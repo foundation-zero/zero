@@ -160,6 +160,7 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.CalculatedTemperature]: "temperature",
   [SensorComponentType.Pressure]: "pressure",
   [SensorComponentType.Flow]: "flow",
+  [SensorComponentType.FlowOnly]: "flow",
   [SensorComponentType.Pump]: "flow",
   [SensorComponentType.Valve]: "positionRel",
   [SensorComponentType.Thruster]: "active",

@@ -11,6 +11,7 @@ import ValueListItem from "./ValueListItem.vue";
 const props = defineProps<{
   source: ModuleField<
     | SensorComponentType.Flow
+    | SensorComponentType.FlowOnly
     | SensorComponentType.CalculatedFlow
     | SensorComponentType.HeatTransferDevice
   >;

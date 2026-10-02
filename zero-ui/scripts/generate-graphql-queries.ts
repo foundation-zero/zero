@@ -111,6 +111,7 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     CalculatedTemperature: ["temperature"],
     Pressure: ["pressure"],
     Flow: ["flow", "temperature", "quantity"],
+    FlowOnly: ["flow"],
     Pump: [
       "flow",
       "speed",

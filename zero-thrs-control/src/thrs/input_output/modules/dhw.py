@@ -237,7 +237,7 @@ class DhwSensorValues(AmcsModeSensorValues):
     ]
 
     freshwater_hotwater_flow: Annotated[
-        sensor.FlowSensor,
+        sensor.FlowOnlySensor,
         component_meta(
             yard_tag="25001123-1",
             included_in_fmu=False,
@@ -692,11 +692,8 @@ class DhwSimulationOutputs(ThrsValues):
         )
     )
     @property
-    def freshwater_hotwater_flow(self) -> sensor.FlowSensor:
-        return sensor.FlowSensor(
-            flow=self.dhw_freshwater_return.flow,
-            temperature=self.dhw_freshwater_return.temperature,
-        )
+    def freshwater_hotwater_flow(self) -> sensor.FlowOnlySensor:
+        return sensor.FlowOnlySensor(flow=self.dhw_freshwater_return.flow)
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property

@@ -5,7 +5,9 @@ import { computed } from "vue";
 import { getMimicDataProvider, ModuleField } from "../../../providers";
 
 const props = defineProps<{
-  flow: ModuleField<SensorComponentType.Flow | SensorComponentType.CalculatedFlow>[];
+  flow: ModuleField<
+    SensorComponentType.Flow | SensorComponentType.FlowOnly | SensorComponentType.CalculatedFlow
+  >[];
 }>();
 
 const { getSensorValue } = getMimicDataProvider();

@@ -82,8 +82,14 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.ThreeWaySwitchValve]: EmptyObject;
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.ConnectingCircuit]: {
-    flowIn: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
-    flowOut: SensorComponentType.Flow | SensorComponentType.CalculatedFlow;
+    flowIn:
+      | SensorComponentType.Flow
+      | SensorComponentType.FlowOnly
+      | SensorComponentType.CalculatedFlow;
+    flowOut:
+      | SensorComponentType.Flow
+      | SensorComponentType.FlowOnly
+      | SensorComponentType.CalculatedFlow;
     tIn: SensorComponentType.Temperature | SensorComponentType.CalculatedTemperature;
     tOut: SensorComponentType.Temperature;
   };

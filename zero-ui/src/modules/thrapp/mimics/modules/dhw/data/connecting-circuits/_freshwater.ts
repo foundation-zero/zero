@@ -11,7 +11,7 @@ export default toInstance<MimicComponentType.ConnectingCircuit>({
   parameters: {},
   source: getCustomField("dhw", { technicalName: "fresh-water" }),
   sensors: {
-    flowIn: getField(SensorComponentType.Flow, "dhw", "freshwaterHotwaterFlow"),
+    flowIn: getField(SensorComponentType.FlowOnly, "dhw", "freshwaterHotwaterFlow"),
     tIn: getField(SensorComponentType.Temperature, "dhw", "freshwaterHotwaterTemperature"),
     flowOut: getField(SensorComponentType.CalculatedFlow, "dhw", "dhwFreshwaterFlowSupply"),
     tOut: getField(SensorComponentType.Temperature, "dhw", "dhwTemperatureFreshwaterSupply"),
