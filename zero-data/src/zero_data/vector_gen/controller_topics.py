@@ -2,8 +2,14 @@
 from zero_data.io_list.managed_topics import ManagedTopic
 from zero_data.io_list.types import IOTopic
 
-THRS_CALCULATED_DEVICES = {
+THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
     "calculated_flows": {
+        "dc": (
+            "dc_total_flow",
+            "dc_aft_flow",
+            "dc_ugrid_flow",
+            "dc_fwd_flow",
+        ),
         "dhw": ("dhw-freshwater-flow-supply",),
         "pvt": (
             "pvt-flow-main-aft-strings",
@@ -42,7 +48,13 @@ THRS_CALCULATED_DEVICES = {
             "consumers-adsorption-exchanger",
             "consumers-dhw-exchanger",
         ),
-        "dc": ("dc-dhw-exchanger",),
+        "dc": (
+            "dc-dhw-exchanger",
+            "dc_seawater_exchanger",
+            "dc_aft_heat",
+            "dc_ugrid_heat",
+            "dc_fwd_heat",
+        ),
         "dhw": (
             "dhw-hvac-exchanger",
             "dhw-heatpump-heat",
