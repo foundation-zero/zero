@@ -56,21 +56,18 @@ const pvt = PVT_MIMIC_DATA[MimicComponentType.Pvt];
     <PvtInstance
       x="14"
       y="30"
-      :tag-id="pvt['9001-01'].tooltip?.yardTag"
       v-bind="pvt['9001-01']"
     />
 
     <PvtInstance
       x="14"
       y="241"
-      :tag-id="pvt['9002-01'].tooltip?.yardTag"
       v-bind="pvt['9002-01']"
     />
 
     <PvtInstance
       x="14"
       y="500"
-      :tag-id="pvt['9001-03'].tooltip?.yardTag"
       v-bind="pvt['9001-03']"
     />
   </g>

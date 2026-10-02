@@ -3,19 +3,20 @@ import { SensorComponentType, ThrusterMode } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
-import { TooltipComponentContext } from "../../components/tooltip";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
-import { HeatPump, HeatPumpTitle } from "../components/heat-pump";
+import { AssetBox, AssetBoxTitle } from "../components/asset-box";
 import { ModeBadge, ModeBadgeMode, ModeBadgeSize } from "../components/mode-badge";
 import {
   ValueList,
   ValueListDeltaTItem,
   ValueListHeatPowerItem,
+  ValueListItem,
   ValueListSeparator,
   ValueListTemperatureItem,
 } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
-import { getMimicDataProvider, getSensorDefinition, ModuleField } from "../providers";
+import { getMimicDataProvider, ModuleField } from "../providers";
 import SensorValue from "../providers/SensorValue.vue";
 
 const props = withDefaults(
@@ -39,7 +40,6 @@ const { getSensorValue, getComponentState } = getMimicDataProvider();
 
 const pcs = getSensorValue(props.sensors.pcs);
 const state = getComponentState();
-const definition = getSensorDefinition(props.source[1], props.source[2]);
 
 const modeLabelMap = {
   [ThrusterMode.Off]: {
@@ -72,37 +72,46 @@ const tempSource = [
 </script>
 
 <template>
-  <HeatPump
-    v-bind="props"
-    :state="state"
+  <MimicTooltipTrigger
+    :type="MimicComponentType.Thruster"
+    :data="props"
   >
-    <YardTag>{{ definition.yardTag }}</YardTag>
-    <HeatPumpTitle class="pb-1">
-      {{ t(`thrapp.mimics.thrusters.assets.${custom.titleKey}`) }}
-    </HeatPumpTitle>
-    <ModeBadge
-      v-bind="mode"
-      :size="ModeBadgeSize.Asset"
-    />
+    <AssetBox
+      v-bind="props"
+      :state="state"
+    >
+      <YardTag>{{ tooltip?.yardTag }}</YardTag>
+      <AssetBoxTitle class="pb-1">
+        {{ t(`thrapp.mimics.thrusters.assets.${custom.titleKey}`) }}
+      </AssetBoxTitle>
 
-    <ValueList class="pt-1">
-      <ValueListSeparator />
-
-      <SensorValue :source="props.source">
-        <ValueListItem class="text-brand">
-          <span class="flex items-center gap-0.5"> Power </span>
-          <span></span>
-        </ValueListItem>
-      </SensorValue>
-      <ValueListTemperatureItem
-        class="text-brand"
-        :source="tempSource"
-        temperature-label="internal"
+      <ModeBadge
+        v-bind="mode"
+        :size="ModeBadgeSize.Asset"
       />
-      <ValueListHeatPowerItem :source="props.sensors.heatTransfer" />
-      <ValueListDeltaTItem :source="props.sensors.heatTransfer" />
 
-      <ValueListSeparator />
-    </ValueList>
-  </HeatPump>
+      <ValueList
+        dense
+        class="pt-1"
+      >
+        <ValueListSeparator />
+
+        <ValueListHeatPowerItem :source="sensors.heatTransfer" />
+        <ValueListDeltaTItem :source="sensors.heatTransfer" />
+        <ValueListTemperatureItem
+          class="text-brand"
+          :source="tempSource"
+          temperature-label="internal"
+        />
+        <SensorValue :source="source">
+          <ValueListItem class="text-brand">
+            <span class="flex items-center gap-0.5"> Power </span>
+            <span></span>
+          </ValueListItem>
+        </SensorValue>
+
+        <ValueListSeparator />
+      </ValueList>
+    </AssetBox>
+  </MimicTooltipTrigger>
 </template>

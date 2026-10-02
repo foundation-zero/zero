@@ -4,7 +4,8 @@ import { usePvtMode } from "@/modules/thrapp/state";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
-import { Pvt, PvtMode, PvtTitle } from "../components/pvt";
+import { AssetBox, AssetBoxTitle } from "../components/asset-box";
+import { PvtMode } from "../components/pvt";
 import {
   ValueList,
   ValueListDeltaTItem,
@@ -27,7 +28,7 @@ const props = withDefaults(
   >(),
   {
     width: 220,
-    height: 228,
+    height: 200,
     forceHeight: true,
   },
 );
@@ -35,6 +36,7 @@ const props = withDefaults(
 const { getComponentState } = getMimicDataProvider();
 
 const state = getComponentState();
+
 const modeKey = usePvtMode(props.custom.group);
 </script>
 
@@ -43,34 +45,31 @@ const modeKey = usePvtMode(props.custom.group);
     :type="MimicComponentType.Pvt"
     :data="props"
   >
-    <Pvt
+    <AssetBox
       v-bind="props"
       :state="state"
-      :height="180"
     >
-      <YardTag>{{ props.tagId }}</YardTag>
-      <PvtTitle class="gap-2 pb-1">
+      <YardTag>{{ tooltip?.yardTag }}</YardTag>
+      <AssetBoxTitle class="pb-1">
         <ZiSolarPanel class="fill-brand-muted" />
-        {{ props.tooltip?.title }}
-      </PvtTitle>
+        {{ tooltip?.title }}
+      </AssetBoxTitle>
 
       <PvtMode
         :mode="modeKey"
         :state="state"
       />
-      <ValueList
-        dense
-        class="gap-0 pt-1"
-      >
+
+      <ValueList dense>
         <ValueListSeparator />
 
-        <ValueListHeatPowerItem :source="props.sensors.heatTransfer" />
-        <ValueListDeltaTItem :source="props.sensors.heatTransfer" />
-        <ValueListFlowItem :source="props.sensors.heatTransfer" />
-        <ValueListPowerItem :source="props.source" />
+        <ValueListHeatPowerItem :source="sensors.heatTransfer" />
+        <ValueListDeltaTItem :source="sensors.heatTransfer" />
+        <ValueListFlowItem :source="sensors.heatTransfer" />
+        <ValueListPowerItem :source="source" />
 
         <ValueListSeparator />
       </ValueList>
-    </Pvt>
+    </AssetBox>
   </MimicTooltipTrigger>
 </template>

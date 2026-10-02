@@ -42,7 +42,7 @@ const { strokeWidth, stateColor } = createMimicComponentContext(state);
       :width="width"
       :height="height"
     >
-      <div :class="cn('h-full w-full p-2 pb-1', props.class)">
+      <div :class="cn('h-full w-full p-4 pb-1', props.class)">
         <slot />
       </div>
     </foreignObject>
