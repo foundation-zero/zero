@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { ZiHeatBatteryFull } from "@/modules/common/components/icons";
-import { RiFireLine } from "@remixicon/vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import { Pcm, PcmLayout, PcmTitle } from "../components/pcm";
 import PcmContent from "../components/pcm/PcmContent.vue";
-import { ValueList, ValueListItem, ValueListSeparator } from "../components/value-list";
+import {
+  ValueList,
+  ValueListHeatPowerItem,
+  ValueListItem,
+  ValueListSeparator,
+} from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
 import ControllerStateValue from "../providers/ControllerStateValue.vue";
-import SensorValue from "../providers/SensorValue.vue";
 import { FieldRenderer } from "../renderers";
 
 const props = withDefaults(
@@ -53,15 +56,7 @@ const props = withDefaults(
         </ControllerStateValue>
         <ValueList class="gap-0 text-base font-medium">
           <ValueListSeparator class="my-0.5" />
-          <ValueListItem>
-            <RiFireLine class="text-heating-medium size-3.5" />
-            <SensorValue
-              :source="sensors.heatTransfer"
-              field="heat"
-            >
-              <FieldRenderer.Auto />
-            </SensorValue>
-          </ValueListItem>
+          <ValueListHeatPowerItem :source="sensors.heatTransfer" />
           <ValueListItem>
             <ZiHeatBatteryFull
               class="size-3.5"

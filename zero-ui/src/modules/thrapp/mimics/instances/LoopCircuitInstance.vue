@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
@@ -13,7 +12,6 @@ import {
 } from "../components/value-list";
 import { getMimicDataProvider } from "../providers";
 
-const { t } = useI18n();
 const props = defineProps<
   MimicComponentInstanceProps &
     TooltipComponentContext<MimicComponentType.ExchangeCircuit> & {
@@ -50,16 +48,14 @@ const state = getComponentState();
           class="text-xs"
           :source="source"
           field="temperatureSupply"
-        >
-          {{ t("units.Tin") }}
-        </ValueListTemperatureItem>
+          temperature-label="in"
+        />
         <ValueListTemperatureItem
           class="text-xs"
           :source="source"
           field="temperatureReturn"
-        >
-          {{ t("units.Tout") }}
-        </ValueListTemperatureItem>
+          temperature-label="out"
+        />
         <ValueListFlowItem :source="source" />
       </ValueList>
     </CircuitBox>

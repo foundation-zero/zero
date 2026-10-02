@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { RiFlashlightLine } from "@remixicon/vue";
 import { first, last } from "lodash";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
@@ -14,12 +13,12 @@ import {
   ValueList,
   ValueListDeltaTItem,
   ValueListHeatPowerItem,
-  ValueListItem,
+  ValueListPowerItem,
   ValueListSeparator,
+  ValueListTemperatureItem,
 } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
 import { getMimicDataProvider } from "../providers";
-import SensorValue from "../providers/SensorValue.vue";
 import { FieldRenderer } from "../renderers";
 
 const props = defineProps<
@@ -68,25 +67,13 @@ const modeKey = useDcMode(props.custom.group);
       <ValueListSeparator />
       <ValueListHeatPowerItem :source="props.sensors.heatTransfer" />
       <ValueListDeltaTItem :source="props.sensors.heatTransfer" />
-      <SensorValue
+      <ValueListTemperatureItem
+        class="text-brand"
         :source="props.sensors.temperature"
-        field="temperature"
-      >
-        <ValueListItem>
-          <span class="text-brand">
-            {{ t("units.temp") }}<small>{{ t("labels.internal") }}</small>
-          </span>
-          <span class="text-foreground font-medium"><FieldRenderer.Temperature /></span>
-        </ValueListItem>
-      </SensorValue>
-      <SensorValue :source="props.sensors.power">
-        <ValueListItem>
-          <span class="flex items-center gap-0.5">
-            <RiFlashlightLine class="text-brand size-3.5" />
-          </span>
-          <span class="text-foreground font-medium"><FieldRenderer.Power :value="1_200" /></span>
-        </ValueListItem>
-      </SensorValue>
+        temperature-label="internal"
+      />
+      <ValueListPowerItem :source="props.sensors.power" />
+
       <ValueListSeparator />
     </ValueList>
   </DcConverter>

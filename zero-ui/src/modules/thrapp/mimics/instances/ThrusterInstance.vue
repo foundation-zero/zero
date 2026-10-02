@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ThrusterMode } from "@/modules/thrsim/types";
-import { RiFireLine } from "@remixicon/vue";
+import { SensorComponentType, ThrusterMode } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
@@ -8,10 +7,16 @@ import { TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import { HeatPump, HeatPumpTitle } from "../components/heat-pump";
 import { ModeBadge, ModeBadgeMode, ModeBadgeSize } from "../components/mode-badge";
-import { ValueList, ValueListItem, ValueListSeparator } from "../components/value-list";
+import {
+  ValueList,
+  ValueListDeltaTItem,
+  ValueListHeatPowerItem,
+  ValueListSeparator,
+  ValueListTemperatureItem,
+} from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
-import { getMimicDataProvider, getSensorDefinition } from "../providers";
-import { FieldRenderer } from "../renderers";
+import { getMimicDataProvider, getSensorDefinition, ModuleField } from "../providers";
+import SensorValue from "../providers/SensorValue.vue";
 
 const props = withDefaults(
   defineProps<
@@ -59,8 +64,11 @@ const mode = computed(() => {
   const modeKey = (pcs?.value?.mode?.value as ThrusterMode) ?? ThrusterMode.Off;
   return modeLabelMap[modeKey];
 });
-
-const heatTransfer = getSensorValue(props.sensors.heatTransfer);
+const tempSource = [
+  SensorComponentType.Temperature,
+  "thrusters",
+  "placeholder",
+] as unknown as ModuleField<SensorComponentType.Temperature>;
 </script>
 
 <template>
@@ -79,30 +87,20 @@ const heatTransfer = getSensorValue(props.sensors.heatTransfer);
 
     <ValueList class="pt-1">
       <ValueListSeparator />
-      <ValueListItem>
-        <span class="flex items-center gap-0.5"> Power </span>
-        <span></span>
-      </ValueListItem>
 
-      <ValueListItem>
-        <span class="flex items-center gap-0.5"> Internal Temp </span>
-        <span></span>
-      </ValueListItem>
-
-      <ValueListItem>
-        <span class="flex items-center gap-0.5">
-          <RiFireLine class="text-heating-medium size-3.5" />
-        </span>
-        <span class="text-foreground font-medium">
-          <FieldRenderer.Heat :value="heatTransfer?.heat.value" />
-        </span>
-      </ValueListItem>
-      <ValueListItem>
-        <span class="text-brand text-sm">{{ t("units.deltaT") }}</span>
-        <span class="text-foreground font-medium">
-          <FieldRenderer.Temperature :value="heatTransfer?.deltaT.value" />
-        </span>
-      </ValueListItem>
+      <SensorValue :source="props.source">
+        <ValueListItem class="text-brand">
+          <span class="flex items-center gap-0.5"> Power </span>
+          <span></span>
+        </ValueListItem>
+      </SensorValue>
+      <ValueListTemperatureItem
+        class="text-brand"
+        :source="tempSource"
+        temperature-label="internal"
+      />
+      <ValueListHeatPowerItem :source="props.sensors.heatTransfer" />
+      <ValueListDeltaTItem :source="props.sensors.heatTransfer" />
 
       <ValueListSeparator />
     </ValueList>

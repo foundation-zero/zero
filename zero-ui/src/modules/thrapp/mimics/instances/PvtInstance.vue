@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import { ZiSolarPanel } from "@/modules/common/components/icons";
 import { usePvtMode } from "@/modules/thrapp/state";
-import { RiDropLine, RiFireLine, RiFlashlightLine } from "@remixicon/vue";
-import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import { Pvt, PvtMode, PvtTitle } from "../components/pvt";
-import { ValueList, ValueListItem, ValueListSeparator } from "../components/value-list";
+import {
+  ValueList,
+  ValueListDeltaTItem,
+  ValueListFlowItem,
+  ValueListHeatPowerItem,
+  ValueListPowerItem,
+  ValueListSeparator,
+} from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
 import { getMimicDataProvider } from "../providers";
-import { FieldRenderer } from "../renderers";
 
 const props = withDefaults(
   defineProps<
@@ -28,10 +32,8 @@ const props = withDefaults(
   },
 );
 
-const { t } = useI18n();
-const { getSensorValue, getComponentState } = getMimicDataProvider();
+const { getComponentState } = getMimicDataProvider();
 
-const heatTransfer = getSensorValue(props.sensors.heatTransfer);
 const state = getComponentState();
 const modeKey = usePvtMode(props.custom.group);
 </script>
@@ -62,34 +64,11 @@ const modeKey = usePvtMode(props.custom.group);
       >
         <ValueListSeparator />
 
-        <ValueListItem>
-          <span class="flex items-center gap-0.5">
-            <RiFireLine class="text-heating-medium size-3.5" />
-          </span>
-          <span class="text-foreground font-medium">
-            <FieldRenderer.Heat :value="heatTransfer?.heat.value" />
-          </span>
-        </ValueListItem>
-        <ValueListItem>
-          <span class="text-brand text-sm">{{ t("units.deltaT") }}</span>
-          <span class="text-foreground font-medium">
-            <FieldRenderer.Temperature :value="heatTransfer?.deltaT.value" />
-          </span>
-        </ValueListItem>
-        <ValueListItem>
-          <span class="flex items-center gap-0.5">
-            <RiDropLine class="text-brand size-3.5" />
-          </span>
-          <span class="text-foreground font-medium">
-            <FieldRenderer.FlowRate :value="heatTransfer?.flow?.value" />
-          </span>
-        </ValueListItem>
-        <ValueListItem>
-          <span class="flex items-center gap-0.5">
-            <RiFlashlightLine class="text-brand size-3.5" />
-          </span>
-          <strong>TODO %</strong>
-        </ValueListItem>
+        <ValueListHeatPowerItem :source="props.sensors.heatTransfer" />
+        <ValueListDeltaTItem :source="props.sensors.heatTransfer" />
+        <ValueListFlowItem :source="props.sensors.heatTransfer" />
+        <ValueListPowerItem :source="props.source" />
+
         <ValueListSeparator />
       </ValueList>
     </Pvt>
