@@ -3,7 +3,7 @@
     viewBox="0 0 1414 854"
     fill="none"
     x="-84"
-    y="-130"
+    y="-140"
     xmlns="http://www.w3.org/2000/svg"
   >
     <g>

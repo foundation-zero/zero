@@ -86,7 +86,8 @@ export type SensorFieldDefinitions = SensorFields<{
     power: SensorComponentType.Pvt; // TODO: fix this
     temperature: SensorComponentType.Temperature;
   };
-  [MimicComponentType.ConnectingCircuit]: {
+  [MimicComponentType.ConnectingCircuit]: EmptyObject;
+  [MimicComponentType.FreshwaterCircuit]: {
     flowIn:
       | SensorComponentType.Flow
       | SensorComponentType.FlowOnly
@@ -98,6 +99,7 @@ export type SensorFieldDefinitions = SensorFields<{
     tIn: SensorComponentType.Temperature | SensorComponentType.CalculatedTemperature;
     tOut: SensorComponentType.Temperature;
   };
+  [MimicComponentType.SeawaterCircuit]: EmptyObject;
   [MimicComponentType.HeatPump]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
   };
@@ -144,6 +146,8 @@ export type ControlFieldDefinitions = ControlFields<{
   };
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.DcConverter]: EmptyObject;
+  [MimicComponentType.FreshwaterCircuit]: EmptyObject;
+  [MimicComponentType.SeawaterCircuit]: EmptyObject;
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: {
     valve: ControlComponentType.Valve;
@@ -179,6 +183,8 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.DcConverter]: EmptyObject;
+  [MimicComponentType.FreshwaterCircuit]: EmptyObject;
+  [MimicComponentType.SeawaterCircuit]: EmptyObject;
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
   [MimicComponentType.Pvt]: EmptyObject;
@@ -196,6 +202,8 @@ export type ParameterFieldDefinitions = ParameterFields<{
   };
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.DcConverter]: EmptyObject;
+  [MimicComponentType.FreshwaterCircuit]: EmptyObject;
+  [MimicComponentType.SeawaterCircuit]: EmptyObject;
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.Pump]: EmptyObject;
   [MimicComponentType.ManualPump]: EmptyObject;
@@ -249,7 +257,7 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.HeatExchanger]: {
     sideA: HeatExchangerPortOrientation;
     sideB: HeatExchangerPortOrientation;
-    exchangeCircuit: ExtractSourceFields<MimicComponentType.ExchangeCircuit>["source"];
+    exchangeCircuit?: ExtractSourceFields<MimicComponentType.ExchangeCircuit>["source"];
   };
   [MimicComponentType.ExchangeCircuit]: {
     width?: number | string;
@@ -265,8 +273,15 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.ConnectingCircuit]: {
     width?: number | string;
     height?: number | string;
+    circuitName: string;
     modeModule?: keyof ControlStatus["modules"];
   };
+  [MimicComponentType.FreshwaterCircuit]: {
+    width?: number | string;
+    height?: number | string;
+    modeModule?: keyof ControlStatus["modules"];
+  };
+  [MimicComponentType.SeawaterCircuit]: EmptyObject;
   [MimicComponentType.PressureSensor]: {
     controller?: PIDController;
   };
@@ -327,7 +342,9 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.DcConverter]: undefined;
   [MimicComponentType.Pvt]: SensorComponentType.Pvt;
   [MimicComponentType.Thruster]: SensorComponentType.Thruster;
-  [MimicComponentType.ConnectingCircuit]: undefined;
+  [MimicComponentType.FreshwaterCircuit]: undefined;
+  [MimicComponentType.SeawaterCircuit]: SensorComponentType.Temperature;
+  [MimicComponentType.ConnectingCircuit]: SensorComponentType.HeatTransferDevice;
 }>;
 
 export type Defined<P, T extends P | undefined> = T extends P ? T : P;

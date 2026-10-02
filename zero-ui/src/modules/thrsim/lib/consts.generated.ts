@@ -1861,6 +1861,9 @@ export const PCM_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
+  pcmFreshwaterHeat: {
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
   pcmHeatModule1: {
     yardTag: "50001049",
     componentType: SensorComponentType.HeatTransferDevice,
@@ -2246,6 +2249,9 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001043-01",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Mix,
+  },
+  pvtPcmHeat: {
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   pvtPressureMainAft: {
     yardTag: "50001097-04",
@@ -2920,6 +2926,10 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
   mode: {
     componentType: SensorComponentType.AmcsControlMode,
   },
+  pcmTemperatureProducersSupply: {
+    yardTag: "50001038-55",
+    componentType: SensorComponentType.Temperature,
+  },
   thrustersFlow: {
     componentType: SensorComponentType.CalculatedFlow,
   },
@@ -2954,6 +2964,9 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001074",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Mix,
+  },
+  thrustersPcmHeat: {
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   thrustersPcs: {
     yardTag: "1500",

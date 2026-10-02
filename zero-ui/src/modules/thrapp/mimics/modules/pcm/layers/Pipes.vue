@@ -19,11 +19,11 @@
       class="stroke-flows-pipe"
     />
     <path
-      d="M108.728 544.093H0.5V521.396"
+      d="M108.728 544.093H0.5V480"
       class="stroke-flows-pipe"
     />
     <path
-      d="M108.728 544.093H216.956V521.22"
+      d="M108.728 544.093H216.956V480"
       class="stroke-flows-pipe"
     />
     <circle
@@ -271,11 +271,11 @@
       class="stroke-flows-pipe"
     />
     <path
-      d="M108.728 276.317H0.5V298.811"
+      d="M108.728 276.317H0.5V340"
       class="stroke-flows-pipe"
     />
     <path
-      d="M108.728 276.317H216.956V298.986"
+      d="M108.728 276.317H216.956V340"
       class="stroke-flows-pipe"
     />
     <circle

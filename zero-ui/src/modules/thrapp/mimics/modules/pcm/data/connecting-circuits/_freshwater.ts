@@ -1,24 +1,20 @@
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getCustomField, getField } from "../../../../providers";
+import { getField } from "../../../../providers";
 import { fieldTooltip } from "../../../shared";
 
 export default toInstance<MimicComponentType.ConnectingCircuit>({
   controls: {},
   controllerState: {},
-  custom: {},
+  custom: { circuitName: "Fresh water" },
   parameters: {},
-  source: getCustomField("dhw", { technicalName: "fresh-water" }),
-  sensors: {
-    flowIn: getField(SensorComponentType.FlowOnly, "pcm", "freshwaterFlowPcm"),
-    tIn: getField(SensorComponentType.Temperature, "pcm", "freshwaterTemperaturePcmReturn"),
-    flowOut: getField(SensorComponentType.FlowOnly, "pcm", "freshwaterFlowPcm"),
-    tOut: getField(SensorComponentType.Temperature, "pcm", "freshwaterTemperaturePcmSupply"),
-  },
+  source: getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmFreshwaterHeat"),
+  sensors: {},
   get tooltip() {
     return fieldTooltip(this.source, {
-      title: "Fresh water",
+      title: "Connecting circuit",
+      componentType: "Fresh water loop",
     });
   },
 });

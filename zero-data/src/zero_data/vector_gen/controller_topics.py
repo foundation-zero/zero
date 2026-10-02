@@ -58,17 +58,20 @@ THRS_CALCULATED_DEVICES = {
             "pcm-heat-module2",
             "pcm-heat-module3",
             "pcm-heat-module4",
+            "pcm_freshwater_heat",
         ),
         "pvt": (
             "pvt-pvt-main-fwd-heat",
             "pvt-pvt-main-aft-heat",
             "pvt-pvt-owners-heat",
             "pvt-seawater-exchanger",
+            "pvt_pcm_heat",
         ),
         "thrusters": (
             "thrusters-thruster-aft-heat",
             "thrusters-thruster-fwd-heat",
             "thrusters-seawater-exchanger",
+            "thrusters_pcm_heat",
         ),
     },
 }

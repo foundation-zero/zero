@@ -5,15 +5,22 @@ import {
   NoopTooltipProvider,
   TooltipComponentContext,
 } from "../../components/tooltip";
-import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
+import {
+  TooltipList,
+  TooltipListHeader,
+  TooltipListItemAction,
+} from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
+import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import ConnectingCircuitInstance from "../instances/ConnectingCircuitInstance.vue";
 import { SensorValue } from "../providers";
+import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
+import Circuit from "./partials/Circuit.vue";
 const props = defineProps<TooltipComponentContext<MimicComponentType.ConnectingCircuit>>();
 
-const { items, labels } = useTranslations();
+const { labels, items, actions } = useTranslations();
 </script>
 
 <template>
@@ -22,7 +29,6 @@ const { items, labels } = useTranslations();
       <NoopTooltipProvider>
         <ConnectingCircuitInstance
           v-bind="props"
-          height="243"
           force-height
         />
       </NoopTooltipProvider>
@@ -31,44 +37,37 @@ const { items, labels } = useTranslations();
 
     <TooltipList class="border-b-0">
       <Partials.ComponentInfo :tooltip="tooltip" />
+      <SensorGraph
+        :device="tooltip?.technicalName"
+        type="heat_transfers"
+        field="heat"
+      />
     </TooltipList>
 
     <TooltipList>
       <TooltipListHeader>
-        {{ labels("connectingCircuit") }}
+        {{ labels("mode") }}
+        <TooltipListItemAction>{{ actions("viewCircuitMimic") }}</TooltipListItemAction>
       </TooltipListHeader>
       <SensorValue
-        :source="sensors.tIn"
-        field="temperature"
+        :source="source"
+        field="heat"
       >
-        <Partials.ListItem size="sm">
-          {{ items("incomingTemperature") }}
+        <Partials.ListItem>
+          {{ items("circuit") }}
+          <template #value>
+            <FieldRenderer.HeatExchangerMode />
+          </template>
         </Partials.ListItem>
       </SensorValue>
-      <SensorValue
-        :source="sensors.flowIn"
-        field="flow"
-      >
-        <Partials.ListItem size="sm">
-          {{ items("incomingFlow") }}
-        </Partials.ListItem>
-      </SensorValue>
-      <SensorValue
-        :source="sensors.tOut"
-        field="temperature"
-      >
-        <Partials.ListItem size="sm">
-          {{ items("outgoingTemperature") }}
-        </Partials.ListItem>
-      </SensorValue>
-      <SensorValue
-        :source="sensors.flowOut"
-        field="flow"
-      >
-        <Partials.ListItem size="sm">
-          {{ items("outgoingFlow") }}
-        </Partials.ListItem>
-      </SensorValue>
+    </TooltipList>
+
+    <TooltipList>
+      <TooltipListHeader>
+        {{ custom.circuitName }}
+        <TooltipListItemAction>{{ actions("viewCircuitMimic") }}</TooltipListItemAction>
+      </TooltipListHeader>
+      <Circuit :source="source" />
     </TooltipList>
   </MimicTooltip>
 </template>

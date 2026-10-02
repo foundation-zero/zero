@@ -1294,6 +1294,7 @@ type PcmSensorValuesType {
   pcmHeatModule2: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001050", componentType: "pcm", valveType: null)
   pcmHeatModule3: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001051", componentType: "pcm", valveType: null)
   pcmHeatModule4: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001052", componentType: "pcm", valveType: null)
+  pcmFreshwaterHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
 }
 
 type PcmSensorValuesTypePcmControlValuesTypePcmParametersTypePcmControlModeTypePcmControllerStateTypeControlModule {
@@ -1536,6 +1537,7 @@ type PvtSensorValuesType {
   pvtTotalFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   pvtSeawaterExchangerFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   pvtSeawaterExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001002", componentType: "heat_transfer", valveType: null)
+  pvtPcmHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
 }
 
 type PvtSensorValuesTypePvtControlValuesTypePvtParametersTypePvtControlModeTypePvtControllerStateTypeControlModule {
@@ -1935,6 +1937,7 @@ type ThrustersSensorValuesType {
   thrustersThrusterAft: SensorThrusterType! @jsonSchemaDirective(yardTag: "15001001", componentType: "thruster", valveType: null)
   thrustersThrusterFwd: SensorThrusterType! @jsonSchemaDirective(yardTag: "15001002", componentType: "thruster", valveType: null)
   thrustersPcs: SensorPcsType! @jsonSchemaDirective(yardTag: "1500", componentType: "pcs", valveType: null)
+  pcmTemperatureProducersSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-55", componentType: "temperature_sensor", valveType: null)
   thrustersThrusterAftHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "15001001", componentType: "heat_transfer", valveType: null)
   thrustersThrusterFwdHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "15001002", componentType: "heat_transfer", valveType: null)
 
@@ -1949,6 +1952,7 @@ type ThrustersSensorValuesType {
   thrustersTemperaturePreCooler: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
   thrustersFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   thrustersSeawaterExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001001", componentType: "heat_transfer", valveType: null)
+  thrustersPcmHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
 }
 
 type ThrustersSensorValuesTypeThrustersControlValuesTypeThrustersParametersTypeThrustersControlModeTypeThrustersControllerStateTypeControlModule {

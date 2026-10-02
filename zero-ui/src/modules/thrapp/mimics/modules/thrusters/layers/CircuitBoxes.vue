@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
-import { LoopCircuitInstance } from "../../../instances";
-import ConnectingCircuitInstance from "../../../instances/ConnectingCircuitInstance.vue";
+import { ConnectingCircuitInstance, SeawaterCircuitInstance } from "../../../instances";
 import { THRUSTERS_MIMIC_DATA } from "../data";
 
-const circuits = THRUSTERS_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
+const seaWaterCircuits = THRUSTERS_MIMIC_DATA[MimicComponentType.SeawaterCircuit];
 const connectingCircuits = THRUSTERS_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
 </script>
 
@@ -18,13 +17,13 @@ const connectingCircuits = THRUSTERS_MIMIC_DATA[MimicComponentType.ConnectingCir
       v-bind="connectingCircuits?.['pcm']"
     />
 
-    <LoopCircuitInstance
-      x="590"
-      y="-10"
+    <SeawaterCircuitInstance
+      x="595"
+      y="20"
       width="194"
-      height="130"
+      height="140"
       force-height
-      v-bind="circuits?.['seawater']"
+      v-bind="seaWaterCircuits?.['seawater']"
     />
   </g>
 </template>

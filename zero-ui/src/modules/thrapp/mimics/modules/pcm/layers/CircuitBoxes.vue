@@ -12,10 +12,11 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
 <template>
   <ConnectingCircuitInstance
     x="-93"
-    y="288"
+    y="310"
     force-height
-    height="300"
+    height="250"
     v-bind="circuits.pvt"
+    inverted
   >
     <template #fromIcon>
       <RiArrowUpLine class="text-muted-foreground size-3" />
@@ -26,10 +27,11 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
   </ConnectingCircuitInstance>
   <ConnectingCircuitInstance
     x="112"
-    y="288"
+    y="310"
     force-height
     height="250"
     v-bind="circuits.thrusters"
+    inverted
   >
     <template #fromIcon>
       <RiArrowUpLine class="text-muted-foreground size-3" />
@@ -40,7 +42,7 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
   </ConnectingCircuitInstance>
   <ConnectingCircuitInstance
     x="1400"
-    y="10"
+    y="35"
     force-height
     height="230"
     v-bind="circuits.freshwater"
@@ -54,7 +56,7 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
   </ConnectingCircuitInstance>
   <LoopCircuitInstance
     x="1400"
-    y="262"
+    y="222"
     force-height
     height="198"
     v-bind="exchangeCircuits.dhw"
@@ -63,7 +65,7 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     x="1400"
     y="440"
     force-height
-    height="174"
+    height="198"
     v-bind="exchangeCircuits.adsorption"
     :tooltip="exchangeCircuits.adsorption.tooltip"
   />

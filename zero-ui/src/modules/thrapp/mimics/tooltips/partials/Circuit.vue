@@ -47,4 +47,15 @@ defineProps<{
       {{ items("flow") }}
     </Partials.ListItem>
   </SensorValue>
+  <SensorValue
+    :source="source"
+    field="heat"
+  >
+    <Partials.ListItem>
+      {{ items("heat") }}
+      <template #sourceName>
+        {{ sources("calculated") }}
+      </template>
+    </Partials.ListItem>
+  </SensorValue>
 </template>
