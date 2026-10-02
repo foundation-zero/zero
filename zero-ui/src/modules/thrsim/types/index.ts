@@ -58,6 +58,7 @@ export type PcmChargeController = {
 
 export const enum PvtMode {
   Idle = "idle",
+  Warmup = "warmup",
   Recovery = "recovery",
 }
 

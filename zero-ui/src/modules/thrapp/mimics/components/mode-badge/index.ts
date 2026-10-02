@@ -88,6 +88,7 @@ export const useModuleMode = (moduleRef?: MaybeRef<keyof ThrsModules | undefined
       const pvtMode = automaticMode as PvtAutomaticMode;
       const MODES: Record<PvtMode, ModeBadgeMode> = {
         [PvtMode.Idle]: ModeBadgeMode.Idle,
+        [PvtMode.Warmup]: ModeBadgeMode.BoostingLow,
         [PvtMode.Recovery]: ModeBadgeMode.Using,
       };
 
@@ -141,6 +142,7 @@ export const useModuleMode = (moduleRef?: MaybeRef<keyof ThrsModules | undefined
       const thrustersMode = automaticMode as ThrustersAutomaticMode;
       const MODES: Record<string, ModeBadgeMode> = {
         idle: ModeBadgeMode.Idle,
+        warmup: ModeBadgeMode.BoostingLow,
         recovery: ModeBadgeMode.Using,
         cooling: ModeBadgeMode.Cooling,
         cooldown: ModeBadgeMode.CoolingLow,
