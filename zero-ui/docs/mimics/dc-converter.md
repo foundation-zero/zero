@@ -9,7 +9,7 @@ DC converter cards are rendered by the DC mimic `Assets` layer through `DcConver
 ## Layout
 
 - Card size: `200 x 198`.
-- Status graphic: four `12 x 12` squares with `4px` gaps.
+- Status graphic: one `12 x 12` square per channel, with `4px` gaps.
 - Active channels use the `constructive` semantic token; inactive channels use `muted`.
 
 ## Groups
