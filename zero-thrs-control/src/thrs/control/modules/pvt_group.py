@@ -1,13 +1,13 @@
 from collections.abc import Callable
 from datetime import datetime
+from typing import ClassVar
 
-from pydantic import model_validator
 from transitions import State
 
 from thrs.classes.control import Control, ControlMode
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Invariant, Stamped, ThrsValues
 from thrs.input_output.definitions import control, sensor
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
@@ -36,17 +36,20 @@ class PvtGroupParameters(ThrsValues):
     recovery_activation_string_temperature: Celsius
     minimum_return_temperature: Celsius
 
-    @model_validator(mode="after")
-    def check_temperature_setpoints(self):
-        if self.recovery_temperature < self.warmup_temperature:
-            raise ValueError(
-                "Recovery temperature must be greater than warmup temperature"
-            )
-        if self.warmup_temperature < self.minimum_return_temperature:
-            raise ValueError(
-                "Warmup temperature must be greater than minimum return temperature"
-            )
-        return self
+    invariants: ClassVar = (
+        Invariant(
+            "recovery_temperature",
+            "ge",
+            "warmup_temperature",
+            "Recovery temperature must be greater than warmup temperature",
+        ),
+        Invariant(
+            "warmup_temperature",
+            "ge",
+            "minimum_return_temperature",
+            "Warmup temperature must be greater than minimum return temperature",
+        ),
+    )
 
 
 class PvtGroupControlMode(ControlMode):

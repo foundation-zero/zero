@@ -211,7 +211,10 @@ class Stub:
         return Stub(servers)
 
     def run(self) -> None:
-        for server in self.servers:
-            server.start()
+        self._start_servers()
         while True:
             time.sleep(1)
+
+    def _start_servers(self):
+        for server in self.servers:
+            server.start()

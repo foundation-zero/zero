@@ -1,8 +1,7 @@
 from collections.abc import Callable
 from datetime import datetime
-from typing import Annotated, Literal, NoReturn
+from typing import Annotated, ClassVar, Literal, NoReturn
 
-from pydantic import model_validator
 from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode
@@ -12,7 +11,7 @@ from thrs.db.models.machine_state import (
     MachineStateEvent,
 )
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
-from thrs.input_output.base import Stamped, ThrsValues, component_meta
+from thrs.input_output.base import Invariant, Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions import controllers
 from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, LMin, PcsMode, Ratio, Tuning
@@ -82,21 +81,26 @@ class ThrustersParameters(ThrsValues):
     aft_temperature_tuning: Tuning = (-0.01, -0.001, 0)
     fwd_temperature_tuning: Tuning = (-0.01, -0.001, 0)
 
-    @model_validator(mode="after")
-    def check_temperature_setpoints(self):
-        if self.maximum_supply_temperature < self.recovery_temperature:
-            raise ValueError(
-                "Maximum recovery temperature must be greater than recovery temperature"
-            )
-        if self.recovery_temperature < self.warmup_temperature:
-            raise ValueError(
-                "Recovery temperature must be greater than warmup temperature"
-            )
-        if self.warmup_temperature < self.cooling_temperature:
-            raise ValueError(
-                "Warmup temperature must be greater than cooling temperature"
-            )
-        return self
+    invariants: ClassVar = (
+        Invariant(
+            "maximum_supply_temperature",
+            "ge",
+            "recovery_temperature",
+            "Maximum recovery temperature must be greater than recovery temperature",
+        ),
+        Invariant(
+            "recovery_temperature",
+            "ge",
+            "warmup_temperature",
+            "Recovery temperature must be greater than warmup temperature",
+        ),
+        Invariant(
+            "warmup_temperature",
+            "ge",
+            "cooling_temperature",
+            "Warmup temperature must be greater than cooling temperature",
+        ),
+    )
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ThrustersControlValues:  # noqa: N802

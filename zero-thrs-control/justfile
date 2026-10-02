@@ -95,5 +95,11 @@ compile_fmus:
 
 compile_fmus_all: compile_fmus compile_fmus_for_linux
 
+asyncapi:
+    uv run python -m thrs.cli print-asyncapi
+
+test_spec *args:
+    uv run pytest tests/spec {{ args }}
+
 export_schema:
     uv run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrsim/graphql/schema.graphql
