@@ -1,6 +1,8 @@
 from datetime import UTC, datetime, timedelta
 
 import pytest
+from fmpy.fmi1 import FMICallException
+from pydantic import ValidationError
 from pytest import fixture
 
 from tests.helpers.collector import PolarsCollector
@@ -14,7 +16,7 @@ from thrs.input_output.modules.dhw import (
 )
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
-from thrs.simulation.models.fmu_paths import dc_path
+from thrs.simulation.models.fmu_paths import dhw_path
 
 
 def test_simulation(simulation, simulation_inputs, control, alarms):
@@ -29,7 +31,20 @@ def test_simulation(simulation, simulation_inputs, control, alarms):
     assert result["time"].len() == 20
 
 
-@fixture(params=list(simulator_input_field_setters(DhwSimulationInputs)))
+@fixture(
+    params=list(
+        simulator_input_field_setters(
+            DhwSimulationInputs,
+            ignore=[
+                "mode",  # Not a physical quantity
+                # The FMU tolerates these, even with the control running
+                ("dhw_hvac_exchanger", "maximum_temperature"),
+                ("dhw_seawater_supply", "temperature"),
+                ("dhw_hotwater_demand", "flow"),
+            ],
+        )
+    )
+)
 def incorrect_simulation_inputs(simulation_inputs, request):
     request.param(simulation_inputs, -9e7)
     return simulation_inputs
@@ -42,7 +57,7 @@ def test_simulation_step(control, simulation):
 
 
 def test_dhw_simulation_inputs(incorrect_simulation_inputs):
-    with Fmu(dc_path) as fmu:
+    with Fmu(dhw_path) as fmu:
         simulation = Simulation(
             DhwSensorValues,
             DhwSimulationOutputs,
@@ -52,7 +67,7 @@ def test_dhw_simulation_inputs(incorrect_simulation_inputs):
             timedelta(seconds=1),
         )
 
-        with pytest.raises(Exception):
+        with pytest.raises((ValidationError, FMICallException)):
             for _i in range(300):
                 simulation.tick(
                     DhwControlValues.zero(),

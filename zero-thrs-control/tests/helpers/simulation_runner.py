@@ -1,4 +1,9 @@
-from collections.abc import Callable
+from collections import deque
+from collections.abc import Callable, Hashable, Iterator
+from copy import deepcopy
+from datetime import timedelta
+from itertools import groupby
+from math import ceil
 from typing import Any, cast
 
 from analysis.simulation_values import SimulationValues
@@ -89,6 +94,7 @@ class _CombinedControlAdapter[
             ),
         )
 
+    @property
     def mode(self) -> ControlMode:
         return ControlMode(
             **{name: control.mode for name, control in self._controls.items()}
@@ -166,11 +172,17 @@ class SimulationTestRunner[
             simulation, cast(SimulationChannels, None)
         )
         self._simulation = simulation
+        self._modes: list[M] = [cast(M, self._control.mode)]
+        self._simulation_outputs: O | None = None
+
+    @property
+    def simulation_outputs(self) -> O | None:
+        return self._simulation_outputs
 
     def update_simulation_inputs(self, simulation_inputs: I):
         self._simulation_inputs = simulation_inputs
 
-    def tick(self, collector: Collector | None = None) -> tuple[S | None, C, CS]:
+    def tick(self, collector: Collector | None = None) -> tuple[S, C, CS]:
         if isinstance(self._simulation_inputs, SimulationValues):
             simulation_inputs = self._simulation_inputs.get_values_at_time(
                 self._simulation.time()
@@ -180,6 +192,7 @@ class SimulationTestRunner[
         self._simulation.update_simulation_inputs(simulation_inputs)
 
         result = self._simulation_module.execute_simulation_tick(self._control_values)
+        self._simulation_outputs = result.simulation_outputs
 
         self._alarms.check(
             result.sensor_values,
@@ -204,8 +217,14 @@ class SimulationTestRunner[
         self._control_values, self._controller_state = self._control.control(
             result.sensor_values
         )
+        self._modes.append(cast(M, self._control.mode))
 
-        return result.sensor_values, self._control_values, self._controller_state
+        # Controls return their internal values; a copy keeps test mutations out of them.
+        return (
+            result.sensor_values,
+            deepcopy(self._control_values),
+            deepcopy(self._controller_state),
+        )
 
     def run(
         self, n_ticks: int, collector: Collector | None = None
@@ -215,12 +234,50 @@ class SimulationTestRunner[
             result = self.tick(collector)
         return result
 
+    def ticks_for(
+        self, duration: timedelta, collector: Collector | None = None
+    ) -> Iterator[tuple[S, C, CS]]:
+        end = self._simulation.time() + duration
+        while self._simulation.time() < end:
+            yield self.tick(collector)
+
     def run_until(
         self,
-        condition: Callable[[S | None, C, CS], bool],
+        condition: Callable[[S, C, CS], bool],
+        within: timedelta,
+        check: Callable[[S, C, CS], None] | None = None,
         collector: Collector | None = None,
-    ) -> tuple[S | None, C, CS]:
-        result = self.tick(collector)
-        while not condition(*result):
+    ) -> tuple[S, C, CS]:
+        """Runs until `condition` holds, calling `check` on every tick on the way."""
+        start = self._simulation.time()
+        while True:
             result = self.tick(collector)
-        return result
+            if check is not None:
+                check(*result)
+            if condition(*result):
+                return result
+            if self._simulation.time() - start >= within:
+                raise AssertionError(
+                    f"Condition not met within {within} (mode: {self._control.mode})"
+                )
+
+    def run_until_stable(
+        self,
+        condition: Callable[[S, C, CS], bool],
+        stable_for: timedelta,
+        within: timedelta,
+        collector: Collector | None = None,
+    ) -> tuple[S, C, CS]:
+        """Runs until `condition` has held on every tick for `stable_for`."""
+        window = deque(maxlen=ceil(stable_for / self._simulation.tick_duration))
+        for result in self.ticks_for(within, collector):
+            window.append(condition(*result))
+            if len(window) == window.maxlen and all(window):
+                return result
+        raise AssertionError(
+            f"Condition not stable for {stable_for} within {within} (mode: {self._control.mode})"
+        )
+
+    def mode_transitions[K: Hashable](self, key: Callable[[M], K]) -> list[K]:
+        """The modes passed through so far, with consecutive repeats collapsed."""
+        return [mode for mode, _ in groupby(key(mode) for mode in self._modes)]

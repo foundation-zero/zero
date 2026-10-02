@@ -85,7 +85,8 @@ def test_filling_level(
         lambda sensor_values, control_values, controller_state: (
             controller_state.dhw_tanks_controller.tank1_state.value
             == TankState.FILLING.value
-        )
+        ),
+        within=timedelta(minutes=1),
     )
 
     # run until tank1 is full
@@ -93,7 +94,8 @@ def test_filling_level(
         lambda sensor_values, control_values, controller_state: (
             controller_state.dhw_tanks_controller.tank1_state.value
             != TankState.FILLING.value
-        )
+        ),
+        within=timedelta(minutes=30),
     )
 
     assert sensor_values.dhw_level_tank1.level.value == approx(
@@ -304,7 +306,10 @@ def test_boosting_pump_held_until_boosting_loop_open(
 
     # run up to the tick the machine commits to boosting
     runner.run_until(
-        lambda sensor_values, control_values, controller_state: control.mode.is_boosting
+        lambda sensor_values, control_values, controller_state: (
+            control.mode.is_boosting
+        ),
+        within=timedelta(minutes=5),
     )
 
     # while the boosting valves travel the pump must not be driven
