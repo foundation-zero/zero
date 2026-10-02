@@ -38,7 +38,12 @@
     "irradiance": "W/m²",
     "temp": "T"
   },
-  "temperatureLabels": { "in": "in", "out": "out", "internal": "internal" },
+  "temperatureLabels": {
+    "in": "in",
+    "out": "out",
+    "internal": "internal",
+    "seawater": "seawater"
+  },
   "apps": {
     "loads": "Loads",
     "thrs": "THRS",

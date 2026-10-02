@@ -1848,6 +1848,13 @@ export const PCM_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
+  pcmFreshwaterHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
   pcmHeatModule1 {
     temperatureSupply { value timestamp source }
     temperatureReturn { value timestamp source }
@@ -2306,6 +2313,13 @@ export const PVT_SENSOR_QUERY = `
     anyWarningActive { value timestamp }
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
+  }
+  pvtPcmHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
   pvtPressureMainAft {
     pressure { value timestamp }
@@ -2984,6 +2998,9 @@ export const THRUSTERS_SENSOR_QUERY = `
   mode {
     mode { value timestamp }
   }
+  pcmTemperatureProducersSupply {
+    temperature { value timestamp }
+  }
   thrustersFlow {
     flow { value timestamp }
   }
@@ -3033,6 +3050,13 @@ export const THRUSTERS_SENSOR_QUERY = `
     anyWarningActive { value timestamp }
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
+  }
+  thrustersPcmHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
   thrustersPcs {
     mode { value timestamp }

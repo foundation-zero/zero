@@ -4,19 +4,19 @@ import { MimicComponentType } from "../../../../../types";
 import { getField } from "../../../../providers";
 import { fieldTooltip } from "../../../shared";
 
-export default toInstance<MimicComponentType.ExchangeCircuit>({
+export default toInstance<MimicComponentType.SeawaterCircuit>({
   controls: {},
   controllerState: {},
   custom: {
     circuitName: "Seawater",
   },
   parameters: {},
-  source: getField(SensorComponentType.HeatTransferDevice, "thrusters", "placeholder"),
+  source: getField(SensorComponentType.Temperature, "thrusters", "placeholder"),
   sensors: {},
   get tooltip() {
     return fieldTooltip(this.source, {
-      title: "Seawater",
-      componentType: "Exchange circuit",
+      title: "Seawater circuit",
+      componentType: "Seawater",
     });
   },
 });

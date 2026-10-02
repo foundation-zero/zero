@@ -1,10 +1,12 @@
 import { MimicComponentBaseProps } from "../components";
 
 export { default as CheckValveInstance } from "./CheckValveInstance.vue";
+export { default as ConnectingCircuitInstance } from "./ConnectingCircuitInstance.vue";
 export { default as DcConverterInstance } from "./DcConverterInstance.vue";
 export { default as DutypointLabelInstance } from "./DutypointLabelInstance.vue";
 export { default as FlowControlValveInstance } from "./FlowControlValveInstance.vue";
 export { default as FlowSensorInstance } from "./FlowSensorInstance.vue";
+export { default as FreshwaterCircuitInstance } from "./FreshwaterCircuitInstance.vue";
 export { default as HeatExchangerInstance } from "./HeatExchangerInstance.vue";
 export { default as HeatExchangerLabelInstance } from "./HeatExchangerLabelInstance.vue";
 export { default as IrradianceLabelInstance } from "./IrradianceLabelInstance.vue";
@@ -22,6 +24,7 @@ export { default as PressureLabelInstance } from "./PressureLabelInstance.vue";
 export { default as PressureSensorInstance } from "./PressureSensorInstance.vue";
 export { default as PumpInstance } from "./PumpInstance.vue";
 export { default as PvtInstance } from "./PvtInstance.vue";
+export { default as SeawaterCircuitInstance } from "./SeawaterCircuitInstance.vue";
 export { default as SwitchValveInstance } from "./SwitchValveInstance.vue";
 export { default as TagLabelInstance } from "./TagLabelInstance.vue";
 export { default as TemperatureSensorInstance } from "./TemperatureSensorInstance.vue";

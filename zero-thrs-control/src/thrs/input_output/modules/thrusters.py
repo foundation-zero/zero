@@ -268,6 +268,37 @@ class ThrustersSensorValues(AmcsModeSensorValues):
             ),
         )
 
+    pcm_temperature_producers_supply: Annotated[
+        sensor.TemperatureSensor,
+        component_meta(
+            yard_tag="50001038-55",
+            component_type="temperature_sensor",
+            topic_override="500000-thrs/pcm/pcm-temperature-producers-supply",
+            included_in_fmu=False,
+        ),
+    ]
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False
+        )
+    )
+    @property
+    def thrusters_pcm_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.thrusters_temperature_recovery.temperature,
+            temperature_return=self.pcm_temperature_producers_supply.temperature,
+            flow=self.thrusters_flow_recovery.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "thrusters_temperature_recovery"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pcm_temperature_producers_supply"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "thrusters_flow_recovery"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
 
 class ThrustersControlValues(AmcsWatchdogControlValues):
     model_config = ConfigDict(

@@ -4,7 +4,6 @@ import { MimicComponentType } from "../../../../../types";
 
 import { HeatExchangerPortOrientation } from "../../../../components/heat-exchanger";
 import { getField } from "../../../../providers";
-import { PVT_EXCHANGE_CIRCUIT_DATA } from "../exchange-circuits";
 import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.HeatExchanger>({
@@ -13,7 +12,6 @@ export default toInstance<MimicComponentType.HeatExchanger>({
   custom: {
     sideA: HeatExchangerPortOrientation.Side,
     sideB: HeatExchangerPortOrientation.Top,
-    exchangeCircuit: PVT_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].seawater.source,
   },
   source: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtSeawaterExchanger"),
   parameters: {},
