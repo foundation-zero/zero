@@ -27,13 +27,13 @@ const heatExchangers = DC_HEAT_EXCHANGER_DATA[MimicComponentType.HeatExchanger];
     x="1246.1406"
     y="333.1458"
     :orientation="ComponentOrientation.Right"
-    v-bind="heatExchangers['1002']"
+    v-bind="heatExchangers['1008']"
   >
     <HeatExchangerLabelInstance
       x="1308.1406"
       y="323.1458"
-      :tag-id="heatExchangers['1002'].tooltip?.yardTag"
-      :heat-exchanger="heatExchangers['1002'].source"
+      :tag-id="heatExchangers['1008'].tooltip?.yardTag"
+      :heat-exchanger="heatExchangers['1008'].source"
     />
   </HeatExchangerInstance>
 </template>

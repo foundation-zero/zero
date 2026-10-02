@@ -3,7 +3,7 @@ import { RiSnowflakeLine } from "@remixicon/vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
-import { HeatPump, HeatPumpTitle } from "../components/heat-pump";
+import { AssetBox, AssetBoxTitle } from "../components/asset-box";
 import {
   ValueList,
   ValueListDeltaTItem,
@@ -32,22 +32,21 @@ const state = getComponentState();
     :type="MimicComponentType.HVAC"
     :data="props"
   >
-    <HeatPump
+    <AssetBox
       v-bind="props"
       :state="state"
     >
       <YardTag>{{ tooltip?.yardTag }}</YardTag>
-      <HeatPumpTitle class="gap-1 py-1">
+      <AssetBoxTitle class="gap-1 py-1">
         <RiSnowflakeLine class="text-brand inline h-4 w-4" />
         {{ tooltip?.title }}
-      </HeatPumpTitle>
-      <ValueList class="gap-0">
+      </AssetBoxTitle>
+      <ValueList dense>
         <ValueListSeparator />
         <ValueListHeatPowerItem :source="source" />
         <ValueListDeltaTItem :source="source" />
         <ValueListSeparator />
       </ValueList>
-    </HeatPump>
-    <slot />
+    </AssetBox>
   </MimicTooltipTrigger>
 </template>

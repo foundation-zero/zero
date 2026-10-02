@@ -501,6 +501,12 @@ export const DC_PARAMETER_DEFINITION = toParameterDefinition({
 });
 
 export const DC_SENSOR_DEFINITION = toSensorDefinition({
+  dcAftFlow: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  dcAftHeat: {
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
   dcBrightloopAft1: {
     yardTag: "45002076",
     componentType: SensorComponentType.Brightloop,
@@ -577,6 +583,12 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001058-06",
     componentType: SensorComponentType.Flow,
   },
+  dcFwdFlow: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  dcFwdHeat: {
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
   dcMixAft: {
     yardTag: "50001043-02",
     componentType: SensorComponentType.Valve,
@@ -625,6 +637,10 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
   dcPumpUgrid: {
     yardTag: "50001023",
     componentType: SensorComponentType.Pump,
+  },
+  dcSeawaterExchanger: {
+    yardTag: "50001006",
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   dcSwitchAft1: {
     yardTag: "50001068-04",
@@ -738,6 +754,9 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001038-70",
     componentType: SensorComponentType.Temperature,
   },
+  dcTotalFlow: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
   dcUgrid1: {
     yardTag: "45002082",
     componentType: SensorComponentType.Ugrid,
@@ -745,6 +764,12 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
   dcUgrid2: {
     yardTag: "45002081",
     componentType: SensorComponentType.Ugrid,
+  },
+  dcUgridFlow: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
+  dcUgridHeat: {
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   mode: {
     componentType: SensorComponentType.AmcsControlMode,

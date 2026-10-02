@@ -1,17 +1,23 @@
 <script setup lang="ts">
-import { ThrusterMode } from "@/modules/thrsim/types";
-import { RiFireLine } from "@remixicon/vue";
+import { SensorComponentType, ThrusterMode } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
-import { TooltipComponentContext } from "../../components/tooltip";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
-import { HeatPump, HeatPumpTitle } from "../components/heat-pump";
+import { AssetBox, AssetBoxTitle } from "../components/asset-box";
 import { ModeBadge, ModeBadgeMode, ModeBadgeSize } from "../components/mode-badge";
-import { ValueList, ValueListItem, ValueListSeparator } from "../components/value-list";
+import {
+  ValueList,
+  ValueListDeltaTItem,
+  ValueListHeatPowerItem,
+  ValueListItem,
+  ValueListSeparator,
+  ValueListTemperatureItem,
+} from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
-import { getMimicDataProvider, getSensorDefinition } from "../providers";
-import { FieldRenderer } from "../renderers";
+import { getMimicDataProvider, ModuleField } from "../providers";
+import SensorValue from "../providers/SensorValue.vue";
 
 const props = withDefaults(
   defineProps<
@@ -34,7 +40,6 @@ const { getSensorValue, getComponentState } = getMimicDataProvider();
 
 const pcs = getSensorValue(props.sensors.pcs);
 const state = getComponentState();
-const definition = getSensorDefinition(props.source[1], props.source[2]);
 
 const modeLabelMap = {
   [ThrusterMode.Off]: {
@@ -59,52 +64,54 @@ const mode = computed(() => {
   const modeKey = (pcs?.value?.mode?.value as ThrusterMode) ?? ThrusterMode.Off;
   return modeLabelMap[modeKey];
 });
-
-const heatTransfer = getSensorValue(props.sensors.heatTransfer);
+const tempSource = [
+  SensorComponentType.Temperature,
+  "thrusters",
+  "placeholder",
+] as unknown as ModuleField<SensorComponentType.Temperature>;
 </script>
 
 <template>
-  <HeatPump
-    v-bind="props"
-    :state="state"
+  <MimicTooltipTrigger
+    :type="MimicComponentType.Thruster"
+    :data="props"
   >
-    <YardTag>{{ definition.yardTag }}</YardTag>
-    <HeatPumpTitle class="pb-1">
-      {{ t(`thrapp.mimics.thrusters.assets.${custom.titleKey}`) }}
-    </HeatPumpTitle>
-    <ModeBadge
-      v-bind="mode"
-      :size="ModeBadgeSize.Asset"
-    />
+    <AssetBox
+      v-bind="props"
+      :state="state"
+    >
+      <YardTag>{{ tooltip?.yardTag }}</YardTag>
+      <AssetBoxTitle class="pb-1">
+        {{ t(`thrapp.mimics.thrusters.assets.${custom.titleKey}`) }}
+      </AssetBoxTitle>
 
-    <ValueList class="pt-1">
-      <ValueListSeparator />
-      <ValueListItem>
-        <span class="flex items-center gap-0.5"> Power </span>
-        <span></span>
-      </ValueListItem>
+      <ModeBadge
+        v-bind="mode"
+        :size="ModeBadgeSize.Asset"
+      />
 
-      <ValueListItem>
-        <span class="flex items-center gap-0.5"> Internal Temp </span>
-        <span></span>
-      </ValueListItem>
+      <ValueList
+        dense
+        class="pt-1"
+      >
+        <ValueListSeparator />
 
-      <ValueListItem>
-        <span class="flex items-center gap-0.5">
-          <RiFireLine class="text-heating-medium size-3.5" />
-        </span>
-        <span class="text-foreground font-medium">
-          <FieldRenderer.Heat :value="heatTransfer?.heat.value" />
-        </span>
-      </ValueListItem>
-      <ValueListItem>
-        <span class="text-brand text-sm">{{ t("units.deltaT") }}</span>
-        <span class="text-foreground font-medium">
-          <FieldRenderer.Temperature :value="heatTransfer?.deltaT.value" />
-        </span>
-      </ValueListItem>
+        <ValueListHeatPowerItem :source="sensors.heatTransfer" />
+        <ValueListDeltaTItem :source="sensors.heatTransfer" />
+        <ValueListTemperatureItem
+          class="text-brand"
+          :source="tempSource"
+          temperature-label="internal"
+        />
+        <SensorValue :source="source">
+          <ValueListItem class="text-brand">
+            <span class="flex items-center gap-0.5"> Power </span>
+            <span></span>
+          </ValueListItem>
+        </SensorValue>
 
-      <ValueListSeparator />
-    </ValueList>
-  </HeatPump>
+        <ValueListSeparator />
+      </ValueList>
+    </AssetBox>
+  </MimicTooltipTrigger>
 </template>

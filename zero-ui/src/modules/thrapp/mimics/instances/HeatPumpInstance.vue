@@ -4,7 +4,8 @@ import { computed } from "vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
-import { HeatPump, HeatPumpMode, HeatPumpModes, HeatPumpTitle } from "../components/heat-pump";
+import { AssetBox, AssetBoxTitle } from "../components/asset-box";
+import { HeatPumpMode, HeatPumpModes } from "../components/heat-pump";
 import {
   ValueList,
   ValueListDeltaTItem,
@@ -22,7 +23,6 @@ const props = defineProps<
       forceHeight?: boolean;
     }
 >();
-
 const { getComponentState, getControlValue } = getMimicDataProvider();
 
 const heatpump = getControlValue(props.controls.heatpump);
@@ -39,26 +39,28 @@ const mode = computed(() => {
     :type="MimicComponentType.HeatPump"
     :data="props"
   >
-    <HeatPump
+    <AssetBox
       v-bind="props"
       :state="state"
     >
       <YardTag>{{ tooltip?.yardTag }}</YardTag>
-      <HeatPumpTitle class="gap-1 py-1">
+      <AssetBoxTitle class="gap-1 py-1">
         <RiTempHotLine class="text-brand inline h-4 w-4" />
         {{ tooltip?.title }}
-      </HeatPumpTitle>
+      </AssetBoxTitle>
       <HeatPumpMode
         :mode="mode"
         :state="state"
       />
-      <ValueList class="gap-0">
+      <ValueList
+        dense
+        class="pt-1"
+      >
         <ValueListSeparator />
         <ValueListHeatPowerItem :source="sensors.heatTransfer" />
         <ValueListDeltaTItem :source="sensors.heatTransfer" />
         <ValueListSeparator />
       </ValueList>
-    </HeatPump>
-    <slot />
+    </AssetBox>
   </MimicTooltipTrigger>
 </template>

@@ -8,7 +8,7 @@ import { fieldTooltip } from "../../../shared";
 
 const exchangeCircuit = (
   circuitName: string,
-  source: ModuleField<SensorComponentType.HeatTransferDevice, "dc">,
+  source: ModuleField<SensorComponentType.HeatTransferDevice>,
 ) =>
   toInstance<MimicComponentType.ExchangeCircuit>({
     controls: {},
@@ -33,7 +33,7 @@ export const DC_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
     ),
     domesticHotWater: exchangeCircuit(
       "Domestic Hot Water",
-      getField(SensorComponentType.HeatTransferDevice, "dc", "dcDhwExchanger"),
+      getField(SensorComponentType.HeatTransferDevice, "dhw", "dhwDcExchanger"),
     ),
   },
 });

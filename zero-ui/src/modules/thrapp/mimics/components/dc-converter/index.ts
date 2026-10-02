@@ -1,7 +1,6 @@
 import { DcMode, SensorComponentType } from "@/modules/thrsim/types";
 import { ModuleField } from "../../providers";
 import { ModeBadgeMode } from "../mode-badge";
-export { default as DcConverter } from "./DcConverter.vue";
 export { default as DcConverterStatus } from "./DcConverterStatus.vue";
 export { default as DcMode } from "./DcMode.vue";
 

@@ -418,6 +418,16 @@ export const DC_PARAMETERS_QUERY = `
 `;
 
 export const DC_SENSOR_QUERY = `
+  dcAftFlow {
+    flow { value timestamp }
+  }
+  dcAftHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
   dcBrightloopAft1 {
     active { value timestamp }
   }
@@ -503,6 +513,16 @@ export const DC_SENSOR_QUERY = `
     temperature { value timestamp }
     quantity { value timestamp }
   }
+  dcFwdFlow {
+    flow { value timestamp }
+  }
+  dcFwdHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
   dcMixAft {
     positionRel { value timestamp }
     positionAbs { value timestamp }
@@ -587,6 +607,13 @@ export const DC_SENSOR_QUERY = `
     anyWarningActive { value timestamp }
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
+  }
+  dcSeawaterExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
   dcSwitchAft1 {
     positionRel { value timestamp }
@@ -706,11 +733,24 @@ export const DC_SENSOR_QUERY = `
   dcTemperatureUgridSupply {
     temperature { value timestamp }
   }
+  dcTotalFlow {
+    flow { value timestamp }
+  }
   dcUgrid1 {
     active { value timestamp }
   }
   dcUgrid2 {
     active { value timestamp }
+  }
+  dcUgridFlow {
+    flow { value timestamp }
+  }
+  dcUgridHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
   mode {
     mode { value timestamp }

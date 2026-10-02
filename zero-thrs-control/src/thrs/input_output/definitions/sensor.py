@@ -252,6 +252,7 @@ class HeatTransferDevice(ThrsValues):
         temperature_supply: Stamped[Celsius] | Stamped[Celsius | None],
         temperature_return: Stamped[Celsius] | Stamped[Celsius | None],
         flow: Stamped[LMin] | Stamped[LMin | None],
+        mix_valve: "Valve",
         temperature_supply_source: str,
         temperature_return_source: str,
         heat_transfer_conversion: float,
@@ -270,13 +271,26 @@ class HeatTransferDevice(ThrsValues):
             "unknown",
             heat_transfer_conversion,
         )
+        if valves_open_closed(closed_valves=[mix_valve]):
+            # When the valve is closed the exchanger bypass is closed and everything goes past the exchanger
+            # Everything goes past exchanger so calculations are correct
+            return heat_transfer
 
-        heat_transfer.delta_t = Stamped.combine(
-            temperature_supply, temperature_return, value=None
-        )
-        heat_transfer.flow = StampedWithSource.combine(
-            flow, value=None, source="unknown"
-        )
+        if valves_open_closed(open_valves=[mix_valve]):
+            heat_transfer.delta_t = Stamped.combine(mix_valve.position_rel, value=0)
+            heat_transfer.flow = StampedWithSource.combine(
+                mix_valve.position_rel, value=0, source="calculated"
+            )
+            heat_transfer.heat = StampedWithSource.combine(
+                mix_valve.position_rel, value=0, source="calculated"
+            )
+        else:
+            heat_transfer.delta_t = Stamped.combine(
+                temperature_supply, temperature_return, value=None
+            )
+            heat_transfer.flow = StampedWithSource.combine(
+                flow, value=None, source="unknown"
+            )
         heat_transfer.temperature_return = StampedWithSource.combine(
             temperature_return, value=None, source="unknown"
         )

@@ -62,42 +62,58 @@ def test_heat_transfer_device_from_sensors(temp_in, temp_out, flow, delta_t, hea
 
 
 @pytest.mark.parametrize(
-    ("temp_in", "temp_out", "flow", "heat"),
-    [
-        (10, 10, 10, 0),
-        (10, 20, 10, 6973.333333333333),
-        (None, None, 0, 0),
-        (None, None, 10, None),
-        (10, 20, None, None),
-        (10, 10, None, 0),
-        (10, None, None, None),
-        (None, None, None, None),
-    ],
-    ids=(
-        "Zero delta",
-        "Normal",
-        "Delta unknown, zero flow",
-        "Delta unknown, normal flow",
-        "Delta, flow unknown",
-        "Zero delta, flow unknown",
-        "Most unknown",
-        "All unknown",
+    (
+        "temp_in",
+        "temp_out",
+        "flow",
+        "position_rel",
+        "delta_t",
+        "heat",
+        "flow_return",
+        "temp_out_return",
     ),
+    [
+        (10, 10, 10, 1, 0, 0, 0, None),
+        (10, 20, 10, 1, 0, 0, 0, None),
+        (None, None, 0, 1, 0, 0, 0, None),
+        (None, None, 10, 1, 0, 0, 0, None),
+        (10, 20, None, 1, 0, 0, 0, None),
+        (10, 10, None, 1, 0, 0, 0, None),
+        (10, None, None, 1, 0, 0, 0, None),
+        (None, None, None, 1, 0, 0, 0, None),
+        (10, 10, 10, 0.5, None, 0, None, None),
+        (10, 20, 10, 0.5, None, 6973.333333333333, None, None),
+        (None, None, 0, 0.5, None, 0, None, None),
+        (None, None, 10, 0.5, None, None, None, None),
+        (10, 20, None, 0.5, None, None, None, None),
+        (10, 10, None, 0.5, None, 0, None, None),
+        (10, None, None, 0.5, None, None, None, None),
+        (None, None, None, 0.5, None, None, None, None),
+        (10, 10, 10, 0, 0, 0, 10, 10),
+        (10, 20, 10, 0, 10, 6973.333333333333, 10, 20),
+        (None, None, 0, 0, None, 0, 0, None),
+        (None, None, 10, 0, None, None, 10, None),
+        (10, 20, None, 0, 10, None, None, 20),
+        (10, 10, None, 0, 0, 0, None, 10),
+        (10, None, None, 0, None, None, None, None),
+        (None, None, None, 0, None, None, None, None),
+    ],
 )
 def test_heat_transfer_device_from_sensors_with_mix_valve(
-    temp_in, temp_out, flow, heat
+    temp_in, temp_out, flow, position_rel, delta_t, heat, flow_return, temp_out_return
 ):
     pcm = sensor.HeatTransferDevice.from_sensors_with_mix_valve(
         temperature_supply=Stamped.stamp(temp_in),
         temperature_return=Stamped.stamp(temp_out),
         flow=Stamped.stamp(flow),
+        mix_valve=sensor.Valve(position_rel=Stamped.stamp(position_rel)),
         temperature_supply_source="",
         temperature_return_source="",
         heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
     )
 
-    assert pcm.delta_t.value is None
-    assert pcm.temperature_return.value is None
-    assert pcm.flow.value is None
+    assert pcm.delta_t.value == delta_t
+    assert pcm.temperature_return.value == temp_out_return
+    assert pcm.flow.value == flow_return
     assert pcm.temperature_supply.value == temp_in
     assert pcm.heat.value == heat

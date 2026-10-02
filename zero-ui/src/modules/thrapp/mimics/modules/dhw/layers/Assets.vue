@@ -14,7 +14,7 @@ const hvacs = DHW_MIMIC_DATA[MimicComponentType.HVAC];
       x="70"
       y="656"
       :width="200"
-      :height="168"
+      :height="178"
       force-height
       v-bind="heatpumps['1035']"
     />
@@ -23,7 +23,7 @@ const hvacs = DHW_MIMIC_DATA[MimicComponentType.HVAC];
       x="670"
       y="400"
       :width="150"
-      :height="140"
+      :height="150"
       force-height
       v-bind="hvacs['41001001']"
     />

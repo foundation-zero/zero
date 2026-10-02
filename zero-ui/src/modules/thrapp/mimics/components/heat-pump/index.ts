@@ -1,7 +1,5 @@
 import { ModeBadgeMode } from "../mode-badge";
 
-export { default as HeatPumpTitle } from "../circuit-box/CircuitBoxTitle.vue";
-export { default as HeatPump } from "./HeatPump.vue";
 export { default as HeatPumpMode } from "./HeatPumpMode.vue";
 
 export const enum HeatPumpModes {

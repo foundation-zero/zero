@@ -83,6 +83,7 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.DcConverter]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
+    power: SensorComponentType.Pvt; // TODO: fix this
     temperature: SensorComponentType.Temperature;
   };
   [MimicComponentType.ConnectingCircuit]: {

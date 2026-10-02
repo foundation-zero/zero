@@ -258,6 +258,7 @@ class ThrustersSensorValues(AmcsModeSensorValues):
             temperature_supply=self.thrusters_temperature_pre_cooler.temperature,
             temperature_return=self.thrusters_temperature_supply.temperature,  # type: ignore
             flow=self.thrusters_flow.flow,
+            mix_valve=self.thrusters_mix_exchanger,
             heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "thrusters_temperature_pre_cooler"
