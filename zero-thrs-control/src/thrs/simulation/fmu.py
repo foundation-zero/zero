@@ -119,6 +119,8 @@ class Fmu:
         if self._fmu_instance:
             self._fmu_instance.terminate()
             self._fmu_instance.freeInstance()
+            self._fmu_instance = None
+            self._time = 0.0
         if value:
             raise value
         return True

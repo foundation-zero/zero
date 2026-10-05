@@ -230,6 +230,8 @@ def control() -> Callable[[CombinedValues], tuple[CombinedValues, CombinedValues
                 "dhw_hvac_exchanger",  # Does not throw exception
                 "dhw_seawater_supply",  # Does not throw exception
                 "dhw_hotwater_demand",  # Does not throw exception
+                ("pcm_freshwater_supply", "flow"),  # Does not throw exception
+                "mode",  # Does not throw exception
             ],
         )
     )
@@ -253,7 +255,6 @@ def thrs_sensor_values() -> ModuleClassMap:
     }
 
 
-@pytest.mark.skip("Segfaults on fmu, works when each input is run separately")
 def test_thrs_simulation_inputs(
     control, thrs_sensor_values, incorrect_simulation_inputs
 ):
