@@ -19,7 +19,7 @@ const exchangeCircuits = DC_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     x="1403"
     y="274.1458"
     force-height
-    height="200"
+    height="220"
     v-bind="exchangeCircuits.domesticHotWater"
   />
 </template>

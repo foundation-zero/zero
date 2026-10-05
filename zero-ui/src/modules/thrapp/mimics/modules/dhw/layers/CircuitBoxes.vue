@@ -30,7 +30,7 @@ const FreshwaterCircuits = DHW_MIMIC_DATA[MimicComponentType.FreshwaterCircuit];
       x="397"
       y="708"
       force-height
-      height="165"
+      height="220"
       v-bind="circuits['dcConverters']"
     />
     <LoopCircuitInstance
