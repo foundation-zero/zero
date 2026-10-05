@@ -43,11 +43,6 @@ def test_consumers_simulation_inputs(
             simulation.tick(control_values)
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="Consumer FMU wires the DHW supply flow to the booster source's "
-    "overpressure input instead of its volume flow input",
-)
 def test_dhw_exchanger_balances_heat(
     runner: ConsumersRunner, simulation_inputs: ConsumersSimulationInputs
 ):

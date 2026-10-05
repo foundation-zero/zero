@@ -4,13 +4,13 @@ set dotenv-required := true
 fmu_files := (
     "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu " +
     "src/thrs/simulation/models/Adsorption_ModuleV1.fmu " +
-    "src/thrs/simulation/models/Consumer_ModuleV10.fmu " +
+    "src/thrs/simulation/models/Consumer_ModuleV9_1.fmu " +
     "src/thrs/simulation/models/DC_ModuleV1_1.fmu " +
     "src/thrs/simulation/models/DHW_ModuleV1_1.fmu " +
     "src/thrs/simulation/models/Drives_ModuleV1_1.fmu " +
-    "src/thrs/simulation/models/HT_SystemV15_1.fmu " +
+    "src/thrs/simulation/models/HT_SystemV15_2.fmu " +
     "src/thrs/simulation/models/PCM_ModuleV9_2.fmu " +
-    "src/thrs/simulation/models/PVT_ModuleV16.fmu " +
+    "src/thrs/simulation/models/PVT_ModuleV16_1.fmu " +
     "src/thrs/simulation/models/Thruster_Module_V19.fmu"
 )
 
@@ -59,19 +59,20 @@ format_fix:
 
 
 build_fmu_compile_container:
-    docker build . --tag fmu_compile_image --target fmu_compile
+    docker build . --platform linux/amd64 --tag fmu_compile_image --target fmu_compile
 
 compile_fmu_for_linux file: build_fmu_compile_container
     -docker rm fmu_compile
-    docker run -it --name fmu_compile --entrypoint /bin/bash fmu_compile_image -c "export FILE=\"{{ file }}\"; export CFLAGS=\"-std=gnu17 -include unistd.h\"; fmpy compile \"/\${FILE/src/app}\""
+    docker run --platform linux/amd64 -it --name fmu_compile --entrypoint /bin/bash fmu_compile_image -c "export FILE=\"{{ file }}\"; export CFLAGS=\"-std=gnu17 -include unistd.h\"; fmpy compile \"/\${FILE/src/app}\""
     bash -c "export FILE={{ file }}; docker cp fmu_compile:/\${FILE/src/app} {{ file }}"
 
 compile_fmus_for_linux: build_fmu_compile_container
     -docker rm -f fmu_compile
-    docker run -d --name fmu_compile --entrypoint /bin/bash fmu_compile_image -c "tail -f /dev/null"
+    docker run --platform linux/amd64 -d --name fmu_compile --entrypoint /bin/bash fmu_compile_image -c "tail -f /dev/null"
 
     for file in {{ fmu_files }}; do \
         container_file="/${file/src/app}"; \
+        docker exec fmu_compile mkdir -p "$(dirname "$container_file")"; \
         docker cp "$file" "fmu_compile:$container_file"; \
         echo "copied in $file -> $container_file"; \
     done
