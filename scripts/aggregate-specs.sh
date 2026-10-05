@@ -52,7 +52,7 @@ if ! (cd "$REPO_ROOT/zero-atpx-nmea" && uv run python -m zero_atpx_nmea asyncapi
 fi
 
 echo "  -> marpower"
-if ! (cd "$REPO_ROOT/zero-data" && uv run python -m zero_data print-asyncapi) > "$SPECS_DIR/marpower.json"; then
+if ! (cd "$REPO_ROOT/zero-data" && uv run python -m zero_data generate-asyncapi "$SPECS_DIR/marpower.json"); then
   fail_or_warn "marpower" || exit 1
 fi
 
