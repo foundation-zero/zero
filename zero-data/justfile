@@ -1,2 +1,5 @@
 generate-vector:
     uv run zero-data generate-vector
+
+generate-asyncapi file="../specs/marpower.json":
+    uv run zero-data generate-asyncapi {{ file }}
