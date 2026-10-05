@@ -34,6 +34,14 @@ from thrs.utils.string import hyphenize
 
 logger = logging.getLogger(__name__)
 
+DEVICE_NAMESPACE = "500000-thrs"
+SIMULATION_INPUTS_TOPIC = "simulation-inputs"
+SIMULATION_OUTPUTS_TOPIC = "simulation-outputs"
+
+
+def device_module_prefix(module_name: str) -> str:
+    return f"{DEVICE_NAMESPACE}/{module_name}"
+
 
 class MqttReceiveMapping[M](Protocol):
     """Mapping between a model and MQTT topics to receive messages"""
@@ -288,7 +296,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
             name: sub_mapping(
                 module_cls,
                 topic_prefix,
-                f"500000-thrs/{name}",
+                device_module_prefix(name),
                 topic_suffix,
             )
             for name, module_cls in clss.items()
@@ -403,7 +411,7 @@ class ControlChannels[
         sensor_values_mapping = PartialMqttMapping[S](
             control_module.sensor_values_cls,
             config.mqtt_devices_topic_prefix,
-            f"500000-thrs/{module_name}",
+            device_module_prefix(module_name),
         )
         connector._register_listener(sensor_values_mapping)
 
@@ -440,7 +448,7 @@ class ControlChannels[
             PartialMqttMapping[C](
                 control_module.control_values_cls,
                 config.mqtt_devices_topic_prefix,
-                f"500000-thrs/{module_name}",
+                device_module_prefix(module_name),
                 config.mqtt_control_topic_suffix,
                 context=AMCS_WRITE_CONTEXT,
             ),
@@ -449,7 +457,7 @@ class ControlChannels[
         actuated_control_values_mapping = PartialMqttMapping[C](
             control_module.control_values_cls,
             config.mqtt_devices_topic_prefix,
-            f"500000-thrs/{module_name}",
+            device_module_prefix(module_name),
             context=AMCS_RECEIVE_CONTEXT,
         )
         connector._register_listener(actuated_control_values_mapping)
@@ -520,10 +528,10 @@ class SimulationChannels[
         simulation_outputs_cls: type[O] | tuple[type[O], ...],
     ) -> None:
         simulation_inputs_topic = (
-            f"{config.mqtt_simulator_topic_prefix}/simulation-inputs"
+            f"{config.mqtt_simulator_topic_prefix}/{SIMULATION_INPUTS_TOPIC}"
         )
         simulation_outputs_topic = (
-            f"{config.mqtt_simulator_topic_prefix}/simulation-outputs"
+            f"{config.mqtt_simulator_topic_prefix}/{SIMULATION_OUTPUTS_TOPIC}"
         )
 
         control_values_mapping = ModuleMqttMapping(
@@ -586,14 +594,14 @@ class ControlApiChannels[
         sensor_values_mapping = PartialMqttMapping[S](
             module_description.sensor_values_cls,
             config.mqtt_devices_topic_prefix,
-            f"500000-thrs/{module_name}",
+            device_module_prefix(module_name),
         )
         connector._register_listener(sensor_values_mapping)
 
         actuated_control_values_mapping = PartialMqttMapping[C](
             module_description.control_values_cls,
             config.mqtt_devices_topic_prefix,
-            f"500000-thrs/{module_name}",
+            device_module_prefix(module_name),
             context=AMCS_RECEIVE_CONTEXT,
         )
         connector._register_listener(actuated_control_values_mapping)
@@ -672,20 +680,20 @@ class SimulationApiChannels[I: ThrsValues, O: ThrsValues]:
     ) -> None:
         self.simulation_inputs_mapping = DirectMqttMapping(
             simulation_inputs_cls,
-            f"{config.mqtt_simulator_topic_prefix}/simulation-inputs",
+            f"{config.mqtt_simulator_topic_prefix}/{SIMULATION_INPUTS_TOPIC}",
         )
         connector._register_listener(self.simulation_inputs_mapping)
 
         self.simulation_outputs_mapping = DirectMqttMapping(
             simulation_outputs_cls,
-            f"{config.mqtt_simulator_topic_prefix}/simulation-outputs",
+            f"{config.mqtt_simulator_topic_prefix}/{SIMULATION_OUTPUTS_TOPIC}",
         )
         connector._register_listener(self.simulation_outputs_mapping)
 
         self.send_simulation_inputs = connector._create_publisher(
             DirectMqttMapping(
                 simulation_inputs_cls,
-                f"{config.mqtt_simulator_topic_prefix}/simulation-inputs/{config.mqtt_simulator_topic_suffix}",
+                f"{config.mqtt_simulator_topic_prefix}/{SIMULATION_INPUTS_TOPIC}/{config.mqtt_simulator_topic_suffix}",
             )
         )
 

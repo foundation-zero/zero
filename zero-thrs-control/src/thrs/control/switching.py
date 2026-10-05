@@ -22,6 +22,10 @@ class SwitchingControlMode[Mode](ThrsValues):
 class AutomationMode(ThrsValues):
     mode: ControlModes
 
+    @classmethod
+    def for_automatic(cls, automatic: bool) -> "AutomationMode":
+        return cls(mode="automatic" if automatic else "manual")
+
 
 class Switching[
     SensorValues: AmcsModeSensorValues,
