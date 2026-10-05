@@ -18,7 +18,7 @@ import { getMimicDataProvider } from "../providers";
 const props = withDefaults(
   defineProps<
     MimicComponentInstanceProps &
-      TooltipComponentContext<MimicComponentType.ExchangeCircuit> & {
+      TooltipComponentContext<MimicComponentType.ConnectingCircuit> & {
         width?: number | string;
         height?: number | string;
         forceHeight?: boolean;
@@ -35,7 +35,7 @@ const state = getComponentState();
 
 <template>
   <MimicTooltipTrigger
-    :type="MimicComponentType.ExchangeCircuit"
+    :type="MimicComponentType.ConnectingCircuit"
     :data="props"
   >
     <CircuitBox

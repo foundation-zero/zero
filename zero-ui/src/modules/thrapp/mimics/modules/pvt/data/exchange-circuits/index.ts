@@ -28,7 +28,7 @@ export const PVT_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
       controls: {},
       controllerState: {},
       custom: {
-        circuitName: "Pcm",
+        circuitName: "PCM",
         modeModule: "pcm",
       },
       parameters: {},

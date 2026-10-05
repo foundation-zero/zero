@@ -317,6 +317,8 @@
             "boosting": "Boosting",
             "charging": "Charging"
           },
+          "drives": "{mode}",
+          "adsorption": "{mode}",
           "consumers": "{mode}",
           "pvt": {
             "idle": "AFT - Idle | FWD - Idle | Owners - Idle",

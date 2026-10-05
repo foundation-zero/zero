@@ -58,6 +58,11 @@ class HighTemperatureSimulationInputs(ThrsValues):
     def pvt_pyranometer_sb(self) -> sensor.Pyranometer:
         return sensor.Pyranometer(irradiance=Stamped.stamp(0))
 
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def pcm_temperature_dhw_supply(self) -> sensor.TemperatureSensor:
+        return sensor.TemperatureSensor(temperature=Stamped.stamp(0))  # TODO Fix this
+
 
 class HighTemperatureSimulationOutputs(
     PcmSimulationOutputs,

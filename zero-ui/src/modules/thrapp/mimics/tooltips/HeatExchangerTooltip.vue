@@ -81,15 +81,12 @@ const { labels, actions, items, sources } = useTranslations();
       <Circuit :source="source" />
     </TooltipList>
 
-    <TooltipList>
+    <TooltipList v-if="custom.exchangeCircuit">
       <TooltipListHeader>
         {{ labels("exchangeCircuit") }}
         <TooltipListItemAction>{{ actions("viewCircuitMimic") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <Circuit
-        v-if="custom.exchangeCircuit"
-        :source="custom.exchangeCircuit"
-      />
+      <Circuit :source="custom.exchangeCircuit" />
     </TooltipList>
   </MimicTooltip>
 </template>
