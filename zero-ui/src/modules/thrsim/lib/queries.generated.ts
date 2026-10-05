@@ -2998,7 +2998,7 @@ export const THRUSTERS_SENSOR_QUERY = `
   mode {
     mode { value timestamp }
   }
-  pcmTemperatureDhwSupply {
+  pcmTemperatureProducersSupply {
     temperature { value timestamp }
   }
   thrustersFlow {

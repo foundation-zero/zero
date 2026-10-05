@@ -2926,7 +2926,7 @@ export const THRUSTERS_SENSOR_DEFINITION = toSensorDefinition({
   mode: {
     componentType: SensorComponentType.AmcsControlMode,
   },
-  pcmTemperatureDhwSupply: {
+  pcmTemperatureProducersSupply: {
     yardTag: "50001038-55",
     componentType: SensorComponentType.Temperature,
   },

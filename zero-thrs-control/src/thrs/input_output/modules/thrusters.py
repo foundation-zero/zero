@@ -268,7 +268,7 @@ class ThrustersSensorValues(AmcsModeSensorValues):
             ),
         )
 
-    pcm_temperature_dhw_supply: Annotated[
+    pcm_temperature_producers_supply: Annotated[
         sensor.TemperatureSensor,
         component_meta(
             yard_tag="50001038-55",
@@ -287,13 +287,13 @@ class ThrustersSensorValues(AmcsModeSensorValues):
     def thrusters_pcm_heat(self) -> sensor.HeatTransferDevice:
         return sensor.HeatTransferDevice.from_sensors(
             temperature_supply=self.thrusters_temperature_recovery.temperature,
-            temperature_return=self.pcm_temperature_dhw_supply.temperature,
+            temperature_return=self.pcm_temperature_producers_supply.temperature,
             flow=self.thrusters_flow_recovery.flow,
             temperature_supply_source=sensor.extract_source_yardtag(
                 self, "thrusters_temperature_recovery"
             ),
             temperature_return_source=sensor.extract_source_yardtag(
-                self, "pcm_temperature_dhw_supply"
+                self, "pcm_temperature_producers_supply"
             ),
             flow_source=sensor.extract_source_yardtag(self, "thrusters_flow_recovery"),
             heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
@@ -357,7 +357,7 @@ class ThrustersSimulationInputs(ThrsValues):
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
-    def pcm_temperature_dhw_supply(self) -> sensor.TemperatureSensor:
+    def pcm_temperature_producers_supply(self) -> sensor.TemperatureSensor:
         return sensor.TemperatureSensor(
             temperature=self.thrusters_pcm_supply.temperature
         )
