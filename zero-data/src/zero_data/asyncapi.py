@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 # an address parameter, filled in from the environment variable of the same
 # name as THRS does (production: marpower, simulation: simulation).
 TOPIC_ROOT = "marpower"
-PREFIX_SETTING = "mqtt_devices_topic_prefix"
 ENV_KEY = "x-env"
 
 # As in THRS, a served value never expires into null; TimeStamp shows its age.
@@ -52,7 +51,7 @@ def address(topic: str) -> str:
     root, _, rest = topic.partition("/")
     if root != TOPIC_ROOT:
         raise ValueError(f"Topic {topic!r} is not under {TOPIC_ROOT!r}")
-    return f"{{{PREFIX_SETTING}}}/{rest}"
+    return f"{TOPIC_ROOT}/{rest}"
 
 
 def key(topic: str) -> str:
@@ -92,12 +91,6 @@ def served_fields(topic: IOTopic) -> list[IOValue]:
 def channel(topic: IOTopic, fields: list[IOValue]) -> dict[str, Any]:
     return {
         "address": address(topic.topic),
-        "parameters": {
-            PREFIX_SETTING: {
-                "description": f"The {PREFIX_SETTING.upper()} setting.",
-                ENV_KEY: PREFIX_SETTING.upper(),
-            }
-        },
         "messages": {
             "message": {
                 "payload": {
