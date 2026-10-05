@@ -46,6 +46,7 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     force-height
     height="230"
     v-bind="circuits.freshwater"
+    inverted
   >
     <template #fromIcon>
       <RiArrowRightLine class="text-muted-foreground size-3" />
