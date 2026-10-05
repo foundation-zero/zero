@@ -2,8 +2,14 @@
 from zero_data.io_list.managed_topics import ManagedTopic
 from zero_data.io_list.types import IOTopic
 
-THRS_CALCULATED_DEVICES = {
+THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
     "calculated_flows": {
+        "dc": (
+            "dc-total-flow",
+            "dc-aft-flow",
+            "dc-ugrid-flow",
+            "dc-fwd-flow",
+        ),
         "dhw": ("dhw-freshwater-flow-supply",),
         "pvt": (
             "pvt-flow-main-aft-strings",
@@ -42,7 +48,13 @@ THRS_CALCULATED_DEVICES = {
             "consumers-adsorption-exchanger",
             "consumers-dhw-exchanger",
         ),
-        "dc": ("dc-dhw-exchanger",),
+        "dc": (
+            "dc-dhw-exchanger",
+            "dc-seawater-exchanger",
+            "dc-aft-heat",
+            "dc-ugrid-heat",
+            "dc-fwd-heat",
+        ),
         "dhw": (
             "dhw-hvac-exchanger",
             "dhw-heatpump-heat",
@@ -58,17 +70,20 @@ THRS_CALCULATED_DEVICES = {
             "pcm-heat-module2",
             "pcm-heat-module3",
             "pcm-heat-module4",
+            "pcm-freshwater-heat",
         ),
         "pvt": (
             "pvt-pvt-main-fwd-heat",
             "pvt-pvt-main-aft-heat",
             "pvt-pvt-owners-heat",
             "pvt-seawater-exchanger",
+            "pvt-pcm-heat",
         ),
         "thrusters": (
             "thrusters-thruster-aft-heat",
             "thrusters-thruster-fwd-heat",
             "thrusters-seawater-exchanger",
+            "thrusters-pcm-heat",
         ),
     },
 }

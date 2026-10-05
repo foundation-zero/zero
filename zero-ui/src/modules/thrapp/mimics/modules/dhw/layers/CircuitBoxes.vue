@@ -10,12 +10,11 @@
 
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { RiArrowDownLine, RiArrowLeftLine } from "@remixicon/vue";
-import ConnectingCircuitInstance from "../../../instances/ConnectingCircuitInstance.vue";
-import { LoopCircuitInstance } from "../../../instances/index.ts";
-import { DHW_MIMIC_DATA } from "../data/index.ts";
+import { FreshwaterCircuitInstance, LoopCircuitInstance } from "../../../instances";
+import { DHW_MIMIC_DATA } from "../data";
 
 const circuits = DHW_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
-const connectingCircuits = DHW_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
+const FreshwaterCircuits = DHW_MIMIC_DATA[MimicComponentType.FreshwaterCircuit];
 </script>
 
 <template>
@@ -24,36 +23,36 @@ const connectingCircuits = DHW_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
       x="0"
       y="25"
       force-height
-      height="175"
+      height="195"
       v-bind="circuits['highTempLoop']"
     />
     <LoopCircuitInstance
       x="397"
       y="708"
       force-height
-      height="155"
+      height="220"
       v-bind="circuits['dcConverters']"
     />
     <LoopCircuitInstance
       x="650"
       y="708"
       force-height
-      height="155"
+      height="165"
       v-bind="circuits['drives']"
     />
     <LoopCircuitInstance
       x="903"
       y="708"
       force-height
-      height="155"
+      height="165"
       v-bind="circuits['adsorption']"
     />
-    <ConnectingCircuitInstance
+    <FreshwaterCircuitInstance
       x="1215"
       y="455"
       force-height
       height="300"
-      v-bind="connectingCircuits['freshwater']"
+      v-bind="FreshwaterCircuits['freshwater']"
     >
       <template #fromIcon>
         <RiArrowDownLine class="text-muted-foreground size-3" />
@@ -61,6 +60,6 @@ const connectingCircuits = DHW_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
       <template #toIcon>
         <RiArrowLeftLine class="text-muted-foreground size-3" />
       </template>
-    </ConnectingCircuitInstance>
+    </FreshwaterCircuitInstance>
   </g>
 </template>

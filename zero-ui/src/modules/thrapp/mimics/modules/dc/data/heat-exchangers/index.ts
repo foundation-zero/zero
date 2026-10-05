@@ -8,7 +8,7 @@ import { fieldTooltip } from "../../../shared";
 
 const heatExchanger = (
   source: ModuleField<SensorComponentType.HeatTransferDevice, "dc">,
-  exchangeCircuit: ModuleField<SensorComponentType.HeatTransferDevice>,
+  exchangeCircuit?: ModuleField<SensorComponentType.HeatTransferDevice>,
   custom: Partial<{
     sideA: HeatExchangerPortOrientation;
     sideB: HeatExchangerPortOrientation;
@@ -39,7 +39,6 @@ export const DC_HEAT_EXCHANGER_DATA = toFieldsMap({
   [MimicComponentType.HeatExchanger]: {
     "1006": heatExchanger(
       getField(SensorComponentType.HeatTransferDevice, "dc", "dcSeawaterExchanger"),
-      DC_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].seawater.source,
     ),
     "1008": heatExchanger(
       getField(SensorComponentType.HeatTransferDevice, "dc", "dcDhwExchanger"),

@@ -4,6 +4,8 @@ export const enum MimicComponentType {
   ExchangeCircuit = "ExchangeCircuit",
   DcConverter = "DcConverter",
   ConnectingCircuit = "ConnectingCircuit",
+  FreshwaterCircuit = "FreshwaterCircuit",
+  SeawaterCircuit = "SeawaterCircuit",
   Pcm = "Pcm",
   HeatPump = "HeatPump",
   HVAC = "HVAC",

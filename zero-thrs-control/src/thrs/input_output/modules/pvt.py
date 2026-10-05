@@ -956,6 +956,27 @@ class PvtSensorValues(AmcsModeSensorValues):
             ),
         )
 
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_pcm_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_return_temperature.temperature,
+            temperature_return=self.pcm_temperature_producers_supply.temperature,
+            flow=self.pvt_total_flow.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_return_temperature"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pcm_temperature_producers_supply"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_total_flow"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
 
 class PvtControlValues(AmcsWatchdogControlValues):
     model_config = ConfigDict(

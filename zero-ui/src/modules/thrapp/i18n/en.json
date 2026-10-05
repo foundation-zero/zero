@@ -186,7 +186,8 @@
         "deltaTemperature": "Delta temperature",
         "flow": "Flow",
         "empty": "Level",
-        "pvt": "Pvt"
+        "pvt": "Pvt",
+        "heat": "Heat"
       }
     },
     "mimics": {
@@ -316,6 +317,8 @@
             "boosting": "Boosting",
             "charging": "Charging"
           },
+          "drives": "{mode}",
+          "adsorption": "{mode}",
           "consumers": "{mode}",
           "pvt": {
             "idle": "AFT - Idle | FWD - Idle | Owners - Idle",

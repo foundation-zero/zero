@@ -1,23 +1,23 @@
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { toFieldsMap, toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
-import { getCustomField, getField } from "../../../../providers";
+import { getField } from "../../../../providers";
 import { fieldTooltip } from "../../../shared";
 
 export const PVT_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
-  [MimicComponentType.ExchangeCircuit]: {
-    seawater: toInstance<MimicComponentType.ExchangeCircuit>({
+  [MimicComponentType.SeawaterCircuit]: {
+    seawater: toInstance<MimicComponentType.SeawaterCircuit>({
       controls: {},
       controllerState: {},
       custom: {
         circuitName: "Seawater",
       },
       parameters: {},
-      source: getField(SensorComponentType.HeatTransferDevice, "pvt", "placeholder"),
+      source: getField(SensorComponentType.Temperature, "pvt", "placeholder"),
       sensors: {},
       get tooltip() {
         return fieldTooltip(this.source, {
-          title: "Exchange circuit",
+          title: "Seawater circuit",
           componentType: "Seawater loop",
         });
       },
@@ -28,18 +28,17 @@ export const PVT_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
       controls: {},
       controllerState: {},
       custom: {
+        circuitName: "PCM",
         modeModule: "pcm",
       },
       parameters: {},
-      source: getCustomField("pvt", { technicalName: "pvt-pcm-loop" }),
-      sensors: {
-        flowIn: getField(SensorComponentType.CalculatedFlow, "pvt", "pvtTotalFlow"),
-        flowOut: getField(SensorComponentType.CalculatedFlow, "pvt", "pvtTotalFlow"),
-        tIn: getField(SensorComponentType.CalculatedTemperature, "pvt", "pvtReturnTemperature"),
-        tOut: getField(SensorComponentType.Temperature, "pcm", "pcmTemperatureProducersSupply"),
-      },
+      source: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtPcmHeat"),
+      sensors: {},
       get tooltip() {
-        return fieldTooltip(this.source, { title: "PCM", componentType: "PCM loop" });
+        return fieldTooltip(this.source, {
+          title: "Connecting circuit",
+          componentType: "PCM loop",
+        });
       },
     }),
   },

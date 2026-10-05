@@ -361,6 +361,27 @@ class PcmSensorValues(AmcsModeSensorValues):
             heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
         )
 
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False
+        )
+    )
+    @property
+    def pcm_freshwater_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.freshwater_temperature_pcm_supply.temperature,
+            temperature_return=self.freshwater_temperature_pcm_return.temperature,
+            flow=self.freshwater_flow_pcm.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "freshwater_temperature_pcm_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "freshwater_temperature_pcm_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "freshwater_flow_pcm"),
+            heat_transfer_conversion=WATER_HEAT_TRANSFER_CONVERSION,
+        )
+
 
 class PcmControlValues(AmcsWatchdogControlValues):
     model_config = ConfigDict(

@@ -37,6 +37,12 @@ export const TOOLTIPS: Partial<Record<MimicComponentType, Component>> = {
   [MimicComponentType.ConnectingCircuit]: defineAsyncComponent(
     () => import("./ConnectingCircuitTooltip.vue"),
   ),
+  [MimicComponentType.FreshwaterCircuit]: defineAsyncComponent(
+    () => import("./FreshwaterCircuitTooltip.vue"),
+  ),
+  [MimicComponentType.SeawaterCircuit]: defineAsyncComponent(
+    () => import("./SeawaterCircuitTooltip.vue"),
+  ),
   [MimicComponentType.ExchangeCircuit]: defineAsyncComponent(
     () => import("./ExchangeCircuitTooltip.vue"),
   ),

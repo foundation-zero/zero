@@ -1,9 +1,9 @@
 <template>
   <svg
-    viewBox="0 0 1414 854"
+    viewBox="0 0 1414 804"
     fill="none"
     x="-84"
-    y="-130"
+    y="-190"
     xmlns="http://www.w3.org/2000/svg"
   >
     <g>

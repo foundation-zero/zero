@@ -3,19 +3,12 @@ import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import { CircuitBox, CircuitBoxTitle } from "../components/circuit-box";
-import { ModeBadges, ModeBadgeSize } from "../components/mode-badge";
-import {
-  ValueList,
-  ValueListDeltaTItem,
-  ValueListFlowItem,
-  ValueListSeparator,
-  ValueListTemperatureItem,
-} from "../components/value-list";
+import { ValueList, ValueListSeparator, ValueListTemperatureItem } from "../components/value-list";
 import { getMimicDataProvider } from "../providers";
 
 const props = defineProps<
   MimicComponentInstanceProps &
-    TooltipComponentContext<MimicComponentType.ExchangeCircuit> & {
+    TooltipComponentContext<MimicComponentType.SeawaterCircuit> & {
       width?: number | string;
       height?: number | string;
       forceHeight?: boolean;
@@ -29,36 +22,21 @@ const state = getComponentState();
 
 <template>
   <MimicTooltipTrigger
-    :type="MimicComponentType.ExchangeCircuit"
+    :type="MimicComponentType.SeawaterCircuit"
     :data="props"
   >
     <CircuitBox
       v-bind="props"
       :state="state"
     >
-      <CircuitBoxTitle>{{ custom.circuitName }}</CircuitBoxTitle>
-
-      <ModeBadges
-        :module="custom.modeModule"
-        :size="ModeBadgeSize.Circuit"
-      />
+      <CircuitBoxTitle>Seawater</CircuitBoxTitle>
 
       <ValueList dense>
         <ValueListSeparator />
-        <ValueListDeltaTItem :source="source" />
         <ValueListTemperatureItem
-          class="text-xs"
           :source="source"
-          field="temperatureSupply"
-          temperature-label="in"
+          temperature-label="seawater"
         />
-        <ValueListTemperatureItem
-          class="text-xs"
-          :source="source"
-          field="temperatureReturn"
-          temperature-label="out"
-        />
-        <ValueListFlowItem :source="source" />
         <ValueListSeparator />
       </ValueList>
     </CircuitBox>

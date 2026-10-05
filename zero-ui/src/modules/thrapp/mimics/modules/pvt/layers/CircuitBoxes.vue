@@ -2,11 +2,10 @@
 import { tScoped } from "@/modules/common/lib/utils";
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { RiArrowDownLine, RiArrowRightLine } from "@remixicon/vue";
-import { LoopCircuitInstance } from "../../../instances";
-import HotWaterCircuitInstance from "../../../instances/ConnectingCircuitInstance.vue";
+import { ConnectingCircuitInstance, SeawaterCircuitInstance } from "../../../instances";
 import { PVT_MIMIC_DATA } from "../data";
 
-const circuits = PVT_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
+const circuits = PVT_MIMIC_DATA[MimicComponentType.SeawaterCircuit];
 const hotWaterCircuits = PVT_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
 
 const t = tScoped("labels");
@@ -14,9 +13,9 @@ const t = tScoped("labels");
 
 <template>
   <g>
-    <HotWaterCircuitInstance
+    <ConnectingCircuitInstance
       x="885"
-      y="0"
+      y="40"
       force-height
       height="245"
       v-bind="hotWaterCircuits?.['pcm']"
@@ -29,9 +28,9 @@ const t = tScoped("labels");
         <RiArrowDownLine class="text-muted-foreground size-3" />
         {{ t("out") }}
       </template>
-    </HotWaterCircuitInstance>
+    </ConnectingCircuitInstance>
 
-    <LoopCircuitInstance
+    <SeawaterCircuitInstance
       x="1110"
       y="355"
       width="194"
