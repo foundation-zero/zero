@@ -2,8 +2,15 @@ from datetime import UTC, datetime, timedelta
 
 from pytest import fixture
 
+from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.control.modules.pvt import PvtControl, PvtParameters
+from thrs.control.modules.pvt import (
+    PvtAlarms,
+    PvtControl,
+    PvtControllerState,
+    PvtControlMode,
+    PvtParameters,
+)
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
     Boundary,
@@ -12,6 +19,7 @@ from thrs.input_output.definitions.simulation import (
 )
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.modules.pvt import (
+    PvtControlValues,
     PvtSensorValues,
     PvtSimulationInputs,
     PvtSimulationOutputs,
@@ -19,6 +27,23 @@ from thrs.input_output.modules.pvt import (
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import pvt_path
+
+type PvtSimulation = Simulation[
+    PvtSensorValues,
+    PvtControlValues,
+    PvtSimulationInputs,
+    PvtSimulationOutputs,
+]
+
+type PvtRunner = SimulationTestRunner[
+    PvtSensorValues,
+    PvtControlValues,
+    PvtSimulationInputs,
+    PvtSimulationOutputs,
+    PvtParameters,
+    PvtControlMode,
+    PvtControllerState,
+]
 
 
 @fixture
@@ -53,3 +78,18 @@ def simulation(simulation_inputs):
             datetime.now(UTC),
             timedelta(seconds=1),
         )
+
+
+@fixture
+def alarms() -> PvtAlarms:
+    return PvtAlarms()
+
+
+@fixture
+def runner(
+    control: PvtControl,
+    simulation: PvtSimulation,
+    simulation_inputs: PvtSimulationInputs,
+    alarms: PvtAlarms,
+) -> PvtRunner:
+    return SimulationTestRunner(simulation, simulation_inputs, control, alarms)
