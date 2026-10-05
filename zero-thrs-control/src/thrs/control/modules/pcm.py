@@ -13,7 +13,7 @@ from thrs.control.controllers import (
     PidController,
 )
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions.control import Pcm, Pump, Valve
 from thrs.input_output.definitions.controllers import (
     PCM_HEATING_ELEMENT_POWER,
@@ -22,6 +22,7 @@ from thrs.input_output.definitions.controllers import (
     PcmChargeControllerValues,
     PcmChargeStatus,
     PcmChargingState,
+    PidControllerValues,
 )
 from thrs.input_output.definitions.units import (
     Celsius,
@@ -102,6 +103,22 @@ class PcmControllerState(ThrsValues):
     module2_charge_controller: PcmChargeControllerValues
     module3_charge_controller: PcmChargeControllerValues
     module4_charge_controller: PcmChargeControllerValues
+    module1_flow_controller: Annotated[
+        PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    module2_flow_controller: Annotated[
+        PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    module3_flow_controller: Annotated[
+        PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
+    module4_flow_controller: Annotated[
+        PidControllerValues,
+        component_meta(component_type="pid_controller", included_in_fmu=False),
+    ]
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:  # noqa: N802
@@ -155,6 +172,10 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> PcmControllerState:  # noq
         module2_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
         module3_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
         module4_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
+        module1_flow_controller=PidController.zero(timestamp),
+        module2_flow_controller=PidController.zero(timestamp),
+        module3_flow_controller=PidController.zero(timestamp),
+        module4_flow_controller=PidController.zero(timestamp),
     )
 
 
@@ -429,6 +450,10 @@ class PcmControl(
             module2_charge_controller=self.module2_charge_controller.values(),
             module3_charge_controller=self.module3_charge_controller.values(),
             module4_charge_controller=self.module4_charge_controller.values(),
+            module1_flow_controller=self.module1_flow_controller.values(),
+            module2_flow_controller=self.module2_flow_controller.values(),
+            module3_flow_controller=self.module3_flow_controller.values(),
+            module4_flow_controller=self.module4_flow_controller.values(),
         )
 
     def _modules(self) -> list[PcmChargeController]:
@@ -622,7 +647,7 @@ class PcmControl(
             value=Valve.CLOSED, timestamp=self._time()
         )
         self._current_values.pcm_switch_consumers.setpoint = Stamped(
-            value=Valve.CLOSED, timestamp=self._time()
+            value=Valve.OPEN, timestamp=self._time()
         )
 
     def _set_valves_to_charging(self, sensor_values: PcmSensorValues):
@@ -636,8 +661,7 @@ class PcmControl(
             value=Valve.OPEN, timestamp=self._time()
         )
         self._current_values.pcm_switch_consumers.setpoint = Stamped(
-            value=Valve.CLOSED,
-            timestamp=self._time(),
+            value=Valve.OPEN, timestamp=self._time()
         )
 
     def _set_valves_to_boosting(self, sensor_values: PcmSensorValues):

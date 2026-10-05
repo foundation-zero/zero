@@ -2,12 +2,20 @@ from datetime import UTC, datetime, timedelta
 
 from pytest import fixture
 
+from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.control.modules.consumers import ConsumersControl, ConsumersParameters
+from thrs.control.modules.consumers import (
+    ConsumersAlarms,
+    ConsumersControl,
+    ConsumersControllerState,
+    ConsumersControlMode,
+    ConsumersParameters,
+)
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.modules.consumers import (
+    ConsumersControlValues,
     ConsumersSensorValues,
     ConsumersSimulationInputs,
     ConsumersSimulationOutputs,
@@ -15,6 +23,23 @@ from thrs.input_output.modules.consumers import (
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import consumers_path
+
+type ConsumersSimulation = Simulation[
+    ConsumersSensorValues,
+    ConsumersControlValues,
+    ConsumersSimulationInputs,
+    ConsumersSimulationOutputs,
+]
+
+type ConsumersRunner = SimulationTestRunner[
+    ConsumersSensorValues,
+    ConsumersControlValues,
+    ConsumersSimulationInputs,
+    ConsumersSimulationOutputs,
+    ConsumersParameters,
+    ConsumersControlMode,
+    ConsumersControllerState,
+]
 
 
 @fixture
@@ -63,3 +88,18 @@ def simulation(simulation_inputs):
             datetime.now(UTC),
             timedelta(seconds=1),
         )
+
+
+@fixture
+def alarms() -> ConsumersAlarms:
+    return ConsumersAlarms()
+
+
+@fixture
+def runner(
+    control: ConsumersControl,
+    simulation: ConsumersSimulation,
+    simulation_inputs: ConsumersSimulationInputs,
+    alarms: ConsumersAlarms,
+) -> ConsumersRunner:
+    return SimulationTestRunner(simulation, simulation_inputs, control, alarms)
