@@ -44,6 +44,33 @@ models:
         description: "Table name associated with the raw message."
       - name: topic
         description: "MQTT topic associated with the raw message."
+  - name: stg_marpower__batteries
+    description: "Cleaned Marpower main power storage errors telemetry."
+    columns:
+      - name: ts
+        description: "Ingest time index (renamed from the raw `timestamp`)."
+        tests:
+          - not_null
+      - name: soc
+        description: "State of charge of the battery."
+      - name: soh
+        description: "State of health of the battery."
+      - name: num_connected_strings
+        description: "Number of connected strings in the battery."
+      - name: energy
+        description: "Energy stored in the battery."
+      - name: charging
+        description: "Charging status of the battery."
+      - name: discharging
+        description: "Discharging status of the battery."
+      - name: charge_power
+        description: "Charge power of the battery."
+      - name: battery_power
+        description: "Battery power."
+      - name: table
+        description: "Table name associated with the raw message."
+      - name: topic
+        description: "MQTT topic associated with the raw message."
   - name: stg_power_tag_metadata
     description: "Static metadata for power tags."
     columns:

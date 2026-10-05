@@ -51,3 +51,30 @@ sources:
             description: "Phase B-to-neutral voltage."
           - name: voltage_cn
             description: "Phase C-to-neutral voltage."
+      - name: marpower__450000_main_power_storage_errors
+        description: "Main power storage errors from Marpower."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: state_of_charge__value
+            description: "State of charge of the battery."
+          - name: state_of_health__value
+            description: "State of health of the battery."
+          - name: number_of_connected_strings__value
+            description: "Number of connected strings in the battery."
+          - name: energy__value
+            description: "Energy stored in the battery."
+          - name: charging__value
+            description: "Charging status of the battery."
+          - name: dis_charging__value
+            description: "Discharging status of the battery."
+          - name: charge_power__value
+            description: "Charge power of the battery."
+          - name: battery_power__value
+            description: "Battery power."
+          - name: table
+            description: "Table name associated with the raw message."
+          - name: topic
+            description: "MQTT topic associated with the raw message."
