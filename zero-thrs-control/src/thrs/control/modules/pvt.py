@@ -8,6 +8,7 @@ from thrs.classes.control import Control, ControlMode
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
 from thrs.control.modules.pvt_group import (
+    IDLE_MIX_POSITION,
     PvtGroupControl,
     PvtGroupControlMode,
     PvtGroupControlValues,
@@ -117,13 +118,13 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PvtControlValues:  # noqa: N
             on=Stamped(value=False, timestamp=timestamp),
         ),
         pvt_mix_main_fwd=Valve(
-            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+            setpoint=Stamped(value=IDLE_MIX_POSITION, timestamp=timestamp)
         ),
         pvt_mix_main_aft=Valve(
-            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+            setpoint=Stamped(value=IDLE_MIX_POSITION, timestamp=timestamp)
         ),
         pvt_mix_owners=Valve(
-            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+            setpoint=Stamped(value=IDLE_MIX_POSITION, timestamp=timestamp)
         ),
         pvt_switch_main_fwd=Valve(
             setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)

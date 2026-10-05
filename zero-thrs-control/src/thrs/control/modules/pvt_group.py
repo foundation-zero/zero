@@ -9,8 +9,11 @@ from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import control, sensor
-from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
+
+IDLE_MIX_POSITION: Ratio = 0.2
+RECOVERY_MIX_UPPER_BOUND: Ratio = 0.2
+RECOVERY_MIX_LOWER_BOUND: Ratio = 0.05
 
 
 class PvtGroupSensorValues(ThrsValues):
@@ -51,6 +54,10 @@ class PvtGroupParameters(ThrsValues):
 
 class PvtGroupControlMode(ControlMode):
     mode: str
+
+    @property
+    def is_idle(self) -> bool:
+        return self.mode == "idle"
 
 
 class PvtGroupControllerState(ControlMode):
@@ -93,19 +100,23 @@ class PvtGroupControl(
 
     def _init_state_machine_states(self):
         self._states = [
-            State(name="idle", on_enter=self._set_mix_to_a),
             State(
-                name="recovery",
+                name="idle",
                 on_enter=[
-                    self._enable_warmup_mix,
-                    self._enable_pump_control,
-                    self._activate_pump,
-                ],
-                on_exit=[
+                    self._set_mix_to_idle_position,
                     self._disable_warmup_mix,
-                    self._disable_pump_control,
                     self._deactivate_pump,
                 ],
+                on_exit=[
+                    self._enable_warmup_mix,
+                    self._activate_pump,
+                ],
+            ),
+            State(name="warmup", on_enter=self._set_pump_to_minimum_dutypoint),
+            State(
+                name="recovery",
+                on_enter=self._enable_pump_control,
+                on_exit=self._disable_pump_control,
             ),
         ]
 
@@ -114,14 +125,26 @@ class PvtGroupControl(
             {
                 "trigger": "_check_temperatures",
                 "source": "idle",
-                "dest": "recovery",
+                "dest": "warmup",
                 "conditions": "_string_warm",
             },
             {
                 "trigger": "_check_temperatures",
-                "source": "recovery",
+                "source": ["warmup", "recovery"],
                 "dest": "idle",
                 "conditions": "_low_return_temperature",
+            },
+            {
+                "trigger": "_check_mix",
+                "source": "warmup",
+                "dest": "recovery",
+                "conditions": "_mix_open",
+            },
+            {
+                "trigger": "_check_mix",
+                "source": "recovery",
+                "dest": "warmup",
+                "conditions": "_mix_closed",
             },
         ]
 
@@ -191,9 +214,20 @@ class PvtGroupControl(
             < self._parameters.minimum_return_temperature
         )
 
-    def _set_mix_to_a(self, sensor_values: PvtGroupSensorValues):
+    def _mix_open(self, sensor_values: PvtGroupSensorValues):
+        return self._current_values.mix.setpoint.value > RECOVERY_MIX_UPPER_BOUND
+
+    def _mix_closed(self, sensor_values: PvtGroupSensorValues):
+        return self._current_values.mix.setpoint.value < RECOVERY_MIX_LOWER_BOUND
+
+    def _set_mix_to_idle_position(self, sensor_values: PvtGroupSensorValues):
         self._current_values.mix.setpoint = Stamped(
-            value=Valve.MIXING_B_TO_AB, timestamp=self._time()
+            value=IDLE_MIX_POSITION, timestamp=self._time()
+        )
+
+    def _set_pump_to_minimum_dutypoint(self, sensor_values: PvtGroupSensorValues):
+        self._current_values.pump.dutypoint = Stamped(
+            value=self._parameters.minimum_pump_dutypoint, timestamp=self._time()
         )
 
     def _enable_warmup_mix(self, sensor_values: PvtGroupSensorValues):
@@ -220,6 +254,8 @@ class PvtGroupControl(
     ) -> tuple[PvtGroupControlValues, PvtGroupControllerState]:
         self._check_temperatures(sensor_values)  # type: ignore
         self._control_warmup_mix(sensor_values)
+        if not self.mode.is_idle:
+            self._check_mix(sensor_values)  # type: ignore
         self._control_pump(sensor_values)
 
         return (self._current_values, PvtGroupControllerState())

@@ -1,7 +1,7 @@
 from pytest import approx
 
 from thrs.control.modules.pvt import PvtControl, PvtControlMode
-from thrs.control.modules.pvt_group import PvtGroupControlMode
+from thrs.control.modules.pvt_group import IDLE_MIX_POSITION, PvtGroupControlMode
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.modules.pvt import (
@@ -78,6 +78,15 @@ def test_recovery(control: PvtControl, simulation: PvtSimulation):
     assert result.simulation_outputs.pvt_pcm_supply.flow.value == approx(
         result.simulation_outputs.pvt_pcm_return.flow.value, abs=1e-5
     )
+
+
+def test_idle_mix_position(control: PvtControl):
+    control_values, _ = control.control(PvtSensorValues.zero())
+
+    assert control.mode.aft == PvtGroupControlMode(mode="idle")
+    assert control_values.pvt_mix_main_aft.setpoint.value == IDLE_MIX_POSITION
+    assert control_values.pvt_mix_main_fwd.setpoint.value == IDLE_MIX_POSITION
+    assert control_values.pvt_mix_owners.setpoint.value == IDLE_MIX_POSITION
 
 
 def test_heat_dump(
