@@ -66,7 +66,7 @@ docker compose --profile data-collection up -d greptimedb
 
 # From this zero-data/ directory:
 # Recreate prod's table shapes (empty) locally from the committed snapshot, and create the
-# `greptime` and `views` databases dbt needs.
+# `views` database dbt materializes into.
 uv run zero-data greptime load
 
 # Build the views and run the tests.
@@ -83,9 +83,20 @@ git diff snapshot/
 
 `GREPTIME_HOST` / `GREPTIME_PG_PORT` / `GREPTIME_USER` / `GREPTIME_PASSWORD` configure both
 the tooling and dbt (defaults target the local compose instance). The integration tests
-(`tests/greptime/`) exercise both seams against a real local Greptime — no DB mocking. How
-dbt-postgres drives Greptime, and the friction points, are in
-[`docs/greptime-views-viability-check.md`](docs/greptime-views-viability-check.md).
+(`tests/greptime/`) exercise both seams against a real local Greptime — no DB mocking.
+
+### Deploying the views
+
+Deploys are manual, from a developer machine on Tailscale. Per tier (`zero`, `singel`,
+`subzero`):
+
+```bash
+just dbt-deploy zero
+```
+
+This creates the `views` database if needed and runs `dbt build` (models and tests) against
+that tier. Rerunning is safe: views are `CREATE OR REPLACE`d. Each build also drops and
+recreates `public.power_tag_metadata` from `macros/load_power_tag_metadata.sql`.
 
 ## Release Management
 

@@ -75,7 +75,7 @@ def ensure_databases(
     handle: "psycopg.Connection",
     databases: tuple[str, ...] = DBT_DATABASES,
 ) -> None:
-    """Create the databases dbt needs (`greptime` landing db, `views` target) if absent."""
+    """Create the databases dbt materializes into if absent."""
     with handle.cursor() as cursor:
         for database in databases:
             cursor.execute(f"CREATE DATABASE IF NOT EXISTS {database}")
