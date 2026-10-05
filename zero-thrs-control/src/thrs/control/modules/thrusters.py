@@ -344,6 +344,7 @@ class ThrustersControl(
                     self._set_valves_to_recovery,
                     self._disable_heat_dump,
                     self._open_flowcontrol_valves,
+                    self._stop_warmup_mix,
                 ],
                 on_exit=[
                     self._activate_pump,
