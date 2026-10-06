@@ -44,33 +44,6 @@ models:
         description: "Table name associated with the raw message."
       - name: topic
         description: "MQTT topic associated with the raw message."
-  - name: stg_marpower__batteries
-    description: "Cleaned Marpower main power storage errors telemetry."
-    columns:
-      - name: ts
-        description: "Ingest time index (renamed from the raw `timestamp`)."
-        tests:
-          - not_null
-      - name: soc
-        description: "State of charge of the battery."
-      - name: soh
-        description: "State of health of the battery."
-      - name: num_connected_strings
-        description: "Number of connected strings in the battery."
-      - name: energy
-        description: "Energy stored in the battery."
-      - name: charging
-        description: "Charging status of the battery."
-      - name: discharging
-        description: "Discharging status of the battery."
-      - name: charge_power
-        description: "Charge power of the battery."
-      - name: battery_power
-        description: "Battery power."
-      - name: table
-        description: "Table name associated with the raw message."
-      - name: topic
-        description: "MQTT topic associated with the raw message."
   - name: stg_power_tag_metadata
     description: "Static metadata for power tags."
     columns:
@@ -95,3 +68,2200 @@ models:
         description: "The main group classification of the power tag."
       - name: sub_group
         description: "The sub group classification, within the main group, of the power tag."
+  - name: stg_marpower__batteries
+    description: "Cleaned Marpower main power storage errors telemetry."
+    columns:
+      - name: ts
+        description: "Ingest time index (renamed from the raw `timestamp`)."
+        tests:
+          - not_null
+      - name: alert_mode__has_value
+        description: "Indicates if the alert mode attribute contains a value."
+      - name: alert_mode__is_valid
+        description: "Indicates if the alert mode value is valid."
+      - name: alert_mode__timestamp
+        description: "Source timestamp of the alert mode status update."
+      - name: alert_mode__value
+        description: "Boolean flag indicating if the system is in alert mode."
+      - name: aside_current_average__has_value
+        description: "Indicates if the A-side average current contains a value."
+      - name: aside_current_average__is_valid
+        description: "Indicates if the A-side average current value is valid."
+      - name: aside_current_average__timestamp
+        description: "Source timestamp of the A-side average current measurement."
+      - name: aside_current_average__value
+        description: "Average current measured on side A of the storage system (Amperes)."
+      - name: aside_voltage_average__has_value
+        description: "Indicates if the A-side average voltage contains a value."
+      - name: aside_voltage_average__is_valid
+        description: "Indicates if the A-side average voltage value is valid."
+      - name: aside_voltage_average__timestamp
+        description: "Source timestamp of the A-side average voltage measurement."
+      - name: aside_voltage_average__value
+        description: "Average voltage measured on side A of the storage system (Volts)."
+      - name: aside_voltage_maximum__has_value
+        description: "Indicates if the A-side maximum voltage contains a value."
+      - name: aside_voltage_maximum__is_valid
+        description: "Indicates if the A-side maximum voltage value is valid."
+      - name: aside_voltage_maximum__timestamp
+        description: "Source timestamp of the A-side maximum voltage measurement."
+      - name: aside_voltage_maximum__value
+        description: "Maximum recorded voltage on side A (Volts)."
+      - name: aside_voltage_minimum__has_value
+        description: "Indicates if the A-side minimum voltage contains a value."
+      - name: aside_voltage_minimum__is_valid
+        description: "Indicates if the A-side minimum voltage value is valid."
+      - name: aside_voltage_minimum__timestamp
+        description: "Source timestamp of the A-side minimum voltage measurement."
+      - name: aside_voltage_minimum__value
+        description: "Minimum recorded voltage on side A (Volts)."
+      - name: auto__has_value
+        description: "Indicates if the automatic mode state contains a value."
+      - name: auto__is_valid
+        description: "Indicates if the automatic mode state is valid."
+      - name: auto__timestamp
+        description: "Source timestamp of the automatic mode status update."
+      - name: auto__value
+        description: "Flag indicating whether automatic operation mode is enabled."
+      - name: auto_start__has_value
+        description: "Indicates if the auto-start status contains a value."
+      - name: auto_start__is_valid
+        description: "Indicates if the auto-start status is valid."
+      - name: auto_start__timestamp
+        description: "Source timestamp of the auto-start status update."
+      - name: auto_start__value
+        description: "Flag indicating whether automatic start is currently active."
+      - name: auto_stop__has_value
+        description: "Indicates if the auto-stop status contains a value."
+      - name: auto_stop__is_valid
+        description: "Indicates if the auto-stop status is valid."
+      - name: auto_stop__timestamp
+        description: "Source timestamp of the auto-stop status update."
+      - name: auto_stop__value
+        description: "Flag indicating whether automatic stop is currently triggered."
+      - name: balancing_required_1__has_value
+        description: "Indicates if balancing requirement status for bank 1 contains a value."
+      - name: balancing_required_1__is_valid
+        description: "Indicates if balancing requirement status for bank 1 is valid."
+      - name: balancing_required_1__timestamp
+        description: "Source timestamp of the balancing requirement status for bank 1."
+      - name: balancing_required_1__value
+        description: "Flag indicating if cell balancing is required on battery bank 1."
+      - name: balancing_required_2__has_value
+        description: "Indicates if balancing requirement status for bank 2 contains a value."
+      - name: balancing_required_2__is_valid
+        description: "Indicates if balancing requirement status for bank 2 is valid."
+      - name: balancing_required_2__timestamp
+        description: "Source timestamp of the balancing requirement status for bank 2."
+      - name: balancing_required_2__value
+        description: "Flag indicating if cell balancing is required on battery bank 2."
+      - name: balancing_required_3__has_value
+        description: "Indicates if balancing requirement status for bank 3 contains a value."
+      - name: balancing_required_3__is_valid
+        description: "Indicates if balancing requirement status for bank 3 is valid."
+      - name: balancing_required_3__timestamp
+        description: "Source timestamp of the balancing requirement status for bank 3."
+      - name: balancing_required_3__value
+        description: "Flag indicating if cell balancing is required on battery bank 3."
+      - name: battery_current__has_value
+        description: "Indicates if total battery current contains a value."
+      - name: battery_current__is_valid
+        description: "Indicates if total battery current is valid."
+      - name: battery_current__timestamp
+        description: "Source timestamp of the battery current measurement."
+      - name: battery_current__value
+        description: "Total battery pack current (positive = charge, negative = discharge) in Amperes."
+      - name: battery_power__has_value
+        description: "Indicates if total battery power contains a value."
+      - name: battery_power__is_valid
+        description: "Indicates if total battery power is valid."
+      - name: battery_power__timestamp
+        description: "Source timestamp of the battery power measurement."
+      - name: battery_power__value
+        description: "Total net battery power in kW or W."
+      - name: battery_voltage__has_value
+        description: "Indicates if battery pack voltage contains a value."
+      - name: battery_voltage__is_valid
+        description: "Indicates if battery pack voltage is valid."
+      - name: battery_voltage__timestamp
+        description: "Source timestamp of the battery voltage measurement."
+      - name: battery_voltage__value
+        description: "Overall battery pack DC terminal voltage (Volts)."
+      - name: bside_current_average__has_value
+        description: "Indicates if B-side average current contains a value."
+      - name: bside_current_average__is_valid
+        description: "Indicates if B-side average current is valid."
+      - name: bside_current_average__timestamp
+        description: "Source timestamp of the B-side average current measurement."
+      - name: bside_current_average__value
+        description: "Average current measured on side B of the storage system (Amperes)."
+      - name: bside_voltage_average__has_value
+        description: "Indicates if B-side average voltage contains a value."
+      - name: bside_voltage_average__is_valid
+        description: "Indicates if B-side average voltage is valid."
+      - name: bside_voltage_average__timestamp
+        description: "Source timestamp of the B-side average voltage measurement."
+      - name: bside_voltage_average__value
+        description: "Average voltage measured on side B of the storage system (Volts)."
+      - name: bside_voltage_maximum__has_value
+        description: "Indicates if B-side maximum voltage contains a value."
+      - name: bside_voltage_maximum__is_valid
+        description: "Indicates if B-side maximum voltage is valid."
+      - name: bside_voltage_maximum__timestamp
+        description: "Source timestamp of the B-side maximum voltage measurement."
+      - name: bside_voltage_maximum__value
+        description: "Maximum recorded voltage on side B (Volts)."
+      - name: bside_voltage_minimum__has_value
+        description: "Indicates if B-side minimum voltage contains a value."
+      - name: bside_voltage_minimum__is_valid
+        description: "Indicates if B-side minimum voltage is valid."
+      - name: bside_voltage_minimum__timestamp
+        description: "Source timestamp of the B-side minimum voltage measurement."
+      - name: bside_voltage_minimum__value
+        description: "Minimum recorded voltage on side B (Volts)."
+      - name: btn_reset__has_value
+        description: "Indicates if reset button status contains a value."
+      - name: btn_reset__is_valid
+        description: "Indicates if reset button status is valid."
+      - name: btn_reset__timestamp
+        description: "Source timestamp of reset button input state."
+      - name: btn_reset__value
+        description: "State of physical or software reset button."
+      - name: can_cc_responding__has_value
+        description: "Indicates if CAN Central Controller communication status contains a value."
+      - name: can_cc_responding__is_valid
+        description: "Indicates if CAN Central Controller communication status is valid."
+      - name: can_cc_responding__timestamp
+        description: "Source timestamp of CAN Central Controller ping."
+      - name: can_cc_responding__value
+        description: "Boolean flag indicating if Central Controller is responding on CAN bus."
+      - name: can_ec_responding__has_value
+        description: "Indicates if CAN Energy Controller communication status contains a value."
+      - name: can_ec_responding__is_valid
+        description: "Indicates if CAN Energy Controller communication status is valid."
+      - name: can_ec_responding__timestamp
+        description: "Source timestamp of CAN Energy Controller ping."
+      - name: can_ec_responding__value
+        description: "Boolean flag indicating if Energy Controller is responding on CAN bus."
+      - name: can_timing_error__has_value
+        description: "Indicates if CAN bus timing error state contains a value."
+      - name: can_timing_error__is_valid
+        description: "Indicates if CAN bus timing error state is valid."
+      - name: can_timing_error__timestamp
+        description: "Source timestamp of CAN timing error detection."
+      - name: can_timing_error__value
+        description: "Flag indicating a timing mismatch or timeout error on the CAN bus."
+      - name: cell_01_temperature_1__has_value
+        description: "Indicates if cell 01 sensor 1 temperature contains a value."
+      - name: cell_01_temperature_1__is_valid
+        description: "Indicates if cell 01 sensor 1 temperature is valid."
+      - name: cell_01_temperature_1__timestamp
+        description: "Source timestamp of cell 01 sensor 1 temperature measurement."
+      - name: cell_01_temperature_1__value
+        description: "Temperature reading from sensor 1 on cell 01 (°C)."
+      - name: cell_01_temperature_2__has_value
+        description: "Indicates if cell 01 sensor 2 temperature contains a value."
+      - name: cell_01_temperature_2__is_valid
+        description: "Indicates if cell 01 sensor 2 temperature is valid."
+      - name: cell_01_temperature_2__timestamp
+        description: "Source timestamp of cell 01 sensor 2 temperature measurement."
+      - name: cell_01_temperature_2__value
+        description: "Temperature reading from sensor 2 on cell 01 (°C)."
+      - name: cell_01_voltage_1__has_value
+        description: "Indicates if cell 01 sensor 1 voltage contains a value."
+      - name: cell_01_voltage_1__is_valid
+        description: "Indicates if cell 01 sensor 1 voltage is valid."
+      - name: cell_01_voltage_1__timestamp
+        description: "Source timestamp of cell 01 sensor 1 voltage measurement."
+      - name: cell_01_voltage_1__value
+        description: "Voltage reading from sensor 1 on cell 01 (Volts)."
+      - name: cell_01_voltage_2__has_value
+        description: "Indicates if cell 01 sensor 2 voltage contains a value."
+      - name: cell_01_voltage_2__is_valid
+        description: "Indicates if cell 01 sensor 2 voltage is valid."
+      - name: cell_01_voltage_2__timestamp
+        description: "Source timestamp of cell 01 sensor 2 voltage measurement."
+      - name: cell_01_voltage_2__value
+        description: "Voltage reading from sensor 2 on cell 01 (Volts)."
+      - name: cell_02_temperature_1__has_value
+        description: "Indicates if cell 02 sensor 1 temperature contains a value."
+      - name: cell_02_temperature_1__is_valid
+        description: "Indicates if cell 02 sensor 1 temperature is valid."
+      - name: cell_02_temperature_1__timestamp
+        description: "Source timestamp of cell 02 sensor 1 temperature measurement."
+      - name: cell_02_temperature_1__value
+        description: "Temperature reading from sensor 1 on cell 02 (°C)."
+      - name: cell_02_temperature_2__has_value
+        description: "Indicates if cell 02 sensor 2 temperature contains a value."
+      - name: cell_02_temperature_2__is_valid
+        description: "Indicates if cell 02 sensor 2 temperature is valid."
+      - name: cell_02_temperature_2__timestamp
+        description: "Source timestamp of cell 02 sensor 2 temperature measurement."
+      - name: cell_02_temperature_2__value
+        description: "Temperature reading from sensor 2 on cell 02 (°C)."
+      - name: cell_02_voltage_1__has_value
+        description: "Indicates if cell 02 sensor 1 voltage contains a value."
+      - name: cell_02_voltage_1__is_valid
+        description: "Indicates if cell 02 sensor 1 voltage is valid."
+      - name: cell_02_voltage_1__timestamp
+        description: "Source timestamp of cell 02 sensor 1 voltage measurement."
+      - name: cell_02_voltage_1__value
+        description: "Voltage reading from sensor 1 on cell 02 (Volts)."
+      - name: cell_overcurrent_charge_mol_warning_1__has_value
+        description: "Indicates if MOL charge overcurrent warning status for string 1 contains a value."
+      - name: cell_overcurrent_charge_mol_warning_1__is_valid
+        description: "Indicates if MOL charge overcurrent warning status for string 1 is valid."
+      - name: cell_overcurrent_charge_mol_warning_1__timestamp
+        description: "Timestamp of MOL charge overcurrent warning on string 1."
+      - name: cell_overcurrent_charge_mol_warning_1__value
+        description: "Maximum Operating Limit (MOL) charge overcurrent warning on string 1."
+      - name: cell_overcurrent_charge_mol_warning_2__has_value
+        description: "Indicates if MOL charge overcurrent warning status for string 2 contains a value."
+      - name: cell_overcurrent_charge_mol_warning_2__is_valid
+        description: "Indicates if MOL charge overcurrent warning status for string 2 is valid."
+      - name: cell_overcurrent_charge_mol_warning_2__timestamp
+        description: "Timestamp of MOL charge overcurrent warning on string 2."
+      - name: cell_overcurrent_charge_mol_warning_2__value
+        description: "Maximum Operating Limit (MOL) charge overcurrent warning on string 2."
+      - name: cell_overcurrent_charge_mol_warning_3__has_value
+        description: "Indicates if MOL charge overcurrent warning status for string 3 contains a value."
+      - name: cell_overcurrent_charge_mol_warning_3__is_valid
+        description: "Indicates if MOL charge overcurrent warning status for string 3 is valid."
+      - name: cell_overcurrent_charge_mol_warning_3__timestamp
+        description: "Timestamp of MOL charge overcurrent warning on string 3."
+      - name: cell_overcurrent_charge_mol_warning_3__value
+        description: "Maximum Operating Limit (MOL) charge overcurrent warning on string 3."
+      - name: cell_overcurrent_charge_msl__has_value
+        description: "Indicates if pack MSL charge overcurrent status contains a value."
+      - name: cell_overcurrent_charge_msl__is_valid
+        description: "Indicates if pack MSL charge overcurrent status is valid."
+      - name: cell_overcurrent_charge_msl__timestamp
+        description: "Timestamp of pack MSL charge overcurrent trip."
+      - name: cell_overcurrent_charge_msl__value
+        description: "Maximum Safety Limit (MSL) charge overcurrent trip on cell level."
+      - name: cell_overcurrent_charge_msl_error_1__has_value
+        description: "Indicates if MSL charge overcurrent error on string 1 contains a value."
+      - name: cell_overcurrent_charge_msl_error_1__is_valid
+        description: "Indicates if MSL charge overcurrent error on string 1 is valid."
+      - name: cell_overcurrent_charge_msl_error_1__timestamp
+        description: "Timestamp of MSL charge overcurrent error on string 1."
+      - name: cell_overcurrent_charge_msl_error_1__value
+        description: "Maximum Safety Limit (MSL) charge overcurrent error on string 1."
+      - name: cell_overcurrent_charge_msl_error_2__has_value
+        description: "Indicates if MSL charge overcurrent error on string 2 contains a value."
+      - name: cell_overcurrent_charge_msl_error_2__is_valid
+        description: "Indicates if MSL charge overcurrent error on string 2 is valid."
+      - name: cell_overcurrent_charge_msl_error_2__timestamp
+        description: "Timestamp of MSL charge overcurrent error on string 2."
+      - name: cell_overcurrent_charge_msl_error_2__value
+        description: "Maximum Safety Limit (MSL) charge overcurrent error on string 2."
+      - name: cell_overcurrent_charge_msl_error_3__has_value
+        description: "Indicates if MSL charge overcurrent error on string 3 contains a value."
+      - name: cell_overcurrent_charge_msl_error_3__is_valid
+        description: "Indicates if MSL charge overcurrent error on string 3 is valid."
+      - name: cell_overcurrent_charge_msl_error_3__timestamp
+        description: "Timestamp of MSL charge overcurrent error on string 3."
+      - name: cell_overcurrent_charge_msl_error_3__value
+        description: "Maximum Safety Limit (MSL) charge overcurrent error on string 3."
+      - name: cell_overcurrent_charge_rsl_warning_1__has_value
+        description: "Indicates if RSL charge overcurrent warning on string 1 contains a value."
+      - name: cell_overcurrent_charge_rsl_warning_1__is_valid
+        description: "Indicates if RSL charge overcurrent warning on string 1 is valid."
+      - name: cell_overcurrent_charge_rsl_warning_1__timestamp
+        description: "Timestamp of RSL charge overcurrent warning on string 1."
+      - name: cell_overcurrent_charge_rsl_warning_1__value
+        description: "Recommended Safety Limit (RSL) charge overcurrent warning on string 1."
+      - name: cell_overcurrent_charge_rsl_warning_2__has_value
+        description: "Indicates if RSL charge overcurrent warning on string 2 contains a value."
+      - name: cell_overcurrent_charge_rsl_warning_2__is_valid
+        description: "Indicates if RSL charge overcurrent warning on string 2 is valid."
+      - name: cell_overcurrent_charge_rsl_warning_2__timestamp
+        description: "Timestamp of RSL charge overcurrent warning on string 2."
+      - name: cell_overcurrent_charge_rsl_warning_2__value
+        description: "Recommended Safety Limit (RSL) charge overcurrent warning on string 2."
+      - name: cell_overcurrent_charge_rsl_warning_3__has_value
+        description: "Indicates if RSL charge overcurrent warning on string 3 contains a value."
+      - name: cell_overcurrent_charge_rsl_warning_3__is_valid
+        description: "Indicates if RSL charge overcurrent warning on string 3 is valid."
+      - name: cell_overcurrent_charge_rsl_warning_3__timestamp
+        description: "Timestamp of RSL charge overcurrent warning on string 3."
+      - name: cell_overcurrent_charge_rsl_warning_3__value
+        description: "Recommended Safety Limit (RSL) charge overcurrent warning on string 3."
+      - name: cell_overcurrent_discharge_mol_warning_1__has_value
+        description: "Indicates if MOL discharge overcurrent warning on string 1 contains a value."
+      - name: cell_overcurrent_discharge_mol_warning_1__is_valid
+        description: "Indicates if MOL discharge overcurrent warning on string 1 is valid."
+      - name: cell_overcurrent_discharge_mol_warning_1__timestamp
+        description: "Timestamp of MOL discharge overcurrent warning on string 1."
+      - name: cell_overcurrent_discharge_mol_warning_1__value
+        description: "Maximum Operating Limit (MOL) discharge overcurrent warning on string 1."
+      - name: cell_overcurrent_discharge_mol_warning_2__has_value
+        description: "Indicates if MOL discharge overcurrent warning on string 2 contains a value."
+      - name: cell_overcurrent_discharge_mol_warning_2__is_valid
+        description: "Indicates if MOL discharge overcurrent warning on string 2 is valid."
+      - name: cell_overcurrent_discharge_mol_warning_2__timestamp
+        description: "Timestamp of MOL discharge overcurrent warning on string 2."
+      - name: cell_overcurrent_discharge_mol_warning_2__value
+        description: "Maximum Operating Limit (MOL) discharge overcurrent warning on string 2."
+      - name: cell_overcurrent_discharge_mol_warning_3__has_value
+        description: "Indicates if MOL discharge overcurrent warning on string 3 contains a value."
+      - name: cell_overcurrent_discharge_mol_warning_3__is_valid
+        description: "Indicates if MOL discharge overcurrent warning on string 3 is valid."
+      - name: cell_overcurrent_discharge_mol_warning_3__timestamp
+        description: "Timestamp of MOL discharge overcurrent warning on string 3."
+      - name: cell_overcurrent_discharge_mol_warning_3__value
+        description: "Maximum Operating Limit (MOL) discharge overcurrent warning on string 3."
+      - name: cell_overcurrent_discharge_msl__has_value
+        description: "Indicates if pack MSL discharge overcurrent status contains a value."
+      - name: cell_overcurrent_discharge_msl__is_valid
+        description: "Indicates if pack MSL discharge overcurrent status is valid."
+      - name: cell_overcurrent_discharge_msl__timestamp
+        description: "Timestamp of pack MSL discharge overcurrent trip."
+      - name: cell_overcurrent_discharge_msl__value
+        description: "Maximum Safety Limit (MSL) discharge overcurrent trip on cell level."
+      - name: cell_overcurrent_discharge_msl_error_1__has_value
+        description: "Indicates if MSL discharge overcurrent error on string 1 contains a value."
+      - name: cell_overcurrent_discharge_msl_error_1__is_valid
+        description: "Indicates if MSL discharge overcurrent error on string 1 is valid."
+      - name: cell_overcurrent_discharge_msl_error_1__timestamp
+        description: "Timestamp of MSL discharge overcurrent error on string 1."
+      - name: cell_overcurrent_discharge_msl_error_1__value
+        description: "Maximum Safety Limit (MSL) discharge overcurrent error on string 1."
+      - name: cell_overcurrent_discharge_msl_error_2__has_value
+        description: "Indicates if MSL discharge overcurrent error on string 2 contains a value."
+      - name: cell_overcurrent_discharge_msl_error_2__is_valid
+        description: "Indicates if MSL discharge overcurrent error on string 2 is valid."
+      - name: cell_overcurrent_discharge_msl_error_2__timestamp
+        description: "Timestamp of MSL discharge overcurrent error on string 2."
+      - name: cell_overcurrent_discharge_msl_error_2__value
+        description: "Maximum Safety Limit (MSL) discharge overcurrent error on string 2."
+      - name: cell_overcurrent_discharge_msl_error_3__has_value
+        description: "Indicates if MSL discharge overcurrent error on string 3 contains a value."
+      - name: cell_overcurrent_discharge_msl_error_3__is_valid
+        description: "Indicates if MSL discharge overcurrent error on string 3 is valid."
+      - name: cell_overcurrent_discharge_msl_error_3__timestamp
+        description: "Timestamp of MSL discharge overcurrent error on string 3."
+      - name: cell_overcurrent_discharge_msl_error_3__value
+        description: "Maximum Safety Limit (MSL) discharge overcurrent error on string 3."
+      - name: cell_overcurrent_discharge_rsl_warning_1__has_value
+        description: "Indicates if RSL discharge overcurrent warning on string 1 contains a value."
+      - name: cell_overcurrent_discharge_rsl_warning_1__is_valid
+        description: "Indicates if RSL discharge overcurrent warning on string 1 is valid."
+      - name: cell_overcurrent_discharge_rsl_warning_1__timestamp
+        description: "Timestamp of RSL discharge overcurrent warning on string 1."
+      - name: cell_overcurrent_discharge_rsl_warning_1__value
+        description: "Recommended Safety Limit (RSL) discharge overcurrent warning on string 1."
+      - name: cell_overcurrent_discharge_rsl_warning_2__has_value
+        description: "Indicates if RSL discharge overcurrent warning on string 2 contains a value."
+      - name: cell_overcurrent_discharge_rsl_warning_2__is_valid
+        description: "Indicates if RSL discharge overcurrent warning on string 2 is valid."
+      - name: cell_overcurrent_discharge_rsl_warning_2__timestamp
+        description: "Timestamp of RSL discharge overcurrent warning on string 2."
+      - name: cell_overcurrent_discharge_rsl_warning_2__value
+        description: "Recommended Safety Limit (RSL) discharge overcurrent warning on string 2."
+      - name: cell_overcurrent_discharge_rsl_warning_3__has_value
+        description: "Indicates if RSL discharge overcurrent warning on string 3 contains a value."
+      - name: cell_overcurrent_discharge_rsl_warning_3__is_valid
+        description: "Indicates if RSL discharge overcurrent warning on string 3 is valid."
+      - name: cell_overcurrent_discharge_rsl_warning_3__timestamp
+        description: "Timestamp of RSL discharge overcurrent warning on string 3."
+      - name: cell_overcurrent_discharge_rsl_warning_3__value
+        description: "Recommended Safety Limit (RSL) discharge overcurrent warning on string 3."
+      - name: cell_overvoltage_msl__has_value
+        description: "Indicates if cell overvoltage MSL state contains a value."
+      - name: cell_overvoltage_msl__is_valid
+        description: "Indicates if cell overvoltage MSL state is valid."
+      - name: cell_overvoltage_msl__timestamp
+        description: "Timestamp of cell overvoltage MSL error."
+      - name: cell_overvoltage_msl__value
+        description: "Cell overvoltage trip at Maximum Safety Limit (MSL)."
+      - name: cell_temperature_plausibility_error_1__has_value
+        description: "Indicates if temperature plausibility error on string 1 contains a value."
+      - name: cell_temperature_plausibility_error_1__is_valid
+        description: "Indicates if temperature plausibility error on string 1 is valid."
+      - name: cell_temperature_plausibility_error_1__timestamp
+        description: "Timestamp of cell temperature plausibility error on string 1."
+      - name: cell_temperature_plausibility_error_1__value
+        description: "Flag indicating an unrealistic or conflicting temperature sensor reading on string 1."
+      - name: cell_temperature_plausibility_error_2__has_value
+        description: "Indicates if temperature plausibility error on string 2 contains a value."
+      - name: cell_temperature_plausibility_error_2__is_valid
+        description: "Indicates if temperature plausibility error on string 2 is valid."
+      - name: cell_temperature_plausibility_error_2__timestamp
+        description: "Timestamp of cell temperature plausibility error on string 2."
+      - name: cell_temperature_plausibility_error_2__value
+        description: "Flag indicating an unrealistic or conflicting temperature sensor reading on string 2."
+      - name: cell_temperature_plausibility_error_3__has_value
+        description: "Indicates if temperature plausibility error on string 3 contains a value."
+      - name: cell_temperature_plausibility_error_3__is_valid
+        description: "Indicates if temperature plausibility error on string 3 is valid."
+      - name: cell_temperature_plausibility_error_3__timestamp
+        description: "Timestamp of cell temperature plausibility error on string 3."
+      - name: cell_temperature_plausibility_error_3__value
+        description: "Flag indicating an unrealistic or conflicting temperature sensor reading on string 3."
+      - name: cell_undervoltage_msl__has_value
+        description: "Indicates if cell undervoltage MSL state contains a value."
+      - name: cell_undervoltage_msl__is_valid
+        description: "Indicates if cell undervoltage MSL state is valid."
+      - name: cell_undervoltage_msl__timestamp
+        description: "Timestamp of cell undervoltage MSL error."
+      - name: cell_undervoltage_msl__value
+        description: "Cell undervoltage trip at Maximum Safety Limit (MSL)."
+      - name: cell_voltage_plausibility_error_1__has_value
+        description: "Indicates if cell voltage plausibility error on string 1 contains a value."
+      - name: cell_voltage_plausibility_error_1__is_valid
+        description: "Indicates if cell voltage plausibility error on string 1 is valid."
+      - name: cell_voltage_plausibility_error_1__timestamp
+        description: "Timestamp of cell voltage plausibility error on string 1."
+      - name: cell_voltage_plausibility_error_1__value
+        description: "Flag indicating an unrealistic or conflicting voltage sensor reading on string 1."
+      - name: cell_voltage_plausibility_error_2__has_value
+        description: "Indicates if cell voltage plausibility error on string 2 contains a value."
+      - name: cell_voltage_plausibility_error_2__is_valid
+        description: "Indicates if cell voltage plausibility error on string 2 is valid."
+      - name: cell_voltage_plausibility_error_2__timestamp
+        description: "Timestamp of cell voltage plausibility error on string 2."
+      - name: cell_voltage_plausibility_error_2__value
+        description: "Flag indicating an unrealistic or conflicting voltage sensor reading on string 2."
+      - name: cell_voltage_plausibility_error_3__has_value
+        description: "Indicates if cell voltage plausibility error on string 3 contains a value."
+      - name: cell_voltage_plausibility_error_3__is_valid
+        description: "Indicates if cell voltage plausibility error on string 3 is valid."
+      - name: cell_voltage_plausibility_error_3__timestamp
+        description: "Timestamp of cell voltage plausibility error on string 3."
+      - name: cell_voltage_plausibility_error_3__value
+        description: "Flag indicating an unrealistic or conflicting voltage sensor reading on string 3."
+      - name: charge_power__has_value
+        description: "Indicates if active charge power contains a value."
+      - name: charge_power__is_valid
+        description: "Indicates if active charge power is valid."
+      - name: charge_power__timestamp
+        description: "Source timestamp of charge power measurement."
+      - name: charge_power__value
+        description: "Active charging power entering the battery system (kW/W)."
+      - name: charging__has_value
+        description: "Indicates if charging status flag contains a value."
+      - name: charging__is_valid
+        description: "Indicates if charging status flag is valid."
+      - name: charging__timestamp
+        description: "Source timestamp of charging status flag."
+      - name: charging__value
+        description: "Flag indicating whether the battery storage is currently charging."
+      - name: clamp_30_c_error__has_value
+        description: "Indicates if Clamp 30C error status contains a value."
+      - name: clamp_30_c_error__is_valid
+        description: "Indicates if Clamp 30C error status is valid."
+      - name: clamp_30_c_error__timestamp
+        description: "Timestamp of Clamp 30C power line fault."
+      - name: clamp_30_c_error__value
+        description: "Fault indicator for Clamp 30C continuous power line connection."
+      - name: control_mode__has_value
+        description: "Indicates if active control mode status contains a value."
+      - name: control_mode__is_valid
+        description: "Indicates if active control mode status is valid."
+      - name: control_mode__timestamp
+        description: "Timestamp of control mode status update."
+      - name: control_mode__value
+        description: "Numeric identifier representing active controller operating mode."
+      - name: coulomb_counting_measurement_error_1__has_value
+        description: "Indicates if coulomb counting error on string 1 contains a value."
+      - name: coulomb_counting_measurement_error_1__is_valid
+        description: "Indicates if coulomb counting error on string 1 is valid."
+      - name: coulomb_counting_measurement_error_1__timestamp
+        description: "Timestamp of coulomb counting measurement error on string 1."
+      - name: coulomb_counting_measurement_error_1__value
+        description: "Error flag for current integration (SoC calculation) hardware on string 1."
+      - name: coulomb_counting_measurement_error_2__has_value
+        description: "Indicates if coulomb counting error on string 2 contains a value."
+      - name: coulomb_counting_measurement_error_2__is_valid
+        description: "Indicates if coulomb counting error on string 2 is valid."
+      - name: coulomb_counting_measurement_error_2__timestamp
+        description: "Timestamp of coulomb counting measurement error on string 2."
+      - name: coulomb_counting_measurement_error_2__value
+        description: "Error flag for current integration (SoC calculation) hardware on string 2."
+      - name: coulomb_counting_measurement_error_3__has_value
+        description: "Indicates if coulomb counting error on string 3 contains a value."
+      - name: coulomb_counting_measurement_error_3__is_valid
+        description: "Indicates if coulomb counting error on string 3 is valid."
+      - name: coulomb_counting_measurement_error_3__timestamp
+        description: "Timestamp of coulomb counting measurement error on string 3."
+      - name: coulomb_counting_measurement_error_3__value
+        description: "Error flag for current integration (SoC calculation) hardware on string 3."
+      - name: current_measurement_error__has_value
+        description: "Indicates if general current measurement error contains a value."
+      - name: current_measurement_error__is_valid
+        description: "Indicates if general current measurement error is valid."
+      - name: current_measurement_error__timestamp
+        description: "Timestamp of current measurement error."
+      - name: current_measurement_error__value
+        description: "General current sensor hardware failure flag."
+      - name: current_measurement_timeout__has_value
+        description: "Indicates if current measurement timeout state contains a value."
+      - name: current_measurement_timeout__is_valid
+        description: "Indicates if current measurement timeout state is valid."
+      - name: current_measurement_timeout__timestamp
+        description: "Timestamp of current measurement timeout."
+      - name: current_measurement_timeout__value
+        description: "Timeout flag when current sensor stops updating."
+      - name: current_on_open_string__has_value
+        description: "Indicates if current on open string error contains a value."
+      - name: current_on_open_string__is_valid
+        description: "Indicates if current on open string error is valid."
+      - name: current_on_open_string__timestamp
+        description: "Timestamp of current on open string fault."
+      - name: current_on_open_string__value
+        description: "Safety alarm triggered when current flow is detected on an open contactor string."
+      - name: current_sensor_power_meas_timeout__has_value
+        description: "Indicates if current sensor power measurement timeout contains a value."
+      - name: current_sensor_power_meas_timeout__is_valid
+        description: "Indicates if current sensor power measurement timeout is valid."
+      - name: current_sensor_power_meas_timeout__timestamp
+        description: "Timestamp of current sensor power timeout."
+      - name: current_sensor_power_meas_timeout__value
+        description: "Timeout flag for power calculation updates from current sensor."
+      - name: current_sensor_responding__has_value
+        description: "Indicates if current sensor response flag contains a value."
+      - name: current_sensor_responding__is_valid
+        description: "Indicates if current sensor response flag is valid."
+      - name: current_sensor_responding__timestamp
+        description: "Source timestamp of current sensor heartbeats."
+      - name: current_sensor_responding__value
+        description: "Health status indicating if primary current sensor is responding."
+      - name: current_sensor_v_1_meas_timeout__has_value
+        description: "Indicates if current sensor V1 timeout contains a value."
+      - name: current_sensor_v_1_meas_timeout__is_valid
+        description: "Indicates if current sensor V1 timeout is valid."
+      - name: current_sensor_v_1_meas_timeout__timestamp
+        description: "Timestamp of current sensor V1 timeout."
+      - name: current_sensor_v_1_meas_timeout__value
+        description: "Timeout flag for channel 1 voltage readings from current sensor."
+      - name: current_sensor_v_2_meas_timeout__has_value
+        description: "Indicates if current sensor V2 timeout contains a value."
+      - name: current_sensor_v_2_meas_timeout__is_valid
+        description: "Indicates if current sensor V2 timeout is valid."
+      - name: current_sensor_v_2_meas_timeout__timestamp
+        description: "Timestamp of current sensor V2 timeout."
+      - name: current_sensor_v_2_meas_timeout__value
+        description: "Timeout flag for channel 2 voltage readings from current sensor."
+      - name: current_sensor_v_3_meas_timeout__has_value
+        description: "Indicates if current sensor V3 timeout contains a value."
+      - name: current_sensor_v_3_meas_timeout__is_valid
+        description: "Indicates if current sensor V3 timeout is valid."
+      - name: current_sensor_v_3_meas_timeout__timestamp
+        description: "Timestamp of current sensor V3 timeout."
+      - name: current_sensor_v_3_meas_timeout__value
+        description: "Timeout flag for channel 3 voltage readings from current sensor."
+      - name: deep_discharge_detected__has_value
+        description: "Indicates if deep discharge detection status contains a value."
+      - name: deep_discharge_detected__is_valid
+        description: "Indicates if deep discharge detection status is valid."
+      - name: deep_discharge_detected__timestamp
+        description: "Timestamp of deep discharge detection."
+      - name: deep_discharge_detected__value
+        description: "Warning flag triggered when battery voltage drops below critical deep discharge threshold."
+      - name: deep_discharge_error_1__has_value
+        description: "Indicates if deep discharge error on string 1 contains a value."
+      - name: deep_discharge_error_1__is_valid
+        description: "Indicates if deep discharge error on string 1 is valid."
+      - name: deep_discharge_error_1__timestamp
+        description: "Timestamp of deep discharge error on string 1."
+      - name: deep_discharge_error_1__value
+        description: "Critical deep discharge lockout trip on string 1."
+      - name: deep_discharge_error_2__has_value
+        description: "Indicates if deep discharge error on string 2 contains a value."
+      - name: deep_discharge_error_2__is_valid
+        description: "Indicates if deep discharge error on string 2 is valid."
+      - name: deep_discharge_error_2__timestamp
+        description: "Timestamp of deep discharge error on string 2."
+      - name: deep_discharge_error_2__value
+        description: "Critical deep discharge lockout trip on string 2."
+      - name: deep_discharge_error_3__has_value
+        description: "Indicates if deep discharge error on string 3 contains a value."
+      - name: deep_discharge_error_3__is_valid
+        description: "Indicates if deep discharge error on string 3 is valid."
+      - name: deep_discharge_error_3__timestamp
+        description: "Timestamp of deep discharge error on string 3."
+      - name: deep_discharge_error_3__value
+        description: "Critical deep discharge lockout trip on string 3."
+      - name: dis_charging__has_value
+        description: "Indicates if discharging state status contains a value."
+      - name: dis_charging__is_valid
+        description: "Indicates if discharging state status is valid."
+      - name: dis_charging__timestamp
+        description: "Source timestamp of discharging state."
+      - name: dis_charging__value
+        description: "Flag indicating whether the battery storage is currently discharging."
+      - name: energy_1__has_value
+        description: "Indicates if string 1 energy measurement contains a value."
+      - name: energy_1__is_valid
+        description: "Indicates if string 1 energy measurement is valid."
+      - name: energy_1__timestamp
+        description: "Timestamp of string 1 energy measurement."
+      - name: energy_1__value
+        description: "Stored energy content in battery string 1 (kWh)."
+      - name: energy_2__has_value
+        description: "Indicates if string 2 energy measurement contains a value."
+      - name: energy_2__is_valid
+        description: "Indicates if string 2 energy measurement is valid."
+      - name: energy_2__timestamp
+        description: "Timestamp of string 2 energy measurement."
+      - name: energy_2__value
+        description: "Stored energy content in battery string 2 (kWh)."
+      - name: energy_3__has_value
+        description: "Indicates if string 3 energy measurement contains a value."
+      - name: energy_3__is_valid
+        description: "Indicates if string 3 energy measurement is valid."
+      - name: energy_3__timestamp
+        description: "Timestamp of string 3 energy measurement."
+      - name: energy_3__value
+        description: "Stored energy content in battery string 3 (kWh)."
+      - name: energy__has_value
+        description: "Indicates if total energy measurement contains a value."
+      - name: energy__is_valid
+        description: "Indicates if total energy measurement is valid."
+      - name: energy__timestamp
+        description: "Timestamp of total energy measurement."
+      - name: energy__value
+        description: "Total remaining energy content in battery pack (kWh)."
+      - name: energy_counter_1__has_value
+        description: "Indicates if lifetime energy counter 1 contains a value."
+      - name: energy_counter_1__is_valid
+        description: "Indicates if lifetime energy counter 1 is valid."
+      - name: energy_counter_1__timestamp
+        description: "Timestamp of energy counter 1 reading."
+      - name: energy_counter_1__value
+        description: "Cumulative energy throughput counter 1 (Wh/kWh)."
+      - name: energy_counter_2__has_value
+        description: "Indicates if lifetime energy counter 2 contains a value."
+      - name: energy_counter_2__is_valid
+        description: "Indicates if lifetime energy counter 2 is valid."
+      - name: energy_counter_2__timestamp
+        description: "Timestamp of energy counter 2 reading."
+      - name: energy_counter_2__value
+        description: "Cumulative energy throughput counter 2 (Wh/kWh)."
+      - name: energy_counter_3__has_value
+        description: "Indicates if lifetime energy counter 3 contains a value."
+      - name: energy_counter_3__is_valid
+        description: "Indicates if lifetime energy counter 3 is valid."
+      - name: energy_counter_3__timestamp
+        description: "Timestamp of energy counter 3 reading."
+      - name: energy_counter_3__value
+        description: "Cumulative energy throughput counter 3 (Wh/kWh)."
+      - name: energy_counting_measurement_error_1__has_value
+        description: "Indicates if energy calculation error on string 1 contains a value."
+      - name: energy_counting_measurement_error_1__is_valid
+        description: "Indicates if energy calculation error on string 1 is valid."
+      - name: energy_counting_measurement_error_1__timestamp
+        description: "Timestamp of energy counting error on string 1."
+      - name: energy_counting_measurement_error_1__value
+        description: "Measurement error flag during energy aggregation on string 1."
+      - name: energy_counting_measurement_error_2__has_value
+        description: "Indicates if energy calculation error on string 2 contains a value."
+      - name: energy_counting_measurement_error_2__is_valid
+        description: "Indicates if energy calculation error on string 2 is valid."
+      - name: energy_counting_measurement_error_2__timestamp
+        description: "Timestamp of energy counting error on string 2."
+      - name: energy_counting_measurement_error_2__value
+        description: "Measurement error flag during energy aggregation on string 2."
+      - name: energy_counting_measurement_error_3__has_value
+        description: "Indicates if energy calculation error on string 3 contains a value."
+      - name: energy_counting_measurement_error_3__is_valid
+        description: "Indicates if energy calculation error on string 3 is valid."
+      - name: energy_counting_measurement_error_3__timestamp
+        description: "Timestamp of energy counting error on string 3."
+      - name: energy_counting_measurement_error_3__value
+        description: "Measurement error flag during energy aggregation on string 3."
+      - name: error__has_value
+        description: "Indicates if general system error status contains a value."
+      - name: error__is_valid
+        description: "Indicates if general system error status is valid."
+      - name: error__timestamp
+        description: "Timestamp of master error flag update."
+      - name: error__value
+        description: "Master boolean error flag for the energy storage unit."
+      - name: error_bms__has_value
+        description: "Indicates if BMS master error status contains a value."
+      - name: error_bms__is_valid
+        description: "Indicates if BMS master error status is valid."
+      - name: error_bms__timestamp
+        description: "Timestamp of BMS master error update."
+      - name: error_bms__value
+        description: "Master error flag reported by Battery Management System."
+      - name: error_dc_dc__has_value
+        description: "Indicates if DC/DC converter error status contains a value."
+      - name: error_dc_dc__is_valid
+        description: "Indicates if DC/DC converter error status is valid."
+      - name: error_dc_dc__timestamp
+        description: "Timestamp of DC/DC converter error update."
+      - name: error_dc_dc__value
+        description: "Fault indicator for DC/DC converter module."
+      - name: exception_2__has_value
+        description: "Indicates if system exception code 2 status contains a value."
+      - name: exception_2__is_valid
+        description: "Indicates if system exception code 2 status is valid."
+      - name: exception_2__timestamp
+        description: "Timestamp of exception 2 occurrence."
+      - name: exception_2__value
+        description: "Custom diagnostic exception flag 2."
+      - name: exception_3__has_value
+        description: "Indicates if system exception code 3 status contains a value."
+      - name: exception_3__is_valid
+        description: "Indicates if system exception code 3 status is valid."
+      - name: exception_3__timestamp
+        description: "Timestamp of exception 3 occurrence."
+      - name: exception_3__value
+        description: "Custom diagnostic exception flag 3."
+      - name: exception_4__has_value
+        description: "Indicates if system exception code 4 status contains a value."
+      - name: exception_4__is_valid
+        description: "Indicates if system exception code 4 status is valid."
+      - name: exception_4__timestamp
+        description: "Timestamp of exception 4 occurrence."
+      - name: exception_4__value
+        description: "Custom diagnostic exception flag 4."
+      - name: exception_5__has_value
+        description: "Indicates if system exception code 5 status contains a value."
+      - name: exception_5__is_valid
+        description: "Indicates if system exception code 5 status is valid."
+      - name: exception_5__timestamp
+        description: "Timestamp of exception 5 occurrence."
+      - name: exception_5__value
+        description: "Custom diagnostic exception flag 5."
+      - name: flash_checksum__has_value
+        description: "Indicates if flash memory checksum status contains a value."
+      - name: flash_checksum__is_valid
+        description: "Indicates if flash memory checksum status is valid."
+      - name: flash_checksum__timestamp
+        description: "Timestamp of flash checksum verification."
+      - name: flash_checksum__value
+        description: "Integrity check flag for controller firmware flash memory."
+      - name: fuse_error_1__has_value
+        description: "Indicates if fuse status on string 1 contains a value."
+      - name: fuse_error_1__is_valid
+        description: "Indicates if fuse status on string 1 is valid."
+      - name: fuse_error_1__timestamp
+        description: "Timestamp of string 1 fuse state change."
+      - name: fuse_error_1__value
+        description: "Blown fuse detection flag on battery string 1."
+      - name: fuse_error_2__has_value
+        description: "Indicates if fuse status on string 2 contains a value."
+      - name: fuse_error_2__is_valid
+        description: "Indicates if fuse status on string 2 is valid."
+      - name: fuse_error_2__timestamp
+        description: "Timestamp of string 2 fuse state change."
+      - name: fuse_error_2__value
+        description: "Blown fuse detection flag on battery string 2."
+      - name: fuse_error_3__has_value
+        description: "Indicates if fuse status on string 3 contains a value."
+      - name: fuse_error_3__is_valid
+        description: "Indicates if fuse status on string 3 is valid."
+      - name: fuse_error_3__timestamp
+        description: "Timestamp of string 3 fuse state change."
+      - name: fuse_error_3__value
+        description: "Blown fuse detection flag on battery string 3."
+      - name: fused_string_voltage_measurement_error_1__has_value
+        description: "Indicates if fused voltage sensor error on string 1 contains a value."
+      - name: fused_string_voltage_measurement_error_1__is_valid
+        description: "Indicates if fused voltage sensor error on string 1 is valid."
+      - name: fused_string_voltage_measurement_error_1__timestamp
+        description: "Timestamp of fused string voltage measurement error on string 1."
+      - name: fused_string_voltage_measurement_error_1__value
+        description: "Error reading string voltage post-fuse on string 1."
+      - name: fused_string_voltage_measurement_error_2__has_value
+        description: "Indicates if fused voltage sensor error on string 2 contains a value."
+      - name: fused_string_voltage_measurement_error_2__is_valid
+        description: "Indicates if fused voltage sensor error on string 2 is valid."
+      - name: fused_string_voltage_measurement_error_2__timestamp
+        description: "Timestamp of fused string voltage measurement error on string 2."
+      - name: fused_string_voltage_measurement_error_2__value
+        description: "Error reading string voltage post-fuse on string 2."
+      - name: fused_string_voltage_measurement_error_3__has_value
+        description: "Indicates if fused voltage sensor error on string 3 contains a value."
+      - name: fused_string_voltage_measurement_error_3__is_valid
+        description: "Indicates if fused voltage sensor error on string 3 is valid."
+      - name: fused_string_voltage_measurement_error_3__timestamp
+        description: "Timestamp of fused string voltage measurement error on string 3."
+      - name: fused_string_voltage_measurement_error_3__value
+        description: "Error reading string voltage post-fuse on string 3."
+      - name: interlock_feedback__has_value
+        description: "Indicates if safety interlock feedback status contains a value."
+      - name: interlock_feedback__is_valid
+        description: "Indicates if safety interlock feedback status is valid."
+      - name: interlock_feedback__timestamp
+        description: "Timestamp of safety interlock state update."
+      - name: interlock_feedback__value
+        description: "Physical high-voltage safety interlock loop circuit state."
+      - name: is_balancing_active_1__has_value
+        description: "Indicates if cell balancing activity state on string 1 contains a value."
+      - name: is_balancing_active_1__is_valid
+        description: "Indicates if cell balancing activity state on string 1 is valid."
+      - name: is_balancing_active_1__timestamp
+        description: "Timestamp of balancing state on string 1."
+      - name: is_balancing_active_1__value
+        description: "Boolean flag indicating active cell balancing on string 1."
+      - name: is_balancing_active_2__has_value
+        description: "Indicates if cell balancing activity state on string 2 contains a value."
+      - name: is_balancing_active_2__is_valid
+        description: "Indicates if cell balancing activity state on string 2 is valid."
+      - name: is_balancing_active_2__timestamp
+        description: "Timestamp of balancing state on string 2."
+      - name: is_balancing_active_2__value
+        description: "Boolean flag indicating active cell balancing on string 2."
+      - name: is_balancing_active_3__has_value
+        description: "Indicates if cell balancing activity state on string 3 contains a value."
+      - name: is_balancing_active_3__is_valid
+        description: "Indicates if cell balancing activity state on string 3 is valid."
+      - name: is_balancing_active_3__timestamp
+        description: "Timestamp of balancing state on string 3."
+      - name: is_balancing_active_3__value
+        description: "Boolean flag indicating active cell balancing on string 3."
+      - name: load_power__has_value
+        description: "Indicates if load power demand status contains a value."
+      - name: load_power__is_valid
+        description: "Indicates if load power demand status is valid."
+      - name: load_power__timestamp
+        description: "Timestamp of load power measurement."
+      - name: load_power__value
+        description: "Active power consumption requested by consumers/loads (kW)."
+      - name: local__has_value
+        description: "Indicates if local control mode selection contains a value."
+      - name: local__is_valid
+        description: "Indicates if local control mode selection is valid."
+      - name: local__timestamp
+        description: "Timestamp of local mode status update."
+      - name: local__value
+        description: "Flag indicating whether system is under local manual control."
+      - name: lower_current_limit__has_value
+        description: "Indicates if lower current threshold contains a value."
+      - name: lower_current_limit__is_valid
+        description: "Indicates if lower current threshold is valid."
+      - name: lower_current_limit__timestamp
+        description: "Timestamp of lower current threshold update."
+      - name: lower_current_limit__value
+        description: "Maximum allowable discharge current safety limit (A)."
+      - name: manual_mode__has_value
+        description: "Indicates if manual operation override status contains a value."
+      - name: manual_mode__is_valid
+        description: "Indicates if manual operation override status is valid."
+      - name: manual_mode__timestamp
+        description: "Timestamp of manual mode selection."
+      - name: manual_mode__value
+        description: "Flag indicating manual control override is engaged."
+      - name: maximum_battery_voltage__has_value
+        description: "Indicates if maximum battery voltage safety limit contains a value."
+      - name: maximum_battery_voltage__is_valid
+        description: "Indicates if maximum battery voltage safety limit is valid."
+      - name: maximum_battery_voltage__timestamp
+        description: "Timestamp of maximum voltage threshold reading."
+      - name: maximum_battery_voltage__value
+        description: "Upper voltage cutoff threshold for battery pack (V)."
+      - name: maximum_cell_temperature__has_value
+        description: "Indicates if maximum cell temperature contains a value."
+      - name: maximum_cell_temperature__is_valid
+        description: "Indicates if maximum cell temperature is valid."
+      - name: maximum_cell_temperature__timestamp
+        description: "Timestamp of highest cell temperature reading."
+      - name: maximum_cell_temperature__value
+        description: "Highest cell temperature currently measured across all strings (°C)."
+      - name: maximum_cell_voltage__has_value
+        description: "Indicates if maximum cell voltage contains a value."
+      - name: maximum_cell_voltage__is_valid
+        description: "Indicates if maximum cell voltage is valid."
+      - name: maximum_cell_voltage__timestamp
+        description: "Timestamp of highest cell voltage reading."
+      - name: maximum_cell_voltage__value
+        description: "Highest single cell voltage reading across the pack (mV or V)."
+      - name: maximum_charge_current__has_value
+        description: "Indicates if max allowable charge current limit contains a value."
+      - name: maximum_charge_current__is_valid
+        description: "Indicates if max allowable charge current limit is valid."
+      - name: maximum_charge_current__timestamp
+        description: "Timestamp of max charge current limit update."
+      - name: maximum_charge_current__value
+        description: "BMS dynamic maximum charge current limit (A)."
+      - name: maximum_charge_power__has_value
+        description: "Indicates if max allowable charge power limit contains a value."
+      - name: maximum_charge_power__is_valid
+        description: "Indicates if max allowable charge power limit is valid."
+      - name: maximum_charge_power__timestamp
+        description: "Timestamp of max charge power limit update."
+      - name: maximum_charge_power__value
+        description: "BMS dynamic maximum charge power limit (kW)."
+      - name: maximum_discharge_current__has_value
+        description: "Indicates if max allowable discharge current limit contains a value."
+      - name: maximum_discharge_current__is_valid
+        description: "Indicates if max allowable discharge current limit is valid."
+      - name: maximum_discharge_current__timestamp
+        description: "Timestamp of max discharge current limit update."
+      - name: maximum_discharge_current__value
+        description: "BMS dynamic maximum discharge current limit (A)."
+      - name: maximum_discharge_power__has_value
+        description: "Indicates if max allowable discharge power limit contains a value."
+      - name: maximum_discharge_power__is_valid
+        description: "Indicates if max allowable discharge power limit is valid."
+      - name: maximum_discharge_power__timestamp
+        description: "Timestamp of max discharge power limit update."
+      - name: maximum_discharge_power__value
+        description: "BMS dynamic maximum discharge power limit (kW)."
+      - name: maximum_power__has_value
+        description: "Indicates if peak system power rating contains a value."
+      - name: maximum_power__is_valid
+        description: "Indicates if peak system power rating is valid."
+      - name: maximum_power__timestamp
+        description: "Timestamp of max power rating reading."
+      - name: maximum_power__value
+        description: "Maximum allowable system power output/input limit (kW)."
+      - name: maximum_soc_1__has_value
+        description: "Indicates if maximum State of Charge threshold for string 1 contains a value."
+      - name: maximum_soc_1__is_valid
+        description: "Indicates if maximum State of Charge threshold for string 1 is valid."
+      - name: maximum_soc_1__timestamp
+        description: "Timestamp of max SoC threshold for string 1."
+      - name: maximum_soc_1__value
+        description: "Upper State of Charge limit for string 1 (%)."
+      - name: maximum_soc_2__has_value
+        description: "Indicates if maximum State of Charge threshold for string 2 contains a value."
+      - name: maximum_soc_2__is_valid
+        description: "Indicates if maximum State of Charge threshold for string 2 is valid."
+      - name: maximum_soc_2__timestamp
+        description: "Timestamp of max SoC threshold for string 2."
+      - name: maximum_soc_2__value
+        description: "Upper State of Charge limit for string 2 (%)."
+      - name: maximum_soc_3__has_value
+        description: "Indicates if maximum State of Charge threshold for string 3 contains a value."
+      - name: maximum_soc_3__is_valid
+        description: "Indicates if maximum State of Charge threshold for string 3 is valid."
+      - name: maximum_soc_3__timestamp
+        description: "Timestamp of max SoC threshold for string 3."
+      - name: maximum_soc_3__value
+        description: "Upper State of Charge limit for string 3 (%)."
+      - name: maximum_soc__has_value
+        description: "Indicates if pack maximum State of Charge threshold contains a value."
+      - name: maximum_soc__is_valid
+        description: "Indicates if pack maximum State of Charge threshold is valid."
+      - name: maximum_soc__timestamp
+        description: "Timestamp of pack max SoC threshold."
+      - name: maximum_soc__value
+        description: "Upper State of Charge limit for overall battery pack (%)."
+      - name: maximum_soe_1__has_value
+        description: "Indicates if State of Energy upper bound for string 1 contains a value."
+      - name: maximum_soe_1__is_valid
+        description: "Indicates if State of Energy upper bound for string 1 is valid."
+      - name: maximum_soe_1__timestamp
+        description: "Timestamp of max SoE for string 1."
+      - name: maximum_soe_1__value
+        description: "State of Energy upper bound on string 1 (%)."
+      - name: maximum_soe_2__has_value
+        description: "Indicates if State of Energy upper bound for string 2 contains a value."
+      - name: maximum_soe_2__is_valid
+        description: "Indicates if State of Energy upper bound for string 2 is valid."
+      - name: maximum_soe_2__timestamp
+        description: "Timestamp of max SoE for string 2."
+      - name: maximum_soe_2__value
+        description: "State of Energy upper bound on string 2 (%)."
+      - name: maximum_soe_3__has_value
+        description: "Indicates if State of Energy upper bound for string 3 contains a value."
+      - name: maximum_soe_3__is_valid
+        description: "Indicates if State of Energy upper bound for string 3 is valid."
+      - name: maximum_soe_3__timestamp
+        description: "Timestamp of max SoE for string 3."
+      - name: maximum_soe_3__value
+        description: "State of Energy upper bound on string 3 (%)."
+      - name: maximum_soe__has_value
+        description: "Indicates if pack State of Energy upper bound contains a value."
+      - name: maximum_soe__is_valid
+        description: "Indicates if pack State of Energy upper bound is valid."
+      - name: maximum_soe__timestamp
+        description: "Timestamp of pack max SoE."
+      - name: maximum_soe__value
+        description: "State of Energy upper bound for overall battery pack (%)."
+      - name: minimum_battery_voltage__has_value
+        description: "Indicates if minimum battery cutoff voltage contains a value."
+      - name: minimum_battery_voltage__is_valid
+        description: "Indicates if minimum battery cutoff voltage is valid."
+      - name: minimum_battery_voltage__timestamp
+        description: "Timestamp of min battery voltage reading."
+      - name: minimum_battery_voltage__value
+        description: "Lower discharge cutoff voltage threshold for battery pack (V)."
+      - name: minimum_cell_temperature__has_value
+        description: "Indicates if lowest cell temperature contains a value."
+      - name: minimum_cell_temperature__is_valid
+        description: "Indicates if lowest cell temperature is valid."
+      - name: minimum_cell_temperature__timestamp
+        description: "Timestamp of lowest cell temperature reading."
+      - name: minimum_cell_temperature__value
+        description: "Lowest cell temperature currently measured across all strings (°C)."
+      - name: minimum_cell_voltage__has_value
+        description: "Indicates if lowest cell voltage contains a value."
+      - name: minimum_cell_voltage__is_valid
+        description: "Indicates if lowest cell voltage is valid."
+      - name: minimum_cell_voltage__timestamp
+        description: "Timestamp of lowest cell voltage reading."
+      - name: minimum_cell_voltage__value
+        description: "Lowest single cell voltage reading across the pack (mV or V)."
+      - name: minimum_soc_1__has_value
+        description: "Indicates if minimum State of Charge limit for string 1 contains a value."
+      - name: minimum_soc_1__is_valid
+        description: "Indicates if minimum State of Charge limit for string 1 is valid."
+      - name: minimum_soc_1__timestamp
+        description: "Timestamp of min SoC limit for string 1."
+      - name: minimum_soc_1__value
+        description: "Lower discharge State of Charge limit for string 1 (%)."
+      - name: minimum_soc_2__has_value
+        description: "Indicates if minimum State of Charge limit for string 2 contains a value."
+      - name: minimum_soc_2__is_valid
+        description: "Indicates if minimum State of Charge limit for string 2 is valid."
+      - name: minimum_soc_2__timestamp
+        description: "Timestamp of min SoC limit for string 2."
+      - name: minimum_soc_2__value
+        description: "Lower discharge State of Charge limit for string 2 (%)."
+      - name: minimum_soc_3__has_value
+        description: "Indicates if minimum State of Charge limit for string 3 contains a value."
+      - name: minimum_soc_3__is_valid
+        description: "Indicates if minimum State of Charge limit for string 3 is valid."
+      - name: minimum_soc_3__timestamp
+        description: "Timestamp of min SoC limit for string 3."
+      - name: minimum_soc_3__value
+        description: "Lower discharge State of Charge limit for string 3 (%)."
+      - name: minimum_soc__has_value
+        description: "Indicates if pack minimum State of Charge limit contains a value."
+      - name: minimum_soc__is_valid
+        description: "Indicates if pack minimum State of Charge limit is valid."
+      - name: minimum_soc__timestamp
+        description: "Timestamp of pack min SoC limit."
+      - name: minimum_soc__value
+        description: "Lower discharge State of Charge limit for overall battery pack (%)."
+      - name: minimum_soe_1__has_value
+        description: "Indicates if State of Energy lower bound for string 1 contains a value."
+      - name: minimum_soe_1__is_valid
+        description: "Indicates if State of Energy lower bound for string 1 is valid."
+      - name: minimum_soe_1__timestamp
+        description: "Timestamp of min SoE for string 1."
+      - name: minimum_soe_1__value
+        description: "State of Energy lower bound on string 1 (%)."
+      - name: minimum_soe_2__has_value
+        description: "Indicates if State of Energy lower bound for string 2 contains a value."
+      - name: minimum_soe_2__is_valid
+        description: "Indicates if State of Energy lower bound for string 2 is valid."
+      - name: minimum_soe_2__timestamp
+        description: "Timestamp of min SoE for string 2."
+      - name: minimum_soe_2__value
+        description: "State of Energy lower bound on string 2 (%)."
+      - name: minimum_soe_3__has_value
+        description: "Indicates if State of Energy lower bound for string 3 contains a value."
+      - name: minimum_soe_3__is_valid
+        description: "Indicates if State of Energy lower bound for string 3 is valid."
+      - name: minimum_soe_3__timestamp
+        description: "Timestamp of min SoE for string 3."
+      - name: minimum_soe_3__value
+        description: "State of Energy lower bound on string 3 (%)."
+      - name: minimum_soe__has_value
+        description: "Indicates if pack State of Energy lower bound contains a value."
+      - name: minimum_soe__is_valid
+        description: "Indicates if pack State of Energy lower bound is valid."
+      - name: minimum_soe__timestamp
+        description: "Timestamp of pack min SoE."
+      - name: minimum_soe__value
+        description: "State of Energy lower bound for overall battery pack (%)."
+      - name: negative_contactor_error_1__has_value
+        description: "Indicates if negative contactor fault on string 1 contains a value."
+      - name: negative_contactor_error_1__is_valid
+        description: "Indicates if negative contactor fault on string 1 is valid."
+      - name: negative_contactor_error_1__timestamp
+        description: "Timestamp of negative contactor fault on string 1."
+      - name: negative_contactor_error_1__value
+        description: "Error flag for negative DC main contactor on string 1."
+      - name: negative_contactor_error_2__has_value
+        description: "Indicates if negative contactor fault on string 2 contains a value."
+      - name: negative_contactor_error_2__is_valid
+        description: "Indicates if negative contactor fault on string 2 is valid."
+      - name: negative_contactor_error_2__timestamp
+        description: "Timestamp of negative contactor fault on string 2."
+      - name: negative_contactor_error_2__value
+        description: "Error flag for negative DC main contactor on string 2."
+      - name: negative_contactor_error_3__has_value
+        description: "Indicates if negative contactor fault on string 3 contains a value."
+      - name: negative_contactor_error_3__is_valid
+        description: "Indicates if negative contactor fault on string 3 is valid."
+      - name: negative_contactor_error_3__timestamp
+        description: "Timestamp of negative contactor fault on string 3."
+      - name: negative_contactor_error_3__value
+        description: "Error flag for negative DC main contactor on string 3."
+      - name: number_of_connected_strings__has_value
+        description: "Indicates if count of connected strings contains a value."
+      - name: number_of_connected_strings__is_valid
+        description: "Indicates if count of connected strings is valid."
+      - name: number_of_connected_strings__timestamp
+        description: "Timestamp of connected strings count update."
+      - name: number_of_connected_strings__value
+        description: "Number of battery strings actively closed and connected to DC bus."
+      - name: over_temp_charge_msl__has_value
+        description: "Indicates if charging overtemperature MSL state contains a value."
+      - name: over_temp_charge_msl__is_valid
+        description: "Indicates if charging overtemperature MSL state is valid."
+      - name: over_temp_charge_msl__timestamp
+        description: "Timestamp of charging overtemperature trip."
+      - name: over_temp_charge_msl__value
+        description: "Overtemperature trip during charging at Maximum Safety Limit."
+      - name: over_temp_discharge_msl__has_value
+        description: "Indicates if discharging overtemperature MSL state contains a value."
+      - name: over_temp_discharge_msl__is_valid
+        description: "Indicates if discharging overtemperature MSL state is valid."
+      - name: over_temp_discharge_msl__timestamp
+        description: "Timestamp of discharging overtemperature trip."
+      - name: over_temp_discharge_msl__value
+        description: "Overtemperature trip during discharging at Maximum Safety Limit."
+      - name: overtemperature_charge_mol_warning_1__has_value
+        description: "Indicates if MOL charge overtemperature warning on string 1 contains a value."
+      - name: overtemperature_charge_mol_warning_1__is_valid
+        description: "Indicates if MOL charge overtemperature warning on string 1 is valid."
+      - name: overtemperature_charge_mol_warning_1__timestamp
+        description: "Timestamp of MOL charge overtemperature warning on string 1."
+      - name: overtemperature_charge_mol_warning_1__value
+        description: "MOL charge overtemperature warning on string 1."
+      - name: overtemperature_charge_mol_warning_2__has_value
+        description: "Indicates if MOL charge overtemperature warning on string 2 contains a value."
+      - name: overtemperature_charge_mol_warning_2__is_valid
+        description: "Indicates if MOL charge overtemperature warning on string 2 is valid."
+      - name: overtemperature_charge_mol_warning_2__timestamp
+        description: "Timestamp of MOL charge overtemperature warning on string 2."
+      - name: overtemperature_charge_mol_warning_2__value
+        description: "MOL charge overtemperature warning on string 2."
+      - name: overtemperature_charge_mol_warning_3__has_value
+        description: "Indicates if MOL charge overtemperature warning on string 3 contains a value."
+      - name: overtemperature_charge_mol_warning_3__is_valid
+        description: "Indicates if MOL charge overtemperature warning on string 3 is valid."
+      - name: overtemperature_charge_mol_warning_3__timestamp
+        description: "Timestamp of MOL charge overtemperature warning on string 3."
+      - name: overtemperature_charge_mol_warning_3__value
+        description: "MOL charge overtemperature warning on string 3."
+      - name: overtemperature_charge_msl_error_1__has_value
+        description: "Indicates if MSL charge overtemperature error on string 1 contains a value."
+      - name: overtemperature_charge_msl_error_1__is_valid
+        description: "Indicates if MSL charge overtemperature error on string 1 is valid."
+      - name: overtemperature_charge_msl_error_1__timestamp
+        description: "Timestamp of MSL charge overtemperature error on string 1."
+      - name: overtemperature_charge_msl_error_1__value
+        description: "MSL charge overtemperature error trip on string 1."
+      - name: overtemperature_charge_msl_error_2__has_value
+        description: "Indicates if MSL charge overtemperature error on string 2 contains a value."
+      - name: overtemperature_charge_msl_error_2__is_valid
+        description: "Indicates if MSL charge overtemperature error on string 2 is valid."
+      - name: overtemperature_charge_msl_error_2__timestamp
+        description: "Timestamp of MSL charge overtemperature error on string 2."
+      - name: overtemperature_charge_msl_error_2__value
+        description: "MSL charge overtemperature error trip on string 2."
+      - name: overtemperature_charge_msl_error_3__has_value
+        description: "Indicates if MSL charge overtemperature error on string 3 contains a value."
+      - name: overtemperature_charge_msl_error_3__is_valid
+        description: "Indicates if MSL charge overtemperature error on string 3 is valid."
+      - name: overtemperature_charge_msl_error_3__timestamp
+        description: "Timestamp of MSL charge overtemperature error on string 3."
+      - name: overtemperature_charge_msl_error_3__value
+        description: "MSL charge overtemperature error trip on string 3."
+      - name: overtemperature_charge_rsl_warning_1__has_value
+        description: "Indicates if RSL charge overtemperature warning on string 1 contains a value."
+      - name: overtemperature_charge_rsl_warning_1__is_valid
+        description: "Indicates if RSL charge overtemperature warning on string 1 is valid."
+      - name: overtemperature_charge_rsl_warning_1__timestamp
+        description: "Timestamp of RSL charge overtemperature warning on string 1."
+      - name: overtemperature_charge_rsl_warning_1__value
+        description: "RSL charge overtemperature warning on string 1."
+      - name: overtemperature_charge_rsl_warning_2__has_value
+        description: "Indicates if RSL charge overtemperature warning on string 2 contains a value."
+      - name: overtemperature_charge_rsl_warning_2__is_valid
+        description: "Indicates if RSL charge overtemperature warning on string 2 is valid."
+      - name: overtemperature_charge_rsl_warning_2__timestamp
+        description: "Timestamp of RSL charge overtemperature warning on string 2."
+      - name: overtemperature_charge_rsl_warning_2__value
+        description: "RSL charge overtemperature warning on string 2."
+      - name: overtemperature_charge_rsl_warning_3__has_value
+        description: "Indicates if RSL charge overtemperature warning on string 3 contains a value."
+      - name: overtemperature_charge_rsl_warning_3__is_valid
+        description: "Indicates if RSL charge overtemperature warning on string 3 is valid."
+      - name: overtemperature_charge_rsl_warning_3__timestamp
+        description: "Timestamp of RSL charge overtemperature warning on string 3."
+      - name: overtemperature_charge_rsl_warning_3__value
+        description: "RSL charge overtemperature warning on string 3."
+      - name: overtemperature_discharge_mol_warning_1__has_value
+        description: "Indicates if MOL discharge overtemperature warning on string 1 contains a value."
+      - name: overtemperature_discharge_mol_warning_1__is_valid
+        description: "Indicates if MOL discharge overtemperature warning on string 1 is valid."
+      - name: overtemperature_discharge_mol_warning_1__timestamp
+        description: "Timestamp of MOL discharge overtemperature warning on string 1."
+      - name: overtemperature_discharge_mol_warning_1__value
+        description: "MOL discharge overtemperature warning on string 1."
+      - name: overtemperature_discharge_mol_warning_2__has_value
+        description: "Indicates if MOL discharge overtemperature warning on string 2 contains a value."
+      - name: overtemperature_discharge_mol_warning_2__is_valid
+        description: "Indicates if MOL discharge overtemperature warning on string 2 is valid."
+      - name: overtemperature_discharge_mol_warning_2__timestamp
+        description: "Timestamp of MOL discharge overtemperature warning on string 2."
+      - name: overtemperature_discharge_mol_warning_2__value
+        description: "MOL discharge overtemperature warning on string 2."
+      - name: overtemperature_discharge_mol_warning_3__has_value
+        description: "Indicates if MOL discharge overtemperature warning on string 3 contains a value."
+      - name: overtemperature_discharge_mol_warning_3__is_valid
+        description: "Indicates if MOL discharge overtemperature warning on string 3 is valid."
+      - name: overtemperature_discharge_mol_warning_3__timestamp
+        description: "Timestamp of MOL discharge overtemperature warning on string 3."
+      - name: overtemperature_discharge_mol_warning_3__value
+        description: "MOL discharge overtemperature warning on string 3."
+      - name: overtemperature_discharge_msl_error_1__has_value
+        description: "Indicates if MSL discharge overtemperature error on string 1 contains a value."
+      - name: overtemperature_discharge_msl_error_1__is_valid
+        description: "Indicates if MSL discharge overtemperature error on string 1 is valid."
+      - name: overtemperature_discharge_msl_error_1__timestamp
+        description: "Timestamp of MSL discharge overtemperature error on string 1."
+      - name: overtemperature_discharge_msl_error_1__value
+        description: "MSL discharge overtemperature error trip on string 1."
+      - name: overtemperature_discharge_msl_error_2__has_value
+        description: "Indicates if MSL discharge overtemperature error on string 2 contains a value."
+      - name: overtemperature_discharge_msl_error_2__is_valid
+        description: "Indicates if MSL discharge overtemperature error on string 2 is valid."
+      - name: overtemperature_discharge_msl_error_2__timestamp
+        description: "Timestamp of MSL discharge overtemperature error on string 2."
+      - name: overtemperature_discharge_msl_error_2__value
+        description: "MSL discharge overtemperature error trip on string 2."
+      - name: overtemperature_discharge_msl_error_3__has_value
+        description: "Indicates if MSL discharge overtemperature error on string 3 contains a value."
+      - name: overtemperature_discharge_msl_error_3__is_valid
+        description: "Indicates if MSL discharge overtemperature error on string 3 is valid."
+      - name: overtemperature_discharge_msl_error_3__timestamp
+        description: "Timestamp of MSL discharge overtemperature error on string 3."
+      - name: overtemperature_discharge_msl_error_3__value
+        description: "MSL discharge overtemperature error trip on string 3."
+      - name: overtemperature_discharge_rsl_warning_1__has_value
+        description: "Indicates if RSL discharge overtemperature warning on string 1 contains a value."
+      - name: overtemperature_discharge_rsl_warning_1__is_valid
+        description: "Indicates if RSL discharge overtemperature warning on string 1 is valid."
+      - name: overtemperature_discharge_rsl_warning_1__timestamp
+        description: "Timestamp of RSL discharge overtemperature warning on string 1."
+      - name: overtemperature_discharge_rsl_warning_1__value
+        description: "RSL discharge overtemperature warning on string 1."
+      - name: overtemperature_discharge_rsl_warning_2__has_value
+        description: "Indicates if RSL discharge overtemperature warning on string 2 contains a value."
+      - name: overtemperature_discharge_rsl_warning_2__is_valid
+        description: "Indicates if RSL discharge overtemperature warning on string 2 is valid."
+      - name: overtemperature_discharge_rsl_warning_2__timestamp
+        description: "Timestamp of RSL discharge overtemperature warning on string 2."
+      - name: overtemperature_discharge_rsl_warning_2__value
+        description: "RSL discharge overtemperature warning on string 2."
+      - name: overtemperature_discharge_rsl_warning_3__has_value
+        description: "Indicates if RSL discharge overtemperature warning on string 3 contains a value."
+      - name: overtemperature_discharge_rsl_warning_3__is_valid
+        description: "Indicates if RSL discharge overtemperature warning on string 3 is valid."
+      - name: overtemperature_discharge_rsl_warning_3__timestamp
+        description: "Timestamp of RSL discharge overtemperature warning on string 3."
+      - name: overtemperature_discharge_rsl_warning_3__value
+        description: "RSL discharge overtemperature warning on string 3."
+      - name: overvoltage_mol_warning_1__has_value
+        description: "Indicates if MOL overvoltage warning on string 1 contains a value."
+      - name: overvoltage_mol_warning_1__is_valid
+        description: "Indicates if MOL overvoltage warning on string 1 is valid."
+      - name: overvoltage_mol_warning_1__timestamp
+        description: "Timestamp of MOL overvoltage warning on string 1."
+      - name: overvoltage_mol_warning_1__value
+        description: "MOL overvoltage warning on string 1."
+      - name: overvoltage_mol_warning_2__has_value
+        description: "Indicates if MOL overvoltage warning on string 2 contains a value."
+      - name: overvoltage_mol_warning_2__is_valid
+        description: "Indicates if MOL overvoltage warning on string 2 is valid."
+      - name: overvoltage_mol_warning_2__timestamp
+        description: "Timestamp of MOL overvoltage warning on string 2."
+      - name: overvoltage_mol_warning_2__value
+        description: "MOL overvoltage warning on string 2."
+      - name: overvoltage_mol_warning_3__has_value
+        description: "Indicates if MOL overvoltage warning on string 3 contains a value."
+      - name: overvoltage_mol_warning_3__is_valid
+        description: "Indicates if MOL overvoltage warning on string 3 is valid."
+      - name: overvoltage_mol_warning_3__timestamp
+        description: "Timestamp of MOL overvoltage warning on string 3."
+      - name: overvoltage_mol_warning_3__value
+        description: "MOL overvoltage warning on string 3."
+      - name: overvoltage_msl_error_1__has_value
+        description: "Indicates if MSL overvoltage error on string 1 contains a value."
+      - name: overvoltage_msl_error_1__is_valid
+        description: "Indicates if MSL overvoltage error on string 1 is valid."
+      - name: overvoltage_msl_error_1__timestamp
+        description: "Timestamp of MSL overvoltage error on string 1."
+      - name: overvoltage_msl_error_1__value
+        description: "MSL overvoltage error trip on string 1."
+      - name: overvoltage_msl_error_2__has_value
+        description: "Indicates if MSL overvoltage error on string 2 contains a value."
+      - name: overvoltage_msl_error_2__is_valid
+        description: "Indicates if MSL overvoltage error on string 2 is valid."
+      - name: overvoltage_msl_error_2__timestamp
+        description: "Timestamp of MSL overvoltage error on string 2."
+      - name: overvoltage_msl_error_2__value
+        description: "MSL overvoltage error trip on string 2."
+      - name: overvoltage_msl_error_3__has_value
+        description: "Indicates if MSL overvoltage error on string 3 contains a value."
+      - name: overvoltage_msl_error_3__is_valid
+        description: "Indicates if MSL overvoltage error on string 3 is valid."
+      - name: overvoltage_msl_error_3__timestamp
+        description: "Timestamp of MSL overvoltage error on string 3."
+      - name: overvoltage_msl_error_3__value
+        description: "MSL overvoltage error trip on string 3."
+      - name: overvoltage_rsl_warning_1__has_value
+        description: "Indicates if RSL overvoltage warning on string 1 contains a value."
+      - name: overvoltage_rsl_warning_1__is_valid
+        description: "Indicates if RSL overvoltage warning on string 1 is valid."
+      - name: overvoltage_rsl_warning_1__timestamp
+        description: "Timestamp of RSL overvoltage warning on string 1."
+      - name: overvoltage_rsl_warning_1__value
+        description: "RSL overvoltage warning on string 1."
+      - name: overvoltage_rsl_warning_2__has_value
+        description: "Indicates if RSL overvoltage warning on string 2 contains a value."
+      - name: overvoltage_rsl_warning_2__is_valid
+        description: "Indicates if RSL overvoltage warning on string 2 is valid."
+      - name: overvoltage_rsl_warning_2__timestamp
+        description: "Timestamp of RSL overvoltage warning on string 2."
+      - name: overvoltage_rsl_warning_2__value
+        description: "RSL overvoltage warning on string 2."
+      - name: overvoltage_rsl_warning_3__has_value
+        description: "Indicates if RSL overvoltage warning on string 3 contains a value."
+      - name: overvoltage_rsl_warning_3__is_valid
+        description: "Indicates if RSL overvoltage warning on string 3 is valid."
+      - name: overvoltage_rsl_warning_3__timestamp
+        description: "Timestamp of RSL overvoltage warning on string 3."
+      - name: overvoltage_rsl_warning_3__value
+        description: "RSL overvoltage warning on string 3."
+      - name: pack_over_curr_charge_msl__has_value
+        description: "Indicates if pack MSL charge overcurrent status contains a value."
+      - name: pack_over_curr_charge_msl__is_valid
+        description: "Indicates if pack MSL charge overcurrent status is valid."
+      - name: pack_over_curr_charge_msl__timestamp
+        description: "Timestamp of pack MSL charge overcurrent event."
+      - name: pack_over_curr_charge_msl__value
+        description: "Pack-level charge overcurrent fault at Maximum Safety Limit."
+      - name: pack_over_curr_discharge_msl__has_value
+        description: "Indicates if pack MSL discharge overcurrent status contains a value."
+      - name: pack_over_curr_discharge_msl__is_valid
+        description: "Indicates if pack MSL discharge overcurrent status is valid."
+      - name: pack_over_curr_discharge_msl__timestamp
+        description: "Timestamp of pack MSL discharge overcurrent event."
+      - name: pack_over_curr_discharge_msl__value
+        description: "Pack-level discharge overcurrent fault at Maximum Safety Limit."
+      - name: pack_overcurrent_charge_error__has_value
+        description: "Indicates if general pack charge overcurrent status contains a value."
+      - name: pack_overcurrent_charge_error__is_valid
+        description: "Indicates if general pack charge overcurrent status is valid."
+      - name: pack_overcurrent_charge_error__timestamp
+        description: "Timestamp of pack charge overcurrent trip."
+      - name: pack_overcurrent_charge_error__value
+        description: "General pack-level charge overcurrent trip."
+      - name: pack_overcurrent_discharge_error__has_value
+        description: "Indicates if general pack discharge overcurrent status contains a value."
+      - name: pack_overcurrent_discharge_error__is_valid
+        description: "Indicates if general pack discharge overcurrent status is valid."
+      - name: pack_overcurrent_discharge_error__timestamp
+        description: "Timestamp of pack discharge overcurrent trip."
+      - name: pack_overcurrent_discharge_error__value
+        description: "General pack-level discharge overcurrent trip."
+      - name: pack_voltage_measurement_error_1__has_value
+        description: "Indicates if pack voltage sensor error on string 1 contains a value."
+      - name: pack_voltage_measurement_error_1__is_valid
+        description: "Indicates if pack voltage sensor error on string 1 is valid."
+      - name: pack_voltage_measurement_error_1__timestamp
+        description: "Timestamp of pack voltage measurement error on string 1."
+      - name: pack_voltage_measurement_error_1__value
+        description: "Pack voltage sensor hardware fault on string 1."
+      - name: pack_voltage_measurement_error_2__has_value
+        description: "Indicates if pack voltage sensor error on string 2 contains a value."
+      - name: pack_voltage_measurement_error_2__is_valid
+        description: "Indicates if pack voltage sensor error on string 2 is valid."
+      - name: pack_voltage_measurement_error_2__timestamp
+        description: "Timestamp of pack voltage measurement error on string 2."
+      - name: pack_voltage_measurement_error_2__value
+        description: "Pack voltage sensor hardware fault on string 2."
+      - name: pack_voltage_measurement_error_3__has_value
+        description: "Indicates if pack voltage sensor error on string 3 contains a value."
+      - name: pack_voltage_measurement_error_3__is_valid
+        description: "Indicates if pack voltage sensor error on string 3 is valid."
+      - name: pack_voltage_measurement_error_3__timestamp
+        description: "Timestamp of pack voltage measurement error on string 3."
+      - name: pack_voltage_measurement_error_3__value
+        description: "Pack voltage sensor hardware fault on string 3."
+      - name: path_err_v_aux_cell__has_value
+        description: "Indicates if auxiliary cell voltage path error contains a value."
+      - name: path_err_v_aux_cell__is_valid
+        description: "Indicates if auxiliary cell voltage path error is valid."
+      - name: path_err_v_aux_cell__timestamp
+        description: "Timestamp of auxiliary cell voltage path error."
+      - name: path_err_v_aux_cell__value
+        description: "Circuit/sense line fault on auxiliary cell voltage measurement path."
+      - name: path_ocp_error__has_value
+        description: "Indicates if path overcurrent protection status contains a value."
+      - name: path_ocp_error__is_valid
+        description: "Indicates if path overcurrent protection status is valid."
+      - name: path_ocp_error__timestamp
+        description: "Timestamp of path OCP trip."
+      - name: path_ocp_error__value
+        description: "Overcurrent Protection (OCP) hardware trip on main power path."
+      - name: path_otp_error__has_value
+        description: "Indicates if path overtemperature protection status contains a value."
+      - name: path_otp_error__is_valid
+        description: "Indicates if path overtemperature protection status is valid."
+      - name: path_otp_error__timestamp
+        description: "Timestamp of path OTP trip."
+      - name: path_otp_error__value
+        description: "Overtemperature Protection (OTP) trip on busbar or main power path."
+      - name: path_rcp_warning__has_value
+        description: "Indicates if reverse current protection warning contains a value."
+      - name: path_rcp_warning__is_valid
+        description: "Indicates if reverse current protection warning is valid."
+      - name: path_rcp_warning__timestamp
+        description: "Timestamp of reverse current warning."
+      - name: path_rcp_warning__value
+        description: "Reverse Current Protection (RCP) warning on power path."
+      - name: patha_ovp_error__has_value
+        description: "Indicates if Path A overvoltage error status contains a value."
+      - name: patha_ovp_error__is_valid
+        description: "Indicates if Path A overvoltage error status is valid."
+      - name: patha_ovp_error__timestamp
+        description: "Timestamp of Path A OVP trip."
+      - name: patha_ovp_error__value
+        description: "Overvoltage Protection (OVP) fault on power Path A."
+      - name: patha_uvp_error__has_value
+        description: "Indicates if Path A undervoltage error status contains a value."
+      - name: patha_uvp_error__is_valid
+        description: "Indicates if Path A undervoltage error status is valid."
+      - name: patha_uvp_error__timestamp
+        description: "Timestamp of Path A UVP trip."
+      - name: patha_uvp_error__value
+        description: "Undervoltage Protection (UVP) fault on power Path A."
+      - name: pathb_ovp_error__has_value
+        description: "Indicates if Path B overvoltage error status contains a value."
+      - name: pathb_ovp_error__is_valid
+        description: "Indicates if Path B overvoltage error status is valid."
+      - name: pathb_ovp_error__timestamp
+        description: "Timestamp of Path B OVP trip."
+      - name: pathb_ovp_error__value
+        description: "Overvoltage Protection (OVP) fault on power Path B."
+      - name: pathb_uvp_error__has_value
+        description: "Indicates if Path B undervoltage error status contains a value."
+      - name: pathb_uvp_error__is_valid
+        description: "Indicates if Path B undervoltage error status is valid."
+      - name: pathb_uvp_error__timestamp
+        description: "Timestamp of Path B UVP trip."
+      - name: pathb_uvp_error__value
+        description: "Undervoltage Protection (UVP) fault on power Path B."
+      - name: plaus_pack_voltage__has_value
+        description: "Indicates if pack voltage plausibility status contains a value."
+      - name: plaus_pack_voltage__is_valid
+        description: "Indicates if pack voltage plausibility status is valid."
+      - name: plaus_pack_voltage__timestamp
+        description: "Timestamp of pack voltage plausibility check."
+      - name: plaus_pack_voltage__value
+        description: "Plausibility check flag comparing redundant pack voltage sensors."
+      - name: positive_contactor_error_1__has_value
+        description: "Indicates if positive contactor fault on string 1 contains a value."
+      - name: positive_contactor_error_1__is_valid
+        description: "Indicates if positive contactor fault on string 1 is valid."
+      - name: positive_contactor_error_1__timestamp
+        description: "Timestamp of positive contactor fault on string 1."
+      - name: positive_contactor_error_1__value
+        description: "Error flag for positive DC main contactor on string 1."
+      - name: positive_contactor_error_2__has_value
+        description: "Indicates if positive contactor fault on string 2 contains a value."
+      - name: positive_contactor_error_2__is_valid
+        description: "Indicates if positive contactor fault on string 2 is valid."
+      - name: positive_contactor_error_2__timestamp
+        description: "Timestamp of positive contactor fault on string 2."
+      - name: positive_contactor_error_2__value
+        description: "Error flag for positive DC main contactor on string 2."
+      - name: positive_contactor_error_3__has_value
+        description: "Indicates if positive contactor fault on string 3 contains a value."
+      - name: positive_contactor_error_3__is_valid
+        description: "Indicates if positive contactor fault on string 3 is valid."
+      - name: positive_contactor_error_3__timestamp
+        description: "Timestamp of positive contactor fault on string 3."
+      - name: positive_contactor_error_3__value
+        description: "Error flag for positive DC main contactor on string 3."
+      - name: power_measurement_error__has_value
+        description: "Indicates if power calculation fault status contains a value."
+      - name: power_measurement_error__is_valid
+        description: "Indicates if power calculation fault status is valid."
+      - name: power_measurement_error__timestamp
+        description: "Timestamp of power calculation fault."
+      - name: power_measurement_error__value
+        description: "General error flag for active power calculation."
+      - name: precharge_cont_feedback__has_value
+        description: "Indicates if precharge contactor feedback contains a value."
+      - name: precharge_cont_feedback__is_valid
+        description: "Indicates if precharge contactor feedback is valid."
+      - name: precharge_cont_feedback__timestamp
+        description: "Timestamp of precharge contactor feedback update."
+      - name: precharge_cont_feedback__value
+        description: "Auxiliary switch feedback state of precharge contactor."
+      - name: precharge_current_error__has_value
+        description: "Indicates if precharge overcurrent error contains a value."
+      - name: precharge_current_error__is_valid
+        description: "Indicates if precharge overcurrent error is valid."
+      - name: precharge_current_error__timestamp
+        description: "Timestamp of precharge current fault."
+      - name: precharge_current_error__value
+        description: "Excessive current flag during precharge cycle."
+      - name: precharge_voltage_error__has_value
+        description: "Indicates if precharge voltage failure contains a value."
+      - name: precharge_voltage_error__is_valid
+        description: "Indicates if precharge voltage failure is valid."
+      - name: precharge_voltage_error__timestamp
+        description: "Timestamp of precharge voltage fault."
+      - name: precharge_voltage_error__value
+        description: "Failure flag indicating bus voltage failed to reach threshold during precharge."
+      - name: pv_power__has_value
+        description: "Indicates if Photovoltaic power input measurement contains a value."
+      - name: pv_power__is_valid
+        description: "Indicates if Photovoltaic power input measurement is valid."
+      - name: pv_power__timestamp
+        description: "Timestamp of PV power input reading."
+      - name: pv_power__value
+        description: "Solar PV input power entering battery charger (kW/W)."
+      - name: pv_voltage__has_value
+        description: "Indicates if Photovoltaic input voltage contains a value."
+      - name: pv_voltage__is_valid
+        description: "Indicates if Photovoltaic input voltage is valid."
+      - name: pv_voltage__timestamp
+        description: "Timestamp of PV input voltage reading."
+      - name: pv_voltage__value
+        description: "Solar PV array terminal voltage (V)."
+      - name: remote__has_value
+        description: "Indicates if remote mode selection state contains a value."
+      - name: remote__is_valid
+        description: "Indicates if remote mode selection state is valid."
+      - name: remote__timestamp
+        description: "Timestamp of remote mode status update."
+      - name: remote__value
+        description: "Flag indicating whether system is under remote PLC/SCADA control."
+      - name: remote_start__has_value
+        description: "Indicates if remote start command signal contains a value."
+      - name: remote_start__is_valid
+        description: "Indicates if remote start command signal is valid."
+      - name: remote_start__timestamp
+        description: "Timestamp of remote start command."
+      - name: remote_start__value
+        description: "Remote digital start command status."
+      - name: remote_stop__has_value
+        description: "Indicates if remote stop command signal contains a value."
+      - name: remote_stop__is_valid
+        description: "Indicates if remote stop command signal is valid."
+      - name: remote_stop__timestamp
+        description: "Timestamp of remote stop command."
+      - name: remote_stop__value
+        description: "Remote digital stop command status."
+      - name: request_auto__has_value
+        description: "Indicates if request for auto mode contains a value."
+      - name: request_auto__is_valid
+        description: "Indicates if request for auto mode is valid."
+      - name: request_auto__timestamp
+        description: "Timestamp of auto mode request."
+      - name: request_auto__value
+        description: "Command signal requesting transition into automatic operating mode."
+      - name: request_remote__has_value
+        description: "Indicates if request for remote mode contains a value."
+      - name: request_remote__is_valid
+        description: "Indicates if request for remote mode is valid."
+      - name: request_remote__timestamp
+        description: "Timestamp of remote mode request."
+      - name: request_remote__value
+        description: "Command signal requesting transition into remote control mode."
+      - name: rfu__has_value
+        description: "Indicates if Reserved for Future Use field contains a value."
+      - name: rfu__is_valid
+        description: "Indicates if Reserved for Future Use field is valid."
+      - name: rfu__timestamp
+        description: "Timestamp of RFU attribute."
+      - name: rfu__value
+        description: "Reserved for future expansion attribute value."
+      - name: rfu_condition_1__has_value
+        description: "Indicates if Reserved condition 1 contains a value."
+      - name: rfu_condition_1__is_valid
+        description: "Indicates if Reserved condition 1 is valid."
+      - name: rfu_condition_1__timestamp
+        description: "Timestamp of RFU condition 1."
+      - name: rfu_condition_1__value
+        description: "Reserved for future expansion condition flag 1."
+      - name: rfu_condition_2__has_value
+        description: "Indicates if Reserved condition 2 contains a value."
+      - name: rfu_condition_2__is_valid
+        description: "Indicates if Reserved condition 2 is valid."
+      - name: rfu_condition_2__timestamp
+        description: "Timestamp of RFU condition 2."
+      - name: rfu_condition_2__value
+        description: "Reserved for future expansion condition flag 2."
+      - name: running__has_value
+        description: "Indicates if running state status contains a value."
+      - name: running__is_valid
+        description: "Indicates if running state status is valid."
+      - name: running__timestamp
+        description: "Timestamp of running state status update."
+      - name: running__value
+        description: "System operational state flag (TRUE = actively running)."
+      - name: running_hours__has_value
+        description: "Indicates if running hours counter contains a value."
+      - name: running_hours__is_valid
+        description: "Indicates if running hours counter is valid."
+      - name: running_hours__timestamp
+        description: "Timestamp of running hours counter reading."
+      - name: running_hours__value
+        description: "Total cumulative operating hours of the storage system (hours)."
+      - name: sbc_fin_state__has_value
+        description: "Indicates if System Basis Chip FIN state contains a value."
+      - name: sbc_fin_state__is_valid
+        description: "Indicates if System Basis Chip FIN state is valid."
+      - name: sbc_fin_state__timestamp
+        description: "Timestamp of SBC FIN pin reading."
+      - name: sbc_fin_state__value
+        description: "Hardware pin status for SBC (System Basis Chip) FIN signal."
+      - name: sbc_rstb_state__has_value
+        description: "Indicates if System Basis Chip RSTB state contains a value."
+      - name: sbc_rstb_state__is_valid
+        description: "Indicates if System Basis Chip RSTB state is valid."
+      - name: sbc_rstb_state__timestamp
+        description: "Timestamp of SBC RSTB pin reading."
+      - name: sbc_rstb_state__value
+        description: "Hardware reset pin status (RSTB) for System Basis Chip."
+      - name: select_string_1__has_value
+        description: "Indicates if selection state for string 1 contains a value."
+      - name: select_string_1__is_valid
+        description: "Indicates if selection state for string 1 is valid."
+      - name: select_string_1__timestamp
+        description: "Timestamp of string 1 selection state."
+      - name: select_string_1__value
+        description: "Command/status flag selecting string 1 for operation."
+      - name: select_string_2__has_value
+        description: "Indicates if selection state for string 2 contains a value."
+      - name: select_string_2__is_valid
+        description: "Indicates if selection state for string 2 is valid."
+      - name: select_string_2__timestamp
+        description: "Timestamp of string 2 selection state."
+      - name: select_string_2__value
+        description: "Command/status flag selecting string 2 for operation."
+      - name: select_string_3__has_value
+        description: "Indicates if selection state for string 3 contains a value."
+      - name: select_string_3__is_valid
+        description: "Indicates if selection state for string 3 is valid."
+      - name: select_string_3__timestamp
+        description: "Timestamp of string 3 selection state."
+      - name: select_string_3__value
+        description: "Command/status flag selecting string 3 for operation."
+      - name: sfc_current_step__has_value
+        description: "Indicates if Sequential Function Chart step state contains a value."
+      - name: sfc_current_step__is_valid
+        description: "Indicates if Sequential Function Chart step state is valid."
+      - name: sfc_current_step__timestamp
+        description: "Timestamp of state machine step transition."
+      - name: sfc_current_step__value
+        description: "Name or identifier of active step in PLC state machine (SFC)."
+      - name: soh_1__has_value
+        description: "Indicates if State of Health for string 1 contains a value."
+      - name: soh_1__is_valid
+        description: "Indicates if State of Health for string 1 is valid."
+      - name: soh_1__timestamp
+        description: "Timestamp of SoH calculation on string 1."
+      - name: soh_1__value
+        description: "Calculated battery State of Health for string 1 (%)."
+      - name: soh_2__has_value
+        description: "Indicates if State of Health for string 2 contains a value."
+      - name: soh_2__is_valid
+        description: "Indicates if State of Health for string 2 is valid."
+      - name: soh_2__timestamp
+        description: "Timestamp of SoH calculation on string 2."
+      - name: soh_2__value
+        description: "Calculated battery State of Health for string 2 (%)."
+      - name: soh_3__has_value
+        description: "Indicates if State of Health for string 3 contains a value."
+      - name: soh_3__is_valid
+        description: "Indicates if State of Health for string 3 is valid."
+      - name: soh_3__timestamp
+        description: "Timestamp of SoH calculation on string 3."
+      - name: soh_3__value
+        description: "Calculated battery State of Health for string 3 (%)."
+      - name: source_type
+        description: "Source type identifier reported by MQTT producer."
+      - name: sp_voltage__has_value
+        description: "Indicates if setpoint voltage contains a value."
+      - name: sp_voltage__is_valid
+        description: "Indicates if setpoint voltage is valid."
+      - name: sp_voltage__timestamp
+        description: "Timestamp of setpoint voltage update."
+      - name: sp_voltage__value
+        description: "Target voltage setpoint requested for converter/charger (V)."
+      - name: starting__has_value
+        description: "Indicates if system starting state contains a value."
+      - name: starting__is_valid
+        description: "Indicates if system starting state is valid."
+      - name: starting__timestamp
+        description: "Timestamp of starting state status update."
+      - name: starting__value
+        description: "Transition flag indicating system is currently booting/starting up."
+      - name: state_of_charge__has_value
+        description: "Indicates if overall pack State of Charge contains a value."
+      - name: state_of_charge__is_valid
+        description: "Indicates if overall pack State of Charge is valid."
+      - name: state_of_charge__timestamp
+        description: "Timestamp of SoC update."
+      - name: state_of_charge__value
+        description: "Overall battery pack State of Charge (0.0 - 100.0 %)."
+      - name: state_of_health__has_value
+        description: "Indicates if overall pack State of Health contains a value."
+      - name: state_of_health__is_valid
+        description: "Indicates if overall pack State of Health is valid."
+      - name: state_of_health__timestamp
+        description: "Timestamp of overall SoH update."
+      - name: state_of_health__value
+        description: "Overall battery pack estimated State of Health (0.0 - 100.0 %)."
+      - name: stopped__has_value
+        description: "Indicates if stopped state status contains a value."
+      - name: stopped__is_valid
+        description: "Indicates if stopped state status is valid."
+      - name: stopped__timestamp
+        description: "Timestamp of stopped status update."
+      - name: stopped__value
+        description: "System state flag indicating storage unit is completely stopped."
+      - name: stopping__has_value
+        description: "Indicates if stopping state transition contains a value."
+      - name: stopping__is_valid
+        description: "Indicates if stopping state transition is valid."
+      - name: stopping__timestamp
+        description: "Timestamp of stopping sequence initiation."
+      - name: stopping__value
+        description: "Transition flag indicating system is currently shutting down."
+      - name: string_current_measurement_error_1__has_value
+        description: "Indicates if string current sensor fault on string 1 contains a value."
+      - name: string_current_measurement_error_1__is_valid
+        description: "Indicates if string current sensor fault on string 1 is valid."
+      - name: string_current_measurement_error_1__timestamp
+        description: "Timestamp of string current sensor fault on string 1."
+      - name: string_current_measurement_error_1__value
+        description: "Current measurement sensor hardware fault on string 1."
+      - name: string_current_measurement_error_2__has_value
+        description: "Indicates if string current sensor fault on string 2 contains a value."
+      - name: string_current_measurement_error_2__is_valid
+        description: "Indicates if string current sensor fault on string 2 is valid."
+      - name: string_current_measurement_error_2__timestamp
+        description: "Timestamp of string current sensor fault on string 2."
+      - name: string_current_measurement_error_2__value
+        description: "Current measurement sensor hardware fault on string 2."
+      - name: string_current_measurement_error_3__has_value
+        description: "Indicates if string current sensor fault on string 3 contains a value."
+      - name: string_current_measurement_error_3__is_valid
+        description: "Indicates if string current sensor fault on string 3 is valid."
+      - name: string_current_measurement_error_3__timestamp
+        description: "Timestamp of string current sensor fault on string 3."
+      - name: string_current_measurement_error_3__value
+        description: "Current measurement sensor hardware fault on string 3."
+      - name: string_fuse_tripped__has_value
+        description: "Indicates if string fuse tripped status contains a value."
+      - name: string_fuse_tripped__is_valid
+        description: "Indicates if string fuse tripped status is valid."
+      - name: string_fuse_tripped__timestamp
+        description: "Timestamp of string fuse trip event."
+      - name: string_fuse_tripped__value
+        description: "Summary flag indicating at least one string fuse has blown."
+      - name: string_minus_cont_feedback__has_value
+        description: "Indicates if negative contactor feedback state contains a value."
+      - name: string_minus_cont_feedback__is_valid
+        description: "Indicates if negative contactor feedback state is valid."
+      - name: string_minus_cont_feedback__timestamp
+        description: "Timestamp of negative contactor switch update."
+      - name: string_minus_cont_feedback__value
+        description: "Auxiliary feedback contact status for negative string contactor."
+      - name: string_over_curr_charge_msl__has_value
+        description: "Indicates if string charge overcurrent trip contains a value."
+      - name: string_over_curr_charge_msl__is_valid
+        description: "Indicates if string charge overcurrent trip is valid."
+      - name: string_over_curr_charge_msl__timestamp
+        description: "Timestamp of string charge overcurrent trip."
+      - name: string_over_curr_charge_msl__value
+        description: "String charge overcurrent fault at Maximum Safety Limit."
+      - name: string_over_curr_disch_msl__has_value
+        description: "Indicates if string discharge overcurrent trip contains a value."
+      - name: string_over_curr_disch_msl__is_valid
+        description: "Indicates if string discharge overcurrent trip is valid."
+      - name: string_over_curr_disch_msl__timestamp
+        description: "Timestamp of string discharge overcurrent trip."
+      - name: string_over_curr_disch_msl__value
+        description: "String discharge overcurrent fault at Maximum Safety Limit."
+      - name: string_plus_cont_feedback__has_value
+        description: "Indicates if positive contactor feedback state contains a value."
+      - name: string_plus_cont_feedback__is_valid
+        description: "Indicates if positive contactor feedback state is valid."
+      - name: string_plus_cont_feedback__timestamp
+        description: "Timestamp of positive contactor switch update."
+      - name: string_plus_cont_feedback__value
+        description: "Auxiliary feedback contact status for positive string contactor."
+      - name: string_voltage_measurement_error_1__has_value
+        description: "Indicates if string voltage measurement fault on string 1 contains a value."
+      - name: string_voltage_measurement_error_1__is_valid
+        description: "Indicates if string voltage measurement fault on string 1 is valid."
+      - name: string_voltage_measurement_error_1__timestamp
+        description: "Timestamp of string voltage sensor fault on string 1."
+      - name: string_voltage_measurement_error_1__value
+        description: "Voltage measurement sensor hardware fault on string 1."
+      - name: string_voltage_measurement_error_2__has_value
+        description: "Indicates if string voltage measurement fault on string 2 contains a value."
+      - name: string_voltage_measurement_error_2__is_valid
+        description: "Indicates if string voltage measurement fault on string 2 is valid."
+      - name: string_voltage_measurement_error_2__timestamp
+        description: "Timestamp of string voltage sensor fault on string 2."
+      - name: string_voltage_measurement_error_2__value
+        description: "Voltage measurement sensor hardware fault on string 2."
+      - name: string_voltage_measurement_error_3__has_value
+        description: "Indicates if string voltage measurement fault on string 3 contains a value."
+      - name: string_voltage_measurement_error_3__is_valid
+        description: "Indicates if string voltage measurement fault on string 3 is valid."
+      - name: string_voltage_measurement_error_3__timestamp
+        description: "Timestamp of string voltage sensor fault on string 3."
+      - name: string_voltage_measurement_error_3__value
+        description: "Voltage measurement sensor hardware fault on string 3."
+      - name: string_voltage_plausibility_error_1__has_value
+        description: "Indicates if string voltage plausibility fault on string 1 contains a value."
+      - name: string_voltage_plausibility_error_1__is_valid
+        description: "Indicates if string voltage plausibility fault on string 1 is valid."
+      - name: string_voltage_plausibility_error_1__timestamp
+        description: "Timestamp of string voltage plausibility fault on string 1."
+      - name: string_voltage_plausibility_error_1__value
+        description: "Unrealistic voltage reading detected on string 1."
+      - name: string_voltage_plausibility_error_2__has_value
+        description: "Indicates if string voltage plausibility fault on string 2 contains a value."
+      - name: string_voltage_plausibility_error_2__is_valid
+        description: "Indicates if string voltage plausibility fault on string 2 is valid."
+      - name: string_voltage_plausibility_error_2__timestamp
+        description: "Timestamp of string voltage plausibility fault on string 2."
+      - name: string_voltage_plausibility_error_2__value
+        description: "Unrealistic voltage reading detected on string 2."
+      - name: string_voltage_plausibility_error_3__has_value
+        description: "Indicates if string voltage plausibility fault on string 3 contains a value."
+      - name: string_voltage_plausibility_error_3__is_valid
+        description: "Indicates if string voltage plausibility fault on string 3 is valid."
+      - name: string_voltage_plausibility_error_3__timestamp
+        description: "Timestamp of string voltage plausibility fault on string 3."
+      - name: string_voltage_plausibility_error_3__value
+        description: "Unrealistic voltage reading detected on string 3."
+      - name: system_monitoring_error__has_value
+        description: "Indicates if overall system monitoring fault contains a value."
+      - name: system_monitoring_error__is_valid
+        description: "Indicates if overall system monitoring fault is valid."
+      - name: system_monitoring_error__timestamp
+        description: "Timestamp of system monitoring error."
+      - name: system_monitoring_error__value
+        description: "Master alarm indicating internal diagnostics or watchdog failure."
+      - name: table
+        description: "Source table name as set in MQTT ingestion."
+      - name: temperature_spread_plausibility_err_1__has_value
+        description: "Indicates if temperature spread error on string 1 contains a value."
+      - name: temperature_spread_plausibility_err_1__is_valid
+        description: "Indicates if temperature spread error on string 1 is valid."
+      - name: temperature_spread_plausibility_err_1__timestamp
+        description: "Timestamp of temperature spread error on string 1."
+      - name: temperature_spread_plausibility_err_1__value
+        description: "Excessive delta between temperature sensors detected on string 1."
+      - name: temperature_spread_plausibility_err_2__has_value
+        description: "Indicates if temperature spread error on string 2 contains a value."
+      - name: temperature_spread_plausibility_err_2__is_valid
+        description: "Indicates if temperature spread error on string 2 is valid."
+      - name: temperature_spread_plausibility_err_2__timestamp
+        description: "Timestamp of temperature spread error on string 2."
+      - name: temperature_spread_plausibility_err_2__value
+        description: "Excessive delta between temperature sensors detected on string 2."
+      - name: temperature_spread_plausibility_err_3__has_value
+        description: "Indicates if temperature spread error on string 3 contains a value."
+      - name: temperature_spread_plausibility_err_3__is_valid
+        description: "Indicates if temperature spread error on string 3 is valid."
+      - name: temperature_spread_plausibility_err_3__timestamp
+        description: "Timestamp of temperature spread error on string 3."
+      - name: temperature_spread_plausibility_err_3__value
+        description: "Excessive delta between temperature sensors detected on string 3."
+      - name: topic
+        description: "MQTT topic path for the message."
+      - name: under_temp_charge_msl__has_value
+        description: "Indicates if charging undertemperature MSL state contains a value."
+      - name: under_temp_charge_msl__is_valid
+        description: "Indicates if charging undertemperature MSL state is valid."
+      - name: under_temp_charge_msl__timestamp
+        description: "Timestamp of charge undertemperature trip."
+      - name: under_temp_charge_msl__value
+        description: "Undertemperature trip during charging at Maximum Safety Limit."
+      - name: under_temp_discharge_msl__has_value
+        description: "Indicates if discharging undertemperature MSL state contains a value."
+      - name: under_temp_discharge_msl__is_valid
+        description: "Indicates if discharging undertemperature MSL state is valid."
+      - name: under_temp_discharge_msl__timestamp
+        description: "Timestamp of discharge undertemperature trip."
+      - name: under_temp_discharge_msl__value
+        description: "Undertemperature trip during discharging at Maximum Safety Limit."
+      - name: undertemperature_charge_mol_warning_1__has_value
+        description: "Indicates if MOL charge undertemperature warning on string 1 contains a value."
+      - name: undertemperature_charge_mol_warning_1__is_valid
+        description: "Indicates if MOL charge undertemperature warning on string 1 is valid."
+      - name: undertemperature_charge_mol_warning_1__timestamp
+        description: "Timestamp of MOL charge undertemperature warning on string 1."
+      - name: undertemperature_charge_mol_warning_1__value
+        description: "MOL charge undertemperature warning on string 1."
+      - name: undertemperature_charge_mol_warning_2__has_value
+        description: "Indicates if MOL charge undertemperature warning on string 2 contains a value."
+      - name: undertemperature_charge_mol_warning_2__is_valid
+        description: "Indicates if MOL charge undertemperature warning on string 2 is valid."
+      - name: undertemperature_charge_mol_warning_2__timestamp
+        description: "Timestamp of MOL charge undertemperature warning on string 2."
+      - name: undertemperature_charge_mol_warning_2__value
+        description: "MOL charge undertemperature warning on string 2."
+      - name: undertemperature_charge_mol_warning_3__has_value
+        description: "Indicates if MOL charge undertemperature warning on string 3 contains a value."
+      - name: undertemperature_charge_mol_warning_3__is_valid
+        description: "Indicates if MOL charge undertemperature warning on string 3 is valid."
+      - name: undertemperature_charge_mol_warning_3__timestamp
+        description: "Timestamp of MOL charge undertemperature warning on string 3."
+      - name: undertemperature_charge_mol_warning_3__value
+        description: "MOL charge undertemperature warning on string 3."
+      - name: undertemperature_charge_msl_error_1__has_value
+        description: "Indicates if MSL charge undertemperature error on string 1 contains a value."
+      - name: undertemperature_charge_msl_error_1__is_valid
+        description: "Indicates if MSL charge undertemperature error on string 1 is valid."
+      - name: undertemperature_charge_msl_error_1__timestamp
+        description: "Timestamp of MSL charge undertemperature error on string 1."
+      - name: undertemperature_charge_msl_error_1__value
+        description: "MSL charge undertemperature trip on string 1."
+      - name: undertemperature_charge_msl_error_2__has_value
+        description: "Indicates if MSL charge undertemperature error on string 2 contains a value."
+      - name: undertemperature_charge_msl_error_2__is_valid
+        description: "Indicates if MSL charge undertemperature error on string 2 is valid."
+      - name: undertemperature_charge_msl_error_2__timestamp
+        description: "Timestamp of MSL charge undertemperature error on string 2."
+      - name: undertemperature_charge_msl_error_2__value
+        description: "MSL charge undertemperature trip on string 2."
+      - name: undertemperature_charge_msl_error_3__has_value
+        description: "Indicates if MSL charge undertemperature error on string 3 contains a value."
+      - name: undertemperature_charge_msl_error_3__is_valid
+        description: "Indicates if MSL charge undertemperature error on string 3 is valid."
+      - name: undertemperature_charge_msl_error_3__timestamp
+        description: "Timestamp of MSL charge undertemperature error on string 3."
+      - name: undertemperature_charge_msl_error_3__value
+        description: "MSL charge undertemperature trip on string 3."
+      - name: undertemperature_charge_rsl_warning_1__has_value
+        description: "Indicates if RSL charge undertemperature warning on string 1 contains a value."
+      - name: undertemperature_charge_rsl_warning_1__is_valid
+        description: "Indicates if RSL charge undertemperature warning on string 1 is valid."
+      - name: undertemperature_charge_rsl_warning_1__timestamp
+        description: "Timestamp of RSL charge undertemperature warning on string 1."
+      - name: undertemperature_charge_rsl_warning_1__value
+        description: "RSL charge undertemperature warning on string 1."
+      - name: undertemperature_charge_rsl_warning_2__has_value
+        description: "Indicates if RSL charge undertemperature warning on string 2 contains a value."
+      - name: undertemperature_charge_rsl_warning_2__is_valid
+        description: "Indicates if RSL charge undertemperature warning on string 2 is valid."
+      - name: undertemperature_charge_rsl_warning_2__timestamp
+        description: "Timestamp of RSL charge undertemperature warning on string 2."
+      - name: undertemperature_charge_rsl_warning_2__value
+        description: "RSL charge undertemperature warning on string 2."
+      - name: undertemperature_charge_rsl_warning_3__has_value
+        description: "Indicates if RSL charge undertemperature warning on string 3 contains a value."
+      - name: undertemperature_charge_rsl_warning_3__is_valid
+        description: "Indicates if RSL charge undertemperature warning on string 3 is valid."
+      - name: undertemperature_charge_rsl_warning_3__timestamp
+        description: "Timestamp of RSL charge undertemperature warning on string 3."
+      - name: undertemperature_charge_rsl_warning_3__value
+        description: "RSL charge undertemperature warning on string 3."
+      - name: undertemperature_discharge_mol_warning_1__has_value
+        description: "Indicates if MOL discharge undertemperature warning on string 1 contains a value."
+      - name: undertemperature_discharge_mol_warning_1__is_valid
+        description: "Indicates if MOL discharge undertemperature warning on string 1 is valid."
+      - name: undertemperature_discharge_mol_warning_1__timestamp
+        description: "Timestamp of MOL discharge undertemperature warning on string 1."
+      - name: undertemperature_discharge_mol_warning_1__value
+        description: "MOL discharge undertemperature warning on string 1."
+      - name: undertemperature_discharge_mol_warning_2__has_value
+        description: "Indicates if MOL discharge undertemperature warning on string 2 contains a value."
+      - name: undertemperature_discharge_mol_warning_2__is_valid
+        description: "Indicates if MOL discharge undertemperature warning on string 2 is valid."
+      - name: undertemperature_discharge_mol_warning_2__timestamp
+        description: "Timestamp of MOL discharge undertemperature warning on string 2."
+      - name: undertemperature_discharge_mol_warning_2__value
+        description: "MOL discharge undertemperature warning on string 2."
+      - name: undertemperature_discharge_mol_warning_3__has_value
+        description: "Indicates if MOL discharge undertemperature warning on string 3 contains a value."
+      - name: undertemperature_discharge_mol_warning_3__is_valid
+        description: "Indicates if MOL discharge undertemperature warning on string 3 is valid."
+      - name: undertemperature_discharge_mol_warning_3__timestamp
+        description: "Timestamp of MOL discharge undertemperature warning on string 3."
+      - name: undertemperature_discharge_mol_warning_3__value
+        description: "MOL discharge undertemperature warning on string 3."
+      - name: undertemperature_discharge_msl_error_1__has_value
+        description: "Indicates if MSL discharge undertemperature error on string 1 contains a value."
+      - name: undertemperature_discharge_msl_error_1__is_valid
+        description: "Indicates if MSL discharge undertemperature error on string 1 is valid."
+      - name: undertemperature_discharge_msl_error_1__timestamp
+        description: "Timestamp of MSL discharge undertemperature error on string 1."
+      - name: undertemperature_discharge_msl_error_1__value
+        description: "MSL discharge undertemperature trip on string 1."
+      - name: undertemperature_discharge_msl_error_2__has_value
+        description: "Indicates if MSL discharge undertemperature error on string 2 contains a value."
+      - name: undertemperature_discharge_msl_error_2__is_valid
+        description: "Indicates if MSL discharge undertemperature error on string 2 is valid."
+      - name: undertemperature_discharge_msl_error_2__timestamp
+        description: "Timestamp of MSL discharge undertemperature error on string 2."
+      - name: undertemperature_discharge_msl_error_2__value
+        description: "MSL discharge undertemperature trip on string 2."
+      - name: undertemperature_discharge_msl_error_3__has_value
+        description: "Indicates if MSL discharge undertemperature error on string 3 contains a value."
+      - name: undertemperature_discharge_msl_error_3__is_valid
+        description: "Indicates if MSL discharge undertemperature error on string 3 is valid."
+      - name: undertemperature_discharge_msl_error_3__timestamp
+        description: "Timestamp of MSL discharge undertemperature error on string 3."
+      - name: undertemperature_discharge_msl_error_3__value
+        description: "MSL discharge undertemperature trip on string 3."
+      - name: undertemperature_discharge_rsl_warning_1__has_value
+        description: "Indicates if RSL discharge undertemperature warning on string 1 contains a value."
+      - name: undertemperature_discharge_rsl_warning_1__is_valid
+        description: "Indicates if RSL discharge undertemperature warning on string 1 is valid."
+      - name: undertemperature_discharge_rsl_warning_1__timestamp
+        description: "Timestamp of RSL discharge undertemperature warning on string 1."
+      - name: undertemperature_discharge_rsl_warning_1__value
+        description: "RSL discharge undertemperature warning on string 1."
+      - name: undertemperature_discharge_rsl_warning_2__has_value
+        description: "Indicates if RSL discharge undertemperature warning on string 2 contains a value."
+      - name: undertemperature_discharge_rsl_warning_2__is_valid
+        description: "Indicates if RSL discharge undertemperature warning on string 2 is valid."
+      - name: undertemperature_discharge_rsl_warning_2__timestamp
+        description: "Timestamp of RSL discharge undertemperature warning on string 2."
+      - name: undertemperature_discharge_rsl_warning_2__value
+        description: "RSL discharge undertemperature warning on string 2."
+      - name: undertemperature_discharge_rsl_warning_3__has_value
+        description: "Indicates if RSL discharge undertemperature warning on string 3 contains a value."
+      - name: undertemperature_discharge_rsl_warning_3__is_valid
+        description: "Indicates if RSL discharge undertemperature warning on string 3 is valid."
+      - name: undertemperature_discharge_rsl_warning_3__timestamp
+        description: "Timestamp of RSL discharge undertemperature warning on string 3."
+      - name: undertemperature_discharge_rsl_warning_3__value
+        description: "RSL discharge undertemperature warning on string 3."
+      - name: undervoltage_mol_warning_1__has_value
+        description: "Indicates if MOL undervoltage warning on string 1 contains a value."
+      - name: undervoltage_mol_warning_1__is_valid
+        description: "Indicates if MOL undervoltage warning on string 1 is valid."
+      - name: undervoltage_mol_warning_1__timestamp
+        description: "Timestamp of MOL undervoltage warning on string 1."
+      - name: undervoltage_mol_warning_1__value
+        description: "MOL undervoltage warning on string 1."
+      - name: undervoltage_mol_warning_2__has_value
+        description: "Indicates if MOL undervoltage warning on string 2 contains a value."
+      - name: undervoltage_mol_warning_2__is_valid
+        description: "Indicates if MOL undervoltage warning on string 2 is valid."
+      - name: undervoltage_mol_warning_2__timestamp
+        description: "Timestamp of MOL undervoltage warning on string 2."
+      - name: undervoltage_mol_warning_2__value
+        description: "MOL undervoltage warning on string 2."
+      - name: undervoltage_mol_warning_3__has_value
+        description: "Indicates if MOL undervoltage warning on string 3 contains a value."
+      - name: undervoltage_mol_warning_3__is_valid
+        description: "Indicates if MOL undervoltage warning on string 3 is valid."
+      - name: undervoltage_mol_warning_3__timestamp
+        description: "Timestamp of MOL undervoltage warning on string 3."
+      - name: undervoltage_mol_warning_3__value
+        description: "MOL undervoltage warning on string 3."
+      - name: undervoltage_msl_error_1__has_value
+        description: "Indicates if MSL undervoltage error on string 1 contains a value."
+      - name: undervoltage_msl_error_1__is_valid
+        description: "Indicates if MSL undervoltage error on string 1 is valid."
+      - name: undervoltage_msl_error_1__timestamp
+        description: "Timestamp of MSL undervoltage error on string 1."
+      - name: undervoltage_msl_error_1__value
+        description: "MSL undervoltage trip on string 1."
+      - name: undervoltage_msl_error_2__has_value
+        description: "Indicates if MSL undervoltage error on string 2 contains a value."
+      - name: undervoltage_msl_error_2__is_valid
+        description: "Indicates if MSL undervoltage error on string 2 is valid."
+      - name: undervoltage_msl_error_2__timestamp
+        description: "Timestamp of MSL undervoltage error on string 2."
+      - name: undervoltage_msl_error_2__value
+        description: "MSL undervoltage trip on string 2."
+      - name: undervoltage_msl_error_3__has_value
+        description: "Indicates if MSL undervoltage error on string 3 contains a value."
+      - name: undervoltage_msl_error_3__is_valid
+        description: "Indicates if MSL undervoltage error on string 3 is valid."
+      - name: undervoltage_msl_error_3__timestamp
+        description: "Timestamp of MSL undervoltage error on string 3."
+      - name: undervoltage_msl_error_3__value
+        description: "MSL undervoltage trip on string 3."
+      - name: undervoltage_rsl_warning_1__has_value
+        description: "Indicates if RSL undervoltage warning on string 1 contains a value."
+      - name: undervoltage_rsl_warning_1__is_valid
+        description: "Indicates if RSL undervoltage warning on string 1 is valid."
+      - name: undervoltage_rsl_warning_1__timestamp
+        description: "Timestamp of RSL undervoltage warning on string 1."
+      - name: undervoltage_rsl_warning_1__value
+        description: "RSL undervoltage warning on string 1."
+      - name: undervoltage_rsl_warning_2__has_value
+        description: "Indicates if RSL undervoltage warning on string 2 contains a value."
+      - name: undervoltage_rsl_warning_2__is_valid
+        description: "Indicates if RSL undervoltage warning on string 2 is valid."
+      - name: undervoltage_rsl_warning_2__timestamp
+        description: "Timestamp of RSL undervoltage warning on string 2."
+      - name: undervoltage_rsl_warning_2__value
+        description: "RSL undervoltage warning on string 2."
+      - name: undervoltage_rsl_warning_3__has_value
+        description: "Indicates if RSL undervoltage warning on string 3 contains a value."
+      - name: undervoltage_rsl_warning_3__is_valid
+        description: "Indicates if RSL undervoltage warning on string 3 is valid."
+      - name: undervoltage_rsl_warning_3__timestamp
+        description: "Timestamp of RSL undervoltage warning on string 3."
+      - name: undervoltage_rsl_warning_3__value
+        description: "RSL undervoltage warning on string 3."
+      - name: upper_current_limit__has_value
+        description: "Indicates if upper charge current limit contains a value."
+      - name: upper_current_limit__is_valid
+        description: "Indicates if upper charge current limit is valid."
+      - name: upper_current_limit__timestamp
+        description: "Timestamp of upper charge current limit update."
+      - name: upper_current_limit__value
+        description: "Upper allowable charging current limit (A)."
+      - name: voltage_spread_plausibility_error_1__has_value
+        description: "Indicates if voltage spread plausibility error on string 1 contains a value."
+      - name: voltage_spread_plausibility_error_1__is_valid
+        description: "Indicates if voltage spread plausibility error on string 1 is valid."
+      - name: voltage_spread_plausibility_error_1__timestamp
+        description: "Timestamp of voltage spread plausibility error on string 1."
+      - name: voltage_spread_plausibility_error_1__value
+        description: "Unrealistic voltage delta between cell sensors detected on string 1."
+      - name: voltage_spread_plausibility_error_2__has_value
+        description: "Indicates if voltage spread plausibility error on string 2 contains a value."
+      - name: voltage_spread_plausibility_error_2__is_valid
+        description: "Indicates if voltage spread plausibility error on string 2 is valid."
+      - name: voltage_spread_plausibility_error_2__timestamp
+        description: "Timestamp of voltage spread plausibility error on string 2."
+      - name: voltage_spread_plausibility_error_2__value
+        description: "Unrealistic voltage delta between cell sensors detected on string 2."
+      - name: voltage_spread_plausibility_error_3__has_value
+        description: "Indicates if voltage spread plausibility error on string 3 contains a value."
+      - name: voltage_spread_plausibility_error_3__is_valid
+        description: "Indicates if voltage spread plausibility error on string 3 is valid."
+      - name: voltage_spread_plausibility_error_3__timestamp
+        description: "Timestamp of voltage spread plausibility error on string 3."
+      - name: voltage_spread_plausibility_error_3__value
+        description: "Unrealistic voltage delta between cell sensors detected on string 3."
+      - name: watchdog_alarm_bms__has_value
+        description: "Indicates if BMS watchdog alarm status contains a value."
+      - name: watchdog_alarm_bms__is_valid
+        description: "Indicates if BMS watchdog alarm status is valid."
+      - name: watchdog_alarm_bms__timestamp
+        description: "Timestamp of BMS watchdog alarm trip."
+      - name: watchdog_alarm_bms__value
+        description: "BMS hardware watchdog alarm flag."
+      - name: watchdog_alarm_dc_dc_converter__has_value
+        description: "Indicates if DC/DC converter watchdog alarm status contains a value."
+      - name: watchdog_alarm_dc_dc_converter__is_valid
+        description: "Indicates if DC/DC converter watchdog alarm status is valid."
+      - name: watchdog_alarm_dc_dc_converter__timestamp
+        description: "Timestamp of DC/DC converter watchdog alarm trip."
+      - name: watchdog_alarm_dc_dc_converter__value
+        description: "DC/DC converter hardware watchdog alarm flag."
+      - name: watchdog_counter__has_value
+        description: "Indicates if hardware watchdog heartbeat counter contains a value."
+      - name: watchdog_counter__is_valid
+        description: "Indicates if hardware watchdog heartbeat counter is valid."
+      - name: watchdog_counter__timestamp
+        description: "Timestamp of watchdog counter update."
+      - name: watchdog_counter__value
+        description: "Monotonically increasing watchdog heartbeat pulse counter."
