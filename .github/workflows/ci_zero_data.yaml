@@ -29,13 +29,14 @@ jobs:
         with:
           python-version: 3.13
       - uses: astral-sh/setup-uv@v10.0.1
+      - uses: extractions/setup-just@v4
       - run: uv sync --locked
         working-directory: zero-data
-      - run: uv run ruff check --no-fix src tests
+      - run: just lint_no_fix
         working-directory: zero-data
-      - run: uv run ruff format --check src tests
+      - run: just format
         working-directory: zero-data
-      - run: uv run mypy src tests/greptime
+      - run: just type_check
         working-directory: zero-data
       # Local GreptimeDB for tests/greptime; offline — tests load the committed snapshot and run dbt build.
       - name: Start local GreptimeDB
@@ -45,7 +46,7 @@ jobs:
         run: uv run zero-data greptime load
         working-directory: zero-data
       - name: Unit Test
-        run: uv run pytest .
+        run: just test
         working-directory: zero-data
       - name: Stop local GreptimeDB
         if: always()

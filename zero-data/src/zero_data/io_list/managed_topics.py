@@ -1,10 +1,30 @@
+import logging
 import re
 from dataclasses import dataclass
-from typing import TypeGuard
+from enum import StrEnum
 
 from more_itertools import partition
 
 from .types import IOTopic
+
+logger = logging.getLogger(__name__)
+
+
+class ComponentType(StrEnum):
+    VALVE = "valve"
+    PUMP = "pump"
+    TEMPERATURE = "temperature"
+    FLOW = "flow"
+    PRESSURE = "pressure"
+    RH33 = "rh33"
+    PYRANOMETER = "pyranometer"
+    LEVEL_SWITCH = "level_switch"
+    LEVEL_SENSOR = "level_sensor"
+    AMCS_MODE = "amcs_mode"
+    CALCULATED_FLOW = "calculated_flow"
+    CALCULATED_TEMPERATURE = "calculated_temperature"
+    HEAT_TRANSFER = "heat_transfer"
+
 
 SYSTEMS = (
     "250000-fresh-water",
@@ -13,66 +33,77 @@ SYSTEMS = (
     "380000-sea-water",
     "500000-thrs",
 )
-TABLES = {
-    "mix": "valves",
-    "switch": "valves",
-    "flowcontrol": "valves",
-    "pump": "pumps",
-    "pump1": "pumps",
-    "pump2": "pumps",
-    "temperature": "temperatures",
-    "flow": "flows",
-    "pressure": "pressures",
-    "power": "rh33s",
-    "pyranometer": "pyranometers",
-    "level-switch": "level_switches",
-    "level": "level_sensors",
+COMPONENTS = {
+    "mix": ComponentType.VALVE,
+    "switch": ComponentType.VALVE,
+    "flowcontrol": ComponentType.VALVE,
+    "pump": ComponentType.PUMP,
+    "pump1": ComponentType.PUMP,
+    "pump2": ComponentType.PUMP,
+    "temperature": ComponentType.TEMPERATURE,
+    "flow": ComponentType.FLOW,
+    "pressure": ComponentType.PRESSURE,
+    "power": ComponentType.RH33,
+    "pyranometer": ComponentType.PYRANOMETER,
+    "level-switch": ComponentType.LEVEL_SWITCH,
+    "level": ComponentType.LEVEL_SENSOR,
+    "mode": ComponentType.AMCS_MODE,
 }
 
-# Sort table keys by length in descending order to match the longest key first
-table_keys = sorted(TABLES.keys(), key=len, reverse=True)
+# Sort component keys by length in descending order to match the longest key first
+component_keys = sorted(COMPONENTS.keys(), key=len, reverse=True)
 system_pattern = re.compile(r"\d{6}-([^/]+)")
 component_pattern = re.compile(r"^.*?-(.*)")
 
 
-def extract_parts(topic: IOTopic) -> tuple[str, str, str] | None:
+@dataclass
+class ManagedTopic:
+    system_name: str
+    module_name: str
+    technical_name: str
+    component: ComponentType
+    topic: IOTopic
+
+
+def extract_parts(topic: IOTopic) -> ManagedTopic | str:
     # example topics
     # marpower/500000-thrs/thrusters/thrusters-switch-aft
     # marpower/500000-thrs/dhw/dhw-temperature-dc-return
     # marpower/500000-thrs/pcm/pcm-flow-module3
     # marpower/250000-fresh-water/hot/hot-flow-crew-cabin-sb-mid
-    parts = topic.topic.split("/")
+    parts = topic.topic.split("/", maxsplit=3)
     if len(parts) < 4:
-        return None
+        return "Not enough topic parts"
+    if "/" in parts[3]:
+        return "To many topic parts"
     match = system_pattern.match(parts[1])
     if not match:
-        return None
+        return "System part is not formatted correctly"
+
     system_name = match.group(1).replace("-", "_")
+    module_name = parts[2]
     technical_name = parts[3]
-    match = component_pattern.match(technical_name)
-    if not match:
-        return None
-    component_string = match.group(1)
-    for table_key in table_keys:
-        if component_string == table_key or component_string.startswith(
-            table_key + "-"
+    if technical_name == "mode":
+        component_string = "mode"
+        technical_name = f"{module_name}-mode"
+    else:
+        match = component_pattern.match(technical_name)
+        if not match:
+            return "Component is not formatted correctly"
+        component_string = match.group(1)
+
+    for component_key in component_keys:
+        if component_string == component_key or component_string.startswith(
+            component_key + "-"
         ):
-            return TABLES[table_key], technical_name, system_name
-    return None
-
-
-@dataclass
-class ManagedTopic:
-    component: str
-    technical_name: str
-    system_name: str
-    topic: IOTopic
-
-
-def _has_extracted_parts(
-    topic_with_parts: tuple[tuple[str, str, str] | None, IOTopic],
-) -> TypeGuard[tuple[tuple[str, str, str], IOTopic]]:
-    return topic_with_parts[0] is not None
+            return ManagedTopic(
+                system_name,
+                module_name,
+                technical_name,
+                COMPONENTS[component_key],
+                topic,
+            )
+    return "Component is not of known type"
 
 
 def extract_managed_topics(
@@ -87,19 +118,20 @@ def extract_managed_topics(
         topics,
     )
     parsed_topics = [(extract_parts(topic), topic) for topic in matched_topics]
-    valid_topics = [
-        topic_with_parts
-        for topic_with_parts in parsed_topics
-        if _has_extracted_parts(topic_with_parts)
-    ]
-    invalid_topics = [topic for parts, topic in parsed_topics if parts is None]
     managed_topics = [
-        ManagedTopic(component, technical_name, system_name, topic)
-        for (component, technical_name, system_name), topic in valid_topics
+        parts for parts, _ in parsed_topics if isinstance(parts, ManagedTopic)
     ]
+    invalid_topics = [
+        (parts, topic)
+        for parts, topic in parsed_topics
+        if not isinstance(parts, ManagedTopic)
+    ]
+
+    for topic in invalid_topics:
+        logger.warning(f"Invalid managed topic {topic[1].topic}: {topic[0]}")
 
     return (
         managed_topics,
-        invalid_topics,
+        [topic for _, topic in invalid_topics],
         list(other_topics),
     )

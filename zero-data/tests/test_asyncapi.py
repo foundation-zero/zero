@@ -10,6 +10,7 @@ from zero_data.asyncapi import (
     served_fields,
 )
 from zero_data.io_list import read_io_list
+from zero_data.io_list.managed_topics import ManagedTopic, extract_managed_topics
 from zero_data.io_list.types import IOResult, IOTopic, IOValue
 
 
@@ -19,14 +20,21 @@ def io_result() -> IOResult:
 
 
 @pytest.fixture(scope="module")
+def managed_topics(io_result: IOResult) -> list[ManagedTopic]:
+    managed_topics, *_ = extract_managed_topics(io_result.topics)
+
+    return managed_topics
+
+
+@pytest.fixture(scope="module")
 def document(io_result: IOResult) -> dict:
     return build_asyncapi(io_result)
 
 
 def test_every_topic_has_one_channel_and_one_send_operation(
-    io_result: IOResult, document: dict
+    managed_topics: list[ManagedTopic], document: dict
 ):
-    keys = {key(topic.topic) for topic in io_result.topics}
+    keys = {key(topic) for topic in managed_topics}
 
     assert set(document["channels"]) == keys
     assert set(document["operations"]) == keys
@@ -36,10 +44,10 @@ def test_every_topic_has_one_channel_and_one_send_operation(
 
 
 def test_address_keeps_the_devices_prefix_as_env_parameter(
-    io_result: IOResult, document: dict
+    managed_topics: list[ManagedTopic], document: dict
 ):
-    for topic in io_result.topics:
-        channel = document["channels"][key(topic.topic)]
+    for topic in managed_topics:
+        channel = document["channels"][key(topic)]
         prefix, _, rest = channel["address"].partition("/")
 
         assert prefix == "{mqtt_devices_topic_prefix}"
@@ -51,18 +59,16 @@ def test_address_keeps_the_devices_prefix_as_env_parameter(
 
 
 def test_every_field_is_a_stamped_value_of_its_data_type(
-    io_result: IOResult, document: dict
+    managed_topics: list[ManagedTopic], document: dict
 ):
     schemas = document["components"]["schemas"]
-    for topic in io_result.topics:
-        payload = document["channels"][key(topic.topic)]["messages"]["message"][
-            "payload"
-        ]
+    for topic in managed_topics:
+        payload = document["channels"][key(topic)]["messages"]["message"]["payload"]
 
         assert set(payload["properties"]) == {
-            field.name for field in served_fields(topic)
+            field for field in served_fields(topic.topic)
         }
-        for field in topic.fields:
+        for field in topic.topic.fields:
             ref = payload["properties"][field.name]["$ref"]
             stamped = schemas[ref.removeprefix(SCHEMA_REF_PREFIX)]
             assert set(stamped["properties"]) == {"Value", "TimeStamp"}
@@ -87,5 +93,5 @@ def test_fields_whose_graphql_names_collide_are_both_left_out(caplog):
         ],
     )
 
-    assert [field.name for field in served_fields(topic)] == ["Pressure", "Temperature"]
+    assert [field for field in served_fields(topic)] == ["Pressure", "Temperature"]
     assert "Tank_Level_Sensor, Tank_level_sensor" in caplog.text

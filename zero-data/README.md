@@ -6,7 +6,8 @@ This repository contains the Zero data platform and scripts to process IO lists 
 
 1. Create a `.env` file based on `.env-example` in the root folder.
 
-3. Start the services. Run in the root folder:
+2. Start the services. Run in the root folder:
+
 ```bash
 docker compose --profile data up -d
 ```
@@ -14,6 +15,7 @@ docker compose --profile data up -d
 ## Development Setup
 
 1. Install dependencies:
+
    ```bash
    uv sync --locked
    ```
@@ -23,6 +25,7 @@ docker compose --profile data up -d
 3. Set up the GSheet service account key file from Bitwarden.
 
 4. Start the required services. Run in the root folder:
+
    ```bash
    docker compose --profile zero up -d
    ```
@@ -32,11 +35,13 @@ docker compose --profile data up -d
 ### Running Components
 
 Generate DBT SQL files:
+
 ```bash
 uv run zero-data generate-dbt
 ```
 
 Start the data mocker:
+
 ```bash
 uv run zero-data generate-data
 ```
@@ -44,10 +49,13 @@ uv run zero-data generate-data
 ## Testing
 
 1. Make sure the dependencies for testing are installed
+
    ```bash
    uv sync --locked
    ```
+
 1. Run the tests
+
    ```bash
    uv run pytest .
    ```

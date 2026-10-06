@@ -1,9 +1,9 @@
 # TODO: generate this from asyncapi spec
-from zero_data.io_list.managed_topics import ManagedTopic
+from zero_data.io_list.managed_topics import ComponentType, ManagedTopic
 from zero_data.io_list.types import IOTopic
 
-THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
-    "calculated_flows": {
+THRS_CALCULATED_DEVICES: dict[ComponentType, dict[str, tuple[str, ...]]] = {
+    ComponentType.CALCULATED_FLOW: {
         "dc": (
             "dc-total-flow",
             "dc-aft-flow",
@@ -20,7 +20,7 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
         ),
         "thrusters": ("thrusters-flow",),
     },
-    "calculated_temperatures": {
+    ComponentType.CALCULATED_TEMPERATURE: {
         "pcm": ("pcm-temperature-consumers-return",),
         "pvt": (
             "pvt-max-temperature-main-aft-strings",
@@ -39,7 +39,7 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
             "thrusters-temperature-pre-cooler",
         ),
     },
-    "heat_transfers": {
+    ComponentType.HEAT_TRANSFER: {
         "adsorption": (
             "adsorption-ht-exchanger",
             "adsorption-dhw-exchanger",
@@ -92,9 +92,10 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
 def generate_controller_managed_topics():
     return [
         ManagedTopic(
-            component,
-            technical_name,
             "thrs",
+            module,
+            technical_name,
+            component,
             IOTopic(f"thrs/controller/{module}/{technical_name}", [], ""),
         )
         for component, data in THRS_CALCULATED_DEVICES.items()

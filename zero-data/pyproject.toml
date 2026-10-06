@@ -19,6 +19,7 @@ dependencies = [
     # dbt tooling's metricflow, which pins more-itertools<11.
     "more-itertools>=10.0.0",
     "psycopg[binary]>=3.2.0,<4.0.0",
+    "stringcase~=1.2.0",
 ]
 dynamic = ["version"]
 
