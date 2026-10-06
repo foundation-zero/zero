@@ -64,7 +64,7 @@ const propulsionCoolers = DRIVES_ASSET_DATA[MimicComponentType.PropulsionCooler]
     :width="169"
     :height="158"
     dense
-    v-bind="propulsionCoolers.aft"
+    v-bind="propulsionCoolers['1012']"
   />
   <PropulsionCoolerInstance
     x="614"
@@ -72,7 +72,7 @@ const propulsionCoolers = DRIVES_ASSET_DATA[MimicComponentType.PropulsionCooler]
     :width="169"
     :height="158"
     dense
-    v-bind="propulsionCoolers.fwd"
+    v-bind="propulsionCoolers['1013']"
   />
   <ShorePowerConverterInstance
     x="881.1582"

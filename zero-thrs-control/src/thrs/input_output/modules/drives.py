@@ -236,6 +236,7 @@ class DrivesSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
+            yard_tag="50001012",
             component_type="heat_transfer",
             included_in_fmu=False,
         )
@@ -348,6 +349,7 @@ class DrivesSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
+            yard_tag="50001013",
             component_type="heat_transfer",
             included_in_fmu=False,
         )

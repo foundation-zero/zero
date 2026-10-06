@@ -37,35 +37,31 @@ const propdrive = (
 
 export const DRIVES_ASSET_DATA = toFieldsMap({
   [MimicComponentType.PropulsionCooler]: {
-    aft: toInstance<MimicComponentType.PropulsionCooler>({
+    "1012": toInstance<MimicComponentType.PropulsionCooler>({
       controls: {},
       controllerState: {},
       custom: {},
       parameters: {},
-      sensors: {
-        heatTransfer: getField(
-          SensorComponentType.HeatTransferDevice,
-          "drives",
-          "drivesAftOilCoolerHeat",
-        ),
+      sensors: {},
+      source: getField(SensorComponentType.HeatTransferDevice, "drives", "drivesAftOilCoolerHeat"),
+      get tooltip() {
+        return fieldTooltip(this.source, {
+          title: "aft",
+        });
       },
-      source: undefined,
-      tooltip: { title: "aft", yardTag: "50001012" },
     }),
-    fwd: toInstance<MimicComponentType.PropulsionCooler>({
+    "1013": toInstance<MimicComponentType.PropulsionCooler>({
       controls: {},
       controllerState: {},
       custom: {},
       parameters: {},
-      sensors: {
-        heatTransfer: getField(
-          SensorComponentType.HeatTransferDevice,
-          "drives",
-          "drivesFwdOilCoolerHeat",
-        ),
+      sensors: {},
+      source: getField(SensorComponentType.HeatTransferDevice, "drives", "drivesFwdOilCoolerHeat"),
+      get tooltip() {
+        return fieldTooltip(this.source, {
+          title: "fwd",
+        });
       },
-      source: undefined,
-      tooltip: { title: "fwd", yardTag: "50001013" },
     }),
   },
   [MimicComponentType.PropulsionDrive]: {

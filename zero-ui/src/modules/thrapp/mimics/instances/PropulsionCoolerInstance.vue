@@ -61,8 +61,8 @@ const state = getComponentState();
       >
         <ValueListSeparator />
 
-        <ValueListHeatPowerItem :source="sensors.heatTransfer" />
-        <ValueListDeltaTItem :source="sensors.heatTransfer" />
+        <ValueListHeatPowerItem :source="source" />
+        <ValueListDeltaTItem :source="source" />
         <ValueListSeparator />
       </ValueList>
     </AssetBox>

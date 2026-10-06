@@ -95,9 +95,7 @@ export type SensorFieldDefinitions = SensorFields<{
     power: SensorComponentType.Pvt;
     temperature: SensorComponentType.Temperature;
   };
-  [MimicComponentType.PropulsionCooler]: {
-    heatTransfer: SensorComponentType.HeatTransferDevice;
-  };
+  [MimicComponentType.PropulsionCooler]: EmptyObject;
   [MimicComponentType.ShorePowerConverter]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
     power: SensorComponentType.Pvt;
@@ -374,7 +372,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.ExchangeCircuit]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.DcConverter]: SensorComponentType.ShorePowerConverter | null;
   [MimicComponentType.PropulsionDrive]: SensorComponentType.PropulsionDrive;
-  [MimicComponentType.PropulsionCooler]: undefined;
+  [MimicComponentType.PropulsionCooler]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.ShorePowerConverter]: SensorComponentType.ShorePowerConverter;
   [MimicComponentType.Pvt]: SensorComponentType.Pvt;
   [MimicComponentType.Thruster]: SensorComponentType.Thruster;

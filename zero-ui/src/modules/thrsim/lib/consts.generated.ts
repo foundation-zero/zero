@@ -1400,6 +1400,7 @@ export const DRIVES_PARAMETER_DEFINITION = toParameterDefinition({
 
 export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
   drivesAftOilCoolerHeat: {
+    yardTag: "50001012",
     componentType: SensorComponentType.HeatTransferDevice,
   },
   drivesDhwExchanger: {
@@ -1447,6 +1448,7 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
     valveType: ValveType.FlowControl,
   },
   drivesFwdOilCoolerHeat: {
+    yardTag: "50001013",
     componentType: SensorComponentType.HeatTransferDevice,
   },
   drivesMixExchanger: {
