@@ -13,7 +13,11 @@ export const DC_MODE_COLORS: Record<DcMode, ModeBadgeMode> = {
 };
 
 export type DcConverterStatusProps = {
-  sources: ModuleField<SensorComponentType.Brightloop | SensorComponentType.Ugrid>[];
+  sources: ModuleField<
+    | SensorComponentType.Brightloop
+    | SensorComponentType.Ugrid
+    | SensorComponentType.ShorePowerConverter
+  >[];
 };
 
-export type DcConverterTitleKey = "group1" | "group2" | "group3";
+export type DcConverterTitleKey = "group1" | "group2" | "group3" | "shorepower";

@@ -267,7 +267,11 @@ export type CustomFieldDefinitions = CustomFields<{
     modeModule?: keyof ControlStatus["modules"];
   };
   [MimicComponentType.DcConverter]: {
-    converters: ModuleField<SensorComponentType.Ugrid | SensorComponentType.Brightloop>[];
+    converters: ModuleField<
+      | SensorComponentType.Ugrid
+      | SensorComponentType.Brightloop
+      | SensorComponentType.ShorePowerConverter
+    >[];
     group: DcConverterGroup;
   };
   [MimicComponentType.ConnectingCircuit]: {

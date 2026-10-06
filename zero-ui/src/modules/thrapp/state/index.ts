@@ -8,7 +8,7 @@ import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrsim/types";
 import { computed, inject, Ref, toRefs } from "vue";
 
 export type PvtGroup = keyof PvtAutomaticMode;
-export type DcConverterGroup = keyof DcAutomaticMode;
+export type DcConverterGroup = keyof DcAutomaticMode | "shorepower";
 
 export const usePvtMode = (group: PvtGroup) => {
   const { control } = toRefs(useAutomationStore());
@@ -21,9 +21,13 @@ export const usePvtMode = (group: PvtGroup) => {
 export const useDcMode = (group: DcConverterGroup) => {
   const { control } = toRefs(useAutomationStore());
 
-  return computed(
-    () => control.value?.modules?.dc.controlMode?.automaticMode?.[group]?.mode ?? DcMode.Idle,
-  );
+  return computed(() => {
+    if (group === "shorepower") {
+      return control.value?.modules?.drives.controlMode?.automaticMode?.mode ?? DcMode.Idle;
+    }
+
+    return control.value?.modules?.dc.controlMode?.automaticMode?.[group]?.mode ?? DcMode.Idle;
+  });
 };
 
 export const useAutomaticMode = () => {
