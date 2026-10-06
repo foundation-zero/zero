@@ -611,7 +611,7 @@
           "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  time,\r\n  MAX(CASE WHEN main_group = 'Domestic' THEN power_value ELSE 0 END)  AS domestic,\r\n  MAX(CASE WHEN main_group = 'HVAC' THEN power_value ELSE 0 END)      AS hvac,\r\n  MAX(CASE WHEN main_group = 'Technical' THEN power_value ELSE 0 END) AS technical,\r\n  NULL                                                                AS propulsion,\r\n  NULL                                                                AS solar,\r\n  NULL                                                                AS shore_power,\r\n  NULL                                                                AS hydro\r\n  FROM (\r\n  SELECT\r\n    MAX(time) AS time,\r\n    main_group,\r\n    AVG(power_value) AS power_value\r\n  FROM (\r\n    SELECT\r\n      time,\r\n      main_group,\r\n      SUM(power) AS power_value\r\n    FROM views.gld_electrical_power_consumption_per_minute\r\n    WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n    GROUP BY\r\n      time,\r\n      main_group\r\n  )\r\n  GROUP BY main_group\r\n)\r\nGROUP BY time",
+          "rawSql": "SELECT\r\n  time,\r\n\t-- Producers\r\n  NULL                                                                AS solar,\r\n  NULL                                                                AS shore_power,\r\n  NULL                                                                AS hydro,\r\n  -- Consumers\r\n  MAX(CASE WHEN main_group = 'Domestic' THEN power_value ELSE 0 END)  AS domestic,\r\n  MAX(CASE WHEN main_group = 'HVAC' THEN power_value ELSE 0 END)      AS hvac,\r\n  MAX(CASE WHEN main_group = 'Technical' THEN power_value ELSE 0 END) AS technical,\r\n  NULL                                                                AS propulsion,\r\nFROM (\r\n  SELECT\r\n    MAX(time) AS time,\r\n    main_group,\r\n    AVG(power_value) AS power_value\r\n  FROM (\r\n    SELECT\r\n      time,\r\n      main_group,\r\n      SUM(power) AS power_value\r\n    FROM views.gld_electrical_power_consumption_per_minute\r\n    WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n    GROUP BY\r\n      time,\r\n      main_group\r\n  )\r\n  GROUP BY main_group\r\n)\r\nGROUP BY time",
           "refId": "A",
           "sql": {
             "columns": [
@@ -652,7 +652,7 @@
           },
           "pluginVersion": "3.0.2",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  MAX(time) AS time,\r\n  SUM(avg_energy_per_pack) AS energy,\r\n  AVG(avg_soc_per_pack) AS soc,\r\n  SUM(avg_charging_power_per_pack) AS charging_power,\r\n  SUM(avg_discharging_power_per_pack) AS discharging_power\r\nFROM (\r\n  SELECT\r\n    MAX(time) AS time,\r\n    topic,\r\n    AVG(avg_energy) AS avg_energy_per_pack,\r\n    AVG(avg_soc) AS avg_soc_per_pack,\r\n    CASE WHEN MAX(is_charging) THEN AVG(ABS(avg_battery_power)) ELSE 0 END AS avg_charging_power_per_pack,\r\n    CASE WHEN MAX(is_discharging) THEN AVG(avg_battery_power) ELSE 0 END AS avg_discharging_power_per_pack,\r\n  FROM views.gld_batteries_per_minute\r\n  WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n  GROUP BY topic\r\n)",
+          "rawSql": "SELECT\r\n  MAX(time)                                                                                                  AS time,\r\n  SUM(avg_energy_per_pack)                                                                                   AS energy,\r\n  (SUM(avg_energy_per_pack) / NULLIF(SUM(avg_energy_per_pack / NULLIF(avg_soc_per_pack, 0) * 100), 0)) * 100 AS soc,\r\n  SUM(avg_charging_power_per_pack)                                                                           AS charging_power,\r\n  SUM(avg_discharging_power_per_pack)                                                                        AS discharging_power\r\nFROM (\r\n  SELECT\r\n    MAX(time)                                                              AS time,\r\n    topic,\r\n    AVG(avg_energy)                                                        AS avg_energy_per_pack,\r\n    AVG(avg_soc)                                                           AS avg_soc_per_pack,\r\n    CASE WHEN MAX(is_charging) THEN AVG(ABS(avg_battery_power)) ELSE 0 END AS avg_charging_power_per_pack,\r\n    CASE WHEN MAX(is_discharging) THEN AVG(avg_battery_power) ELSE 0 END   AS avg_discharging_power_per_pack,\r\n  FROM views.gld_batteries_per_minute\r\n  WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n  GROUP BY topic\r\n)",
           "refId": "B"
         }
       ],
@@ -668,7 +668,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "continuous-YlRd"
           },
           "decimals": 1,
           "fieldMinMax": false,
@@ -677,28 +677,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "super-light-blue",
+                "color": "text",
                 "value": 0
-              },
-              {
-                "color": "light-blue",
-                "value": 2000
-              },
-              {
-                "color": "blue",
-                "value": 4000
-              },
-              {
-                "color": "semi-dark-blue",
-                "value": 7000
-              },
-              {
-                "color": "dark-blue",
-                "value": 10000
-              },
-              {
-                "color": "#194e9f",
-                "value": 15000
               }
             ]
           },
@@ -746,7 +726,7 @@
           "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tmain_group AS group_name,\r\n\tsub_group AS sub_group_name,\r\n\tSUM(energy) AS energy,\r\n  SUM(SUM(energy)) OVER (PARTITION BY main_group) AS group_energy\r\nFROM (\r\n\tSELECT\r\n    date_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tsub_group,\r\n\t\tSUM(power) / 60 AS energy\r\n\tFROM views.gld_electrical_power_consumption_per_minute\r\n\tWHERE main_group IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(time)\r\n\tGROUP BY hour, main_group, sub_group\r\n)\r\nGROUP BY main_group, sub_group",
+          "rawSql": "SELECT\r\n\tmain_group                                      AS group_name,\r\n\tsub_group                                       AS sub_group_name,\r\n\tSUM(energy)                                     AS energy,\r\n  SUM(SUM(energy)) OVER (PARTITION BY main_group) AS group_energy\r\nFROM (\r\n\tSELECT\r\n    date_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tsub_group,\r\n\t\tSUM(power) / 60          AS energy\r\n\tFROM views.gld_electrical_power_consumption_per_minute\r\n\tWHERE main_group IN ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\n\tAND $__timeFilter(time)\r\n\tGROUP BY hour, main_group, sub_group\r\n)\r\nGROUP BY main_group, sub_group",
           "refId": "A",
           "sql": {
             "columns": [
