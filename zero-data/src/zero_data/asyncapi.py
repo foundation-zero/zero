@@ -32,17 +32,6 @@ JSON_TYPES = {
 
 SCHEMA_REF_PREFIX = "#/components/schemas/"
 
-TOPICS_ALLOWLIST = (
-    "marpower/150000",  # propulsion
-    "marpower/210000",  # Bilge
-    "marpower/250000",  # Freshwater
-    "marpower/280000",  # Hydraulic sail
-    "marpower/380000",  # Seawater
-    "marpower/450000",  # DC distribution
-    "marpower/500000",  # Thrs
-    "marpower/550000",  # Navigation lights
-)
-
 
 def stamped_schema_name(data_type: str) -> str:
     return f"stamped{stringcase.capitalcase(JSON_TYPES[data_type])}"

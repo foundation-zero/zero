@@ -75,7 +75,7 @@ def extract_parts(topic: IOTopic) -> ManagedTopic | str:
     if len(parts) < 4:
         return "Not enough topic parts"
     if "/" in parts[3]:
-        return "To many topic parts"
+        return "Too many topic parts"
     match = system_pattern.match(parts[1])
     if not match:
         return "System part is not formatted correctly"
