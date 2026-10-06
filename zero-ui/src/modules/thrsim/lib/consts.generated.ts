@@ -103,6 +103,10 @@ export const ADSORPTION_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001034",
     componentType: SensorComponentType.AdsorptionChiller,
   },
+  adsorptionCoolingHeat: {
+    yardTag: "50001034",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
   adsorptionDhwExchanger: {
     yardTag: "50001004",
     componentType: SensorComponentType.HeatTransferDevice,
@@ -128,6 +132,10 @@ export const ADSORPTION_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
+  adsorptionHotHeat: {
+    yardTag: "50001034",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
   adsorptionHtExchanger: {
     yardTag: "50001003",
     componentType: SensorComponentType.HeatTransferDevice,
@@ -141,6 +149,10 @@ export const ADSORPTION_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001047-01",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Mix,
+  },
+  adsorptionSeawaterExchanger: {
+    yardTag: "50001005",
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   adsorptionSwitchDhw: {
     yardTag: "50001187-01",
@@ -173,6 +185,25 @@ export const ADSORPTION_SENSOR_DEFINITION = toSensorDefinition({
   },
   adsorptionTemperatureWasteSupply: {
     yardTag: "50001038-39",
+    componentType: SensorComponentType.Temperature,
+  },
+  adsorptionTemperatureWasteSupplyBeforeSeawater: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  adsorptionWasteHeat: {
+    yardTag: "50001034",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  coolingFlowAdsorption: {
+    yardTag: "50001058-05",
+    componentType: SensorComponentType.Flow,
+  },
+  coolingTemperatureAdsorptionReturn: {
+    yardTag: "50001038-42",
+    componentType: SensorComponentType.Temperature,
+  },
+  coolingTemperatureAdsorptionSupply: {
+    yardTag: "50001038-43",
     componentType: SensorComponentType.Temperature,
   },
   mode: {
