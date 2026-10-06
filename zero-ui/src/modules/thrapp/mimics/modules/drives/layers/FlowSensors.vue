@@ -20,7 +20,6 @@ const flowSensors = DRIVES_FLOW_SENSOR_DATA.FlowSensor;
         target-x="322.6582"
         :target-width="FLOW_SENSOR_WIDTH"
         y="108.916"
-        :height="33"
         :tag-id="flowSensors['1057-16'].tooltip?.yardTag"
         :flow="flowSensors['1057-16'].source"
       />
@@ -35,7 +34,6 @@ const flowSensors = DRIVES_FLOW_SENSOR_DATA.FlowSensor;
         target-x="322.6582"
         :target-width="FLOW_SENSOR_WIDTH"
         y="327.916"
-        :height="33"
         :tag-id="flowSensors['1057-13'].tooltip?.yardTag"
         :flow="flowSensors['1057-13'].source"
       />
@@ -50,7 +48,6 @@ const flowSensors = DRIVES_FLOW_SENSOR_DATA.FlowSensor;
         target-x="322.6582"
         :target-width="FLOW_SENSOR_WIDTH"
         y="561.916"
-        :height="33"
         :tag-id="flowSensors['1057-14'].tooltip?.yardTag"
         :flow="flowSensors['1057-14'].source"
       />
@@ -65,7 +62,6 @@ const flowSensors = DRIVES_FLOW_SENSOR_DATA.FlowSensor;
         target-x="322.6582"
         :target-width="FLOW_SENSOR_WIDTH"
         y="771.916"
-        :height="33"
         :tag-id="flowSensors['1057-15'].tooltip?.yardTag"
         :flow="flowSensors['1057-15'].source"
       />
@@ -77,9 +73,8 @@ const flowSensors = DRIVES_FLOW_SENSOR_DATA.FlowSensor;
       v-bind="flowSensors['1057-10']"
     >
       <FlowLabelInstance
-        x="870.1582"
-        y="257.916"
-        :height="33"
+        x="860.1582"
+        y="250.916"
         :tag-id="flowSensors['1057-10'].tooltip?.yardTag"
         :flow="flowSensors['1057-10'].source"
       />
@@ -94,7 +89,6 @@ const flowSensors = DRIVES_FLOW_SENSOR_DATA.FlowSensor;
         target-x="1260.1582"
         :target-width="FLOW_SENSOR_WIDTH"
         y="293"
-        :height="33"
         :tag-id="flowSensors['1058-03'].tooltip?.yardTag"
         :flow="flowSensors['1058-03'].source"
       />

@@ -293,13 +293,22 @@
         "groups": {
           "group1": "DC/DC group 1",
           "group2": "DC/AC group 1",
-          "group3": "DC/DC group 2",
-          "shorepower": "Shorepower converters"
+          "group3": "DC/DC group 2"
         },
         "assets": {
           "modes": {
             "recovery": "Recovery",
             "idle": "Idle"
+          }
+        }
+      },
+      "drives": {
+        "assets": {
+          "propulsionDrive": "Aradex prop Drive",
+          "shorepower": "Shorepower converters",
+          "propulsionCooler": {
+            "aft": "Aft. Prop. Oil Cooler",
+            "fwd": "Fwd. Prop. Oil Cooler"
           }
         }
       },

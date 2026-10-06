@@ -20,7 +20,6 @@ const temperatureSensors = DRIVES_TEMPERATURE_SENSOR_DATA.TemperatureSensor;
         target-x="330.6582"
         :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="15.916"
-        :height="33"
         :tag-id="temperatureSensors['1038-64'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-64'].source"
       />
@@ -35,7 +34,6 @@ const temperatureSensors = DRIVES_TEMPERATURE_SENSOR_DATA.TemperatureSensor;
         target-x="326.6582"
         :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="206.916"
-        :height="33"
         :tag-id="temperatureSensors['1038-32'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-32'].source"
       />
@@ -50,7 +48,6 @@ const temperatureSensors = DRIVES_TEMPERATURE_SENSOR_DATA.TemperatureSensor;
         target-x="326.6582"
         :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="451.916"
-        :height="33"
         :tag-id="temperatureSensors['1038-72'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-72'].source"
       />
@@ -65,7 +62,6 @@ const temperatureSensors = DRIVES_TEMPERATURE_SENSOR_DATA.TemperatureSensor;
         target-x="326.6582"
         :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="662.916"
-        :height="33"
         :tag-id="temperatureSensors['1038-61'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-61'].source"
       />
@@ -80,7 +76,6 @@ const temperatureSensors = DRIVES_TEMPERATURE_SENSOR_DATA.TemperatureSensor;
         target-x="476.1582"
         :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="329.916"
-        :height="33"
         :tag-id="temperatureSensors['1038-63'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-63'].source"
       />
@@ -95,7 +90,6 @@ const temperatureSensors = DRIVES_TEMPERATURE_SENSOR_DATA.TemperatureSensor;
         target-x="476.1582"
         :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="775.916"
-        :height="33"
         :tag-id="temperatureSensors['1038-62'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-62'].source"
       />
@@ -108,8 +102,7 @@ const temperatureSensors = DRIVES_TEMPERATURE_SENSOR_DATA.TemperatureSensor;
     >
       <TemperatureLabelInstance
         x="1044"
-        y="257"
-        :height="33"
+        y="250"
         :tag-id="temperatureSensors['1038-11'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-11'].source"
       />
@@ -124,7 +117,6 @@ const temperatureSensors = DRIVES_TEMPERATURE_SENSOR_DATA.TemperatureSensor;
         target-x="1144.1582"
         :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="281.916"
-        :height="33"
         :tag-id="temperatureSensors['1038-16'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-16'].source"
       />
@@ -139,7 +131,6 @@ const temperatureSensors = DRIVES_TEMPERATURE_SENSOR_DATA.TemperatureSensor;
         target-x="964.1582"
         :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="540.916"
-        :height="33"
         :tag-id="temperatureSensors['1038-14'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-14'].source"
       />
@@ -154,7 +145,6 @@ const temperatureSensors = DRIVES_TEMPERATURE_SENSOR_DATA.TemperatureSensor;
         target-x="1512.1582"
         :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="292.916"
-        :height="33"
         :tag-id="temperatureSensors['1038-59'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-59'].source"
       />
@@ -169,7 +159,6 @@ const temperatureSensors = DRIVES_TEMPERATURE_SENSOR_DATA.TemperatureSensor;
         target-x="1611.1582"
         :target-width="TEMPERATURE_SENSOR_WIDTH"
         y="597.916"
-        :height="33"
         :tag-id="temperatureSensors['1038-57'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-57'].source"
       />

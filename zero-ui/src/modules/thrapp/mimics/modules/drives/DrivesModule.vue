@@ -11,6 +11,7 @@ import ManualValves from "./layers/ManualValves.vue";
 import MixValves from "./layers/MixValves.vue";
 import Pipes from "./layers/Pipes.vue";
 import PressureGauges from "./layers/PressureGauges.vue";
+import PressureSensors from "./layers/PressureSensors.vue";
 import Pumps from "./layers/Pumps.vue";
 import SwitchValves from "./layers/SwitchValves.vue";
 import TemperatureSensors from "./layers/TemperatureSensors.vue";
@@ -33,6 +34,7 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
     <FlowControlValves />
     <Pumps />
     <FlowSensors />
+    <PressureSensors />
     <PressureGauges />
     <TemperatureSensors />
     <DirectionArrows

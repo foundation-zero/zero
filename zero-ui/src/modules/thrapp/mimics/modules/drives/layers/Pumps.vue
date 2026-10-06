@@ -19,7 +19,6 @@ const pumps = DRIVES_PUMP_DATA.Pump;
         target-x="1411.8037"
         :target-width="PUMP_WIDTH"
         y="547.916"
-        :height="33"
         :tag-id="pumps['1028'].tooltip?.yardTag"
         :pump="pumps['1028'].controls.pump"
       />
@@ -34,7 +33,6 @@ const pumps = DRIVES_PUMP_DATA.Pump;
         target-x="1411.8037"
         :target-width="PUMP_WIDTH"
         y="780.6006"
-        :height="33"
         :tag-id="pumps['1029'].tooltip?.yardTag"
         :pump="pumps['1029'].controls.pump"
       />

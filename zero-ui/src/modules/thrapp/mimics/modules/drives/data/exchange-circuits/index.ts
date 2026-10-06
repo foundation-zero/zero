@@ -5,6 +5,22 @@ import { getField } from "../../../../providers";
 import { fieldTooltip } from "../../../shared";
 
 export const DRIVES_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
+  [MimicComponentType.SeawaterCircuit]: {
+    seawater: toInstance<MimicComponentType.SeawaterCircuit>({
+      controls: {},
+      controllerState: {},
+      custom: { circuitName: "Seawater" },
+      parameters: {},
+      sensors: {},
+      source: getField(SensorComponentType.Temperature, "dc", "placeholder"),
+      get tooltip() {
+        return fieldTooltip(this.source, {
+          title: "Seawater circuit",
+          componentType: `Seawater loop`,
+        });
+      },
+    }),
+  },
   [MimicComponentType.ExchangeCircuit]: {
     domesticHotWater: toInstance<MimicComponentType.ExchangeCircuit>({
       controls: {},

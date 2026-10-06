@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ZiSeawater } from "@/modules/common/components/icons";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
@@ -28,13 +29,15 @@ const state = getComponentState();
     <CircuitBox
       v-bind="props"
       :state="state"
+      height="200"
     >
-      <CircuitBoxTitle>Seawater</CircuitBoxTitle>
+      <CircuitBoxTitle class="flex items-center gap-1"><ZiSeawater />Seawater</CircuitBoxTitle>
 
       <ValueList dense>
         <ValueListSeparator />
         <ValueListTemperatureItem
           :source="source"
+          class="text-brand"
           temperature-label="seawater"
         />
         <ValueListSeparator />

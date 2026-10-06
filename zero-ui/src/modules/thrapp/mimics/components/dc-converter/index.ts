@@ -20,4 +20,4 @@ export type DcConverterStatusProps = {
   >[];
 };
 
-export type DcConverterTitleKey = "group1" | "group2" | "group3" | "shorepower";
+export type DcConverterTitleKey = "group1" | "group2" | "group3";
