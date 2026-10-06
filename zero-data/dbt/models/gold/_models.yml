@@ -12,6 +12,8 @@ models:
           - not_null
       - name: topic
         description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
       - name: consumer
         description: "Consumer identifier associated with the tag."
       - name: avg_power
@@ -35,3 +37,30 @@ models:
         description: "The main group classification of the power tag."
       - name: sub_group
         description: "The sub group classification, within the main group, of the power tag."
+  - name: gld_batteries_per_minute
+    description: >
+      Battery metrics aggregated per minute.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the minute interval for the aggregated battery metrics."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: avg_soc
+        description: "Average state of charge aggregated per minute."
+      - name: avg_soh
+        description: "Average state of health aggregated per minute."
+      - name: avg_energy
+        description: "Average energy aggregated per minute."
+      - name: avg_battery_power
+        description: "Average battery power aggregated per minute."
+      - name: avg_charge_power
+        description: "Average charge power aggregated per minute."
+      - name: is_charging
+        description: "Indicates if the battery is charging during the minute interval."
+      - name: is_discharging
+        description: "Indicates if the battery is discharging during the minute interval."
