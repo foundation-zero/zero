@@ -7,8 +7,7 @@ import { fieldTooltip } from "../../../shared";
 import { DRIVES_EXCHANGE_CIRCUIT_DATA } from "../exchange-circuits";
 
 const heatExchanger = (
-  field: "drivesDhwExchanger" | "placeholder",
-  yardTag: string,
+  field: "drivesDhwExchanger" | "drivesSeawaterExchanger",
   sideA: HeatExchangerPortOrientation,
   sideB: HeatExchangerPortOrientation,
   exchangeCircuit?: ModuleField<SensorComponentType.HeatTransferDevice>,
@@ -20,7 +19,7 @@ const heatExchanger = (
     custom: {
       sideA,
       sideB,
-      exchangeCircuit: exchangeCircuit ?? source,
+      exchangeCircuit: exchangeCircuit,
     },
     parameters: {},
     sensors: {},
@@ -29,7 +28,6 @@ const heatExchanger = (
       return fieldTooltip(this.source, {
         title: "Heat exchanger",
         componentType: "Heat exchanger",
-        yardTag,
       });
     },
   });
@@ -38,14 +36,12 @@ const heatExchanger = (
 export const DRIVES_HEAT_EXCHANGER_DATA = toFieldsMap({
   [MimicComponentType.HeatExchanger]: {
     "1011": heatExchanger(
-      "placeholder",
-      "1011",
+      "drivesSeawaterExchanger",
       HeatExchangerPortOrientation.Side,
       HeatExchangerPortOrientation.Top,
     ),
     "1009": heatExchanger(
       "drivesDhwExchanger",
-      "1009",
       HeatExchangerPortOrientation.Top,
       HeatExchangerPortOrientation.Top,
       DRIVES_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit].domesticHotWater.source,
