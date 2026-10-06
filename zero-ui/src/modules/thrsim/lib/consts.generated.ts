@@ -1399,9 +1399,15 @@ export const DRIVES_PARAMETER_DEFINITION = toParameterDefinition({
 });
 
 export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
+  drivesAftOilCoolerHeat: {
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
   drivesDhwExchanger: {
     yardTag: "50001009",
     componentType: SensorComponentType.HeatTransferDevice,
+  },
+  drivesFlowPropdriveAft: {
+    componentType: SensorComponentType.CalculatedFlow,
   },
   drivesFlowPropdriveAft1: {
     yardTag: "50001057-13",
@@ -1410,6 +1416,9 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
   drivesFlowPropdriveAft2: {
     yardTag: "50001057-16",
     componentType: SensorComponentType.Flow,
+  },
+  drivesFlowPropdriveFwd: {
+    componentType: SensorComponentType.CalculatedFlow,
   },
   drivesFlowPropdriveFwd1: {
     yardTag: "50001057-15",
@@ -1437,6 +1446,9 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Valve,
     valveType: ValveType.FlowControl,
   },
+  drivesFwdOilCoolerHeat: {
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
   drivesMixExchanger: {
     yardTag: "50001046-01",
     componentType: SensorComponentType.Valve,
@@ -1455,17 +1467,29 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "45002079",
     componentType: SensorComponentType.PropulsionDrive,
   },
+  drivesPropdriveAft1Heat: {
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
   drivesPropdriveAft2: {
     yardTag: "45002079",
     componentType: SensorComponentType.PropulsionDrive,
+  },
+  drivesPropdriveAft2Heat: {
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   drivesPropdriveFwd1: {
     yardTag: "45002080",
     componentType: SensorComponentType.PropulsionDrive,
   },
+  drivesPropdriveFwd1Heat: {
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
   drivesPropdriveFwd2: {
     yardTag: "45002080",
     componentType: SensorComponentType.PropulsionDrive,
+  },
+  drivesPropdriveFwd2Heat: {
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   drivesPump1: {
     yardTag: "50001028",
@@ -1475,9 +1499,16 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001029",
     componentType: SensorComponentType.Pump,
   },
+  drivesSeawaterExchanger: {
+    yardTag: "50001011",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
   drivesShorepower: {
     yardTag: "45002001",
     componentType: SensorComponentType.ShorePowerConverter,
+  },
+  drivesShorepowerHeat: {
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   drivesSwitchPropdriveAft1: {
     yardTag: "50001069-06",
@@ -1552,6 +1583,9 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
   drivesTemperatureSupply: {
     yardTag: "50001038-14",
     componentType: SensorComponentType.Temperature,
+  },
+  drivesTotalFlow: {
+    componentType: SensorComponentType.CalculatedFlow,
   },
   mode: {
     componentType: SensorComponentType.AmcsControlMode,
@@ -1736,23 +1770,23 @@ export const PCM_CONTROLLER_STATE = toControllerStateDefinition({
   module1ChargeController: {
     componentType: ControllerStateComponentType.PcmChargeController,
   },
-  module2ChargeController: {
-    componentType: ControllerStateComponentType.PcmChargeController,
-  },
-  module3ChargeController: {
-    componentType: ControllerStateComponentType.PcmChargeController,
-  },
-  module4ChargeController: {
-    componentType: ControllerStateComponentType.PcmChargeController,
-  },
   module1FlowController: {
     componentType: ControllerStateComponentType.PIDController,
+  },
+  module2ChargeController: {
+    componentType: ControllerStateComponentType.PcmChargeController,
   },
   module2FlowController: {
     componentType: ControllerStateComponentType.PIDController,
   },
+  module3ChargeController: {
+    componentType: ControllerStateComponentType.PcmChargeController,
+  },
   module3FlowController: {
     componentType: ControllerStateComponentType.PIDController,
+  },
+  module4ChargeController: {
+    componentType: ControllerStateComponentType.PcmChargeController,
   },
   module4FlowController: {
     componentType: ControllerStateComponentType.PIDController,
