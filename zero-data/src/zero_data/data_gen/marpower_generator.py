@@ -53,6 +53,6 @@ class MarpowerGenerator(Generator):
         raise KeyError(f"Unknown type: {data_type}")
 
     def _generate_marpower_struct[T](self, value: T) -> MarpowerStruct[T]:
-        return MarpowerStruct[T](
+        return MarpowerStruct(
             value=value, timestamp=datetime.now(tz=UTC), is_valid=True, has_value=True
         )

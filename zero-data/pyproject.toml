@@ -64,6 +64,7 @@ asyncio_mode = "auto"
 testpaths = ["tests"]
 log_level = "DEBUG"
 log_format = "%(asctime)s.%(msecs)03d | %(levelname)-8s | %(message)s"
+markers = ["greptimedb: tests requiring a running greptimedb"]
 
 [tool.ruff]
 fix = true
