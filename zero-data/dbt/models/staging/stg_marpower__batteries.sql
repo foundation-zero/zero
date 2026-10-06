@@ -1096,3 +1096,4 @@ select
   "watchdog_counter__timestamp",
   "watchdog_counter__value"
 from {{ source('raw', 'marpower__450000_main_power_storage_errors') }}
+where topic is not null

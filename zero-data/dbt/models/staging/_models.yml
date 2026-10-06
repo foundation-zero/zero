@@ -44,6 +44,8 @@ models:
         description: "Table name associated with the raw message."
       - name: topic
         description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
   - name: stg_power_tag_metadata
     description: "Static metadata for power tags."
     columns:
@@ -1977,6 +1979,8 @@ models:
         description: "Excessive delta between temperature sensors detected on string 3."
       - name: topic
         description: "MQTT topic path for the message."
+        tests:
+          - not_null
       - name: under_temp_charge_msl__has_value
         description: "Indicates if charging undertemperature MSL state contains a value."
       - name: under_temp_charge_msl__is_valid
