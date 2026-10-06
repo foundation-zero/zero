@@ -58,7 +58,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "soc_perc"
+              "options": "soc"
             },
             "properties": [
               {
@@ -70,7 +70,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "soc"
+              "options": "energy"
             },
             "properties": [
               {
@@ -135,8 +135,9 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "-",
-                  "mode": "fixed"
+                  "field": "propulsion",
+                  "fixed": "",
+                  "mode": "field"
                 },
                 "valign": "middle"
               },
@@ -175,7 +176,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "Domestic",
+                  "field": "domestic",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -216,7 +217,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "Technical",
+                  "field": "technical",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -259,7 +260,7 @@
                 },
                 "size": 12,
                 "text": {
-                  "field": "HVAC",
+                  "field": "hvac",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -300,8 +301,9 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "-",
-                  "mode": "fixed"
+                  "field": "hydro",
+                  "fixed": "",
+                  "mode": "field"
                 },
                 "valign": "middle"
               },
@@ -339,8 +341,9 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "-",
-                  "mode": "fixed"
+                  "field": "shore_power",
+                  "fixed": "",
+                  "mode": "field"
                 },
                 "valign": "middle"
               },
@@ -378,8 +381,9 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "-",
-                  "mode": "fixed"
+                  "field": "solar",
+                  "fixed": "",
+                  "mode": "field"
                 },
                 "valign": "middle"
               },
@@ -417,8 +421,9 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "-",
-                  "mode": "fixed"
+                  "field": "charging_power",
+                  "fixed": "",
+                  "mode": "field"
                 },
                 "valign": "middle"
               },
@@ -428,7 +433,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "Discharging",
+              "name": "Charging",
               "placement": {
                 "height": 31,
                 "left": 427,
@@ -457,8 +462,9 @@
                 },
                 "size": 12,
                 "text": {
-                  "fixed": "-",
-                  "mode": "fixed"
+                  "field": "discharging_power",
+                  "fixed": "",
+                  "mode": "field"
                 },
                 "valign": "middle"
               },
@@ -468,7 +474,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "Charging",
+              "name": "Discharging",
               "placement": {
                 "height": 31,
                 "left": 286,
@@ -496,8 +502,9 @@
                 },
                 "size": 24,
                 "text": {
-                  "fixed": "-",
-                  "mode": "fixed"
+                  "field": "soc",
+                  "fixed": "",
+                  "mode": "field"
                 },
                 "valign": "middle"
               },
@@ -506,7 +513,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "SoC %",
+              "name": "SoC",
               "placement": {
                 "height": 40,
                 "left": 437,
@@ -537,10 +544,11 @@
                 "color": {
                   "fixed": "#000000"
                 },
-                "size": 16,
+                "size": 12,
                 "text": {
-                  "fixed": "-",
-                  "mode": "fixed"
+                  "field": "energy",
+                  "fixed": "",
+                  "mode": "field"
                 },
                 "valign": "middle"
               },
@@ -549,7 +557,7 @@
                 "vertical": "top"
               },
               "links": [],
-              "name": "SoC",
+              "name": "Energy",
               "placement": {
                 "height": 30,
                 "left": 350,
@@ -588,6 +596,7 @@
           "editorMode": "code",
           "editorType": "sql",
           "format": 1,
+          "hide": false,
           "meta": {
             "builderOptions": {
               "columns": [],
@@ -602,7 +611,7 @@
           "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(time) AS time,\r\n  main_group,\r\n  AVG(power_value) AS power_value\r\nFROM (\r\n  SELECT\r\n    time,\r\n    main_group,\r\n    SUM(power) AS power_value\r\n  FROM views.gld_electrical_power_consumption_per_minute\r\n  WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n  GROUP BY\r\n    time,\r\n    main_group\r\n)\r\nGROUP BY main_group",
+          "rawSql": "SELECT\r\n  time,\r\n  MAX(CASE WHEN main_group = 'Domestic' THEN power_value ELSE 0 END)  AS domestic,\r\n  MAX(CASE WHEN main_group = 'HVAC' THEN power_value ELSE 0 END)      AS hvac,\r\n  MAX(CASE WHEN main_group = 'Technical' THEN power_value ELSE 0 END) AS technical,\r\n  NULL                                                                AS propulsion,\r\n  NULL                                                                AS solar,\r\n  NULL                                                                AS shore_power,\r\n  NULL                                                                AS hydro\r\n  FROM (\r\n  SELECT\r\n    MAX(time) AS time,\r\n    main_group,\r\n    AVG(power_value) AS power_value\r\n  FROM (\r\n    SELECT\r\n      time,\r\n      main_group,\r\n      SUM(power) AS power_value\r\n    FROM views.gld_electrical_power_consumption_per_minute\r\n    WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n    GROUP BY\r\n      time,\r\n      main_group\r\n  )\r\n  GROUP BY main_group\r\n)\r\nGROUP BY time",
           "refId": "A",
           "sql": {
             "columns": [
@@ -621,44 +630,33 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "3.0.2",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n  MAX(time) AS time,\r\n  SUM(avg_energy_per_pack) AS energy,\r\n  AVG(avg_soc_per_pack) AS soc,\r\n  SUM(avg_charging_power_per_pack) AS charging_power,\r\n  SUM(avg_discharging_power_per_pack) AS discharging_power\r\nFROM (\r\n  SELECT\r\n    MAX(time) AS time,\r\n    topic,\r\n    AVG(avg_energy) AS avg_energy_per_pack,\r\n    AVG(avg_soc) AS avg_soc_per_pack,\r\n    CASE WHEN MAX(is_charging) THEN AVG(ABS(avg_battery_power)) ELSE 0 END AS avg_charging_power_per_pack,\r\n    CASE WHEN MAX(is_discharging) THEN AVG(avg_battery_power) ELSE 0 END AS avg_discharging_power_per_pack,\r\n  FROM views.gld_batteries_per_minute\r\n  WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n  GROUP BY topic\r\n)",
+          "refId": "B"
         }
       ],
       "title": "Electrical flow",
-      "transformations": [
-        {
-          "id": "groupingToMatrix",
-          "options": {
-            "columnField": "main_group",
-            "emptyValue": "null",
-            "rowField": "time",
-            "valueField": "power_value"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "orderByMode": "manual",
-            "renameByName": {
-              "Domestic": "",
-              "charging": "Charging",
-              "discharging": "Discharging",
-              "domestic": "Domestic",
-              "hvac": "HVAC",
-              "hydro": "Hydrogeneration",
-              "propulsion": "Propulsion",
-              "shore": "Shore",
-              "soc": "State of Charge",
-              "soc_perc": "",
-              "solar": "Solar",
-              "technical": "Technical",
-              "time\\main_group": "Time"
-            }
-          }
-        }
-      ],
       "type": "canvas"
     },
     {
@@ -1046,7 +1044,7 @@
     }
   ],
   "preload": false,
-  "refresh": "30s",
+  "refresh": "1m",
   "schemaVersion": 42,
   "tags": [],
   "templating": {
@@ -1066,7 +1064,7 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-12h",
     "to": "now"
   },
   "timepicker": {},
