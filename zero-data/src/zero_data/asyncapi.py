@@ -35,24 +35,13 @@ JSON_TYPES = {
 
 SCHEMA_REF_PREFIX = "#/components/schemas/"
 
-TOPICS_ALLOWLIST = (
-    "marpower/150000",  # propulsion
-    "marpower/210000",  # Bilge
-    "marpower/250000",  # Freshwater
-    "marpower/280000",  # Hydraulic sail
-    "marpower/380000",  # Seawater
-    "marpower/450000",  # DC distribution
-    "marpower/500000",  # Thrs
-    "marpower/550000",  # Navigation lights
-)
-
 
 def stamped_schema_name(data_type: str) -> str:
     return f"stamped{stringcase.capitalcase(JSON_TYPES[data_type])}"
 
 
 def stamped_schema(data_type: str) -> dict[str, Any]:
-    """Every AMCS value is published as {Value, TimeStamp, ...}."""
+    """Every AMCS value is published as {"Value": 1.0, "TimeStamp": "timestamp", ...}."""
     return {
         "title": stamped_schema_name(data_type),
         "type": "object",
@@ -121,50 +110,47 @@ def served_fields(topic: IOTopic) -> dict[str, str]:
     }
 
 
+def _merge_component_fields(
+    existing: dict[str, Any] | None, fields: dict[str, Any], topic: ManagedTopic
+) -> dict[str, Any]:
+    """Merge incoming fields with existing fields, warning on conflict."""
+    if existing is None or existing.items() <= fields.items():
+        return fields
+
+    if fields.items() <= existing.items():
+        return existing
+
+    logger.warning(
+        "We found mismatching types for component '%s' on topic '%s', ignoring.",
+        topic.component,
+        topic.topic.topic,
+    )
+    return existing
+
+
 def extract_schemas(
     topics: list[ManagedTopic],
 ) -> dict[str, dict[str, Any]]:
-    component_types = {}
-    field_types: set[str] = set()
-
+    component_types: dict[str, dict[str, Any]] = {}
     for topic in topics:
-        component = topic.component
-        fields = served_fields(topic.topic)
-        field_types.update(fields.values())
-
-        if component not in component_types:
-            component_types[component] = fields
-            continue
-
-        if component_types[component] == fields:
-            continue
-
-        combined = {**fields, **component_types[component]}
-
-        if combined == component_types[component]:
-            # Fields is a subset of what we already have
-            continue
-
-        if combined == fields:
-            # What we already have is a subset of fields, so update to the bigger set
-            component_types[component] = fields
-            continue
-
-        logger.warning(
-            "We found mismatching types for component '%s' on topic '%s', ignoring.",
-            component,
-            topic.topic.topic,
+        component_types[topic.component] = _merge_component_fields(
+            component_types.get(topic.component),
+            served_fields(topic.topic),
+            topic,
         )
 
+    field_types = {
+        data_type
+        for fields in component_types.values()
+        for data_type in fields.values()
+    }
+
     return {
-        **{
-            component_name(component): component_schema(component, fields)
-            for component, fields in component_types.items()
-        },
-        **{
-            stamped_schema_name(data_type): stamped_schema(data_type)
-            for data_type in sorted(field_types)
-        },
+        component_name(component): component_schema(component, fields)
+        for component, fields in component_types.items()
+    } | {
+        stamped_schema_name(data_type): stamped_schema(data_type)
+        for data_type in sorted(field_types)
     }
 
 

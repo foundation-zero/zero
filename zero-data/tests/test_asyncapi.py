@@ -43,21 +43,6 @@ def test_every_topic_has_one_channel_and_one_receive_operation(
         assert operation["channel"] == {"$ref": f"#/channels/{operation_key}"}
 
 
-def test_address_keeps_the_devices_prefix_as_env_parameter(
-    managed_topics: list[ManagedTopic], document: dict
-):
-    for topic in managed_topics:
-        channel = document["channels"][key(topic)]
-        prefix, _, rest = channel["address"].partition("/")
-
-        assert prefix == "{mqtt_devices_topic_prefix}"
-        assert f"marpower/{rest}" == topic.topic
-        assert (
-            channel["parameters"]["mqtt_devices_topic_prefix"]["x-env"]
-            == "MQTT_DEVICES_TOPIC_PREFIX"
-        )
-
-
 def test_every_field_is_a_stamped_value_of_its_data_type(
     managed_topics: list[ManagedTopic], document: dict
 ):

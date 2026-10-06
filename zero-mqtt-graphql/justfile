@@ -8,7 +8,7 @@ default: check
 generate_specs:
     just --justfile ../justfile --working-directory .. generate_specs
 
-# Serve the GraphQL API on http://localhost:5103 (needs `just specs` once and a broker)
+# Serve the GraphQL API on http://localhost:5103 (needs `just generate_specs` once and a broker)
 run:
     cargo run --locked -- --spec-dir {{ spec_dir }} serve
 
