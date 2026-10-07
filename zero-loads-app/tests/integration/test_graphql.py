@@ -275,10 +275,10 @@ query ($awaRange: AwaRange!, $awsRange: AwsRange!) {
 
 
 @pytest.mark.asyncio
-async def test_graphql_reference_falls_back_to_max_thresholds_without_load_case(
+async def test_graphql_reference_falls_back_to_thresholds_without_load_case(
     async_client: AsyncClient, scenario_factory
 ):
-    await scenario_factory.create_max_threshold(
+    await scenario_factory.create_threshold(
         variable_id="main-sheet-load", warning_high=11.0, alarm_high=12.0
     )
 
@@ -301,10 +301,10 @@ async def test_graphql_reference_falls_back_to_max_thresholds_without_load_case(
 
 
 @pytest.mark.asyncio
-async def test_graphql_reference_thresholds_override_max_thresholds_per_column(
+async def test_graphql_reference_thresholds_override_thresholds_per_column(
     async_client: AsyncClient, scenario_factory
 ):
-    await scenario_factory.create_max_threshold(
+    await scenario_factory.create_threshold(
         variable_id="main-sheet-load",
         alarm_low=0.5,
         warning_high=11.0,
@@ -330,10 +330,10 @@ async def test_graphql_reference_thresholds_override_max_thresholds_per_column(
 
 
 @pytest.mark.asyncio
-async def test_graphql_load_case_reference_values_include_max_thresholds(
+async def test_graphql_load_case_reference_values_include_thresholds(
     async_client: AsyncClient, scenario_factory
 ):
-    await scenario_factory.create_max_threshold(
+    await scenario_factory.create_threshold(
         variable_id="mizzen-sheet-load", warning_high=6.0, alarm_high=6.5
     )
 

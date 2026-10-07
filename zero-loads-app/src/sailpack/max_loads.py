@@ -3,13 +3,20 @@ from pathlib import Path
 
 import polars as pl
 
+from sailpack.seed_utils import RUNNER_BLOCK_LOAD_PER_TAIL_LOAD, mirror_side
+
 KILOGRAM_PER_TONNE = 1000.0
 
-# Column positions in the "Max loads" tab export, which has two header rows.
+# The "Max loads" tab export has a row of column groups above the column headers.
 HEADER_ROWS = 2
-TECHNICAL_NAME_COLUMN = 0
-WARNING_THRESHOLD_COLUMN = 7
-ALARM_SETTING_COLUMN = 8
+TECHNICAL_NAME_HEADER = "Loads app technical name"
+THRESHOLD_HEADERS = {
+    "alarm_low": "Lower Alarm Setting (kg)",
+    "warning_low": "Lower Warning Setting (kg)",
+    "warning_high": "Upper Warning Setting (kg)",
+    "alarm_high": "Upper Alarm Setting (kg)",
+}
+THRESHOLD_COLUMNS = list(THRESHOLD_HEADERS)
 
 
 def _kilogram_to_tonne(cell: str) -> float | None:
@@ -19,37 +26,85 @@ def _kilogram_to_tonne(cell: str) -> float | None:
         return None
 
 
-def read_max_loads(max_loads_path: Path) -> pl.DataFrame:
+def read_max_loads_cells(max_loads_path: Path) -> list[dict[str, str]]:
+    """Return the technical name and raw threshold cells of every named row."""
     if not max_loads_path.exists():
         raise FileNotFoundError(f"Max loads file not found: {max_loads_path}")
 
     with max_loads_path.open(newline="", encoding="utf-8") as file:
-        rows = list(csv.reader(file))[HEADER_ROWS:]
+        rows = list(csv.reader(file))
 
-    max_loads = pl.DataFrame(
+    headers = [header.strip() for header in rows[HEADER_ROWS - 1]]
+    missing_headers = [
+        header
+        for header in [TECHNICAL_NAME_HEADER, *THRESHOLD_HEADERS.values()]
+        if header not in headers
+    ]
+    if missing_headers:
+        raise ValueError(
+            f"Columns not found in {max_loads_path.name}: {missing_headers}"
+        )
+
+    column_positions = {
+        "variable": headers.index(TECHNICAL_NAME_HEADER),
+        **{
+            column: headers.index(header)
+            for column, header in THRESHOLD_HEADERS.items()
+        },
+    }
+    return [
+        {column: row[position].strip() for column, position in column_positions.items()}
+        for row in rows[HEADER_ROWS:]
+        if row and row[column_positions["variable"]].strip()
+    ]
+
+
+def runner_block_thresholds(max_loads: pl.DataFrame) -> pl.DataFrame:
+    """Derive the runner block thresholds on both sides from the runner tail thresholds."""
+    block_load_per_tail_load = pl.DataFrame(
+        [
+            {"block": side_block, "variable": side_tail, "factor": factor}
+            for (block, tail), factor in RUNNER_BLOCK_LOAD_PER_TAIL_LOAD.items()
+            for side_block, side_tail in [
+                (block, tail),
+                (mirror_side(block), mirror_side(tail)),
+            ]
+        ]
+    )
+    return max_loads.join(block_load_per_tail_load, on="variable").select(
+        pl.col("block").alias("variable"),
+        *(pl.col(column) * pl.col("factor") for column in THRESHOLD_COLUMNS),
+    )
+
+
+def read_max_loads(max_loads_path: Path) -> pl.DataFrame:
+    """Read the max loads in tonnes, including the runner block thresholds derived from the tails."""
+    sheet_max_loads = pl.DataFrame(
         [
             {
-                "variable": row[TECHNICAL_NAME_COLUMN].strip(),
-                "warning_high": _kilogram_to_tonne(row[WARNING_THRESHOLD_COLUMN]),
-                "alarm_high": _kilogram_to_tonne(row[ALARM_SETTING_COLUMN]),
+                "variable": cells["variable"],
+                **{
+                    column: _kilogram_to_tonne(cells[column])
+                    for column in THRESHOLD_COLUMNS
+                },
             }
-            for row in rows
-            if row and row[TECHNICAL_NAME_COLUMN].strip()
+            for cells in read_max_loads_cells(max_loads_path)
         ],
         schema={
             "variable": pl.String,
-            "warning_high": pl.Float64,
-            "alarm_high": pl.Float64,
+            **{column: pl.Float64 for column in THRESHOLD_COLUMNS},
         },
     )
+    max_loads = pl.concat([sheet_max_loads, runner_block_thresholds(sheet_max_loads)])
 
-    warning_above_alarm = max_loads.filter(
-        pl.col("warning_high") > pl.col("alarm_high")
+    out_of_order = max_loads.filter(
+        (pl.col("alarm_low") > pl.col("warning_low"))
+        | (pl.col("warning_high") > pl.col("alarm_high"))
     )
-    if not warning_above_alarm.is_empty():
+    if not out_of_order.is_empty():
         raise ValueError(
-            "Warning threshold above alarm setting in max loads: "
-            f"{warning_above_alarm.to_dicts()}"
+            "Lower alarm above lower warning or upper warning above upper alarm in max loads: "
+            f"{out_of_order.to_dicts()}"
         )
 
     duplicates = max_loads.filter(pl.col("variable").is_duplicated())
@@ -61,25 +116,28 @@ def read_max_loads(max_loads_path: Path) -> pl.DataFrame:
     return max_loads
 
 
-def drop_targets_above_thresholds(
+def drop_targets_outside_thresholds(
     reference_values: pl.DataFrame, max_loads: pl.DataFrame
 ) -> tuple[pl.DataFrame, pl.DataFrame]:
-    """Split the SailPack targets into those within their max thresholds and the conflicts.
+    """Split the SailPack targets into those within their thresholds and the conflicts.
 
-    The API falls back to the max thresholds wherever a reference value has none, so a target
-    above them would show above its own warning or alarm.
+    The API falls back to the thresholds wherever a reference value has none, so a target
+    outside them would show beyond its own warning or alarm.
     """
     targets = reference_values.filter(pl.col("value").is_not_null()).join(
         max_loads, on="variable", how="left"
     )
-    exceeds_threshold = (pl.col("value") > pl.col("warning_high")).fill_null(False) | (
-        pl.col("value") > pl.col("alarm_high")
-    ).fill_null(False)
+    outside_thresholds = pl.any_horizontal(
+        (pl.col("value") < pl.col("alarm_low")).fill_null(False),
+        (pl.col("value") < pl.col("warning_low")).fill_null(False),
+        (pl.col("value") > pl.col("warning_high")).fill_null(False),
+        (pl.col("value") > pl.col("alarm_high")).fill_null(False),
+    )
 
-    conflicts = targets.filter(exceeds_threshold).sort(
+    conflicts = targets.filter(outside_thresholds).sort(
         "variable", "Calculation ID", "tack"
     )
-    targets_within_thresholds = targets.filter(~exceeds_threshold).select(
+    targets_within_thresholds = targets.filter(~outside_thresholds).select(
         "Calculation ID", "variable", "value", "tack"
     )
 
@@ -88,7 +146,7 @@ def drop_targets_above_thresholds(
 
 def thresholded_variables(max_loads: pl.DataFrame) -> pl.DataFrame:
     return max_loads.filter(
-        pl.col("warning_high").is_not_null() | pl.col("alarm_high").is_not_null()
+        pl.any_horizontal(pl.col(column).is_not_null() for column in THRESHOLD_COLUMNS)
     )
 
 
@@ -98,6 +156,5 @@ def write_conflicts(conflicts: pl.DataFrame, output_csv: Path) -> None:
         pl.col("Calculation ID").alias("load_case_id"),
         "tack",
         pl.col("value").round(3).alias("dropped_target"),
-        "warning_high",
-        "alarm_high",
+        *THRESHOLD_COLUMNS,
     ).write_csv(output_csv)

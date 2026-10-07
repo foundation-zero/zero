@@ -3,7 +3,7 @@
 
 BEGIN;
 
-DELETE FROM loads.max_thresholds;
+DELETE FROM loads.thresholds;
 DELETE FROM loads.reference_values;
 DELETE FROM loads.load_case_mappings;
 DELETE FROM loads.load_cases;
@@ -2834,6 +2834,12 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "blade-tweaker-sb-load",
+    "tack": "port",
+    "target": 6.006842295789082
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
     "target": 26.698719746294607
@@ -3020,6 +3026,12 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
+    "variable_id": "blade-tweaker-ps-load",
+    "tack": "starboard",
+    "target": 6.006842295789082
+  },
+  {
+    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "starboard",
     "target": 0.8846038147583528
@@ -4940,6 +4952,12 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "main-preventer-load",
+    "tack": "port",
+    "target": 12.239959619237966
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-runner-block-ps-load",
     "tack": "port",
     "target": 7.620135316341463
@@ -4985,6 +5003,12 @@ reference_payload AS (
     "variable_id": "mizzen-outhaul-load",
     "tack": "port",
     "target": 9.948555317055265
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "mizzen-preventer-load",
+    "tack": "port",
+    "target": 9.18968251135709
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -5072,6 +5096,12 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "main-preventer-load",
+    "tack": "starboard",
+    "target": 12.239959619237966
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-runner-block-sb-load",
     "tack": "starboard",
     "target": 7.620135316341463
@@ -5117,6 +5147,12 @@ reference_payload AS (
     "variable_id": "mizzen-outhaul-load",
     "tack": "starboard",
     "target": 9.948555317055265
+  },
+  {
+    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
+    "variable_id": "mizzen-preventer-load",
+    "tack": "starboard",
+    "target": 9.18968251135709
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -6428,6 +6464,12 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "main-sheet-load",
+    "tack": "port",
+    "target": 11.152432278097006
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-vang-load",
     "tack": "port",
     "target": 0.10197162129779283
@@ -6566,6 +6608,12 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "variable_id": "main-sheet-load",
+    "tack": "starboard",
+    "target": 11.152432278097006
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-vang-load",
     "tack": "starboard",
     "target": 0.10197162129779283
@@ -7106,12 +7154,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "staysail-sheet-sb-load",
-    "tack": "port",
-    "target": 11.105219417436128
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
     "target": 13.435678850575885
@@ -7261,12 +7303,6 @@ reference_payload AS (
     "target": 0.10197162129779283
   },
   {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "staysail-sheet-ps-load",
-    "tack": "starboard",
-    "target": 11.105219417436128
-  },
-  {
     "load_case_id": "LC8_ SS_M2R_TWA50_TWS27_RM15_20240410",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
@@ -8210,6 +8246,12 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "blade-sheet-sb-load",
+    "tack": "port",
+    "target": 12.220279096327491
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "blade-tweaker-sb-load",
     "tack": "port",
     "target": 5.62159351052602
@@ -8273,12 +8315,6 @@ reference_payload AS (
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
     "target": 0.804250177175692
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-outhaul-load",
-    "tack": "port",
-    "target": 15.292378131166096
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
@@ -8360,6 +8396,12 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
+    "variable_id": "blade-sheet-ps-load",
+    "tack": "starboard",
+    "target": 12.220279096327491
+  },
+  {
+    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
     "target": 5.62159351052602
@@ -8423,12 +8465,6 @@ reference_payload AS (
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
     "target": 0.804250177175692
-  },
-  {
-    "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
-    "variable_id": "main-outhaul-load",
-    "tack": "starboard",
-    "target": 15.292378131166096
   },
   {
     "load_case_id": "LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test",
@@ -8521,271 +8557,412 @@ JOIN upsert_load_cases AS load_case
 ON CONFLICT (load_case_id, tack, variable_id) DO UPDATE
 SET target = EXCLUDED.target;
 
-INSERT INTO loads.max_thresholds (variable_id, warning_high, alarm_high)
-SELECT variable_id, warning_high, alarm_high
+INSERT INTO loads.thresholds (variable_id, alarm_low, warning_low, warning_high, alarm_high)
+SELECT variable_id, alarm_low, warning_low, warning_high, alarm_high
 FROM jsonb_to_recordset($$[
   {
     "variable_id": "aft-winch-ps-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 7.0,
     "alarm_high": 9.0
   },
   {
     "variable_id": "aft-winch-sb-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 7.0,
     "alarm_high": 9.0
   },
   {
     "variable_id": "blade-adjuster-load",
+    "alarm_low": 7.5,
+    "warning_low": 8.4,
     "warning_high": 28.0,
-    "alarm_high": 31.0
+    "alarm_high": 31.3
   },
   {
     "variable_id": "blade-cunningham-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 20.0,
-    "alarm_high": 22.0
+    "alarm_high": 22.5
   },
   {
     "variable_id": "blade-sheet-ps-load",
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 14.0,
+    "alarm_high": 16.0
   },
   {
     "variable_id": "blade-sheet-sb-load",
-    "warning_high": 12.0,
-    "alarm_high": 13.0
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 14.0,
+    "alarm_high": 16.0
   },
   {
     "variable_id": "blade-tweaker-ps-load",
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.5,
+    "alarm_high": 7.5
   },
   {
     "variable_id": "blade-tweaker-sb-load",
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 6.5,
+    "alarm_high": 7.5
   },
   {
     "variable_id": "code-zero-tack-load",
-    "warning_high": 22.0,
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 20.0,
     "alarm_high": 24.0
   },
   {
     "variable_id": "fiber-optic-main-d1-ps",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 35.0,
     "alarm_high": 39.0
   },
   {
     "variable_id": "fiber-optic-main-d1-sb",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 35.0,
     "alarm_high": 39.0
   },
   {
     "variable_id": "fiber-optic-main-v1-ps",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 70.0,
     "alarm_high": 77.5
   },
   {
     "variable_id": "fiber-optic-main-v1-sb",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 70.0,
     "alarm_high": 77.5
   },
   {
     "variable_id": "fiber-optic-mizzen-d1-ps",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 20.5,
     "alarm_high": 22.8
   },
   {
     "variable_id": "fiber-optic-mizzen-d1-sb",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 20.5,
     "alarm_high": 22.8
   },
   {
     "variable_id": "fiber-optic-mizzen-forestay",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 25.0,
     "alarm_high": 28.0
   },
   {
     "variable_id": "fiber-optic-mizzen-v1-ps",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 38.0,
     "alarm_high": 43.0
   },
   {
     "variable_id": "fiber-optic-mizzen-v1-sb",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 38.0,
     "alarm_high": 43.0
   },
   {
     "variable_id": "main-checkstay-deflector-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 4.25,
     "alarm_high": 5.0
   },
   {
     "variable_id": "main-checkstay-ps-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 12.5,
     "alarm_high": 13.5
   },
   {
     "variable_id": "main-checkstay-sb-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 12.5,
     "alarm_high": 13.5
   },
   {
     "variable_id": "main-cunningham-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 5.0,
     "alarm_high": 5.5
   },
   {
     "variable_id": "main-halyard-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 2.5,
     "alarm_high": 3.0
   },
   {
     "variable_id": "main-headstay-combined-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 47.5,
     "alarm_high": 52.6
   },
   {
+    "variable_id": "main-mast-compression-load",
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 212.0,
+    "alarm_high": 223.0
+  },
+  {
+    "variable_id": "main-outhaul-load",
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 15.0,
+    "alarm_high": 16.0
+  },
+  {
     "variable_id": "main-preventer-load",
-    "warning_high": 11.0,
-    "alarm_high": 14.75
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 38.0,
+    "alarm_high": 42.0
   },
   {
     "variable_id": "main-runner-block-ps-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 26.0,
     "alarm_high": 28.0
   },
   {
     "variable_id": "main-runner-block-sb-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 26.0,
     "alarm_high": 28.0
   },
   {
     "variable_id": "main-runner-stay-ps-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 23.0,
     "alarm_high": 26.0
   },
   {
     "variable_id": "main-runner-stay-sb-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 23.0,
     "alarm_high": 26.0
   },
   {
     "variable_id": "main-runner-tail-ps-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 13.0,
     "alarm_high": 14.0
   },
   {
     "variable_id": "main-runner-tail-sb-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 13.0,
     "alarm_high": 14.0
   },
   {
     "variable_id": "main-sheet-load",
-    "warning_high": 11.0,
-    "alarm_high": 12.0
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 11.5,
+    "alarm_high": 13.0
   },
   {
     "variable_id": "main-vang-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 40.0,
     "alarm_high": 45.75
   },
   {
     "variable_id": "mizzen-checkstay-deflector-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 0.55,
     "alarm_high": 0.75
   },
   {
     "variable_id": "mizzen-checkstay-ps-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 2.2,
     "alarm_high": 2.45
   },
   {
     "variable_id": "mizzen-checkstay-sb-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 2.2,
     "alarm_high": 2.45
   },
   {
     "variable_id": "mizzen-cunningham-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 3.0,
     "alarm_high": 4.0
   },
   {
     "variable_id": "mizzen-halyard-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 2.0,
     "alarm_high": 2.5
   },
   {
     "variable_id": "mizzen-headsail-tack-adjuster-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 13.0,
     "alarm_high": 14.5
   },
   {
+    "variable_id": "mizzen-mast-compression-load",
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 121.0,
+    "alarm_high": 127.5
+  },
+  {
     "variable_id": "mizzen-preventer-load",
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 20.0,
+    "alarm_high": 25.0
   },
   {
     "variable_id": "mizzen-runner-block-ps-load",
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563047559630354,
+    "alarm_high": 10.51935231559339
   },
   {
     "variable_id": "mizzen-runner-block-sb-load",
-    "warning_high": 9.563,
-    "alarm_high": 10.519
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 9.563047559630354,
+    "alarm_high": 10.51935231559339
   },
   {
     "variable_id": "mizzen-runner-stay-ps-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 9.0,
     "alarm_high": 11.5
   },
   {
     "variable_id": "mizzen-runner-stay-sb-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 9.0,
     "alarm_high": 11.5
   },
   {
     "variable_id": "mizzen-runner-tail-ps-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 5.0,
     "alarm_high": 5.5
   },
   {
     "variable_id": "mizzen-runner-tail-sb-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 5.0,
     "alarm_high": 5.5
   },
   {
     "variable_id": "mizzen-sheet-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 6.0,
     "alarm_high": 6.5
   },
   {
     "variable_id": "mizzen-vang-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 20.0,
     "alarm_high": 25.0
   },
   {
     "variable_id": "primary-winch-ps-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 11.5,
     "alarm_high": 12.5
   },
   {
     "variable_id": "primary-winch-sb-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 11.5,
     "alarm_high": 12.5
   },
   {
+    "variable_id": "staysail-sheet-ps-load",
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 11.0,
+    "alarm_high": 13.0
+  },
+  {
+    "variable_id": "staysail-sheet-sb-load",
+    "alarm_low": null,
+    "warning_low": null,
+    "warning_high": 11.0,
+    "alarm_high": 13.0
+  },
+  {
     "variable_id": "staysail-stay-adjuster-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 30.0,
     "alarm_high": 33.0
   },
   {
     "variable_id": "storm-jib-tack-load",
+    "alarm_low": null,
+    "warning_low": null,
     "warning_high": 25.0,
     "alarm_high": 27.0
   }
 ]$$::jsonb) AS t(
     variable_id TEXT,
+    alarm_low NUMERIC,
+    warning_low NUMERIC,
     warning_high NUMERIC,
     alarm_high NUMERIC
 );

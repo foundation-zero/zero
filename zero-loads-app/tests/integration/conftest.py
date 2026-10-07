@@ -19,9 +19,9 @@ from loads.api.schema import (
     AwsRanges,
     LoadCaseMappings,
     LoadCases,
-    MaxThresholds,
     ReferenceValues,
     SailSetsCombined,
+    Thresholds,
 )
 from loads.config import Settings
 from loads.registry import at_sensors, fiber_optic_sensors, sail_system_sensors
@@ -45,7 +45,7 @@ def clear_mutating_tables(
         autocommit=True,
     ) as conn:
         with conn.cursor() as cursor:
-            cursor.execute("DELETE FROM loads.max_thresholds")
+            cursor.execute("DELETE FROM loads.thresholds")
             cursor.execute("DELETE FROM loads.reference_values")
             cursor.execute("DELETE FROM loads.load_case_mappings")
             cursor.execute("DELETE FROM loads.load_cases")
@@ -132,7 +132,7 @@ async def sessionmanager(settings: Settings):
 @fixture(autouse=True)
 async def reset_mutable_tables(sessionmanager: SessionManager):
     async with sessionmanager.connect() as connection:
-        await connection.execute(text("DELETE FROM loads.max_thresholds"))
+        await connection.execute(text("DELETE FROM loads.thresholds"))
         await connection.execute(text("DELETE FROM loads.reference_values"))
         await connection.execute(text("DELETE FROM loads.load_case_mappings"))
         await connection.execute(text("DELETE FROM loads.load_cases"))
@@ -254,7 +254,7 @@ class ScenarioFactory:
         async with self._manager.session() as session:
             session.add(ReferenceValues(**payload))
 
-    async def create_max_threshold(
+    async def create_threshold(
         self,
         *,
         variable_id: str,
@@ -265,7 +265,7 @@ class ScenarioFactory:
     ) -> None:
         async with self._manager.session() as session:
             session.add(
-                MaxThresholds(
+                Thresholds(
                     variable_id=variable_id,
                     alarm_low=alarm_low,
                     warning_low=warning_low,

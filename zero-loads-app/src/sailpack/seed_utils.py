@@ -35,6 +35,14 @@ NEWTON_PER_TONNE_FORCE = 9806.65
 RUNNER_BLOCK_PURCHASE = 2
 MIZZEN_RUNNER_TAIL_ANGLE_DEGREES = 17
 
+# Port tack runner block load per runner tail load, by runner block and runner tail.
+RUNNER_BLOCK_LOAD_PER_TAIL_LOAD = {
+    ("main-runner-block-ps-load", "main-runner-tail-ps-load"): RUNNER_BLOCK_PURCHASE,
+    ("mizzen-runner-block-ps-load", "mizzen-runner-tail-ps-load"): (
+        RUNNER_BLOCK_PURCHASE * math.cos(math.radians(MIZZEN_RUNNER_TAIL_ANGLE_DEGREES))
+    ),
+}
+
 
 def escape_dollar_quoted_json(value: str) -> str:
     return value.replace("$$", "$ $")
@@ -213,19 +221,16 @@ def extract_reference_values(
 
 
 def add_derived_loads(port_tack_loads: pl.DataFrame) -> pl.DataFrame:
-    mizzen_tail_angle = math.radians(MIZZEN_RUNNER_TAIL_ANGLE_DEGREES)
     return port_tack_loads.with_columns(
         (pl.col("blade-adjuster-load") + pl.col("blade-cunningham-load")).alias(
             "main-headstay-combined-load"
         ),
-        (RUNNER_BLOCK_PURCHASE * pl.col("main-runner-tail-ps-load")).alias(
-            "main-runner-block-ps-load"
+        *(
+            (block_load_per_tail_load * pl.col(tail)).alias(block)
+            for (block, tail), block_load_per_tail_load in (
+                RUNNER_BLOCK_LOAD_PER_TAIL_LOAD.items()
+            )
         ),
-        (
-            RUNNER_BLOCK_PURCHASE
-            * pl.col("mizzen-runner-tail-ps-load")
-            * math.cos(mizzen_tail_angle)
-        ).alias("mizzen-runner-block-ps-load"),
     )
 
 

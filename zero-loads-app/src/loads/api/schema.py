@@ -88,8 +88,8 @@ class ReferenceValues(Base):
     load_case = relationship("LoadCases")
 
 
-class MaxThresholds(Base):
-    __tablename__ = "max_thresholds"
+class Thresholds(Base):
+    __tablename__ = "thresholds"
 
     variable_id = Column(String, primary_key=True)
     alarm_low = Column(Float, nullable=True)

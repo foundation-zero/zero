@@ -91,17 +91,17 @@ uv run loads generate-jwt --roles captain
 The Hasura seed files `hasura/seeds/zero/loads_reference_values.sql` and
 `hasura/seeds/zero/loads_case_mappings.sql` are generated from the Sailpack
 load cases in `src/sailpack/load_cases`. The SailPack targets go into `loads.reference_values`
-and the warning and alarm thresholds from `src/loads/registry/max_loads.csv` into
-`loads.max_thresholds`, one row per variable. The API takes each threshold from the reference
-value of the matching load case, or from `loads.max_thresholds` where that is empty or no load
-case matches, so a threshold set on a reference value overrides the max threshold for those
-conditions. Targets above their max threshold are dropped and listed in
+and the lower and upper warning and alarm thresholds from `src/loads/registry/max_loads.csv` into
+`loads.thresholds`, one row per variable. The API takes each threshold from the reference
+value of the matching load case, or from `loads.thresholds` where that is empty or no load
+case matches, so a threshold set on a reference value overrides the variable threshold for those
+conditions. Targets outside their thresholds are dropped and listed in
 `src/sailpack/target_threshold_conflicts.csv`.
 
 The sailpack mapping, max loads and Vitters IO list CSVs are exports of the loads Google Sheet,
 which is the source of truth. Download them (all tabs, or e.g. `--tabs max-loads`), which also
-checks their technical names against the registry, the Vitters join and whether the seeds need
-regenerating:
+checks their technical names against the registry, that every Vitters IO list row with a display
+name matches a registry variable on its topic, and whether the seeds need regenerating:
 
 ```bash
 just download_sheets

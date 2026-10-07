@@ -14,6 +14,7 @@ class VariableDefinition:
     id: str
     name: str
     topic: str
+    payload_path: str
     get_actual: Callable[[LoadsModel], float | None]
     unit: str
     scale_min: float | None
@@ -57,6 +58,7 @@ def _build_loads_model_variable_definitions(
             id=_variable_id(model, field, meta),
             name=model.field_display_name(field, field_info.metadata),
             topic=model.TOPIC,
+            payload_path=str(field_info.validation_alias or field),
             get_actual=partial(
                 lambda field, model_instance: getattr(model_instance, field), field
             ),
@@ -223,6 +225,7 @@ def _build_at_variable_definitions(model: type[LoadsModel]) -> VariableDefinitio
         id=variable_meta.name,
         name=model.class_display_name(),
         topic=model.TOPIC,
+        payload_path=str(field_info.validation_alias or "value"),
         get_actual=lambda model_instance: model_instance.value,  # type: ignore[attr-defined]
         unit=variable_meta.unit,
         scale_min=variable_meta.scale_min,

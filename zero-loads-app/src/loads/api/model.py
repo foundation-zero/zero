@@ -16,10 +16,10 @@ from .schema import (
     AwsRanges,
     LoadCaseMappings,
     LoadCases,
-    MaxThresholds,
     ReferenceValues,
     SailSets,
     SailSetsCombined,
+    Thresholds,
 )
 from .schema import (
     Sails as SailsTable,
@@ -63,44 +63,46 @@ async def get_loads_reference_values(
     if not references:
         logger.info(f"No reference values found for case: {case}")
 
-    max_thresholds = await get_max_thresholds(session, variable_ids)
+    thresholds = await get_thresholds(session, variable_ids)
 
     return [
         merge_reference_value(
-            variable_id, references.get(variable_id), max_thresholds.get(variable_id)
+            variable_id, references.get(variable_id), thresholds.get(variable_id)
         )
         for variable_id in dict.fromkeys(variable_ids)
-        if variable_id in references or variable_id in max_thresholds
+        if variable_id in references or variable_id in thresholds
     ]
 
 
-async def get_max_thresholds(
+async def get_thresholds(
     session: AsyncSession, variable_ids: Sequence[str] | None = None
-) -> dict[str, MaxThresholds]:
-    query = select(MaxThresholds)
+) -> dict[str, Thresholds]:
+    query = select(Thresholds)
     filtered_query = (
         query
         if variable_ids is None
-        else query.where(MaxThresholds.variable_id.in_(variable_ids))
+        else query.where(Thresholds.variable_id.in_(variable_ids))
     )
     result = await session.execute(filtered_query)
     return {
-        str(max_threshold.variable_id): max_threshold
-        for max_threshold in result.scalars().all()
+        str(variable_thresholds.variable_id): variable_thresholds
+        for variable_thresholds in result.scalars().all()
     }
 
 
 def merge_reference_value(
     variable_id: str,
     reference: ReferenceValues | None,
-    max_threshold: MaxThresholds | None,
+    variable_thresholds: Thresholds | None,
 ) -> ReferenceValue:
-    """Take each threshold from the reference value, or from the max thresholds where it is empty."""
+    """Take each threshold from the reference value, or from the variable thresholds where it is empty."""
 
     def threshold(column: str) -> float | None:
         override = getattr(reference, column, None)
         return (
-            override if override is not None else getattr(max_threshold, column, None)
+            override
+            if override is not None
+            else getattr(variable_thresholds, column, None)
         )
 
     return ReferenceValue(
@@ -181,17 +183,17 @@ async def get_reference_values_by_case_ids(
     for load_case_id, reference in result.all():
         references_by_case[str(load_case_id)][str(reference.variable_id)] = reference
 
-    max_thresholds = await get_max_thresholds(session)
+    thresholds = await get_thresholds(session)
 
     return {
         str(load_case_id): [
             merge_reference_value(
                 variable_id,
                 references_by_case[str(load_case_id)].get(variable_id),
-                max_thresholds.get(variable_id),
+                thresholds.get(variable_id),
             )
             for variable_id in dict.fromkeys(
-                [*references_by_case[str(load_case_id)], *sorted(max_thresholds)]
+                [*references_by_case[str(load_case_id)], *sorted(thresholds)]
             )
         ]
         for load_case_id in load_case_ids
