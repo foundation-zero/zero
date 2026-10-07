@@ -157,6 +157,31 @@ class DrivesSensorValues(AmcsModeSensorValues):
     ] = sensor.PropulsionDrive(
         active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def drives_propdrive_aft1_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.drives_temperature_propdrives_aft_supply.temperature,
+            temperature_return=self.drives_temperature_propdrive_aft1_return.temperature,
+            flow=self.drives_flow_propdrive_aft1.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_propdrives_aft_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_propdrive_aft1_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(
+                self, "drives_flow_propdrive_aft1"
+            ),
+        )
+
     drives_propdrive_aft2: Annotated[
         sensor.PropulsionDrive,
         component_meta(
@@ -168,6 +193,72 @@ class DrivesSensorValues(AmcsModeSensorValues):
     ] = sensor.PropulsionDrive(
         active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def drives_propdrive_aft2_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.drives_temperature_propdrives_aft_supply.temperature,
+            temperature_return=self.drives_temperature_propdrive_aft2_return.temperature,
+            flow=self.drives_flow_propdrive_aft2.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_propdrives_aft_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_propdrive_aft2_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(
+                self, "drives_flow_propdrive_aft2"
+            ),
+        )
+
+    # TODO: We need this for correct heatdump on the oil cooler
+    # It currently does not work because we don't know the flow pas the bypass
+    # @computed_field(
+    #     json_schema_extra=computed_meta(
+    #         component_type="calculated_flow", included_in_fmu=False
+    #     )
+    # )
+    # @property
+    # def drives_flow_propdrive_aft(self) -> sensor.CalculatedFlow:
+    #     return sensor.CalculatedFlow(
+    #         flow=Stamped.combine(
+    #             self.drives_flow_propdrive_aft1.flow,
+    #             self.drives_flow_propdrive_aft2.flow,
+    #             value=self.drives_flow_propdrive_aft1.flow.value
+    #             + self.drives_flow_propdrive_aft2.flow.value,
+    #         )
+    #     )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001012",
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def drives_aft_oil_cooler_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.drives_temperature_supply.temperature,
+            temperature_return=self.drives_temperature_propdrives_aft_supply.temperature,
+            flow=Stamped.combine(self.drives_flow_recovery.flow, value=None),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_propdrives_aft_supply"
+            ),
+            flow_source="unknown",
+        )
+
     drives_propdrive_fwd1: Annotated[
         sensor.PropulsionDrive,
         component_meta(
@@ -179,6 +270,31 @@ class DrivesSensorValues(AmcsModeSensorValues):
     ] = sensor.PropulsionDrive(
         active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def drives_propdrive_fwd1_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.drives_temperature_propdrives_fwd_supply.temperature,
+            temperature_return=self.drives_temperature_propdrive_fwd1_return.temperature,
+            flow=self.drives_flow_propdrive_fwd1.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_propdrives_fwd_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_propdrive_fwd1_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(
+                self, "drives_flow_propdrive_fwd1"
+            ),
+        )
+
     drives_propdrive_fwd2: Annotated[
         sensor.PropulsionDrive,
         component_meta(
@@ -190,17 +306,105 @@ class DrivesSensorValues(AmcsModeSensorValues):
     ] = sensor.PropulsionDrive(
         active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def drives_propdrive_fwd2_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.drives_temperature_propdrives_fwd_supply.temperature,
+            temperature_return=self.drives_temperature_propdrive_fwd2_return.temperature,
+            flow=self.drives_flow_propdrive_fwd2.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_propdrives_fwd_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_propdrive_fwd2_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(
+                self, "drives_flow_propdrive_fwd2"
+            ),
+        )
+
+    # TODO: We need this for correct heatdump on the oil cooler
+    # It currently does not work because we don't know the flow pas the bypass
+    # @computed_field(
+    #     json_schema_extra=computed_meta(
+    #         component_type="calculated_flow", included_in_fmu=False
+    #     )
+    # )
+    # @property
+    # def drives_flow_propdrive_fwd(self) -> sensor.CalculatedFlow:
+    #     return sensor.CalculatedFlow(
+    #         flow=Stamped.combine(
+    #             self.drives_flow_propdrive_fwd1.flow,
+    #             self.drives_flow_propdrive_fwd2.flow,
+    #             value=self.drives_flow_propdrive_fwd1.flow.value
+    #             + self.drives_flow_propdrive_fwd2.flow.value,
+    #         )
+    #     )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001013",
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def drives_fwd_oil_cooler_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.drives_temperature_supply.temperature,
+            temperature_return=self.drives_temperature_propdrives_fwd_supply.temperature,
+            flow=Stamped.combine(self.drives_flow_recovery.flow, value=None),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_propdrives_fwd_supply"
+            ),
+            flow_source="unknown",
+        )
+
     drives_shorepower: Annotated[
         sensor.ShorePowerConverter,
         component_meta(
             yard_tag="45002001",
             component_type="shore_power_converter",
             included_in_fmu=False,
-            topic_override="dummy-pcs/shorepower-active",
+            topic_override="dummy-pcs/shorepower-active",  # TODO
         ),
     ] = sensor.ShorePowerConverter(
         active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
     )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def drives_shorepower_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.drives_temperature_supply.temperature,
+            temperature_return=self.drives_temperature_shorepower_return.temperature,
+            flow=self.drives_flow_shorepower.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_shorepower_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "drives_flow_shorepower"),
+        )
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -212,17 +416,64 @@ class DrivesSensorValues(AmcsModeSensorValues):
     @property
     def drives_dhw_exchanger(self) -> sensor.HeatTransferDevice:
         return sensor.HeatTransferDevice.from_sensors(
-            temperature_supply=self.drives_temperature_recovery_mix.temperature,
+            temperature_supply=self.drives_temperature_recovery.temperature,
             temperature_return=self.drives_temperature_recovery_return.temperature,
             flow=self.drives_flow_recovery.flow,
             heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
-                self, "drives_temperature_recovery_mix"
+                self, "drives_temperature_recovery"
             ),
             temperature_return_source=sensor.extract_source_yardtag(
                 self, "drives_temperature_recovery_return"
             ),
             flow_source=sensor.extract_source_yardtag(self, "drives_flow_recovery"),
+        )
+
+    # TODO: We need this for correct heatdump to the seawater if dhw bypass is active
+    # @computed_field(
+    #     json_schema_extra=computed_meta(
+    #         component_type="calculated_flow", included_in_fmu=False
+    #     )
+    # )
+    # @property
+    # def drives_total_flow(self) -> sensor.CalculatedFlow:
+    #     return sensor.CalculatedFlow(
+    #         flow=Stamped.combine(
+    #             self.drives_flow_propdrive_aft.flow,
+    #             self.drives_flow_propdrive_fwd.flow,
+    #             self.drives_flow_shorepower.flow,
+    #             value=self.drives_flow_propdrive_aft.flow.value
+    #             + self.drives_flow_propdrive_fwd.flow.value
+    #             + self.drives_flow_shorepower.flow.value,
+    #         )
+    #     )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001011",
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def drives_seawater_exchanger(self) -> sensor.HeatTransferDevice:
+        if sensor.valves_open_closed(open_valves=[self.drives_mix_recovery]):
+            flow = self.drives_flow_recovery.flow
+            flow_source = sensor.extract_source_yardtag(self, "drives_flow_recovery")
+        else:
+            flow = Stamped.combine(self.drives_flow_recovery.flow, value=None)
+            flow_source = "unknown"
+
+        return sensor.HeatTransferDevice.from_sensors_with_mix_valve(
+            temperature_supply=self.drives_temperature_recovery_mix.temperature,
+            temperature_return=self.drives_temperature_supply.temperature,
+            flow=flow,  # type: ignore
+            mix_valve=self.drives_mix_exchanger,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "drives_temperature_recovery_mix"
+            ),
+            temperature_return_source=flow_source,
         )
 
 

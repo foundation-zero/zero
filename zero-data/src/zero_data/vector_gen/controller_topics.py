@@ -11,6 +11,11 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
             "dc-fwd-flow",
         ),
         "dhw": ("dhw-freshwater-flow-supply",),
+        "drives": (
+            # "drives-flow-propdrive-aft",
+            # "drives-flow-propdrive-fwd",
+            # "drives-total-flow",
+        ),
         "pvt": (
             "pvt-flow-main-aft-strings",
             "pvt-flow-main-fwd-strings",
@@ -63,7 +68,17 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
             "dhw-dc-exchanger",
             "dhw-drives-exchanger",
         ),
-        "drives": ("drives-dhw-exchanger",),
+        "drives": (
+            "drives-propdrive-aft1-heat",
+            "drives-propdrive-aft2-heat",
+            "drives-aft-oil-cooler-heat",
+            "drives-propdrive-fwd1-heat",
+            "drives-propdrive-fwd2-heat",
+            "drives-fwd-oil-cooler-heat",
+            "drives-shorepower-heat",
+            "drives-dhw-exchanger",
+            "drives-seawater-exchanger",
+        ),
         "pcm": (
             "pcm-heat-module1",
             "pcm-heat-module1-freshwater",

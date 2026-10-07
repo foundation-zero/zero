@@ -1,19 +1,23 @@
 import { ComponentOrientation } from "..";
 
+export { default as ManualFlowMarker } from "./ManualFlowMarker.vue";
+
 export const FIGMA_URL = [
   "https://www.figma.com/design/DDNAUHsV56fQMTh3Ej76gL/App-screens---On-board-monitoring?node-id=6186-116693",
   "https://www.figma.com/design/DDNAUHsV56fQMTh3Ej76gL/App-screens---On-board-monitoring?node-id=6186-116697",
   "https://www.figma.com/design/DDNAUHsV56fQMTh3Ej76gL/App-screens---On-board-monitoring?node-id=6186-116701",
+  "https://www.figma.com/design/DDNAUHsV56fQMTh3Ej76gL/App-screens---On-board-monitoring?node-id=10139-351556",
 ];
 
 export const enum ManualValveType {
   Switch = "switch",
   FlowControl = "flow-control",
+  Flow = "flow",
   ThreeWay = "three-way",
 }
 
 export interface ManualValveProps {
-  type: ManualValveType;
+  type?: ManualValveType;
 }
 
 export const MANUAL_VALVE_WIDTH = 36;

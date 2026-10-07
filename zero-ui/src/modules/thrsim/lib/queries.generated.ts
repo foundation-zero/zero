@@ -1349,6 +1349,13 @@ export const DRIVES_PARAMETERS_QUERY = `
 `;
 
 export const DRIVES_SENSOR_QUERY = `
+  drivesAftOilCoolerHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
   drivesDhwExchanger {
     temperatureSupply { value timestamp source }
     temperatureReturn { value timestamp source }
@@ -1402,6 +1409,13 @@ export const DRIVES_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
+  drivesFwdOilCoolerHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
   drivesMixExchanger {
     positionRel { value timestamp }
     positionAbs { value timestamp }
@@ -1424,14 +1438,42 @@ export const DRIVES_SENSOR_QUERY = `
   drivesPropdriveAft1 {
     active { value timestamp }
   }
+  drivesPropdriveAft1Heat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
   drivesPropdriveAft2 {
     active { value timestamp }
+  }
+  drivesPropdriveAft2Heat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
   drivesPropdriveFwd1 {
     active { value timestamp }
   }
+  drivesPropdriveFwd1Heat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
   drivesPropdriveFwd2 {
     active { value timestamp }
+  }
+  drivesPropdriveFwd2Heat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
   drivesPump1 {
     flow { value timestamp }
@@ -1457,8 +1499,22 @@ export const DRIVES_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
+  drivesSeawaterExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
   drivesShorepower {
     active { value timestamp }
+  }
+  drivesShorepowerHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
   drivesSwitchPropdriveAft1 {
     positionRel { value timestamp }
@@ -1726,24 +1782,6 @@ export const PCM_CONTROLLER_STATE_QUERY = `
     chargingState { value timestamp }
     chargeStatus { value timestamp }
   }
-  module2ChargeController {
-    charge { value timestamp }
-    energy { value timestamp }
-    chargingState { value timestamp }
-    chargeStatus { value timestamp }
-  }
-  module3ChargeController {
-    charge { value timestamp }
-    energy { value timestamp }
-    chargingState { value timestamp }
-    chargeStatus { value timestamp }
-  }
-  module4ChargeController {
-    charge { value timestamp }
-    energy { value timestamp }
-    chargingState { value timestamp }
-    chargeStatus { value timestamp }
-  }
   module1FlowController {
     setpoint { value timestamp }
     measurement { value timestamp }
@@ -1752,6 +1790,12 @@ export const PCM_CONTROLLER_STATE_QUERY = `
     enabled { value timestamp }
     tuning { value timestamp }
     components { value timestamp }
+  }
+  module2ChargeController {
+    charge { value timestamp }
+    energy { value timestamp }
+    chargingState { value timestamp }
+    chargeStatus { value timestamp }
   }
   module2FlowController {
     setpoint { value timestamp }
@@ -1762,6 +1806,12 @@ export const PCM_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
+  module3ChargeController {
+    charge { value timestamp }
+    energy { value timestamp }
+    chargingState { value timestamp }
+    chargeStatus { value timestamp }
+  }
   module3FlowController {
     setpoint { value timestamp }
     measurement { value timestamp }
@@ -1770,6 +1820,12 @@ export const PCM_CONTROLLER_STATE_QUERY = `
     enabled { value timestamp }
     tuning { value timestamp }
     components { value timestamp }
+  }
+  module4ChargeController {
+    charge { value timestamp }
+    energy { value timestamp }
+    chargingState { value timestamp }
+    chargeStatus { value timestamp }
   }
   module4FlowController {
     setpoint { value timestamp }

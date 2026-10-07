@@ -302,6 +302,16 @@
           }
         }
       },
+      "drives": {
+        "assets": {
+          "propulsionDrive": "Aradex prop Drive",
+          "shorepower": "Shorepower converters",
+          "propulsionCooler": {
+            "aft": "Aft. Prop. Oil Cooler",
+            "fwd": "Fwd. Prop. Oil Cooler"
+          }
+        }
+      },
       "modeBadge": {
         "modes": {
           "AdvisoryOff": "Advisory off",

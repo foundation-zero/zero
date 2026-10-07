@@ -3,6 +3,7 @@ import { Component, defineAsyncComponent } from "vue";
 import { MimicComponentFieldsMap } from "../mimics/modules";
 import { DC_MIMIC_DATA } from "../mimics/modules/dc/data";
 import { DHW_MIMIC_DATA } from "../mimics/modules/dhw/data";
+import { DRIVES_MIMIC_DATA } from "../mimics/modules/drives/data";
 import { PCM_MIMIC_DATA } from "../mimics/modules/pcm/data";
 import { PVT_MIMIC_DATA } from "../mimics/modules/pvt/data";
 import { THRUSTERS_MIMIC_DATA } from "../mimics/modules/thrusters/data";
@@ -46,5 +47,11 @@ export const MIMICS: Partial<Record<keyof ThrsModules, MimicDefinition>> = {
       () => import("@/modules/thrapp/mimics/modules/dc/DcModule.vue"),
     ),
     data: DC_MIMIC_DATA,
+  },
+  drives: {
+    component: defineAsyncComponent(
+      () => import("@/modules/thrapp/mimics/modules/drives/DrivesModule.vue"),
+    ),
+    data: DRIVES_MIMIC_DATA,
   },
 };
