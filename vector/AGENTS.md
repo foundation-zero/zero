@@ -58,17 +58,15 @@ against a checked-in expected file. They pull the `timberio/vector` Docker image
 and need Docker running; no broker or Greptime required.
 
 ```bash
-./test-process.sh    # general pipeline   → tests/process-expected.json
-./test-atpx.sh       # ATPX instrument    → tests/atpx-expected.json
-./test-atpx-nmea.sh  # ATPX NMEA routing  → tests/atpx-nmea-expected.json
+just test
 ```
 
 Each script prints a "matches" line on success and a unified diff on failure.
 
-- Input fixtures: `tests/*test-cases.json`
-- Expected output: `tests/*expected.json`
+- Input fixtures: `tests/*test-cases.jsonl`
+- Expected output: `tests/*expected.jsonl`
 - Test-only Vector configs (wire the fixture into the transforms): `tests/*config.yaml`
 
-When you change a transform on purpose, update the matching `expected.json` to
-the new correct output rather than loosening the test. `test-atpx.sh` sorts
+When you change a transform on purpose, update the matching `expected.jsonl` to
+the new correct output rather than loosening the test. `test.sh` sorts
 output before diffing because Vector does not guarantee row order.

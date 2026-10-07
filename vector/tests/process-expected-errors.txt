@@ -1,0 +1,2 @@
+ERROR transform{component_kind="transform" component_id=process component_type=remap}: vector::internal_events::remap: Mapping failed with event. error="function call error for \"parse_json\" at (89563:89593): unable to parse json: EOF while parsing a string at line 1 column 37" error_type="conversion_failed" stage="processing"
+ERROR transform{component_kind="transform" component_id=process component_type=remap}: vector_common::internal_event::component_events_dropped: Events dropped intentional=false count=1 reason="Mapping failed with event."

@@ -1,11 +1,11 @@
 test_process:
-    bash test-process.sh
+    ./test.sh process
 
 test_atpx:
-    bash test-atpx.sh
+    ./test.sh atpx
 
 test_atpx_nmea:
-    bash test-atpx-nmea.sh
+    ./test.sh atpx-nmea
 
 test: test_process test_atpx test_atpx_nmea
 
