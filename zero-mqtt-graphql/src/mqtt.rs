@@ -8,7 +8,7 @@ use rumqttc::{AsyncClient, Event, EventLoop, Incoming, MqttOptions, QoS};
 use serde_json::Value;
 
 use crate::asyncapi::{TopicDef, TopicGroupDef};
-use crate::cache::{mqtt_pattern_matches, TopicCache};
+use crate::cache::{TopicCache, mqtt_pattern_matches};
 
 pub struct MqttConnection<'a> {
     pub host: &'a str,

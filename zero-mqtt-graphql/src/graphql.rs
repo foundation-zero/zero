@@ -22,20 +22,20 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::iter::once;
 use std::sync::Arc;
 
-use async_graphql::dynamic::*;
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
+use async_graphql::dynamic::*;
 use log::warn;
 use roas_asyncapi::common::reference::RefOr;
+use roas_asyncapi::v3_0::Document;
 use roas_asyncapi::v3_0::schema::{
     Schema as AsyncApiSchema, SchemaOrMultiFormat, SchemaType, SubSchema,
 };
-use roas_asyncapi::v3_0::Document;
 use serde_json::Value as JsonValue;
 
 use crate::asyncapi::{FieldDef, TopicDef, TopicGroupDef};
 use crate::cache::TopicCache;
-use crate::metadata::{metadata_by_topic, MetadataByTopic, MetadataFile};
+use crate::metadata::{MetadataByTopic, MetadataFile, metadata_by_topic};
 use crate::naming::*;
 
 /// A group's rows partitioned into buckets by the `group_by` metadata

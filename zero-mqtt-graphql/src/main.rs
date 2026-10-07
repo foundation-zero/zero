@@ -8,12 +8,12 @@ use tokio::net::TcpListener;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
 
-use zero_mqtt_graphql::asyncapi::{load_specs_and_groups, TopicDef, TopicGroupDef};
+use zero_mqtt_graphql::asyncapi::{TopicDef, TopicGroupDef, load_specs_and_groups};
 use zero_mqtt_graphql::cache::TopicCache;
 use zero_mqtt_graphql::config::AppConfig;
 use zero_mqtt_graphql::graphql::build_schema;
 use zero_mqtt_graphql::http::router;
-use zero_mqtt_graphql::metadata::{load_metadata, MetadataFile};
+use zero_mqtt_graphql::metadata::{MetadataFile, load_metadata};
 use zero_mqtt_graphql::mqtt::{MqttConnection, MqttSubscriber};
 
 /// A spawned MQTT subscriber task paired with a receiver that fires when

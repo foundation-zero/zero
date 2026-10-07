@@ -4,10 +4,10 @@ use std::path::{Path, PathBuf};
 use anyhow::Context;
 use log::{info, warn};
 use roas_asyncapi::common::reference::{RefOr, Reference};
+use roas_asyncapi::v3_0::Document;
 use roas_asyncapi::v3_0::channel::Channel;
 use roas_asyncapi::v3_0::message::Message;
 use roas_asyncapi::v3_0::schema::{Schema, SchemaOrMultiFormat};
-use roas_asyncapi::v3_0::Document;
 use serde_json::Value;
 
 use crate::graphql::graphql_type_for_subschema;
@@ -411,19 +411,19 @@ fn resolve_channel<'a>(r: &'a RefOr<Channel>, doc: &'a Document) -> Option<&'a C
                 .or_else(|| reference.local_key())?;
             // If the key is the current iteration key itself, avoid infinite recursion
             // by looking directly in components without recursing into the same ref.
-            if let Some(components) = &doc.components {
-                if let Some(entry) = components.channels.get(&key) {
-                    return match entry {
-                        RefOr::Item(c) => Some(c),
-                        RefOr::Reference(r2) => {
-                            let key2 = r2.component_key("channels").or_else(|| r2.local_key())?;
-                            if key2 == key {
-                                return None;
-                            }
-                            components.channels.get(&key2)?.item()
+            if let Some(components) = &doc.components
+                && let Some(entry) = components.channels.get(&key)
+            {
+                return match entry {
+                    RefOr::Item(c) => Some(c),
+                    RefOr::Reference(r2) => {
+                        let key2 = r2.component_key("channels").or_else(|| r2.local_key())?;
+                        if key2 == key {
+                            return None;
                         }
-                    };
-                }
+                        components.channels.get(&key2)?.item()
+                    }
+                };
             }
             if let Some(entry) = doc.channels.get(&key) {
                 if let RefOr::Item(c) = entry {
