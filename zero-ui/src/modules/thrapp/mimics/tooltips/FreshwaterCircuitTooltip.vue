@@ -1,16 +1,13 @@
 <script setup lang="ts">
 import { useTranslations } from ".";
-import {
-  MimicTooltip,
-  NoopTooltipProvider,
-  TooltipComponentContext,
-} from "../../components/tooltip";
+import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip";
 import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
-import { FreshwaterCircuitInstance } from "../instances";
+import FreshwaterCircuitContent from "../instances/content/FreshwaterCircuitContent.vue";
 import { SensorValue } from "../providers";
 import * as Partials from "./partials";
+
 const props = defineProps<TooltipComponentContext<MimicComponentType.FreshwaterCircuit>>();
 
 const { items, labels } = useTranslations();
@@ -19,13 +16,10 @@ const { items, labels } = useTranslations();
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <NoopTooltipProvider>
-        <FreshwaterCircuitInstance
-          v-bind="props"
-          height="243"
-          force-height
-        />
-      </NoopTooltipProvider>
+      <FreshwaterCircuitContent
+        v-bind="props"
+        class="w-49"
+      />
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 

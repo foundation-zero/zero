@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { ZiSeawater } from "@/modules/common/components/icons";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
-import { CircuitBox, CircuitBoxTitle } from "../components/circuit-box";
-import { ValueList, ValueListSeparator, ValueListTemperatureItem } from "../components/value-list";
-import { getMimicDataProvider } from "../providers";
+import { HTMLWrapper } from "../components/html-wrapper";
+import SeawaterCircuitContent from "./content/SeawaterCircuitContent.vue";
 
 const props = withDefaults(
   defineProps<
@@ -18,10 +16,6 @@ const props = withDefaults(
   >(),
   { height: 90 },
 );
-
-const { getComponentState } = getMimicDataProvider();
-
-const state = getComponentState();
 </script>
 
 <template>
@@ -29,22 +23,10 @@ const state = getComponentState();
     :type="MimicComponentType.SeawaterCircuit"
     :data="props"
   >
-    <CircuitBox
-      v-bind="props"
-      :state="state"
-    >
-      <CircuitBoxTitle class="flex items-center gap-1"><ZiSeawater />Seawater</CircuitBoxTitle>
-
-      <ValueList dense>
-        <ValueListSeparator />
-        <ValueListTemperatureItem
-          :source="source"
-          class="text-brand"
-          temperature-label="seawater"
-        />
-        <ValueListSeparator />
-      </ValueList>
-    </CircuitBox>
-    <slot />
+    <HTMLWrapper v-bind="{ width, height, forceHeight, x, y }">
+      <SeawaterCircuitContent
+        v-bind="{ sensors, controllerState, controls, parameters, source, tooltip, custom }"
+      />
+    </HTMLWrapper>
   </MimicTooltipTrigger>
 </template>

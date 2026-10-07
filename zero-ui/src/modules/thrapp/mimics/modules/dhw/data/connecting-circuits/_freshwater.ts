@@ -9,7 +9,7 @@ export default toInstance<MimicComponentType.FreshwaterCircuit>({
   controllerState: {},
   custom: {},
   parameters: {},
-  source: getCustomField("dhw", { technicalName: "fresh-water" }),
+  source: getCustomField("dhw", {}),
   sensors: {
     flowIn: getField(SensorComponentType.FlowOnly, "dhw", "freshwaterHotwaterFlow"),
     tIn: getField(SensorComponentType.Temperature, "dhw", "freshwaterHotwaterTemperature"),

@@ -32,13 +32,13 @@ export { default as SensorValue } from "./SensorValue.vue";
 export type SchemaDirectiveData = {
   title?: string;
   yardTag?: string;
-  technicalName: string;
+  technicalName?: string;
 };
 
 export const getCustomField = <Module extends keyof ThrsDefinitions>(
   module: Module,
   data: SchemaDirectiveData,
-): ModuleField<"custom", Module> => ["custom", module, data.technicalName, data];
+): ModuleField<"custom", Module> => ["custom", module, data.technicalName ?? "unknown", data];
 
 export const getField = <
   Type extends

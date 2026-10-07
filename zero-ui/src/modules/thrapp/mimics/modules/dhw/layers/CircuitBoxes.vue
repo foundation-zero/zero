@@ -10,7 +10,7 @@
 
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { RiArrowDownLine, RiArrowLeftLine } from "@remixicon/vue";
-import { FreshwaterCircuitInstance, LoopCircuitInstance } from "../../../instances";
+import { ExchangeCircuitInstance, FreshwaterCircuitInstance } from "../../../instances";
 import { DHW_MIMIC_DATA } from "../data";
 
 const circuits = DHW_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
@@ -19,28 +19,28 @@ const FreshwaterCircuits = DHW_MIMIC_DATA[MimicComponentType.FreshwaterCircuit];
 
 <template>
   <g>
-    <LoopCircuitInstance
+    <ExchangeCircuitInstance
       x="0"
       y="25"
       force-height
       height="195"
       v-bind="circuits['highTempLoop']"
     />
-    <LoopCircuitInstance
+    <ExchangeCircuitInstance
       x="397"
       y="708"
       force-height
       height="220"
       v-bind="circuits['dcConverters']"
     />
-    <LoopCircuitInstance
+    <ExchangeCircuitInstance
       x="650"
       y="708"
       force-height
       height="165"
       v-bind="circuits['drives']"
     />
-    <LoopCircuitInstance
+    <ExchangeCircuitInstance
       x="903"
       y="708"
       force-height

@@ -1,8 +1,8 @@
 export { default as BoilerTankController } from "./BoilerTankController.vue";
 export { default as BoilerTankOperator } from "./BoilerTankOperator.vue";
-export { default as Circuit } from "./Circuit.vue";
 export { default as ComponentInfo } from "./ComponentInfo.vue";
 export { default as EditableListItem } from "./EditableListItem.vue";
+export { default as ExchangeCircuit } from "./ExchangeCircuitPartial.vue";
 export { default as ListItem } from "./ListItem.vue";
 export { default as ManualControl } from "./ManualControl.vue";
 export { default as PIDController } from "./PIDController.vue";

@@ -283,13 +283,6 @@ export type CustomFieldDefinitions = CustomFields<{
     sideB: HeatExchangerPortOrientation;
     exchangeCircuit?: ExtractSourceFields<MimicComponentType.ExchangeCircuit>["source"];
   };
-  [MimicComponentType.ExchangeCircuit]: {
-    width?: number | string;
-    height?: number | string;
-    forceHeight?: boolean;
-    circuitName: string;
-    modeModule?: keyof ControlStatus["modules"];
-  };
   [MimicComponentType.DcConverter]: {
     converters: ModuleField<SensorComponentType.Ugrid | SensorComponentType.Brightloop>[];
     group: DcConverterGroup;
@@ -308,7 +301,16 @@ export type CustomFieldDefinitions = CustomFields<{
     height?: number | string;
     modeModule?: keyof ControlStatus["modules"];
   };
-  [MimicComponentType.SeawaterCircuit]: EmptyObject;
+  [MimicComponentType.SeawaterCircuit]: {
+    circuitName?: string;
+  };
+  [MimicComponentType.ExchangeCircuit]: {
+    width?: number | string;
+    height?: number | string;
+    forceHeight?: boolean;
+    circuitName: string;
+    modeModule?: keyof ControlStatus["modules"];
+  };
   [MimicComponentType.PressureSensor]: {
     controller?: PIDController;
   };

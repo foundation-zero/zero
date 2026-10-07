@@ -11,7 +11,7 @@ import { YardTag } from "../components/yard-tag/index.ts";
 import HVACInstance from "../instances/HVACInstance.vue";
 import { SensorValue } from "../providers/index.ts";
 import { useTranslations } from "./index.ts";
-import Circuit from "./partials/Circuit.vue";
+import Circuit from "./partials/ExchangeCircuitPartial.vue";
 
 import * as Partials from "./partials/index.ts";
 const { items, labels, sources } = useTranslations();

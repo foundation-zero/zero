@@ -18,7 +18,7 @@ import { HeatExchangerInstance } from "../instances";
 import { SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
-import Circuit from "./partials/Circuit.vue";
+import Circuit from "./partials/ExchangeCircuitPartial.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.HeatExchanger>>();
 

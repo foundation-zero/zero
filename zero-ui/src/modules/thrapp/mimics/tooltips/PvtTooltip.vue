@@ -17,7 +17,7 @@ import { SensorGraph } from "../components/sensor-graph";
 import { PvtInstance } from "../instances";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
-import Circuit from "./partials/Circuit.vue";
+import Circuit from "./partials/ExchangeCircuitPartial.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.Pvt>>();
 
