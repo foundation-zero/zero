@@ -78,11 +78,19 @@ type AdsorptionSensorValuesType {
   adsorptionTemperatureWasteReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-38", componentType: "temperature_sensor", valveType: null)
   adsorptionTemperatureWasteSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-39", componentType: "temperature_sensor", valveType: null)
   adsorptionTemperatureDhwReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-56", componentType: "temperature_sensor", valveType: null)
+  coolingTemperatureAdsorptionReturn: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-42", componentType: "temperature_sensor", valveType: null)
+  coolingTemperatureAdsorptionSupply: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "50001038-43", componentType: "temperature_sensor", valveType: null)
+  coolingFlowAdsorption: SensorFlowSensorType! @jsonSchemaDirective(yardTag: "50001058-05", componentType: "flow_sensor", valveType: null)
   adsorptionAvailableHotTemperature: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "", componentType: "external_sensor", valveType: null)
   adsorptionAvailableColdTemperature: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "", componentType: "external_sensor", valveType: null)
   adsorptionAvailableSeawaterTemperature: SensorTemperatureSensorType! @jsonSchemaDirective(yardTag: "", componentType: "external_sensor", valveType: null)
+  adsorptionHotHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001034", componentType: "heat_transfer", valveType: null)
+  adsorptionWasteHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001034", componentType: "heat_transfer", valveType: null)
+  adsorptionCoolingHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001034", componentType: "heat_transfer", valveType: null)
   adsorptionHtExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001003", componentType: "heat_transfer", valveType: null)
   adsorptionDhwExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001004", componentType: "heat_transfer", valveType: null)
+  adsorptionTemperatureWasteSupplyBeforeSeawater: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  adsorptionSeawaterExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001005", componentType: "heat_transfer", valveType: null)
 }
 
 type AdsorptionSensorValuesTypeAdsorptionControlValuesTypeAdsorptionParametersTypeAdsorptionControlModeTypeAdsorptionControllerStateTypeControlModule {

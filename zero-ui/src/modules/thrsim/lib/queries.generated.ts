@@ -51,6 +51,13 @@ export const ADSORPTION_SENSOR_QUERY = `
     noError { value timestamp }
     freeCooling { value timestamp }
   }
+  adsorptionCoolingHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
   adsorptionDhwExchanger {
     temperatureSupply { value timestamp source }
     temperatureReturn { value timestamp source }
@@ -86,6 +93,13 @@ export const ADSORPTION_SENSOR_QUERY = `
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
   }
+  adsorptionHotHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
   adsorptionHtExchanger {
     temperatureSupply { value timestamp source }
     temperatureReturn { value timestamp source }
@@ -108,6 +122,13 @@ export const ADSORPTION_SENSOR_QUERY = `
     anyWarningActive { value timestamp }
     feedbackFailure { value timestamp }
     externalOutOfRange { value timestamp }
+  }
+  adsorptionSeawaterExchanger {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
   }
   adsorptionSwitchDhw {
     positionRel { value timestamp }
@@ -136,6 +157,27 @@ export const ADSORPTION_SENSOR_QUERY = `
     temperature { value timestamp }
   }
   adsorptionTemperatureWasteSupply {
+    temperature { value timestamp }
+  }
+  adsorptionTemperatureWasteSupplyBeforeSeawater {
+    temperature { value timestamp }
+  }
+  adsorptionWasteHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  coolingFlowAdsorption {
+    flow { value timestamp }
+    temperature { value timestamp }
+    quantity { value timestamp }
+  }
+  coolingTemperatureAdsorptionReturn {
+    temperature { value timestamp }
+  }
+  coolingTemperatureAdsorptionSupply {
     temperature { value timestamp }
   }
   mode {

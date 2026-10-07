@@ -2087,15 +2087,40 @@ managed_tables = {
     "yard_tag": "50001038-28",
     "technical_name": "thrusters-temperature-supply"
   },
+  "thrs/controller/adsorption/adsorption-cooling-heat": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "adsorption-cooling-heat"
+  },
   "thrs/controller/adsorption/adsorption-dhw-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
     "technical_name": "adsorption-dhw-exchanger"
   },
+  "thrs/controller/adsorption/adsorption-hot-heat": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "adsorption-hot-heat"
+  },
   "thrs/controller/adsorption/adsorption-ht-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
     "technical_name": "adsorption-ht-exchanger"
+  },
+  "thrs/controller/adsorption/adsorption-seawater-exchanger": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "adsorption-seawater-exchanger"
+  },
+  "thrs/controller/adsorption/adsorption-temperature-waste-supply-before-seawater": {
+    "table": "marpower__thrs__calculated_temperatures",
+    "yard_tag": null,
+    "technical_name": "adsorption-temperature-waste-supply-before-seawater"
+  },
+  "thrs/controller/adsorption/adsorption-waste-heat": {
+    "table": "marpower__thrs__heat_transfers",
+    "yard_tag": null,
+    "technical_name": "adsorption-waste-heat"
   },
   "thrs/controller/consumers/consumers-adsorption-exchanger": {
     "table": "marpower__thrs__heat_transfers",

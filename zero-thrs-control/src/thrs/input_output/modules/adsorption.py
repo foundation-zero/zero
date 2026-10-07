@@ -121,6 +121,33 @@ class AdsorptionSensorValues(AmcsModeSensorValues):
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-56", component_type="temperature_sensor"),
     ]
+    cooling_temperature_adsorption_return: Annotated[
+        sensor.TemperatureSensor,
+        component_meta(
+            yard_tag="50001038-42",
+            component_type="temperature_sensor",
+            included_in_fmu=False,
+            topic_override="500000-thrs/cooling/cooling-temperature-adsorption-return",
+        ),
+    ]
+    cooling_temperature_adsorption_supply: Annotated[
+        sensor.TemperatureSensor,
+        component_meta(
+            yard_tag="50001038-43",
+            component_type="temperature_sensor",
+            included_in_fmu=False,
+            topic_override="500000-thrs/cooling/cooling-temperature-adsorption-supply",
+        ),
+    ]
+    cooling_flow_adsorption: Annotated[
+        sensor.FlowSensor,
+        component_meta(
+            yard_tag="50001058-05",
+            component_type="flow_sensor",
+            included_in_fmu=False,
+            topic_override="500000-thrs/cooling/cooling-flow-adsorption",
+        ),
+    ]
     adsorption_available_hot_temperature: Annotated[
         sensor.TemperatureSensor,
         component_meta(
@@ -145,6 +172,75 @@ class AdsorptionSensorValues(AmcsModeSensorValues):
     ] = sensor.TemperatureSensor(
         temperature=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC)),
     )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001034",
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def adsorption_hot_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.adsorption_temperature_hot_supply.temperature,
+            temperature_return=self.adsorption_temperature_hot_return.temperature,
+            flow=self.adsorption_flow_hot.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "adsorption_temperature_hot_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "adsorption_temperature_hot_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "adsorption_flow_hot"),
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001034",
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def adsorption_waste_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.adsorption_temperature_waste_supply.temperature,
+            temperature_return=self.adsorption_temperature_waste_return.temperature,
+            flow=self.adsorption_flow_waste.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "adsorption_temperature_waste_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "adsorption_temperature_waste_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "adsorption_flow_waste"),
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001034",
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def adsorption_cooling_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.cooling_temperature_adsorption_supply.temperature,
+            temperature_return=self.cooling_temperature_adsorption_return.temperature,
+            flow=self.cooling_flow_adsorption.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "cooling_temperature_adsorption_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "cooling_temperature_adsorption_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "cooling_flow_adsorption"),
+        )
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -179,17 +275,64 @@ class AdsorptionSensorValues(AmcsModeSensorValues):
     @property
     def adsorption_dhw_exchanger(self) -> sensor.HeatTransferDevice:
         return sensor.HeatTransferDevice.from_sensors(
-            temperature_supply=self.adsorption_temperature_waste_supply.temperature,
+            temperature_supply=self.adsorption_temperature_waste_return.temperature,
             temperature_return=self.adsorption_temperature_dhw_return.temperature,
             flow=self.adsorption_flow_dhw.flow,
             heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(
-                self, "adsorption_temperature_waste_supply"
+                self, "adsorption_temperature_waste_return"
             ),
             temperature_return_source=sensor.extract_source_yardtag(
                 self, "adsorption_temperature_dhw_return"
             ),
             flow_source=sensor.extract_source_yardtag(self, "adsorption_flow_dhw"),
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_temperature", included_in_fmu=False
+        )
+    )
+    @property
+    def adsorption_temperature_waste_supply_before_seawater(
+        self,
+    ) -> sensor.CalculatedTemperature:
+        dhw_bypass_flow = Stamped.combine(
+            self.adsorption_flow_dhw.flow,
+            self.adsorption_flow_waste.flow,
+            value=self.adsorption_flow_waste.flow.value
+            - self.adsorption_flow_dhw.flow.value,
+        )
+
+        return sensor.CalculatedTemperature.from_weighted_sensors(
+            weights=[self.adsorption_flow_dhw.flow, dhw_bypass_flow],
+            sensors=[
+                self.adsorption_temperature_dhw_return,
+                self.adsorption_temperature_waste_return,
+            ],
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="50001005",
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def adsorption_seawater_exchanger(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors_with_mix_valve(
+            temperature_supply=self.adsorption_temperature_waste_supply_before_seawater.temperature,
+            temperature_return=self.adsorption_temperature_waste_supply.temperature,
+            flow=self.adsorption_flow_waste.flow,
+            mix_valve=self.adsorption_mix_waste,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "adsorption_temperature_waste_supply_before_seawater"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "adsorption_temperature_waste_supply"
+            ),
         )
 
 
@@ -268,6 +411,13 @@ class AdsorptionSimulationInputs(ThrsValues):
     adsorption_dhw_supply: simulation.Boundary
     mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def cooling_temperature_adsorption_supply(self) -> sensor.TemperatureSensor:
+        return sensor.TemperatureSensor(
+            temperature=self.adsorption_cooling_supply.temperature
+        )
+
 
 class AdsorptionSimulationOutputs(ThrsValues):
     adsorption_cooling_return: simulation.Boundary
@@ -276,3 +426,18 @@ class AdsorptionSimulationOutputs(ThrsValues):
     adsorption_dhw_return: simulation.TemperatureBoundary
     adsorption_consumers_exchanger: simulation.ExchangerBoundary
     adsorption_consumers_return: simulation.TemperatureBoundary
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def cooling_temperature_adsorption_return(self) -> sensor.TemperatureSensor:
+        return sensor.TemperatureSensor(
+            temperature=self.adsorption_cooling_return.temperature
+        )
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def cooling_flow_adsorption(self) -> sensor.FlowSensor:
+        return sensor.FlowSensor(
+            flow=self.adsorption_cooling_return.flow,
+            temperature=self.adsorption_cooling_return.temperature,
+        )

@@ -26,6 +26,7 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
         "thrusters": ("thrusters-flow",),
     },
     "calculated_temperatures": {
+        "adsorption": ("adsorption-temperature-waste-supply-before-seawater",),
         "pcm": ("pcm-temperature-consumers-return",),
         "pvt": (
             "pvt-max-temperature-main-aft-strings",
@@ -46,8 +47,12 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
     },
     "heat_transfers": {
         "adsorption": (
+            "adsorption-hot-heat",
+            "adsorption-waste-heat",
+            "adsorption-cooling-heat",
             "adsorption-ht-exchanger",
             "adsorption-dhw-exchanger",
+            "adsorption-seawater-exchanger",
         ),
         "consumers": (
             "consumers-adsorption-exchanger",
