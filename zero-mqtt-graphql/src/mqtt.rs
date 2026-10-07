@@ -31,7 +31,7 @@ pub struct MqttSubscriber {
 
 impl MqttSubscriber {
     pub fn new_with_mode(
-        connection: MqttConnection,
+        connection: &MqttConnection,
         cache: Arc<TopicCache>,
         listen_only: bool,
         topics: &[TopicDef],
@@ -83,7 +83,7 @@ impl MqttSubscriber {
         loop {
             match self.event_loop.poll().await {
                 Ok(Event::Incoming(Incoming::Publish(publish))) => {
-                    self.handle_publish(publish.topic, &publish.payload).await;
+                    self.handle_publish(&publish.topic, &publish.payload);
                 }
                 Ok(Event::Incoming(Incoming::ConnAck(_))) => {
                     backoff = INITIAL_BACKOFF;
@@ -94,10 +94,7 @@ impl MqttSubscriber {
                     // Other events — ignore
                 }
                 Err(e) => {
-                    error!(
-                        "MQTT event loop error: {}. Reconnecting in {:?}...",
-                        e, backoff
-                    );
+                    error!("MQTT event loop error: {e}. Reconnecting in {backoff:?}...");
                     // rumqttc auto-reconnects; back off exponentially to avoid
                     // hammering the broker on persistent failures.
                     tokio::time::sleep(backoff).await;
@@ -138,24 +135,24 @@ impl MqttSubscriber {
     ///
     /// Takes `&mut self` because `EventLoop` (owned by the same struct) is
     /// `!Sync`; a shared borrow would make the polling future non-`Send`.
-    async fn handle_publish(&mut self, topic: String, payload: &[u8]) {
+    fn handle_publish(&mut self, topic: &str, payload: &[u8]) {
         let payload = match std::str::from_utf8(payload) {
             Ok(s) => s,
             Err(e) => {
-                warn!("Non-UTF8 payload on topic '{}': {}", topic, e);
+                warn!("Non-UTF8 payload on topic '{topic}': {e}");
                 return;
             }
         };
 
         if payload.trim().is_empty() {
-            debug!("Empty payload on topic '{}', skipping", topic);
+            debug!("Empty payload on topic '{topic}', skipping");
             return;
         }
 
         match serde_json::from_str::<Value>(payload) {
-            Ok(value) => self.handle_json_payload(&topic, value),
+            Ok(value) => self.handle_json_payload(topic, value),
             Err(e) => {
-                warn!("Non-JSON payload on topic '{}': {}", topic, e);
+                warn!("Non-JSON payload on topic '{topic}': {e}");
             }
         }
     }
@@ -165,15 +162,12 @@ impl MqttSubscriber {
     fn handle_json_payload(&self, topic: &str, value: Value) {
         if self.listen_only {
             match self.validate_payload(topic, &value) {
-                Some(true) => info!("Schema OK for topic '{}': {}", topic, value),
+                Some(true) => info!("Schema OK for topic '{topic}': {value}"),
                 Some(false) => {} // mismatch already logged
                 None if self.validators.is_empty() => {
-                    info!("Received on topic '{}' (no schema known): {}", topic, value)
+                    info!("Received on topic '{topic}' (no schema known): {value}");
                 }
-                None => warn!(
-                    "Received on unknown topic '{}' (not in specs): {}",
-                    topic, value
-                ),
+                None => warn!("Received on unknown topic '{topic}' (not in specs): {value}"),
             }
             return;
         }
@@ -186,8 +180,7 @@ impl MqttSubscriber {
         let preview_len = rendered
             .char_indices()
             .nth(100)
-            .map(|(idx, _)| idx)
-            .unwrap_or(rendered.len());
+            .map_or(rendered.len(), |(idx, _)| idx);
         if preview_len < rendered.len() {
             debug!(
                 "Caching payload for topic '{}': {}...",
@@ -195,7 +188,7 @@ impl MqttSubscriber {
                 &rendered[..preview_len]
             );
         } else {
-            debug!("Caching payload for topic '{}': {}", topic, rendered);
+            debug!("Caching payload for topic '{topic}': {rendered}");
         }
         self.cache.insert(topic, flatten_payload(value));
     }
@@ -288,6 +281,7 @@ fn build_validators(topics: &[TopicDef], groups: &[TopicGroupDef]) -> HashMap<St
 /// Generate a unique suffix for the MQTT client ID from full-precision
 /// wall-clock nanoseconds, so concurrent instances and rapid restarts do not
 /// collide (brokers disconnect clients sharing an ID).
+#[allow(clippy::cast_possible_truncation)]
 fn rand_u64() -> u64 {
     use std::time::{SystemTime, UNIX_EPOCH};
     let nanos = SystemTime::now()
@@ -480,7 +474,7 @@ mod tests {
             password: None,
         };
         MqttSubscriber::new_with_mode(
-            connection,
+            &connection,
             Arc::new(TopicCache::new()),
             true,
             topics,

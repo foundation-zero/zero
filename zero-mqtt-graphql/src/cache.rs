@@ -25,10 +25,12 @@ impl Default for TopicCache {
 }
 
 impl TopicCache {
+    #[must_use]
     pub fn new() -> Self {
         Self::with_ttl(crate::config::DEFAULT_TTL_SECS, HashMap::new())
     }
 
+    #[must_use]
     pub fn with_ttl(default_ttl_secs: u64, per_topic_ttl: HashMap<String, u64>) -> Self {
         Self {
             data: DashMap::new(),
@@ -41,6 +43,7 @@ impl TopicCache {
     /// definitions: topics whose `ttl_secs` differs from `default_ttl` are
     /// keyed by topic, groups by their wildcard pattern so every concrete
     /// topic under them inherits the group's `x-ttl`.
+    #[must_use]
     pub fn from_definitions(
         topics: &[TopicDef],
         groups: &[TopicGroupDef],
@@ -70,8 +73,7 @@ impl TopicCache {
             .iter()
             .filter(|(pattern, _)| pattern.contains('+') || pattern.contains('#'))
             .find(|(pattern, _)| mqtt_pattern_matches(pattern, topic))
-            .map(|(_, ttl)| *ttl)
-            .unwrap_or(self.default_ttl_secs)
+            .map_or(self.default_ttl_secs, |(_, ttl)| *ttl)
     }
 
     /// Insert or overwrite the cached payload for a topic.
@@ -88,12 +90,14 @@ impl TopicCache {
     }
 
     /// Get the full cached payload for a topic, or `None` if missing or expired.
+    #[must_use]
     pub fn get(&self, topic: &str) -> Option<Value> {
         let entry = self.get_entry_if_fresh(topic)?;
         Some(entry.value.clone())
     }
 
     /// Get a specific field from a topic's cached payload.
+    #[must_use]
     pub fn get_field(&self, topic: &str, field: &str) -> Option<Value> {
         let entry = self.get_entry_if_fresh(topic)?;
         entry.value.get(field).cloned()
@@ -135,10 +139,9 @@ pub(crate) fn mqtt_pattern_matches(pattern: &str, topic: &str) -> bool {
     let mut topic_levels = topic.split('/');
     loop {
         match (pattern_levels.next(), topic_levels.next()) {
-            (Some("#"), _) => return true,
+            (Some("#"), _) | (None, None) => return true,
             (Some("+"), Some(_)) => {}
             (Some(p), Some(t)) if p == t => {}
-            (None, None) => return true,
             _ => return false,
         }
     }

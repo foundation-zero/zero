@@ -30,6 +30,7 @@ pub struct MetadataFile {
 }
 
 /// Whether this path is a topic-metadata file (not an AsyncAPI document).
+#[must_use]
 pub fn is_metadata_file(path: &Path) -> bool {
     path.file_name()
         .and_then(|name| name.to_str())
@@ -40,10 +41,7 @@ pub fn is_metadata_file(path: &Path) -> bool {
 pub fn load_metadata(spec_dir: &str) -> anyhow::Result<Vec<MetadataFile>> {
     let dir = Path::new(spec_dir);
     if !dir.is_dir() {
-        anyhow::bail!(
-            "spec_dir does not exist or is not a directory: {}",
-            spec_dir
-        );
+        anyhow::bail!("spec_dir does not exist or is not a directory: {spec_dir}");
     }
 
     let mut paths: Vec<_> = std::fs::read_dir(dir)?
@@ -68,6 +66,7 @@ pub type MetadataByTopic = BTreeMap<String, (String, BTreeMap<String, Value>)>;
 
 /// Flat lookup of every annotated topic across all files:
 /// `topic → (group, metadata)`.
+#[must_use]
 pub fn metadata_by_topic(files: &[MetadataFile]) -> MetadataByTopic {
     files
         .iter()

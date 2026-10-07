@@ -1,4 +1,5 @@
 /// Sanitize a topic name to lowerCamelCase (for GraphQL query fields).
+#[must_use]
 pub fn sanitize_to_graphql_name(raw: &str) -> String {
     to_camel_case(raw)
 }
@@ -58,6 +59,7 @@ fn split_to_words(raw: &str) -> Vec<String> {
 }
 
 /// PascalCase form of a group id (`power-tags` → `PowerTags`).
+#[must_use]
 pub fn pascal_case(name: &str) -> String {
     let camel = sanitize_to_graphql_name(name);
     let mut chars = camel.chars();
@@ -81,6 +83,7 @@ const RESERVED_GRAPHQL_NAMES: &[&str] = &[
 ];
 
 /// Whether `name` collides with a reserved GraphQL name.
+#[must_use]
 pub fn is_reserved_name(name: &str) -> bool {
     RESERVED_GRAPHQL_NAMES.contains(&name)
 }

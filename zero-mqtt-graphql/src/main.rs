@@ -79,7 +79,7 @@ fn validate_command(spec_dir: &str, topics: &[TopicDef], groups: &[TopicGroupDef
     let metadata = load_metadata(spec_dir)?;
     zero_mqtt_graphql::graphql::validate_topics(topics)?;
     let cache = Arc::new(TopicCache::new());
-    let _schema = zero_mqtt_graphql::graphql::build_schema(topics, cache, groups, &metadata)?;
+    let _schema = zero_mqtt_graphql::graphql::build_schema(topics, &cache, groups, &metadata)?;
     println!(
         "Validated {} topic(s), {} group(s) and {} metadata file(s) from '{}' — no sanitization collisions",
         topics.len(),
@@ -111,7 +111,7 @@ async fn run_serve(
     zero_mqtt_graphql::graphql::spawn_eviction(cache.clone());
     let mut mqtt = spawn_mqtt_subscriber(&config, &topics, &groups, &cache)?;
 
-    let schema = build_schema(&topics, cache, &groups, &metadata)?;
+    let schema = build_schema(&topics, &cache, &groups, &metadata)?;
     let addr = SocketAddr::from(([0, 0, 0, 0], config.listen_port));
     info!("Listening on http://{}", addr);
     let listener = TcpListener::bind(addr).await?;
@@ -165,7 +165,7 @@ fn spawn_mqtt_subscriber(
         username: config.mqtt_username.as_deref(),
         password: config.mqtt_password.as_deref(),
     };
-    let mut sub = MqttSubscriber::new_with_mode(connection, cache.clone(), false, topics, groups)?;
+    let mut sub = MqttSubscriber::new_with_mode(&connection, cache.clone(), false, topics, groups)?;
     sub.set_pending_subscriptions(&mqtt_topics);
     Ok(Some(spawn_subscriber(sub)))
 }
@@ -247,7 +247,7 @@ async fn run_listen_only(
         username: config.mqtt_username.as_deref(),
         password: config.mqtt_password.as_deref(),
     };
-    let mut sub = MqttSubscriber::new_with_mode(connection, cache, true, &topics, &groups)?;
+    let mut sub = MqttSubscriber::new_with_mode(&connection, cache, true, &topics, &groups)?;
     sub.set_pending_subscriptions(&mqtt_topics);
 
     let (handle, dead_rx) = spawn_subscriber(sub);
@@ -306,7 +306,7 @@ fn export_sdl(
         anyhow::bail!("no topics found — nothing to export");
     }
     let cache = Arc::new(TopicCache::new());
-    let schema = build_schema(topics, cache, groups, metadata)?;
+    let schema = build_schema(topics, &cache, groups, metadata)?;
     let sdl = schema.sdl();
     match output {
         Some(path) => {

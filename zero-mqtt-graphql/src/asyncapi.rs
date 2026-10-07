@@ -11,7 +11,7 @@ use roas_asyncapi::v3_0::schema::{Schema, SchemaOrMultiFormat};
 use serde_json::Value;
 
 use crate::graphql::graphql_type_for_subschema;
-use crate::naming::*;
+use crate::naming::sanitize_to_graphql_name;
 
 #[derive(Debug, Clone)]
 pub struct TopicDef {
@@ -171,24 +171,18 @@ fn topic_from_channel(
         return None;
     }
 
-    let mqtt_topic = binding_topic.or_else(|| channel.address().map(|s| s.to_string()));
-    let mqtt_topic = match mqtt_topic {
-        Some(t) => t,
-        None => {
-            warn!(
-                "Channel '{}' in {} has no mqtt binding topic and no address, skipping",
-                channel_name,
-                path.display()
-            );
-            return None;
-        }
+    let mqtt_topic = binding_topic.or_else(|| channel.address().map(ToString::to_string));
+    let Some(mqtt_topic) = mqtt_topic else {
+        warn!(
+            "Channel '{}' in {} has no mqtt binding topic and no address, skipping",
+            channel_name,
+            path.display()
+        );
+        return None;
     };
 
     if channel.messages.is_empty() {
-        info!(
-            "Channel '{}' (topic: '{}') has no messages",
-            channel_name, mqtt_topic
-        );
+        info!("Channel '{channel_name}' (topic: '{mqtt_topic}') has no messages");
     }
 
     let (fields, payload_schema) = message_fields(channel, doc);
@@ -440,7 +434,7 @@ fn resolve_channel<'a>(r: &'a RefOr<Channel>, doc: &'a Document) -> Option<&'a C
 fn mqtt_topic_from_channel(channel: &Channel) -> Option<String> {
     let bindings = channel.bindings.as_ref()?.item()?;
     let mqtt_val = bindings.get("mqtt")?;
-    mqtt_val.get("topic")?.as_str().map(|s| s.to_string())
+    mqtt_val.get("topic")?.as_str().map(ToString::to_string)
 }
 
 /// Follow a component `$ref` to its entry in one components map, resolving
@@ -469,7 +463,7 @@ fn resolve_ref_to_entry<'a, T>(
             }
             entries.get(&key2)
         }
-        entry => Some(entry),
+        entry @ RefOr::Item(_) => Some(entry),
     }
 }
 
@@ -578,14 +572,13 @@ fn parse_ttl_str(s: &str) -> Option<u64> {
         );
         return None;
     };
-    match num.parse::<u64>() {
-        Ok(n) => Some(n * mult),
-        Err(_) => {
-            warn!(
-                "Unparseable x-ttl value '{s}' (expected seconds, '30s', '5m' or '1h') — using default"
-            );
-            None
-        }
+    if let Ok(n) = num.parse::<u64>() {
+        Some(n * mult)
+    } else {
+        warn!(
+            "Unparseable x-ttl value '{s}' (expected seconds, '30s', '5m' or '1h') — using default"
+        );
+        None
     }
 }
 
