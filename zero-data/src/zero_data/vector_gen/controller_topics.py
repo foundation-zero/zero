@@ -12,9 +12,9 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
         ),
         "dhw": ("dhw-freshwater-flow-supply",),
         "drives": (
-            "drives-flow-propdrive-aft",
-            "drives-flow-propdrive-fwd",
-            "drives-total-flow",
+            # "drives-flow-propdrive-aft",
+            # "drives-flow-propdrive-fwd",
+            # "drives-total-flow",
         ),
         "pvt": (
             "pvt-flow-main-aft-strings",

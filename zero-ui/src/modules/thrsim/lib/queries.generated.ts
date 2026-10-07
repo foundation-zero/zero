@@ -1363,9 +1363,6 @@ export const DRIVES_SENSOR_QUERY = `
     heat { value timestamp }
     deltaT { value timestamp }
   }
-  drivesFlowPropdriveAft {
-    flow { value timestamp }
-  }
   drivesFlowPropdriveAft1 {
     flow { value timestamp }
     temperature { value timestamp }
@@ -1375,9 +1372,6 @@ export const DRIVES_SENSOR_QUERY = `
     flow { value timestamp }
     temperature { value timestamp }
     quantity { value timestamp }
-  }
-  drivesFlowPropdriveFwd {
-    flow { value timestamp }
   }
   drivesFlowPropdriveFwd1 {
     flow { value timestamp }
@@ -1602,9 +1596,6 @@ export const DRIVES_SENSOR_QUERY = `
   }
   drivesTemperatureSupply {
     temperature { value timestamp }
-  }
-  drivesTotalFlow {
-    flow { value timestamp }
   }
   mode {
     mode { value timestamp }

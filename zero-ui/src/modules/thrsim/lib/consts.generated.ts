@@ -1407,9 +1407,6 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001009",
     componentType: SensorComponentType.HeatTransferDevice,
   },
-  drivesFlowPropdriveAft: {
-    componentType: SensorComponentType.CalculatedFlow,
-  },
   drivesFlowPropdriveAft1: {
     yardTag: "50001057-13",
     componentType: SensorComponentType.Flow,
@@ -1417,9 +1414,6 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
   drivesFlowPropdriveAft2: {
     yardTag: "50001057-16",
     componentType: SensorComponentType.Flow,
-  },
-  drivesFlowPropdriveFwd: {
-    componentType: SensorComponentType.CalculatedFlow,
   },
   drivesFlowPropdriveFwd1: {
     yardTag: "50001057-15",
@@ -1585,9 +1579,6 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
   drivesTemperatureSupply: {
     yardTag: "50001038-14",
     componentType: SensorComponentType.Temperature,
-  },
-  drivesTotalFlow: {
-    componentType: SensorComponentType.CalculatedFlow,
   },
   mode: {
     componentType: SensorComponentType.AmcsControlMode,

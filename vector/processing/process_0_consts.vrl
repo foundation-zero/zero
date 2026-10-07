@@ -2197,16 +2197,6 @@ managed_tables = {
     "yard_tag": null,
     "technical_name": "drives-dhw-exchanger"
   },
-  "thrs/controller/drives/drives-flow-propdrive-aft": {
-    "table": "marpower__thrs__calculated_flows",
-    "yard_tag": null,
-    "technical_name": "drives-flow-propdrive-aft"
-  },
-  "thrs/controller/drives/drives-flow-propdrive-fwd": {
-    "table": "marpower__thrs__calculated_flows",
-    "yard_tag": null,
-    "technical_name": "drives-flow-propdrive-fwd"
-  },
   "thrs/controller/drives/drives-fwd-oil-cooler-heat": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
@@ -2241,11 +2231,6 @@ managed_tables = {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
     "technical_name": "drives-shorepower-heat"
-  },
-  "thrs/controller/drives/drives-total-flow": {
-    "table": "marpower__thrs__calculated_flows",
-    "yard_tag": null,
-    "technical_name": "drives-total-flow"
   },
   "thrs/controller/pcm/pcm-freshwater-heat": {
     "table": "marpower__thrs__heat_transfers",
