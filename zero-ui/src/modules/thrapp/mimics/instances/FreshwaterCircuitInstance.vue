@@ -23,7 +23,15 @@ const props = defineProps<
     <HTMLWrapper v-bind="{ width, height, forceHeight, x, y }">
       <FreshwaterCircuitContent
         v-bind="{ sensors, controllerState, controls, parameters, source, tooltip, custom }"
-      />
+      >
+        <template
+          v-for="(_, slotName) in $slots"
+          :key="slotName"
+          #[slotName]
+        >
+          <slot :name="slotName" />
+        </template>
+      </FreshwaterCircuitContent>
     </HTMLWrapper>
   </MimicTooltipTrigger>
 </template>

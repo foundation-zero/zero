@@ -10,7 +10,7 @@ import * as Partials from "./partials";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.FreshwaterCircuit>>();
 
-const { items, labels } = useTranslations();
+const { items } = useTranslations();
 </script>
 
 <template>
@@ -29,13 +29,13 @@ const { items, labels } = useTranslations();
 
     <TooltipList>
       <TooltipListHeader>
-        {{ labels("connectingCircuit") }}
+        {{ custom.circuitName }}
       </TooltipListHeader>
       <SensorValue
         :source="sensors.tIn"
         field="temperature"
       >
-        <Partials.ListItem size="sm">
+        <Partials.ListItem>
           {{ items("incomingTemperature") }}
         </Partials.ListItem>
       </SensorValue>
@@ -43,7 +43,7 @@ const { items, labels } = useTranslations();
         :source="sensors.flowIn"
         field="flow"
       >
-        <Partials.ListItem size="sm">
+        <Partials.ListItem>
           {{ items("incomingFlow") }}
         </Partials.ListItem>
       </SensorValue>
@@ -51,7 +51,7 @@ const { items, labels } = useTranslations();
         :source="sensors.tOut"
         field="temperature"
       >
-        <Partials.ListItem size="sm">
+        <Partials.ListItem>
           {{ items("outgoingTemperature") }}
         </Partials.ListItem>
       </SensorValue>
@@ -59,7 +59,7 @@ const { items, labels } = useTranslations();
         :source="sensors.flowOut"
         field="flow"
       >
-        <Partials.ListItem size="sm">
+        <Partials.ListItem>
           {{ items("outgoingFlow") }}
         </Partials.ListItem>
       </SensorValue>

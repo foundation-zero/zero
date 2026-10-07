@@ -300,6 +300,7 @@ export type CustomFieldDefinitions = CustomFields<{
     width?: number | string;
     height?: number | string;
     modeModule?: keyof ControlStatus["modules"];
+    circuitName: string;
   };
   [MimicComponentType.SeawaterCircuit]: {
     circuitName?: string;

@@ -18,7 +18,10 @@ withDefaults(
 </script>
 
 <template>
-  <svg v-bind="createSizeAndViewbox(width, height, forceHeight)">
+  <svg
+    v-bind="createSizeAndViewbox(width, height, forceHeight)"
+    :class="$props.class"
+  >
     <foreignObject
       :width="width"
       :height="height"

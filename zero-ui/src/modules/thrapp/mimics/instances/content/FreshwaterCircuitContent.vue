@@ -35,7 +35,7 @@ const t = tScoped("labels");
     v-bind="{ sensors, controllerState, controls, parameters, source, tooltip, custom }"
     :state="state"
   >
-    <CircuitBoxTitle>{{ tooltip?.title }}</CircuitBoxTitle>
+    <CircuitBoxTitle>{{ custom.circuitName }}</CircuitBoxTitle>
 
     <ModeBadges
       v-if="custom.modeModule"

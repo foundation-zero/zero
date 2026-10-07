@@ -30,7 +30,7 @@ const { items } = useTranslations();
         :source="source"
         field="temperature"
       >
-        <Partials.ListItem size="sm">
+        <Partials.ListItem>
           {{ items("temperature") }}
         </Partials.ListItem>
       </SensorValue>

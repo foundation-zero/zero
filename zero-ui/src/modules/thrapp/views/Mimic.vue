@@ -36,7 +36,7 @@ const showDemoMode = computed(() => ENV.VITE_SHOW_DEMO_MODE === "1");
     >
       <GridPattern class="absolute top-0 right-0 bottom-0 left-0 h-full w-full" />
       <aside
-        class="z-1 flex w-full flex-row-reverse items-center justify-between landscape:lg:w-62.5 landscape:lg:flex-col landscape:lg:items-start"
+        class="z-1 flex w-full flex-row-reverse items-center justify-between overflow-hidden landscape:lg:w-62.5 landscape:lg:flex-col landscape:lg:items-start"
         :class="{ 'justify-between': showDemoMode, 'justify-end': !showDemoMode }"
       >
         <div

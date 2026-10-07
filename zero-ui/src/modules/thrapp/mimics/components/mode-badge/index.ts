@@ -110,7 +110,7 @@ export const useModuleMode = (moduleRef?: MaybeRef<keyof ThrsModules | undefined
       const MODES: Record<string, ModeBadgeMode> = {
         idle: ModeBadgeMode.Idle,
         propulsion: ModeBadgeMode.Active,
-        cooling: ModeBadgeMode.Cooling,
+        shorepower: ModeBadgeMode.Active,
       };
 
       return [{ mode: MODES[drivesMode.mode], label: t(`modes.drives.${drivesMode.mode}`) }];

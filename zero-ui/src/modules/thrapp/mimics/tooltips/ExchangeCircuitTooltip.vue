@@ -35,8 +35,12 @@ const { labels, actions } = useTranslations();
     <TooltipList>
       <TooltipListItem v-if="custom.modeModule">
         &nbsp;
-        <RouterLink :to="{ name: currentRoute.name, params: { module: custom.modeModule } }">
-          <TooltipListItemActionButton>
+        <RouterLink
+          v-slot="{ navigate }"
+          custom
+          :to="{ name: currentRoute.name, params: { module: custom.modeModule } }"
+        >
+          <TooltipListItemActionButton @click="navigate">
             <RiRepeatLine />
             {{ actions("viewCircuitMimic") }}
           </TooltipListItemActionButton>

@@ -333,6 +333,8 @@
             "charging": "Charging"
           },
           "drives": {
+            "idle": "Idle",
+            "shorepower": "Shore power",
             "propulsion": "Propulsion"
           },
           "adsorption": "{mode}",
