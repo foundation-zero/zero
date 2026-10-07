@@ -45,10 +45,14 @@ export type ParameterFields<Fields extends ComponentFields<ParametersType>> = Co
 >;
 
 export type SourceFields<
-  Fields extends Record<
-    MimicComponentType,
-    SensorComponentType | ControlComponentType | ParametersType | undefined
-  >,
+  Fields extends {
+    [Type in MimicComponentType]:
+      | SensorComponentType
+      | ControlComponentType
+      | ParametersType
+      | undefined
+      | null;
+  },
 > = Fields;
 
 export type CustomFields<Fields extends Record<MimicComponentType, Record<string, unknown>>> =
@@ -84,6 +88,17 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.DcConverter]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
     power: SensorComponentType.Pvt; // TODO: fix this
+    temperature: SensorComponentType.Temperature;
+  };
+  [MimicComponentType.PropulsionDrive]: {
+    heatTransfer: SensorComponentType.HeatTransferDevice;
+    power: SensorComponentType.Pvt;
+    temperature: SensorComponentType.Temperature;
+  };
+  [MimicComponentType.PropulsionCooler]: EmptyObject;
+  [MimicComponentType.ShorePowerConverter]: {
+    heatTransfer: SensorComponentType.HeatTransferDevice;
+    power: SensorComponentType.Pvt;
     temperature: SensorComponentType.Temperature;
   };
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
@@ -146,6 +161,9 @@ export type ControlFieldDefinitions = ControlFields<{
   };
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.DcConverter]: EmptyObject;
+  [MimicComponentType.PropulsionDrive]: EmptyObject;
+  [MimicComponentType.PropulsionCooler]: EmptyObject;
+  [MimicComponentType.ShorePowerConverter]: EmptyObject;
   [MimicComponentType.FreshwaterCircuit]: EmptyObject;
   [MimicComponentType.SeawaterCircuit]: EmptyObject;
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
@@ -183,6 +201,9 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.DcConverter]: EmptyObject;
+  [MimicComponentType.PropulsionDrive]: EmptyObject;
+  [MimicComponentType.PropulsionCooler]: EmptyObject;
+  [MimicComponentType.ShorePowerConverter]: EmptyObject;
   [MimicComponentType.FreshwaterCircuit]: EmptyObject;
   [MimicComponentType.SeawaterCircuit]: EmptyObject;
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
@@ -202,6 +223,9 @@ export type ParameterFieldDefinitions = ParameterFields<{
   };
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.DcConverter]: EmptyObject;
+  [MimicComponentType.PropulsionDrive]: EmptyObject;
+  [MimicComponentType.PropulsionCooler]: EmptyObject;
+  [MimicComponentType.ShorePowerConverter]: EmptyObject;
   [MimicComponentType.FreshwaterCircuit]: EmptyObject;
   [MimicComponentType.SeawaterCircuit]: EmptyObject;
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
@@ -270,6 +294,9 @@ export type CustomFieldDefinitions = CustomFields<{
     converters: ModuleField<SensorComponentType.Ugrid | SensorComponentType.Brightloop>[];
     group: DcConverterGroup;
   };
+  [MimicComponentType.PropulsionDrive]: EmptyObject;
+  [MimicComponentType.PropulsionCooler]: EmptyObject;
+  [MimicComponentType.ShorePowerConverter]: EmptyObject;
   [MimicComponentType.ConnectingCircuit]: {
     width?: number | string;
     height?: number | string;
@@ -340,6 +367,9 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.BoilerTank]: undefined;
   [MimicComponentType.ExchangeCircuit]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.DcConverter]: undefined;
+  [MimicComponentType.PropulsionDrive]: SensorComponentType.PropulsionDrive;
+  [MimicComponentType.PropulsionCooler]: SensorComponentType.HeatTransferDevice;
+  [MimicComponentType.ShorePowerConverter]: SensorComponentType.ShorePowerConverter;
   [MimicComponentType.Pvt]: SensorComponentType.Pvt;
   [MimicComponentType.Thruster]: SensorComponentType.Thruster;
   [MimicComponentType.FreshwaterCircuit]: undefined;
@@ -390,8 +420,13 @@ export type ExtractCustomFields<Type extends MimicComponentType> = {
   custom: CustomFieldDefinitions[Type];
 };
 
-export type ExtractSourceFields<Type extends MimicComponentType> = {
-  source: SourceFieldDefinitions[Type] extends undefined
+export type ExtractSourceFields<
+  Type extends MimicComponentType,
+  SourceType extends SourceFieldDefinitions[Type] = SourceFieldDefinitions[Type],
+> = {
+  source: SourceType extends undefined
     ? ModuleField<"custom"> | undefined
-    : ModuleField<SourceFieldDefinitions[Type]>;
+    : SourceType extends null
+      ? ModuleField<NonNullable<SourceType>> | undefined
+      : ModuleField<NonNullable<SourceType>>;
 };

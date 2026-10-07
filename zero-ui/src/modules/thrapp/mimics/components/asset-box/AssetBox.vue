@@ -24,8 +24,6 @@ const { strokeWidth, stateColor } = createMimicComponentContext(state);
     v-bind="createSizeAndViewbox(Number(width), Number(height), forceHeight)"
     class="fill-background transition-all"
   >
-    // Seperate foreignObject is needed to prevent the border from pushing the content inwards when
-    state changes
     <foreignObject
       :width="width"
       :height="height"
@@ -42,7 +40,7 @@ const { strokeWidth, stateColor } = createMimicComponentContext(state);
       :width="width"
       :height="height"
     >
-      <div :class="cn('h-full w-full p-4 pb-1', props.class)">
+      <div :class="cn('h-full w-full p-3 pb-1', props.class)">
         <slot />
       </div>
     </foreignObject>

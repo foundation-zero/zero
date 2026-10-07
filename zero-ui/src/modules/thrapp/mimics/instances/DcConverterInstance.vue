@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ZiDcConverter } from "@/modules/common/components/icons";
 import { first, last } from "lodash";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
@@ -61,16 +62,18 @@ const modeKey = useDcMode(props.custom.group);
             class="text-3xs text-muted-foreground"
             :source="first(custom.converters)"
           />
-          -
-          <FieldRenderer.Source
-            v-if="custom.converters.length > 1"
-            class="text-3xs text-muted-foreground"
-            :source="last(custom.converters)"
-          />
+          <template v-if="custom.converters.length > 1">
+            -
+            <FieldRenderer.Source
+              class="text-3xs text-muted-foreground"
+              :source="last(custom.converters)"
+            />
+          </template>
         </YardTag>
         <DcConverterStatus :sources="custom.converters" />
       </div>
       <AssetBoxTitle class="gap-2 py-1">
+        <ZiDcConverter />
         {{ t(`thrapp.mimics.dc.groups.${tooltip?.title}`) }}
       </AssetBoxTitle>
 
