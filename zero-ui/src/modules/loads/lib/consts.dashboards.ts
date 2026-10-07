@@ -76,6 +76,7 @@ export const MAIN_MAST_GROUP = group(
   "fiber-optic-main-v1-ps",
   "fiber-optic-main-v1-sb",
   "main-headstay-combined-load",
+  "main-mast-compression-load",
   ["fiber-optic-main-d1-ps", false],
   ["fiber-optic-main-d1-sb", false],
 );
@@ -118,6 +119,7 @@ export const MIZZEN_MAST_GROUP = group(
   "fiber-optic-mizzen-v1-ps",
   "fiber-optic-mizzen-v1-sb",
   "fiber-optic-mizzen-forestay",
+  "mizzen-mast-compression-load",
   ["fiber-optic-mizzen-d1-ps", false],
   ["fiber-optic-mizzen-d1-sb", false],
 );

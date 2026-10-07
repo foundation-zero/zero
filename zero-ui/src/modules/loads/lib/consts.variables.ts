@@ -449,6 +449,8 @@ export const VARIABLE_IDS = [
   "mast-overhoist-staysail",
   "mast-overhoist-storm-jib",
   "storm-jib-tack-load",
+  "main-mast-compression-load",
+  "mizzen-mast-compression-load",
   "mizzen-checkstay-deflector-load",
   "mizzen-checkstay-deflector-relative-position",
   "mizzen-checkstay-ps-load",

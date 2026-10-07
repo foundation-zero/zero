@@ -172,7 +172,6 @@ SAIL_SYSTEM_MODELS: list[type[LoadsModel]] = [
     sail_system.BladeTweakerSb,
     sail_system.CodeZeroTack,
     sail_system.A2Tack,
-    sail_system.MainHeadstayCombined,
     sail_system.Mast,
     sail_system.MainCheckstay,
     sail_system.MainCunningham,

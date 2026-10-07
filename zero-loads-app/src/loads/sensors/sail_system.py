@@ -71,6 +71,20 @@ LoadAlarm: TypeAlias = Annotated[
     VariableMeta(unit="bool", name="max_load_alarm", type="alarm", alarm_for="load"),
 ]
 
+LoadPinLoad: TypeAlias = Annotated[Load, Field(validation_alias="st_LoadLc/i_Load")]
+
+LoadPinMaxLoad: TypeAlias = Annotated[
+    MaxLoad, Field(validation_alias="st_LoadLc/i_MaxLoadSetting")
+]
+
+LoadPinLoadFailure: TypeAlias = Annotated[
+    LoadFailure, Field(validation_alias="st_LoadLc/x_Failure")
+]
+
+LoadPinLoadAlarm: TypeAlias = Annotated[
+    LoadAlarm, Field(validation_alias="st_LoadLc/x_MaxLimitReached")
+]
+
 RelativePosition: TypeAlias = Annotated[
     BaseRelativePosition,
     Field(validation_alias="st_position/i_Position_permille"),
@@ -185,6 +199,24 @@ class BladeAdjuster(LoadsModel, ABC):
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    headstay_combined_load: Annotated[
+        Load,
+        Field(validation_alias="i_ActualLoad2"),
+        VariableMeta(
+            name="headstay_combined_load",
+            display_name="Headstay Comb",
+            technical_name="main-headstay-combined-load",
+        ),
+    ]
+    # TODO: Confirm this alarm and add its max load setting once the max loads sheet is finished.
+    headstay_combined_load_alarm: Annotated[
+        LoadAlarm,
+        Field(validation_alias="ox_LoadAlarm"),
+        VariableMeta(
+            name="headstay_combined_max_load_alarm",
+            alarm_for="headstay_combined_load",
+        ),
+    ]
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
@@ -324,17 +356,6 @@ class CodeZeroTack(LoadsModel, ABC):
 class A2Tack(LoadsModel, ABC):
     TOPIC = "sail-systems/a2-tack-placeholder"
     load: Annotated[Load, VariableMeta(display_name="Tack")]
-    load_failure: LoadFailure
-    load_alarm: LoadAlarm
-    max_load: MaxLoad
-
-
-class MainHeadstayCombined(LoadsModel, ABC):
-    TOPIC = "sail-systems/combined-headstay-placeholder"
-    load: Annotated[
-        Load,
-        VariableMeta(display_name="Headstay Comb"),
-    ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
@@ -551,6 +572,25 @@ class Mast(LoadsModel, ABC):
         VariableMeta(threshold_for="storm_jib_load_alarm"),
     ]
 
+    main_compression: Annotated[
+        Load,
+        Field(validation_alias="i_MainMastLoadShim"),
+        VariableMeta(
+            name="main_compression",
+            display_name="Compression",
+            technical_name="main-mast-compression-load",
+        ),
+    ]
+    mizzen_compression: Annotated[
+        Load,
+        Field(validation_alias="i_MzznMastLoadShim"),
+        VariableMeta(
+            name="mizzen_compression",
+            display_name="Compression",
+            technical_name="mizzen-mast-compression-load",
+        ),
+    ]
+
 
 class MainCheckstay(LoadsModel, ABC):
     TOPIC = "sail-systems/f0203-main-checkstay-deflector"
@@ -585,33 +625,17 @@ class MainCheckstay(LoadsModel, ABC):
     ]
     deflector_load: Annotated[
         Load,
+        Field(validation_alias="i_Load"),
         VariableMeta(name="deflector-load", display_name="Deflector"),
     ]
-    deflector_load_failure: Annotated[
-        LoadFailure,
-        Field(validation_alias="st_Load/x_Failure"),
-        VariableMeta(
-            name="deflector-load-failure",
-            display_name="Main Deflector Load Failure",
-            alarm_for="deflector_load",
-        ),
-    ]
+    # TODO: Confirm this alarm and add its max load setting once the max loads sheet is finished.
     deflector_load_alarm: Annotated[
         LoadAlarm,
-        Field(validation_alias="st_Load/x_MaxLimitReached"),
+        Field(validation_alias="ox_LoadAlarm"),
         VariableMeta(
             name="deflector-load-alarm",
             display_name="Main Deflector Load Alarm",
             alarm_for="deflector_load",
-        ),
-    ]
-    deflector_max_load: Annotated[
-        MaxLoad,
-        Field(validation_alias="st_Load/i_MaxLoadSetting"),
-        VariableMeta(
-            name="deflector-max-load",
-            display_name="Main Deflector Max Load",
-            threshold_for="deflector_load_alarm",
         ),
     ]
 
@@ -720,6 +744,7 @@ class MainHalyard(LoadsModel, ABC):
 
 class MainOuthaul(LoadsModel, ABC):
     TOPIC = "sail-systems/f0201-main-outhaul"
+    # TODO: Read the load pin in the boom (st_LoadLc) once the PLC publishes it, as the IO list does.
     load: Annotated[
         Load,
         VariableMeta(display_name="Outhaul"),
@@ -742,12 +767,12 @@ class MainOuthaul(LoadsModel, ABC):
 class MainPreventer(LoadsModel, ABC):
     TOPIC = "sail-systems/f0204-main-boom-preventer"
     load: Annotated[
-        Load,
+        LoadPinLoad,
         VariableMeta(display_name="Preventer"),
     ]
-    load_failure: LoadFailure
-    load_alarm: LoadAlarm
-    max_load: MaxLoad
+    load_failure: LoadPinLoadFailure
+    load_alarm: LoadPinLoadAlarm
+    max_load: LoadPinMaxLoad
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
@@ -828,6 +853,7 @@ class MainRunnerSb(LoadsModel, ABC):
 
 class MainSheet(LoadsModel, ABC):
     TOPIC = "sail-systems/fe205-main-sheet-captive-winch"
+    # TODO: Read the sheet load (i_sheetLoad) once the PLC publishes it, as the IO list does.
     load: Annotated[
         Load,
         VariableMeta(display_name="Sheet"),
@@ -937,33 +963,17 @@ class MizzenCheckstay(LoadsModel, ABC):
 
     deflector_load: Annotated[
         Load,
+        Field(validation_alias="i_Load"),
         VariableMeta(name="deflector-load", display_name="Deflector"),
     ]
-    deflector_load_failure: Annotated[
-        LoadFailure,
-        Field(validation_alias="st_Load/x_Failure"),
-        VariableMeta(
-            name="deflector-load-failure",
-            display_name="Mizzen Deflector Load Failure",
-            alarm_for="deflector_load",
-        ),
-    ]
+    # TODO: Confirm this alarm and add its max load setting once the max loads sheet is finished.
     deflector_load_alarm: Annotated[
         LoadAlarm,
-        Field(validation_alias="st_Load/x_MaxLimitReached"),
+        Field(validation_alias="ox_LoadAlarm"),
         VariableMeta(
             name="deflector-load-alarm",
             display_name="Mizzen Deflector Load Alarm",
             alarm_for="deflector_load",
-        ),
-    ]
-    deflector_max_load: Annotated[
-        MaxLoad,
-        Field(validation_alias="st_Load/i_MaxLoadSetting"),
-        VariableMeta(
-            name="deflector-max-load",
-            display_name="Mizzen Deflector Max Load",
-            threshold_for="deflector_load_alarm",
         ),
     ]
 
@@ -1093,6 +1103,7 @@ class MizzenHeadsailTackAdjuster(LoadsModel, ABC):
 
 class MizzenOuthaul(LoadsModel, ABC):
     TOPIC = "sail-systems/f0501-mizzen-outhaul"
+    # TODO: Read the load pin in the boom (st_LoadLc) once the PLC publishes it, as the IO list does.
     load: Annotated[
         Load,
         VariableMeta(display_name="Outhaul"),
@@ -1115,12 +1126,12 @@ class MizzenOuthaul(LoadsModel, ABC):
 class MizzenPreventer(LoadsModel, ABC):
     TOPIC = "sail-systems/f0506-mizzen-boom-preventer"
     load: Annotated[
-        Load,
+        LoadPinLoad,
         VariableMeta(display_name="Preventer"),
     ]
-    load_failure: LoadFailure
-    load_alarm: LoadAlarm
-    max_load: MaxLoad
+    load_failure: LoadPinLoadFailure
+    load_alarm: LoadPinLoadAlarm
+    max_load: LoadPinMaxLoad
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
