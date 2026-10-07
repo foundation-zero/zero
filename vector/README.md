@@ -30,6 +30,7 @@ The main pipeline. It subscribes to the everyday topics (`marpower/#`,
 | 4 | `process_4_timestamp.vrl` | Finds the newest `*TimeStamp` field, or falls back to "now". |
 | 5 | `process_5_spell_fix.vrl` | Normalises `TimeStamp` → `Timestamp` in key names. |
 | 6 | `process_6_snakecase.vrl` | Converts all keys from `PascalCase` to `snake_case`. |
+| 7 | `process_7_drop_nans.vrl` | Drops messages where the value is 'NaN'. Greptime can't deal with those values. |
 
 The result lands in a per-domain table via the `greptimedb` sink.
 
