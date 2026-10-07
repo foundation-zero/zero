@@ -14,7 +14,7 @@ from zero_data.greptime.config import GreptimeConnection
 from zero_data.greptime.snapshot import connect
 
 
-@pytest.fixture
+@pytest.fixture(params=[pytest.param("", marks=pytest.mark.greptimedb)])
 def connection() -> GreptimeConnection:
     return GreptimeConnection()
 

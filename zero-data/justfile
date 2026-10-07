@@ -1,2 +1,25 @@
 generate-vector:
     uv run zero-data generate-vector
+
+generate-asyncapi file="../specs/marpower.json":
+    uv run zero-data generate-asyncapi {{ file }}
+
+check: lint type_check test
+
+lint:
+    uv run ruff check src tests
+
+lint_no_fix:
+    uv run ruff check --no-fix src tests
+
+type_check:
+    uv run mypy src tests/greptime
+
+test *args:
+    uv run pytest {{ args }}
+
+format:
+    uv run ruff format --check src tests
+
+format_fix:
+    uv run ruff format src tests

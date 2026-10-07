@@ -27,6 +27,38 @@ async def test_marpower_generator():
     jsonfyier = TypeAdapter(dict[str, dict[str, Any]])
     now = datetime.datetime.now(datetime.UTC)
 
+    expected_calls = [
+        (
+            "a",
+            jsonfyier.dump_json(
+                {
+                    "field1": MarpowerStruct(
+                        value=True, timestamp=now, is_valid=True, has_value=True
+                    ).model_dump(by_alias=True),
+                    "field2": MarpowerStruct(
+                        value=10.60040562252202,
+                        timestamp=now,
+                        is_valid=True,
+                        has_value=True,
+                    ).model_dump(by_alias=True),
+                }
+            ),
+        ),
+        (
+            "b",
+            jsonfyier.dump_json(
+                {
+                    "field1": MarpowerStruct(
+                        value=8, timestamp=now, is_valid=True, has_value=True
+                    ).model_dump(by_alias=True),
+                    "field2": MarpowerStruct(
+                        value=5, timestamp=now, is_valid=True, has_value=True
+                    ).model_dump(by_alias=True),
+                }
+            ),
+        ),
+    ]
+
     with patch("zero_data.data_gen.generator.Client", return_value=mock_client):
         random.seed(1)
 
@@ -41,37 +73,6 @@ async def test_marpower_generator():
             # Ensure the MQTT client was created once
             mock_client.__aenter__.assert_called_once()
             # Verify the publish calls
-            expected_calls = [
-                (
-                    "a",
-                    jsonfyier.dump_json(
-                        {
-                            "field1": MarpowerStruct(
-                                value=True, timestamp=now, is_valid=True, has_value=True
-                            ).model_dump(by_alias=True),
-                            "field2": MarpowerStruct(
-                                value=10.60040562252202,
-                                timestamp=now,
-                                is_valid=True,
-                                has_value=True,
-                            ).model_dump(by_alias=True),
-                        }
-                    ),
-                ),
-                (
-                    "b",
-                    jsonfyier.dump_json(
-                        {
-                            "field1": MarpowerStruct(
-                                value=8, timestamp=now, is_valid=True, has_value=True
-                            ).model_dump(by_alias=True),
-                            "field2": MarpowerStruct(
-                                value=5, timestamp=now, is_valid=True, has_value=True
-                            ).model_dump(by_alias=True),
-                        }
-                    ),
-                ),
-            ]
 
             actual_calls = [
                 (call.args[0], call.args[1])

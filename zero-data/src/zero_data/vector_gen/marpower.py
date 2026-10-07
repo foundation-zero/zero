@@ -3,7 +3,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, TypeAdapter
 
-from zero_data.io_list.managed_topics import extract_managed_topics
+from zero_data.io_list.managed_topics import ComponentType, extract_managed_topics
 from zero_data.io_list.types import IOResult
 from zero_data.io_list.utils import detect_same_format
 from zero_data.vector_gen.controller_topics import generate_controller_managed_topics
@@ -20,6 +20,22 @@ EXTRA_GROUPED_TOPICS = [
     "termodinamica/ac/",
     "power-tags/",
 ]
+
+COMPONENT_TYPE_TABLE: dict[ComponentType, str] = {
+    ComponentType.VALVE: "valves",
+    ComponentType.PUMP: "pumps",
+    ComponentType.TEMPERATURE: "temperatures",
+    ComponentType.FLOW: "flows",
+    ComponentType.PRESSURE: "pressures",
+    ComponentType.RH33: "rh33s",
+    ComponentType.PYRANOMETER: "pyranometers",
+    ComponentType.LEVEL_SWITCH: "level_switches",
+    ComponentType.LEVEL_SENSOR: "level_sensors",
+    ComponentType.AMCS_MODE: "amcs_modes",
+    ComponentType.CALCULATED_FLOW: "calculated_flows",
+    ComponentType.CALCULATED_TEMPERATURE: "calculated_temperatures",
+    ComponentType.HEAT_TRANSFER: "heat_transfers",
+}
 
 logger = logging.getLogger(__name__)
 
@@ -40,14 +56,12 @@ class MarpowerVectorGenerator:
         managed_topics, invalid_managed_topics, other_topics = extract_managed_topics(
             topics
         )
-        for topic in invalid_managed_topics:
-            logger.warning(f"Invalid managed topic: {topic.topic}")
 
         managed_topics += generate_controller_managed_topics()
 
         mapping = {
             managed_topic.topic.topic: ManagedTopicMapping(
-                table=f"marpower__{managed_topic.system_name}__{managed_topic.component}",
+                table=f"marpower__{managed_topic.system_name}__{COMPONENT_TYPE_TABLE[managed_topic.component]}",
                 yard_tag=(
                     managed_topic.topic.yard_tag.strip()
                     if managed_topic.topic.yard_tag is not None
