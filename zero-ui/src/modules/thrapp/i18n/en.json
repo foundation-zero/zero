@@ -4,6 +4,24 @@
       "actions": {
         "resetToDefaults": "Reset to defaults"
       },
+      "drives": {
+        "title": "Drives & Shorepower parameters",
+        "items": {
+          "recoveryTemperature": "Recovery temperature",
+          "shorepowerMaximumSupplyTemperature": "Shorepower maximum supply temperature",
+          "propulsionMaximumSupplyTemperature": "Propulsion maximum supply temperature",
+          "shorepowerFlowSetpoint": "Shorepower flow",
+          "propulsionDrivesFlowSetpoint": "Propulsion drives flow"
+        },
+        "temperatureSettings": {
+          "title": "Temperature settings",
+          "description": "Target temperatures for propulsion and shorepower cooling and heat recovery"
+        },
+        "flowSettings": {
+          "title": "Flow settings",
+          "description": "Cooling flow setpoints for propulsion drives and shorepower"
+        }
+      },
       "dc": {
         "title": "DC converter parameters",
         "items": {

@@ -80,6 +80,8 @@ const PARAMETER_INPUT_TYPES: Partial<Record<ParametersType, string>> = {
   [ParametersType.Tuning]: "[Float!]!",
   [ParametersType.Dutypoint]: "Float!",
   [ParametersType.dT]: "Float!",
+  [ParametersType.Duration]: "Float!",
+  [ParametersType.Power]: "Float!",
 };
 
 const setParameter = async <Type extends ParametersType, Module extends keyof ThrsDefinitions>(
