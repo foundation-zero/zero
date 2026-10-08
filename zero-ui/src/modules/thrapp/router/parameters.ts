@@ -14,4 +14,5 @@ export const PARAMETERS: Partial<Record<keyof ThrsModules, Component>> = {
   pcm: defineAsyncComponent(
     () => import("@/modules/thrapp/parameters/modules/pcm/PcmParameters.vue"),
   ),
+  dc: defineAsyncComponent(() => import("@/modules/thrapp/parameters/modules/dc/DcParameters.vue")),
 };

@@ -4,6 +4,25 @@
       "actions": {
         "resetToDefaults": "Reset to defaults"
       },
+      "dc": {
+        "title": "DC converter parameters",
+        "items": {
+          "recoveryTemperature": "Recovery temperature",
+          "maximumSupplyTemperature": "Maximum supply temperature",
+          "brightloopReturnTemperature": "Brightloop return temperature",
+          "ugridReturnTemperature": "Ugrid return temperature",
+          "brightloopFlowSetpoint": "Brightloop flow",
+          "ugridFlowSetpoint": "Ugrid flow"
+        },
+        "temperatureSettings": {
+          "title": "Temperature settings",
+          "description": "Target temperatures for DC converter cooling and heat recovery"
+        },
+        "flowSettings": {
+          "title": "Flow settings",
+          "description": "Cooling flow setpoints for Brightloop and Ugrid converters"
+        }
+      },
       "pvt": {
         "title": "PVT parameters",
         "items": {

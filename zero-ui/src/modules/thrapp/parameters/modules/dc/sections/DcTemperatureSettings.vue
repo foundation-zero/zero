@@ -1,0 +1,39 @@
+<script setup lang="ts">
+import { tScoped } from "@/modules/common/lib/utils";
+import { getField } from "@/modules/thrapp/mimics/providers";
+import { ParametersType } from "@/modules/thrsim/types";
+import * as Parameters from "../../../components/module-parameters";
+import * as ParameterItems from "../../../components/module-parameters/items";
+
+const t = tScoped("thrapp.parameters.dc");
+</script>
+
+<template>
+  <Parameters.Card>
+    <Parameters.CardTitle>{{ t("temperatureSettings.title") }}</Parameters.CardTitle>
+    <Parameters.Description>{{ t("temperatureSettings.description") }}</Parameters.Description>
+    <Parameters.Separator />
+    <Parameters.List>
+      <ParameterItems.Temperature
+        :source="getField(ParametersType.Temperature, 'dc', 'recoveryTemperature')"
+      >
+        {{ t("items.recoveryTemperature") }}
+      </ParameterItems.Temperature>
+      <ParameterItems.Temperature
+        :source="getField(ParametersType.Temperature, 'dc', 'maximumSupplyTemperature')"
+      >
+        {{ t("items.maximumSupplyTemperature") }}
+      </ParameterItems.Temperature>
+      <ParameterItems.Temperature
+        :source="getField(ParametersType.Temperature, 'dc', 'brightloopReturnTemperature')"
+      >
+        {{ t("items.brightloopReturnTemperature") }}
+      </ParameterItems.Temperature>
+      <ParameterItems.Temperature
+        :source="getField(ParametersType.Temperature, 'dc', 'ugridReturnTemperature')"
+      >
+        {{ t("items.ugridReturnTemperature") }}
+      </ParameterItems.Temperature>
+    </Parameters.List>
+  </Parameters.Card>
+</template>
