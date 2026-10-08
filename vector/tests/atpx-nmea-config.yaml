@@ -3,7 +3,7 @@ sources:
     type: exec
     command:
       - "cat"
-      - "tests/atpx-nmea-test-cases.json"
+      - "tests/atpx-nmea-test-cases.jsonl"
     mode: streaming
     decoding:
       codec: json

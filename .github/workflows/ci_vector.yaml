@@ -21,15 +21,10 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: "0"
+      - uses: extractions/setup-just@v4
       - name: Run Vector test
         working-directory: vector
-        run: bash test-process.sh
-      - name: Run Vector ATPX test
-        working-directory: vector
-        run: bash test-atpx.sh
-      - name: Run Vector ATPX NMEA test
-        working-directory: vector
-        run: bash test-atpx-nmea.sh
+        run: just test
   helm-push:
     if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
     needs: test

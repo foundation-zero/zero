@@ -3,7 +3,7 @@ sources:
     type: exec
     command:
       - "cat"
-      - "tests/process-test-cases.json"
+      - "tests/process-test-cases.jsonl"
     mode: streaming
     decoding:
       codec: json
