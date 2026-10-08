@@ -1,0 +1,85 @@
+data_dir: /vector-data
+api:
+  enabled: true
+  address: 127.0.0.1:8686
+sources:
+  # A+T (ATPX) instrument bus: one raw float per message on
+  # `atpx/<field-id>/<sender*256+instance>`. See ZERO-1660.
+  # ATPX_MQTT_TOPIC is atpx_raw/+/+ locally, defaulting to A+T's atpx/+/+ in prod.
+  atpx_mqtt:
+    type: mqtt
+    host: "${ATPX_MQTT_HOST}"
+    port: ${ATPX_MQTT_PORT}
+    client_id: vector-atpx
+    topic:
+      - "${ATPX_MQTT_TOPIC:-atpx/+/+}"
+    decoding:
+      codec: bytes
+    user: "${ATPX_MQTT_USER:-}"
+    password: "${ATPX_MQTT_PASSWORD:-}"
+  vector_metrics:
+    type: internal_metrics
+transforms:
+  # Resolves each single-value ATPX message into one `atpx_raw` row (topic,
+  # human-readable sender and field names, value).
+  atpx_parse:
+    type: remap
+    inputs: ["atpx_mqtt"]
+    files:
+      - "/etc/vector/atpx_0_consts.vrl"
+      - "/etc/vector/atpx_1_parse.vrl"
+    # Enable dead letter queue
+    drop_on_error: true
+    drop_on_abort: true
+    reroute_dropped: true
+  dropped_append_timestamp:
+    type: remap
+    inputs: ["*.dropped"]
+    source: |
+      if !exists(.timestamp) || is_null(.timestamp) {
+        .timestamp = now()
+      }
+sinks:
+  # All ATPX messages land in a single table; a pivot view produces the
+  # per-domain wide shapes later.
+  greptimedb_atpx:
+    type: greptimedb_logs
+    inputs: ["atpx_parse"]
+    endpoint: "http://${GREPTIMEDB_HOST}:${GREPTIMEDB_PORT}"
+    dbname: "public"
+    table: "atpx_raw"
+    extra_params:
+      custom_time_index: "timestamp;datestr;%+"
+  # Republishes each row to our own broker; the topic rides in metadata so it
+  # isn't duplicated inside the JSON payload.
+  atpx_mqtt_publish:
+    type: mqtt
+    inputs: ["atpx_parse"]
+    host: "${MQTT_HOST}"
+    port: ${MQTT_PORT}
+    client_id: vector-atpx-publish
+    user: "${MQTT_USER}"
+    password: "${MQTT_PASSWORD}"
+    topic: "{{ %mqtt_topic }}"
+    encoding:
+      codec: json
+    # A broker outage must not backpressure atpx_parse, or atpx_raw writes stop
+    # too. 4 GiB holds ~30 min at ~1.2 MB/s. Size the volume above max_size:
+    # Vector stops on an I/O error while flushing a disk buffer.
+    buffer:
+      type: disk
+      max_size: 4294967296
+      when_full: drop_newest
+  prometheus:
+    type: prometheus_exporter
+    inputs:
+      - vector_metrics
+    address: 0.0.0.0:9090 # prom-exporter port from chart
+  dead_letter_queue:
+    type: greptimedb_logs
+    inputs: ["dropped_append_timestamp"]
+    endpoint: "http://${GREPTIMEDB_HOST}:${GREPTIMEDB_PORT}"
+    dbname: "public"
+    table: "vector_dead_letter_queue"
+    extra_params:
+      custom_time_index: "timestamp;datestr;%+"

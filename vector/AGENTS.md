@@ -62,6 +62,8 @@ just test
 ```
 
 Each script prints a "matches" line on success and a unified diff on failure.
+`just test` also runs `test-config.sh`, which validates the deployed
+`config-atpx.yaml` and `config-ingest.yaml`, including their VRL references.
 
 - Input fixtures: `tests/*test-cases.jsonl`
 - Expected output: `tests/*expected.jsonl`

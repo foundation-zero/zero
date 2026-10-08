@@ -162,7 +162,7 @@ services:
       - ./specs:/app/specs:ro
 
   # ---- data collection ----
-  vector:
+  vector-atpx:
     image: timberio/vector:0.54.0-debian
     profiles:
       - data-collection
@@ -179,8 +179,31 @@ services:
       GREPTIMEDB_HOST: greptimedb
       GREPTIMEDB_PORT: 4000
     volumes:
-      - ./vector/config.yaml:/etc/vector-config.yaml
+      - ./vector/config-atpx.yaml:/etc/vector-config.yaml
       - ./vector/processing:/etc/vector/
+      - vector_atpx_data:/vector-data
+    depends_on:
+      vernemq:
+        condition: service_healthy
+      greptimedb:
+        condition: service_healthy
+
+  vector-ingest:
+    image: timberio/vector:0.54.0-debian
+    profiles:
+      - data-collection
+    command: -c /etc/vector-config.yaml
+    environment:
+      MQTT_HOST: vernemq
+      MQTT_PORT: 1883
+      MQTT_USER: mqtt
+      MQTT_PASSWORD: mqtt
+      GREPTIMEDB_HOST: greptimedb
+      GREPTIMEDB_PORT: 4000
+    volumes:
+      - ./vector/config-ingest.yaml:/etc/vector-config.yaml
+      - ./vector/processing:/etc/vector/
+      - vector_ingest_data:/vector-data
     depends_on:
       vernemq:
         condition: service_healthy
@@ -483,3 +506,5 @@ services:
 volumes:
   db_data:
   grafana:
+  vector_atpx_data:
+  vector_ingest_data:
