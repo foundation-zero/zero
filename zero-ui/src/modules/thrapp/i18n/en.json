@@ -4,6 +4,26 @@
       "actions": {
         "resetToDefaults": "Reset to defaults"
       },
+      "thrusters": {
+        "title": "Thrusters parameters",
+        "items": {
+          "coolingTemperature": "Cooling temperature",
+          "warmupTemperature": "Warmup temperature",
+          "recoveryTemperature": "Recovery temperature (AFT & FWD)",
+          "maximumSupplyTemperature": "Maximum supply temperature",
+          "minimumFlow": "Minimum flow",
+          "coolingFlow": "Cooling flow",
+          "maximumFlow": "Maximum flow"
+        },
+        "temperatureSettings": {
+          "title": "Temperature settings",
+          "description": "Target temperatures for the thruster controls"
+        },
+        "flowSettings": {
+          "title": "Flow settings",
+          "description": "Determines flow levels for thrusters"
+        }
+      },
       "dhw": {
         "title": "Domestic hot water parameters",
         "items": {
