@@ -4,6 +4,38 @@
       "actions": {
         "resetToDefaults": "Reset to defaults"
       },
+      "pcm": {
+        "title": "PCM & Consumers",
+        "items": {
+          "supplyingRequested": "PCM supplying",
+          "chargingRequested": "PCM charging",
+          "minimumChargingTemperature": "Minimum charging temperature",
+          "pcmChargeFlow": "PCM charge flow",
+          "pcmDischargeFlow": "PCM discharge flow",
+          "gracePeriod": "Charging/supplying grace period",
+          "stallDuration": "Stall duration",
+          "retryDelay": "Retry delay",
+          "domesticHotWater": "Domestic hot water",
+          "adsorption": "Adsorption",
+          "flowRatioToCircuit": "Flow ratio to circuit"
+        },
+        "chargingSettings": {
+          "title": "PCM charging",
+          "description": "Settings that determine charging performance"
+        },
+        "flowSettings": {
+          "title": "PCM charging flows",
+          "description": "Flow settings for charging and supplying heat"
+        },
+        "consumersBoosting": {
+          "title": "Consumers",
+          "description": "Selection of circuits enabled"
+        },
+        "stallGuardSettings": {
+          "title": "Stall guard",
+          "description": "Charging and supplying startup, stall detection and retry timings"
+        }
+      },
       "thrusters": {
         "title": "Thrusters parameters",
         "items": {
