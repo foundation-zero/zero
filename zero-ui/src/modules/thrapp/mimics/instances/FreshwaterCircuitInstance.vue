@@ -1,33 +1,17 @@
 <script setup lang="ts">
-import { tScoped } from "@/modules/common/lib/utils";
-import { RiArrowDownLine } from "@remixicon/vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
-import { CircuitBox, CircuitBoxTitle } from "../components/circuit-box";
-import { ModeBadgeSize, ModeBadges } from "../components/mode-badge";
-import {
-  ValueList,
-  ValueListFlowItem,
-  ValueListHeader,
-  ValueListSeparator,
-  ValueListTemperatureItem,
-} from "../components/value-list";
-import { getMimicDataProvider } from "../providers";
+import { HTMLWrapper } from "../components/html-wrapper";
+import FreshwaterCircuitContent from "./content/FreshwaterCircuitContent.vue";
 
 const props = defineProps<
   MimicComponentInstanceProps &
     TooltipComponentContext<MimicComponentType.FreshwaterCircuit> & {
       width?: number | string;
       height?: number | string;
-      forceHeight?: boolean;
     }
 >();
-
-const { getComponentState } = getMimicDataProvider();
-const state = getComponentState();
-
-const t = tScoped("labels");
 </script>
 
 <template>
@@ -35,43 +19,18 @@ const t = tScoped("labels");
     :type="MimicComponentType.FreshwaterCircuit"
     :data="props"
   >
-    <CircuitBox
-      v-bind="props"
-      :state="state"
-    >
-      <CircuitBoxTitle>{{ tooltip?.title }}</CircuitBoxTitle>
-
-      <ModeBadges
-        :module="custom.modeModule"
-        :size="ModeBadgeSize.Circuit"
-      />
-
-      <ValueList dense>
-        <ValueListSeparator />
-        <ValueListHeader>
-          <slot name="from">
-            <slot name="fromIcon">
-              <RiArrowDownLine class="text-muted-foreground size-3" />
-            </slot>
-            {{ t("from") }}
-          </slot>
-        </ValueListHeader>
-        <ValueListFlowItem :source="sensors.flowIn" />
-        <ValueListTemperatureItem :source="sensors.tIn" />
-        <ValueListSeparator />
-        <ValueListHeader>
-          <slot name="to">
-            <slot name="toIcon">
-              <RiArrowDownLine class="text-muted-foreground size-3" />
-            </slot>
-            {{ t("to") }}
-          </slot>
-        </ValueListHeader>
-        <ValueListFlowItem :source="sensors.flowOut" />
-        <ValueListTemperatureItem :source="sensors.tOut" />
-        <ValueListSeparator />
-      </ValueList>
-    </CircuitBox>
-    <slot />
+    <HTMLWrapper v-bind="{ width, height, x, y }">
+      <FreshwaterCircuitContent
+        v-bind="{ sensors, controllerState, controls, parameters, source, tooltip, custom }"
+      >
+        <template
+          v-for="(_, slotName) in $slots"
+          :key="slotName"
+          #[slotName]
+        >
+          <slot :name="slotName" />
+        </template>
+      </FreshwaterCircuitContent>
+    </HTMLWrapper>
   </MimicTooltipTrigger>
 </template>

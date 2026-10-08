@@ -15,7 +15,7 @@ const heatExchangers = PCM_MIMIC_DATA[MimicComponentType.HeatExchanger];
     v-bind="heatExchangers['1007']"
   >
     <HeatExchangerLabelInstance
-      :target-x="1104"
+      x="1035"
       y="292"
       :tag-id="heatExchangers['1007'].tooltip?.yardTag"
       :heat-exchanger="heatExchangers['1007'].source"
@@ -28,7 +28,7 @@ const heatExchangers = PCM_MIMIC_DATA[MimicComponentType.HeatExchanger];
     v-bind="heatExchangers['1003']"
   >
     <HeatExchangerLabelInstance
-      :target-x="1228"
+      x="1160"
       y="460"
       :tag-id="heatExchangers['1003'].tooltip?.yardTag"
       :heat-exchanger="heatExchangers['1003'].source"

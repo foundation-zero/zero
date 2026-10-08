@@ -7,9 +7,9 @@ import { fieldTooltip } from "../../../shared";
 export default toInstance<MimicComponentType.FreshwaterCircuit>({
   controls: {},
   controllerState: {},
-  custom: {},
+  custom: { circuitName: "Fresh water" },
   parameters: {},
-  source: getCustomField("dhw", { technicalName: "fresh-water" }),
+  source: getCustomField("dhw", {}),
   sensors: {
     flowIn: getField(SensorComponentType.FlowOnly, "dhw", "freshwaterHotwaterFlow"),
     tIn: getField(SensorComponentType.Temperature, "dhw", "freshwaterHotwaterTemperature"),
@@ -18,7 +18,7 @@ export default toInstance<MimicComponentType.FreshwaterCircuit>({
   },
   get tooltip() {
     return fieldTooltip(this.source, {
-      title: "Fresh water",
+      title: "Connecting Circuit",
     });
   },
 });

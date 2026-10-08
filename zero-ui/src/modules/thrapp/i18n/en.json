@@ -89,7 +89,7 @@
     },
     "tooltips": {
       "actions": {
-        "viewCircuitMimic": "View circuit mimic",
+        "viewCircuitMimic": "Switch to circuit mimic",
         "viewControls": "View controls",
         "controlManually": "Switch to manual mode",
         "controlAutomatically": "Switch to auto control",
@@ -107,7 +107,9 @@
         "heatExchange": "Heat exchange",
         "thisCircuit": "This circuit",
         "exchangeCircuit": "Exchange circuit",
-        "connectingCircuit": "Connecting circuit"
+        "connectingCircuit": "Connecting circuit",
+        "consumingCircuit": "Consuming circuit",
+        "consuming": "Consuming"
       },
       "sources": {
         "unknown": "Unknown",
@@ -130,6 +132,7 @@
         "hvacHeatFlow": "HVAC heatflow"
       },
       "items": {
+        "mode": "Mode",
         "outputMinimum": "Output minimum",
         "tankState": "Tank state",
         "incomingFlow": "Incoming flow",
@@ -329,7 +332,11 @@
             "boosting": "Boosting",
             "charging": "Charging"
           },
-          "drives": "{mode}",
+          "drives": {
+            "idle": "Idle",
+            "shorepower": "Shore power",
+            "propulsion": "Propulsion"
+          },
           "adsorption": "{mode}",
           "consumers": "{mode}",
           "pvt": {

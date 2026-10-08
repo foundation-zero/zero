@@ -17,7 +17,7 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
 <template>
   <!-- viewBox is a placeholder until the Figma frame geometry is captured -->
   <svg
-    viewBox="0 0 1599 718"
+    viewBox="0 0 1610 718"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"

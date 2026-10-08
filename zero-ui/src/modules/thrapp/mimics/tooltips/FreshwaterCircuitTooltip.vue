@@ -1,31 +1,25 @@
 <script setup lang="ts">
 import { useTranslations } from ".";
-import {
-  MimicTooltip,
-  NoopTooltipProvider,
-  TooltipComponentContext,
-} from "../../components/tooltip";
+import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip";
 import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { YardTag } from "../components/yard-tag";
-import { FreshwaterCircuitInstance } from "../instances";
+import FreshwaterCircuitContent from "../instances/content/FreshwaterCircuitContent.vue";
 import { SensorValue } from "../providers";
 import * as Partials from "./partials";
+
 const props = defineProps<TooltipComponentContext<MimicComponentType.FreshwaterCircuit>>();
 
-const { items, labels } = useTranslations();
+const { items } = useTranslations();
 </script>
 
 <template>
   <MimicTooltip>
     <div class="flex items-center gap-2">
-      <NoopTooltipProvider>
-        <FreshwaterCircuitInstance
-          v-bind="props"
-          height="243"
-          force-height
-        />
-      </NoopTooltipProvider>
+      <FreshwaterCircuitContent
+        v-bind="props"
+        class="w-49"
+      />
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 
@@ -35,13 +29,13 @@ const { items, labels } = useTranslations();
 
     <TooltipList>
       <TooltipListHeader>
-        {{ labels("connectingCircuit") }}
+        {{ custom.circuitName }}
       </TooltipListHeader>
       <SensorValue
         :source="sensors.tIn"
         field="temperature"
       >
-        <Partials.ListItem size="sm">
+        <Partials.ListItem>
           {{ items("incomingTemperature") }}
         </Partials.ListItem>
       </SensorValue>
@@ -49,7 +43,7 @@ const { items, labels } = useTranslations();
         :source="sensors.flowIn"
         field="flow"
       >
-        <Partials.ListItem size="sm">
+        <Partials.ListItem>
           {{ items("incomingFlow") }}
         </Partials.ListItem>
       </SensorValue>
@@ -57,7 +51,7 @@ const { items, labels } = useTranslations();
         :source="sensors.tOut"
         field="temperature"
       >
-        <Partials.ListItem size="sm">
+        <Partials.ListItem>
           {{ items("outgoingTemperature") }}
         </Partials.ListItem>
       </SensorValue>
@@ -65,7 +59,7 @@ const { items, labels } = useTranslations();
         :source="sensors.flowOut"
         field="flow"
       >
-        <Partials.ListItem size="sm">
+        <Partials.ListItem>
           {{ items("outgoingFlow") }}
         </Partials.ListItem>
       </SensorValue>

@@ -4,6 +4,7 @@ export { default as CheckValveInstance } from "./CheckValveInstance.vue";
 export { default as ConnectingCircuitInstance } from "./ConnectingCircuitInstance.vue";
 export { default as DcConverterInstance } from "./DcConverterInstance.vue";
 export { default as DutypointLabelInstance } from "./DutypointLabelInstance.vue";
+export { default as ExchangeCircuitInstance } from "./ExchangeCircuitInstance.vue";
 export { default as FlowControlValveInstance } from "./FlowControlValveInstance.vue";
 export { default as FlowSensorInstance } from "./FlowSensorInstance.vue";
 export { default as FreshwaterCircuitInstance } from "./FreshwaterCircuitInstance.vue";
@@ -13,7 +14,6 @@ export { default as IrradianceLabelInstance } from "./IrradianceLabelInstance.vu
 export { default as LevelLabelInstance } from "./LevelLabelInstance.vue";
 export { default as LevelSensorInstance } from "./LevelSensorInstance.vue";
 export { default as LevelSwitchInstance } from "./LevelSwitchInstance.vue";
-export { default as LoopCircuitInstance } from "./LoopCircuitInstance.vue";
 export { default as ManualPumpInstance } from "./ManualPumpInstance.vue";
 export { default as ManualValveInstance } from "./ManualValveInstance.vue";
 export { default as MixValveInstance } from "./MixValveInstance.vue";

@@ -83,7 +83,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
           </template>
         </Partials.ListItem>
       </SensorValue>
-      <Partials.Circuit :source="sensors.heatTransfer" />
+      <Partials.ExchangeCircuit :source="sensors.heatTransfer" />
     </TooltipList>
 
     <TooltipList v-if="custom.controller">

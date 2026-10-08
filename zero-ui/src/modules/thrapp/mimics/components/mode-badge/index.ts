@@ -3,6 +3,7 @@ import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import {
   DcAutomaticMode,
   DhwAutomaticMode,
+  DrivesAutomaticMode,
   PcmAutomaticMode,
   PvtAutomaticMode,
   ThrustersAutomaticMode,
@@ -104,6 +105,15 @@ export const useModuleMode = (moduleRef?: MaybeRef<keyof ThrsModules | undefined
           label: t(`modes.pvt.${pvtMode.owners.mode}`, { count: 2 }),
         },
       ];
+    } else if (module === "drives") {
+      const drivesMode = automaticMode as DrivesAutomaticMode;
+      const MODES: Record<string, ModeBadgeMode> = {
+        idle: ModeBadgeMode.Idle,
+        propulsion: ModeBadgeMode.Active,
+        shorepower: ModeBadgeMode.Active,
+      };
+
+      return [{ mode: MODES[drivesMode.mode], label: t(`modes.drives.${drivesMode.mode}`) }];
     } else if (module === "pcm") {
       const pcmMode = automaticMode as PcmAutomaticMode;
       const MODES: Record<string, ModeBadgeMode> = {

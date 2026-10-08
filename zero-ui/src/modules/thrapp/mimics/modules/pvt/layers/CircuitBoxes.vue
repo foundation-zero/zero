@@ -16,8 +16,7 @@ const t = tScoped("labels");
     <ConnectingCircuitInstance
       x="885"
       y="40"
-      force-height
-      height="245"
+      height="195"
       v-bind="hotWaterCircuits?.['pcm']"
     >
       <template #from>
@@ -34,8 +33,7 @@ const t = tScoped("labels");
       x="1110"
       y="355"
       width="194"
-      height="145"
-      force-height
+      height="90"
       v-bind="circuits?.['seawater']"
     />
   </g>
