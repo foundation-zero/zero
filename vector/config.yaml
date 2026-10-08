@@ -70,6 +70,7 @@ transforms:
       - "/etc/vector/process_5_spell_fix.vrl"
       - "/etc/vector/process_6_snakecase.vrl"
       - "/etc/vector/process_7_drop_nans.vrl"
+      - "/etc/vector/process_8_cast_integers.vrl"
     # Enable dead letter queue
     drop_on_error: true
     drop_on_abort: true

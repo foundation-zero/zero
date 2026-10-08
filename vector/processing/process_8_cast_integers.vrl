@@ -1,0 +1,17 @@
+# Since 8 Oct 2026 the PMS publishes these Int16 kW values as floats. Greptime
+# rejects a float in the existing bigint column, and with it the whole row.
+integer_fields_by_table = {
+  "marpower__150000_propulsion__pcs_fwd_ara1": ["max_power_setpoint_motor__value", "max_power_setpoint_generator__value"],
+  "marpower__150000_propulsion__pcs_fwd_ara2": ["max_power_setpoint_motor__value", "max_power_setpoint_generator__value"],
+  "marpower__150000_propulsion__pcs_aft_ara1": ["max_power_setpoint_motor__value", "max_power_setpoint_generator__value"],
+  "marpower__150000_propulsion__pcs_aft_ara2": ["max_power_setpoint_motor__value", "max_power_setpoint_generator__value"]
+}
+
+integer_fields = array(get(integer_fields_by_table, [string!(%table)]) ?? []) ?? []
+
+for_each(integer_fields) -> |_index, field| {
+  value = get!(., [field])
+  if is_float(value) {
+    . = set!(value: ., path: [field], data: to_int(round!(value)))
+  }
+}

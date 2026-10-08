@@ -37,6 +37,7 @@ transforms:
       - "./processing/process_5_spell_fix.vrl"
       - "./processing/process_6_snakecase.vrl"
       - "./processing/process_7_drop_nans.vrl"
+      - "./processing/process_8_cast_integers.vrl"
     drop_on_error: true
   re_add_table:
     type: remap

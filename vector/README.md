@@ -31,6 +31,7 @@ The main pipeline. It subscribes to the everyday topics (`marpower/#`,
 | 5 | `process_5_spell_fix.vrl` | Normalises `TimeStamp` → `Timestamp` in key names. |
 | 6 | `process_6_snakecase.vrl` | Converts all keys from `PascalCase` to `snake_case`. |
 | 7 | `process_7_drop_nans.vrl` | Drops messages where the value is 'NaN'. Greptime can't deal with those values. |
+| 8 | `process_8_cast_integers.vrl` | Rounds listed fields that arrive as floats to integers, so they fit their existing integer columns. |
 
 The result lands in a per-domain table via the `greptimedb` sink.
 
