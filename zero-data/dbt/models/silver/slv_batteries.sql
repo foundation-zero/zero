@@ -8,5 +8,5 @@ select
   "charging__value" as charging,
   "dis_charging__value" as discharging,
   "charge_power__value" as charge_power,
-  "battery_power__value" as battery_power,
+  "battery_power__value" as battery_power
 from {{ ref('stg_marpower__batteries') }}
