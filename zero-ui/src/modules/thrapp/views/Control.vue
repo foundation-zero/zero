@@ -5,15 +5,15 @@ import { DEFINITIONS } from "@/modules/thrsim/lib/consts";
 import { defineAsyncComponent, inject, Ref } from "vue";
 
 const currentDefinition = inject<Ref<keyof typeof DEFINITIONS>>("currentModule")!;
-const DHWParameters = defineAsyncComponent(
-  () => import("@/modules/thrapp/components/module-parameters/dhw/DHWParameters.vue"),
+const DhwParameters = defineAsyncComponent(
+  () => import("@/modules/thrapp/parameters/modules/dhw/DhwParameters.vue"),
 );
 </script>
 <template>
   <GraphQLProvider>
     <section class="relative h-full">
       <GridPattern class="absolute top-0 right-0 bottom-0 left-0 h-full w-full" />
-      <DHWParameters
+      <DhwParameters
         v-if="currentDefinition === 'dhw'"
         class="relative"
       />

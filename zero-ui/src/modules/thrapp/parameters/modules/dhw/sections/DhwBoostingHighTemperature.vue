@@ -2,8 +2,8 @@
 import { tScoped } from "@/modules/common/lib/utils";
 import { getField } from "@/modules/thrapp/mimics/providers";
 import { ParametersType } from "@/modules/thrsim/types";
-import * as Parameters from "..";
-import * as ParameterItems from "../items";
+import * as Parameters from "../../../components/module-parameters";
+import * as ParameterItems from "../../../components/module-parameters/items";
 
 const t = tScoped("thrapp.parameters.dhw");
 </script>

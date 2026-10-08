@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
+import { provideMultiLineEditor } from "@modules/thrapp/mimics/editors";
+import { injectValueForm } from "@modules/thrapp/mimics/providers/forms";
 import { HTMLAttributes } from "vue";
-import { provideMultiLineEditor } from "../../mimics/editors";
-import { injectValueForm } from "../../mimics/providers/forms";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
