@@ -26,9 +26,13 @@ export const useAlarmsStore = defineStore("loads-alarms", () => {
 
   const activeAlarms = computed(() => activeAlarmsResult.value?.alarms ?? []);
   const status = computed(() => (activeAlarms.value.length === 0 ? "ok" : "alarm"));
+  const alarmedVariableIds = computed(
+    () => new Set(activeAlarms.value.map((alarm) => alarm.actual.variable.id)),
+  );
 
   return {
     activeAlarms,
+    alarmedVariableIds,
     startPolling,
     stopPolling,
     status,

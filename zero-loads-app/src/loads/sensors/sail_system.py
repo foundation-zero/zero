@@ -102,11 +102,25 @@ Position: TypeAlias = Annotated[
     VariableMeta(name="position"),
 ]
 
+PositionFailure: TypeAlias = Annotated[
+    BaseAlarm,
+    Field(validation_alias="st_position/x_Failure"),
+    VariableMeta(
+        unit="bool",
+        name="position_sensor_failure",
+        type="alarm",
+        alarm_for="relative_position",
+    ),
+]
+
 MaxPositionAlarm: TypeAlias = Annotated[
     BaseAlarm,
     Field(validation_alias="st_position/x_MaxLimitReached"),
     VariableMeta(
-        name="max-position-alarm", type="alarm", alarm_for="relative_position"
+        name="max-position-alarm",
+        type="alarm",
+        alarm_for="relative_position",
+        value_from="position",
     ),
 ]
 
@@ -114,29 +128,22 @@ MinPositionAlarm: TypeAlias = Annotated[
     BaseAlarm,
     Field(validation_alias="st_position/x_MinLimitReached"),
     VariableMeta(
-        name="min-position-alarm", type="alarm", alarm_for="relative_position"
+        name="min-position-alarm",
+        type="alarm",
+        alarm_for="relative_position",
+        value_from="position",
     ),
 ]
 
 MaxPosition: TypeAlias = Annotated[
     BaseMaxPosition,
     Field(validation_alias="st_position/i_MaxPosition"),
-    BeforeValidator(per_mille_to_ratio),
-    ScalingMeta(
-        conversion=per_mille_to_ratio,
-        inverse_conversion=ratio_to_per_mille,
-    ),
     VariableMeta(threshold_for="max_position_alarm"),
 ]
 
 MinPosition: TypeAlias = Annotated[
     BaseMinPosition,
     Field(validation_alias="st_position/i_MinPosition"),
-    BeforeValidator(per_mille_to_ratio),
-    ScalingMeta(
-        conversion=per_mille_to_ratio,
-        inverse_conversion=ratio_to_per_mille,
-    ),
     VariableMeta(threshold_for="min_position_alarm"),
 ]
 
@@ -225,6 +232,8 @@ class BladeAdjuster(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -251,6 +260,22 @@ class BladeCunningham(LoadsModel, ABC):
             display_name="Cunningham",
             scale_min_label="out",
             scale_max_label="in",
+        ),
+    ]
+    position_ps_failure: Annotated[
+        PositionFailure,
+        Field(validation_alias="st_positionPs/x_Failure"),
+        VariableMeta(
+            name="position-ps-sensor-failure",
+            display_name="Blade Cunningham PT Position Failure",
+        ),
+    ]
+    position_sb_failure: Annotated[
+        PositionFailure,
+        Field(validation_alias="st_positionSb/x_Failure"),
+        VariableMeta(
+            name="position-sb-sensor-failure",
+            display_name="Blade Cunningham SB Position Failure",
         ),
     ]
 
@@ -302,6 +327,8 @@ class BladeTweakerPs(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -327,6 +354,8 @@ class BladeTweakerSb(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -349,6 +378,22 @@ class CodeZeroTack(LoadsModel, ABC):
             display_name="Tack",
             scale_min_label="out",
             scale_max_label="in",
+        ),
+    ]
+    position_ps_failure: Annotated[
+        PositionFailure,
+        Field(validation_alias="st_positionPs/x_Failure"),
+        VariableMeta(
+            name="position-ps-sensor-failure",
+            display_name="Code Zero Tack PT Position Failure",
+        ),
+    ]
+    position_sb_failure: Annotated[
+        PositionFailure,
+        Field(validation_alias="st_positionSb/x_Failure"),
+        VariableMeta(
+            name="position-sb-sensor-failure",
+            display_name="Code Zero Tack SB Position Failure",
         ),
     ]
 
@@ -603,16 +648,28 @@ class MainCheckstay(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    deflector_position: Annotated[Position, VariableMeta(name="deflector-position")]
+    deflector_position_failure: Annotated[
+        PositionFailure,
+        VariableMeta(
+            name="deflector-position-sensor-failure",
+            alarm_for="deflector_relative_position",
+        ),
+    ]
     deflector_max_position_alarm: Annotated[
         MaxPositionAlarm,
         VariableMeta(
-            name="deflector-max-position-alarm", alarm_for="deflector_relative_position"
+            name="deflector-max-position-alarm",
+            alarm_for="deflector_relative_position",
+            value_from="deflector_position",
         ),
     ]
     deflector_min_position_alarm: Annotated[
         MinPositionAlarm,
         VariableMeta(
-            name="deflector-min-position-alarm", alarm_for="deflector_relative_position"
+            name="deflector-min-position-alarm",
+            alarm_for="deflector_relative_position",
+            value_from="deflector_position",
         ),
     ]
     deflector_max_position: Annotated[
@@ -728,6 +785,8 @@ class MainCunningham(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -758,6 +817,8 @@ class MainOuthaul(LoadsModel, ABC):
             display_name="Outhaul", scale_min_label="out", scale_max_label="in"
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -781,6 +842,8 @@ class MainPreventer(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -884,6 +947,8 @@ class MainVang(LoadsModel, ABC):
         RelativePosition,
         VariableMeta(display_name="Vang", scale_min_label="out", scale_max_label="in"),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -904,7 +969,7 @@ class MainTraveller(LoadsModel, ABC):
         ),
     ]
     inner_limit_alarm: Annotated[
-        MinPositionAlarm,
+        BaseAlarm,
         Field(validation_alias="xInnerLimit"),
         VariableMeta(
             name="inner-limit-alarm",
@@ -913,7 +978,7 @@ class MainTraveller(LoadsModel, ABC):
         ),
     ]
     outer_limit_alarm: Annotated[
-        MaxPositionAlarm,
+        BaseAlarm,
         Field(validation_alias="xOuterLimit"),
         VariableMeta(
             name="outer-limit-alarm",
@@ -934,6 +999,14 @@ class MizzenCheckstay(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    deflector_position: Annotated[Position, VariableMeta(name="deflector-position")]
+    deflector_position_failure: Annotated[
+        PositionFailure,
+        VariableMeta(
+            name="deflector-position-sensor-failure",
+            alarm_for="deflector_relative_position",
+        ),
+    ]
     deflector_max_position_alarm: Annotated[
         MaxPositionAlarm,
         Field(validation_alias="st_position/x_MaxLimitReached"),
@@ -941,6 +1014,7 @@ class MizzenCheckstay(LoadsModel, ABC):
             name="deflector-max-position-alarm",
             display_name="Mizzen Deflector Max Position Alarm",
             alarm_for="deflector_relative_position",
+            value_from="deflector_position",
         ),
     ]
     deflector_min_position_alarm: Annotated[
@@ -950,6 +1024,7 @@ class MizzenCheckstay(LoadsModel, ABC):
             name="deflector-min-position-alarm",
             display_name="Mizzen Deflector Min Position Alarm",
             alarm_for="deflector_relative_position",
+            value_from="deflector_position",
         ),
     ]
     deflector_max_position: Annotated[
@@ -1064,6 +1139,8 @@ class MizzenCunningham(LoadsModel, ABC):
             display_name="Cunningham", scale_min_label="out", scale_max_label="in"
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -1095,6 +1172,8 @@ class MizzenHeadsailTackAdjuster(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -1117,6 +1196,8 @@ class MizzenOuthaul(LoadsModel, ABC):
             display_name="Outhaul", scale_min_label="out", scale_max_label="in"
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -1140,6 +1221,8 @@ class MizzenPreventer(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -1242,6 +1325,8 @@ class MizzenVang(LoadsModel, ABC):
         RelativePosition,
         VariableMeta(display_name="Vang", scale_min_label="out", scale_max_label="in"),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -1293,6 +1378,8 @@ class StaysailStayAdjuster(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition

@@ -125,12 +125,13 @@ export type MastLockState = boolean | "error";
 export type Alarm = {
   id: string;
   name: string;
+  unit: VariableUnit;
   active: boolean | null;
   actualValue: number | null;
   thresholdValue: number | null;
   actual: {
     variable: {
-      unit: VariableUnit;
+      id: string;
     };
   };
 };

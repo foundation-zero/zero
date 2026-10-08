@@ -598,8 +598,10 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
         MainCheckstay.TOPIC,
         """{
             "st_position/i_Position_permille": 500,
-            "st_position/i_MaxPosition": 1000,
-            "st_position/i_MinPosition": 0,
+            "st_position/i_Position_mm": 300,
+            "st_position/i_MaxPosition": 550,
+            "st_position/i_MinPosition": 50,
+            "st_position/x_Failure": false,
             "st_position/x_MaxLimitReached": false,
             "st_position/x_MinLimitReached": false,
             "i_Load": 500,
@@ -623,6 +625,7 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
                 alarms(alarms: ["main-checkstay-deflector-load-alarm"]) {
                     id
                     name
+                    unit
                     thresholdValue
                     actualValue
                     active
@@ -645,6 +648,7 @@ async def test_alarms(async_client: AsyncClient, mqtt_client_send):
                 {
                     "id": "main-checkstay-deflector-load-alarm",
                     "name": "Main Deflector Load Alarm",
+                    "unit": "tonne",
                     "active": True,
                     "thresholdValue": None,
                     "actualValue": 5.0,
@@ -666,8 +670,10 @@ async def test_active_alarms(async_client: AsyncClient, mqtt_client_send):
         MainCheckstay.TOPIC,
         """{
             "st_position/i_Position_permille": 500,
-            "st_position/i_MaxPosition": 1000,
-            "st_position/i_MinPosition": 0,
+            "st_position/i_Position_mm": 300,
+            "st_position/i_MaxPosition": 550,
+            "st_position/i_MinPosition": 50,
+            "st_position/x_Failure": false,
             "st_position/x_MaxLimitReached": false,
             "st_position/x_MinLimitReached": false,
             "i_Load": 500,
@@ -861,6 +867,66 @@ async def test_sails_single(async_client: AsyncClient):
                     "name": "Full Main",
                     "variantName": "Full",
                 }
+            ]
+        }
+    }
+
+
+@pytest.mark.asyncio
+async def test_position_alarm_in_mm(async_client: AsyncClient, mqtt_client_send):
+    await mqtt_client_send.publish(
+        MainCheckstay.TOPIC,
+        """{
+            "st_position/i_Position_permille": 1000,
+            "st_position/i_Position_mm": 560,
+            "st_position/i_MaxPosition": 550,
+            "st_position/i_MinPosition": 50,
+            "st_position/x_Failure": false,
+            "st_position/x_MaxLimitReached": true,
+            "st_position/x_MinLimitReached": false,
+            "i_Load": 500,
+            "ox_LoadAlarm": false,
+            "st_LoadPs/i_Load": 420,
+            "st_LoadPs/x_Failure": false,
+            "st_LoadPs/i_MaxLoadSetting": 450,
+            "st_LoadPs/x_MaxLimitReached": false,
+            "st_LoadSb/i_Load": 300,
+            "st_LoadSb/x_Failure": false,
+            "st_LoadSb/i_MaxLoadSetting": 400,
+            "st_LoadSb/x_MaxLimitReached": false
+        }""",
+    )
+    await asyncio.sleep(0.1)
+    response = await async_client.post(
+        "/graphql",
+        json={
+            "query": """
+            query {
+                alarms(active: true) {
+                    id
+                    unit
+                    thresholdValue
+                    actualValue
+                    actual {
+                        id
+                    }
+                }
+            }
+            """
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "data": {
+            "alarms": [
+                {
+                    "id": "main-checkstay-deflector-max-position-alarm",
+                    "unit": "mm",
+                    "thresholdValue": 550.0,
+                    "actualValue": 560.0,
+                    "actual": {"id": "main-checkstay-deflector-relative-position"},
+                },
             ]
         }
     }

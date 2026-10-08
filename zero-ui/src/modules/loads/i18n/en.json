@@ -59,7 +59,9 @@
       "status": "Loads status",
       "alarms": "No alarms | Critical alert | Critical alerts ({count})",
       "showAlarms": "Show",
-      "alarmActive": "<strong>{actualValue} {unit}</strong> exceeds threshold <b>{thresholdValue} {unit}</b>"
+      "alarmValue": "<strong>{actualValue} {unit}</strong>",
+      "alarmAboveMax": "<strong>{actualValue} {unit}</strong> exceeds max <b>{thresholdValue} {unit}</b>",
+      "alarmBelowMin": "<strong>{actualValue} {unit}</strong> below min <b>{thresholdValue} {unit}</b>"
     },
     "components": {
       "grid": {

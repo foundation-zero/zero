@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { cn, formatInt, useFixed } from "@/modules/common/lib/utils";
+import { cn, formatInt } from "@/modules/common/lib/utils";
 import { reactiveOmit } from "@vueuse/core";
 import { PrimitiveProps } from "reka-ui";
-import { HTMLAttributes, provide, toRef } from "vue";
+import { computed, HTMLAttributes, provide, toRef } from "vue";
 import { VariableStateVariants, variableStateVariants } from ".";
-import { formatLoadFn } from "../../lib/utils";
+import { formatLoadFn, splitLoad } from "../../lib/utils";
 import { VariableState, VariableUnit } from "../../types";
 import AnimatedNumber from "../animated-number/AnimatedNumber.vue";
 
@@ -22,7 +22,7 @@ const type = toRef(props, "type");
 
 provide("load-type", type);
 
-const splitValue = useFixed(toRef(props, "value"), 1);
+const splitValue = computed(() => (props.value == undefined ? undefined : splitLoad(props.value)));
 </script>
 
 <template>
@@ -34,16 +34,18 @@ const splitValue = useFixed(toRef(props, "value"), 1);
     <template v-if="type === VariableUnit.Tonne">
       <animated-number
         data-slot="load-value"
-        :to="splitValue[0]"
-        :format="formatInt"
+        :to="splitValue?.integer"
+        :format="(val: number) => `${splitValue?.sign}${formatInt(val)}`"
       />
 
       <animated-number
-        v-if="splitValue[1] != undefined"
+        v-if="splitValue != undefined"
         class="text-r2xs"
         data-slot="load-value"
-        :to="splitValue[1]"
-        :format="(val: number) => `.${formatInt(val)}`"
+        :to="splitValue.fraction"
+        :format="
+          (val: number) => `.${formatInt(val).padStart(splitValue?.fractionDigits ?? 1, '0')}`
+        "
       />
     </template>
     <template v-else>
