@@ -73,7 +73,7 @@ const flowSensors = PCM_MIMIC_DATA[MimicComponentType.FlowSensor];
     v-bind="flowSensors['1058-07']"
   >
     <FlowLabelInstance
-      target-x="1100"
+      x="1040"
       y="710"
       :tag-id="flowSensors['1058-07'].tooltip?.yardTag"
       :flow="flowSensors['1058-07'].source"
@@ -86,7 +86,7 @@ const flowSensors = PCM_MIMIC_DATA[MimicComponentType.FlowSensor];
     v-bind="flowSensors['1058-08']"
   >
     <FlowLabelInstance
-      target-x="1224"
+      x="1164"
       y="710"
       :tag-id="flowSensors['1058-08'].tooltip?.yardTag"
       :flow="flowSensors['1058-08'].source"
@@ -99,7 +99,7 @@ const flowSensors = PCM_MIMIC_DATA[MimicComponentType.FlowSensor];
     v-bind="flowSensors['1192']"
   >
     <FlowLabelInstance
-      target-x="1348"
+      x="1288"
       y="710"
       :tag-id="flowSensors['1192'].tooltip?.yardTag"
       :flow="flowSensors['1192'].source"

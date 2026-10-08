@@ -78,7 +78,7 @@ const temperatureSensors = PCM_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-48']"
     >
       <TemperatureLabelInstance
-        target-x="1105"
+        x="1050"
         y="630"
         :tag-id="temperatureSensors['1038-48'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-48'].source"
@@ -92,7 +92,7 @@ const temperatureSensors = PCM_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-49']"
     >
       <TemperatureLabelInstance
-        target-x="1229"
+        x="1174"
         y="630"
         :tag-id="temperatureSensors['1038-49'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-49'].source"
@@ -106,7 +106,7 @@ const temperatureSensors = PCM_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-53']"
     >
       <TemperatureLabelInstance
-        target-x="1105"
+        x="1050"
         y="10"
         :tag-id="temperatureSensors['1038-53'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-53'].source"
@@ -120,7 +120,7 @@ const temperatureSensors = PCM_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-54']"
     >
       <TemperatureLabelInstance
-        target-x="1229"
+        x="1174"
         y="10"
         :tag-id="temperatureSensors['1038-54'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-54'].source"
@@ -134,7 +134,7 @@ const temperatureSensors = PCM_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-31']"
     >
       <TemperatureLabelInstance
-        target-x="80"
+        x="15"
         y="190"
         :tag-id="temperatureSensors['1038-31'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-31'].source"
@@ -148,7 +148,7 @@ const temperatureSensors = PCM_MIMIC_DATA[MimicComponentType.TemperatureSensor];
       v-bind="temperatureSensors['1038-55']"
     >
       <TemperatureLabelInstance
-        target-x="80"
+        x="16"
         y="635"
         :tag-id="temperatureSensors['1038-55'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-55'].source"

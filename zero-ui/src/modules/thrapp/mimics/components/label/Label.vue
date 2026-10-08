@@ -11,8 +11,8 @@ const props = withDefaults(
   >(),
   {
     x: 0,
-    width: 140,
-    height: 60,
+    width: 80,
+    height: 40,
     targetX: 0,
     targetWidth: 0,
     minWidth: 35,

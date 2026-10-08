@@ -73,7 +73,7 @@ const valves = PCM_MIMIC_DATA[MimicComponentType.FlowControlValve];
     v-bind="valves['1065-01']"
   >
     <FlowControlLabelInstance
-      target-x="1125"
+      x="1060"
       y="550"
       :tag-id="valves['1065-01'].tooltip?.yardTag"
       :valve="valves['1065-01'].source"
@@ -86,7 +86,7 @@ const valves = PCM_MIMIC_DATA[MimicComponentType.FlowControlValve];
     v-bind="valves['1061']"
   >
     <FlowControlLabelInstance
-      target-x="1250"
+      x="1185"
       y="790"
       :tag-id="valves['1061'].tooltip?.yardTag"
       :valve="valves['1061'].source"
@@ -99,7 +99,7 @@ const valves = PCM_MIMIC_DATA[MimicComponentType.FlowControlValve];
     v-bind="valves['1062-01']"
   >
     <FlowControlLabelInstance
-      target-x="1373"
+      x="1305"
       y="790"
       :tag-id="valves['1062-01'].tooltip?.yardTag"
       :valve="valves['1062-01'].source"
