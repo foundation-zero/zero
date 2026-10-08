@@ -4,6 +4,27 @@
       "actions": {
         "resetToDefaults": "Reset to defaults"
       },
+      "pvt": {
+        "title": "PVT parameters",
+        "items": {
+          "minimumReturnTemperature": "PVT minimum return temperature",
+          "recoveryActivationStringTemperature": "Recovery activation string temperature",
+          "warmupTemperature": "Warmup temperature",
+          "recoveryTemperature": "Recovery temperature",
+          "maximumSupplyTemperature": "Maximum supply temperature",
+          "mainFwdMinimumPumpDutypoint": "Main FWD minimum pump dutypoint",
+          "mainAftMinimumPumpDutypoint": "Main AFT minimum pump dutypoint",
+          "ownersMinimumPumpDutypoint": "Owners minimum pump dutypoint"
+        },
+        "temperatureSettings": {
+          "title": "Temperature settings",
+          "description": "Target temperatures for the PVT controls"
+        },
+        "pumpControl": {
+          "title": "Pump control",
+          "description": "Pump setpoints"
+        }
+      },
       "pcm": {
         "title": "PCM & Consumers",
         "items": {

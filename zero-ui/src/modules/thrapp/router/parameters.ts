@@ -8,6 +8,9 @@ export const PARAMETERS: Partial<Record<keyof ThrsModules, Component>> = {
   thrusters: defineAsyncComponent(
     () => import("@/modules/thrapp/parameters/modules/thrusters/ThrustersParameters.vue"),
   ),
+  pvt: defineAsyncComponent(
+    () => import("@/modules/thrapp/parameters/modules/pvt/PvtParameters.vue"),
+  ),
   pcm: defineAsyncComponent(
     () => import("@/modules/thrapp/parameters/modules/pcm/PcmParameters.vue"),
   ),

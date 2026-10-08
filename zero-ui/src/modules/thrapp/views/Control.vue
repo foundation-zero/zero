@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import GridPattern from "@/modules/thrapp/mimics/modules/GridPattern.vue";
 import { GraphQLProvider } from "@/modules/thrapp/mimics/providers";
 import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import { inject, Ref } from "vue";
@@ -10,7 +9,7 @@ const currentDefinition = inject<Ref<keyof ThrsModules>>("currentModule")!;
 <template>
   <GraphQLProvider>
     <section class="relative h-full">
-      <GridPattern class="absolute top-0 right-0 bottom-0 left-0 h-full w-full" />
+      <!-- <GridPattern class="absolute top-0 right-0 bottom-0 left-0 h-full w-full" /> -->
       <component :is="PARAMETERS[currentDefinition]" />
     </section>
   </GraphQLProvider>
