@@ -12,7 +12,7 @@ const props = withDefaults(
       TooltipComponentContext<MimicComponentType.ConnectingCircuit> & {
         width?: number | string;
         height?: number | string;
-        forceHeight?: boolean;
+
         inverted?: boolean;
       }
   >(),
@@ -29,7 +29,7 @@ const state = getComponentState();
     :type="MimicComponentType.ConnectingCircuit"
     :data="props"
   >
-    <HTMLWrapper v-bind="{ width, height, forceHeight, x, y }">
+    <HTMLWrapper v-bind="{ width, height, x, y }">
       <ConnectingCircuit
         v-bind="{
           sensors,

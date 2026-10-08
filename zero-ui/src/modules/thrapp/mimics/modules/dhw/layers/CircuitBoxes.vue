@@ -22,36 +22,31 @@ const FreshwaterCircuits = DHW_MIMIC_DATA[MimicComponentType.FreshwaterCircuit];
     <ExchangeCircuitInstance
       x="0"
       y="25"
-      force-height
-      height="195"
+      height="165"
       v-bind="circuits['highTempLoop']"
     />
     <ExchangeCircuitInstance
       x="397"
       y="708"
-      force-height
-      height="220"
+      height="165"
       v-bind="circuits['dcConverters']"
     />
     <ExchangeCircuitInstance
       x="650"
       y="708"
-      force-height
       height="165"
       v-bind="circuits['drives']"
     />
     <ExchangeCircuitInstance
       x="903"
       y="708"
-      force-height
       height="165"
       v-bind="circuits['adsorption']"
     />
     <FreshwaterCircuitInstance
       x="1215"
       y="455"
-      force-height
-      height="300"
+      height="196"
       v-bind="FreshwaterCircuits['freshwater']"
     >
       <template #fromIcon>

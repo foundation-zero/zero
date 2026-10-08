@@ -27,7 +27,7 @@ const setTooltip = () => {
 <template>
   <g
     v-if="!disabled"
-    class="origin-center transition-all transform-fill hover:scale-105 hover:cursor-pointer hover:drop-shadow-2xl hover:drop-shadow-black"
+    class="origin-center transition-all will-change-auto transform-fill hover:scale-105 hover:cursor-pointer hover:drop-shadow-2xl hover:drop-shadow-black"
     @click="setTooltip"
   >
     <slot />

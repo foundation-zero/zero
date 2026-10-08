@@ -10,7 +10,6 @@ const props = defineProps<
     TooltipComponentContext<MimicComponentType.FreshwaterCircuit> & {
       width?: number | string;
       height?: number | string;
-      forceHeight?: boolean;
     }
 >();
 </script>
@@ -20,7 +19,7 @@ const props = defineProps<
     :type="MimicComponentType.FreshwaterCircuit"
     :data="props"
   >
-    <HTMLWrapper v-bind="{ width, height, forceHeight, x, y }">
+    <HTMLWrapper v-bind="{ width, height, x, y }">
       <FreshwaterCircuitContent
         v-bind="{ sensors, controllerState, controls, parameters, source, tooltip, custom }"
       >

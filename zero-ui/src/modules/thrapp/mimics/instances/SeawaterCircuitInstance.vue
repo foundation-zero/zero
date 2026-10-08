@@ -11,7 +11,6 @@ const props = withDefaults(
       TooltipComponentContext<MimicComponentType.SeawaterCircuit> & {
         width?: number | string;
         height?: number | string;
-        forceHeight?: boolean;
       }
   >(),
   { height: 90 },
@@ -23,7 +22,7 @@ const props = withDefaults(
     :type="MimicComponentType.SeawaterCircuit"
     :data="props"
   >
-    <HTMLWrapper v-bind="{ width, height, forceHeight, x, y }">
+    <HTMLWrapper v-bind="{ width, height, x, y }">
       <SeawaterCircuitContent
         v-bind="{ sensors, controllerState, controls, parameters, source, tooltip, custom }"
       />

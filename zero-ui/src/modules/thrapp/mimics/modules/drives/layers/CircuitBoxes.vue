@@ -11,16 +11,12 @@ const exchangeCircuits = DRIVES_EXCHANGE_CIRCUIT_DATA[MimicComponentType.Exchang
   <SeawaterCircuitInstance
     x="1039.2832"
     y="782.916"
-    :width="196"
-    force-height
     v-bind="seawaterCircuits.seawater"
   />
   <ExchangeCircuitInstance
     x="1314"
     y="19.916"
-    :width="196"
-    :height="220"
-    force-height
+    :height="183"
     v-bind="exchangeCircuits.domesticHotWater"
   />
 </template>

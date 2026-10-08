@@ -11,15 +11,13 @@ const exchangeCircuits = DC_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
   <SeawaterCircuitInstance
     x="815.1406"
     y="570.1563"
-    force-height
-    height="174"
+    height="95"
     v-bind="seawaterCircuits.seawater"
   />
   <ExchangeCircuitInstance
     x="1403"
     y="274.1458"
-    force-height
-    height="220"
+    height="183"
     v-bind="exchangeCircuits.domesticHotWater"
   />
 </template>

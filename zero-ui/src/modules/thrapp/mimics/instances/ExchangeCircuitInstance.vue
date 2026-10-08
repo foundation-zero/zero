@@ -11,7 +11,6 @@ const props = withDefaults(
       TooltipComponentContext<MimicComponentType.ExchangeCircuit> & {
         width?: number | string;
         height?: number | string;
-        forceHeight?: boolean;
       }
   >(),
   {
@@ -27,7 +26,7 @@ const props = withDefaults(
     :type="MimicComponentType.ExchangeCircuit"
     :data="props"
   >
-    <HTMLWrapper v-bind="{ width, height, forceHeight, x, y }">
+    <HTMLWrapper v-bind="{ width, height, x, y }">
       <ExchangeCircuit
         class="w-full"
         v-bind="{ sensors, controllerState, controls, parameters, source, tooltip, custom }"
