@@ -1,0 +1,10 @@
+topic = string!(.topic)
+
+for_each(.) -> |key, value| {
+    if ends_with(key, "value") {
+        if value == "NaN" {
+            log("NaN found in topic: " + topic + " for key: " + key + " setting to null", level: "info")
+            . = set!(value: ., path: [key], data: null)
+        }
+    }
+}
