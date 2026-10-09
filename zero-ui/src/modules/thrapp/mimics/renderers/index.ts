@@ -40,35 +40,97 @@ export type FieldRendererProps<T> = {
 };
 
 export const FieldRenderer = {
-  Placeholder,
-  Number,
-  Temperature,
-  HeatPumpMode,
-  BoilerTankMode,
-  BoilerTankTemperature,
-  BoilerTankControllerMode,
-  ValveState,
-  ThreeWayValveState,
-  Percentage,
-  FlowRate,
-  Degree,
-  Level,
-  TimeRemaining,
-  Source,
-  DeltaT,
-  Heat,
-  HeatExchangerMode,
-  OnOff,
-  Pressure,
-  Energy,
-  Power,
-  Frequency,
-  QuantityLiters,
-  Auto,
-  EnabledDisabled,
-  Empty,
-  PvtMode,
-  Irradiance,
-  ChargeState,
-  ChargingMode,
+  get Placeholder() {
+    return Placeholder;
+  },
+  get Number() {
+    return Number;
+  },
+  get Temperature() {
+    return Temperature;
+  },
+  get HeatPumpMode() {
+    return HeatPumpMode;
+  },
+  get BoilerTankMode() {
+    return BoilerTankMode;
+  },
+  get BoilerTankTemperature() {
+    return BoilerTankTemperature;
+  },
+  get BoilerTankControllerMode() {
+    return BoilerTankControllerMode;
+  },
+  get ValveState() {
+    return ValveState;
+  },
+  get ThreeWayValveState() {
+    return ThreeWayValveState;
+  },
+  get Percentage() {
+    return Percentage;
+  },
+  get FlowRate() {
+    return FlowRate;
+  },
+  get Degree() {
+    return Degree;
+  },
+  get Level() {
+    return Level;
+  },
+  get TimeRemaining() {
+    return TimeRemaining;
+  },
+  get Source() {
+    return Source;
+  },
+  get DeltaT() {
+    return DeltaT;
+  },
+  get Heat() {
+    return Heat;
+  },
+  get HeatExchangerMode() {
+    return HeatExchangerMode;
+  },
+  get OnOff() {
+    return OnOff;
+  },
+  get Pressure() {
+    return Pressure;
+  },
+  get Energy() {
+    return Energy;
+  },
+  get Power() {
+    return Power;
+  },
+  get Frequency() {
+    return Frequency;
+  },
+  get QuantityLiters() {
+    return QuantityLiters;
+  },
+  get Auto() {
+    return Auto;
+  },
+  get EnabledDisabled() {
+    return EnabledDisabled;
+  },
+  get Empty() {
+    return Empty;
+  },
+  get PvtMode() {
+    return PvtMode;
+  },
+  get Irradiance() {
+    return Irradiance;
+  },
+  get ChargeState() {
+    return ChargeState;
+  },
+  get ChargingMode() {
+    return ChargingMode;
+  },
 };

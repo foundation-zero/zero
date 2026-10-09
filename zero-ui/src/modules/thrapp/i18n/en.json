@@ -1,6 +1,106 @@
 {
   "thrapp": {
     "parameters": {
+      "pid": {
+        "title": "PID controller tuning",
+        "components": "Components",
+        "configuration": "Configuration",
+        "table": {
+          "tuning": "PID tuning",
+          "actual": "Actual",
+          "actualDescription": "(error * coefficient)",
+          "coefficient": "Coefficient"
+        },
+        "parts": {
+          "proportional": "Proportional (P)",
+          "integral": "Integral (I)",
+          "derivative": "Derivative (D)"
+        },
+        "dhwDcFlowController": {
+          "title": "DC Flow Controller",
+          "description": "PLACEHOLDER"
+        },
+        "dhwDrivesFlowController": {
+          "title": "Drives Flow Controller",
+          "description": "PLACEHOLDER"
+        },
+        "dhwPumpFlowController": {
+          "title": "Pump Flow Controller",
+          "description": "PLACEHOLDER"
+        },
+        "thrustersHeatDumpController": {
+          "title": "Heat Dump Controller",
+          "description": "PLACEHOLDER"
+        },
+        "thrustersWarmupMixController": {
+          "title": "Warmup Mix Controller",
+          "description": "PLACEHOLDER"
+        },
+        "thrustersPumpController": {
+          "title": "Pump Controller",
+          "description": "PLACEHOLDER"
+        },
+        "thrustersAftRecoveryTemperatureController": {
+          "title": "Aft Recovery Temperature Controller",
+          "description": "PLACEHOLDER"
+        },
+        "thrustersFwdRecoveryTemperatureController": {
+          "title": "Forward Recovery Temperature Controller",
+          "description": "PLACEHOLDER"
+        },
+        "thrustersAftFlowController": {
+          "title": "Aft Flow Controller",
+          "description": "PLACEHOLDER"
+        },
+        "thrustersFwdFlowController": {
+          "title": "Forward Flow Controller",
+          "description": "PLACEHOLDER"
+        },
+        "pvtHeatDumpController": {
+          "title": "Heat Dump Controller",
+          "description": "PLACEHOLDER"
+        },
+        "pvtMainAftWarmupMixController": {
+          "title": "Main Aft Warmup Mix Controller",
+          "description": "PLACEHOLDER"
+        },
+        "pvtMainAftPumpController": {
+          "title": "Main Aft Pump Controller",
+          "description": "PLACEHOLDER"
+        },
+        "pvtMainFwdWarmupMixController": {
+          "title": "Main Forward Warmup Mix Controller",
+          "description": "PLACEHOLDER"
+        },
+        "pvtMainFwdPumpController": {
+          "title": "Main Forward Pump Controller",
+          "description": "PLACEHOLDER"
+        },
+        "pvtOwnersWarmupMixController": {
+          "title": "Owners Warmup Mix Controller",
+          "description": "PLACEHOLDER"
+        },
+        "pvtOwnersPumpController": {
+          "title": "Owners Pump Controller",
+          "description": "PLACEHOLDER"
+        },
+        "module1FlowController": {
+          "title": "Module 1 Flow Controller",
+          "description": "PLACEHOLDER"
+        },
+        "module2FlowController": {
+          "title": "Module 2 Flow Controller",
+          "description": "PLACEHOLDER"
+        },
+        "module3FlowController": {
+          "title": "Module 3 Flow Controller",
+          "description": "PLACEHOLDER"
+        },
+        "module4FlowController": {
+          "title": "Module 4 Flow Controller",
+          "description": "PLACEHOLDER"
+        }
+      },
       "actions": {
         "resetToDefaults": "Reset to defaults"
       },

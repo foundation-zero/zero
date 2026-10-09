@@ -60,3 +60,6 @@ export type NavItem = {
   title: string;
   to: string;
 };
+
+export type TupleIndices<T extends readonly unknown[]> =
+  Extract<keyof T, `${number}`> extends `${infer N extends number}` ? N : never;
