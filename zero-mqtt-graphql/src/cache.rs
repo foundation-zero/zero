@@ -5,6 +5,7 @@ use dashmap::DashMap;
 use serde_json::Value;
 
 use crate::asyncapi::{TopicDef, TopicGroupDef};
+use crate::topic_map::TopicMap;
 
 struct Entry {
     value: Value,
@@ -15,7 +16,7 @@ struct Entry {
 pub struct TopicCache {
     data: DashMap<String, Entry>,
     default_ttl_secs: u64,
-    per_topic_ttl: HashMap<String, u64>,
+    per_topic_ttl: TopicMap<u64>,
 }
 
 impl Default for TopicCache {
@@ -35,7 +36,7 @@ impl TopicCache {
         Self {
             data: DashMap::new(),
             default_ttl_secs,
-            per_topic_ttl,
+            per_topic_ttl: per_topic_ttl.into_iter().collect(),
         }
     }
 
@@ -63,28 +64,15 @@ impl TopicCache {
         )
     }
 
-    fn ttl_for(&self, topic: &str) -> u64 {
-        if let Some(ttl) = self.per_topic_ttl.get(topic) {
-            return *ttl;
-        }
-        // Wildcard patterns (from parametrized topic groups) match any of
-        // their concrete topics.
-        self.per_topic_ttl
-            .iter()
-            .filter(|(pattern, _)| pattern.contains('+') || pattern.contains('#'))
-            .find(|(pattern, _)| mqtt_pattern_matches(pattern, topic))
-            .map_or(self.default_ttl_secs, |(_, ttl)| *ttl)
-    }
-
     /// Insert or overwrite the cached payload for a topic.
     pub fn insert(&self, topic: &str, payload: Value) {
-        let ttl = self.ttl_for(topic);
+        let ttl = self.per_topic_ttl.get(topic);
         self.data.insert(
             topic.to_string(),
             Entry {
                 value: payload,
                 inserted: Instant::now(),
-                ttl_secs: ttl,
+                ttl_secs: *ttl.unwrap_or(&self.default_ttl_secs),
             },
         );
     }
@@ -133,78 +121,12 @@ impl TopicCache {
     }
 }
 
-/// MQTT wildcard match: `+` matches one level, `#` matches the rest.
-pub(crate) fn mqtt_pattern_matches(pattern: &str, topic: &str) -> bool {
-    let mut pattern_levels = pattern.split('/');
-    let mut topic_levels = topic.split('/');
-    loop {
-        match (pattern_levels.next(), topic_levels.next()) {
-            (Some("#"), _) | (None, None) => return true,
-            (Some("+"), Some(_)) => {}
-            (Some(p), Some(t)) if p == t => {}
-            _ => return false,
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::asyncapi::{FieldDef, TopicGroupDef};
+    use crate::asyncapi::{FieldDef, TopicDef, TopicGroupDef};
     use serde_json::json;
     use std::collections::BTreeMap;
-
-    #[test]
-    fn test_pattern_matches_exact() {
-        assert!(mqtt_pattern_matches(
-            "power-tags/10P1/slug",
-            "power-tags/10P1/slug"
-        ));
-        assert!(!mqtt_pattern_matches(
-            "power-tags/10P1/slug",
-            "power-tags/10P1/other"
-        ));
-    }
-
-    #[test]
-    fn test_pattern_matches_plus_single_level() {
-        assert!(mqtt_pattern_matches(
-            "power-tags/+/+",
-            "power-tags/10P1/slug"
-        ));
-        assert!(mqtt_pattern_matches(
-            "power-tags/+/+",
-            "power-tags/10P2/other-slug"
-        ));
-        // `+` matches exactly one level, not zero and not several.
-        assert!(!mqtt_pattern_matches("power-tags/+/+", "power-tags/10P1"));
-        assert!(!mqtt_pattern_matches(
-            "power-tags/+/+",
-            "power-tags/10P1/a/b"
-        ));
-    }
-
-    #[test]
-    fn test_pattern_matches_hash_matches_remaining_levels() {
-        assert!(mqtt_pattern_matches("logs/#", "logs/a"));
-        assert!(mqtt_pattern_matches("logs/#", "logs/a/b/c"));
-        // `#` also matches zero remaining levels (the prefix topic itself).
-        assert!(mqtt_pattern_matches("logs/#", "logs"));
-    }
-
-    #[test]
-    fn test_pattern_matches_rejects_different_prefix() {
-        assert!(!mqtt_pattern_matches("logs/#", "metrics/a"));
-        assert!(!mqtt_pattern_matches(
-            "power-tags/+/+",
-            "power-tags-other/10P1/slug"
-        ));
-    }
-
-    #[test]
-    fn test_pattern_matches_rejects_pattern_longer_than_topic() {
-        assert!(!mqtt_pattern_matches("power-tags/+/+", "power-tags/10P1"));
-    }
 
     fn topic(topic_name: &str, ttl_secs: u64) -> TopicDef {
         TopicDef {
@@ -330,7 +252,7 @@ mod tests {
     }
 
     #[test]
-    fn test_group_pattern_ttl_overrides_default() {
+    fn test_group_pattern_ttl_overrides_default_insert_and_evicted() {
         let mut per_topic = HashMap::new();
         per_topic.insert("power-tags/+/+".to_string(), 0);
         per_topic.insert("logs/#".to_string(), 0);

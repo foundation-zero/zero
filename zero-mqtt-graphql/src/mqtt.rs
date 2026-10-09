@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -7,8 +6,11 @@ use log::{debug, error, info, warn};
 use rumqttc::{AsyncClient, Event, EventLoop, Incoming, MqttOptions, QoS};
 use serde_json::Value;
 
-use crate::asyncapi::{TopicDef, TopicGroupDef};
-use crate::cache::{TopicCache, mqtt_pattern_matches};
+use crate::{
+    asyncapi::{TopicDef, TopicGroupDef},
+    cache::TopicCache,
+    topic_map::TopicMap,
+};
 
 pub struct MqttConnection<'a> {
     pub host: &'a str,
@@ -22,7 +24,7 @@ pub struct MqttSubscriber {
     event_loop: EventLoop,
     cache: Arc<TopicCache>,
     listen_only: bool,
-    validators: HashMap<String, Validator>,
+    validators: TopicMap<Validator>,
     /// Topics to subscribe once the connection is established. Subscribing
     /// from within the polled event loop avoids deadlocking on the bounded
     /// request channel when the topic count exceeds its capacity.
@@ -164,9 +166,6 @@ impl MqttSubscriber {
             match self.validate_payload(topic, &value) {
                 Some(true) => info!("Schema OK for topic '{topic}': {value}"),
                 Some(false) => {} // mismatch already logged
-                None if self.validators.is_empty() => {
-                    info!("Received on topic '{topic}' (no schema known): {value}");
-                }
                 None => warn!("Received on unknown topic '{topic}' (not in specs): {value}"),
             }
             return;
@@ -198,13 +197,7 @@ impl MqttSubscriber {
     /// the wildcard-containing keys (from topic groups). Returns `None`
     /// when no schema covers the topic, else whether the payload is valid.
     fn validate_payload(&self, topic: &str, value: &Value) -> Option<bool> {
-        let validator = self.validators.get(topic).or_else(|| {
-            self.validators
-                .iter()
-                .filter(|(pattern, _)| pattern.contains('+') || pattern.contains('#'))
-                .find(|(pattern, _)| mqtt_pattern_matches(pattern, topic))
-                .map(|(_, validator)| validator)
-        })?;
+        let validator = self.validators.get(topic)?;
         let valid = validator.is_valid(value);
         if !valid {
             let details: Vec<String> = validator
@@ -225,7 +218,7 @@ impl MqttSubscriber {
 /// Compile one validator per topic and one per topic group, into a single
 /// map keyed by exact topic (`TopicDef`) or wildcard pattern (`TopicGroupDef`,
 /// e.g. `power-tags/+/+`)
-fn build_validators(topics: &[TopicDef], groups: &[TopicGroupDef]) -> HashMap<String, Validator> {
+fn build_validators(topics: &[TopicDef], groups: &[TopicGroupDef]) -> TopicMap<Validator> {
     let topic_validators: Vec<(String, Validator)> = topics
         .iter()
         .filter_map(|td| {
@@ -349,7 +342,7 @@ mod tests {
         )];
         let validators = build_validators(&[], &groups);
         assert_eq!(validators.len(), 1);
-        assert!(validators.contains_key("power-tags/+/+"));
+        assert!(validators.get("power-tags/+/+").is_some());
     }
 
     #[test]
