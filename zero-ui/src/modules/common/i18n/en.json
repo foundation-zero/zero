@@ -14,6 +14,7 @@
     "bar": "bar",
     "celsius": "°C",
     "percent": "%",
+    "ratioPercent": "Ratio %",
     "ppm": "ppm",
     "liters": "L",
     "lpm": "L/min",
