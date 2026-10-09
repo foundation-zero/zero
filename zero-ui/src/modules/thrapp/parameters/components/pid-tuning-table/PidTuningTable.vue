@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ratioToPercentage } from "@/modules/common/lib/numbers";
+import { tScoped } from "@/modules/common/lib/utils";
 import type { TupleIndices } from "@/modules/common/types";
 import { FieldEditor } from "@/modules/thrapp/mimics/editors";
 import { getMimicDataProvider, ParameterValueForm } from "@/modules/thrapp/mimics/providers";
@@ -16,14 +17,15 @@ import type { PidControllerTuning } from "@/modules/thrapp/parameters";
 import type { PID } from "@/modules/thrsim/types";
 import { computed } from "vue";
 
+const t = tScoped("thrapp.parameters.pid");
 const props = defineProps<PidControllerTuning>();
 
 const { getControllerState } = getMimicDataProvider();
 const controllerState = getControllerState(props.controller);
 const partLabels = computed<Record<TupleIndices<PID>, string>>(() => ({
-  0: "Proportional (P)",
-  1: "Integral (I)",
-  2: "Derivative (D)",
+  0: t("parts.proportional"),
+  1: t("parts.integral"),
+  2: t("parts.derivative"),
 }));
 const parts: TupleIndices<PID>[] = [0, 1, 2];
 </script>
@@ -33,9 +35,12 @@ const parts: TupleIndices<PID>[] = [0, 1, 2];
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead class="text-foreground font-medium">PID tuning</TableHead>
-          <TableHead class="w-38 border-l text-center">Actual</TableHead>
-          <TableHead class="border-l text-center">Coefficient</TableHead>
+          <TableHead class="text-foreground font-medium">{{ t("table.tuning") }}</TableHead>
+          <TableHead class="w-38 border-l text-center">
+            {{ t("table.actual") }}
+            <small class="font-light">{{ t("table.actualDescription") }}</small>
+          </TableHead>
+          <TableHead class="border-l text-center">{{ t("table.coefficient") }}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
