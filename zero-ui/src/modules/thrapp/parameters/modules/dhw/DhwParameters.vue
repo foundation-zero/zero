@@ -6,6 +6,7 @@ import DhwBoostingHeatpump from "./sections/DhwBoostingHeatpump.vue";
 import DhwBoostingHighTemperature from "./sections/DhwBoostingHighTemperature.vue";
 import DhwBoostingModeSelection from "./sections/DhwBoostingModeSelection.vue";
 import DhwFillingParameters from "./sections/DhwFillingParameters.vue";
+import DhwPidTuning from "./sections/DhwPidTuning.vue";
 import DhwTankSelection from "./sections/DhwTankSelection.vue";
 
 const t = tScoped("thrapp.parameters");
@@ -25,4 +26,11 @@ provideHideEditorIfNotEditable(false);
     <DhwBoostingHeatpump />
     <DhwBoostingHighTemperature />
   </Parameters.Root>
+
+  <Parameters.Pid class="mt-6">
+    <Parameters.Header>
+      {{ t("pid.title") }}
+    </Parameters.Header>
+    <DhwPidTuning />
+  </Parameters.Pid>
 </template>
