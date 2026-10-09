@@ -10,6 +10,6 @@ for config in config-*.yaml; do
     -e MQTT_HOST=mqtt -e MQTT_PORT=1883 -e MQTT_USER=u -e MQTT_PASSWORD=p \
     -e ATPX_MQTT_HOST=atpx -e ATPX_MQTT_PORT=1883 \
     -e GREPTIMEDB_HOST=greptimedb -e GREPTIMEDB_PORT=4000 \
-    timberio/vector:0.54.0-debian validate --skip-healthchecks /config.yaml
+    timberio/vector:0.55.0-debian validate --skip-healthchecks /config.yaml
   echo "Vector config $config is valid"
 done

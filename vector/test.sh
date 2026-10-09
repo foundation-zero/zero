@@ -9,7 +9,7 @@ if ! [ -f tests/${TEST_CASE}-config.yaml ]; then
 fi
 
 # Vector doesn't guarantee output row order, so sort before comparing.
-actual_output="$(docker run -q --rm -w /home/vector -v "$(pwd):/home/vector" timberio/vector:0.54.0-debian --config tests/${TEST_CASE}-config.yaml -q -q 2>&1)" && exit_status=$? || exit_status=$? 
+actual_output="$(docker run -q --rm -w /home/vector -v "$(pwd):/home/vector" timberio/vector:0.55.0-debian --config tests/${TEST_CASE}-config.yaml -q -q 2>&1)" && exit_status=$? || exit_status=$? 
 
 actual_output_without_errors=$(printf '%s' "$actual_output" | grep -v ERROR  | sort)
 actual_output_without_errors+=$'\n'
