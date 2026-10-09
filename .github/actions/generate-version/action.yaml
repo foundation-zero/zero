@@ -52,6 +52,9 @@ runs:
           MINOR=$(echo "$VERSION_NO_V" | cut -d. -f2)
           PATCH=$(echo "$VERSION_NO_V" | cut -d. -f3 | cut -d- -f1)
           EXTRA=$(echo "$VERSION_NO_V" | cut -d. -f3- | cut -d- -f2-)
+          # "11-g98e077c8" -> "11.g98e077c8": semver compares a dot-separated
+          # numeric identifier as a number, but "11-g..." as text ("11" < "7").
+          EXTRA=${EXTRA/-/.}
 
           if [ "$INCREASE_PATCH" == "true" ]; then
             PATCH=$((PATCH + 1))
