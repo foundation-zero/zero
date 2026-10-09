@@ -9,8 +9,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 SNAPSHOT_DIR = PROJECT_ROOT / "snapshot"
 CURATED_TABLES_FILE = SNAPSHOT_DIR / "tables.txt"
 
-# dbt also needs the `greptime` landing db (the connection target) and the `views` db.
-DBT_DATABASES = ("greptime", "views")
+# The database dbt materializes its models into, next to the raw `public` tables.
+DBT_DATABASES = ("views",)
 
 
 class GreptimeConnection(BaseSettings):

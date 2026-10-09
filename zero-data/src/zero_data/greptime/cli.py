@@ -9,7 +9,12 @@ from zero_data.greptime.config import (
     SNAPSHOT_DIR,
     GreptimeConnection,
 )
-from zero_data.greptime.snapshot import load_snapshot, snapshot_curated_tables
+from zero_data.greptime.snapshot import (
+    connect,
+    ensure_databases,
+    load_snapshot,
+    snapshot_curated_tables,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -49,11 +54,26 @@ class LoadCmd(BaseModel):
         logger.info("Loaded %d table(s) into %s", len(loaded), self.host or "local")
 
 
+class InitCmd(BaseModel):
+    """Create the databases dbt materializes into, ahead of a `dbt build` on a live tier."""
+
+    host: Annotated[
+        str | None,
+        Field(description="Greptime host to initialize (overrides GREPTIME_HOST)."),
+    ] = None
+
+    def cli_cmd(self) -> None:
+        with connect(_connection(self.host)) as handle:
+            ensure_databases(handle)
+        logger.info("Ensured dbt databases on %s", self.host or "local")
+
+
 class GreptimeCmd(BaseModel):
     """Snapshot prod's Greptime schema and replay it into a local Greptime for dbt."""
 
     snapshot: CliSubCommand[SnapshotCmd]
     load: CliSubCommand[LoadCmd]
+    init: CliSubCommand[InitCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)

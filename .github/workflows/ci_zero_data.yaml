@@ -40,7 +40,7 @@ jobs:
       # Local GreptimeDB for tests/greptime; offline — tests load the committed snapshot and run dbt build.
       - name: Start local GreptimeDB
         run: docker compose --profile data-collection up -d --wait greptimedb
-      # Seed the `greptime`/`views` databases from the committed snapshot.
+      # Seed the raw tables and the `views` database from the committed snapshot.
       - name: Seed local Greptime from the committed snapshot
         run: uv run zero-data greptime load
         working-directory: zero-data

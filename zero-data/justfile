@@ -1,2 +1,7 @@
 generate-vector:
     uv run zero-data generate-vector
+
+# Build the dbt views on a live Greptime tier (zero, singel or subzero) over Tailscale.
+dbt-deploy tier:
+    uv run zero-data greptime init --host greptime-{{tier}}.tail0b4840.ts.net
+    cd dbt && DBT_PROFILES_DIR="$PWD" uv run --project .. dbt build --target greptime-{{tier}}
