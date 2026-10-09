@@ -474,7 +474,7 @@
       }
     },
     "legends": {
-      "boilerLegend": {
+      "dhwLegend": {
         "groups": {
           "connectingCircuits": "Connecting circuits",
           "assets": "Assets",
