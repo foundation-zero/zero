@@ -43,6 +43,7 @@ from tests.graphql.mutation_harness import (
     _spec_mutation,
     _spec_sim_mutation,
     _topic,
+    state_seeds,
 )
 from tests.graphql.parity import graphql_literal, messages
 from tests.graphql.seeding import seed_state, seeded
@@ -215,7 +216,7 @@ def _component_container(
         cls = MODULES[owner].control_values_cls
         seed = json.dumps(_dump(seeded(cls)))
         return cls, {
-            api: {_topic(api, _spec_mutation(api, owner, m["gql"])["state"]): seed}
+            api: state_seeds(api, owner, _spec_mutation(api, owner, m["gql"]), seed)
             for api in APIS
         }
     sim = owner.removeprefix(SIMULATION_OWNER)

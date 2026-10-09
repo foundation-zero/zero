@@ -17,6 +17,12 @@ Known, accepted difference (user decision): a tuning tuple (``[Float!]!``)
 times out on thrs-api (its echo check compares a tuple with a list) while
 mqtt-graphql confirms it; the publishes are still identical.
 
+Known, same on both: a component form that leaves an optional leaf out (the
+pump form has no ``controlMode``) sends it as null, which a device never
+reports back, so the actuated values never equal what was sent and both APIs
+time out (thrs-api since it awaits the actuated values); the publishes are
+still identical.
+
 Needs the docker stack (vernemq, thrs-api, mqtt-graphql) and no control loop.
 """
 
@@ -47,6 +53,8 @@ from tests.graphql.mutation_harness import (
     _spec_sim_mutation,
     _topic,
     diff_,
+    state_echo,
+    state_seeds,
 )
 from tests.graphql.parity import diff
 from tests.graphql.seeding import control_mode_instance, seeded
@@ -89,11 +97,8 @@ class UiCall:
     # thrs-api's echo check never matches a tuning tuple (accepted
     # difference, see the module docstring).
     thrs_api_times_out: bool = False
-
-
-def _echo_state(api: str, spec: dict[str, Any]) -> dict[str, Echo]:
-    state = _topic(api, spec["state"])
-    return {_topic(api, spec["target"]): lambda p, t=state: (t, json.dumps(p))}
+    # A null leaf the device cannot echo (see the module docstring).
+    both_time_out: bool = False
 
 
 def _enum_member(leaf: dict[str, Any], value: Any) -> Any:
@@ -125,14 +130,15 @@ def _parameter_calls() -> dict[str, UiCall]:
                     input_type, m["gql"], queries[module]["parameters"]
                 ),
                 variables={"input": list(value) if is_list else value},
-                seeds={api: {_topic(api, specs[api]["state"]): seed} for api in APIS},
-                echo={api: _echo_state(api, specs[api]) for api in APIS},
+                seeds={api: state_seeds(api, module, specs[api], seed) for api in APIS},
+                echo={api: state_echo(api, module, specs[api]) for api in APIS},
                 thrs_api_times_out=is_list,
             )
     return calls
 
 
 def _component_call(
+    module: str | None,
     container_cls: Any,
     m: dict[str, Any],
     specs: dict[str, dict[str, Any]],
@@ -151,15 +157,21 @@ def _component_call(
         "input": {f: _enum_member(by_gql[f], args[f]) for f in fields if f in by_gql}
     }
     seed = json.dumps(_dump(seed_model))
+    omitted = [
+        leaf
+        for leaf in m["inputFields"]
+        if leaf["gql"] not in fields and not leaf["required"]
+    ]
     return UiCall(
         query=query,
         variables=variables,
         seeds={
-            api: {_topic(api, specs[api]["state"]): seed, **extra_seeds[api]}
+            api: {**state_seeds(api, module, specs[api], seed), **extra_seeds[api]}
             for api in APIS
         },
-        echo={api: _echo_state(api, specs[api]) for api in APIS},
+        echo={api: state_echo(api, module, specs[api]) for api in APIS},
         restamped=frozenset(_restamped_keys(m)),
+        both_time_out="stateSection" in m and bool(omitted),
     )
 
 
@@ -174,6 +186,7 @@ def _control_calls() -> dict[str, UiCall]:
                 continue
             specs = {api: _spec_mutation(api, module, m["gql"]) for api in APIS}
             calls[f"{module}.{m['gql']}"] = _component_call(
+                module,
                 MODULES[module].control_values_cls,
                 m,
                 specs,
@@ -215,6 +228,7 @@ def _simulation_calls() -> dict[str, UiCall]:
                 continue
             specs = {api: _spec_sim_mutation(api, sim, m["gql"]) for api in APIS}
             calls[f"{sim}.{m['gql']}"] = _component_call(
+                None,
                 inputs_cls,
                 m,
                 specs,
@@ -333,9 +347,13 @@ def test_ui_mutation_parity(case: str) -> None:
     for api, capture in captures.items():
         errors = capture.response.get("errors")
         timeout = [{"message": contract.PARAMETERS_TIMEOUT_ERROR}]
+        messages = [{"message": e["message"]} for e in errors or []]
         if api == THRS_API and call.thrs_api_times_out:
-            if [{"message": e["message"]} for e in errors or []] != timeout:
+            if messages != timeout:
                 problems.append(f"{api}: expected its tuning timeout, got {errors!r}")
+        elif call.both_time_out:
+            if messages != [{"message": contract.CONTROL_VALUES_TIMEOUT_ERROR}]:
+                problems.append(f"{api}: expected the echo timeout, got {errors!r}")
         elif errors:
             problems.append(f"{api}: errored: {errors!r}")
         if len(capture.published) != 1:
@@ -344,7 +362,7 @@ def test_ui_mutation_parity(case: str) -> None:
             )
     if len(captures) == 2 and not problems:
         a, b = captures[THRS_API], captures[MQTT_GRAPHQL]
-        if not call.thrs_api_times_out:
+        if not (call.thrs_api_times_out or call.both_time_out):
             problems += diff(a.response, b.response, now_window_s=NOW_WINDOW_S)
         (pa,) = a.published.values()
         (pb,) = b.published.values()

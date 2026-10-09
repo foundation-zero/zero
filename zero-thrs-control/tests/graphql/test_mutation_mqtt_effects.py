@@ -77,8 +77,11 @@ from tests.graphql.mutation_harness import (
     _spec_sim_mutation,
     _topic,
     _value_at,
+    as_actuated,
     diff_,
     recent_,
+    state_echo,
+    state_seeds,
 )
 from tests.graphql.parity import graphql_literal, query_data
 from tests.graphql.resolved import section_of
@@ -309,9 +312,12 @@ def test_mutation_without_controller_echo_times_out_on_both(
     problems = []
     for api in APIS:
         s = _spec_mutation(api, module, name)
-        state = _topic(api, s["confirm"].get("operation") or s["state"])
+        if confirm_op := s["confirm"].get("operation"):
+            seeds = {_topic(api, confirm_op): _dump_json(seed_model)}
+        else:
+            seeds = state_seeds(api, module, s, _dump_json(seed_model))
         started = time.monotonic()
-        cap = asyncio.run(_run(URLS[api], query, seeds={state: _dump_json(seed_model)}))
+        cap = asyncio.run(_run(URLS[api], query, seeds=seeds))
         elapsed = time.monotonic() - started
         errors = cap.response.get("errors") or []
         if [e["message"] for e in errors] != [spec["confirm"]["timeoutError"]]:
@@ -331,13 +337,13 @@ def _dump_json(model: ThrsValues) -> str:
     return model.model_dump_json(by_alias=True)
 
 
-# --- Tests: manual control (manual-values) ----------------------------------------
+# --- Tests: manual control ---------------------------------------------------------
 
 
 @pytest.mark.parametrize(("module", "name"), _control_ids(), ids=lambda x: x)
 def test_control_mutation_restamps_component(module: str, name: str) -> None:
     """``{module}ControlSet{Component}(value: {..})``: exactly one publish on
-    ``.../manual-values/set`` equal to the seeded manual-values object with
+    ``.../manual-values/set`` equal to the seeded actuated control values with
     only that component replaced by the given leaves, each restamped with a
     recent timestamp; every other component byte-identical; the response
     shows the new leaf values; both APIs agree."""
@@ -346,7 +352,8 @@ def test_control_mutation_restamps_component(module: str, name: str) -> None:
     spec = _spec_mutation(MQTT_GRAPHQL, module, name)
     py_name = _alias_to_name(cv_cls)[spec["key"]]
     component_cls = component_class(cv_cls.model_fields[py_name].annotation)
-    seed_model = seeded(cv_cls)
+    # Both APIs modify the control values as the devices report them.
+    seed_model = as_actuated(module, seeded(cv_cls))
     args, component = _pick_component_input(
         component_cls, getattr(seed_model, py_name), spec["inputFields"]
     )
@@ -369,13 +376,12 @@ def test_control_mutation_restamps_component(module: str, name: str) -> None:
     payloads: dict[str, Any] = {}
     for api in APIS:
         s = _spec_mutation(api, module, name)
-        state, target = _topic(api, s["state"]), _topic(api, s["target"])
         cap = asyncio.run(
             _run(
                 URLS[api],
                 query,
-                seeds={state: json.dumps(seed)},
-                echo={target: lambda p, t=state: (t, json.dumps(p))},
+                seeds=state_seeds(api, module, s, json.dumps(seed)),
+                echo=state_echo(api, module, s),
             )
         )
         if cap.response.get("errors"):

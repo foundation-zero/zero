@@ -112,6 +112,11 @@ fn cached_state(
     cache: &TopicCache,
     def: &MutationDef,
 ) -> async_graphql::Result<serde_json::Map<String, JsonValue>> {
+    if let Some(section) = &def.state_section {
+        return assembled_object(cache, section).ok_or_else(|| {
+            async_graphql::Error::new(def.missing_error.clone().unwrap_or_default())
+        });
+    }
     match cache.get_raw(&def.state_topic) {
         Some(JsonValue::Object(map)) => Ok(map),
         Some(_) => Err(async_graphql::Error::new(format!(
@@ -151,7 +156,14 @@ async fn publish_result(
         .map_err(|e| async_graphql::Error::new(e.to_string()))?;
     if let (Some(confirm), Some(expectation)) = (&def.confirm, expectation) {
         let key = confirm.key.as_deref().unwrap_or(&def.key);
-        await_confirmation(cache, confirm, key, &expectation).await?;
+        await_confirmation(
+            cache,
+            confirm,
+            def.state_section.as_ref(),
+            key,
+            &expectation,
+        )
+        .await?;
     }
     Ok(Some(if returns_object {
         FieldValue::value(json_to_graphql_value(&payload))
@@ -179,13 +191,17 @@ impl Expectation {
 async fn await_confirmation(
     cache: &TopicCache,
     confirm: &ConfirmDef,
+    state_section: Option<&ObjectSectionDef>,
     key: &str,
     expectation: &Expectation,
 ) -> async_graphql::Result<()> {
     let deadline =
         tokio::time::Instant::now() + std::time::Duration::from_secs_f64(confirm.timeout_s);
     loop {
-        let cached = cache.get_raw(&confirm.topic);
+        let cached = match state_section.filter(|_| confirm.topic.is_empty()) {
+            Some(section) => assembled_object(cache, section).map(JsonValue::Object),
+            None => cache.get_raw(&confirm.topic),
+        };
         if expectation.met_by(cached.as_ref().and_then(|v| v.get(key))) {
             return Ok(());
         }
@@ -196,10 +212,20 @@ async fn await_confirmation(
     }
 }
 
-/// JSON equality with `1` == `1.0`, so a republished object matches its echo.
+/// JSON equality with `1` == `1.0` and RFC 3339 timestamps compared as instants
+/// (`...00Z` == `...00.000000Z`), so a republished object matches its echo.
 fn json_equivalent(a: &JsonValue, b: &JsonValue) -> bool {
     match (a, b) {
         (JsonValue::Number(x), JsonValue::Number(y)) => x.as_f64() == y.as_f64(),
+        (JsonValue::String(x), JsonValue::String(y)) if x != y => {
+            match (
+                humantime::parse_rfc3339_weak(x),
+                humantime::parse_rfc3339_weak(y),
+            ) {
+                (Ok(p), Ok(q)) => p == q,
+                _ => false,
+            }
+        }
         (JsonValue::Array(x), JsonValue::Array(y)) => {
             x.len() == y.len() && x.iter().zip(y).all(|(p, q)| json_equivalent(p, q))
         }

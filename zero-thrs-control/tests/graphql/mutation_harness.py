@@ -22,6 +22,7 @@ from pydantic import TypeAdapter, ValidationError
 
 from tests.graphql.parity import diff, graphql_literal, post, recent
 from tests.graphql.resolved import ResolvedSpec
+from tests.graphql.seeding import device_payloads, seeded
 from tests.graphql.stack_config import (
     MQTT_GRAPHQL,
     MQTT_HOST,
@@ -33,6 +34,8 @@ from tests.graphql.stack_config import (
     thrs_api_config,
 )
 from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.definitions.wire_context import AMCS_RECEIVE_CONTEXT
+from thrs.orchestration.comms import PartialMqttMapping, device_module_prefix
 from thrs.runtime.descriptions.simulation import simulation_io_classes
 from thrs.spec import contract
 from thrs.spec.asyncapi import all_module_descriptions
@@ -92,6 +95,94 @@ SIM_MODE_BY_CAMEL = {field_name(mode): mode for mode in simulation_io_classes()}
 def _topic(api: str, ref: dict[str, Any]) -> str:
     """The MQTT topic an operation reference resolves to in this API's document."""
     return API_SPECS[api].contract.topic(ref)
+
+
+_CONFIGS = {THRS_API: _THRS_CFG, MQTT_GRAPHQL: _MQTT_CFG}
+
+
+def _in_loop[T](fn: Callable[[], T]) -> T:
+    """Run ``fn`` where an event loop runs: the mappings need one, and seeds
+    are built before any does."""
+    try:
+        asyncio.get_running_loop()
+    except RuntimeError:
+
+        async def run() -> T:
+            return fn()
+
+        # Not ``asyncio.run``: that unsets the current loop, and modules
+        # collected later build mappings through ``get_event_loop``.
+        loop = asyncio.new_event_loop()
+        try:
+            return loop.run_until_complete(run())
+        finally:
+            loop.close()
+    return fn()
+
+
+def _device_topics(api: str, module: str, actuated: ThrsValues) -> dict[str, str]:
+    """A control-values object as the devices report it, next to seeded sensor
+    readings (a device publishes both on one topic)."""
+    sensors = seeded(MODULES[module].sensor_values_cls)
+    return {
+        topic: json.dumps(payload)
+        for topic, payload in device_payloads(
+            module, sensors, actuated, _CONFIGS[api].mqtt_devices_topic_prefix
+        ).items()
+    }
+
+
+def as_actuated(module: str, model: ThrsValues) -> ThrsValues:
+    """``model`` as read back from the device topics, as thrs-api reads the
+    control values it modifies: leaves a device does not report get defaults."""
+
+    def read_back() -> ThrsValues:
+        prefix = _MQTT_CFG.mqtt_devices_topic_prefix
+        mapping = PartialMqttMapping(
+            type(model),
+            prefix,
+            device_module_prefix(module),
+            context=AMCS_RECEIVE_CONTEXT,
+        )
+        sensors = seeded(MODULES[module].sensor_values_cls)
+        for topic, payload in device_payloads(module, sensors, model, prefix).items():
+            mapping.handle_message(topic, json.dumps(payload))
+        result = mapping.result()
+        assert result is not None, f"{module}: actuated values incomplete"
+        return result
+
+    return _in_loop(read_back)
+
+
+def state_seeds(
+    api: str, module: str | None, spec: dict[str, Any], seed: str
+) -> dict[str, str]:
+    """The retained state a module mutation reads: its ``state`` topic, or for a
+    ``stateSection`` the actuated device topics thrs-api assembles the object from."""
+    if "stateSection" in spec:
+        assert module is not None, f"{spec['gql']}: a stateSection needs its module"
+        cls = MODULES[module].control_values_cls
+        return _in_loop(
+            lambda: _device_topics(api, module, cls.model_validate_json(seed))
+        )
+    return {_topic(api, spec["state"]): seed}
+
+
+def state_echo(api: str, module: str | None, spec: dict[str, Any]) -> dict[str, Echo]:
+    """The controller's acknowledgement of a module mutation: the published
+    object back on its ``state`` topic, or for a ``stateSection`` on the
+    actuated device topics, as the devices report what they now do."""
+    target = _topic(api, spec["target"])
+    if "stateSection" in spec:
+        assert module is not None, f"{spec['gql']}: a stateSection needs its module"
+        cls = MODULES[module].control_values_cls
+        return {
+            target: lambda p: list(
+                _device_topics(api, module, cls.model_validate(p)).items()
+            )
+        }
+    state = _topic(api, spec["state"])
+    return {target: lambda p: [(state, json.dumps(p))]}
 
 
 def _spec_mutation(api: str, module: str, gql_name: str) -> dict[str, Any]:
@@ -341,7 +432,7 @@ class Capture:
         assert not self.published, f"unexpected publishes: {self.published!r}"
 
 
-Echo = Callable[[Any], tuple[str, str] | None]
+Echo = Callable[[Any], list[tuple[str, str]] | tuple[str, str] | None]
 
 
 async def _run(
@@ -352,9 +443,10 @@ async def _run(
     variables: dict[str, Any] | None = None,
 ) -> Capture:
     """Seed retained state, POST the mutation, capture what it publishes. An
-    ``echo`` maps a set topic to a function producing (state topic, payload)
-    to publish retained the moment a publish on that set topic is seen: the
-    controller's acknowledgement, which the API's echo-wait needs."""
+    ``echo`` maps a set topic to a function producing (state topic, payload),
+    or a list of them, to publish retained the moment a publish on that set
+    topic is seen: the controller's acknowledgement, which the API's echo-wait
+    needs."""
     echo = echo or {}
     own_topics: set[str] = set(seeds)
     capture = Capture()
@@ -376,8 +468,8 @@ async def _run(
                 capture.published.setdefault(topic, []).append(value)
                 if topic in echo:
                     reply = echo[topic](value)
-                    if reply is not None:
-                        state_topic, state_payload = reply
+                    replies = [reply] if isinstance(reply, tuple) else reply or []
+                    for state_topic, state_payload in replies:
                         own_topics.add(state_topic)
                         await client.publish(
                             state_topic, payload=state_payload, retain=True

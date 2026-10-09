@@ -2,6 +2,7 @@ use std::collections::BTreeMap;
 
 use serde::Deserialize;
 
+use crate::model::views::ObjectSectionDef;
 use crate::model_validation::ModelSchema;
 
 use crate::extension::OperationRef;
@@ -96,6 +97,7 @@ impl InvariantDef {
 
 /// How a mutation waits for its change to show up on `topic` under `key` before returning.
 /// With `presence` the Boolean argument is compared with whether `key` is non-null.
+/// An empty `topic` waits on the mutation's state section instead.
 #[derive(Debug, Clone, PartialEq)]
 pub struct ConfirmDef {
     pub operation: Option<OperationRef>,
@@ -133,8 +135,11 @@ pub struct MutationDef {
     pub state: Option<OperationRef>,
     /// The `receive` operation the object is published to.
     pub target: Option<OperationRef>,
-    /// The resolved topic of `state` (empty for `setFlag`).
+    /// The resolved topic of `state` (empty for `setFlag` and a state section).
     pub state_topic: String,
+    /// `setComponent`: the per-topic section the object is assembled from
+    /// instead of one `state` topic, as thrs-api reads actuated control values.
+    pub state_section: Option<ObjectSectionDef>,
     /// The resolved topic of `target`.
     pub set_topic: String,
     /// The `object` section of the member the mutation returns. None returns
@@ -177,9 +182,12 @@ impl MutationDef {
             .expect("composite mutation carries its input type name (spec validated on load)")
     }
 
-    /// The topic a confirmation is awaited on, if any.
+    /// The topic a confirmation is awaited on, if any; `None` too when it waits on the state section.
     pub fn confirm_topic(&self) -> Option<&str> {
-        self.confirm.as_ref().map(|c| c.topic.as_str())
+        self.confirm
+            .as_ref()
+            .map(|c| c.topic.as_str())
+            .filter(|t| !t.is_empty())
     }
 }
 
