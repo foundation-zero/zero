@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ratioToPercentage } from "@/modules/common/lib/numbers";
 import { tScoped } from "@/modules/common/lib/utils";
 import type { TupleIndices } from "@/modules/common/types";
 import { FieldEditor } from "@/modules/thrapp/mimics/editors";
@@ -52,7 +51,7 @@ const parts: TupleIndices<PID>[] = [0, 1, 2];
             <TableCell class="py-2 pl-2">{{ partLabels[part] }}</TableCell>
             <TableCell class="border-l py-2 pl-2 text-center">
               <FieldRenderer.Number
-                :transform="ratioToPercentage"
+                :transform="transform"
                 :value="controllerState?.components.value[part]"
               />
             </TableCell>
