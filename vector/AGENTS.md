@@ -17,7 +17,7 @@ Bring up the local path (starts the broker, Greptime, `zero-atpx-nmea`, and the
 synthetic generator via `depends_on`):
 
 ```bash
-docker compose up --build vector data-gen
+docker compose up --build vector-atpx vector-process data-gen
 ```
 
 GreptimeDB exposes a MySQL-compatible endpoint on port 4002 (user `app`, no
@@ -44,7 +44,7 @@ mysql -h 127.0.0.1 -P 4002 -u app public \
 
 Expect ~16 `atpx__nmea_*` tables (hdt, rot, dbt, dpt, gga, gll, vtg, zda, rmc,
 vbw, vhw, vlw, alr, alc, pos, fec), each gaining a row per cycle. Rows here
-confirm the whole `data-gen → zero-atpx-nmea → vector → greptime` NMEA path
+confirm the whole `data-gen → zero-atpx-nmea → vector-process → greptime` NMEA path
 end-to-end.
 
 > `data-gen` also emits synthetic Marpower and SailSystem data. That is harmless
@@ -62,6 +62,8 @@ just test
 ```
 
 Each script prints a "matches" line on success and a unified diff on failure.
+`just test` also runs `test-config.sh`, which validates the deployed
+`config-atpx.yaml` and `config-process.yaml`, including their VRL references.
 
 - Input fixtures: `tests/*test-cases.jsonl`
 - Expected output: `tests/*expected.jsonl`

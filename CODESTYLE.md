@@ -458,7 +458,7 @@ Every service has a `Dockerfile` in its project directory.
 |---------|----------|
 | `zero` | vernemq, postgres, hasura, hass |
 | `data` | data-gen, dbt-gen, grafana |
-| `data-collection` | vector, greptimedb |
+| `data-collection` | vector-atpx, vector-process, greptimedb |
 | `domestic` | domestic-control-api, domestic-control-control, domestic-control-stub |
 | `loads` | loads-api, loads-at-sensors-stub, loads-fiber-optic-sensors-stub, loads-sail-system-sensors-stub |
 | `loads-dev` | loads-conditions-stub |

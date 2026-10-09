@@ -1,3 +1,17 @@
+{{- range $instance := list "atpx" "process" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-config-{{ $instance }}
+  namespace: {{ $.Release.Namespace }}
+data:
+  config.yaml: |-
+{{ $.Files.Get (printf "config-%s.yaml" $instance) | indent 4 }}
+{{- end }}
+---
+# Legacy single-instance config, mounted by the `vector` HelmRelease until all
+# clusters run vector-atpx and vector-process (ZERO-2397). Remove it afterwards.
 apiVersion: v1
 kind: ConfigMap
 metadata:

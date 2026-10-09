@@ -7,6 +7,9 @@ test_atpx:
 test_atpx_nmea:
     ./test.sh atpx-nmea
 
-test: test_process test_atpx test_atpx_nmea
+test_config:
+    ./test-config.sh
+
+test: test_process test_atpx test_atpx_nmea test_config
 
 check: test
