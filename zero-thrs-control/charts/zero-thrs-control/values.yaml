@@ -50,7 +50,7 @@ control:
     tag: ""
   resources: {}
   types: ["thrs"]
-  modulePersistence: false
+  modulePersistence: true
 
 simulation:
   enabled: false
