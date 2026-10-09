@@ -90,6 +90,52 @@ async def test_module_forces_manual_and_seeds_actuated_when_not_advisory(
     assert module._control._manual_control._control_values == actuated
 
 
+async def test_compute_uses_given_actuated_values_instead_of_channels(
+    manual_values, mock_channels, mock_control, module_factory
+):
+    """Lockstep passes the simulation's actuated values in memory, so compute must
+    not fall back to the actuated values received over MQTT."""
+    actuated = simple_control_values(flow=6.0)
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+    mock_channels.get_actuated_control_values.return_value = simple_control_values(
+        flow=3.0
+    )
+
+    module = module_factory()
+
+    module_tick = module.compute(manual_values, actuated)
+
+    assert module_tick.control_values == actuated
+    mock_channels.get_actuated_control_values.assert_not_called()
+
+
+async def test_compute_does_not_publish(
+    advisory_sensor_values, mock_channels, mock_control, module_factory
+):
+    automatic_values = simple_control_values(flow=2.0)
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+    mock_control.control.return_value = (automatic_values, None)
+
+    module = module_factory()
+    module.set_automation_mode(AutomationMode(mode="automatic"))
+
+    module_tick = module.compute(advisory_sensor_values, None)
+
+    assert module_tick.sensor_values is advisory_sensor_values
+    assert module_tick.control_values is automatic_values
+    assert [
+        send.await_count
+        for send in (
+            mock_channels.send_computed_values,
+            mock_channels.send_control_values,
+            mock_channels.send_controller_state,
+            mock_channels.send_parameters,
+            mock_channels.send_control_modes,
+            mock_channels.send_manual_control,
+        )
+    ] == [0] * 6
+
+
 async def test_module_forces_manual_even_without_actuated_values(
     local_sensor_values, mock_channels, mock_control, module_factory
 ):

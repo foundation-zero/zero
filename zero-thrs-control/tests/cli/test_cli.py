@@ -2,6 +2,7 @@ import asyncio
 import logging
 from asyncio import create_task, sleep
 from contextlib import suppress
+from datetime import timedelta
 from typing import cast
 from unittest import mock
 
@@ -26,7 +27,7 @@ from thrs.orchestration.setup import setup_control_modules, setup_simulation_mod
 from thrs.runtime.descriptions.simulation import Mode, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.messages import SimulationStatus, SimulationStatusMessage
-from thrs.runtime.runners.lockstep import LockstepRunner
+from thrs.runtime.runners.lockstep import LockstepPublisher, LockstepRunner
 from thrs.runtime.runtime import Runtime
 
 pytestmark = pytest.mark.mqtt
@@ -45,14 +46,16 @@ test_client = pytest.fixture(_mqtt_client)
 status_client = pytest.fixture(_mqtt_client)
 
 
-async def wait_for_status(status_client: Client, status: SimulationStatus) -> None:
-    """Skip the running status that is republished every tick until the expected status arrives."""
+async def wait_for_status(
+    status_client: Client, status: SimulationStatus
+) -> SimulationStatusMessage:
+    """Skip the running status that is republished every publish interval until the expected status arrives."""
     async for message in status_client.messages:
         if not isinstance(message.payload, str | bytes) or not message.payload:
             continue
         status_message = SimulationStatusMessage.model_validate_json(message.payload)
         if status_message.status == status:
-            return
+            return status_message
     raise RuntimeError(f"Status messages ended before status '{status}'")
 
 
@@ -74,6 +77,7 @@ def setup_lockstep(
         settings,
         mode.control_modules,
         mode.simulation_description,
+        subscribe_device_values=False,
     )
 
     control_modules = setup_control_modules(
@@ -84,6 +88,7 @@ def setup_lockstep(
         database=database or mock.Mock(spec=PostgresDatabase),
         machine_state_logging_service_enabled=machine_state_logging_service_enabled,
         publish_qos=0,
+        subscribe_device_values=False,
     )
 
     for module in control_modules:
@@ -97,11 +102,15 @@ def setup_lockstep(
         mode,
         simulation_module.time,
     )
+    publisher = LockstepPublisher(
+        runner, directive_handling.status_hooks(), timedelta(milliseconds=100)
+    )
     return Runtime(
         runner,
         connector,
         simulation_module.tick_duration,
         directive_handling,
+        publisher.hooks(),
     )
 
 
@@ -182,13 +191,11 @@ async def test_simulation_run_start_stop(
 async def test_simulation_run_playback_rate(
     controls_client: Client,
     runtime_client: Client,
-    test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies a higher playback rate produces more simulation output messages in equal wall time.
+    # Verifies a higher playback rate advances the simulation time further in equal wall time.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
-    outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
     runtime = setup_lockstep(
         lookup_mode("thrusters"),
@@ -198,72 +205,32 @@ async def test_simulation_run_playback_rate(
 
     await runtime.clear_previous()
     await status_client.subscribe(status_topic)
-    await test_client.subscribe(outputs_topic)
+
+    async def simulation_time_advance(playback_rate: float) -> timedelta:
+        await controls_client.publish(
+            f"{settings.mqtt_simulator_topic_prefix}/play",
+            f'{{"playback_rate": {playback_rate}}}',
+            qos=1,
+        )
+        running = await wait_for_status(status_client, "running")
+        await sleep(2.6)
+        await controls_client.publish(
+            f"{settings.mqtt_simulator_topic_prefix}/pause",
+            "{}",
+            qos=1,
+        )
+        available = await wait_for_status(status_client, "available")
+        return available.simulation_time - running.simulation_time
 
     run_task = create_task(runtime.start())
     try:
-        logger.info("Waiting on message")
-        available = await anext(status_client.messages)
-        assert isinstance(available.payload, str | bytes)
-        assert (
-            SimulationStatusMessage.model_validate_json(available.payload).status
-            == "available"
-        )
-
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/play",
-            '{"playback_rate": 1}',
-            qos=1,
-        )
-        logger.info("Waiting on message")
-        running = await anext(status_client.messages)
-        assert isinstance(running.payload, str | bytes)
-        assert (
-            SimulationStatusMessage.model_validate_json(running.payload).status
-            == "running"
-        )
-
-        await sleep(2.6)
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/pause",
-            "{}",
-            qos=1,
-        )
-        logger.info("Waiting on message")
         await wait_for_status(status_client, "available")
 
-        rate_1_count = 0
-        while len(test_client.messages) != 0:
-            logger.info("Waiting on message")
-            msg = await anext(test_client.messages)
-            if msg.topic.value == outputs_topic:
-                rate_1_count += 1
+        rate_1_advance = await simulation_time_advance(1)
+        rate_2_advance = await simulation_time_advance(2)
 
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/play",
-            '{"playback_rate": 2}',
-            qos=1,
-        )
-        logger.info("Waiting on message")
-        await wait_for_status(status_client, "running")
-        await sleep(2.6)
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/pause",
-            "{}",
-            qos=1,
-        )
-        logger.info("Waiting on message")
-        await wait_for_status(status_client, "available")
-
-        rate_2_count = 0
-        while len(test_client.messages) != 0:
-            logger.info("Waiting on message")
-            msg = await anext(test_client.messages)
-            if msg.topic.value == outputs_topic:
-                rate_2_count += 1
-
-        assert rate_1_count > 0
-        assert rate_2_count > rate_1_count
+        assert rate_1_advance > timedelta(0)
+        assert rate_2_advance > rate_1_advance
     finally:
         run_task.cancel()
         with suppress(asyncio.CancelledError):

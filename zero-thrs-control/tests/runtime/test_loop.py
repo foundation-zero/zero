@@ -94,9 +94,16 @@ async def test_loop_play_runs_until_pause():
 
 
 @pytest.mark.asyncio
-async def test_loop_reports_running_after_each_played_tick():
+async def test_loop_reports_running_once_per_play():
     loop = Loop(tick_duration=timedelta(seconds=1))
-    runner = make_runner(block_after_first_call=True)
+    ticked_three_times = asyncio.Event()
+    runner = MagicMock()
+
+    async def tick() -> None:
+        if runner.tick.await_count >= 3:
+            ticked_three_times.set()
+
+    runner.tick = AsyncMock(side_effect=tick)
     hook_calls: list[str] = []
     recording_hooks = make_hooks(hook_calls)
     available_again = asyncio.Event()
@@ -111,16 +118,13 @@ async def test_loop_reports_running_after_each_played_tick():
     loop_task = asyncio.create_task(loop.loop(runner, hooks))
 
     try:
-        await loop.play(10)
+        await loop.play(100)
 
-        await asyncio.wait_for(runner.started.wait(), timeout=1)
-        assert hook_calls == ["available", "running"]
-
+        await asyncio.wait_for(ticked_three_times.wait(), timeout=1)
         await loop.pause()
-        runner.release.set()
 
         await asyncio.wait_for(available_again.wait(), timeout=1)
-        assert hook_calls[:4] == ["available", "running", "running", "available"]
+        assert hook_calls[:3] == ["available", "running", "available"]
     finally:
         loop_task.cancel()
         with pytest.raises(asyncio.CancelledError):

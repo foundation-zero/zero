@@ -34,7 +34,7 @@ class SimulationStatusMessage(OutgoingMessage):
 
 
 class PlayMessage(IncomingMessage):
-    playback_rate: Annotated[float, Field(ge=0.25, le=10)] = 1.0
+    playback_rate: Annotated[float, Field(ge=0.25, le=100)] = 1.0
 
     @staticmethod
     def subscribe_topic() -> str:
