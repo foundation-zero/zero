@@ -6,6 +6,8 @@ import {
   TooltipListItemTitle,
 } from "@/modules/thrapp/components/tooltip-list";
 import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltipProvider.vue";
+import ControllerStateValue from "@/modules/thrapp/mimics/providers/ControllerStateValue.vue";
+import { FieldRenderer } from "@/modules/thrapp/mimics/renderers";
 import { PidControllerTuning } from "../..";
 import * as Partials from "../../../mimics/tooltips/partials";
 import * as Parameters from "../../components/module-parameters";
@@ -18,7 +20,15 @@ const props = defineProps<PidControllerTuning>();
 <template>
   <NoopTooltipProvider>
     <Parameters.Card>
-      <Parameters.CardTitle>{{ t(`${controller[2]}.title`) }}</Parameters.CardTitle>
+      <Parameters.CardTitle class="flex items-center justify-between">
+        {{ t(`${controller[2]}.title`) }}
+        <ControllerStateValue
+          :source="props.controller"
+          field="enabled"
+        >
+          <FieldRenderer.HeatPumpMode />
+        </ControllerStateValue>
+      </Parameters.CardTitle>
       <Parameters.Description>{{ t(`${controller[2]}.description`) }}</Parameters.Description>
       <Parameters.Separator />
       <TooltipList class="border-0">
@@ -28,13 +38,13 @@ const props = defineProps<PidControllerTuning>();
         >
           <template #header>
             <TooltipListItem>
-              <TooltipListItemTitle>Components</TooltipListItemTitle>
+              <TooltipListItemTitle>{{ t("components") }}</TooltipListItemTitle>
             </TooltipListItem>
           </template>
         </Partials.PIDController>
       </TooltipList>
 
-      <TooltipListItemTitle>Configuration</TooltipListItemTitle>
+      <TooltipListItemTitle>{{ t("configuration") }}</TooltipListItemTitle>
       <PidTuningTable v-bind="props" />
     </Parameters.Card>
   </NoopTooltipProvider>
