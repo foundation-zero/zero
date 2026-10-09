@@ -10,24 +10,26 @@ can be set separately and a failure in one does not stop the other:
 
 | Instance | Config | Pipelines |
 | ---------- | -------- | ----------- |
-| `vector-atpx` | `config-atpx.yaml` | 2. A+T instrument bus |
-| `vector-ingest` | `config-ingest.yaml` | 1. General MQTT, 3. A+T NMEA |
+| `vector-process` | `config-process.yaml` | General MQTT, A+T NMEA |
+| `vector-atpx` | `config-atpx.yaml` | A+T instrument bus |
 
 Both run as services in `docker-compose.yml` (part of the `data-collection`
 profile) and share the `processing/` files from this directory.
 
 The clusters still run the single `vector` Helm release on the legacy
 `config.yaml` until edge-flux switches them to `vector-atpx` and
-`vector-ingest`. The chart renders both the legacy and the per-instance
+`vector-process`. The chart renders both the legacy and the per-instance
 ConfigMaps until then.
 
 ## How data flows
 
 Vector's config has three parts: **sources** (where messages come from),
-**transforms** (how they are reshaped), and **sinks** (where they go). There are
-three pipelines:
+**transforms** (how they are reshaped), and **sinks** (where they go). Each
+instance runs its own pipelines through it.
 
-### 1. General MQTT → GreptimeDB
+### `vector-process`
+
+#### General MQTT → GreptimeDB
 
 The main pipeline. It subscribes to the everyday topics (`marpower/#`,
 `domestic/+`, `hull-temperature/...`, `termodinamica/#`, `sail-systems/#`,
@@ -46,7 +48,16 @@ The main pipeline. It subscribes to the everyday topics (`marpower/#`,
 
 The result lands in a per-domain table via the `greptimedb` sink.
 
-### 2. A+T (ATPX) instrument bus → `atpx_raw`
+#### A+T NMEA 0183 → `atpx__nmea_*`
+
+A+T also emits NMEA 0183 sentences. The standalone `zero-atpx-nmea` service
+parses those into JSON and republishes them on `atpx/processed/nmea/<type>/<sender>`.
+This pipeline (`atpx_nmea_route.vrl`) just reads the sentence `type`, derives the
+table name `atpx__nmea_<type>`, and writes one row per sentence.
+
+### `vector-atpx`
+
+#### A+T (ATPX) instrument bus → `atpx_raw`
 
 A+T's onboard instrument bus publishes one raw number per message on a topic
 like `atpx/<field-id>/<source>`. This pipeline (`atpx_parse` transform) turns
@@ -64,18 +75,11 @@ The topic it listens on is `${ATPX_MQTT_TOPIC}`. Locally that is `atpx_raw/+/+`
 (so synthetic test data stays separate); in production the variable is unset and
 defaults to A+T's real `atpx/+/+` bus.
 
-### 3. A+T NMEA 0183 → `atpx__nmea_*`
-
-A+T also emits NMEA 0183 sentences. The standalone `zero-atpx-nmea` service
-parses those into JSON and republishes them on `atpx/processed/nmea/<type>/<sender>`.
-This pipeline (`atpx_nmea_route.vrl`) just reads the sentence `type`, derives the
-table name `atpx__nmea_<type>`, and writes one row per sentence.
-
 ## Directory layout
 
 ```
 config-atpx.yaml         vector-atpx config: sources, transforms, sinks.
-config-ingest.yaml       vector-ingest config: sources, transforms, sinks.
+config-process.yaml      vector-process config: sources, transforms, sinks.
 config.yaml              Legacy single-instance config; removed once all clusters
                          run the split instances (ZERO-2397).
 processing/              The VRL transform steps (see the tables above).
@@ -98,7 +102,7 @@ Vector needs the broker and Greptime to talk to. The easiest way to bring up the
 whole ingest path, including the synthetic ATPX data generator, is:
 
 ```bash
-docker compose up --build vector-atpx vector-ingest data-gen
+docker compose up --build vector-atpx vector-process data-gen
 ```
 
 Via `depends_on` this also starts `vernemq` (broker), `greptimedb`, and
