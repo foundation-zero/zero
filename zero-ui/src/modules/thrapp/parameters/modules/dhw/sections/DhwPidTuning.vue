@@ -1,17 +1,31 @@
 <script setup lang="ts">
+import { ratioToPercentage } from "@/modules/common/lib/numbers";
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { PidControllerTuning, pidControllerTuning } from "../../..";
 import PidControllerCard from "../../../components/pid-controller-card/PidControllerCard.vue";
 
 const controllers: PidControllerTuning[] = [
-  pidControllerTuning("dhw", SensorComponentType.Flow, "dhwDcFlowController", "dcFlowTuning"),
+  pidControllerTuning(
+    "dhw",
+    SensorComponentType.Temperature,
+    "dhwDcFlowController",
+    "dcFlowTuning",
+    ratioToPercentage,
+  ),
+  pidControllerTuning(
+    "dhw",
+    SensorComponentType.Temperature,
+    "dhwDrivesFlowController",
+    "drivesFlowTuning",
+    ratioToPercentage,
+  ),
   pidControllerTuning(
     "dhw",
     SensorComponentType.Flow,
-    "dhwDrivesFlowController",
-    "drivesFlowTuning",
+    "dhwPumpFlowController",
+    "pumpFlowTuning",
+    ratioToPercentage,
   ),
-  pidControllerTuning("dhw", SensorComponentType.Flow, "dhwPumpFlowController", "pumpFlowTuning"),
 ];
 </script>
 

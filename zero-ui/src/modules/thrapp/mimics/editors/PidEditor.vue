@@ -5,7 +5,9 @@ import { computed } from "vue";
 import { FieldEditor, NumberEditorProps } from ".";
 import { getFieldValue } from "../providers";
 
-const props = withDefaults(defineProps<NumberEditorProps<PID> & { part: TupleIndices<PID> }>(), {});
+const props = withDefaults(defineProps<NumberEditorProps<PID> & { part: TupleIndices<PID> }>(), {
+  formatOptions: () => ({ maximumFractionDigits: 5 }),
+});
 const tuning = getFieldValue<PID>();
 const value = computed({
   get() {
@@ -14,8 +16,9 @@ const value = computed({
   set(newValue: number) {
     if (!tuning.value) return;
 
-    tuning.value[props.part] = newValue;
-    tuning.value = [...tuning.value];
+    const updatedTuning: PID = [...tuning.value];
+    updatedTuning[props.part] = newValue;
+    tuning.value = updatedTuning;
   },
 });
 </script>
@@ -26,7 +29,7 @@ const value = computed({
     :format-options="formatOptions"
     :min="-100"
     :max="100"
-    :step="0.001"
+    :step="0.00001"
     :class="props.class"
   >
     <slot />
