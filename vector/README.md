@@ -14,8 +14,12 @@ can be set separately and a failure in one does not stop the other:
 | `vector-ingest` | `config-ingest.yaml` | 1. General MQTT, 3. A+T NMEA |
 
 Both run as services in `docker-compose.yml` (part of the `data-collection`
-profile) and as Helm releases in the cluster, and share the `processing/` files
-from this directory.
+profile) and share the `processing/` files from this directory.
+
+The clusters still run the single `vector` Helm release on the legacy
+`config.yaml` until edge-flux switches them to `vector-atpx` and
+`vector-ingest`. The chart renders both the legacy and the per-instance
+ConfigMaps until then.
 
 ## How data flows
 
