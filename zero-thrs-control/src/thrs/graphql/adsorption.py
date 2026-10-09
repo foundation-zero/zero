@@ -12,7 +12,6 @@ from thrs.graphql.base import (
     add_parameter_mutations,
 )
 from thrs.graphql.helpers import (
-    empty_pydantic_type_to_strawberry_type,
     pydantic_to_strawberry_type,
 )
 from thrs.input_output.modules.adsorption import (
@@ -26,9 +25,7 @@ AdsorptionSensorValuesType = pydantic_to_strawberry_type(
 AdsorptionControlValuesType = pydantic_to_strawberry_type(AdsorptionControlValues)
 AdsorptionParametersType = pydantic_to_strawberry_type(AdsorptionParameters)
 AdsorptionControlModeType = pydantic_to_strawberry_type(AdsorptionControlMode)
-AdsorptionControllerStateType = empty_pydantic_type_to_strawberry_type(
-    AdsorptionControllerState
-)
+AdsorptionControllerStateType = pydantic_to_strawberry_type(AdsorptionControllerState)
 
 
 AdsorptionModule = ControlModule[

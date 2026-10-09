@@ -41,7 +41,9 @@ type AdsorptionControlValuesType {
 }
 
 type AdsorptionControllerStateType {
-  Empty: Void
+  adsorptionHotMixController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  adsorptionRecoveryController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  adsorptionWasteCoolingController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
 }
 
 type AdsorptionParametersType {
@@ -159,7 +161,9 @@ type ConsumersControlValuesType {
 }
 
 type ConsumersControllerStateType {
-  Empty: Void
+  consumersDhwFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  consumersBypassFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  consumersAdsorptionFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
 }
 
 type ConsumersParametersType {
@@ -339,7 +343,14 @@ type DcControlValuesType {
 }
 
 type DcControllerStateType {
-  Empty: Void
+  dcHeatDumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  dcRecoveryMixController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  dcBrightloopsAftPumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  dcBrightloopsAftWarmupMixController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  dcBrightloopsFwdPumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  dcBrightloopsFwdWarmupMixController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  dcUgridsPumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  dcUgridsWarmupMixController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
 }
 
 type DcParametersType {
@@ -675,7 +686,12 @@ type DrivesControlValuesType {
 }
 
 type DrivesControllerStateType {
-  Empty: Void
+  drivesHeatDumpController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  drivesRecoveryMixController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  drivesPumpControllerShorepower: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  drivesPumpControllerPropulsion: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  drivesAftFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  drivesFwdFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
 }
 
 type DrivesParametersType {
@@ -1229,14 +1245,15 @@ type PcmControlValuesType {
 }
 
 type PcmControllerStateType {
-  module1ChargeController: ControllerPcmChargeControllerValuesType!
-  module2ChargeController: ControllerPcmChargeControllerValuesType!
-  module3ChargeController: ControllerPcmChargeControllerValuesType!
-  module4ChargeController: ControllerPcmChargeControllerValuesType!
-  module1FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
-  module2FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
-  module3FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
-  module4FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  pcmPumpFlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  pcmModule1ChargeController: ControllerPcmChargeControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pcm_charge_controller", valveType: null)
+  pcmModule2ChargeController: ControllerPcmChargeControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pcm_charge_controller", valveType: null)
+  pcmModule3ChargeController: ControllerPcmChargeControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pcm_charge_controller", valveType: null)
+  pcmModule4ChargeController: ControllerPcmChargeControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pcm_charge_controller", valveType: null)
+  pcmModule1FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  pcmModule2FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  pcmModule3FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
+  pcmModule4FlowController: ControllerPidControllerValuesType! @jsonSchemaDirective(yardTag: "", componentType: "pid_controller", valveType: null)
 }
 
 input PcmInputType {

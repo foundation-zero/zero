@@ -1,6 +1,6 @@
 from collections.abc import Callable
 from datetime import datetime
-from typing import Literal
+from typing import Annotated, Literal
 
 from transitions import State
 
@@ -9,8 +9,9 @@ from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.control.modules.thrusters import ThrustersControlMode
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions.control import Pump, Valve
+from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
 from thrs.input_output.modules.drives import DrivesControlValues, DrivesSensorValues
 from thrs.orchestration.module import ModuleDescription
@@ -33,7 +34,24 @@ class DrivesControlMode(ControlMode):
 
 
 class DrivesControllerState(ThrsValues):
-    pass
+    drives_heat_dump_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    drives_recovery_mix_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    drives_pump_controller_shorepower: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    drives_pump_controller_propulsion: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    drives_aft_flow_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    drives_fwd_flow_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
 
 
 class DrivesParameters(ThrsValues):
@@ -89,6 +107,18 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DrivesControlValues:  # noqa
         drives_switch_propdrive_fwd2=Valve(
             setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
         ),
+    )
+
+
+def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DrivesControllerState:  # noqa: N802
+
+    return DrivesControllerState(
+        drives_heat_dump_controller=PidController.zero(timestamp),
+        drives_recovery_mix_controller=PidController.zero(timestamp),
+        drives_pump_controller_shorepower=PidController.zero(timestamp),
+        drives_pump_controller_propulsion=PidController.zero(timestamp),
+        drives_aft_flow_controller=PidController.zero(timestamp),
+        drives_fwd_flow_controller=PidController.zero(timestamp),
     )
 
 
@@ -282,7 +312,10 @@ class DrivesControl(
         return DrivesControlMode(mode=mode)
 
     def initial(self) -> tuple[DrivesControlValues, DrivesControllerState]:
-        return (_INITIAL_CONTROL_VALUES(self._time()), DrivesControllerState())
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            _INITIAL_CONTROLLER_STATE(self._time()),
+        )
 
     def reset(self) -> None:
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
@@ -309,7 +342,16 @@ class DrivesControl(
         elif self.mode.is_propulsion:
             self._control_flow_balance(sensor_values)
 
-        return (self._current_values, DrivesControllerState())
+        controller_state = DrivesControllerState(
+            drives_heat_dump_controller=self._heat_dump_controller.values(),
+            drives_recovery_mix_controller=self._recovery_mix_controller.values(),
+            drives_pump_controller_shorepower=self._pump_controller_shorepower.values(),
+            drives_pump_controller_propulsion=self._pump_controller_propulsion.values(),
+            drives_aft_flow_controller=self._aft_flow_controller.values(),
+            drives_fwd_flow_controller=self._fwd_flow_controller.values(),
+        )
+
+        return (self._current_values, controller_state)
 
     def _shorepower_on(self, sensor_values: DrivesSensorValues) -> bool:
         return sensor_values.drives_shorepower.active.value

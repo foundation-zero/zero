@@ -8,8 +8,10 @@ from thrs.classes.control import Control, ControlMode
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
 from thrs.control.modules.pvt_group import (
+    _INITIAL_PVT_GROUP_CONTROLLER_STATE,
     IDLE_MIX_POSITION,
     PvtGroupControl,
+    PvtGroupControllerState,
     PvtGroupControlMode,
     PvtGroupControlValues,
     PvtGroupParameters,
@@ -17,8 +19,8 @@ from thrs.control.modules.pvt_group import (
 )
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues, component_meta
-from thrs.input_output.definitions import controllers
 from thrs.input_output.definitions.control import Pump, Valve
+from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
 from thrs.orchestration.module import ModuleDescription
@@ -32,32 +34,25 @@ class PvtControlMode(ControlMode):
 
 class PvtControllerState(ThrsValues):
     pvt_heat_dump_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     pvt_main_aft_warmup_mix_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     pvt_main_aft_pump_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     pvt_main_fwd_warmup_mix_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     pvt_main_fwd_pump_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     pvt_owners_warmup_mix_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     pvt_owners_pump_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
 
 
@@ -145,14 +140,15 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PvtControlValues:  # noqa: N
 
 
 def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> PvtControllerState:  # noqa: N802
+    pvt_group_state = _INITIAL_PVT_GROUP_CONTROLLER_STATE(timestamp)
     return PvtControllerState(
         pvt_heat_dump_controller=PidController.zero(timestamp),
-        pvt_main_fwd_warmup_mix_controller=PidController.zero(timestamp),
-        pvt_main_fwd_pump_controller=PidController.zero(timestamp),
-        pvt_main_aft_warmup_mix_controller=PidController.zero(timestamp),
-        pvt_main_aft_pump_controller=PidController.zero(timestamp),
-        pvt_owners_warmup_mix_controller=PidController.zero(timestamp),
-        pvt_owners_pump_controller=PidController.zero(timestamp),
+        pvt_main_aft_warmup_mix_controller=pvt_group_state.pvt_group_warmup_mix_controller,
+        pvt_main_aft_pump_controller=pvt_group_state.pvt_group_pump_controller,
+        pvt_main_fwd_warmup_mix_controller=pvt_group_state.pvt_group_warmup_mix_controller,
+        pvt_main_fwd_pump_controller=pvt_group_state.pvt_group_pump_controller,
+        pvt_owners_warmup_mix_controller=pvt_group_state.pvt_group_warmup_mix_controller,
+        pvt_owners_pump_controller=pvt_group_state.pvt_group_pump_controller,
     )
 
 
@@ -326,28 +322,34 @@ class PvtControl(
         self._current_values.pvt_pump_owners = owners_control_values.pump
         self._current_values.pvt_mix_owners = owners_control_values.mix
 
-    def _control_groups(self, sensor_values: PvtSensorValues):
-        main_fwd_control_values, _ = self._main_fwd_control.control(
-            PvtGroupSensorValues(
-                pump=sensor_values.pvt_pump_main_fwd,
-                temperature_supply=sensor_values.pvt_temperature_main_fwd_supply,
-                temperature_return=sensor_values.pvt_temperature_main_fwd_return,
-                pressure=sensor_values.pvt_pressure_main_fwd,
-                mix=sensor_values.pvt_mix_main_fwd,
-                max_temperature_strings=sensor_values.pvt_max_temperature_main_fwd_strings,
+    def _control_groups(
+        self, sensor_values: PvtSensorValues
+    ) -> dict[str, PvtGroupControllerState]:
+        main_fwd_control_values, main_fwd_controller_state = (
+            self._main_fwd_control.control(
+                PvtGroupSensorValues(
+                    pump=sensor_values.pvt_pump_main_fwd,
+                    temperature_supply=sensor_values.pvt_temperature_main_fwd_supply,
+                    temperature_return=sensor_values.pvt_temperature_main_fwd_return,
+                    pressure=sensor_values.pvt_pressure_main_fwd,
+                    mix=sensor_values.pvt_mix_main_fwd,
+                    max_temperature_strings=sensor_values.pvt_max_temperature_main_fwd_strings,
+                )
             )
         )
-        main_aft_control_values, _ = self._main_aft_control.control(
-            PvtGroupSensorValues(
-                pump=sensor_values.pvt_pump_main_aft,
-                temperature_supply=sensor_values.pvt_temperature_main_aft_supply,
-                temperature_return=sensor_values.pvt_temperature_main_aft_return,
-                pressure=sensor_values.pvt_pressure_main_aft,
-                mix=sensor_values.pvt_mix_main_aft,
-                max_temperature_strings=sensor_values.pvt_max_temperature_main_aft_strings,
+        main_aft_control_values, main_aft_controller_state = (
+            self._main_aft_control.control(
+                PvtGroupSensorValues(
+                    pump=sensor_values.pvt_pump_main_aft,
+                    temperature_supply=sensor_values.pvt_temperature_main_aft_supply,
+                    temperature_return=sensor_values.pvt_temperature_main_aft_return,
+                    pressure=sensor_values.pvt_pressure_main_aft,
+                    mix=sensor_values.pvt_mix_main_aft,
+                    max_temperature_strings=sensor_values.pvt_max_temperature_main_aft_strings,
+                )
             )
         )
-        owners_control_values, _ = self._owners_control.control(
+        owners_control_values, owners_controller_state = self._owners_control.control(
             PvtGroupSensorValues(
                 pump=sensor_values.pvt_pump_owners,
                 temperature_supply=sensor_values.pvt_temperature_owners_supply,
@@ -362,22 +364,40 @@ class PvtControl(
             main_fwd_control_values, main_aft_control_values, owners_control_values
         )
 
+        return {
+            "pvt_main_fwd": main_fwd_controller_state,
+            "pvt_main_aft": main_aft_controller_state,
+            "pvt_owners": owners_controller_state,
+        }
+
     @StateLogger.log_warnings
     def control(
         self, sensor_values: PvtSensorValues
     ) -> tuple[PvtControlValues, PvtControllerState]:
         self._control_heat_dump(sensor_values)
 
-        self._control_groups(sensor_values)
+        pvt_group_state = self._control_groups(sensor_values)
 
         controller_state = PvtControllerState(
             pvt_heat_dump_controller=self._heat_dump_controller.values(),
-            pvt_main_fwd_warmup_mix_controller=self._main_fwd_control._warmup_mix_controller.values(),
-            pvt_main_fwd_pump_controller=self._main_fwd_control._pump_controller.values(),
-            pvt_main_aft_warmup_mix_controller=self._main_aft_control._warmup_mix_controller.values(),
-            pvt_main_aft_pump_controller=self._main_aft_control._pump_controller.values(),
-            pvt_owners_warmup_mix_controller=self._owners_control._warmup_mix_controller.values(),
-            pvt_owners_pump_controller=self._owners_control._pump_controller.values(),
+            pvt_main_aft_warmup_mix_controller=pvt_group_state[
+                "pvt_main_aft"
+            ].pvt_group_warmup_mix_controller,
+            pvt_main_aft_pump_controller=pvt_group_state[
+                "pvt_main_aft"
+            ].pvt_group_pump_controller,
+            pvt_main_fwd_warmup_mix_controller=pvt_group_state[
+                "pvt_main_fwd"
+            ].pvt_group_warmup_mix_controller,
+            pvt_main_fwd_pump_controller=pvt_group_state[
+                "pvt_main_fwd"
+            ].pvt_group_pump_controller,
+            pvt_owners_warmup_mix_controller=pvt_group_state[
+                "pvt_owners"
+            ].pvt_group_warmup_mix_controller,
+            pvt_owners_pump_controller=pvt_group_state[
+                "pvt_owners"
+            ].pvt_group_pump_controller,
         )
 
         return (self._current_values, controller_state)

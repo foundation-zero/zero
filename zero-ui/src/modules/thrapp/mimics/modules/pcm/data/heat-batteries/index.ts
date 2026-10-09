@@ -29,22 +29,38 @@ export const PCM_HEAT_BATTERIES_DATA = toFieldsMap({
     "1049": createHeatBattery(
       "Heat battery 1",
       getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmHeatModule1"),
-      getField(ControllerStateComponentType.PcmChargeController, "pcm", "module1ChargeController"),
+      getField(
+        ControllerStateComponentType.PcmChargeController,
+        "pcm",
+        "pcmModule1ChargeController",
+      ),
     ),
     "1050": createHeatBattery(
       "Heat battery 2",
       getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmHeatModule2"),
-      getField(ControllerStateComponentType.PcmChargeController, "pcm", "module2ChargeController"),
+      getField(
+        ControllerStateComponentType.PcmChargeController,
+        "pcm",
+        "pcmModule2ChargeController",
+      ),
     ),
     "1051": createHeatBattery(
       "Heat battery 3",
       getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmHeatModule3"),
-      getField(ControllerStateComponentType.PcmChargeController, "pcm", "module3ChargeController"),
+      getField(
+        ControllerStateComponentType.PcmChargeController,
+        "pcm",
+        "pcmModule3ChargeController",
+      ),
     ),
     "1052": createHeatBattery(
       "Heat battery 4",
       getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmHeatModule4"),
-      getField(ControllerStateComponentType.PcmChargeController, "pcm", "module4ChargeController"),
+      getField(
+        ControllerStateComponentType.PcmChargeController,
+        "pcm",
+        "pcmModule4ChargeController",
+      ),
     ),
   },
 });

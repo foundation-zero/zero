@@ -1,6 +1,9 @@
 import strawberry
 
-from thrs.control.modules.converters import ConvertersControlMode
+from thrs.control.modules.converters import (
+    ConvertersControllerState,
+    ConvertersControlMode,
+)
 from thrs.control.modules.dc import DcControllerState, DcControlMode, DcParameters
 from thrs.graphql.base import (
     ControlModule,
@@ -9,7 +12,6 @@ from thrs.graphql.base import (
     add_parameter_mutations,
 )
 from thrs.graphql.helpers import (
-    empty_pydantic_type_to_strawberry_type,
     pydantic_to_strawberry_type,
 )
 from thrs.input_output.modules.dc import DcControlValues, DcSensorValues
@@ -19,7 +21,8 @@ DcControlValuesType = pydantic_to_strawberry_type(DcControlValues)
 DcParametersType = pydantic_to_strawberry_type(DcParameters)
 ConvertersControlModeType = pydantic_to_strawberry_type(ConvertersControlMode)
 DcControlModeType = pydantic_to_strawberry_type(DcControlMode)
-DcControllerStateType = empty_pydantic_type_to_strawberry_type(DcControllerState)
+ConvertersControllerStateType = pydantic_to_strawberry_type(ConvertersControllerState)
+DcControllerStateType = pydantic_to_strawberry_type(DcControllerState)
 
 
 DcModule = ControlModule[

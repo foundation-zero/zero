@@ -1,14 +1,16 @@
 from collections.abc import Callable
 from datetime import datetime
+from typing import Annotated
 
 from transitions import State
 
 from thrs.classes.control import Control, ControlMode
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions import control, sensor
 from thrs.input_output.definitions.control import Valve
+from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
 
 
@@ -32,7 +34,22 @@ class ConvertersParameters(ThrsValues):
 
 
 class ConvertersControllerState(ThrsValues):
-    pass
+    converters_pump_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    converters_warmup_mix_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+
+
+def _INITIAL_CONVERTERS_CONTROLLER_STATE(  # noqa: N802
+    timestamp: datetime,
+) -> ConvertersControllerState:
+
+    return ConvertersControllerState(
+        converters_pump_controller=PidController.zero(timestamp),
+        converters_warmup_mix_controller=PidController.zero(timestamp),
+    )
 
 
 class ConvertersSensorValues(ThrsValues):
@@ -191,7 +208,10 @@ class ConvertersControl(
         return ConvertersControlMode(mode=mode)
 
     def initial(self) -> tuple[ConvertersControlValues, ConvertersControllerState]:
-        return (self._current_values, ConvertersControllerState())
+        return (
+            self._current_values,
+            _INITIAL_CONVERTERS_CONTROLLER_STATE(self._time()),
+        )
 
     def reset(self) -> None:
         raise NotImplementedError(
@@ -221,7 +241,13 @@ class ConvertersControl(
         self._control_switch_valves(sensor_values)
         self._control_flow(sensor_values)
 
-        return (self._current_values, ConvertersControllerState())
+        return (
+            self._current_values,
+            ConvertersControllerState(
+                converters_pump_controller=self._pump_controller.values(),
+                converters_warmup_mix_controller=self._warmup_mix_controller.values(),
+            ),
+        )
 
     def _control_warmup_mix(self, sensor_values: ConvertersSensorValues):
         self._current_values.mix.setpoint = Stamped(

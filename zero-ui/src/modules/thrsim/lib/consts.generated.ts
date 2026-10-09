@@ -45,7 +45,17 @@ export const ADSORPTION_CONTROL_DEFINITION = toControlDefinition({
   },
 });
 
-export const ADSORPTION_CONTROLLER_STATE = toControllerStateDefinition({});
+export const ADSORPTION_CONTROLLER_STATE = toControllerStateDefinition({
+  adsorptionHotMixController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  adsorptionRecoveryController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  adsorptionWasteCoolingController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+});
 
 export const ADSORPTION_PARAMETER_DEFINITION = toParameterDefinition({
   adsorptionColdMinimum: {
@@ -284,7 +294,17 @@ export const CONSUMERS_CONTROL_DEFINITION = toControlDefinition({
   },
 });
 
-export const CONSUMERS_CONTROLLER_STATE = toControllerStateDefinition({});
+export const CONSUMERS_CONTROLLER_STATE = toControllerStateDefinition({
+  consumersAdsorptionFlowController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  consumersBypassFlowController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  consumersDhwFlowController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+});
 
 export const CONSUMERS_PARAMETER_DEFINITION = toParameterDefinition({
   adsorptionEnabled: {
@@ -484,7 +504,32 @@ export const DC_CONTROL_DEFINITION = toControlDefinition({
   },
 });
 
-export const DC_CONTROLLER_STATE = toControllerStateDefinition({});
+export const DC_CONTROLLER_STATE = toControllerStateDefinition({
+  dcBrightloopsAftPumpController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  dcBrightloopsAftWarmupMixController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  dcBrightloopsFwdPumpController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  dcBrightloopsFwdWarmupMixController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  dcHeatDumpController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  dcRecoveryMixController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  dcUgridsPumpController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  dcUgridsWarmupMixController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+});
 
 export const DC_PARAMETER_DEFINITION = toParameterDefinition({
   brightloopFlowSetpoint: {
@@ -1394,7 +1439,26 @@ export const DRIVES_CONTROL_DEFINITION = toControlDefinition({
   },
 });
 
-export const DRIVES_CONTROLLER_STATE = toControllerStateDefinition({});
+export const DRIVES_CONTROLLER_STATE = toControllerStateDefinition({
+  drivesAftFlowController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  drivesFwdFlowController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  drivesHeatDumpController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  drivesPumpControllerPropulsion: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  drivesPumpControllerShorepower: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  drivesRecoveryMixController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+});
 
 export const DRIVES_PARAMETER_DEFINITION = toParameterDefinition({
   aftFlowBalanceTuning: {
@@ -1791,28 +1855,31 @@ export const PCM_CONTROL_DEFINITION = toControlDefinition({
 });
 
 export const PCM_CONTROLLER_STATE = toControllerStateDefinition({
-  module1ChargeController: {
+  pcmModule1ChargeController: {
     componentType: ControllerStateComponentType.PcmChargeController,
   },
-  module1FlowController: {
+  pcmModule1FlowController: {
     componentType: ControllerStateComponentType.PIDController,
   },
-  module2ChargeController: {
+  pcmModule2ChargeController: {
     componentType: ControllerStateComponentType.PcmChargeController,
   },
-  module2FlowController: {
+  pcmModule2FlowController: {
     componentType: ControllerStateComponentType.PIDController,
   },
-  module3ChargeController: {
+  pcmModule3ChargeController: {
     componentType: ControllerStateComponentType.PcmChargeController,
   },
-  module3FlowController: {
+  pcmModule3FlowController: {
     componentType: ControllerStateComponentType.PIDController,
   },
-  module4ChargeController: {
+  pcmModule4ChargeController: {
     componentType: ControllerStateComponentType.PcmChargeController,
   },
-  module4FlowController: {
+  pcmModule4FlowController: {
+    componentType: ControllerStateComponentType.PIDController,
+  },
+  pcmPumpFlowController: {
     componentType: ControllerStateComponentType.PIDController,
   },
 });

@@ -105,10 +105,10 @@ def _charge_controllers(
     controller_state: PcmControllerState,
 ) -> list[PcmChargeControllerValues]:
     return [
-        controller_state.module1_charge_controller,
-        controller_state.module2_charge_controller,
-        controller_state.module3_charge_controller,
-        controller_state.module4_charge_controller,
+        controller_state.pcm_module1_charge_controller,
+        controller_state.pcm_module2_charge_controller,
+        controller_state.pcm_module3_charge_controller,
+        controller_state.pcm_module4_charge_controller,
     ]
 
 
@@ -116,10 +116,10 @@ def _flow_controllers(
     controller_state: PcmControllerState,
 ) -> list[PidControllerValues]:
     return [
-        controller_state.module1_flow_controller,
-        controller_state.module2_flow_controller,
-        controller_state.module3_flow_controller,
-        controller_state.module4_flow_controller,
+        controller_state.pcm_module1_flow_controller,
+        controller_state.pcm_module2_flow_controller,
+        controller_state.pcm_module3_flow_controller,
+        controller_state.pcm_module4_flow_controller,
     ]
 
 
@@ -267,10 +267,10 @@ def test_stalled_module_is_dropped_and_charging_retried_after_lockout(
 
     runner.run_until(lambda *_: control.mode.is_charging, within=timedelta(minutes=2))
     for _, _, controller_state in runner.ticks_for(stall_after - timedelta(seconds=5)):
-        assert controller_state.module1_flow_controller.enabled.value
+        assert controller_state.pcm_module1_flow_controller.enabled.value
     _, _, controller_state = runner.run_until(
         lambda _, __, controller_state: (
-            not controller_state.module1_flow_controller.enabled.value
+            not controller_state.pcm_module1_flow_controller.enabled.value
         ),
         within=timedelta(seconds=10),
     )
@@ -280,7 +280,7 @@ def test_stalled_module_is_dropped_and_charging_retried_after_lockout(
         flow_controller.enabled.value
         for flow_controller in _flow_controllers(controller_state)
     ] == [False, True, True, True]
-    assert controller_state.module1_flow_controller.setpoint.value == 0
+    assert controller_state.pcm_module1_flow_controller.setpoint.value == 0
 
     runner.run_until(lambda *_: control.mode.is_idle, within=timedelta(minutes=30))
     for _ in runner.ticks_for(

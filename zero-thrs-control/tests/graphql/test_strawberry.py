@@ -418,11 +418,49 @@ async def test_query_controller_state(app, test_client):
     response = test_client.post(
         "/graphql",
         json={
-            "query": """{
+            "query": """
+                fragment PidControllerFields on ControllerPidControllerValuesType {
+                    setpoint { value }
+                    measurement { value }
+                    output { value }
+                    error { value }
+                    enabled { value }
+                    tuning { value }
+                    components { value }
+                }
+                fragment PcmChargeControllerFields on ControllerPcmChargeControllerValuesType {
+                    charge { value }
+                    energy { value }
+                    chargeStatus { value }
+                    chargingState { value }
+                }
+
+                {
                 modules {
+                    adsorption {
+                        controllerState {
+                            adsorptionHotMixController { ...PidControllerFields }
+                            adsorptionRecoveryController { ...PidControllerFields }
+                            adsorptionWasteCoolingController { ...PidControllerFields }
+                        }
+                    }
                     consumers {
                         controllerState {
-                            Empty
+                            consumersDhwFlowController { ...PidControllerFields }
+                            consumersBypassFlowController { ...PidControllerFields }
+                            consumersAdsorptionFlowController { ...PidControllerFields }
+                        }
+                    }
+                    dc {
+                        controllerState {
+                            dcHeatDumpController { ...PidControllerFields }
+                            dcRecoveryMixController { ...PidControllerFields }
+                            dcBrightloopsAftPumpController { ...PidControllerFields }
+                            dcBrightloopsAftWarmupMixController { ...PidControllerFields }
+                            dcBrightloopsFwdPumpController { ...PidControllerFields }
+                            dcBrightloopsFwdWarmupMixController { ...PidControllerFields }
+                            dcUgridsPumpController { ...PidControllerFields }
+                            dcUgridsWarmupMixController { ...PidControllerFields }
                         }
                     }
                     dhw {
@@ -433,195 +471,54 @@ async def test_query_controller_state(app, test_client):
                                 tank3State { value }
                                 timeToFill { value }
                             }
-                            dhwPumpFlowController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            dhwDrivesFlowController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            dhwDcFlowController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
+                            dhwPumpFlowController { ...PidControllerFields }
+                            dhwDrivesFlowController { ...PidControllerFields }
+                            dhwDcFlowController { ...PidControllerFields }
                         }
                     }
-                    thrusters {
+                    drives {
                         controllerState {
-                            thrustersHeatDumpController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            thrustersWarmupMixController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            thrustersPumpController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            thrustersAftRecoveryTemperatureController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            thrustersFwdRecoveryTemperatureController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            thrustersAftFlowController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            thrustersFwdFlowController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                        }
-                    }
-                    pvt {
-                        controllerState {
-                            pvtHeatDumpController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            pvtMainAftWarmupMixController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            pvtMainAftPumpController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            pvtMainFwdWarmupMixController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            pvtMainFwdPumpController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            pvtOwnersWarmupMixController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
-                            pvtOwnersPumpController {
-                                setpoint { value }
-                                measurement { value }
-                                output { value }
-                                error { value }
-                                enabled { value }
-                                tuning { value }
-                                components { value }
-                            }
+                            drivesHeatDumpController { ...PidControllerFields }
+                            drivesRecoveryMixController { ...PidControllerFields }
+                            drivesPumpControllerShorepower { ...PidControllerFields }
+                            drivesPumpControllerPropulsion { ...PidControllerFields }
+                            drivesAftFlowController { ...PidControllerFields }
+                            drivesFwdFlowController { ...PidControllerFields }
                         }
                     }
                     pcm {
                         controllerState {
-                            module1ChargeController {
-                                charge { value }
-                                energy { value }
-                                chargeStatus { value }
-                                chargingState { value }
-                            }
-                            module2ChargeController {
-                                charge { value }
-                                energy { value }
-                                chargeStatus { value }
-                                chargingState { value }
-                            }
-                            module3ChargeController {
-                                charge { value }
-                                energy { value }
-                                chargeStatus { value }
-                                chargingState { value }
-                            }
-                            module4ChargeController {
-                                charge { value }
-                                energy { value }
-                                chargeStatus { value }
-                                chargingState { value }
-                            }
+                            pcmPumpFlowController { ...PidControllerFields }
+                            pcmModule1ChargeController { ...PcmChargeControllerFields }
+                            pcmModule2ChargeController { ...PcmChargeControllerFields }
+                            pcmModule3ChargeController { ...PcmChargeControllerFields }
+                            pcmModule4ChargeController { ...PcmChargeControllerFields }
+                            pcmModule1FlowController { ...PidControllerFields }
+                            pcmModule2FlowController { ...PidControllerFields }
+                            pcmModule3FlowController { ...PidControllerFields }
+                            pcmModule4FlowController { ...PidControllerFields }
+                        }
+                    }
+                    pvt {
+                        controllerState {
+                            pvtHeatDumpController { ...PidControllerFields }
+                            pvtMainAftWarmupMixController { ...PidControllerFields }
+                            pvtMainAftPumpController { ...PidControllerFields }
+                            pvtMainFwdWarmupMixController { ...PidControllerFields }
+                            pvtMainFwdPumpController { ...PidControllerFields }
+                            pvtOwnersWarmupMixController { ...PidControllerFields }
+                            pvtOwnersPumpController { ...PidControllerFields }
+                        }
+                    }
+                    thrusters {
+                        controllerState {
+                            thrustersHeatDumpController { ...PidControllerFields }
+                            thrustersWarmupMixController { ...PidControllerFields }
+                            thrustersPumpController { ...PidControllerFields }
+                            thrustersAftRecoveryTemperatureController { ...PidControllerFields }
+                            thrustersFwdRecoveryTemperatureController { ...PidControllerFields }
+                            thrustersAftFlowController { ...PidControllerFields }
+                            thrustersFwdFlowController { ...PidControllerFields }
                         }
                     }
                 }
@@ -629,41 +526,58 @@ async def test_query_controller_state(app, test_client):
         },
     )
     assert response.status_code == 200
+
+    pid_controller = {
+        "components": {"value": [0.0, 0.0, 0.0]},
+        "enabled": {"value": False},
+        "error": {"value": None},
+        "measurement": {"value": None},
+        "output": {"value": None},
+        "setpoint": {"value": 0.0},
+        "tuning": {"value": [0.0, 0.0, 0.0]},
+    }
+
+    pcm_charge_controller = {
+        "charge": {"value": None},
+        "energy": {"value": None},
+        "chargeStatus": {"value": "UNKNOWN"},
+        "chargingState": {"value": "IDLE"},
+    }
+
     assert response.json() == {
         "data": {
             "modules": {
+                "adsorption": {
+                    "controllerState": {
+                        "adsorptionHotMixController": pid_controller,
+                        "adsorptionRecoveryController": pid_controller,
+                        "adsorptionWasteCoolingController": pid_controller,
+                    }
+                },
                 "consumers": {
-                    "controllerState": {"Empty": None},
+                    "controllerState": {
+                        "consumersDhwFlowController": pid_controller,
+                        "consumersBypassFlowController": pid_controller,
+                        "consumersAdsorptionFlowController": pid_controller,
+                    }
+                },
+                "dc": {
+                    "controllerState": {
+                        "dcHeatDumpController": pid_controller,
+                        "dcRecoveryMixController": pid_controller,
+                        "dcBrightloopsAftPumpController": pid_controller,
+                        "dcBrightloopsAftWarmupMixController": pid_controller,
+                        "dcBrightloopsFwdPumpController": pid_controller,
+                        "dcBrightloopsFwdWarmupMixController": pid_controller,
+                        "dcUgridsPumpController": pid_controller,
+                        "dcUgridsWarmupMixController": pid_controller,
+                    }
                 },
                 "dhw": {
                     "controllerState": {
-                        "dhwDcFlowController": {
-                            "components": {"value": [0.0, 0.0, 0.0]},
-                            "enabled": {"value": False},
-                            "error": {"value": None},
-                            "measurement": {"value": None},
-                            "output": {"value": None},
-                            "setpoint": {"value": 0.0},
-                            "tuning": {"value": [0.0, 0.0, 0.0]},
-                        },
-                        "dhwDrivesFlowController": {
-                            "components": {"value": [0.0, 0.0, 0.0]},
-                            "enabled": {"value": False},
-                            "error": {"value": None},
-                            "measurement": {"value": None},
-                            "output": {"value": None},
-                            "setpoint": {"value": 0.0},
-                            "tuning": {"value": [0.0, 0.0, 0.0]},
-                        },
-                        "dhwPumpFlowController": {
-                            "components": {"value": [0.0, 0.0, 0.0]},
-                            "enabled": {"value": False},
-                            "error": {"value": None},
-                            "measurement": {"value": None},
-                            "output": {"value": None},
-                            "setpoint": {"value": 0.0},
-                            "tuning": {"value": [0.0, 0.0, 0.0]},
-                        },
+                        "dhwDcFlowController": pid_controller,
+                        "dhwDrivesFlowController": pid_controller,
+                        "dhwPumpFlowController": pid_controller,
                         "dhwTanksController": {
                             "tank1State": {"value": "IN_USE"},
                             "tank2State": {"value": "IN_USE"},
@@ -672,506 +586,49 @@ async def test_query_controller_state(app, test_client):
                         },
                     },
                 },
-                "thrusters": {
+                "drives": {
                     "controllerState": {
-                        "thrustersAftFlowController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
-                        "thrustersAftRecoveryTemperatureController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
-                        "thrustersFwdFlowController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
-                        "thrustersFwdRecoveryTemperatureController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
-                        "thrustersHeatDumpController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
-                        "thrustersPumpController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
-                        "thrustersWarmupMixController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
+                        "drivesHeatDumpController": pid_controller,
+                        "drivesRecoveryMixController": pid_controller,
+                        "drivesPumpControllerShorepower": pid_controller,
+                        "drivesPumpControllerPropulsion": pid_controller,
+                        "drivesAftFlowController": pid_controller,
+                        "drivesFwdFlowController": pid_controller,
+                    }
+                },
+                "pcm": {
+                    "controllerState": {
+                        "pcmPumpFlowController": pid_controller,
+                        "pcmModule1ChargeController": pcm_charge_controller,
+                        "pcmModule2ChargeController": pcm_charge_controller,
+                        "pcmModule3ChargeController": pcm_charge_controller,
+                        "pcmModule4ChargeController": pcm_charge_controller,
+                        "pcmModule1FlowController": pid_controller,
+                        "pcmModule2FlowController": pid_controller,
+                        "pcmModule3FlowController": pid_controller,
+                        "pcmModule4FlowController": pid_controller,
                     },
                 },
                 "pvt": {
                     "controllerState": {
-                        "pvtHeatDumpController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
-                        "pvtMainAftPumpController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
-                        "pvtMainAftWarmupMixController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
-                        "pvtMainFwdPumpController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
-                        "pvtMainFwdWarmupMixController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
-                        "pvtOwnersPumpController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
-                        "pvtOwnersWarmupMixController": {
-                            "components": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                            "enabled": {
-                                "value": False,
-                            },
-                            "error": {
-                                "value": None,
-                            },
-                            "measurement": {
-                                "value": None,
-                            },
-                            "output": {
-                                "value": None,
-                            },
-                            "setpoint": {
-                                "value": 0.0,
-                            },
-                            "tuning": {
-                                "value": [
-                                    0.0,
-                                    0.0,
-                                    0.0,
-                                ],
-                            },
-                        },
+                        "pvtHeatDumpController": pid_controller,
+                        "pvtMainAftPumpController": pid_controller,
+                        "pvtMainAftWarmupMixController": pid_controller,
+                        "pvtMainFwdPumpController": pid_controller,
+                        "pvtMainFwdWarmupMixController": pid_controller,
+                        "pvtOwnersPumpController": pid_controller,
+                        "pvtOwnersWarmupMixController": pid_controller,
                     },
                 },
-                "pcm": {
+                "thrusters": {
                     "controllerState": {
-                        "module1ChargeController": {
-                            "charge": {
-                                "value": None,
-                            },
-                            "energy": {
-                                "value": None,
-                            },
-                            "chargeStatus": {
-                                "value": "UNKNOWN",
-                            },
-                            "chargingState": {
-                                "value": "IDLE",
-                            },
-                        },
-                        "module2ChargeController": {
-                            "charge": {
-                                "value": None,
-                            },
-                            "energy": {
-                                "value": None,
-                            },
-                            "chargeStatus": {
-                                "value": "UNKNOWN",
-                            },
-                            "chargingState": {
-                                "value": "IDLE",
-                            },
-                        },
-                        "module3ChargeController": {
-                            "charge": {
-                                "value": None,
-                            },
-                            "energy": {
-                                "value": None,
-                            },
-                            "chargeStatus": {
-                                "value": "UNKNOWN",
-                            },
-                            "chargingState": {
-                                "value": "IDLE",
-                            },
-                        },
-                        "module4ChargeController": {
-                            "charge": {
-                                "value": None,
-                            },
-                            "energy": {
-                                "value": None,
-                            },
-                            "chargeStatus": {
-                                "value": "UNKNOWN",
-                            },
-                            "chargingState": {
-                                "value": "IDLE",
-                            },
-                        },
+                        "thrustersAftFlowController": pid_controller,
+                        "thrustersAftRecoveryTemperatureController": pid_controller,
+                        "thrustersFwdFlowController": pid_controller,
+                        "thrustersFwdRecoveryTemperatureController": pid_controller,
+                        "thrustersHeatDumpController": pid_controller,
+                        "thrustersPumpController": pid_controller,
+                        "thrustersWarmupMixController": pid_controller,
                     },
                 },
             }

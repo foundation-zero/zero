@@ -377,8 +377,8 @@ export type ExtractControlValues<T extends ControlDefinitions> = ExtractValues<
 
 export const enum ControllerStateComponentType {
   DhwTanksController = "controller:dhwTanksController",
-  PIDController = "pidController",
-  PcmChargeController = "pcmChargeController",
+  PIDController = "controller:pidController",
+  PcmChargeController = "controller:pcmChargeController",
 }
 
 export type ControllerStateDefinition<
