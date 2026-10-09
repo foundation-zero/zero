@@ -29,25 +29,25 @@ const t = tScoped("thrapp.legends");
 <template>
   <div :class="cn('grid sm:gap-x-4 md:grid-cols-2 xl:grid-cols-3', props.class)">
     <Legend>
-      <LegendGroupHeader>{{ t("boilerLegend.groups.connectingCircuits") }}</LegendGroupHeader>
+      <LegendGroupHeader>{{ t("dhwLegend.groups.connectingCircuits") }}</LegendGroupHeader>
       <LegendGroup>
         <OtherMimic />
       </LegendGroup>
-      <LegendGroupHeader>{{ t("boilerLegend.groups.assets") }}</LegendGroupHeader>
+      <LegendGroupHeader>{{ t("dhwLegend.groups.assets") }}</LegendGroupHeader>
       <LegendGroup>
         <HeatPump />
         <HVAC />
         <BoilerTank />
       </LegendGroup>
       <LegendGroupHeader class="max-md:hidden xl:hidden">
-        {{ t("boilerLegend.groups.actuatedValveComponents") }}
+        {{ t("dhwLegend.groups.actuatedValveComponents") }}
       </LegendGroupHeader>
       <LegendGroup class="max-md:hidden xl:hidden">
         <SwitchValve />
         <FlowValve />
       </LegendGroup>
       <LegendGroupHeader class="max-md:hidden xl:hidden">
-        {{ t("boilerLegend.groups.heatExchangers") }}
+        {{ t("dhwLegend.groups.heatExchangers") }}
       </LegendGroupHeader>
       <LegendGroup class="max-md:hidden xl:hidden">
         <PlateHeatExchanger />
@@ -55,20 +55,20 @@ const t = tScoped("thrapp.legends");
     </Legend>
 
     <Legend class="md:max-xl:hidden">
-      <LegendGroupHeader>{{ t("boilerLegend.groups.pumps") }}</LegendGroupHeader>
+      <LegendGroupHeader>{{ t("dhwLegend.groups.pumps") }}</LegendGroupHeader>
       <LegendGroup>
         <Pumps />
       </LegendGroup>
-      <LegendGroupHeader>{{ t("boilerLegend.groups.actuatedValveComponents") }}</LegendGroupHeader>
+      <LegendGroupHeader>{{ t("dhwLegend.groups.actuatedValveComponents") }}</LegendGroupHeader>
       <LegendGroup>
         <SwitchValve />
         <FlowValve />
       </LegendGroup>
-      <LegendGroupHeader>{{ t("boilerLegend.groups.heatExchangers") }}</LegendGroupHeader>
+      <LegendGroupHeader>{{ t("dhwLegend.groups.heatExchangers") }}</LegendGroupHeader>
       <LegendGroup>
         <PlateHeatExchanger />
       </LegendGroup>
-      <LegendGroupHeader>{{ t("boilerLegend.groups.sensors") }}</LegendGroupHeader>
+      <LegendGroupHeader>{{ t("dhwLegend.groups.sensors") }}</LegendGroupHeader>
       <LegendGroup class="gap-2">
         <TemperatureSensors />
         <FlowSensors />
@@ -79,13 +79,13 @@ const t = tScoped("thrapp.legends");
 
     <Legend>
       <LegendGroupHeader class="max-md:hidden xl:hidden">
-        {{ t("boilerLegend.groups.pumps") }}
+        {{ t("dhwLegend.groups.pumps") }}
       </LegendGroupHeader>
       <LegendGroup class="max-md:hidden xl:hidden">
         <Pumps />
       </LegendGroup>
       <LegendGroupHeader class="max-md:hidden xl:hidden">
-        {{ t("boilerLegend.groups.sensors") }}
+        {{ t("dhwLegend.groups.sensors") }}
       </LegendGroupHeader>
       <LegendGroup class="gap-2 max-md:hidden xl:hidden">
         <TemperatureSensors />
@@ -93,12 +93,12 @@ const t = tScoped("thrapp.legends");
         <PressureSensors />
         <LevelSensors />
       </LegendGroup>
-      <LegendGroupHeader>{{ t("boilerLegend.groups.manualComponents") }}</LegendGroupHeader>
+      <LegendGroupHeader>{{ t("dhwLegend.groups.manualComponents") }}</LegendGroupHeader>
       <LegendGroup>
         <ManualSwitchValve />
         <PressureGauges />
       </LegendGroup>
-      <LegendGroupHeader>{{ t("boilerLegend.groups.pipes") }}</LegendGroupHeader>
+      <LegendGroupHeader>{{ t("dhwLegend.groups.pipes") }}</LegendGroupHeader>
       <LegendGroup>
         <Pipe class="border-flows-pipe">{{ t("pipes.pipe") }}</Pipe>
         <Pipe class="border-flows-pipe border-dashed">{{ t("pipes.connectingCircuitPipe") }}</Pipe>
@@ -112,7 +112,7 @@ const t = tScoped("thrapp.legends");
           {{ t("pipes.directionArrow") }}
         </Pipe>
       </LegendGroup>
-      <LegendGroupHeader>{{ t("boilerLegend.groups.labels") }}</LegendGroupHeader>
+      <LegendGroupHeader>{{ t("dhwLegend.groups.labels") }}</LegendGroupHeader>
       <LegendGroup class="gap-2">
         <LabelTag />
         <LabelValue />
