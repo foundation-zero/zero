@@ -1,6 +1,21 @@
 {
   "thrapp": {
     "parameters": {
+      "pid": {
+        "title": "PID controller tuning",
+        "dhwDcFlowController": {
+          "title": "DC Flow Controller",
+          "description": "PLACEHOLDER"
+        },
+        "dhwDrivesFlowController": {
+          "title": "Drives Flow Controller",
+          "description": "PLACEHOLDER"
+        },
+        "dhwPumpFlowController": {
+          "title": "Pump Flow Controller",
+          "description": "PLACEHOLDER"
+        }
+      },
       "actions": {
         "resetToDefaults": "Reset to defaults"
       },

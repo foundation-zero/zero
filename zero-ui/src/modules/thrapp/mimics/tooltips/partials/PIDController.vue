@@ -27,6 +27,7 @@ const props = defineProps<{
   measurement?: ModuleField<Type>;
   setpoint?: ModuleField<Parameter>;
   outputMinimum?: ModuleField<Parameter>;
+  noSource?: boolean;
 }>();
 
 const fieldRenderer = computed(() => {
@@ -39,16 +40,18 @@ const fieldRenderer = computed(() => {
 </script>
 
 <template>
-  <ControllerStateValue
-    :source="controller"
-    field="enabled"
-  >
-    <Partials.ListItem>
-      <template #value>
-        <FieldRenderer.HeatPumpMode />
-      </template>
-    </Partials.ListItem>
-  </ControllerStateValue>
+  <slot name="header">
+    <ControllerStateValue
+      :source="controller"
+      field="enabled"
+    >
+      <Partials.ListItem>
+        <template #value>
+          <FieldRenderer.HeatPumpMode />
+        </template>
+      </Partials.ListItem>
+    </ControllerStateValue>
+  </slot>
 
   <ControllerStateValue
     :source="controller"
@@ -56,6 +59,7 @@ const fieldRenderer = computed(() => {
   >
     <Partials.ListItem
       size="sm"
+      :no-source="noSource"
       :renderer="FieldRenderer.Percentage"
     >
       {{ items("actuator") }}
@@ -77,10 +81,14 @@ const fieldRenderer = computed(() => {
   >
     <Partials.ListItem
       size="sm"
+      :no-source="noSource"
       :renderer="fieldRenderer"
     >
       {{ items("setpoint") }}
-      <template #source>
+      <template
+        v-if="!noSource"
+        #source
+      >
         <slot name="setpoint">
           <FieldRenderer.Source :source="setpoint" />
         </slot>
@@ -94,13 +102,14 @@ const fieldRenderer = computed(() => {
   >
     <Partials.ListItem
       size="sm"
+      :no-source="noSource"
       :renderer="fieldRenderer"
     >
       {{ items("measurement") }}
       <template #source>
         <slot name="measurement">
           <FieldRenderer.Source :source="measurement">
-            <template v-if="!measurement">
+            <template v-if="!measurement && !noSource">
               {{ sources("this") }}
             </template>
           </FieldRenderer.Source>
@@ -115,10 +124,14 @@ const fieldRenderer = computed(() => {
   >
     <Partials.ListItem
       size="sm"
+      :no-source="noSource"
       :renderer="fieldRenderer"
     >
       {{ items("error") }}
-      <template #sourceName>
+      <template
+        v-if="!noSource"
+        #sourceName
+      >
         {{ sources("calculated") }}
       </template>
     </Partials.ListItem>
@@ -130,6 +143,7 @@ const fieldRenderer = computed(() => {
   >
     <Partials.ListItem
       size="sm"
+      :no-source="noSource"
       :renderer="FieldRenderer.Percentage"
     >
       {{ items("outputMinimum") }}
