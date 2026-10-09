@@ -1,5 +1,6 @@
 from collections.abc import Callable
 from datetime import datetime
+from typing import Annotated
 
 from pydantic import model_validator
 from transitions import State
@@ -7,8 +8,9 @@ from transitions import State
 from thrs.classes.control import Control, ControlMode
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions import control, sensor
+from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 
 IDLE_MIX_POSITION: Ratio = 0.2
@@ -61,7 +63,19 @@ class PvtGroupControlMode(ControlMode):
 
 
 class PvtGroupControllerState(ControlMode):
-    pass
+    pvt_group_warmup_mix_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    pvt_group_pump_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+
+
+def _INITIAL_PVT_GROUP_CONTROLLER_STATE(timestamp: datetime) -> PvtGroupControllerState:  # noqa: N802
+    return PvtGroupControllerState(
+        pvt_group_warmup_mix_controller=PidController.zero(timestamp),
+        pvt_group_pump_controller=PidController.zero(timestamp),
+    )
 
 
 class PvtGroupControl(
@@ -194,7 +208,10 @@ class PvtGroupControl(
         self._current_values.update_in_place(control_values)
 
     def initial(self) -> tuple[PvtGroupControlValues, PvtGroupControllerState]:
-        return (self._current_values, PvtGroupControllerState())
+        return (
+            self._current_values,
+            _INITIAL_PVT_GROUP_CONTROLLER_STATE(self._time()),
+        )
 
     def reset(self) -> None:
         raise NotImplementedError(
@@ -258,7 +275,13 @@ class PvtGroupControl(
             self._check_mix(sensor_values)  # type: ignore
         self._control_pump(sensor_values)
 
-        return (self._current_values, PvtGroupControllerState())
+        return (
+            self._current_values,
+            PvtGroupControllerState(
+                pvt_group_pump_controller=self._pump_controller.values(),
+                pvt_group_warmup_mix_controller=self._warmup_mix_controller.values(),
+            ),
+        )
 
     def _control_warmup_mix(self, sensor_values: PvtGroupSensorValues):
         if self._warmup_mix_controller.enabled():

@@ -1,5 +1,6 @@
 from collections.abc import Callable
 from datetime import datetime
+from typing import Annotated
 
 from pydantic import model_validator
 from transitions import State
@@ -8,8 +9,9 @@ from thrs.classes.control import Control, ControlMode
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions.control import AdsorptionChiller, Valve
+from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import (
     AdsorptionChillerMode,
     Celsius,
@@ -89,7 +91,24 @@ class AdsorptionControlMode(ControlMode):
 
 
 class AdsorptionControllerState(ThrsValues):
-    pass
+    adsorption_hot_mix_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    adsorption_recovery_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    adsorption_waste_cooling_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+
+
+def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> AdsorptionControllerState:  # noqa: N802
+
+    return AdsorptionControllerState(
+        adsorption_hot_mix_controller=PidController.zero(timestamp),
+        adsorption_recovery_controller=PidController.zero(timestamp),
+        adsorption_waste_cooling_controller=PidController.zero(timestamp),
+    )
 
 
 class AdsorptionControl(
@@ -229,7 +248,7 @@ class AdsorptionControl(
     def initial(self) -> tuple[AdsorptionControlValues, AdsorptionControllerState]:
         return (
             _INITIAL_CONTROL_VALUES(self._time()),
-            AdsorptionControllerState(),
+            _INITIAL_CONTROLLER_STATE(self._time()),
         )
 
     def reset(self) -> None:
@@ -245,11 +264,13 @@ class AdsorptionControl(
     ) -> tuple[AdsorptionControlValues, AdsorptionControllerState]:
         self._update_adsorption_inputs(sensor_values)
         self._check_adsorption_status(sensor_values)  # type: ignore
-        self._control_temperature_controllers(sensor_values)
+        controller_state = self._control_temperature_controllers(sensor_values)
 
-        return (self._current_values, AdsorptionControllerState())
+        return (self._current_values, controller_state)
 
-    def _control_temperature_controllers(self, sensor_values: AdsorptionSensorValues):
+    def _control_temperature_controllers(
+        self, sensor_values: AdsorptionSensorValues
+    ) -> AdsorptionControllerState:
         self._current_values.adsorption_mix_hot.setpoint = Stamped(
             value=(
                 self._hot_mix_controller(
@@ -273,6 +294,12 @@ class AdsorptionControl(
                 )
             ),
             timestamp=self._time(),
+        )
+
+        return AdsorptionControllerState(
+            adsorption_hot_mix_controller=self._hot_mix_controller.values(),
+            adsorption_recovery_controller=self._recovery_controller.values(),
+            adsorption_waste_cooling_controller=self._waste_cooling_controller.values(),
         )
 
     def _disable_hot_mix(self):

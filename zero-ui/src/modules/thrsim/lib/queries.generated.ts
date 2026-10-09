@@ -17,7 +17,33 @@ export const ADSORPTION_CONTROL_QUERY = `
 `;
 
 export const ADSORPTION_CONTROLLER_STATE_QUERY = `
-
+  adsorptionHotMixController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  adsorptionRecoveryController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  adsorptionWasteCoolingController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
 `;
 
 export const ADSORPTION_PARAMETERS_QUERY = `
@@ -253,7 +279,33 @@ export const CONSUMERS_CONTROL_QUERY = `
 `;
 
 export const CONSUMERS_CONTROLLER_STATE_QUERY = `
-
+  consumersAdsorptionFlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  consumersBypassFlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  consumersDhwFlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
 `;
 
 export const CONSUMERS_PARAMETERS_QUERY = `
@@ -439,7 +491,78 @@ export const DC_CONTROL_QUERY = `
 `;
 
 export const DC_CONTROLLER_STATE_QUERY = `
-
+  dcBrightloopsAftPumpController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  dcBrightloopsAftWarmupMixController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  dcBrightloopsFwdPumpController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  dcBrightloopsFwdWarmupMixController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  dcHeatDumpController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  dcRecoveryMixController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  dcUgridsPumpController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  dcUgridsWarmupMixController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
 `;
 
 export const DC_PARAMETERS_QUERY = `
@@ -1374,7 +1497,60 @@ export const DRIVES_CONTROL_QUERY = `
 `;
 
 export const DRIVES_CONTROLLER_STATE_QUERY = `
-
+  drivesAftFlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  drivesFwdFlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  drivesHeatDumpController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  drivesPumpControllerPropulsion {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  drivesPumpControllerShorepower {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  drivesRecoveryMixController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
 `;
 
 export const DRIVES_PARAMETERS_QUERY = `
@@ -1818,13 +1994,13 @@ export const PCM_CONTROL_QUERY = `
 `;
 
 export const PCM_CONTROLLER_STATE_QUERY = `
-  module1ChargeController {
+  pcmModule1ChargeController {
     charge { value timestamp }
     energy { value timestamp }
     chargingState { value timestamp }
     chargeStatus { value timestamp }
   }
-  module1FlowController {
+  pcmModule1FlowController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -1833,13 +2009,13 @@ export const PCM_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  module2ChargeController {
+  pcmModule2ChargeController {
     charge { value timestamp }
     energy { value timestamp }
     chargingState { value timestamp }
     chargeStatus { value timestamp }
   }
-  module2FlowController {
+  pcmModule2FlowController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -1848,13 +2024,13 @@ export const PCM_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  module3ChargeController {
+  pcmModule3ChargeController {
     charge { value timestamp }
     energy { value timestamp }
     chargingState { value timestamp }
     chargeStatus { value timestamp }
   }
-  module3FlowController {
+  pcmModule3FlowController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
@@ -1863,13 +2039,22 @@ export const PCM_CONTROLLER_STATE_QUERY = `
     tuning { value timestamp }
     components { value timestamp }
   }
-  module4ChargeController {
+  pcmModule4ChargeController {
     charge { value timestamp }
     energy { value timestamp }
     chargingState { value timestamp }
     chargeStatus { value timestamp }
   }
-  module4FlowController {
+  pcmModule4FlowController {
+    setpoint { value timestamp }
+    measurement { value timestamp }
+    output { value timestamp }
+    error { value timestamp }
+    enabled { value timestamp }
+    tuning { value timestamp }
+    components { value timestamp }
+  }
+  pcmPumpFlowController {
     setpoint { value timestamp }
     measurement { value timestamp }
     output { value timestamp }

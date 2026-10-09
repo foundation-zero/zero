@@ -11,8 +11,9 @@ from thrs.control.controllers import (
     PidController,
 )
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions.control import Valve
+from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import LMin, Ratio, Tuning
 from thrs.input_output.modules.consumers import (
     ConsumersControlValues,
@@ -56,7 +57,24 @@ class ConsumersControlMode(ControlMode):
 
 
 class ConsumersControllerState(ThrsValues):
-    pass
+    consumers_dhw_flow_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    consumers_bypass_flow_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    consumers_adsorption_flow_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+
+
+def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> ConsumersControllerState:  # noqa: N802
+
+    return ConsumersControllerState(
+        consumers_dhw_flow_controller=PidController.zero(timestamp),
+        consumers_bypass_flow_controller=PidController.zero(timestamp),
+        consumers_adsorption_flow_controller=PidController.zero(timestamp),
+    )
 
 
 class ConsumersControl(
@@ -120,7 +138,10 @@ class ConsumersControl(
         )
 
     def initial(self) -> tuple[ConsumersControlValues, ConsumersControllerState]:
-        return (_INITIAL_CONTROL_VALUES(self._time()), ConsumersControllerState())
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            _INITIAL_CONTROLLER_STATE(self._time()),
+        )
 
     def reset(self) -> None:
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
@@ -190,7 +211,13 @@ class ConsumersControl(
             self._parameters.adsorption_enabled,
         )
 
-        return (self._current_values, ConsumersControllerState())
+        controller_state = ConsumersControllerState(
+            consumers_dhw_flow_controller=self._dhw_flow_controller.values(),
+            consumers_bypass_flow_controller=self._bypass_flow_controller.values(),
+            consumers_adsorption_flow_controller=self._adsorption_flow_controller.values(),
+        )
+
+        return (self._current_values, controller_state)
 
     def modes(self) -> list[str]:
         return []

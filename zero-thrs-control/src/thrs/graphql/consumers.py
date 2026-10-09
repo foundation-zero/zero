@@ -26,9 +26,7 @@ ConsumersSensorValuesType = pydantic_to_strawberry_type(
 ConsumersControlValuesType = pydantic_to_strawberry_type(ConsumersControlValues)
 ConsumersParametersType = pydantic_to_strawberry_type(ConsumersParameters)
 ConsumersControlModeType = empty_pydantic_type_to_strawberry_type(ConsumersControlMode)
-ConsumersControllerStateType = empty_pydantic_type_to_strawberry_type(
-    ConsumersControllerState
-)
+ConsumersControllerStateType = pydantic_to_strawberry_type(ConsumersControllerState)
 
 
 ConsumersModule = ControlModule[

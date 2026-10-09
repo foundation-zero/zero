@@ -14,9 +14,9 @@ from thrs.classes.machine_state_logger import (
 from thrs.control.controllers import PidController
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 from thrs.input_output.base import Stamped, ThrsValues, component_meta
-from thrs.input_output.definitions import controllers
 from thrs.input_output.definitions.control import HeatPump, Pump, Valve
 from thrs.input_output.definitions.controllers import (
+    PidControllerValues,
     TanksControllerValues,
 )
 from thrs.input_output.definitions.units import (
@@ -39,20 +39,17 @@ logger = logging.getLogger(__name__)
 
 class DhwControllerState(ThrsValues):
     dhw_tanks_controller: Annotated[
-        controllers.TanksControllerValues,
-        component_meta(component_type="tank_controller", included_in_fmu=False),
+        TanksControllerValues,
+        component_meta(component_type="tank_controller"),
     ]
     dhw_pump_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     dhw_drives_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     dhw_dc_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
 
 

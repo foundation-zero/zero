@@ -12,7 +12,6 @@ from thrs.graphql.base import (
     add_parameter_mutations,
 )
 from thrs.graphql.helpers import (
-    empty_pydantic_type_to_strawberry_type,
     pydantic_to_strawberry_type,
 )
 from thrs.input_output.modules.drives import DrivesControlValues, DrivesSensorValues
@@ -23,9 +22,7 @@ DrivesSensorValuesType = pydantic_to_strawberry_type(
 DrivesControlValuesType = pydantic_to_strawberry_type(DrivesControlValues)
 DrivesParametersType = pydantic_to_strawberry_type(DrivesParameters)
 DrivesControlModeType = pydantic_to_strawberry_type(DrivesControlMode)
-DrivesControllerStateType = empty_pydantic_type_to_strawberry_type(
-    DrivesControllerState
-)
+DrivesControllerStateType = pydantic_to_strawberry_type(DrivesControllerState)
 
 
 DrivesModule = ControlModule[

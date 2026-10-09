@@ -99,25 +99,36 @@ class PcmParameters(ThrsValues):
 
 
 class PcmControllerState(ThrsValues):
-    module1_charge_controller: PcmChargeControllerValues
-    module2_charge_controller: PcmChargeControllerValues
-    module3_charge_controller: PcmChargeControllerValues
-    module4_charge_controller: PcmChargeControllerValues
-    module1_flow_controller: Annotated[
-        PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+    pcm_pump_flow_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
-    module2_flow_controller: Annotated[
-        PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+    pcm_module1_charge_controller: Annotated[
+        PcmChargeControllerValues,
+        component_meta(component_type="pcm_charge_controller"),
     ]
-    module3_flow_controller: Annotated[
-        PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+    pcm_module2_charge_controller: Annotated[
+        PcmChargeControllerValues,
+        component_meta(component_type="pcm_charge_controller"),
     ]
-    module4_flow_controller: Annotated[
-        PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+    pcm_module3_charge_controller: Annotated[
+        PcmChargeControllerValues,
+        component_meta(component_type="pcm_charge_controller"),
+    ]
+    pcm_module4_charge_controller: Annotated[
+        PcmChargeControllerValues,
+        component_meta(component_type="pcm_charge_controller"),
+    ]
+    pcm_module1_flow_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    pcm_module2_flow_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    pcm_module3_flow_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
+    ]
+    pcm_module4_flow_controller: Annotated[
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
 
 
@@ -168,14 +179,15 @@ def _INITIAL_CHARGE_CONTROLLER_VALUES(  # noqa: N802
 
 def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> PcmControllerState:  # noqa: N802
     return PcmControllerState(
-        module1_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
-        module2_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
-        module3_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
-        module4_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
-        module1_flow_controller=PidController.zero(timestamp),
-        module2_flow_controller=PidController.zero(timestamp),
-        module3_flow_controller=PidController.zero(timestamp),
-        module4_flow_controller=PidController.zero(timestamp),
+        pcm_pump_flow_controller=PidController.zero(timestamp),
+        pcm_module1_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
+        pcm_module2_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
+        pcm_module3_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
+        pcm_module4_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
+        pcm_module1_flow_controller=PidController.zero(timestamp),
+        pcm_module2_flow_controller=PidController.zero(timestamp),
+        pcm_module3_flow_controller=PidController.zero(timestamp),
+        pcm_module4_flow_controller=PidController.zero(timestamp),
     )
 
 
@@ -446,14 +458,15 @@ class PcmControl(
         self.module4_charge_controller(sensor_values.pcm_heat_module4)
 
         return PcmControllerState(
-            module1_charge_controller=self.module1_charge_controller.values(),
-            module2_charge_controller=self.module2_charge_controller.values(),
-            module3_charge_controller=self.module3_charge_controller.values(),
-            module4_charge_controller=self.module4_charge_controller.values(),
-            module1_flow_controller=self.module1_flow_controller.values(),
-            module2_flow_controller=self.module2_flow_controller.values(),
-            module3_flow_controller=self.module3_flow_controller.values(),
-            module4_flow_controller=self.module4_flow_controller.values(),
+            pcm_pump_flow_controller=self._pump_flow_controller.values(),
+            pcm_module1_charge_controller=self.module1_charge_controller.values(),
+            pcm_module2_charge_controller=self.module2_charge_controller.values(),
+            pcm_module3_charge_controller=self.module3_charge_controller.values(),
+            pcm_module4_charge_controller=self.module4_charge_controller.values(),
+            pcm_module1_flow_controller=self.module1_flow_controller.values(),
+            pcm_module2_flow_controller=self.module2_flow_controller.values(),
+            pcm_module3_flow_controller=self.module3_flow_controller.values(),
+            pcm_module4_flow_controller=self.module4_flow_controller.values(),
         )
 
     def _modules(self) -> list[PcmChargeController]:

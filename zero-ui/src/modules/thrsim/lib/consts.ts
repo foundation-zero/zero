@@ -347,7 +347,7 @@ export const QUERY_ALL = gql`
           ${Queries.ADSORPTION_PARAMETERS_QUERY}
         }
         controllerState {
-          Empty
+          ${Queries.ADSORPTION_CONTROLLER_STATE_QUERY}
         }
       }
       consumers {
@@ -361,7 +361,7 @@ export const QUERY_ALL = gql`
           ${Queries.CONSUMERS_PARAMETERS_QUERY}
         }
         controllerState {
-          Empty
+          ${Queries.CONSUMERS_CONTROLLER_STATE_QUERY}
         }
       }
       dc {
@@ -375,7 +375,7 @@ export const QUERY_ALL = gql`
           ${Queries.DC_PARAMETERS_QUERY}
         }
         controllerState {
-          Empty
+          ${Queries.DC_CONTROLLER_STATE_QUERY}
         }
       }
       dhw {
@@ -403,7 +403,7 @@ export const QUERY_ALL = gql`
           ${Queries.DRIVES_PARAMETERS_QUERY}
         }
         controllerState {
-          Empty
+          ${Queries.DRIVES_CONTROLLER_STATE_QUERY}
         }
       }
     }

@@ -13,8 +13,8 @@ from thrs.db.models.machine_state import (
 )
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 from thrs.input_output.base import Stamped, ThrsValues, component_meta
-from thrs.input_output.definitions import controllers
 from thrs.input_output.definitions.control import Pump, Valve
+from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Celsius, LMin, PcsMode, Ratio, Tuning
 from thrs.input_output.modules.thrusters import (
     ThrustersControlValues,
@@ -44,32 +44,25 @@ class ThrustersControlMode(ControlMode):
 
 class ThrustersControllerState(ThrsValues):
     thrusters_heat_dump_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     thrusters_warmup_mix_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     thrusters_pump_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     thrusters_aft_recovery_temperature_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     thrusters_fwd_recovery_temperature_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     thrusters_aft_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
     thrusters_fwd_flow_controller: Annotated[
-        controllers.PidControllerValues,
-        component_meta(component_type="pid_controller", included_in_fmu=False),
+        PidControllerValues, component_meta(component_type="pid_controller")
     ]
 
 

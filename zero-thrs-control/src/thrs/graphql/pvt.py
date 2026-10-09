@@ -1,7 +1,7 @@
 import strawberry
 
 from thrs.control.modules.pvt import PvtControllerState, PvtControlMode, PvtParameters
-from thrs.control.modules.pvt_group import PvtGroupControlMode
+from thrs.control.modules.pvt_group import PvtGroupControllerState, PvtGroupControlMode
 from thrs.graphql.base import (
     ControlModule,
     ThrsContext,
@@ -19,6 +19,7 @@ PvtControlValuesType = pydantic_to_strawberry_type(PvtControlValues)
 PvtParametersType = pydantic_to_strawberry_type(PvtParameters)
 PvtGroupControlModeType = pydantic_to_strawberry_type(PvtGroupControlMode)
 PvtControlModeType = pydantic_to_strawberry_type(PvtControlMode)
+PvtGroupControllerStateType = pydantic_to_strawberry_type(PvtGroupControllerState)
 PvtControllerStateType = pydantic_to_strawberry_type(PvtControllerState)
 
 
