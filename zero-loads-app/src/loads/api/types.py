@@ -16,7 +16,9 @@ class LoadsContext(BaseContext):
     reference_by_case_input_loader: (
         "DataLoader[tuple[strawberry.ID, CaseInput], ReferenceValue | None]"
     )
-    reference_by_case_id_loader: "DataLoader[strawberry.ID, list[ReferenceValue]]"
+    reference_by_case_id_loader: (
+        "DataLoader[tuple[strawberry.ID, Tack], list[ReferenceValue]]"
+    )
     sails_by_case_id_loader: "DataLoader[strawberry.ID, list[SailType]]"
     variables_loader: "DataLoader[str, VariableType | None]"
 
@@ -189,6 +191,6 @@ class LoadCase:
 
     @strawberry.field
     async def reference_values(
-        self, info: strawberry.Info[LoadsContext]
+        self, info: strawberry.Info[LoadsContext], tack: Tack
     ) -> list[ReferenceValue]:
-        return await info.context.reference_by_case_id_loader.load(self.id)
+        return await info.context.reference_by_case_id_loader.load((self.id, tack))

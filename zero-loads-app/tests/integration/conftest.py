@@ -19,6 +19,7 @@ from loads.api.schema import (
     AwsRanges,
     LoadCaseMappings,
     LoadCases,
+    MaxThresholds,
     ReferenceValues,
     SailSetsCombined,
 )
@@ -44,6 +45,7 @@ def clear_mutating_tables(
         autocommit=True,
     ) as conn:
         with conn.cursor() as cursor:
+            cursor.execute("DELETE FROM loads.max_thresholds")
             cursor.execute("DELETE FROM loads.reference_values")
             cursor.execute("DELETE FROM loads.load_case_mappings")
             cursor.execute("DELETE FROM loads.load_cases")
@@ -130,6 +132,7 @@ async def sessionmanager(settings: Settings):
 @fixture(autouse=True)
 async def reset_mutable_tables(sessionmanager: SessionManager):
     async with sessionmanager.connect() as connection:
+        await connection.execute(text("DELETE FROM loads.max_thresholds"))
         await connection.execute(text("DELETE FROM loads.reference_values"))
         await connection.execute(text("DELETE FROM loads.load_case_mappings"))
         await connection.execute(text("DELETE FROM loads.load_cases"))
@@ -152,7 +155,8 @@ class LoadCaseMappingFactory(DictFactory):
 
 class ReferenceValueFactory(DictFactory):
     load_case_id = LazyFunction(lambda: str(uuid4()))
-    variable_key = "main-sheet-load"
+    variable_id = "main-sheet-load"
+    tack = "port"
     alarm_low = None
     warning_low = None
     target = 9.6
@@ -229,7 +233,8 @@ class ScenarioFactory:
         self,
         *,
         load_case_id: str,
-        variable_key: str,
+        variable_id: str,
+        tack: str,
         alarm_low: float | None = None,
         warning_low: float | None = None,
         target: float | None = None,
@@ -238,7 +243,8 @@ class ScenarioFactory:
     ) -> None:
         payload = ReferenceValueFactory.build(
             load_case_id=load_case_id,
-            variable_key=variable_key,
+            variable_id=variable_id,
+            tack=tack,
             alarm_low=alarm_low,
             warning_low=warning_low,
             target=target,
@@ -247,6 +253,26 @@ class ScenarioFactory:
         )
         async with self._manager.session() as session:
             session.add(ReferenceValues(**payload))
+
+    async def create_max_threshold(
+        self,
+        *,
+        variable_id: str,
+        alarm_low: float | None = None,
+        warning_low: float | None = None,
+        warning_high: float | None = None,
+        alarm_high: float | None = None,
+    ) -> None:
+        async with self._manager.session() as session:
+            session.add(
+                MaxThresholds(
+                    variable_id=variable_id,
+                    alarm_low=alarm_low,
+                    warning_low=warning_low,
+                    warning_high=warning_high,
+                    alarm_high=alarm_high,
+                )
+            )
 
     async def create_case_with_mapping(
         self,
@@ -279,16 +305,27 @@ class ScenarioFactory:
             awa_range_id="upwind",
             aws_range="[20,25)",
         )
+        for tack in ("port", "starboard"):
+            await self.create_reference_value(
+                load_case_id=load_case_id,
+                variable_id="main-sheet-load",
+                tack=tack,
+                target=9.6,
+                warning_high=13.5,
+                alarm_high=15.0,
+            )
         await self.create_reference_value(
             load_case_id=load_case_id,
-            variable_key="main-sheet-load",
-            target=9.6,
-            warning_high=13.5,
-            alarm_high=15.0,
+            variable_id="main-runner-tail-ps-load",
+            tack="port",
+            target=17.3,
+            warning_high=23.76,
+            alarm_high=26.4,
         )
         await self.create_reference_value(
             load_case_id=load_case_id,
-            variable_key="main-runner-load",
+            variable_id="main-runner-tail-sb-load",
+            tack="starboard",
             target=17.3,
             warning_high=23.76,
             alarm_high=26.4,
@@ -340,7 +377,8 @@ class ScenarioFactory:
         )
         await self.create_reference_value(
             load_case_id=load_case_id,
-            variable_key="main-sheet-load",
+            variable_id="main-sheet-load",
+            tack="port",
             target=target,
         )
 

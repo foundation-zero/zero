@@ -77,7 +77,8 @@ class ReferenceValues(Base):
     load_case_id = Column(
         String, ForeignKey("load_cases.id"), nullable=False, index=True
     )
-    variable_key = Column(String, nullable=False)
+    variable_id = Column(String, nullable=False)
+    tack = Column(String, nullable=False)
     alarm_low = Column(Float, nullable=True)
     warning_low = Column(Float, nullable=True)
     target = Column(Float, nullable=True)
@@ -85,6 +86,16 @@ class ReferenceValues(Base):
     alarm_high = Column(Float, nullable=True)
 
     load_case = relationship("LoadCases")
+
+
+class MaxThresholds(Base):
+    __tablename__ = "max_thresholds"
+
+    variable_id = Column(String, primary_key=True)
+    alarm_low = Column(Float, nullable=True)
+    warning_low = Column(Float, nullable=True)
+    warning_high = Column(Float, nullable=True)
+    alarm_high = Column(Float, nullable=True)
 
 
 class LoadCaseMappings(Base):

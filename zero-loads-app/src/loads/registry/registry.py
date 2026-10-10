@@ -1,18 +1,12 @@
 from dataclasses import dataclass
 from functools import partial
-from typing import Callable, Literal, cast
+from typing import Callable, cast
 
 from pydantic.fields import FieldInfo
 
 from loads.sensors import LoadsModel, at, fiber_optic, sail_system
 from loads.sensors.units import VariableMeta
 from loads.util import camel_to_kebab, hyphenize
-
-
-@dataclass
-class Applicability:
-    variable_key: str
-    applies_to_tack: Literal["port", "starboard"]
 
 
 @dataclass
@@ -26,7 +20,6 @@ class VariableDefinition:
     scale_max: float | None
     scale_min_label: str | None
     scale_max_label: str | None
-    applicability: Applicability | None
 
 
 @dataclass
@@ -40,16 +33,28 @@ class AlarmDefinition:
     actual_definition: VariableDefinition
 
 
+def _variable_id(model: type[LoadsModel], field: str, meta: VariableMeta) -> str:
+    return (
+        meta.technical_name
+        or f"{camel_to_kebab(model.__name__)}-{hyphenize(meta.name or field)}"
+    )
+
+
+def _actual_variable_ids_by_name(model: type[LoadsModel]) -> dict[str, str]:
+    return {
+        hyphenize(meta.name or field): _variable_id(model, field, meta)
+        for field, field_info in model.model_fields.items()
+        if (meta := model.extract_variable_meta(field, field_info.metadata))
+        and meta.type == "actual"
+    }
+
+
 def _build_loads_model_variable_definitions(
     model: type[LoadsModel],
 ) -> list[VariableDefinition]:
-    function_id = camel_to_kebab(model.__name__)
-
     def _variable_definition(field: str, field_info: FieldInfo, meta: VariableMeta):
-        applicability = _applicability_for(meta)
-
         return VariableDefinition(
-            id=f"{function_id}-{hyphenize(meta.name or field)}",
+            id=_variable_id(model, field, meta),
             name=model.field_display_name(field, field_info.metadata),
             topic=model.TOPIC,
             get_actual=partial(
@@ -60,7 +65,6 @@ def _build_loads_model_variable_definitions(
             scale_max=meta.scale_max,
             scale_min_label=meta.scale_min_label,
             scale_max_label=meta.scale_max_label,
-            applicability=applicability,
         )
 
     return [
@@ -69,21 +73,6 @@ def _build_loads_model_variable_definitions(
         if (variable_meta := model.extract_variable_meta(field, field_info.metadata))
         and variable_meta.type == "actual"
     ]
-
-
-def _applicability_for(meta: VariableMeta) -> Applicability | None:
-    match (meta.variable_key, meta.applies_to_tack):
-        case (str(key), str(applies_to_tack)):
-            return Applicability(
-                key,
-                applies_to_tack,
-            )
-        case (None, None):
-            return None
-        case _:
-            raise ValueError(
-                f"variable_key and applies_to_tack need to be either both present or None: {(meta.variable_key, meta.applies_to_tack)}"
-            )
 
 
 def _lookup_variable_definition_by_id(
@@ -100,13 +89,17 @@ def _build_sail_system_alarm_definitions(
     variable_definitions: list[VariableDefinition],
 ) -> list[AlarmDefinition]:
     function_id = camel_to_kebab(model.__name__)
+    actual_variable_ids = _actual_variable_ids_by_name(model)
 
-    def _lookup_variable_definition(alarm: str, id: str) -> VariableDefinition:
+    def _lookup_variable_definition(alarm: str, actual_name: str) -> VariableDefinition:
         try:
-            return _lookup_variable_definition_by_id(variable_definitions, id)
-        except ValueError as e:
+            return _lookup_variable_definition_by_id(
+                variable_definitions, actual_variable_ids[actual_name]
+            )
+        except (KeyError, ValueError) as e:
             raise ValueError(
-                f"No variable definition found for alarm {alarm} with id: {id}", e
+                f"No variable definition found for alarm {alarm} with actual: {actual_name}",
+                e,
             )
 
     def _lookup_threshold_getter(
@@ -160,8 +153,7 @@ def _build_sail_system_alarm_definitions(
         and variable_meta.alarm_for_field
         and (
             actual_definition := _lookup_variable_definition(
-                field,
-                f"{function_id}-{variable_meta.alarm_for_field}",
+                field, variable_meta.alarm_for_field
             )
         )
     ]
@@ -238,7 +230,6 @@ def _build_at_variable_definitions(model: type[LoadsModel]) -> VariableDefinitio
         scale_max=variable_meta.scale_max,
         scale_min_label=variable_meta.scale_min_label,
         scale_max_label=variable_meta.scale_max_label,
-        applicability=None,
     )
 
 

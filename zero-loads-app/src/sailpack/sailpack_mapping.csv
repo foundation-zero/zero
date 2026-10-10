@@ -1,54 +1,115 @@
-Variable key,Technical name,name in LC sheet by Stevo,Sailpack table name,Sailpack row label,Sailpack column label,Note on getting var from Sailpack
-aft-winch-load-ps,aft-winch-load-ps,Trisail Sheet,CABLE DATA,CABLE_TRISAIL_SHEET_PORT,Load (N),May also carry  loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example
-aft-winch-load-sb,aft-winch-load-sb,Trisail Sheet,CABLE DATA,CABLE_TRISAIL_SHEET_PORT,Load (N),May also carry  loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example
-aft-winch-load,aft-winch-load-sb,Trisail Sheet,CABLE DATA,CABLE_TRISAIL_SHEET_STBD,Load (N),May also carry loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example
-aft-winch-load,aft-winch-load-ps,Mizzen jib sheet load,CABLE DATA,CABLE_MIZZEN_JIB_SHEET,Load (N),
-blade-adjuster-load,blade-adjuster-load,Main head stay,CABLE DATA,CABLE__FS,Load (N),
-blade-adjuster-relative-position,blade-adjuster-relative-position,- Main head stay position (remap),CABLE DATA,CABLE__FS,Trimming value (N or m),Should not be adjusted once rig is set up. For monitoring purposes only
-blade-cunningham-load,blade-cunningham-load,Jib tack,CABLE DATA,CABLE_BladeTACK,Load (N),
-blade-cunningham-relative-position,blade-cunningham-relative-position,- Jib tack position (remap),CABLE DATA,CABLE_BladeTACK,Trimming value (N or m),
-blade-sheet-feeder-load,blade-sheet-feeder-load,Jib sheet,CABLE DATA,CABLE_JIBSHEET,Load (N),
-blade-tweaker-load,blade-tweaker-load,Jib tweaker,CABLE DATA,CABLE_BLADE_UP_DOWN,Load (N),
-blade-tweaker-relative-position,blade-tweaker-relative-position,- Jib tweaker position (remap),CABLE DATA,CABLE_BLADE_UP_DOWN,Trimming value (N or m),
-code-zero-tack-load,code-zero-tack-load,Mast head zero,CABLE DATA,CABLE_CODE_0_TACK,Load (N),
-code-zero-tack-relative-position,code-zero-tack-relative-position,- Mast head zero tack position (remap),CABLE DATA,CABLE_CODE_0_TACK,Trimming value (N or m),
-fiber-optic-main-d1-ps,fiber-optic-main-d1-ps,Main D1 - Port,CABLE DATA,CABLE_D1P,Load (N),
-fiber-optic-main-d1-sb,fiber-optic-main-d1-sb,Main D1 - Stbd,CABLE DATA,CABLE_D1S,Load (N),
-fiber-optic-main-v1-ps,fiber-optic-main-v1-sb,Main V1 - Stbd,CABLE DATA,CABLE_V1S,Load (N),
-fiber-optic-main-v1-sb,fiber-optic-main-v1-ps,Main V1 - Port,CABLE DATA,CABLE_V1P,Load (N),
-fiber-optic-mizzen-d1-ps,fiber-optic-mizzen-d1-ps,Mizzen D1,CABLE DATA,CABLE_MD1P,Load (N),
-fiber-optic-mizzen-d1-sb,fiber-optic-mizzen-d1-sb,Mizzen D1,CABLE DATA,CABLE_MD1S,Load (N),
-fiber-optic-mizzen-forestay,fiber-optic-mizzen-forestay,Mizzen headstay,CABLE DATA,CABLE_MIZ_FS,Load (N),
-fiber-optic-mizzen-v1-sb,fiber-optic-mizzen-v1-sb,Mizzen V1,CABLE DATA,CABLE_M_V1S,Load (N),
-fiber-optic-mizzen-v1-ps,fiber-optic-mizzen-v1-ps,Mizzen V1,CABLE DATA,CABLE_M_V1P,Load (N),
-main-checkstay-deflector-load,main-checkstay-deflector-load,Main checkstay deflector,CABLE DATA,CABLE_CHECKSTAY_DEFLECTOR,Load (N),
-main-checkstay-deflector-relative-position,main-checkstay-deflector-relative-position,Main checkstay deflector,CABLE DATA,CABLE_CHECKSTAY_DEFLECTOR,Trimming value (N or m),
-main-checkstay-load,main-checkstay-load-ps,Main checkstay,CABLE DATA,CABLE_CHECKSTAY,Load (N),
-main-cunningham-load,main-cunningham-load,Main cunno,CABLE DATA,CABLE_MAIN_CUNN,Load (N),
-main-cunningham-relative-position,main-cunningham-relative-position,Main cunno,CABLE DATA,CABLE_MAIN_CUNN,Trimming value (N or m),
-main-halyard-load,main-halyard-load,-,CABLE DATA,CABLE_MAINHEAD_V,Load (N),
-main-outhaul-load,main-outhaul-load,Main outhaul / REEEF,CABLE DATA,CABLE_MAIN_OUTHAUL,Load (N),
-main-outhaul-relative-position,main-outhaul-relative-position,Main outhaul / REEEF,CABLE DATA,CABLE_MAIN_OUTHAUL,Trimming value (N or m),
-main-preventer-load,main-preventer-load,Preventer,CABLE DATA,CABLE_PREVENTER,Load (N),
-main-runner-load,main-runner-load-ps,Main runner (remap?),CABLE DATA,CABLE_RUNNER,Load (N),
-main-sheet-load,main-sheet-load,Main sheet load,CABLE DATA,CABLE_MAINSHEET,Load (N),Need to decide if we should display this as 1:1 or 2:1 load. Load from SailPack is 2:1
-main-traveller-relative-position,main-traveller-relative-position,Main traveller - Port,CABLE DATA,CABLE_TRAVELLER_WW,Trimming value (N or m),
-main-traveller-relative-position,main-traveller-relative-position,Main traveller - Stbd,CABLE DATA,CABLE_TRAVELLER_LW,Trimming value (N or m),
-main-vang-load,main-vang-load,Main vang,CABLE DATA,CABLE_VANG,Load (N),
-main-vang-relative-position,main-vang-relative-position,Main vang (remap),CABLE DATA,CABLE_VANG,Trimming value (N or m),
-mizzen-checkstay-deflector-load,mizzen-checkstay-deflector-load,Mizzen checkstay deflector,CABLE DATA,CABLE_MIZZ_CHECKSTAY_DEFLECTOR,Load (N),
-mizzen-checkstay-deflector-relative-position,mizzen-checkstay-deflector-relative-position,Mizzen checkstay deflector,CABLE DATA,CABLE_MIZZ_CHECKSTAY_DEFLECTOR,Trimming value (N or m),
-mizzen-checkstay-load,mizzen-checkstay-load-ps,Mizzen checkstay,CABLE DATA,CABLE_MIZZ_CHECKSTAY,Load (N),
-mizzen-cunningham-load,mizzen-cunningham-load,Mizzen cunno,CABLE DATA,CABLE_MIZZEN_CUNN,Load (N),
-mizzen-cunningham-relative-position,mizzen-cunningham-relative-position,Mizzen cunno,CABLE DATA,CABLE_MIZZEN_CUNN,Trimming value (N or m),
-mizzen-halyard-load,mizzen-halyard-load,-,CABLE DATA,CABLE_MIZZENHEAD_V,Load (N),
-mizzen-jib-tack-adjuster-load,mizzen-headsail-tack-adjuster-load,Mizzen tack,CABLE DATA,CABLE_MIZZEN_JIB_Tack,Load (N),
-mizzen-staysail-tack-adjuster-load,mizzen-headsail-tack-adjuster-load,,CABLE DATA,CABLE_MIZZEN_STAYSAILTack,Load (N),
-mizzen-jib-tack-adjuster-relative-position,mizzen-headsail-tack-adjuster-relative-position,- Mizzen tack (remap?),CABLE DATA,CABLE_MIZZEN_JIB_Tack,Trimming value (N or m),
-mizzen-staysail-tack-adjuster-relative-position,mizzen-headsail-tack-adjuster-relative-position,,CABLE DATA,CABLE_MIZZEN_STAYSAILTack,Trimming value (N or m),
-mizzen-outhaul-load,mizzen-outhaul-load,Mizzen outhaul / REEF,CABLE DATA,CABLE_MIZZENCLEW,Load (N),
-mizzen-outhaul-relative-position,mizzen-outhaul-relative-position,Mizzen outhaul / REEF,CABLE DATA,CABLE_MIZZENCLEW,Trimming value (N or m),
-mizzen-preventer-load,mizzen-preventer-load,Mizzen Preventer sheet,CABLE DATA,CABLE_MIZZEN_PREVENTER,Load (N),
-mizzen-runner-load,mizzen-runner-load-ps,Mizzen runner (remap?),CABLE DATA,CABLE_MIZZ_RUNNER,Load (N),2 x Mizzen Runner Tail Load Pin load x cos(17) – (Mizzen Check Stay Load Cell x cos(8)).
-mizzen-vang-load,mizzen-vang-load,,,,,
-mizzen-vang-relative-position ,mizzen-vang-relative-position ,,,,,
+Technical name,Sailpack table name,Sailpack row label,Sailpack column label,Note on getting var from Sailpack,SailPack load cases,SailPack min,SailPack max,SailPack max load case,SailPack trimming modes
+aft-winch-ps-load,CABLE DATA,CABLE_TRISAIL_SHEET_PORT,Load (N),"May also carry  loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example
+[Question] The trisail sheet is rigged 2:1 (max loads sheet). Is the SailPack load the line load at the winch, or the clew load (winch sees half)?",2,0.10 t,3.63 t,LC66_TSOnly_TWS45_TWA45,"Delta length, Target load"
+aft-winch-sb-load,CABLE DATA,CABLE_TRISAIL_SHEET_STBD,Load (N),"May also carry loads from other applications - Mizzen Auxilary or Mizzen Jib sheet for example
+[Question] Same 2:1 question as the port trisail sheet.
+[Max load conflict] 14.0 t (LC66 TWA70) > alarm 9 t and max working load 9 t. The max loads sheet says reaching needs a 2:1 rig; can LC66 be rerun rigged 2:1?",2,9.79 t,14.02 t,LC66_TSOnly_TWS45_TWA70,Delta length
+aft-winch-sb-load,CABLE DATA,CABLE_MIZZEN_JIB_SHEET,Load (N),"[Question] Please confirm the mizzen jib sheet leads to the leeward aft winch. The mizzen staysail sheet (CABLE_MIZZEN_STAYSAIL_SHEET) goes to the mastbase winch, which has no sensor, so it is not mapped.",1,5.97 t,5.97 t,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,Delta length
+blade-adjuster-load,CABLE DATA,CABLE__FS,Load (N),"[Question] CABLE__FS is the whole headstay (unloaded length 59.50 m, never trimmed). Does the adjuster see the full headstay load?
+[Max load conflict] 30.6 t (LC4) > warning 28 t (alarm 31 t).",25,11.57 t,30.61 t,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,none
+blade-adjuster-relative-position,CABLE DATA,CABLE__FS,Unloaded length (m) - After FSIC,"Should not be adjusted once rig is set up. For monitoring purposes only
+[Question] The headstay is never trimmed: unloaded length is 59.50 m in all 25 load cases. Which adjuster position does 59.50 m correspond to?",25,59.50 m,59.50 m,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,none
+blade-cunningham-load,CABLE DATA,CABLE_BladeTACK,Load (N),"[Question] There are two tack cylinders. Is this the total tack load (both cylinders)?
+[Max load conflict] 22.2 t (LC4) > alarm 22 t (= relief load).",8,12.29 t,22.22 t,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,"Delta length, none"
+blade-cunningham-relative-position,CABLE DATA,CABLE_BladeTACK,Unloaded length (m) - After FSIC,"[Question] Unloaded length only varies 0.30–0.32 m, while the cylinder stroke is 500 mm (Harken C15789). What does this cable span, and what length is 0 % stroke?",8,0.30 m,0.33 m,LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410,"Delta length, none"
+blade-sheet-sb-load,CABLE DATA,CABLE_JIBSHEET,Load (N),"[Question] The inboard and outboard sheet alternate: the unused one is set to a 0.1 t target load. Please confirm this is intentional. The outboard sheet goes to the primary winch.
+[Mismatch] The max loads sheet gives 16.5 t (LC4) as the SailPack value, but that is CABLE_JIBSHEET_OB (primary winch). The inboard sheet max is 12.2 t (Main Tack Test).
+[Max load conflict] 12.2 t (Main Tack Test) > warning 12 t.",8,0.10 t,12.22 t,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,"Delta length, Target load"
+blade-tweaker-sb-load,CABLE DATA,CABLE_BLADE_UP_DOWN,Load (N),[Question] What is CABLE_BLADE_PULLR_INBOARD (up to 2.7 t)? Is it part of the tweaker system?,8,0.04 t,6.01 t,LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409,"Delta length, none"
+blade-tweaker-sb-relative-position,CABLE DATA,CABLE_BLADE_UP_DOWN,Unloaded length (m) - After FSIC,"[Question] Unloaded length 0.60–1.05 m; cylinder stroke 595 mm (Harken C16027). What does this cable span, is there a purchase, and what length is 0 % stroke?",8,0.60 m,1.05 m,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,"Delta length, none"
+code-zero-tack-load,CABLE DATA,CABLE_CODE_0_TACK,Load (N),[Max load conflict] 23.8 t (LC20) > warning 22 t. LC20 is the only code zero case.,1,23.82 t,23.82 t,LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411,Delta length
+code-zero-tack-load,CABLE DATA,CABLE_CL_A3_TACKLINE,Load (N),"[Suggestion] The A3 tack line uses the code zero tack system, so it is mapped here. 11.7 t in LC33.",1,11.69 t,11.69 t,LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411,none
+code-zero-tack-relative-position,CABLE DATA,CABLE_CODE_0_TACK,Unloaded length (m) - After FSIC,"[Question] Two cylinders with 750 mm stroke (Harken C16064). What does this cable span, and what length is 0 % stroke?",1,0.35 m,0.35 m,LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411,Delta length
+code-zero-tack-relative-position,CABLE DATA,CABLE_CL_A3_TACKLINE,Unloaded length (m) - After FSIC,[Question] The A3 tack line is not trimmed (unloaded length 0.08 m). Does this represent the tack cylinder?,1,0.08 m,0.08 m,LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411,none
+fiber-optic-main-d1-ps,CABLE DATA,CABLE_D1P,Load (N),[Max load conflict] 39.1 t (LC9-R) > alarm 39 t and max working load 38.8 t.,25,21.37 t,39.06 t,LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,none
+fiber-optic-main-d1-sb,CABLE DATA,CABLE_D1S,Load (N),,25,0.00 t,16.64 t,LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,none
+fiber-optic-main-v1-ps,CABLE DATA,CABLE_V1P,Load (N),[Max load conflict] 76.0 t (LC11) > warning 70 t (alarm 77.5 t).,25,43.30 t,75.97 t,LC11_ SS_M1R_TWA50_TWS24_RM18_20240410,none
+fiber-optic-main-v1-sb,CABLE DATA,CABLE_V1S,Load (N),,25,6.55 t,42.05 t,LC10_ SJ_TWA60_TWS45_RM10_20240419,none
+fiber-optic-mizzen-d1-ps,CABLE DATA,CABLE_MD1P,Load (N),[Max load conflict] 24.8 t (LC53) > alarm 22.8 t (= max working load).,25,7.50 t,24.83 t,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,none
+fiber-optic-mizzen-d1-sb,CABLE DATA,CABLE_MD1S,Load (N),,25,0.00 t,7.44 t,LC10_ SJ_TWA60_TWS45_RM10_20240419,none
+fiber-optic-mizzen-forestay,CABLE DATA,CABLE_MIZ_FS,Load (N),"[Question] CABLE_MIZ_FS_UNDERDECK (20.4 t, 3 load cases) also exists. The fibre-optic sensor is on the forestay above deck; please confirm CABLE_MIZ_FS is the right cable.
+[Max load conflict] 27.9 t (LC7) > warning 25 t (alarm 28 t).",25,6.65 t,27.88 t,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,none
+fiber-optic-mizzen-v1-ps,CABLE DATA,CABLE_M_V1P,Load (N),"[Max load conflict] 45.7 t (LC53) > alarm 43 t and max working load 43.1 t.
+[Mismatch] The max loads sheet gives 42.15 t from LC35 as the SailPack value, but LC53 is higher.",25,23.34 t,45.68 t,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,none
+fiber-optic-mizzen-v1-sb,CABLE DATA,CABLE_M_V1S,Load (N),,25,4.82 t,27.53 t,LC66_TSOnly_TWS45_TWA70,none
+main-checkstay-deflector-load,CABLE DATA,CABLE_CHECKSTAY_DEFLECTOR,Load (N),"[Question] The deflector has a 1:3 purchase and the relief value is the line load (max loads sheet). Is the SailPack load the cylinder line load or the load at the checkstay?
+[Max load conflict] 4.3 t (LC9-R) > warning 4.25 t.",25,0.00 t,4.26 t,LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,"Delta length, none"
+main-checkstay-deflector-relative-position,CABLE DATA,CABLE_CHECKSTAY_DEFLECTOR,Unloaded length (m) - After FSIC,"[Question] Unloaded length 39.03–41.28 m, so the cable runs a long way beyond the cylinder. What length is 0 % stroke, and does the 1:3 purchase apply to the length change?",25,39.03 m,41.28 m,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,"Delta length, none"
+main-checkstay-ps-load,CABLE DATA,CABLE_CHECKSTAY,Load (N),"[Question] CABLE_CHECKSTAY_STROP carries the same load. Which one has the Cyclops load cell?
+[Max load conflict] 16.5 t (LC9-R) > alarm 13.5 t and max working load 13.8 t.",25,0.00 t,16.49 t,LC9-R_ SJ_M3R_TWA90_TWS35_RM12_20240418,none
+main-cunningham-load,CABLE DATA,CABLE_MAIN_CUNN,Load (N),"[Question] Apart from the Main Tack Test, the cunningham is set with a target load (1.5–2.5 t), so the reference value is an input, not a result. Are those realistic targets?
+[Max load conflict] 6.0 t (Main Tack Test) > alarm 5.5 t.",9,1.53 t,6.04 t,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,"Delta length, Target load"
+main-cunningham-load,CABLE DATA,CABLE_MAIN_CUNNO_R1,Load (N),"[Suggestion] Reefed cunningham, mapped to the same sensor. It is set with a target load (2.5–3.6 t). The max loads sheet allows 5.5 t at 1:1 and 2.5 t at 2:1 when reefed: is this the load at the reef tack or at the cylinder?
+[Question] Naming: CUNNO_Rn vs CUNN. Same kind of cable?",6,2.55 t,3.57 t,LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410,Target load
+main-cunningham-load,CABLE DATA,CABLE_MAIN_CUNNO_R2,Load (N),"[Suggestion] Reefed cunningham, mapped to the same sensor. It is set with a target load (2.5–3.6 t). The max loads sheet allows 5.5 t at 1:1 and 2.5 t at 2:1 when reefed: is this the load at the reef tack or at the cylinder?
+[Question] Naming: CUNNO_Rn vs CUNN. Same kind of cable?",4,2.55 t,2.55 t,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,Target load
+main-cunningham-load,CABLE DATA,CABLE_MAIN_CUNNO_R3,Load (N),"[Suggestion] Reefed cunningham, mapped to the same sensor. It is set with a target load (2.5–3.6 t). The max loads sheet allows 5.5 t at 1:1 and 2.5 t at 2:1 when reefed: is this the load at the reef tack or at the cylinder?
+[Question] Naming: CUNNO_Rn vs CUNN. Same kind of cable?",3,2.55 t,2.55 t,LC65-2_M3R_TWA70_TWS40_RM12_20240412,Target load
+main-cunningham-relative-position,CABLE DATA,CABLE_MAIN_CUNN,Unloaded length (m) - After FSIC,,9,7.08 m,7.21 m,LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411,"Delta length, Target load"
+main-cunningham-relative-position,CABLE DATA,CABLE_MAIN_CUNNO_R1,Unloaded length (m) - After FSIC,,6,7.11 m,7.12 m,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,Target load
+main-cunningham-relative-position,CABLE DATA,CABLE_MAIN_CUNNO_R2,Unloaded length (m) - After FSIC,,4,7.09 m,7.12 m,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,Target load
+main-cunningham-relative-position,CABLE DATA,CABLE_MAIN_CUNNO_R3,Unloaded length (m) - After FSIC,,3,7.06 m,7.06 m,LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412,Target load
+main-halyard-load,,,,"[Suggestion] Not mapped. CABLE_MAINHEAD_V and CABLE_MAINHEADV_R1–R3 (up to 26.8 t) are the head load on the halyard lock. With the lock engaged, the halyard winch (max 3 t) carries almost nothing.",,,,,
+main-outhaul-load,CABLE DATA,CABLE_MAIN_OUTHAUL,Load (N),"[Question] Reefed: do the reef clew strops CABLE_MAIN_CLEW_STROP_R1–R3 (up to 24.9 t, LC6) pull on the outhaul car, so the outhaul sensor sees their load (fully, or the horizontal component only)? If so, 24.9 t is above the 18 t relief load and the 22.2 t max working load.
+[Question] What are CABLE_MAIN_CLEW_STROP_VERT (up to 19.2 t, full main) and, in the Main Tack Test only, CABLE_MAIN_CLEW_STROP (25.5 t) and CABLE_OUTHAUL_SLIDER (16.7 t)? Which one represents the outhaul load pin?
+[Mismatch] The max loads sheet has no warning or alarm for the main outhaul.",9,4.43 t,15.29 t,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,Delta length
+main-outhaul-relative-position,CABLE DATA,CABLE_MAIN_OUTHAUL,Unloaded length (m) - After FSIC,[Question] Unloaded length ranges from 0.98 m to 6.24 m. What does this cable span? The CARS DATA table also has a TRACK_MAIN_OUTHAUL car: is its position a better source?,9,0.98 m,6.24 m,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,Delta length
+main-preventer-load,CABLE DATA,CABLE_PREVENTER,Load (N),"[Question] The preventer has a 1:2 purchase. Is the SailPack load at the boom or at the cylinder?
+[Max load conflict] 12.2 t (LC53) > warning 11 t.",12,0.00 t,12.24 t,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,"Delta length, Target load, none"
+main-preventer-relative-position,CABLE DATA,CABLE_PREVENTER,Unloaded length (m) - After FSIC,,12,2.95 m,5.80 m,LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411,"Delta length, Target load, none"
+main-runner-block-ps-load,,,,[Suggestion] Not a SailPack cable; the loads app derives it from RUNNER_TAIL (block = 2 × tail). The max loads sheet has no thresholds for the block yet.,,,,,
+main-runner-stay-ps-load,CABLE DATA,CABLE_RUNNER,Load (N),"[Suggestion] Verified: 2 × RUNNER_TAIL − CABLE_CHECKSTAY × cos 10° reproduces CABLE_RUNNER to within 0.1 t in all 25 load cases.
+[Max load conflict] 25.9 t (LC4) > warning 23 t (alarm 26 t).",25,6.28 t,25.86 t,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,none
+main-runner-tail-ps-load,CABLE DATA,RUNNER_TAIL,Load (N),"[Question] Naming: no CABLE_ prefix, unlike CABLE_MIZZ_RUNNERTAIL.
+[Max load conflict] 13.4 t (LC4) > warning 13 t.",25,3.81 t,13.42 t,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,"Delta length, Target load"
+main-sheet-load,CABLE DATA,CABLE_MAINSHEET,Load (N),"Need to decide if we should display this as 1:1 or 2:1 load. Load from SailPack is 2:1
+[Max load conflict] 11.7 t (Main Tack Test) > warning 11 t.",25,1.02 t,11.71 t,LC___FM_B_TWA45_TWS18_RM22_20241202 Main Tack Test,"Delta length, Target load"
+main-traveller-relative-position,CARS DATA,TRACK_MAINSAIL,Pos Z(m),"[Suggestion] Uses the traveller car position across the boat (Pos Z, 0–2.8 m) from CARS DATA instead of the WW/LW control lines. What is the track half-length, and is positive Z windward?",25,0.00 m,2.80 m,LC12_ SJ_M2R_TWA52_TWS30_RM15_20240412,
+main-vang-load,CABLE DATA,CABLE_VANG,Load (N),"[Max load conflict] 56.1 t is a target load set in the model (LC1-2R, LC5-R, LC53, LC6-R; 49.0 t in LC65-2, 35.7 t in LC9-R). That is above the 45.75 t alarm and relief load. Can these cases be rerun with the vang at 45.75 t?
+[Question] LC66 and the Main Tack Test model the vang/gooseneck with extra cables (CABLE_MAIN_VANG_TOP/BOTTOM, GOOSENECK_*). Which one is the vang cylinder there?",25,0.00 t,56.08 t,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,"Delta length, Target load, none"
+main-vang-relative-position,CABLE DATA,CABLE_VANG,Unloaded length (m) - After FSIC,,25,3.57 m,4.47 m,LC66_TSOnly_TWS45_TWA45,"Delta length, Target load, none"
+mizzen-checkstay-deflector-load,CABLE DATA,CABLE_MIZZ_CHECKSTAY_DEFLECTOR,Load (N),,25,0.00 t,0.47 t,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,"Delta length, Target load, none"
+mizzen-checkstay-deflector-relative-position,CABLE DATA,CABLE_MIZZ_CHECKSTAY_DEFLECTOR,Unloaded length (m) - After FSIC,,25,32.63 m,33.38 m,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,"Delta length, Target load, none"
+mizzen-checkstay-ps-load,CABLE DATA,CABLE_MIZZ_CHECKSTAY,Load (N),[Max load conflict] 2.9 t (LC1-2R) > alarm 2.45 t and max working load 2.46 t.,25,0.00 t,2.94 t,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,none
+mizzen-cunningham-load,CABLE DATA,CABLE_MIZZEN_CUNN,Load (N),"[Question] Always set with a target load (1.0–2.0 t), so the reference value is an input. Are those realistic targets?",7,1.02 t,2.04 t,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,Target load
+mizzen-cunningham-load,CABLE DATA,CABLE_MIZZEN_CUNN_R1,Load (N),"[Suggestion] Reefed cunningham, mapped to the same sensor. Set with a target load (1.5–2.0 t). The max loads sheet allows 4 t at 1:1 and 2 t at 2:1 when reefed: is this the load at the reef tack or at the cylinder?",3,1.53 t,2.04 t,LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410,Target load
+mizzen-cunningham-load,CABLE DATA,CABLE_MIZZEN_CUNN_R2,Load (N),"[Suggestion] Reefed cunningham, mapped to the same sensor. Set with a target load (1.5–2.0 t). The max loads sheet allows 4 t at 1:1 and 2 t at 2:1 when reefed: is this the load at the reef tack or at the cylinder?",5,1.53 t,2.04 t,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,Target load
+mizzen-cunningham-relative-position,CABLE DATA,CABLE_MIZZEN_CUNN,Unloaded length (m) - After FSIC,,7,6.54 m,6.57 m,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,Target load
+mizzen-cunningham-relative-position,CABLE DATA,CABLE_MIZZEN_CUNN_R1,Unloaded length (m) - After FSIC,,3,6.47 m,6.48 m,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,Target load
+mizzen-cunningham-relative-position,CABLE DATA,CABLE_MIZZEN_CUNN_R2,Unloaded length (m) - After FSIC,,5,6.38 m,6.39 m,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,Target load
+mizzen-halyard-load,,,,[Suggestion] Not mapped. CABLE_MIZZENHEAD_V and CABLE_MIZZENHEAD_R1_V/R2_V (up to 15.8 t) are the head load on the halyard lock; the winch alarm is 2.5 t.,,,,,
+mizzen-headsail-tack-adjuster-load,CABLE DATA,CABLE_MIZZEN_JIB_Tack,Load (N),[Max load conflict] 15.3 t (LC22) > alarm 14.5 t (= max working load).,1,15.26 t,15.26 t,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,Delta length
+mizzen-headsail-tack-adjuster-load,CABLE DATA,CABLE_MIZZEN_STAYSAILTack,Load (N),,1,13.69 t,13.69 t,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,Delta length
+mizzen-headsail-tack-adjuster-relative-position,CABLE DATA,CABLE_MIZZEN_JIB_Tack,Unloaded length (m) - After FSIC,,1,0.57 m,0.57 m,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,Delta length
+mizzen-headsail-tack-adjuster-relative-position,CABLE DATA,CABLE_MIZZEN_STAYSAILTack,Unloaded length (m) - After FSIC,,1,0.42 m,0.42 m,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,Delta length
+mizzen-outhaul-load,CABLE DATA,CABLE_MIZZENCLEW,Load (N),"[Question] Reefed: do the reef clew strops CABLE_MIZZEN_CLEW_STROP_R1/R2 (up to 16.4 t, LC5-R) pull on the outhaul car? If so, 16.4 t is above the 15.4 t max working load.
+[Question] Naming: MIZZENCLEW vs MAIN_OUTHAUL. Same kind of cable? And what is CABLE_MIZZEN_CLEW_STROP_VERT (up to 13.7 t)?
+[Mismatch] The max loads sheet has no warning or alarm for the mizzen outhaul.",7,3.28 t,9.95 t,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,Delta length
+mizzen-outhaul-relative-position,CABLE DATA,CABLE_MIZZENCLEW,Unloaded length (m) - After FSIC,,7,0.54 m,0.56 m,LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409,Delta length
+mizzen-preventer-load,CABLE DATA,CABLE_MIZZEN_PREVENTER,Load (N),"[Question] The preventer has a 1:2 purchase. Is the SailPack load at the boom or at the cylinder?
+[Max load conflict] 9.2 t (LC53) > alarm 9 t.",12,0.00 t,9.19 t,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,"Delta length, none"
+mizzen-preventer-relative-position,CABLE DATA,CABLE_MIZZEN_PREVENTER,Unloaded length (m) - After FSIC,,12,2.87 m,3.82 m,LC10_ SJ_TWA60_TWS45_RM10_20240419,"Delta length, none"
+mizzen-runner-block-ps-load,,,,[Suggestion] Not a SailPack cable; the loads app derives it from CABLE_MIZZ_RUNNERTAIL (block = 2 × tail × cos 17°). The max loads sheet has no thresholds for the block yet.,,,,,
+mizzen-runner-stay-ps-load,CABLE DATA,CABLE_MIZZ_RUNNER,Load (N),"2 x Mizzen Runner Tail Load Pin load x cos(17) – (Mizzen Check Stay Load Cell x cos(8)).
+[Suggestion] Verified: 2 × tail × cos 17° − checkstay × cos 8° reproduces CABLE_MIZZ_RUNNER to within about 0.3 t.
+[Max load conflict] 9.1 t (LC7) > warning 9 t.",25,1.14 t,9.12 t,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,none
+mizzen-runner-tail-ps-load,CABLE DATA,CABLE_MIZZ_RUNNERTAIL,Load (N),[Max load conflict] 5.3 t (LC7-R) > warning 5 t.,25,1.15 t,5.30 t,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,"Delta length, Target load"
+mizzen-sheet-load,CABLE DATA,CABLE_MIZZENSHEET,Load (N),[Max load conflict] 6.4 t (LC1-2) > warning 6 t.,25,0.34 t,6.40 t,LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409,"Delta length, Target load, none"
+mizzen-vang-load,CABLE DATA,CABLE_MIZZEN_VANG,Load (N),"[Max load conflict] 30.6 t is a target load set in the model (LC1-2R, LC5-R, LC53, LC6-R). That is above the 25 t alarm and relief load. Can these cases be rerun with the vang at 25 t?
+[Mismatch] The max loads sheet gives 30.0 t as the SailPack value; the model uses 30.6 t.
+[Question] Negative loads in LC66 (−14.0 t) and the Main Tack Test (−10.4 t): is the vang pushing there?",25,-13.99 t,30.59 t,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,"Delta length, Target load, none"
+mizzen-vang-relative-position,CABLE DATA,CABLE_MIZZEN_VANG,Unloaded length (m) - After FSIC,,25,4.46 m,5.32 m,LC66_TSOnly_TWS45_TWA45,"Delta length, Target load, none"
+primary-winch-sb-load,CABLE DATA,CABLE_JIBSHEET_OB,Load (N),"[Suggestion] The outboard jib sheet goes to the primary winch.
+[Max load conflict] 16.5 t (LC4) > alarm 12.5 t and max working load 13 t.",8,0.00 t,16.55 t,LC4_ B_M1R_MZ2R_TWA45_TWS22_RM20_20240410,"Delta length, Target load, none"
+primary-winch-sb-load,CABLE DATA,CABLE_STORM_JIB_OB_SHEET,Load (N),"[Suggestion] The storm jib has a single sheet, led to the primary winch. The model has two: CABLE_Storm_Jib_SHEET is always slack (0.01–0.1 t target load) and this cable carries the load (6.0–8.9 t). Please confirm this cable is that single sheet.",4,5.95 t,8.90 t,LC10_ SJ_TWA60_TWS45_RM10_20240419,"Delta length, none"
+primary-winch-sb-load,CABLE DATA,CABLE_CODE_0_SHEET,Load (N),[Suggestion] The code zero sheet goes to the primary winch. 9.4 t in LC20.,1,9.39 t,9.39 t,LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411,Delta length
+primary-winch-sb-load,CABLE DATA,CABLE_CL_A3_SHEET,Load (N),"[Suggestion] The A3 sheet goes to the primary winch, like the code zero sheet. 8.1 t in LC33.",1,8.07 t,8.07 t,LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411,Delta length
+primary-winch-sb-load,CABLE DATA,CABLE_STAYSAIL_OB_SHEET,Load (N),"[Suggestion] The outboard staysail lead goes to the primary winch; the inboard lead is on the feeder load pin (staysail-sheet-sb-load). Loaded in the reaching cases LC5-R, LC6-R and LC7-R (6.0–9.2 t) and in LC8 (6.7 t).",7,0.01 t,9.17 t,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,"Delta length, Target load, none"
+staysail-sheet-sb-load,CABLE DATA,CABLE_staysail_SHEET,Load (N),"[Suggestion] Inboard lead: measured by the load pin on the feeder. The outboard lead (CABLE_STAYSAIL_OB_SHEET) goes to the primary winch. In LC8 both leads carry load (7.5 t here, 6.7 t outboard); please confirm that is intended.
+[Question] Is CABLE_staysail_BLOCK (up to 6.6 t, loaded only with this sheet) the feeder? If so, the load pin measures the feeder load, not the sheet tension.
+[Mismatch] The max loads sheet has no thresholds for the staysail sheet.",7,0.10 t,11.11 t,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,"Delta length, Target load, none"
+staysail-stay-adjuster-load,CABLE DATA,CABLE_STAYSAIL_Tack,Load (N),"[Question] The staysail luff (Sail8 LuffLine) is set with a target load of 5.1–17.8 t, so the stay load is partly an input. CABLE_Staysail_HALYARD reaches 40.8 t, more than the tack. Does the stay adjuster see the tack load?
+[Max load conflict] 36.4 t (LC8) > alarm 33 t and max working load 33.2 t.",7,18.84 t,36.42 t,LC8_ SS_M2R_TWA50_TWS27_RM15_20240410,"Delta length, none"
+staysail-stay-adjuster-relative-position,CABLE DATA,CABLE_STAYSAIL_Tack,Unloaded length (m) - After FSIC,,7,0.42 m,0.52 m,LC11_ SS_M1R_TWA50_TWS24_RM18_20240410,"Delta length, none"
+storm-jib-tack-load,CABLE DATA,CABLE_Storm_Jib_Tack,Load (N),"[Question] The tack has a 3:1 purchase to a 9 t winch. Is the SailPack value the tack load (before the purchase)?
+[Max load conflict] 31.2 t (LC9) > alarm 27 t; at 3:1 that is 10.4 t on the 9 t winch.",4,26.07 t,31.21 t,LC9_ SJ_M3R_TWA55_TWS35_RM12_20240412,Delta length
