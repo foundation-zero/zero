@@ -349,7 +349,7 @@
           "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tDAY,\r\n\tAVG(total_soc) * 100 / $max_soc AS soc\r\nFROM (\r\n\tSELECT\r\n\t\tdate_trunc('day', HOUR AT TIME ZONE 'Etc/Universal') AS day,\r\n\t\tSUM(soc) AS total_soc\r\n\tFROM views.\r\n\tGROUP BY hour\r\n)\r\nGROUP BY DAY\r\nORDER BY day",
+          "rawSql": "SELECT\r\n  day,\r\n  (SUM(avg_energy_per_pack) / NULLIF(SUM(avg_energy_per_pack / NULLIF(avg_soc_per_pack, 0) * 100), 0)) * 100 AS soc\r\nFROM (\r\n  SELECT\r\n    date_bin(INTERVAL '1 day', time) AS day,\r\n    topic,\r\n    AVG(avg_energy)                  AS avg_energy_per_pack,\r\n    AVG(avg_soc)                     AS avg_soc_per_pack\r\n  FROM views.gld_batteries_per_minute\r\n  WHERE $__timeFilter(time)\r\n  GROUP BY day, topic\r\n)\r\nGROUP BY day\r\n",
           "refId": "SoC",
           "sql": {
             "columns": [
@@ -377,7 +377,7 @@
           },
           "editorMode": "code",
           "format": "table",
-          "hide": false,
+          "hide": true,
           "rawQuery": true,
           "rawSql": "SELECT *\r\nFROM (\r\n  WITH\r\n  start_value AS (\r\n    SELECT\r\n      day AS start_day,\r\n      AVG(total_soc) as start_soc\r\n    FROM (\r\n      SELECT\r\n        date_trunc('day', hour) AS day,\r\n        SUM(soc) AS total_soc\r\n      FROM energy.electrical_soc_hourly\r\n      WHERE hour BETWEEN to_date('$start_date', 'DD Mon YYYY') AND to_date('$start_date', 'DD Mon YYYY') + TIME '23:59'\r\n      GROUP BY hour\r\n    )\r\n    GROUP BY day\r\n  ),\r\n  future AS (\r\n    SELECT\r\n      (start_day + n * INTERVAL '1 day')::date AS day,\r\n      start_soc - $daily_consumption * n AS soc\r\n    FROM start_value\r\n    CROSS JOIN generate_series(0, 30) AS n\r\n  )\r\n  SELECT\r\n    day AS time,\r\n    soc * 100 / $max_soc AS soc_prediction\r\n  FROM future\r\n)\r\nORDER BY time",
           "refId": "SoC prediction",
@@ -407,7 +407,7 @@
           },
           "editorMode": "code",
           "format": "table",
-          "hide": false,
+          "hide": true,
           "rawQuery": true,
           "rawSql": "WITH\r\n  start_point AS (\r\n    SELECT\r\n      day::date AS start_day,\r\n      AVG(total_soc) as start_soc\r\n    FROM (\r\n      SELECT\r\n        date_trunc('day', hour) AS day,\r\n        SUM(soc) AS total_soc\r\n      FROM energy.electrical_soc_hourly\r\n      WHERE hour BETWEEN to_date('$start_date', 'DD Mon YYYY') AND to_date('$start_date', 'DD Mon YYYY') + TIME '23:59'\r\n      GROUP BY hour\r\n    )\r\n    GROUP BY day\r\n  ),\r\n  end_point AS (\r\n    SELECT\r\n      day::date AS end_day,\r\n      AVG(total_soc) as end_soc\r\n    FROM (\r\n      SELECT\r\n        date_trunc('day', hour) AS day,\r\n        SUM(soc) AS total_soc\r\n      FROM energy.electrical_soc_hourly\r\n      WHERE hour >= (SELECT date_trunc('day', MAX(hour)) FROM energy.electrical_soc_hourly)\r\n      GROUP BY hour\r\n    )\r\n    GROUP BY day\r\n  ),\r\n  consumption_values AS (\r\n    SELECT \r\n      s.start_day AS start_date,\r\n      e.end_day AS end_date,\r\n      s.start_soc AS start_value,\r\n      (e.end_soc - s.start_soc) / GREATEST(1, (e.end_day - s.start_day)) AS daily_consumption\r\n    FROM start_point s\r\n    CROSS JOIN end_point e\r\n  )\r\nSELECT\r\n  (start_date + n * INTERVAL '1 day')::date AS day,\r\n  CASE WHEN start_date = end_date\r\n    THEN NULL\r\n    ELSE (start_value + n * daily_consumption) * 100 / $max_soc\r\n  END AS soc_calculated\r\nFROM consumption_values\r\nCROSS JOIN generate_series(0, 30) AS n\r\n",
           "refId": "SoC calculated",
@@ -436,10 +436,24 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "format": "table",
+          "editorType": "sql",
+          "format": 1,
           "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "3.0.2",
+          "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH start_date AS (\r\n  SELECT to_timestamp($__from / 1000)::date AS start\r\n)\r\nSELECT\r\n  (start + n * INTERVAL '1 day')::date AS day,\r\n  $min_soc AS soc_threshold\r\nFROM start_date\r\nCROSS JOIN generate_series(0, 100) AS n",
+          "rawSql": "WITH start AS (\r\n  SELECT $__from / 1000 AS start_date\r\n)\r\nSELECT\r\n  to_timestamp(start_date + n * 86400)::DATE AS day,\r\n  $min_soc AS soc_threshold\r\nFROM start\r\nCROSS JOIN (\r\n  SELECT unnest(generate_series(0, 100, 1)) AS n\r\n) AS series",
           "refId": "SoC threshold",
           "sql": {
             "columns": [
@@ -467,7 +481,7 @@
           },
           "editorMode": "code",
           "format": "table",
-          "hide": false,
+          "hide": true,
           "rawQuery": true,
           "rawSql": "SELECT\r\n  date_trunc('day',  hour) DAY,\r\n  CASE WHEN SUM(-energy_wh) > 0 THEN SUM(-energy_wh)\r\n  ELSE NULL END AS daily_consumption,\r\n  CASE WHEN SUM(energy_wh) > 0 THEN SUM(energy_wh)\r\n  ELSE NULL END AS daily_production\r\nFROM energy.electrical_hourly\r\nGROUP BY DAY\r\nORDER BY DAY desc",
           "refId": "Net consumption/production",
@@ -946,13 +960,17 @@
           "type": "info8fcc-greptimedb-datasource",
           "uid": "${datasource}"
         },
-        "definition": "SELECT to_char(hour, 'MM_DD Mon YYYY') AS day \nFROM energy.electrical_soc_hourly\nWHERE hour > now() - INTERVAL '15 days'\nGROUP BY day\nORDER BY day DESC",
+        "definition": "",
         "label": "Start date",
         "name": "start_date",
         "options": [],
-        "query": "SELECT to_char(hour, 'MM_DD Mon YYYY') AS day \nFROM energy.electrical_soc_hourly\nWHERE hour > now() - INTERVAL '15 days'\nGROUP BY day\nORDER BY day DESC",
+        "query": {
+          "queryType": "sql",
+          "rawSql": "SELECT date_format(time, '%Y_%m %d %m %Y') AS day \nFROM views.gld_batteries_per_minute\nWHERE time > now() - INTERVAL '15 days'\nGROUP BY day\nORDER BY day DESC",
+          "refId": "var"
+        },
         "refresh": 2,
-        "regex": "/\\d\\d_(.*)/",
+        "regex": "/\\d\\d_\\d\\d (.*)/",
         "staticOptions": [
           {
             "text": "None",

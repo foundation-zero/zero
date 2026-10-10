@@ -2,3 +2,4 @@
 # Keep this small — snapshot diffs should stay focused on tables we actually model.
 # Refresh the committed DDL with: `zero-data greptime snapshot --host <tier>`.
 power_tags
+marpower__450000_main_power_storage_errors

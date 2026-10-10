@@ -44,7 +44,38 @@ models:
         description: "Table name associated with the raw message."
       - name: topic
         description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
       - name: main_group
         description: "The main group classification of the power tag."
       - name: sub_group
         description: "The sub group classification, within the main group, of the power tag."
+  - name: slv_batteries
+    description: >
+      Battery metrics enriched with metadata.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: soc
+        description: "State of charge of the battery."
+      - name: soh
+        description: "State of health of the battery."
+      - name: num_connected_strings
+        description: "Number of connected battery strings."
+      - name: energy
+        description: "Energy stored in the battery."
+      - name: charging
+        description: "Indicates if the battery is charging."
+      - name: discharging
+        description: "Indicates if the battery is discharging."
+      - name: charge_power
+        description: "Power used for charging the battery."
+      - name: battery_power
+        description: "Total power of the battery."
