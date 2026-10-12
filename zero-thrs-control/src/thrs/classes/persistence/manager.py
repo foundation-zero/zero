@@ -33,7 +33,7 @@ class PersistManager:
         self._persisted: dict[str, ModulePersistenceSnapshot] = {}
         self._persisted_at: dict[str, datetime] = {}
         self._transient_error_budget = transient_error_budget
-        self._failing_since: datetime | None = None
+        self._failing_since: dict[str, datetime] = {}
 
     async def restore(self, module: Module) -> bool:
         """Retrieve the module configuration from the persistence engine and apply it to the module.
@@ -88,7 +88,7 @@ class PersistManager:
         try:
             await self._persistence_engine.save(module_name, snapshot)
         except Exception as e:
-            if not self._tolerate(e):
+            if not self._tolerate(module_name, e):
                 raise
             logger.warning(
                 "Transient database error saving config for module %s, retrying next tick: %r",
@@ -97,18 +97,17 @@ class PersistManager:
             )
             return False
 
-        self._failing_since = None
+        self._failing_since.pop(module_name, None)
         return True
 
-    def _tolerate(self, exception: Exception) -> bool:
+    def _tolerate(self, module_name: str, exception: Exception) -> bool:
         """Retrying inside the control tick would stall it past the liveness probe,
         so a transient error is skipped until the next tick instead."""
         if not is_transient(exception):
             return False
         now = datetime.now()
-        if self._failing_since is None:
-            self._failing_since = now
-        return now - self._failing_since < self._transient_error_budget
+        failing_since = self._failing_since.setdefault(module_name, now)
+        return now - failing_since < self._transient_error_budget
 
     async def persist_all(self, modules: Iterable[Module]) -> None:
         """Persist all modules, per module is checked if it changed or the heartbeat expired."""

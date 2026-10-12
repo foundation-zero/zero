@@ -50,7 +50,8 @@ class PostgresDatabase:
 
 
 _TRANSIENT_ERRORS = (
-    OSError,
+    ConnectionError,
+    TimeoutError,
     asyncpg.CannotConnectNowError,
     asyncpg.ConnectionDoesNotExistError,
     asyncpg.ReadOnlySQLTransactionError,

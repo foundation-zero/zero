@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from datetime import timedelta
 
@@ -41,6 +42,17 @@ class SwitchoverSnapshotStore(InMemoryPersistentEngine):
     async def save(self, module_name: str, snapshot: ModulePersistenceSnapshot) -> None:
         if self._failures > 0:
             self._failures -= 1
+            raise ConnectionRefusedError(111, "Connect call failed")
+        await super().save(module_name, snapshot)
+
+
+class UnreachableForModuleStore(InMemoryPersistentEngine):
+    def __init__(self, unreachable_module: str) -> None:
+        super().__init__()
+        self._unreachable_module = unreachable_module
+
+    async def save(self, module_name: str, snapshot: ModulePersistenceSnapshot) -> None:
+        if module_name == self._unreachable_module:
             raise ConnectionRefusedError(111, "Connect call failed")
         await super().save(module_name, snapshot)
 
@@ -355,6 +367,35 @@ async def test_transient_save_error_raises_once_the_budget_runs_out():
 
     with pytest.raises(ConnectionRefusedError):
         await manager.persist(make_module())
+
+
+async def test_transient_save_budget_is_tracked_per_module():
+    manager = PersistManager(
+        UnreachableForModuleStore("failing"),
+        transient_error_budget=timedelta(milliseconds=50),
+    )
+    failing = make_module("failing")
+
+    assert await manager.persist(failing) is False
+    await asyncio.sleep(0.06)
+    assert await manager.persist(make_module("healthy")) is True
+
+    with pytest.raises(ConnectionRefusedError):
+        await manager.persist(failing)
+
+
+@pytest.mark.parametrize(
+    "error", [PermissionError("denied"), OSError(28, "No space left on device")]
+)
+async def test_non_connection_os_error_is_not_tolerated(error: OSError):
+    class BrokenStore(InMemoryPersistentEngine):
+        async def save(
+            self, module_name: str, snapshot: ModulePersistenceSnapshot
+        ) -> None:
+            raise error
+
+    with pytest.raises(type(error)):
+        await make_manager(BrokenStore()).persist(make_module())
 
 
 async def test_noop_store_never_returns_a_snapshot():
