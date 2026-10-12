@@ -1,12 +1,43 @@
 version: 2
 
 sources:
+  - name: metadata
+    description: >
+      Metadata for the system, including static information about various components.
+    database: public
+    schema: public
+    tables:
+      - name: power_tag_metadata
+        description: "Static metadata for power tags."
+        columns:
+          - name: ts
+            description: "Mandatory timestamp without valid value."
+          - name: power_tag_id
+            description: "Power tag identifier."
+          - name: panel
+            description: "Panel the power tag is located in."
+          - name: breaker
+            description: "Breaker the power tag is associated with."
+          - name: description
+            description: "Description of the power tag."
+          - name: name
+            description: "Name of the power tag."
+          - name: topic
+            description: "MQTT topic of the power tag."
+            tests:
+              - unique
+              - not_null
+          - name: main_group
+            description: "The main group classification of the power tag."
+          - name: sub_group
+            description: "The sub group classification, within the main group, of the power tag."
   - name: raw
     description: >
       Raw telemetry tables in Greptime's `public` database. Vector infers the table name
       from the MQTT payload and Greptime infers the columns and types from the flattened,
       snakecased JSON — so these schemas are dynamically generated, not declared. Their
       shapes are pinned locally by the committed snapshot under `snapshot/`.
+    database: public
     schema: public
     tables:
       - name: power_tags

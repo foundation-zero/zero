@@ -46,30 +46,24 @@ models:
         description: "MQTT topic associated with the raw message."
         tests:
           - not_null
-  - name: stg_power_tag_metadata
-    description: "Static metadata for power tags."
+  - name: stg_24vdc_metadata
+    description: "Static metadata for 24V DC system."
     columns:
       - name: ts
         description: "Mandatory timestamp without valid value."
-      - name: power_tag_id
-        description: "Power tag identifier."
-      - name: panel
-        description: "Panel the power tag is located in."
-      - name: breaker
-        description: "Breaker the power tag is associated with."
       - name: description
-        description: "Description of the power tag."
+        description: "Description of the 24V DC component."
       - name: name
-        description: "Name of the power tag."
+        description: "Name of the 24V DC component."
       - name: topic
-        description: "MQTT topic of the power tag."
+        description: "MQTT topic of the 24V DC component."
         tests:
           - unique
           - not_null
       - name: main_group
-        description: "The main group classification of the power tag."
+        description: "The main group classification of the 24V DC component."
       - name: sub_group
-        description: "The sub group classification, within the main group, of the power tag."
+        description: "The sub group classification, within the main group, of the 24V DC component."
   - name: stg_marpower__batteries
     description: "Cleaned Marpower main power storage errors telemetry."
     columns:
