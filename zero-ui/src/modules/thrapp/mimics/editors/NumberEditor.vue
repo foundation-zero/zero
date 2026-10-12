@@ -28,10 +28,10 @@ const form = injectValueForm();
     <template #editor>
       <NumberField
         v-model="modelValue"
+        v-bind="props"
         :class="cn({ 'w-full': isMultiLineEditor, 'w-30': !isMultiLineEditor }, props.class)"
         :readonly="form?.isPending.value"
         :disabled="!form?.isEditable.value"
-        v-bind="props"
       >
         <NumberFieldContent>
           <NumberFieldDecrement class="text-brand" />

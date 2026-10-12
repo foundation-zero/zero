@@ -6,6 +6,7 @@ import NumberEditor from "./NumberEditor.vue";
 import OpenClosedEditor from "./OpenClosedEditor.vue";
 import PendingIndicator from "./PendingIndicator.vue";
 import PercentageEditor from "./PercentageEditor.vue";
+import PidEditor from "./PidEditor.vue";
 import PowerEditor from "./PowerEditor.vue";
 import SubmitButton from "./SubmitButton.vue";
 import TankLevelEditor from "./TankLevelEditor.vue";
@@ -13,18 +14,45 @@ import TemperatureEditor from "./TemperatureEditor.vue";
 import ToggleEditor from "./ToggleEditor.vue";
 
 export const FieldEditor = {
-  Toggle: ToggleEditor,
-  Submit: SubmitButton,
-  Temperature: TemperatureEditor,
-  Number: NumberEditor,
-  Auto: AutoEditor,
-  Percentage: PercentageEditor,
-  OpenClosed: OpenClosedEditor,
-  TankLevel: TankLevelEditor,
-  FlowRate: FlowRateEditor,
-  Duration: DurationEditor,
-  Power: PowerEditor,
-  PendingIndicator,
+  get Toggle() {
+    return ToggleEditor;
+  },
+  get Submit() {
+    return SubmitButton;
+  },
+  get Temperature() {
+    return TemperatureEditor;
+  },
+  get Number() {
+    return NumberEditor;
+  },
+  get Auto() {
+    return AutoEditor;
+  },
+  get Percentage() {
+    return PercentageEditor;
+  },
+  get OpenClosed() {
+    return OpenClosedEditor;
+  },
+  get TankLevel() {
+    return TankLevelEditor;
+  },
+  get FlowRate() {
+    return FlowRateEditor;
+  },
+  get Duration() {
+    return DurationEditor;
+  },
+  get Power() {
+    return PowerEditor;
+  },
+  get PendingIndicator() {
+    return PendingIndicator;
+  },
+  get PidTuning() {
+    return PidEditor;
+  },
 };
 
 export type FieldEditorProps<T> = {
@@ -32,7 +60,7 @@ export type FieldEditorProps<T> = {
   class?: HTMLAttributes["class"];
 };
 
-export type NumberEditorProps = FieldEditorProps<number> & {
+export type NumberEditorProps<T = number> = FieldEditorProps<T> & {
   formatOptions?: Intl.NumberFormatOptions;
   min?: number;
   max?: number;
