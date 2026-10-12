@@ -14,7 +14,9 @@ use crate::mqtt::{MqttHandler, PublishError};
 use anyhow::{bail, Context, Result};
 use clap::{Parser, Subcommand};
 use log::{debug, error, info, warn};
+use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
+use std::hash::{BuildHasher, Hasher};
 use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::Duration;
@@ -167,16 +169,8 @@ fn read_runtime_config(config_path: &str) -> Result<crate::config::UdpChannels> 
 /// clients create no queues on the broker, so there is no session state to
 /// orphan.
 fn mqtt_client_id() -> String {
-    use std::time::{SystemTime, UNIX_EPOCH};
-    let nanos = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap_or_default()
-        .as_nanos() as u64;
-    let mut x = nanos;
-    x ^= x << 13;
-    x ^= x >> 7;
-    x ^= x << 17;
-    format!("zero-fiber-optics-{x:012x}")
+    let suffix = RandomState::new().build_hasher().finish();
+    format!("zero-fiber-optics-{suffix:016x}")
 }
 
 /// Log what the process is about to connect to.
