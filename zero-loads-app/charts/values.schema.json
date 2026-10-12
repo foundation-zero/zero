@@ -10,9 +10,6 @@
         "port": {
           "type": "integer"
         },
-        "username": {
-          "type": "string"
-        },
         "existingSecret": {
           "type": "string"
         },
@@ -20,7 +17,7 @@
           "type": "string"
         }
       },
-      "required": ["host", "port", "username", "existingSecret"],
+      "required": ["host", "port", "existingSecret"],
       "type": "object"
     },
     "postgresql": {

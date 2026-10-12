@@ -50,6 +50,19 @@ spec:
           imagePullPolicy: {{ .Values.control.image.pullPolicy }}
           resources:
             {{- toYaml .Values.simulation.resources | nindent 12 }}
+          env:
+            {{- if .Values.mqtt.existingSecret }}
+            - name: MQTT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mqtt.existingSecret }}
+                  key: username
+            - name: MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mqtt.existingSecret }}
+                  key: {{ .Values.mqtt.existingSecretPasswordKey }}
+            {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ include "zero-thrs-control.envvars" . }}

@@ -2,7 +2,6 @@
 mqtt:
   host: rabbitmq.rabbitmq.svc.cluster.local
   port: 1883
-  username: thrs
   existingSecret: thrs-user-user-credentials
   existingSecretPasswordKey: password
   devicesTopicPrefix: thrs

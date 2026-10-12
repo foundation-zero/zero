@@ -12,5 +12,4 @@ atpxMqtt:
 mqtt:
   host: "host.docker.internal"
   port: 1883
-  username: ""
   existingSecret: ""

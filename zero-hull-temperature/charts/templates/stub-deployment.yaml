@@ -44,11 +44,12 @@ spec:
               value: {{ .Values.mqtt.host | quote }}
             - name: MQTT_PORT
               value: {{ .Values.mqtt.port | quote }}
-            {{- if .Values.mqtt.username }}
-            - name: MQTT_USERNAME
-              value: {{ .Values.mqtt.username | quote }}
-            {{- end }}
             {{- if .Values.mqtt.existingSecret }}
+            - name: MQTT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mqtt.existingSecret }}
+                  key: username
             - name: MQTT_PASSWORD
               valueFrom:
                 secretKeyRef:

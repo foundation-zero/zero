@@ -26,7 +26,11 @@ class Control:
     @staticmethod
     async def init_from_settings(settings: Settings):
         async with MqttClient(
-            settings.mqtt_host, settings.mqtt_port, identifier="loads_control"
+            settings.mqtt_host,
+            settings.mqtt_port,
+            identifier="loads_control",
+            username=settings.mqtt_username,
+            password=settings.mqtt_password,
         ) as mqtt_client:
             yield Control(mqtt_client=mqtt_client)
 

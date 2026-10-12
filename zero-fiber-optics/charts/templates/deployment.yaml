@@ -53,11 +53,12 @@ spec:
               value: {{ .Values.mqtt.port | quote }}
             - name: MQTT_PREFIX
               value: {{ .Values.mqtt.prefix | quote }}
-            {{- if .Values.mqtt.username }}
-            - name: MQTT_USERNAME
-              value: {{ .Values.mqtt.username | quote }}
-            {{- end }}
             {{- if .Values.mqtt.existingSecret }}
+            - name: MQTT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mqtt.existingSecret }}
+                  key: username
             - name: MQTT_PASSWORD
               valueFrom:
                 secretKeyRef:

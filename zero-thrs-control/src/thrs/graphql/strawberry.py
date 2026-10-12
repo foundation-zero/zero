@@ -252,7 +252,12 @@ def create_app(settings: Config):
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt:
+        async with MqttClient(
+            settings.mqtt_host,
+            settings.mqtt_port,
+            username=settings.mqtt_username,
+            password=settings.mqtt_password,
+        ) as mqtt:
             messaging_connector = MqttConnector(mqtt)
 
             thrusters_channels = ControlApiChannels(
