@@ -1,5 +1,8 @@
 import asyncio
-from unittest.mock import Mock
+from contextlib import asynccontextmanager
+from unittest.mock import Mock, patch
+
+import pytest
 
 from tests.classes.machine_state_logger.conftest import added_model
 from thrs.classes.machine_state_logger import MachineStateLogger
@@ -96,3 +99,85 @@ async def test_log_model_in_running_loop_saves_to_database(
     await asyncio.sleep(0)  # give the scheduled task a chance to run
 
     mock_session.add.assert_called_once()
+
+
+def _flaky_postgres_db(mock_session: Mock, failures: int) -> Mock:
+    remaining = [failures]
+
+    @asynccontextmanager
+    async def begin():
+        if remaining[0] > 0:
+            remaining[0] -= 1
+            raise ConnectionRefusedError(111, "Connect call failed")
+        yield mock_session
+
+    postgres_db = Mock()
+    postgres_db.session_factory.begin = begin
+    return postgres_db
+
+
+@pytest.fixture
+def no_backoff(monkeypatch: pytest.MonkeyPatch) -> None:
+    async def sleep(delay_s: float) -> None:
+        await asyncio.sleep(0)
+
+    monkeypatch.setattr("thrs.classes.database.sleep", sleep)
+
+
+@pytest.mark.usefixtures("no_backoff")
+async def test_log_retries_through_a_switchover(mock_session: Mock) -> None:
+    logger = MachineStateLogger(_flaky_postgres_db(mock_session, failures=3))
+    loop = asyncio.get_running_loop()
+
+    logger.log_warning("during switchover")
+    await logger.wait_for_pending_tasks()
+
+    assert loop.is_running()
+    mock_session.add.assert_called_once()
+
+
+@pytest.mark.usefixtures("no_backoff")
+async def test_log_keeps_order_while_retrying(mock_session: Mock) -> None:
+    logger = MachineStateLogger(_flaky_postgres_db(mock_session, failures=2))
+
+    logger.log_warning("first")
+    logger.log_warning("second")
+    await logger.wait_for_pending_tasks()
+
+    details = [call.args[0].issue_details for call in mock_session.add.call_args_list]
+    assert details == ["first", "second"]
+
+
+@pytest.mark.usefixtures("no_backoff")
+async def test_log_stops_loop_when_retry_budget_runs_out(mock_session: Mock) -> None:
+    logger = MachineStateLogger(
+        _flaky_postgres_db(mock_session, failures=1), retry_budget_s=0
+    )
+
+    with _stop_spy() as stop:
+        logger.log_warning("database gone")
+        await logger.wait_for_pending_tasks()
+        await asyncio.sleep(0)
+
+    stop.assert_called_once()
+    mock_session.add.assert_not_called()
+
+
+async def test_log_stops_loop_on_non_transient_error(
+    postgres_db: Mock, mock_session: Mock
+) -> None:
+    mock_session.add.side_effect = ValueError("not a connection problem")
+    logger = MachineStateLogger(postgres_db)
+
+    with _stop_spy() as stop:
+        logger.log_warning("bad row")
+        await logger.wait_for_pending_tasks()
+        await asyncio.sleep(0)
+
+    stop.assert_called_once()
+    mock_session.add.assert_called_once()
+
+
+def _stop_spy():
+    """pytest-asyncio ends each test with `loop.stop()`, so the spy must not outlive the block."""
+    return patch.object(asyncio.get_running_loop(), "stop")

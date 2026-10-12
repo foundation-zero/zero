@@ -33,6 +33,18 @@ class FailingSnapshotStore(PersistentEngine):
         raise self._error()
 
 
+class SwitchoverSnapshotStore(InMemoryPersistentEngine):
+    def __init__(self, failures: int) -> None:
+        super().__init__()
+        self._failures = failures
+
+    async def save(self, module_name: str, snapshot: ModulePersistenceSnapshot) -> None:
+        if self._failures > 0:
+            self._failures -= 1
+            raise ConnectionRefusedError(111, "Connect call failed")
+        await super().save(module_name, snapshot)
+
+
 class CorruptSnapshotStore(PersistentEngine):
     """Simulates a real `PostgresPersistentEngine` hitting a row with an
     unrecognized `automation_mode` - the snapshot construction itself raises."""
@@ -323,6 +335,26 @@ async def test_failed_write_is_retried_next_call():
         await manager.persist(make_module())
 
     assert manager._persisted_at == {}
+
+
+async def test_transient_save_error_is_skipped_until_the_database_is_back():
+    store = SwitchoverSnapshotStore(failures=2)
+    manager = make_manager(store)
+    module = make_module()
+
+    assert await manager.persist(module) is False
+    assert await manager.persist(module) is False
+    assert await manager.persist(module) is True
+    assert module.name in store.snapshots
+
+
+async def test_transient_save_error_raises_once_the_budget_runs_out():
+    manager = PersistManager(
+        SwitchoverSnapshotStore(failures=2), transient_error_budget=timedelta(0)
+    )
+
+    with pytest.raises(ConnectionRefusedError):
+        await manager.persist(make_module())
 
 
 async def test_noop_store_never_returns_a_snapshot():

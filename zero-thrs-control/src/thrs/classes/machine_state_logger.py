@@ -10,7 +10,7 @@ from typing import Any, Literal, Protocol
 from sqlmodel import SQLModel
 from transitions import Machine, State
 
-from thrs.classes.database import PostgresDatabase
+from thrs.classes.database import PostgresDatabase, retry_transient
 from thrs.db.models.machine_state import (
     MachineStateEvent,
     MachineStateIssue,
@@ -41,9 +41,11 @@ class MachineStateValuesType(Enum):
 class MachineStateLogger:
     """Provide direct log methods for the state machine, saving to the database."""
 
-    def __init__(self, postgres_db: PostgresDatabase):
+    def __init__(self, postgres_db: PostgresDatabase, retry_budget_s: float = 60.0):
         self.postgres_db: PostgresDatabase = postgres_db
+        self._retry_budget_s = retry_budget_s
         self._pending_tasks: set[asyncio.Task[None]] = set()
+        self._write_lock = asyncio.Lock()
         self.console_logger = logging.getLogger(__name__)
 
     def log_event(self, event: MachineStateEvent):
@@ -114,6 +116,12 @@ class MachineStateLogger:
         await asyncio.wait(self._pending_tasks, timeout=timeout)
 
     async def _log_model_async(self, model: SQLModel):
+        async with self._write_lock:
+            await retry_transient(
+                partial(self._write_model, model), self._retry_budget_s
+            )
+
+    async def _write_model(self, model: SQLModel):
         async with self.postgres_db.session_factory.begin() as session:
             session.add(model)
 

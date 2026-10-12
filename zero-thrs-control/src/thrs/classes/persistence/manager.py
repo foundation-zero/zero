@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 from pydantic import ValidationError
 
+from thrs.classes.database import is_transient
 from thrs.classes.persistence.engine import PersistentEngine
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.orchestration.module import Module
@@ -21,6 +22,7 @@ class PersistManager:
         heartbeat: timedelta = timedelta(seconds=60),
         apply_module_defaults_on_corrupt_database: bool = False,
         restore_manual_control_values: bool = False,
+        transient_error_budget: timedelta = timedelta(seconds=60),
     ) -> None:
         self._persistence_engine = persistence_engine
         self._heartbeat = heartbeat
@@ -30,6 +32,8 @@ class PersistManager:
         self._restore_manual_control_values = restore_manual_control_values
         self._persisted: dict[str, ModulePersistenceSnapshot] = {}
         self._persisted_at: dict[str, datetime] = {}
+        self._transient_error_budget = transient_error_budget
+        self._failing_since: datetime | None = None
 
     async def restore(self, module: Module) -> bool:
         """Retrieve the module configuration from the persistence engine and apply it to the module.
@@ -81,9 +85,30 @@ class PersistManager:
         if not self._require_save(module_name, snapshot):
             return False
 
-        await self._persistence_engine.save(module_name, snapshot)
+        try:
+            await self._persistence_engine.save(module_name, snapshot)
+        except Exception as e:
+            if not self._tolerate(e):
+                raise
+            logger.warning(
+                "Transient database error saving config for module %s, retrying next tick: %r",
+                module_name,
+                e,
+            )
+            return False
 
+        self._failing_since = None
         return True
+
+    def _tolerate(self, exception: Exception) -> bool:
+        """Retrying inside the control tick would stall it past the liveness probe,
+        so a transient error is skipped until the next tick instead."""
+        if not is_transient(exception):
+            return False
+        now = datetime.now()
+        if self._failing_since is None:
+            self._failing_since = now
+        return now - self._failing_since < self._transient_error_budget
 
     async def persist_all(self, modules: Iterable[Module]) -> None:
         """Persist all modules, per module is checked if it changed or the heartbeat expired."""
