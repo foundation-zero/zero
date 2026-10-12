@@ -15,7 +15,6 @@ command: serve
 mqtt:
   host: ""
   port: 1883
-  username: ""
   existingSecret: ""
   existingSecretPasswordKey: password
 

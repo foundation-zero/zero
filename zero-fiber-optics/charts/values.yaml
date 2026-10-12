@@ -12,7 +12,6 @@ mqtt:
   host: ""
   port: 1883
   prefix: fiber-optics
-  username: fiber-optics
   existingSecret: ""
   existingSecretPasswordKey: password
 

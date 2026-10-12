@@ -9,7 +9,6 @@ image:
 mqtt:
   host: ""
   port: 1883
-  username: atpx-nmea
   existingSecret: ""
   existingSecretPasswordKey: password
 

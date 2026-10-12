@@ -8,7 +8,6 @@ image:
 mqtt:
   host:
   port: 1883
-  username: loads
   existingSecret:
   existingSecretPasswordKey: password
 

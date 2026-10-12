@@ -16,6 +16,8 @@ class Config(BaseSettings):
 
     mqtt_host: str
     mqtt_port: int
+    mqtt_username: str | None = None
+    mqtt_password: str | None = None
     mqtt_devices_topic_prefix: str
     mqtt_controller_topic_prefix: str
     mqtt_controller_topic_suffix: str
