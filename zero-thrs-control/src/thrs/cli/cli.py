@@ -13,7 +13,7 @@ from pydantic_settings import (
 
 from thrs.control.switching import AutomationMode
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector
-from thrs.orchestration.config import Config, mqtt_client_id
+from thrs.orchestration.config import Config
 from thrs.orchestration.log import setup_logging
 from thrs.orchestration.module import Module
 from thrs.orchestration.setup import (
@@ -66,7 +66,7 @@ class ControlCmd(BaseSettings):
         async with MqttClient(
             settings.mqtt_host,
             settings.mqtt_port,
-            identifier=mqtt_client_id("control"),
+            identifier=settings.mqtt_control_client_id,
             username=settings.mqtt_username,
             password=settings.mqtt_password,
         ) as mqtt_client:
@@ -107,7 +107,7 @@ class SimulationCmd(BaseSettings):
         async with MqttClient(
             settings.mqtt_host,
             settings.mqtt_port,
-            identifier=mqtt_client_id("simulation"),
+            identifier=settings.mqtt_simulation_client_id,
             username=settings.mqtt_username,
             password=settings.mqtt_password,
         ) as mqtt_client:
@@ -209,7 +209,7 @@ class LockstepCmd(BaseSettings):
             MqttClient(
                 settings.mqtt_host,
                 settings.mqtt_port,
-                identifier=mqtt_client_id("lockstep"),
+                identifier=settings.mqtt_lockstep_client_id,
                 username=settings.mqtt_username,
                 password=settings.mqtt_password,
             ) as mqtt_client,

@@ -37,8 +37,7 @@ impl MqttSubscriber {
         topics: &[TopicDef],
         groups: &[TopicGroupDef],
     ) -> anyhow::Result<Self> {
-        let hostname = std::env::var("HOSTNAME").unwrap_or_else(|_| "local".into());
-        let client_id = format!("zero-mqtt-graphql-{hostname}");
+        let client_id = format!("zero-mqtt-graphql-{:012x}", rand_u64());
 
         let mut mqttoptions = MqttOptions::new(&client_id, connection.host, connection.port);
         mqttoptions.set_keep_alive(Duration::from_secs(15));
@@ -284,6 +283,22 @@ fn build_validators(topics: &[TopicDef], groups: &[TopicGroupDef]) -> HashMap<St
         .into_iter()
         .chain(group_validators)
         .collect()
+}
+
+/// Generate a unique suffix for the MQTT client ID from full-precision
+/// wall-clock nanoseconds, so concurrent instances and rapid restarts do not
+/// collide (brokers disconnect clients sharing an ID).
+fn rand_u64() -> u64 {
+    use std::time::{SystemTime, UNIX_EPOCH};
+    let nanos = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_nanos() as u64;
+    let mut x = nanos;
+    x ^= x << 13;
+    x ^= x >> 7;
+    x ^= x << 17;
+    x
 }
 
 /// Flatten nested objects one level deep into the payload root.

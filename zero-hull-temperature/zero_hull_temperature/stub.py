@@ -6,11 +6,7 @@ from typing import Coroutine
 from aiomqtt import Client as MqttClient
 from jsonpath_ng import parse
 from pyModbusTCP.server import ModbusServer
-from zero_modbus_bridge.settings import (
-    ModbusSettings,
-    MqttSettings,
-    mqtt_client_id,
-)
+from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
 from zero_modbus_bridge.stub import MultiUnitDataHandler
 
 from zero_hull_temperature.addresses import HULL_TEMPERATURE_TOPIC
@@ -45,7 +41,7 @@ class Stub:
         async with MqttClient(
             mqtt_settings.mqtt_host,
             mqtt_settings.mqtt_port,
-            identifier=mqtt_client_id("hull-temperature-stub"),
+            identifier=mqtt_settings.mqtt_client_id,
             username=mqtt_settings.mqtt_username,
             password=mqtt_settings.mqtt_password,
         ) as mqtt:

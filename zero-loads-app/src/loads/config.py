@@ -1,11 +1,8 @@
-import os
+from secrets import token_hex
 from typing import Literal
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-
-def mqtt_client_id(role: str) -> str:
-    return f"loads-{role}-{os.environ.get('HOSTNAME', 'local')}"
 
 
 class Settings(BaseSettings):
@@ -25,6 +22,13 @@ class Settings(BaseSettings):
     mqtt_port: int
     mqtt_username: str | None = None
     mqtt_password: str | None = None
+    mqtt_api_client_id: str = Field(default_factory=lambda: f"loads-api-{token_hex(4)}")
+    mqtt_control_client_id: str = Field(
+        default_factory=lambda: f"loads-control-{token_hex(4)}"
+    )
+    mqtt_stub_client_id: str = Field(
+        default_factory=lambda: f"loads-stub-{token_hex(4)}"
+    )
 
     @property
     def pg_url(self) -> str:

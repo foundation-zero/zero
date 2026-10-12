@@ -1,11 +1,8 @@
-import os
 from pathlib import Path
+from secrets import token_hex
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-
-def mqtt_client_id(role: str) -> str:
-    return f"thrs-{role}-{os.environ.get('HOSTNAME', 'local')}"
 
 
 class Config(BaseSettings):
@@ -23,6 +20,16 @@ class Config(BaseSettings):
     mqtt_port: int
     mqtt_username: str | None = None
     mqtt_password: str | None = None
+    mqtt_api_client_id: str = Field(default_factory=lambda: f"thrs-api-{token_hex(4)}")
+    mqtt_control_client_id: str = Field(
+        default_factory=lambda: f"thrs-control-{token_hex(4)}"
+    )
+    mqtt_simulation_client_id: str = Field(
+        default_factory=lambda: f"thrs-simulation-{token_hex(4)}"
+    )
+    mqtt_lockstep_client_id: str = Field(
+        default_factory=lambda: f"thrs-lockstep-{token_hex(4)}"
+    )
     mqtt_devices_topic_prefix: str
     mqtt_controller_topic_prefix: str
     mqtt_controller_topic_suffix: str

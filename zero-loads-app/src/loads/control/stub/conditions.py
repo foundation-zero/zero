@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from aiomqtt import Client
 from aiomqtt import Client as MqttClient
 
-from loads.config import Settings, mqtt_client_id
+from loads.config import Settings
 
 logger = logging.getLogger("sensor_stub")
 
@@ -30,7 +30,7 @@ class ConditionsStub:
         async with MqttClient(
             settings.mqtt_host,
             settings.mqtt_port,
-            identifier=mqtt_client_id("stub"),
+            identifier=settings.mqtt_stub_client_id,
             username=settings.mqtt_username,
             password=settings.mqtt_password,
         ) as mqtt_client:

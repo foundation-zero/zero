@@ -11,7 +11,7 @@ from fastapi import Depends, FastAPI, Request
 from strawberry.dataloader import DataLoader
 from typing_extensions import Annotated
 
-from loads.config import mqtt_client_id, settings
+from loads.config import settings
 from loads.registry import (
     ALARMS,
     VARIABLES,
@@ -51,7 +51,7 @@ async def lifespan(app: FastAPI):
     async with MqttClient(
         settings.mqtt_host,
         settings.mqtt_port,
-        identifier=mqtt_client_id("api"),
+        identifier=settings.mqtt_api_client_id,
         username=settings.mqtt_username,
         password=settings.mqtt_password,
     ) as mqtt:

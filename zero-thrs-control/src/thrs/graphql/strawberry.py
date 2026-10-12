@@ -61,7 +61,7 @@ from thrs.orchestration.comms import (
     MqttConnector,
     SimulationApiChannels,
 )
-from thrs.orchestration.config import Config, mqtt_client_id
+from thrs.orchestration.config import Config
 from thrs.orchestration.log import setup_logging
 
 logger = logging.getLogger(__name__)
@@ -255,7 +255,7 @@ def create_app(settings: Config):
         async with MqttClient(
             settings.mqtt_host,
             settings.mqtt_port,
-            identifier=mqtt_client_id("api"),
+            identifier=settings.mqtt_api_client_id,
             username=settings.mqtt_username,
             password=settings.mqtt_password,
         ) as mqtt:

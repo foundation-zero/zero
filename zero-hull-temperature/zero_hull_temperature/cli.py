@@ -1,12 +1,13 @@
 import asyncio
 import json
 import logging
+from secrets import token_hex
 from typing import Any, Literal
 
 from faststream import FastStream
 from faststream.mqtt import MQTTBroker
 from faststream.specification import AsyncAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pydantic_settings import (
     BaseSettings,
     CliApp,
@@ -38,11 +39,14 @@ class MqttSend(CliMutuallyExclusiveGroup):
 
 
 class ReadWithMqttCmd(ModbusSettings, MqttSettings):
+    mqtt_client_id: str = Field(
+        default_factory=lambda: f"hull-temperature-{token_hex(4)}"
+    )
     activate_topic: str = TOPIC
     activate_json_path: str = PATH
 
     async def cli_cmd(self) -> None:
-        async with self.make_broker("hull-temperature") as broker:
+        async with self.make_broker() as broker:
             bridge = RelaySwitchingBridge.from_settings(
                 self,
                 broker,
@@ -67,6 +71,9 @@ class ReadSkipMqttCmd(ModbusSettings):
 
 
 class StubCmd(ModbusSettings, MqttSettings):
+    mqtt_client_id: str = Field(
+        default_factory=lambda: f"hull-temperature-stub-{token_hex(4)}"
+    )
     activate_topic: str = TOPIC
     activate_json_path: str = PATH
     temperature: float = 20
@@ -101,11 +108,14 @@ class TuiCmd(ModbusSettings):
 
 
 class RunCmd(ModbusSettings, MqttSettings):
+    mqtt_client_id: str = Field(
+        default_factory=lambda: f"hull-temperature-{token_hex(4)}"
+    )
     activate_topic: str = TOPIC
     activate_json_path: str = PATH
 
     async def cli_cmd(self) -> None:
-        broker = self.make_broker("hull-temperature")
+        broker = self.make_broker()
         bridge = RelaySwitchingBridge.from_settings(
             self,
             broker,

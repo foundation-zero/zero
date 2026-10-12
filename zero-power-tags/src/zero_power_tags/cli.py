@@ -2,11 +2,12 @@ import asyncio
 import json
 import logging
 import re
+from secrets import token_hex
 from typing import Any, Literal
 
 from faststream import FastStream
 from faststream.mqtt import MQTTBroker, ReconnectConfig
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pydantic_settings import (
     BaseSettings,
     CliApp,
@@ -148,18 +149,17 @@ def local_topic_groups(
 
 
 class RunCmd(MqttSettings):
+    mqtt_client_id: str = Field(default_factory=lambda: f"power-tags-{token_hex(4)}")
     modbus_port: int = 502
     modbus_probe_interval: int = 1
 
-    def make_broker(
-        self, client_id_prefix: str = "power-tags", **extra: Any
-    ) -> MQTTBroker:
+    def make_broker(self, **extra: Any) -> MQTTBroker:
         # Reconnect indefinitely (the default 5 attempts leaves us dark after a
         # blip); ping every 15s, since 60s races RabbitMQ's keepalive window.
         kwargs: dict[str, Any] = dict(extra)
         kwargs.setdefault("reconnect", ReconnectConfig(max_attempts=None))
         kwargs.setdefault("keepalive", 15)
-        return super().make_broker(client_id_prefix, **kwargs)
+        return super().make_broker(**kwargs)
 
     async def cli_cmd(self) -> None:
         broker = self.make_broker()

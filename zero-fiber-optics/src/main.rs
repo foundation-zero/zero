@@ -162,16 +162,21 @@ fn read_runtime_config(config_path: &str) -> Result<crate::config::UdpChannels> 
 
 /// Client ID for the MQTT connection.
 ///
-/// Under Kubernetes `HOSTNAME` is the pod name, so each pod gets its own ID and
-/// a rolling update cannot leave two replicas fighting over a single broker
-/// session. Publish-only clients create no queues on the broker, so there is no
-/// session state to orphan.
+/// The random suffix gives every pod its own ID, so a rolling update cannot
+/// leave two replicas fighting over a single broker session. Publish-only
+/// clients create no queues on the broker, so there is no session state to
+/// orphan.
 fn mqtt_client_id() -> String {
-    let hostname = std::env::var("HOSTNAME")
-        .ok()
-        .filter(|hostname| !hostname.is_empty())
-        .unwrap_or_else(|| "local".into());
-    format!("zero-fiber-optics-{hostname}")
+    use std::time::{SystemTime, UNIX_EPOCH};
+    let nanos = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_nanos() as u64;
+    let mut x = nanos;
+    x ^= x << 13;
+    x ^= x >> 7;
+    x ^= x << 17;
+    format!("zero-fiber-optics-{x:012x}")
 }
 
 /// Log what the process is about to connect to.

@@ -7,11 +7,12 @@ Locally both resolve to the same `vernemq` container; in production
 `ATPX_MQTT_HOST` points at A+T's real broker instead.
 """
 
-import os
+from secrets import token_hex
 from typing import Any
 
 from faststream.mqtt import MQTTBroker
 from faststream.security import SASLPlaintext
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 model_config = SettingsConfigDict(
@@ -22,10 +23,6 @@ model_config = SettingsConfigDict(
 )
 
 
-def mqtt_client_id(role: str) -> str:
-    return f"atpx-nmea-{role}-{os.environ.get('HOSTNAME', 'local')}"
-
-
 class InputMqttSettings(BaseSettings):
     """Config for A+T's onboard MQTT broker (input, no auth)."""
 
@@ -33,11 +30,14 @@ class InputMqttSettings(BaseSettings):
 
     atpx_mqtt_host: str
     atpx_mqtt_port: int
+    atpx_mqtt_client_id: str = Field(
+        default_factory=lambda: f"atpx-nmea-in-{token_hex(4)}"
+    )
 
     def make_broker(self) -> MQTTBroker:
         return MQTTBroker(
             f"{self.atpx_mqtt_host}:{self.atpx_mqtt_port}",
-            client_id=mqtt_client_id("in"),
+            client_id=self.atpx_mqtt_client_id,
         )
 
 
@@ -50,10 +50,10 @@ class OutputMqttSettings(BaseSettings):
     mqtt_port: int
     mqtt_user: str | None = None
     mqtt_password: str | None = None
+    mqtt_client_id: str = Field(default_factory=lambda: f"atpx-nmea-out-{token_hex(4)}")
 
     def make_broker(self) -> MQTTBroker:
-        kwargs: dict[str, Any] = {}
+        kwargs: dict[str, Any] = {"client_id": self.mqtt_client_id}
         if self.mqtt_user and self.mqtt_password:
             kwargs["security"] = SASLPlaintext(self.mqtt_user, self.mqtt_password)
-        kwargs["client_id"] = mqtt_client_id("out")
         return MQTTBroker(f"{self.mqtt_host}:{self.mqtt_port}", **kwargs)
