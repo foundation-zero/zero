@@ -13,6 +13,7 @@ const SUPPORTED_MIMICS: Array<keyof ThrsModules> = [
   "pcm",
   "dc",
   "drives",
+  "adsorption",
 ];
 
 const currentRoute = useRoute();
