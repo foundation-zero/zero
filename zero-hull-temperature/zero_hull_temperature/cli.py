@@ -42,7 +42,7 @@ class ReadWithMqttCmd(ModbusSettings, MqttSettings):
     activate_json_path: str = PATH
 
     async def cli_cmd(self) -> None:
-        async with self.make_broker() as broker:
+        async with self.make_broker("hull-temperature") as broker:
             bridge = RelaySwitchingBridge.from_settings(
                 self,
                 broker,
@@ -105,7 +105,7 @@ class RunCmd(ModbusSettings, MqttSettings):
     activate_json_path: str = PATH
 
     async def cli_cmd(self) -> None:
-        broker = self.make_broker()
+        broker = self.make_broker("hull-temperature")
         bridge = RelaySwitchingBridge.from_settings(
             self,
             broker,

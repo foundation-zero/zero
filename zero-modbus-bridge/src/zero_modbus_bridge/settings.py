@@ -1,3 +1,4 @@
+import os
 from typing import Any
 
 from faststream.mqtt import MQTTBroker
@@ -15,6 +16,10 @@ model_config = SettingsConfigDict(
 )
 
 
+def mqtt_client_id(prefix: str) -> str:
+    return f"{prefix}-{os.environ.get('HOSTNAME', 'local')}"
+
+
 class MqttSettings(BaseSettings):
     model_config = model_config
 
@@ -23,8 +28,9 @@ class MqttSettings(BaseSettings):
     mqtt_username: str | None = None
     mqtt_password: str | None = None
 
-    def make_broker(self, **extra: Any) -> MQTTBroker:
+    def make_broker(self, client_id_prefix: str, **extra: Any) -> MQTTBroker:
         kwargs: dict[str, Any] = dict(extra)
+        kwargs["client_id"] = mqtt_client_id(client_id_prefix)
         if self.mqtt_username and self.mqtt_password:
             kwargs["security"] = SASLPlaintext(self.mqtt_username, self.mqtt_password)
         return MQTTBroker(f"{self.mqtt_host}:{self.mqtt_port}", **kwargs)

@@ -1,6 +1,11 @@
+import os
 from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def mqtt_client_id(role: str) -> str:
+    return f"loads-{role}-{os.environ.get('HOSTNAME', 'local')}"
 
 
 class Settings(BaseSettings):

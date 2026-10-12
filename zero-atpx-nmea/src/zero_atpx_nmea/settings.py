@@ -7,6 +7,7 @@ Locally both resolve to the same `vernemq` container; in production
 `ATPX_MQTT_HOST` points at A+T's real broker instead.
 """
 
+import os
 from typing import Any
 
 from faststream.mqtt import MQTTBroker
@@ -21,6 +22,10 @@ model_config = SettingsConfigDict(
 )
 
 
+def mqtt_client_id(role: str) -> str:
+    return f"atpx-nmea-{role}-{os.environ.get('HOSTNAME', 'local')}"
+
+
 class InputMqttSettings(BaseSettings):
     """Config for A+T's onboard MQTT broker (input, no auth)."""
 
@@ -30,7 +35,10 @@ class InputMqttSettings(BaseSettings):
     atpx_mqtt_port: int
 
     def make_broker(self) -> MQTTBroker:
-        return MQTTBroker(f"{self.atpx_mqtt_host}:{self.atpx_mqtt_port}")
+        return MQTTBroker(
+            f"{self.atpx_mqtt_host}:{self.atpx_mqtt_port}",
+            client_id=mqtt_client_id("in"),
+        )
 
 
 class OutputMqttSettings(BaseSettings):
@@ -47,4 +55,5 @@ class OutputMqttSettings(BaseSettings):
         kwargs: dict[str, Any] = {}
         if self.mqtt_user and self.mqtt_password:
             kwargs["security"] = SASLPlaintext(self.mqtt_user, self.mqtt_password)
+        kwargs["client_id"] = mqtt_client_id("out")
         return MQTTBroker(f"{self.mqtt_host}:{self.mqtt_port}", **kwargs)

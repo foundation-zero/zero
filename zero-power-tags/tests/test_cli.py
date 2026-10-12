@@ -122,8 +122,8 @@ def test_run_cmd_broker_reconnects_indefinitely(monkeypatch):
     """RunCmd asks the base broker for indefinite reconnect and a 15s keepalive."""
     captured: dict = {}
 
-    def fake_make_broker(self, **kwargs):
-        captured.update(kwargs)
+    def fake_make_broker(self, client_id_prefix, **kwargs):
+        captured.update(kwargs, client_id_prefix=client_id_prefix)
         return MagicMock()
 
     monkeypatch.setattr(MqttSettings, "make_broker", fake_make_broker)
@@ -132,6 +132,7 @@ def test_run_cmd_broker_reconnects_indefinitely(monkeypatch):
 
     assert captured["reconnect"].max_attempts is None
     assert captured["keepalive"] == 15
+    assert captured["client_id_prefix"] == "power-tags"
 
 
 def test_make_broker_accepts_kwargs_on_real_broker():

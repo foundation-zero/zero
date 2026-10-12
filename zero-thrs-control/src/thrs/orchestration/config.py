@@ -1,6 +1,11 @@
+import os
 from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def mqtt_client_id(role: str) -> str:
+    return f"thrs-{role}-{os.environ.get('HOSTNAME', 'local')}"
 
 
 class Config(BaseSettings):

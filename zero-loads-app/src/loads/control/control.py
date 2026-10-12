@@ -7,7 +7,7 @@ from aiomqtt import Client
 from aiomqtt import Client as MqttClient
 from aiomqtt import Message as MqttMessage
 
-from loads.config import Settings
+from loads.config import Settings, mqtt_client_id
 
 from .message import Conditions, Message, SensorInput
 
@@ -28,7 +28,7 @@ class Control:
         async with MqttClient(
             settings.mqtt_host,
             settings.mqtt_port,
-            identifier="loads_control",
+            identifier=mqtt_client_id("control"),
             username=settings.mqtt_username,
             password=settings.mqtt_password,
         ) as mqtt_client:

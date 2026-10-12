@@ -25,9 +25,6 @@ use tokio::task::{JoinHandle, JoinSet};
 use tokio_stream::wrappers::ReceiverStream;
 use tokio_stream::StreamExt;
 
-/// Fallback MQTT client ID, used when the pod name is not available.
-const DEFAULT_CLIENT_ID: &str = "fiber-adapter";
-
 /// How often the watchdog checks that each port is still receiving packets.
 const WATCHDOG_INTERVAL: Duration = Duration::from_secs(10);
 
@@ -170,10 +167,11 @@ fn read_runtime_config(config_path: &str) -> Result<crate::config::UdpChannels> 
 /// session. Publish-only clients create no queues on the broker, so there is no
 /// session state to orphan.
 fn mqtt_client_id() -> String {
-    std::env::var("HOSTNAME")
+    let hostname = std::env::var("HOSTNAME")
         .ok()
         .filter(|hostname| !hostname.is_empty())
-        .unwrap_or_else(|| DEFAULT_CLIENT_ID.to_string())
+        .unwrap_or_else(|| "local".into());
+    format!("zero-fiber-optics-{hostname}")
 }
 
 /// Log what the process is about to connect to.

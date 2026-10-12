@@ -23,7 +23,7 @@ logging.basicConfig(
 
 class RunCmd(ModbusSettings, MqttSettings):
     async def cli_cmd(self) -> None:
-        broker = self.make_broker()
+        broker = self.make_broker("termodinamica")
         topics = read_modbus_topics()
         bridge = ModbusBridge.from_settings(self, broker, topics)
         app = FastStream(broker)
