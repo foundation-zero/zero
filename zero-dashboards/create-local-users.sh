@@ -61,11 +61,21 @@ main() {
 
   wait_for_grafana || { log "grafana not healthy after ${WAIT_SECONDS}s, giving up"; return 1; }
 
-  for file in "$USERS_DIR"/*; do
+  newline="$(printf '\n_')"
+  newline="${newline%_}"
+  for file in "$USERS_DIR"/* "$USERS_DIR"/.[!.]*; do
     [ -f "$file" ] || continue
+    name="$(basename "$file")"
     password="$(cat "$file")"
-    [ -n "$password" ] || { log "empty password for '$(basename "$file")', skipping"; continue; }
-    create_user "$(basename "$file")" "$password" || true
+    [ -n "$password" ] || { log "empty password for '$name', skipping"; continue; }
+    case "$password" in
+      *"$newline"*) log "password for '$name' contains a newline, skipping"; continue ;;
+    esac
+    if printf '%s' "$password" | LC_ALL=C grep -q '[[:cntrl:]]'; then
+      log "password for '$name' contains control characters, skipping"
+      continue
+    fi
+    create_user "$name" "$password" || true
   done
 }
 
