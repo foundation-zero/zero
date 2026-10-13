@@ -36,8 +36,8 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SCHEMA_PATH = path.join(__dirname, "../src/modules/heat-system-simulation/graphql/schema.graphql");
-const CONSTS_PATH = path.join(__dirname, "../src/modules/heat-system-simulation/lib/consts.generated.ts");
+const SCHEMA_PATH = path.join(__dirname, "../src/modules/heat-simulation/graphql/schema.graphql");
+const CONSTS_PATH = path.join(__dirname, "../src/modules/heat-simulation/lib/consts.generated.ts");
 
 // ============================================================================
 // Types

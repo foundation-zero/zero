@@ -24,7 +24,7 @@ The agent will then work through the implementation without further input. You c
 2. **Exports exact SVG paths** — uses the Figma API to get vector data for all states.
 3. **Derives a geometry model** — reduces multiple states to one canonical shape with rotation or color changes where possible.
 4. **Maps colors to semantic tokens** — replaces Figma hex values with design-system CSS variables.
-5. **Creates the component files** — places the `.vue` file and a colocated `index.ts` under `src/modules/heat-system/mimics/components/<name>/`.
+5. **Creates the component files** — places the `.vue` file and a colocated `index.ts` under `src/modules/heat/mimics/components/<name>/`.
 6. **Stores the Figma URL** — adds a `FIGMA_URL` constant in `index.ts` so future updates have a known reference point.
 7. **Validates** — runs type checking on all touched files and confirms zero diagnostics.
 8. **Creates the docs page** — adds an entry under `docs/mimics/` with a props table and state examples.
@@ -44,7 +44,7 @@ Once the agent is done, check the following before committing:
 All mimic components live under:
 
 ```
-src/modules/heat-system/mimics/components/<component-name>/
+src/modules/heat/mimics/components/<component-name>/
   index.ts        ← props, enums, constants, FIGMA_URL
   ComponentName.vue
 ```

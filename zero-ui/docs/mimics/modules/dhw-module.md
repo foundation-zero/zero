@@ -6,7 +6,7 @@ Documentation page for the DhwModule mimic composition.
 import { defineAsyncComponent, ref } from 'vue'
 
 const DhwModule = defineAsyncComponent(
-  () => import('@/modules/heat-system/mimics/modules/dhw/DhwModule.vue'),
+  () => import('@/modules/heat/mimics/modules/dhw/DhwModule.vue'),
 )
 
 const isExpanded = ref(false)

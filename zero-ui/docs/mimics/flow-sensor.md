@@ -3,8 +3,8 @@
 Stateless directional mimic flow sensor component.
 
 <script setup lang="ts">
-import FlowSensor from '@/modules/heat-system/mimics/components/flow-sensor/FlowSensor.vue'
-import { ComponentOrientation } from '@/modules/heat-system/mimics/components'
+import FlowSensor from '@/modules/heat/mimics/components/flow-sensor/FlowSensor.vue'
+import { ComponentOrientation } from '@/modules/heat/mimics/components'
 </script>
 
 ## Overview

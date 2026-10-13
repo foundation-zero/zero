@@ -1,0 +1,28 @@
+<script setup lang="ts">
+import { MimicComponentType } from "@/modules/heat/types";
+import { ComponentOrientation } from "../../../components";
+import { PRESSURE_SENSOR_WIDTH } from "../../../components/pressure-sensor";
+import { PressureLabelInstance, PressureSensorInstance } from "../../../instances";
+import { DHW_MIMIC_DATA } from "../data";
+
+const pressureSensors = DHW_MIMIC_DATA[MimicComponentType.PressureSensor];
+</script>
+
+<template>
+  <g>
+    <PressureSensorInstance
+      x="289"
+      y="221.2099609375"
+      v-bind="pressureSensors['1097-11']"
+      :orientation="ComponentOrientation.Down"
+    >
+      <PressureLabelInstance
+        :target-x="289"
+        :target-width="PRESSURE_SENSOR_WIDTH"
+        y="186"
+        :tag-id="pressureSensors['1097-11'].tooltip?.yardTag"
+        :pressure="pressureSensors['1097-11'].source"
+      />
+    </PressureSensorInstance>
+  </g>
+</template>

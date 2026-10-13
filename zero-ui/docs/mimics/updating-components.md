@@ -12,7 +12,7 @@ Figma is the single source of truth. When a design changes, update the component
 Every mimic component stores its Figma source URL in a `FIGMA_URL` constant inside its `index.ts`:
 
 ```ts
-// src/modules/heat-system/mimics/components/actuated-valve/index.ts
+// src/modules/heat/mimics/components/actuated-valve/index.ts
 export const FIGMA_URL = "https://www.figma.com/design/...";
 ```
 

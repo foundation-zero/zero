@@ -3,8 +3,8 @@
 Stateless directional mimic pressure sensor component.
 
 <script setup lang="ts">
-import PressureSensor from '@/modules/heat-system/mimics/components/pressure-sensor/PressureSensor.vue'
-import { ComponentOrientation } from '@/modules/heat-system/mimics/components'
+import PressureSensor from '@/modules/heat/mimics/components/pressure-sensor/PressureSensor.vue'
+import { ComponentOrientation } from '@/modules/heat/mimics/components'
 </script>
 
 ## Overview

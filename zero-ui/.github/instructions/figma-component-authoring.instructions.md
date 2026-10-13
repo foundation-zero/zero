@@ -1,7 +1,7 @@
 ---
 description: "Use when creating new Figma-derived components or mimic components from scratch. Covers the full Figma MCP authoring workflow, exact geometry capture, semantic token mapping, colocated index.ts constants, and required docs updates."
 name: "Figma Component Authoring"
-applyTo: "src/modules/heat-system/mimics/components/**/index.ts, src/modules/heat-system/mimics/components/**/*.vue, docs/mimics/*.md"
+applyTo: "src/modules/heat/mimics/components/**/index.ts, src/modules/heat/mimics/components/**/*.vue, docs/mimics/*.md"
 ---
 
 # Figma Component Authoring
@@ -13,7 +13,7 @@ It is written as a standalone rule set for agents working in this repository.
 
 Use this for domain-specific mimic components in:
 
-- `src/modules/heat-system/mimics/components/**`
+- `src/modules/heat/mimics/components/**`
 
 These components should be small, composable primitives intended for larger mimic scenes.
 
@@ -74,7 +74,7 @@ Keep this updated when a component is intentionally re-pointed to a new Figma so
 
 ### 5. Implement in the component folder
 
-- Place the component under `src/modules/heat-system/mimics/components/<component-name>/`.
+- Place the component under `src/modules/heat/mimics/components/<component-name>/`.
 - Add or maintain a colocated `index.ts`.
 - Use `<script setup lang="ts">`.
 - Define exported prop contracts in `index.ts`, then consume them with `defineProps` in the `.vue` file.

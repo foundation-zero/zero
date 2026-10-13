@@ -3,10 +3,10 @@
 Directional mimic heat exchanger symbol composed from a shell component and two child port elements.
 
 <script setup lang="ts">
-import HeatExchanger from '@/modules/heat-system/mimics/components/heat-exchanger/HeatExchanger.vue'
-import HeatExchangerPort from '@/modules/heat-system/mimics/components/heat-exchanger/HeatExchangerPort.vue'
-import { ComponentOrientation, HeatingState } from '@/modules/heat-system/mimics/components'
-import { HeatExchangerPortOrientation } from '@/modules/heat-system/mimics/components/heat-exchanger'
+import HeatExchanger from '@/modules/heat/mimics/components/heat-exchanger/HeatExchanger.vue'
+import HeatExchangerPort from '@/modules/heat/mimics/components/heat-exchanger/HeatExchangerPort.vue'
+import { ComponentOrientation, HeatingState } from '@/modules/heat/mimics/components'
+import { HeatExchangerPortOrientation } from '@/modules/heat/mimics/components/heat-exchanger'
 </script>
 
 ## Overview
@@ -118,10 +118,10 @@ Render exactly two child ports for a complete exchanger symbol:
 
 ```vue
 <script setup lang="ts">
-import HeatExchanger from '@/modules/heat-system/mimics/components/heat-exchanger/HeatExchanger.vue'
-import HeatExchangerPort from '@/modules/heat-system/mimics/components/heat-exchanger/HeatExchangerPort.vue'
-import { ComponentOrientation, HeatingState } from '@/modules/heat-system/mimics/components'
-import { HeatExchangerPortOrientation } from '@/modules/heat-system/mimics/components/heat-exchanger'
+import HeatExchanger from '@/modules/heat/mimics/components/heat-exchanger/HeatExchanger.vue'
+import HeatExchangerPort from '@/modules/heat/mimics/components/heat-exchanger/HeatExchangerPort.vue'
+import { ComponentOrientation, HeatingState } from '@/modules/heat/mimics/components'
+import { HeatExchangerPortOrientation } from '@/modules/heat/mimics/components/heat-exchanger'
 </script>
 
 <template>

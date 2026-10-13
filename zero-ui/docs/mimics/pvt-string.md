@@ -3,8 +3,8 @@
 Stateless mimic component representing a single PVT (photovoltaic-thermal) panel string.
 
 <script setup lang="ts">
-import PvtString from '@/modules/heat-system/mimics/components/pvt-string/PvtString.vue'
-import { ComponentOrientation } from '@/modules/heat-system/mimics/components'
+import PvtString from '@/modules/heat/mimics/components/pvt-string/PvtString.vue'
+import { ComponentOrientation } from '@/modules/heat/mimics/components'
 </script>
 
 ## Overview
@@ -53,8 +53,8 @@ The base orientation is `ComponentOrientation.Up`, matching the Figma drawing.
 
 ```vue
 <script setup lang="ts">
-import PvtString from "@/modules/heat-system/mimics/components/pvt-string/PvtString.vue";
-import { ComponentOrientation } from "@/modules/heat-system/mimics/components";
+import PvtString from "@/modules/heat/mimics/components/pvt-string/PvtString.vue";
+import { ComponentOrientation } from "@/modules/heat/mimics/components";
 </script>
 
 <template>

@@ -3,9 +3,9 @@
 A stateless directional manual valve mimic component for use in THRAPP diagrams.
 
 <script setup lang="ts">
-import ManualValve from '@/modules/heat-system/mimics/components/manual-valve/ManualValve.vue'
-import { ManualValveType } from '@/modules/heat-system/mimics/components/manual-valve'
-import { ComponentOrientation } from '@/modules/heat-system/mimics/components'
+import ManualValve from '@/modules/heat/mimics/components/manual-valve/ManualValve.vue'
+import { ManualValveType } from '@/modules/heat/mimics/components/manual-valve'
+import { ComponentOrientation } from '@/modules/heat/mimics/components'
 </script>
 
 The shape mirrors the [Actuated Valve](/mimics/actuated-valve) body but uses a manual control marker instead of a motorised actuator. There is no state prop — the valve displays its type and orientation only.
@@ -78,8 +78,8 @@ Like `ActuatedValve`, `ManualValve` supports SVG composition. The default slot r
 
 ```vue
 <script setup lang="ts">
-import ManualValve from "@/modules/heat-system/mimics/components/manual-valve/ManualValve.vue";
-import { ManualFlowMarker } from "@/modules/heat-system/mimics/components/manual-valve";
+import ManualValve from "@/modules/heat/mimics/components/manual-valve/ManualValve.vue";
+import { ManualFlowMarker } from "@/modules/heat/mimics/components/manual-valve";
 </script>
 
 <template>

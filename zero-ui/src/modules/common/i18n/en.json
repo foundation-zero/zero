@@ -47,8 +47,8 @@
   },
   "apps": {
     "loads": "Loads",
-    "heatSystem": "Heat System",
-    "heatSystemSimulation": "Heat System Simulation",
+    "heat": "Heat System",
+    "heatSimulation": "Heat System Simulation",
     "domestic": "Domestic Control",
     "powerTags": "Power Tags",
     "grafana": "Grafana",
@@ -75,7 +75,7 @@
     "powerTags": "Power Tags",
     "ventilation": "Ventilation",
     "electricity": "Electricity",
-    "heatSystem": "Heat System",
+    "heat": "Heat System",
     "pumpControl": "Pump control",
     "lights": "Lights",
     "blinds": "Blinds",
@@ -125,10 +125,10 @@
         "loads": {
           "title": "Loads"
         },
-        "heatSystemSimulation": {
+        "heatSimulation": {
           "title": "Heat System Simulation"
         },
-        "heatSystem": {
+        "heat": {
           "title": "Heat System"
         },
         "domestic": {

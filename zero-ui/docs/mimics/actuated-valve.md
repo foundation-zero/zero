@@ -3,13 +3,13 @@
 Composable actuator shell for valve mimics. Instead of selecting a built-in variant, you compose marker and body primitives as slot content.
 
 <script setup lang="ts">
-import ActuatedValve from '@/modules/heat-system/mimics/components/actuated-valve/ActuatedValve.vue'
-import MixValve from '@/modules/heat-system/mimics/components/actuated-valve/MixValve.vue'
-import SwitchValve from '@/modules/heat-system/mimics/components/actuated-valve/SwitchValve.vue'
-import ThreeWayValve from '@/modules/heat-system/mimics/components/actuated-valve/ThreeWayValve.vue'
-import TwoWayValve from '@/modules/heat-system/mimics/components/actuated-valve/TwoWayValve.vue'
-import { ValveLeg, ValvePortName } from '@/modules/heat-system/mimics/components/actuated-valve'
-import { ComponentOrientation, MimicComponentState } from '@/modules/heat-system/mimics/components'
+import ActuatedValve from '@/modules/heat/mimics/components/actuated-valve/ActuatedValve.vue'
+import MixValve from '@/modules/heat/mimics/components/actuated-valve/MixValve.vue'
+import SwitchValve from '@/modules/heat/mimics/components/actuated-valve/SwitchValve.vue'
+import ThreeWayValve from '@/modules/heat/mimics/components/actuated-valve/ThreeWayValve.vue'
+import TwoWayValve from '@/modules/heat/mimics/components/actuated-valve/TwoWayValve.vue'
+import { ValveLeg, ValvePortName } from '@/modules/heat/mimics/components/actuated-valve'
+import { ComponentOrientation, MimicComponentState } from '@/modules/heat/mimics/components'
 </script>
 
 ## Overview

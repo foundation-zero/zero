@@ -1,9 +1,0 @@
-import { TooltipContent } from "@/modules/heat-system/components/tooltip";
-import { ModuleField } from "@/modules/heat-system/mimics/providers";
-import { fieldTooltip } from "../../../shared";
-
-export const tooltip = (field: ModuleField<"custom">): TooltipContent =>
-  fieldTooltip(field, {
-    title: "3-Way Switch Valve",
-    componentType: "3 way valve DN 25",
-  });
