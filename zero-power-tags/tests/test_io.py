@@ -388,3 +388,10 @@ class TestBuildAsyncapi:
         schema = doc["components"]["schemas"]["PowerTag"]
         assert schema["properties"]["current_a"]["x-unit"] == "A"
         assert schema["properties"]["active_power_total"]["x-unit"] == "W"
+
+
+def test_asyncapi_payload_declares_timestamp():
+    from zero_power_tags.io import build_asyncapi
+
+    schemas = build_asyncapi()["components"]["schemas"]
+    assert "TimeStamp" in schemas["PowerTag"]["properties"]

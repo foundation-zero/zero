@@ -21,11 +21,20 @@ logging.basicConfig(
 )
 
 
+BUFFER_SECONDS = 300
+
+
 class RunCmd(ModbusSettings, MqttSettings):
     async def cli_cmd(self) -> None:
         broker = self.make_broker()
         topics = read_modbus_topics()
-        bridge = ModbusBridge.from_settings(self, broker, topics)
+        bridge = ModbusBridge.from_settings(
+            self,
+            broker,
+            topics,
+            buffer_size=max(1, round(BUFFER_SECONDS / self.modbus_probe_interval))
+            * len(topics),
+        )
         app = FastStream(broker)
         app.after_startup(bridge.run)
         await app.run()

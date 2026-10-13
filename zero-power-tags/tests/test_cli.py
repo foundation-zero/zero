@@ -144,3 +144,10 @@ def test_make_broker_accepts_kwargs_on_real_broker():
         mqtt_password="p",
     )
     assert isinstance(cmd.make_broker(), MQTTBroker)
+
+
+def test_buffer_size_covers_five_minutes_of_one_bridge():
+    from zero_power_tags.cli import buffer_size_for
+
+    assert buffer_size_for(probe_interval=10, topic_count=43) == 30 * 43
+    assert buffer_size_for(probe_interval=1, topic_count=2) == 300 * 2

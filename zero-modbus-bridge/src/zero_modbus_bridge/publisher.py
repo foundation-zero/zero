@@ -3,6 +3,7 @@
 import asyncio
 import logging
 import re
+from datetime import datetime
 from typing import TYPE_CHECKING, Any, Protocol, cast
 
 from faststream._internal.broker.registrator import Registrator
@@ -13,7 +14,8 @@ from faststream.mqtt.publisher.config import (
 )
 from faststream.mqtt.publisher.specification import MQTTPublisherSpecification
 from faststream.mqtt.publisher.usecase import MQTTPublisher
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, create_model
+from pydantic_core import to_jsonable_python
 
 from zero_modbus_bridge.io import ModbusTopic
 
@@ -24,6 +26,40 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+TIMESTAMP_FIELD = "TimeStamp"
+
+
+def with_timestamp[T: BaseModel](model: type[T]) -> type[T]:
+    """Subclass of ``model`` that also declares the wire ``TimeStamp`` field.
+
+    Only used to describe the payload (AsyncAPI): the value itself is added by
+    ``timestamped_body`` at publish time. Vector reads ``TimeStamp`` exactly
+    (not ``timestamp``) as the event time.
+    """
+    return create_model(  # type: ignore[call-overload,no-any-return]
+        model.__name__,
+        __base__=model,
+        __module__=model.__module__,
+        timestamp=(
+            datetime,
+            Field(
+                alias=TIMESTAMP_FIELD,
+                description="Time of the Modbus read, ISO 8601 UTC.",
+            ),
+        ),
+    )
+
+
+def timestamped_body(payload: BaseModel, read_at: datetime) -> dict[str, Any]:
+    """JSON-ready message body: ``payload`` plus ``TimeStamp`` set to ``read_at``."""
+    if read_at.tzinfo is None:
+        raise ValueError("read_at must be timezone-aware")
+    return {
+        **to_jsonable_python(payload),
+        TIMESTAMP_FIELD: to_jsonable_python(read_at),
+    }
+
+
 def _register(broker: MQTTBroker, publisher: MQTTPublisher) -> None:
     """Register a pre-built publisher via the base registrator."""
     Registrator.publisher(cast("Registrator[Any, Any]", broker), publisher)
@@ -32,7 +68,9 @@ def _register(broker: MQTTBroker, publisher: MQTTPublisher) -> None:
 class TopicPublisher(Protocol):
     """Minimal publisher contract the bridge depends on."""
 
-    async def publish(self, topic: str, payload: BaseModel) -> None: ...
+    async def publish(
+        self, topic: str, payload: BaseModel, read_at: datetime
+    ) -> None: ...
 
 
 class MappingPublisher:
@@ -55,21 +93,21 @@ class MappingPublisher:
             mapper if isinstance(mapper, dict) else None
         )
 
-    async def publish(self, topic: str, payload: BaseModel) -> None:
+    async def publish(self, topic: str, payload: BaseModel, read_at: datetime) -> None:
         """Map ``payload`` then delegate to ``inner``."""
         if self._mappers is not None:
             fn = self._mappers.get(topic)
             mapped = fn(payload) if fn is not None else payload
         else:
             mapped = self._mapper(payload)  # type: ignore[operator]
-        await self._inner.publish(topic, mapped)
+        await self._inner.publish(topic, mapped, read_at)
 
 
 class MqttPublisher:
     """Wraps FastStream topic publishers for a set of ModbusTopics.
 
     Call ``register_publishers`` once per broker to create all publishers,
-    then ``publish(topic, payload)`` to send a JSON payload.
+    then ``publish(topic, payload, read_at)`` to send a JSON payload.
     """
 
     def __init__(
@@ -96,17 +134,17 @@ class MqttPublisher:
         for topic in topics:
             publisher = broker.publisher(
                 topic.topic,
-                schema=(schemas or {}).get(topic.topic, topic.model),
+                schema=with_timestamp((schemas or {}).get(topic.topic, topic.model)),
                 qos=QoS.AT_LEAST_ONCE,
                 description=f"Modbus data for {topic.topic}",
             )
             publishers[topic.topic] = publisher
         return publishers
 
-    async def publish(self, topic: str, payload: BaseModel) -> None:
-        """Publish a JSON payload to a previously-registered topic."""
+    async def publish(self, topic: str, payload: BaseModel, read_at: datetime) -> None:
+        """Publish a JSON payload, stamped with ``read_at``, to a registered topic."""
         if publisher := self._publishers.get(topic):
-            await publisher.publish(payload)
+            await publisher.publish(timestamped_body(payload, read_at))
         else:
             logger.warning("No publisher for topic %s", topic)
 
@@ -195,7 +233,7 @@ class ParametrizedMQTTPublisher(MQTTPublisher):
                     topic=template,
                     qos=qos,
                     retain=retain,
-                    schema_=schema,
+                    schema_=with_timestamp(schema) if schema is not None else None,
                     title_=template,
                     description_=description,
                     include_in_schema=True,
@@ -258,7 +296,9 @@ class ParametrizedMQTTPublisher(MQTTPublisher):
                 return None
         return values
 
-    async def publish(self, topic: str, payload: BaseModel) -> None:  # type: ignore[override]
+    async def publish(  # type: ignore[override]
+        self, topic: str, payload: BaseModel, read_at: datetime
+    ) -> None:
         """Publish to the concrete topic, creating its publisher on first use."""
         if self._match(topic) is None:
             logger.warning("No publisher for topic %s", topic)
@@ -290,7 +330,7 @@ class ParametrizedMQTTPublisher(MQTTPublisher):
                 )
                 _register(self._broker, publisher)
                 self._cache[topic] = publisher
-        await publisher.publish(payload)
+        await publisher.publish(timestamped_body(payload, read_at))
 
 
 def finalize_parametrized_spec(
