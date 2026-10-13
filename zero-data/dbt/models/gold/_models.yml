@@ -114,14 +114,6 @@ models:
           - not_null
       - name: sub_group
         description: "The sub group classification, within the main group, of the power tag."
-      - name: current
-        description: "Current of the 24V DC converter aggregated per minute."
-        tests:
-          - not_null
-      - name: voltage
-        description: "Voltage of the 24V DC converter aggregated per minute."
-        tests:
-          - not_null
       - name: power
         description: "Power of the 24V DC converter aggregated per minute."
         tests:

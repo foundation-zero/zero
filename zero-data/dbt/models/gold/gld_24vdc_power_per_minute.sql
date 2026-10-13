@@ -15,8 +15,6 @@ select
 	cur.converter,
 	cur.main_group,
 	cur.sub_group,
-	cur.current,
-	volt.voltage,
 	(cur.current * volt.voltage) / 1000.0 as power
 from currents as cur
 join {{ ref('gld_24vdc_converter_voltage_per_minute') }} as volt
