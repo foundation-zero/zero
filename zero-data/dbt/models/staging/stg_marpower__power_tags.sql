@@ -18,3 +18,4 @@ select
   "table",
   "topic"
 from {{ source('raw', 'power_tags') }}
+where topic is not null
