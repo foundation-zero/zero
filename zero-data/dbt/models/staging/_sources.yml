@@ -101,6 +101,179 @@ sources:
             description: "Phase B-to-neutral voltage."
           - name: voltage_cn
             description: "Phase C-to-neutral voltage."
+      - name: marpower__450000_24vdc_system
+        description: "24V DC system telemetry from Marpower."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: csetting__has_value
+            description: "Indicates whether a value is present for current setting (csetting)."
+          - name: csetting__is_valid
+            description: "Indicates whether the measured csetting value is valid."
+          - name: csetting__timestamp
+            description: "Timestamp of the csetting measurement."
+          - name: csetting__value
+            description: "Current setting threshold value (csetting)."
+          - name: external_off__has_value
+            description: "Indicates whether a value is present for the external off signal."
+          - name: external_off__is_valid
+            description: "Indicates whether the external off status is valid."
+          - name: external_off__timestamp
+            description: "Timestamp of the external off signal."
+          - name: external_off__value
+            description: "Status of the external off command (true/false)."
+          - name: hmi_cmd_close__has_value
+            description: "Indicates whether a value is present for the HMI close command."
+          - name: hmi_cmd_close__is_valid
+            description: "Indicates whether the HMI close command status is valid."
+          - name: hmi_cmd_close__timestamp
+            description: "Timestamp of the HMI close command."
+          - name: hmi_cmd_close__value
+            description: "Status of the HMI close command."
+          - name: hmi_cmd_open__has_value
+            description: "Indicates whether a value is present for the HMI open command."
+          - name: hmi_cmd_open__is_valid
+            description: "Indicates whether the HMI open command status is valid."
+          - name: hmi_cmd_open__timestamp
+            description: "Timestamp of the HMI open command."
+          - name: hmi_cmd_open__value
+            description: "Status of the HMI open command."
+          - name: isetting__has_value
+            description: "Indicates whether a value is present for current setting (isetting)."
+          - name: isetting__is_valid
+            description: "Indicates whether the isetting value is valid."
+          - name: isetting__timestamp
+            description: "Timestamp of the isetting measurement."
+          - name: isetting__value
+            description: "Current setting value (isetting)."
+          - name: iwarning__has_value
+            description: "Indicates whether a value is present for the current warning (iwarning)."
+          - name: iwarning__is_valid
+            description: "Indicates whether the iwarning value is valid."
+          - name: iwarning__timestamp
+            description: "Timestamp of the iwarning status."
+          - name: iwarning__value
+            description: "Threshold value or status of the current warning."
+          - name: output_current__has_value
+            description: "Indicates whether a value is present for output current."
+          - name: output_current__is_valid
+            description: "Indicates whether the output current measurement is valid."
+          - name: output_current__timestamp
+            description: "Timestamp of the output current measurement."
+          - name: output_current__value
+            description: "Measured output current value."
+          - name: short_circuit__has_value
+            description: "Indicates whether a value is present for short circuit status."
+          - name: short_circuit__is_valid
+            description: "Indicates whether the short circuit status is valid."
+          - name: short_circuit__timestamp
+            description: "Timestamp of the short circuit detection."
+          - name: short_circuit__value
+            description: "Short circuit detection status (true on short circuit)."
+          - name: source_type
+            description: "Source identifier or protocol type."
+          - name: status_hmi_green__has_value
+            description: "Indicates whether a value is present for the green HMI status LED."
+          - name: status_hmi_green__is_valid
+            description: "Indicates whether the green HMI LED status is valid."
+          - name: status_hmi_green__timestamp
+            description: "Timestamp of the green HMI LED status."
+          - name: status_hmi_green__value
+            description: "Status of the green HMI LED."
+          - name: status_hmi_red__has_value
+            description: "Indicates whether a value is present for the red HMI status LED."
+          - name: status_hmi_red__is_valid
+            description: "Indicates whether the red HMI LED status is valid."
+          - name: status_hmi_red__timestamp
+            description: "Timestamp of the red HMI LED status."
+          - name: status_hmi_red__value
+            description: "Status of the red HMI LED."
+          - name: status_hmi_yellow__has_value
+            description: "Indicates whether a value is present for the yellow HMI status LED."
+          - name: status_hmi_yellow__is_valid
+            description: "Indicates whether the yellow HMI LED status is valid."
+          - name: status_hmi_yellow__timestamp
+            description: "Timestamp of the yellow HMI LED status."
+          - name: status_hmi_yellow__value
+            description: "Status of the yellow HMI LED."
+          - name: status_on_off__has_value
+            description: "Indicates whether a value is present for on/off status."
+          - name: status_on_off__is_valid
+            description: "Indicates whether the on/off status is valid."
+          - name: status_on_off__timestamp
+            description: "Timestamp of the on/off status measurement."
+          - name: status_on_off__value
+            description: "General on/off status of the channel or device."
+          - name: system_error__has_value
+            description: "Indicates whether a value is present for system error status."
+          - name: system_error__is_valid
+            description: "Indicates whether the system error status is valid."
+          - name: system_error__timestamp
+            description: "Timestamp of the system error report."
+          - name: system_error__value
+            description: "System error status (true on fault)."
+          - name: table
+            description: "Internal source or storage table name."
+          - name: topic
+            description: "MQTT topic path for the sensor or channel."
+          - name: under_voltage__has_value
+            description: "Indicates whether a value is present for under-voltage detection."
+          - name: under_voltage__is_valid
+            description: "Indicates whether the under-voltage value is valid."
+          - name: under_voltage__timestamp
+            description: "Timestamp of the under-voltage detection."
+          - name: under_voltage__value
+            description: "Under-voltage status (true on low voltage)."
+          - name: active__has_value
+            description: "Indicates whether a value is present for active status."
+          - name: active__is_valid
+            description: "Indicates whether the active status is valid."
+          - name: active__timestamp
+            description: "Timestamp of the active status measurement."
+          - name: active__value
+            description: "Indicates whether the component is actively operating."
+          - name: current__has_value
+            description: "Indicates whether a current measurement value is present."
+          - name: current__is_valid
+            description: "Indicates whether the current measurement value is valid."
+          - name: current__timestamp
+            description: "Timestamp of the current measurement."
+          - name: current__value
+            description: "Measured electrical current in Amperes (A)."
+          - name: device_temp__has_value
+            description: "Indicates whether a device temperature value is present."
+          - name: device_temp__is_valid
+            description: "Indicates whether the device temperature measurement is valid."
+          - name: device_temp__timestamp
+            description: "Timestamp of the device temperature measurement."
+          - name: device_temp__value
+            description: "Measured device temperature."
+          - name: heatsink_temp__has_value
+            description: "Indicates whether a heatsink temperature value is present."
+          - name: heatsink_temp__is_valid
+            description: "Indicates whether the heatsink temperature measurement is valid."
+          - name: heatsink_temp__timestamp
+            description: "Timestamp of the heatsink temperature measurement."
+          - name: heatsink_temp__value
+            description: "Measured heatsink temperature."
+          - name: power__has_value
+            description: "Indicates whether a power value is present."
+          - name: power__is_valid
+            description: "Indicates whether the power measurement is valid."
+          - name: power__timestamp
+            description: "Timestamp of the power measurement."
+          - name: power__value
+            description: "Measured power value."
+          - name: voltage__has_value
+            description: "Indicates whether a voltage measurement value is present."
+          - name: voltage__is_valid
+            description: "Indicates whether the voltage measurement is valid."
+          - name: voltage__timestamp
+            description: "Timestamp of the voltage measurement."
+          - name: voltage__value
+            description: "Measured voltage in Volts (V)."
       - name: marpower__450000_main_power_storage_errors
         description: "Main power storage errors and status telemetry from Marpower."
         columns:
