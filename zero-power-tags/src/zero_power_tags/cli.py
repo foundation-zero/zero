@@ -147,6 +147,14 @@ def local_topic_groups(
     return [(spec.topics, ports[spec.panel]) for spec in specs]
 
 
+BUFFER_SECONDS = 300
+
+
+def buffer_size_for(probe_interval: float, topic_count: int) -> int:
+    """Readings one bridge produces in ``BUFFER_SECONDS`` of probing."""
+    return max(1, round(BUFFER_SECONDS / probe_interval)) * topic_count
+
+
 class RunCmd(MqttSettings):
     modbus_port: int = 502
     modbus_probe_interval: int = 1
@@ -173,10 +181,11 @@ class RunCmd(MqttSettings):
                 publisher,
                 endpoint.spec.topics,
                 self.modbus_probe_interval,
-                # 1s cadence: cap each read below the interval, and drop rather
-                # than retry a failed publish (make_broker reconnects on its own).
+                # 1s cadence: cap each read below the interval.
                 modbus_timeout=0.5,
-                drop_failed_publishes=True,
+                buffer_size=buffer_size_for(
+                    self.modbus_probe_interval, len(endpoint.spec.topics)
+                ),
             )
             for endpoint in endpoints
         ]

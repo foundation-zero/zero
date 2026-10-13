@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -9,6 +10,7 @@ from zero_modbus_bridge.publisher import (
     MQTTPublisher,
     MqttPublisher,
     ParametrizedMQTTPublisher,
+    timestamped_body,
 )
 
 
@@ -21,15 +23,18 @@ async def test_publisher_registers_and_publishes():
 
     topic = AnnotationModbusTopic(topic="test/p", model=FloatModel)
     pub = MqttPublisher(mock_broker, [topic])
-    await pub.publish("test/p", FloatModel(value=1))
-    mock_pub.publish.assert_called_once_with(FloatModel(value=1))
+    read_at = datetime(2026, 10, 13, 9, 30, tzinfo=UTC)
+    await pub.publish("test/p", FloatModel(value=1), read_at)
+    mock_pub.publish.assert_called_once_with(
+        {"value": 1.0, "room": None, "TimeStamp": "2026-10-13T09:30:00Z"}
+    )
 
 
 @pytest.mark.asyncio
 async def test_publisher_unknown_topic_noop():
     mock_broker = MagicMock()
     pub = MqttPublisher(mock_broker, [])
-    await pub.publish("unknown", FloatModel(value=1))
+    await pub.publish("unknown", FloatModel(value=1), datetime.now(UTC))
 
 
 class TestParametrizedMQTTPublisher:
@@ -90,8 +95,12 @@ class TestParametrizedMQTTPublisher:
             broker, self.TEMPLATE, parameters=self.PARAMS
         )
 
-        await pub.publish("power-tags/10P1/pump-a", FloatModel(value=1))
-        await pub.publish("power-tags/10P1/pump-a", FloatModel(value=2))
+        await pub.publish(
+            "power-tags/10P1/pump-a", FloatModel(value=1), datetime.now(UTC)
+        )
+        await pub.publish(
+            "power-tags/10P1/pump-a", FloatModel(value=2), datetime.now(UTC)
+        )
 
         # Template + exactly one concrete (hidden) publisher.
         assert len(broker.publishers) == 2
@@ -108,7 +117,7 @@ class TestParametrizedMQTTPublisher:
             broker, self.TEMPLATE, parameters=self.PARAMS
         )
 
-        await pub.publish("other/10P1/pump-a", FloatModel(value=1))
+        await pub.publish("other/10P1/pump-a", FloatModel(value=1), datetime.now(UTC))
         assert len(broker.publishers) == 1  # only the template
 
     @pytest.mark.asyncio
@@ -118,5 +127,31 @@ class TestParametrizedMQTTPublisher:
             broker, self.TEMPLATE, parameters=self.PARAMS
         )
 
-        await pub.publish("power-tags/10P9/pump-a", FloatModel(value=1))
+        await pub.publish(
+            "power-tags/10P9/pump-a", FloatModel(value=1), datetime.now(UTC)
+        )
         assert len(broker.publishers) == 1  # only the template
+
+
+def test_schema_declares_timestamp_field():
+    broker = MQTTBroker("localhost:1883")
+    ParametrizedMQTTPublisher.create(
+        broker,
+        "power-tags/{panel}/{slug}",
+        parameters={"panel": {"enum": ["10P1"]}, "slug": {"enum": ["a"]}},
+        schema=FloatModel,
+    )
+    mock_broker = MagicMock()
+    MqttPublisher(mock_broker, [AnnotationModbusTopic(topic="t", model=FloatModel)])
+
+    schema = mock_broker.publisher.call_args.kwargs["schema"]
+    assert schema.__name__ == "FloatModel"
+    assert schema.model_json_schema()["properties"]["TimeStamp"]["format"] == (
+        "date-time"
+    )
+    assert "TimeStamp" in schema.model_json_schema()["required"]
+
+
+def test_timestamped_body_requires_timezone():
+    with pytest.raises(ValueError, match="timezone"):
+        timestamped_body(FloatModel(value=1), datetime(2026, 10, 13))

@@ -117,9 +117,16 @@ Temperatures are published as a JSON object:
     "DV1": 12.3,
     "DV2": 11.8,
     "...": "..."
-  }
+  },
+  "TimeStamp": "2026-10-13T09:30:00Z"
 }
 ```
+
+`TimeStamp` is the time of the Modbus read (ISO 8601, UTC). Vector uses it as the
+event time, so readings replayed after a broker outage land at their real time.
+Readings whose publish fails are buffered (about 5 minutes' worth) and replayed
+in order once the broker accepts again; the oldest are dropped when the buffer
+is full.
 
 ## Development
 
