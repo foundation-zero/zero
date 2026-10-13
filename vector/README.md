@@ -41,8 +41,16 @@ The main pipeline. It subscribes to the everyday topics (`marpower/#`,
 | 5 | `process_5_spell_fix.vrl` | Normalises `TimeStamp` → `Timestamp` in key names. |
 | 6 | `process_6_snakecase.vrl` | Converts all keys from `PascalCase` to `snake_case`. |
 | 7 | `process_7_drop_nans.vrl` | Drops messages where the value is 'NaN'. Greptime can't deal with those values. |
+| 8 | `process_8_valid_timestamp.vrl` | Drops (to the dead letter queue) events whose `timestamp` Greptime cannot parse. |
 
 The result lands in a per-domain table via the `greptimedb` sink.
+
+The `greptimedb` sink keeps Vector's default unlimited retries on purpose. A
+Greptime outage (connection refused, 5xx) is retried too, and the 4 GiB disk
+buffer only helps if those retries outlast the outage. The one input Greptime
+answers with a retried 500 is an unparseable `timestamp` (null, missing, not a
+string or timestamp, not RFC 3339); step 8 keeps those out of the sink. Type
+mismatches and bad table names answer 400, which Vector drops without retrying.
 
 #### A+T NMEA 0183 → `atpx__nmea_*`
 
