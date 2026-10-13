@@ -6,6 +6,7 @@ export { default as NoopTooltipProvider } from "./NoopTooltipProvider.vue";
 import { isEqual } from "lodash";
 import { createContext } from "reka-ui";
 import { type Component, markRaw, ref, type Ref, toRefs, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { MimicComponentFieldsMap } from "../../mimics/modules/index.ts";
 import { deserializeField, ModuleField, serializeField } from "../../mimics/providers/index.ts";
@@ -28,6 +29,7 @@ export type TooltipComponentContext<Type extends MimicComponentType = MimicCompo
 export type TooltipContext = {
   data: Ref<TooltipComponentContext | null>;
   component: Ref<Component | null>;
+  title: Ref<string | null>;
   dialog: Ref<Component | null>;
   disabled?: boolean;
   setTooltip: <Type extends MimicComponentType>(
@@ -49,9 +51,11 @@ export const [getTooltipContext, provideTooltipContext] =
 export const createTooltipContext = (
   sourceData: Partial<MimicComponentFieldsMap>,
 ): TooltipContext => {
+  const { te, t } = useI18n();
   const component = ref<Component | null>(null);
   const dialog = ref<Component | null>(null);
   const data = ref<TooltipComponentContext | null>(null);
+  const title = ref<string | null>(null);
 
   const setTooltip = <Type extends MimicComponentType>(
     context: TooltipComponentContext<Type>,
@@ -92,6 +96,7 @@ export const createTooltipContext = (
     data.value = null;
     component.value = null;
     dialog.value = null;
+    title.value = null;
   };
 
   const setDialog = (comp: Component) => {
@@ -121,6 +126,8 @@ export const createTooltipContext = (
         const [type, tooltip] = tooltipContext;
 
         setTooltip(tooltip, TOOLTIPS[type]);
+        const titleKey = `thrapp.tooltips.titles.${type}`;
+        title.value = te(titleKey) ? t(titleKey) : (tooltip?.tooltip?.title ?? null);
       }
     },
     { immediate: true },
@@ -130,6 +137,7 @@ export const createTooltipContext = (
     data,
     component,
     dialog,
+    title,
     findTooltipContext,
     setTooltip,
     setDialog,

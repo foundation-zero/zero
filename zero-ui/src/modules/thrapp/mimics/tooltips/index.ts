@@ -47,6 +47,18 @@ export const TOOLTIPS: Partial<Record<MimicComponentType, Component>> = {
     () => import("./ExchangeCircuitTooltip.vue"),
   ),
   [MimicComponentType.Pvt]: defineAsyncComponent(() => import("./PvtTooltip.vue")),
+  [MimicComponentType.DcConverter]: defineAsyncComponent(() => import("./DcConverterTooltip.vue")),
+  [MimicComponentType.Pcm]: defineAsyncComponent(() => import("./PcmTooltip.vue")),
+  [MimicComponentType.Thruster]: defineAsyncComponent(() => import("./ThrustersTooltip.vue")),
+  [MimicComponentType.PropulsionDrive]: defineAsyncComponent(
+    () => import("./PropulsionDriveTooltip.vue"),
+  ),
+  [MimicComponentType.PropulsionCooler]: defineAsyncComponent(
+    () => import("./PropulsionCoolerTooltip.vue"),
+  ),
+  [MimicComponentType.ShorePowerConverter]: defineAsyncComponent(
+    () => import("./ShorePowerConverterTooltip.vue"),
+  ),
 };
 
 export const useTranslations = () => ({

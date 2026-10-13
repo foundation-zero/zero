@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { TooltipListItem, TooltipListItemTitle } from "@/modules/thrapp/components/tooltip-list";
+import {
+  TooltipListItem,
+  TooltipListItemTitle,
+  TooltipListItemValue,
+} from "@/modules/thrapp/components/tooltip-list";
 import { type Component } from "vue";
 import { FieldEditor } from "../../editors";
+import { ModuleField } from "../../providers";
 import { FieldRenderer } from "../../renderers";
 
 withDefaults(
@@ -9,6 +14,8 @@ withDefaults(
     size?: "sm" | "default";
     renderer?: Component;
     editor?: Component;
+    source?: ModuleField;
+    noSource?: boolean;
   }>(),
   { size: "default", renderer: FieldRenderer.Auto, editor: FieldEditor.Auto },
 );
@@ -18,19 +25,24 @@ withDefaults(
   <TooltipListItem :size="size">
     <TooltipListItemTitle>
       <slot />
-      <slot name="source">
-        <FieldRenderer.Source>
+      <slot
+        v-if="!noSource"
+        name="source"
+      >
+        <FieldRenderer.Source :source="source">
           <slot name="sourceName" />
         </FieldRenderer.Source>
       </slot>
     </TooltipListItemTitle>
 
     <slot name="editor">
-      <component :is="editor">
-        <slot name="renderer">
-          <component :is="renderer" />
-        </slot>
-      </component>
+      <TooltipListItemValue>
+        <component :is="editor">
+          <slot name="renderer">
+            <component :is="renderer" />
+          </slot>
+        </component>
+      </TooltipListItemValue>
     </slot>
   </TooltipListItem>
 </template>

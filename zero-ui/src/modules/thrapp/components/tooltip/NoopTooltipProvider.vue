@@ -7,6 +7,7 @@ provideTooltipContext({
   findTooltipContext() {
     return undefined;
   },
+  title: ref(null),
   getData() {
     return null;
   },

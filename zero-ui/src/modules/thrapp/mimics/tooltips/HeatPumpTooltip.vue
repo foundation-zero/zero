@@ -10,10 +10,10 @@ import { MimicComponentType } from "../../types";
 import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import HeatPumpInstance from "../instances/HeatPumpInstance.vue";
-import { ControlValue, ControlValueForm, SensorValue } from "../providers";
+import { ControlValue, ControlValueForm } from "../providers";
 import * as Partials from "./partials";
 import SubmitControlForm from "./partials/SubmitControlForm.vue";
-const { items, labels, sources } = useTranslations();
+const { items, labels } = useTranslations();
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>();
 </script>
@@ -47,22 +47,19 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
           :source="controls.heatpump"
           field="on"
         >
-          <Partials.EditableListItem>
+          <Partials.EditableListItem
+            no-source
+            :source="custom.controller?.controller"
+          >
             {{ items("onOff") }}
-            <template #sourceName>
-              {{ sources("this") }}
-            </template>
           </Partials.EditableListItem>
         </ControlValue>
         <ControlValue
           :source="controls.heatpump"
           field="temperatureSetpoint"
         >
-          <Partials.EditableListItem>
+          <Partials.EditableListItem :source="parameters.temperatureSetpoint">
             {{ items("temperature") }}
-            <template #sourceName>
-              {{ sources("this") }}
-            </template>
           </Partials.EditableListItem>
         </ControlValue>
 
@@ -72,17 +69,6 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
 
     <TooltipList>
       <TooltipListHeader>{{ labels("heatExchange") }}</TooltipListHeader>
-      <SensorValue
-        :source="sensors.heatTransfer"
-        field="heat"
-      >
-        <Partials.ListItem>
-          {{ items("heatExchange") }}
-          <template #sourceName>
-            {{ sources("calculated") }}
-          </template>
-        </Partials.ListItem>
-      </SensorValue>
       <Partials.ExchangeCircuit :source="sensors.heatTransfer" />
     </TooltipList>
 
