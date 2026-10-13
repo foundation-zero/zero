@@ -22,6 +22,8 @@ postgresql:
   existingSecretPasswordKey: password
 
 api:
+  mqtt:
+    existingSecret: ""
   enabled: true
   image:
     repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-api
@@ -40,6 +42,8 @@ api:
     className: tailscale
 
 control:
+  mqtt:
+    existingSecret: ""
   enabled: false
   image:
     repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-control
@@ -52,6 +56,8 @@ control:
   modulePersistence: true
 
 simulation:
+  mqtt:
+    existingSecret: ""
   enabled: false
   resources: {}
   type: "thrs"

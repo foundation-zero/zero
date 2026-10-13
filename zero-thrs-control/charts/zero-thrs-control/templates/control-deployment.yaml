@@ -58,16 +58,17 @@ spec:
                 secretKeyRef:
                   name: {{ $root.Values.postgresql.existingSecret }}
                   key: {{ $root.Values.postgresql.existingSecretPasswordKey }}
-            {{- if $root.Values.mqtt.existingSecret }}
+            {{- $mqttSecret := $root.Values.control.mqtt.existingSecret | default $root.Values.mqtt.existingSecret }}
+            {{- if $mqttSecret }}
             - name: MQTT_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: {{ $root.Values.mqtt.existingSecret }}
+                  name: {{ $mqttSecret }}
                   key: username
             - name: MQTT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ $root.Values.mqtt.existingSecret }}
+                  name: {{ $mqttSecret }}
                   key: {{ $root.Values.mqtt.existingSecretPasswordKey }}
             {{- end }}
           envFrom:
