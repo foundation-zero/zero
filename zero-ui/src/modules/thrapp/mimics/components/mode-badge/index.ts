@@ -62,7 +62,7 @@ export const MODE_COLORS: Record<ModeBadgeMode, string> = {
   [ModeBadgeMode.FillingLow]: "var(--flows-fill-low)",
   [ModeBadgeMode.Filling]: "var(--flows-fill-medium)",
   [ModeBadgeMode.ManualControl]: "var(--warning)",
-  [ModeBadgeMode.AdvisoryOff]: "var(--destructive)",
+  [ModeBadgeMode.AdvisoryOff]: "var(--brand-muted)",
   [ModeBadgeMode.Disabled]: "var(--destructive-muted)",
 };
 
