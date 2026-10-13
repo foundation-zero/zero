@@ -107,7 +107,7 @@ class MqttPublisher:
     """Wraps FastStream topic publishers for a set of ModbusTopics.
 
     Call ``register_publishers`` once per broker to create all publishers,
-    then ``publish(topic, payload)`` to send a JSON payload.
+    then ``publish(topic, payload, read_at)`` to send a JSON payload.
     """
 
     def __init__(
