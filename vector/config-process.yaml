@@ -79,10 +79,8 @@ transforms:
   dropped_append_timestamp:
     type: remap
     inputs: ["*.dropped"]
-    source: |
-      if !exists(.timestamp) || is_null(.timestamp) {
-        .timestamp = now()
-      }
+    files:
+      - "/etc/vector/dropped_append_timestamp.vrl"
 sinks:
   greptimedb:
     type: greptimedb_logs

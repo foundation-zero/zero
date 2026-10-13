@@ -39,6 +39,20 @@ transforms:
       - "./processing/process_7_drop_nans.vrl"
       - "./processing/process_8_valid_timestamp.vrl"
     drop_on_error: true
+    reroute_dropped: true
+  dropped_append_timestamp:
+    type: remap
+    inputs: ["*.dropped"]
+    files:
+      - "./processing/dropped_append_timestamp.vrl"
+  mask_ingest_time:
+    type: remap
+    inputs: ["dropped_append_timestamp"]
+    source: |
+      del(.metadata)
+      if is_timestamp(.timestamp) {
+        .timestamp = "<ingest-time>"
+      }
   re_add_table:
     type: remap
     inputs: ["process"]
@@ -48,5 +62,10 @@ sinks:
   output:
     type: console
     inputs: ["re_add_table"]
+    encoding:
+      codec: json
+  dead_letter_queue:
+    type: console
+    inputs: ["mask_ingest_time"]
     encoding:
       codec: json
