@@ -13,6 +13,6 @@ select
     meta.converter_subnr,
     dc.voltage__value as voltage
 from dc_24v as dc
-left join metadata as meta
+join metadata as meta
     on dc.topic = meta.topic
 where dc.voltage__value is not null

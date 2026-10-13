@@ -14,6 +14,6 @@ select
     meta.main_group,
     meta.sub_group
 from dc_24v as dc
-left join metadata as meta
+join metadata as meta
     on dc.topic = meta.topic
 where dc.output_current__value is not null
