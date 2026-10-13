@@ -238,6 +238,34 @@ async def test_failed_publish_is_buffered_and_replayed_in_order(error: Exception
 
 
 @pytest.mark.asyncio
+async def test_partial_flush_keeps_order_and_never_resends():
+    class FailsAfterTwo(RecordingPublisher):
+        async def publish(
+            self, topic: str, payload: BaseModel, read_at: datetime
+        ) -> None:
+            if len(self.accepted) == 2 and self.error is not None:
+                raise self.error
+            self.accepted.append((topic, payload, read_at))
+
+    publisher = FailsAfterTwo()
+    bridge, reader = _bridge(publisher)
+    publisher.error = MQTTPublishError(0x83, "Implementation specific error", None)
+
+    _probe_yields(reader, 1, 2, 3, 4)
+    await bridge.run_once()
+
+    assert [p.value for _, p, _ in publisher.accepted] == [1, 2]  # type: ignore[attr-defined]
+    assert bridge.buffered_count == 2
+
+    publisher.error = None
+    _probe_yields(reader, 5)
+    await bridge.run_once()
+
+    assert [p.value for _, p, _ in publisher.accepted] == [1, 2, 3, 4, 5]  # type: ignore[attr-defined]
+    assert bridge.buffered_count == 0
+
+
+@pytest.mark.asyncio
 async def test_replay_keeps_the_original_read_time():
     publisher = RecordingPublisher()
     bridge, reader = _bridge(publisher)
