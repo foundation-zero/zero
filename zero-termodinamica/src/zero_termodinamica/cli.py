@@ -1,9 +1,11 @@
 import json
 import logging
+from secrets import token_hex
 
 from faststream import FastStream
 from faststream.mqtt import MQTTBroker
 from faststream.specification.asyncapi import AsyncAPI
+from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
     CliApp,
@@ -22,6 +24,8 @@ logging.basicConfig(
 
 
 class RunCmd(ModbusSettings, MqttSettings):
+    mqtt_client_id: str = Field(default_factory=lambda: f"termodinamica-{token_hex(4)}")
+
     async def cli_cmd(self) -> None:
         broker = self.make_broker()
         topics = read_modbus_topics()

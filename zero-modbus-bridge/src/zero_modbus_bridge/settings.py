@@ -1,7 +1,9 @@
+from secrets import token_hex
 from typing import Any
 
 from faststream.mqtt import MQTTBroker
 from faststream.security import SASLPlaintext
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pyModbusTCP.client import ModbusClient
 from pyModbusTCP.server import ModbusServer
@@ -22,9 +24,11 @@ class MqttSettings(BaseSettings):
     mqtt_port: int
     mqtt_username: str | None = None
     mqtt_password: str | None = None
+    mqtt_client_id: str = Field(default_factory=lambda: f"modbus-bridge-{token_hex(4)}")
 
     def make_broker(self, **extra: Any) -> MQTTBroker:
         kwargs: dict[str, Any] = dict(extra)
+        kwargs["client_id"] = self.mqtt_client_id
         if self.mqtt_username and self.mqtt_password:
             kwargs["security"] = SASLPlaintext(self.mqtt_username, self.mqtt_password)
         return MQTTBroker(f"{self.mqtt_host}:{self.mqtt_port}", **kwargs)
