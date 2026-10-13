@@ -1,13 +1,10 @@
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
+use crate::roas_asyncapi::{Channel, Document, Message, Schema, SchemaOrMultiFormat};
 use anyhow::Context;
 use log::{info, warn};
 use roas_asyncapi::common::reference::{RefOr, Reference};
-use roas_asyncapi::v3_0::Document;
-use roas_asyncapi::v3_0::channel::Channel;
-use roas_asyncapi::v3_0::message::Message;
-use roas_asyncapi::v3_0::schema::{Schema, SchemaOrMultiFormat};
 use serde_json::Value;
 
 use crate::graphql::graphql_type_for_subschema;

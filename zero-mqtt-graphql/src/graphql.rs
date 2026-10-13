@@ -22,6 +22,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::iter::once;
 use std::sync::Arc;
 
+use crate::roas_asyncapi::Document;
+use crate::roas_asyncapi::{Schema as AsyncApiSchema, SchemaOrMultiFormat, SchemaType, SubSchema};
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{
@@ -29,10 +31,6 @@ use async_graphql::dynamic::{
 };
 use log::warn;
 use roas_asyncapi::common::reference::RefOr;
-use roas_asyncapi::v3_0::Document;
-use roas_asyncapi::v3_0::schema::{
-    Schema as AsyncApiSchema, SchemaOrMultiFormat, SchemaType, SubSchema,
-};
 use serde_json::Value as JsonValue;
 
 use crate::asyncapi::{FieldDef, TopicDef, TopicGroupDef};
