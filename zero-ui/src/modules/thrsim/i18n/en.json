@@ -10,7 +10,7 @@
       "adsorption": "Adsorption",
       "dc": "DC converters",
       "drives": "Drives",
-      "thrs": "THRS"
+      "thrs": "Heat System"
     },
     "title": "HMI",
     "views": {
@@ -27,20 +27,20 @@
         "inputs": "Inputs",
         "outputs": "Outputs",
         "inputsOutputs": "Inputs & Outputs",
-        "description": "Run simulations of the THRS system with different parameters and control modes."
+        "description": "Run simulations of the Heat System with different parameters and control modes."
       },
       "controls": {
         "title": "Controls",
-        "description": "Adjust control values and modes for the THRS system."
+        "description": "Adjust control values and modes for the Heat System."
       },
       "parameters": {
         "title": "Parameters",
         "tuning": "Tuning",
-        "description": "View and modify the parameters of the THRS system."
+        "description": "View and modify the parameters of the Heat System."
       },
       "sensors": {
         "title": "Sensors",
-        "description": "View real-time data from the THRS sensors."
+        "description": "View real-time data from the Heat System sensors."
       }
     },
     "components": {

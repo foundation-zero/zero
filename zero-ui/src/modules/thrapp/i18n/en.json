@@ -387,7 +387,7 @@
         "title": "Advisory mode disabled",
         "content": [
           "The advisory mode for this circuit is disabled in the AMCS.",
-          "Automatic control or manual control via the THRS app is unavailable. The mimics are ‘read-only’. The controls and parameters in the THRS app are disregarded.",
+          "Automatic control or manual control via the Heat System app is unavailable. The mimics are ‘read-only’. The controls and parameters in the Heat System app are disregarded.",
           "To enable the advisory mode, please check the AMCS systems."
         ],
         "action": "OK"
