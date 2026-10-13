@@ -3,8 +3,8 @@
 Stateless directional mimic pressure gauge component.
 
 <script setup lang="ts">
-import PressureGauge from '@/modules/thrapp/mimics/components/pressure-gauge/PressureGauge.vue'
-import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
+import PressureGauge from '@/modules/heat-system/mimics/components/pressure-gauge/PressureGauge.vue'
+import { ComponentOrientation } from '@/modules/heat-system/mimics/components'
 </script>
 
 ## Overview

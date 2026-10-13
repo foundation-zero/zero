@@ -1,0 +1,182 @@
+{
+  "heatSystemSimulation": {
+    "simulationTypes": {
+      "highTemperature": "High temperature",
+      "thrusters": "Thrusters",
+      "pcm": "PCM",
+      "pvt": "PVT",
+      "consumers": "Consumers",
+      "dhw": "DHW",
+      "adsorption": "Adsorption",
+      "dc": "DC converters",
+      "drives": "Drives",
+      "thrs": "Heat System"
+    },
+    "title": "HMI",
+    "views": {
+      "monitoring": {
+        "title": "Monitoring",
+        "description": "Monitor the sensor and control values in real-time."
+      },
+      "mimic": {
+        "title": "Mimic"
+      },
+      "simulation": {
+        "title": "Simulation",
+        "noActive": "No active simulation. Please run a simulation to see the controls.",
+        "inputs": "Inputs",
+        "outputs": "Outputs",
+        "inputsOutputs": "Inputs & Outputs",
+        "description": "Run simulations of the Heat System with different parameters and control modes."
+      },
+      "controls": {
+        "title": "Controls",
+        "description": "Adjust control values and modes for the Heat System."
+      },
+      "parameters": {
+        "title": "Parameters",
+        "tuning": "Tuning",
+        "description": "View and modify the parameters of the Heat System."
+      },
+      "sensors": {
+        "title": "Sensors",
+        "description": "View real-time data from the Heat System sensors."
+      }
+    },
+    "components": {
+      "simulationActions": {
+        "title": "Simulation",
+        "playbackRate": "Playback rate",
+        "start": "Start",
+        "run": "Run",
+        "pause": "Pause",
+        "step": "Step",
+        "advisory": "Advisory",
+        "tuning": "Tuning",
+        "description": "Control the simulation playback and speed."
+      },
+      "valueTable": {
+        "component": "Component",
+        "property": "Property",
+        "value": "Value",
+        "lastChange": "Last change"
+      },
+      "fieldsValues": {
+        "empty": {
+          "title": "No fields selected",
+          "description": "Please select fields to display their values."
+        }
+      },
+      "controlActions": {
+        "advisoryDisabled": "Advisory mode disabled",
+        "advisoryDisabledTooltip": "Advisory mode can be enabled through the AMCS. Until it is enabled, this screen is read-only.",
+        "automatedControl": "Automated control",
+        "manualControl": "Manual control",
+        "off": "Off"
+      }
+    },
+    "labels": {
+      "noDataAvailable": "No data available. Is the simulation running?",
+      "reset": "Reset",
+      "connect": "Connect",
+      "sensorValues": "Sensor values",
+      "controlValues": "Control values",
+      "controls": "Controls",
+      "parameters": "Parameters",
+      "sensors": "Sensors",
+      "controlParameters": "Control parameters",
+      "controllerState": "Controller values",
+      "controlMode": "Control mode",
+      "setValues": "Set values",
+      "start": "Start",
+      "run": "Run",
+      "tuning": "Tuning",
+      "seconds": "Seconds",
+      "mode": "Mode",
+      "stepInSeconds": "Step (seconds)"
+    }
+  },
+  "components": {
+    "inputs": {
+      "parameter:flow": {
+        "label": "Flow",
+        "unit": "l/s"
+      },
+      "parameter:temperature": {
+        "label": "Temperature",
+        "unit": "°C"
+      },
+      "parameter:flowcontrol": {
+        "label": "Valve Setpoint",
+        "unit": "Ratio"
+      },
+      "parameter:tuning": {
+        "label": "Tuning",
+        "unit": "Ratio"
+      },
+      "parameter:enabled": {
+        "label": "Enabled",
+        "unit": ""
+      },
+      "parameter:ratio": {
+        "label": "Ratio",
+        "unit": "%"
+      },
+      "parameter:dutypoint": {
+        "label": "Duty Point",
+        "unit": "%"
+      },
+      "parameter:dT": {
+        "label": "Temperature Difference",
+        "unit": "K"
+      },
+      "parameter:level": {
+        "label": "Level",
+        "unit": "l"
+      },
+      "parameter:duration": {
+        "label": "Duration",
+        "unit": "s"
+      },
+      "parameter:power": {
+        "label": "Power",
+        "unit": "W"
+      },
+      "parameter:disabled": {
+        "label": "Disabled",
+        "unit": ""
+      },
+      "flow": {
+        "label": "Flow",
+        "unit": "l/min"
+      },
+      "temperature": {
+        "label": "Temperature",
+        "unit": "°C"
+      },
+      "overpressure": {
+        "label": "Overpressure",
+        "unit": "bar"
+      },
+      "heatFlow": {
+        "label": "Heat Flow",
+        "unit": "W"
+      },
+      "maximumTemperature": {
+        "label": "Maximum Temperature",
+        "unit": "°C"
+      },
+      "thruster": {
+        "label": "Thruster"
+      },
+      "mode": {
+        "label": "Mode"
+      },
+      "pid": {
+        "p": "P",
+        "i": "I",
+        "d": "D"
+      }
+    }
+  }
+}

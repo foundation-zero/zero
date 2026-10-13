@@ -3,9 +3,9 @@
 Mimic pump component with four operational states: active, transient, closed, and alarm.
 
 <script setup lang="ts">
-import Pump from '@/modules/thrapp/mimics/components/pump/Pump.vue'
-import { PumpState } from '@/modules/thrapp/mimics/components/pump'
-import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
+import Pump from '@/modules/heat-system/mimics/components/pump/Pump.vue'
+import { PumpState } from '@/modules/heat-system/mimics/components/pump'
+import { ComponentOrientation } from '@/modules/heat-system/mimics/components'
 </script>
 
 ## Overview
@@ -92,9 +92,9 @@ import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
 
 ```vue
 <script setup lang="ts">
-import Pump from '@/modules/thrapp/mimics/components/pump/Pump.vue'
-import { PumpState } from '@/modules/thrapp/mimics/components/pump'
-import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
+import Pump from '@/modules/heat-system/mimics/components/pump/Pump.vue'
+import { PumpState } from '@/modules/heat-system/mimics/components/pump'
+import { ComponentOrientation } from '@/modules/heat-system/mimics/components'
 </script>
 
 <template>

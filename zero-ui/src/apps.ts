@@ -1,8 +1,8 @@
 import { ENV } from "./settings";
 
 export const enum ZeroApps {
-  "thrsim" = "thrsim",
-  "thrs" = "thrs",
+  "heatSystemSimulation" = "heatSystemSimulation",
+  "heatSystem" = "heatSystem",
   "loads" = "loads",
   "grafana" = "grafana",
   "domestic" = "domestic",
@@ -10,11 +10,11 @@ export const enum ZeroApps {
   "powerTags" = "powerTags",
 }
 
-const DEFAULT_INCLUDED_APPS: ZeroApps[] = [ZeroApps.loads, ZeroApps.thrs, ZeroApps.domestic];
+const DEFAULT_INCLUDED_APPS: ZeroApps[] = [ZeroApps.loads, ZeroApps.heatSystem, ZeroApps.domestic];
 
 const VALID_APPS = new Set<ZeroApps>([
-  ZeroApps.thrsim,
-  ZeroApps.thrs,
+  ZeroApps.heatSystemSimulation,
+  ZeroApps.heatSystem,
   ZeroApps.loads,
   ZeroApps.grafana,
   ZeroApps.domestic,
@@ -22,9 +22,14 @@ const VALID_APPS = new Set<ZeroApps>([
   ZeroApps.powerTags,
 ]);
 
+const APP_ALIASES: Record<string, ZeroApps> = {
+  thrs: ZeroApps.heatSystem,
+  thrsim: ZeroApps.heatSystemSimulation,
+};
+
 const envIncludedApps = String(ENV.VITE_INCLUDE_APPS)
   .split(",")
-  .map((s) => s.trim())
+  .map((app) => APP_ALIASES[app.trim()] ?? app.trim())
   .filter((s): s is ZeroApps => VALID_APPS.has(s as ZeroApps));
 
 export const INCLUDED_APPS: ZeroApps[] = envIncludedApps.length

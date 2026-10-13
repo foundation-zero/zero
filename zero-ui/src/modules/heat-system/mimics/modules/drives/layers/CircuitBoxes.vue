@@ -1,0 +1,22 @@
+<script setup lang="ts">
+import { MimicComponentType } from "@/modules/heat-system/types";
+import { ExchangeCircuitInstance, SeawaterCircuitInstance } from "../../../instances";
+import { DRIVES_EXCHANGE_CIRCUIT_DATA } from "../data";
+
+const seawaterCircuits = DRIVES_EXCHANGE_CIRCUIT_DATA[MimicComponentType.SeawaterCircuit];
+const exchangeCircuits = DRIVES_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit];
+</script>
+
+<template>
+  <SeawaterCircuitInstance
+    x="1039.2832"
+    y="782.916"
+    v-bind="seawaterCircuits.seawater"
+  />
+  <ExchangeCircuitInstance
+    x="1314"
+    y="19.916"
+    :height="183"
+    v-bind="exchangeCircuits.domesticHotWater"
+  />
+</template>

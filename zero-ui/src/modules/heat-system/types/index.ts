@@ -1,0 +1,35 @@
+import { DhwTankController } from "@/modules/heat-system-simulation/types";
+
+export const enum MimicComponentType {
+  ExchangeCircuit = "ExchangeCircuit",
+  DcConverter = "DcConverter",
+  ConnectingCircuit = "ConnectingCircuit",
+  FreshwaterCircuit = "FreshwaterCircuit",
+  SeawaterCircuit = "SeawaterCircuit",
+  Pcm = "Pcm",
+  HeatPump = "HeatPump",
+  HVAC = "HVAC",
+  SwitchValve = "SwitchValve",
+  FlowControlValve = "FlowControlValve",
+  HeatExchanger = "HeatExchanger",
+  BoilerTank = "BoilerTank",
+  Pump = "Pump",
+  ManualPump = "ManualPump",
+  PressureSensor = "PressureSensor",
+  PressureGauge = "PressureGauge",
+  TemperatureSensor = "TemperatureSensor",
+  FlowSensor = "FlowSensor",
+  ManualValve = "ManualValve",
+  MixValve = "MixValve",
+  CheckValve = "CheckValve",
+  ThreeWaySwitchValve = "ThreeWaySwitchValve",
+  LevelSensor = "LevelSensor",
+  LevelSwitch = "LevelSwitch",
+  Pvt = "Pvt",
+  Thruster = "Thruster",
+  PropulsionCooler = "PropulsionCooler",
+  PropulsionDrive = "PropulsionDrive",
+  ShorePowerConverter = "ShorePowerConverter",
+}
+
+export type BoilerTankStateField = keyof Omit<DhwTankController, "timeToFill" | "timeToHot">;

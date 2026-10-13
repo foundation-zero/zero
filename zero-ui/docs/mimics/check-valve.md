@@ -3,8 +3,8 @@
 Stateless directional mimic check valve component.
 
 <script setup lang="ts">
-import CheckValve from '@/modules/thrapp/mimics/components/check-valve/CheckValve.vue'
-import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
+import CheckValve from '@/modules/heat-system/mimics/components/check-valve/CheckValve.vue'
+import { ComponentOrientation } from '@/modules/heat-system/mimics/components'
 </script>
 
 ## Overview

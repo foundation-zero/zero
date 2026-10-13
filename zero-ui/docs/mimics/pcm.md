@@ -4,11 +4,11 @@ The PCM (phase-change material) mimic is a thermal battery card with title, stat
 
 <script setup lang="ts">
 import { RiFireLine, RiTempHotLine } from '@remixicon/vue'
-import { ChargeState, ChargingMode, Pcm, PcmChargeState, PcmChargingMode, PcmTitle } from '../../src/modules/thrapp/mimics/components/pcm'
-import ValueList from '../../src/modules/thrapp/mimics/components/value-list/ValueList.vue'
-import ValueListItem from '../../src/modules/thrapp/mimics/components/value-list/ValueListItem.vue'
-import ValueListSeparator from '../../src/modules/thrapp/mimics/components/value-list/ValueListSeparator.vue'
-import { YardTag } from '../../src/modules/thrapp/mimics/components/yard-tag'
+import { ChargeState, ChargingMode, Pcm, PcmChargeState, PcmChargingMode, PcmTitle } from '../../src/modules/heat-system/mimics/components/pcm'
+import ValueList from '../../src/modules/heat-system/mimics/components/value-list/ValueList.vue'
+import ValueListItem from '../../src/modules/heat-system/mimics/components/value-list/ValueListItem.vue'
+import ValueListSeparator from '../../src/modules/heat-system/mimics/components/value-list/ValueListSeparator.vue'
+import { YardTag } from '../../src/modules/heat-system/mimics/components/yard-tag'
 </script>
 
 ## Overview
@@ -52,9 +52,9 @@ The single default slot is a regular HTML flex column. Place the identifier firs
 ```vue
 <script setup lang="ts">
 import { RiFireLine, RiTempHotLine } from "@remixicon/vue";
-import { ChargeState, ChargingMode, Pcm, PcmChargeState, PcmChargingMode, PcmLayout, PcmTitle } from "@/modules/thrapp/mimics/components/pcm";
-import { ValueList, ValueListItem, ValueListSeparator } from "@/modules/thrapp/mimics/components/value-list";
-import { YardTag } from "@/modules/thrapp/mimics/components/yard-tag";
+import { ChargeState, ChargingMode, Pcm, PcmChargeState, PcmChargingMode, PcmLayout, PcmTitle } from "@/modules/heat-system/mimics/components/pcm";
+import { ValueList, ValueListItem, ValueListSeparator } from "@/modules/heat-system/mimics/components/value-list";
+import { YardTag } from "@/modules/heat-system/mimics/components/yard-tag";
 </script>
 
 <template>

@@ -3,7 +3,7 @@
 /**
  * Script to convert raw Figma-exported arrow paths in a mimic module's DirectionArrows.vue
  * into <line> elements with a marker-end arrowhead, matching the hand-authored convention
- * used across mimic modules (see src/modules/thrapp/mimics/modules/dhw/layers/DirectionArrows.vue).
+ * used across mimic modules (see src/modules/heat-system/mimics/modules/dhw/layers/DirectionArrows.vue).
  *
  * Figma exports each directional arrow as a filled <path> made of three subpaths: a small
  * end-cap square, a chevron (the arrowhead, identifiable by its cubic-bezier "C" commands),
@@ -18,7 +18,7 @@
  *   pnpm convert-direction-arrows dc
  *   pnpm convert-direction-arrows dhw
  *
- * The <module> is the folder name under src/modules/thrapp/mimics/modules/<module>/layers/DirectionArrows.vue.
+ * The <module> is the folder name under src/modules/heat-system/mimics/modules/<module>/layers/DirectionArrows.vue.
  */
 
 import { execSync } from "node:child_process";
@@ -292,7 +292,7 @@ if (!moduleName) {
 
 const filePath = path.join(
   __dirname,
-  "../src/modules/thrapp/mimics/modules",
+  "../src/modules/heat-system/mimics/modules",
   moduleName,
   "layers/DirectionArrows.vue",
 );

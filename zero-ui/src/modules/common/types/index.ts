@@ -1,4 +1,4 @@
-import { PID } from "@/modules/thrsim/types";
+import { PID } from "@/modules/heat-system-simulation/types";
 import { Ref } from "vue";
 
 export type Stamped<T> = { value: T; timestamp: Date };

@@ -1,0 +1,58 @@
+import { DEFINITIONS } from "@/modules/heat-system-simulation/lib/consts";
+import {
+  DcAutomaticMode,
+  type PvtAutomaticMode,
+  useAutomationStore,
+} from "@/modules/heat-system-simulation/stores/automation";
+import { AmcsControlMode, DcMode, PvtMode } from "@/modules/heat-system-simulation/types";
+import { computed, inject, Ref, toRefs } from "vue";
+
+export type PvtGroup = keyof PvtAutomaticMode;
+export type DcConverterGroup = keyof DcAutomaticMode;
+
+export const usePvtMode = (group: PvtGroup) => {
+  const { control } = toRefs(useAutomationStore());
+
+  return computed(
+    () => control.value?.modules?.pvt.controlMode?.automaticMode?.[group].mode ?? PvtMode.Idle,
+  );
+};
+
+export const useDcMode = (group: DcConverterGroup) => {
+  const { control } = toRefs(useAutomationStore());
+
+  return computed(
+    () => control.value?.modules?.dc.controlMode?.automaticMode?.[group]?.mode ?? DcMode.Idle,
+  );
+};
+
+export const useAutomaticMode = () => {
+  const currentDefinition = inject<Ref<keyof typeof DEFINITIONS>>("currentModule")!;
+  const { control } = toRefs(useAutomationStore());
+  const { setAutomatedControl } = useAutomationStore();
+
+  return computed({
+    get() {
+      return control.value?.modules?.[currentDefinition.value as keyof typeof control.value.modules]
+        ?.controlMode?.automatic;
+    },
+    set(value: boolean) {
+      setAutomatedControl(currentDefinition.value)(value);
+    },
+  });
+};
+
+export const useAdvisoryEnabled = () => {
+  const currentDefinition = inject<Ref<keyof typeof DEFINITIONS>>("currentModule")!;
+  const { control } = toRefs(useAutomationStore());
+
+  return computed(() => {
+    const key = currentDefinition.value;
+    if (!key || !control.value?.modules) return null;
+
+    const module = control.value.modules[key as keyof typeof control.value.modules];
+    if (!module?.sensorValues) return null;
+
+    return module.sensorValues.mode?.mode.value === AmcsControlMode.External;
+  });
+};

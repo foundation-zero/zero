@@ -3,8 +3,8 @@
 Stateless directional mimic level switch component.
 
 <script setup lang="ts">
-import LevelSwitch from '@/modules/thrapp/mimics/components/level-switch/LevelSwitch.vue'
-import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
+import LevelSwitch from '@/modules/heat-system/mimics/components/level-switch/LevelSwitch.vue'
+import { ComponentOrientation } from '@/modules/heat-system/mimics/components'
 </script>
 
 ## Overview

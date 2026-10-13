@@ -297,7 +297,7 @@ modules/<name>/
   types/           # Module-level types
   lib/             # Constants, helpers
   layouts/         # Layout components
-  mimics/          # Mimic diagram providers (thrapp only)
+  mimics/          # Mimic diagram providers (heat-system only)
   tests/           # Integration tests
 ```
 

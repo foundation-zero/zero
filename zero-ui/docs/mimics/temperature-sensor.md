@@ -3,8 +3,8 @@
 Stateless directional mimic temperature sensor component.
 
 <script setup lang="ts">
-import TemperatureSensor from '@/modules/thrapp/mimics/components/temperature-sensor/TemperatureSensor.vue'
-import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
+import TemperatureSensor from '@/modules/heat-system/mimics/components/temperature-sensor/TemperatureSensor.vue'
+import { ComponentOrientation } from '@/modules/heat-system/mimics/components'
 </script>
 
 ## Overview

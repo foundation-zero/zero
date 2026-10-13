@@ -19,12 +19,12 @@ const APPS: App[] = [
     link: "/loads",
   },
   {
-    name: ZeroApps.thrs,
-    link: "/thrs",
+    name: ZeroApps.heatSystem,
+    link: "/heat-system",
   },
   {
-    name: ZeroApps.thrsim,
-    link: "/thrsim",
+    name: ZeroApps.heatSystemSimulation,
+    link: "/heat-system-simulation",
   },
   {
     name: ZeroApps.domestic,

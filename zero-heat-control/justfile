@@ -97,4 +97,4 @@ compile_fmus:
 compile_fmus_all: compile_fmus compile_fmus_for_linux
 
 export_schema:
-    uv run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrsim/graphql/schema.graphql
+    uv run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/heat-system-simulation/graphql/schema.graphql

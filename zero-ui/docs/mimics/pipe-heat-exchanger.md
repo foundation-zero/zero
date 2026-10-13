@@ -3,9 +3,9 @@
 Directional mimic pipe heat exchanger component with operational states.
 
 <script setup lang="ts">
-import PipeHeatExchanger from '@/modules/thrapp/mimics/components/pipe-heat-exchanger/PipeHeatExchanger.vue'
-import { ComponentOrientation } from '@/modules/thrapp/mimics/components'
-import { PipeHeatExchangerState } from '@/modules/thrapp/mimics/components/pipe-heat-exchanger/index'
+import PipeHeatExchanger from '@/modules/heat-system/mimics/components/pipe-heat-exchanger/PipeHeatExchanger.vue'
+import { ComponentOrientation } from '@/modules/heat-system/mimics/components'
+import { PipeHeatExchangerState } from '@/modules/heat-system/mimics/components/pipe-heat-exchanger/index'
 </script>
 
 ## Overview
