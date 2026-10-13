@@ -1,10 +1,10 @@
 {{/*
 Compile all warnings into a single message, and call fail.
 */}}
-{{- define "zero-thrs-control.validateValues" -}}
+{{- define "zero-heat-control.validateValues" -}}
 {{- $messages := list -}}
-{{- $messages := append $messages (include "zero-thrs-control.validateValues.mqttHost" .) -}}
-{{- $messages := append $messages (include "zero-thrs-control.validateValues.mqttPort" .) -}}
+{{- $messages := append $messages (include "zero-heat-control.validateValues.mqttHost" .) -}}
+{{- $messages := append $messages (include "zero-heat-control.validateValues.mqttPort" .) -}}
 {{- $messages := without $messages "" -}}
 {{- $message := join "\n" $messages -}}
 
@@ -14,15 +14,15 @@ Compile all warnings into a single message, and call fail.
 {{- end -}}
 
 {{/* Must provide a host for MQTT */}}
-{{- define "zero-thrs-control.validateValues.mqttHost" -}}
+{{- define "zero-heat-control.validateValues.mqttHost" -}}
 {{- if not .Values.mqtt.host  -}}
-    zero-thrs-control: mqtt.host is a required value
+    zero-heat-control: mqtt.host is a required value
 {{- end -}}
 {{- end -}}
 
 {{/* Must provide a port for MQTT */}}
-{{- define "zero-thrs-control.validateValues.mqttPort" -}}
+{{- define "zero-heat-control.validateValues.mqttPort" -}}
 {{- if not .Values.mqtt.port  -}}
-    zero-thrs-control: mqtt.port is a required value
+    zero-heat-control: mqtt.port is a required value
 {{- end -}}
 {{- end -}}

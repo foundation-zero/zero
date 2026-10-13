@@ -1,4 +1,4 @@
-# Adapted from THRS messaging (zero-thrs-control/src/thrs/graphql/messaging.py)
+# Adapted from THRS messaging (zero-heat-control/src/thrs/graphql/messaging.py)
 
 import asyncio
 import logging

@@ -368,7 +368,7 @@ services:
   # ---- THRS ----
   thrs-api:
     build:
-      context: ./zero-thrs-control
+      context: ./zero-heat-control
       dockerfile: Dockerfile
       target: api
     profiles:
@@ -401,7 +401,7 @@ services:
   thrs-control-thrusters: &thrs_control
     pull_policy: never
     build:
-      context: ./zero-thrs-control
+      context: ./zero-heat-control
       dockerfile: Dockerfile
       target: control
     profiles:

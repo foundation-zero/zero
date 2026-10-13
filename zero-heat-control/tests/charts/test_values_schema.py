@@ -7,7 +7,7 @@ import pytest
 from thrs.runtime.descriptions.simulation import ModeName
 
 SCHEMA_PATH = (
-    Path(__file__).parents[2] / "charts" / "zero-thrs-control" / "values.schema.json"
+    Path(__file__).parents[2] / "charts" / "zero-heat-control" / "values.schema.json"
 )
 
 # ModeName is a PEP 695 alias, so the Literal members live behind __value__.

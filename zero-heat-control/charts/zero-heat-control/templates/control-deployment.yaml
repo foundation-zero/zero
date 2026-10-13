@@ -5,10 +5,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ print (include "zero-thrs-control.control" $root) "-" $type_name }}
+  name: {{ print (include "zero-heat-control.control" $root) "-" $type_name }}
   namespace: {{ $root.Release.Namespace }}
   labels:
-    {{- include "zero-thrs-control.labels" $root | nindent 4 }}
+    {{- include "zero-heat-control.labels" $root | nindent 4 }}
     app.kubernetes.io/part-of: thrs-control
     app.kubernetes.io/component: {{ print "control-" $type_name }}
 spec:
@@ -17,13 +17,13 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      {{- include "zero-thrs-control.selectorLabels" $root | nindent 6 }}
+      {{- include "zero-heat-control.selectorLabels" $root | nindent 6 }}
       app.kubernetes.io/part-of: thrs-control
       app.kubernetes.io/component: {{ print "control-" $type_name }}
   template:
     metadata:
       labels:
-        {{- include "zero-thrs-control.labels" $root | nindent 8 }}
+        {{- include "zero-heat-control.labels" $root | nindent 8 }}
         app.kubernetes.io/part-of: thrs-control
         app.kubernetes.io/component: {{ print "control-" $type_name }}
     spec:
@@ -72,12 +72,12 @@ spec:
             {{- end }}
           envFrom:
             - configMapRef:
-                name: {{ include "zero-thrs-control.envvars" $root }}
+                name: {{ include "zero-heat-control.envvars" $root }}
           volumeMounts:
             - mountPath: /tmp
               name: tmp-volume
           livenessProbe:
-            {{- include "zero-thrs-control.livenessProbe" $root.Values.livenessPath | nindent 12 }}
+            {{- include "zero-heat-control.livenessProbe" $root.Values.livenessPath | nindent 12 }}
       volumes:
         - name: tmp-volume
           emptyDir: {}

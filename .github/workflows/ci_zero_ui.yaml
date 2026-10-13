@@ -5,7 +5,7 @@ on:
       - .github/workflows/ci_apps.yaml
       - zero-ui/**
       - zero-loads-app/**
-      - zero-thrs-control/**
+      - zero-heat-control/**
   release:
     types: [released]
   push:
@@ -15,7 +15,7 @@ on:
       - .github/workflows/ci_apps.yaml
       - zero-ui/**
       - zero-loads-app/**
-      - zero-thrs-control/**
+      - zero-heat-control/**
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-ui"
@@ -61,7 +61,7 @@ jobs:
       - name: Create .env file from secret in THRS project
         run: |
           echo "${{ secrets.ENV_THRS }}" > .env
-        working-directory: zero-thrs-control
+        working-directory: zero-heat-control
 
       - name: Run services
         run: MACHINE_STATE_LOGGING=false docker compose --profile loads --profile thrs up --quiet-pull --wait

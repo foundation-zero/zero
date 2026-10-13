@@ -2,7 +2,7 @@ name: "THRS Control: Test"
 on:
   pull_request:
     paths:
-      - zero-thrs-control/**
+      - zero-heat-control/**
       - .github/workflows/ci_thrs_control.yaml
   release:
     types: [released]
@@ -10,11 +10,11 @@ on:
     branches:
       - main
     paths:
-      - zero-thrs-control/**
+      - zero-heat-control/**
       - .github/workflows/ci_thrs_control.yaml
 
 env:
-  IMAGE_PREFIX: "europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-"
+  IMAGE_PREFIX: "europe-west1-docker.pkg.dev/common-449414/common/zero-heat-"
 
 jobs:
   test:
@@ -41,31 +41,31 @@ jobs:
       - name: Create .env file from secret in project
         run: |
           echo "${{ secrets.ENV_THRS }}" > .env
-        working-directory: zero-thrs-control
+        working-directory: zero-heat-control
 
       - name: Setup Graphviz
         uses: ts-graphviz/setup-graphviz@v2
 
       - run: uv sync --locked
-        working-directory: zero-thrs-control
+        working-directory: zero-heat-control
 
       - run: just type_check
-        working-directory: zero-thrs-control
+        working-directory: zero-heat-control
 
       - run: just lint_no_fix
-        working-directory: zero-thrs-control
+        working-directory: zero-heat-control
 
       - run: just format
-        working-directory: zero-thrs-control
+        working-directory: zero-heat-control
 
       - run: docker compose --profile thrs up -d --quiet-pull --wait vernemq
 
       - run: just test -v
-        working-directory: zero-thrs-control
+        working-directory: zero-heat-control
 
       - name: Run IO tests (non-blocking)
         run: just test_io -v
-        working-directory: zero-thrs-control
+        working-directory: zero-heat-control
         continue-on-error: true
 
   docker-push:
@@ -112,7 +112,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
-          context: zero-thrs-control
+          context: zero-heat-control
           push: true
           platforms: linux/amd64,linux/arm64
           target: ${{matrix.target}}
@@ -129,4 +129,4 @@ jobs:
       id-token: "write"
     secrets: inherit
     with:
-      helm_chart: "zero-thrs-control/charts/zero-thrs-control"
+      helm_chart: "zero-heat-control/charts/zero-heat-control"

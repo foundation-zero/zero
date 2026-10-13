@@ -3,9 +3,9 @@ apiVersion: v1
 kind: Service
 metadata:
   namespace: {{ .Release.Namespace }}
-  name: {{ include "zero-thrs-control.api" . }}
+  name: {{ include "zero-heat-control.api" . }}
   labels:
-    {{- include "zero-thrs-control.labels" . | nindent 4 }}
+    {{- include "zero-heat-control.labels" . | nindent 4 }}
     {{- with .Values.api.service.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -25,6 +25,6 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "zero-thrs-control.selectorLabels" . | nindent 4 }}
+    {{- include "zero-heat-control.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: api
 {{- end }}

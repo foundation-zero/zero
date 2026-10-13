@@ -24,7 +24,7 @@ postgresql:
 api:
   enabled: true
   image:
-    repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-api
+    repository: europe-west1-docker.pkg.dev/common-449414/common/zero-heat-api
     # This sets the pull policy for images.
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
@@ -42,7 +42,7 @@ api:
 control:
   enabled: false
   image:
-    repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-control
+    repository: europe-west1-docker.pkg.dev/common-449414/common/zero-heat-control
     # This sets the pull policy for images.
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
