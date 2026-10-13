@@ -47,6 +47,10 @@ sources:
             tests:
               - unique
               - not_null
+          - name: converter
+            description: "Converter associated with the 24V DC component."
+          - name: converter_subnr
+            description: "Sub-number of the converter associated with the 24V DC component."
           - name: main_group
             description: "The main group classification of the 24V DC component."
           - name: sub_group
