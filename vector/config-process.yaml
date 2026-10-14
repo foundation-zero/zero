@@ -58,6 +58,7 @@ transforms:
       - "/etc/vector/process_5_spell_fix.vrl"
       - "/etc/vector/process_6_snakecase.vrl"
       - "/etc/vector/process_7_drop_nans.vrl"
+      - "/etc/vector/process_8_valid_timestamp.vrl"
     # Enable dead letter queue
     drop_on_error: true
     drop_on_abort: true
@@ -78,10 +79,8 @@ transforms:
   dropped_append_timestamp:
     type: remap
     inputs: ["*.dropped"]
-    source: |
-      if !exists(.timestamp) || is_null(.timestamp) {
-        .timestamp = now()
-      }
+    files:
+      - "/etc/vector/dropped_append_timestamp.vrl"
 sinks:
   greptimedb:
     type: greptimedb_logs
