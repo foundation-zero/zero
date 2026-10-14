@@ -27,7 +27,7 @@ const dcConverter = (
     source: heatTransfer,
     get tooltip(): TooltipContent {
       return {
-        componentType: "Heat pump",
+        componentType: "DC converter",
         ...tooltip,
       };
     },

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrsim/types";
 import { TooltipList, TooltipListHeader } from "../../components/tooltip-list/index.ts";
 import {
   MimicTooltip,
@@ -9,7 +8,7 @@ import {
 import { MimicComponentType } from "../../types/index.ts";
 import { SensorGraph } from "../components/sensor-graph/index.ts";
 import { PropulsionDriveInstance } from "../instances/index.ts";
-import { getField, SensorValue } from "../providers";
+import { SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import { useTranslations } from "./index.ts";
 import Circuit from "./partials/ExchangeCircuitPartial.vue";
@@ -59,12 +58,12 @@ const { labels, items } = useTranslations();
         </Partials.ListItem>
       </SensorValue>
 
-      <SensorValue :source="getField(SensorComponentType.Thruster, 'thrusters', 'placeholder')">
+      <SensorValue :source="sensors.power">
         <Partials.ListItem no-source>
           {{ items("power") }}
         </Partials.ListItem>
       </SensorValue>
-      <SensorValue :source="getField(SensorComponentType.Temperature, 'thrusters', 'placeholder')">
+      <SensorValue :source="sensors.temperature">
         <Partials.ListItem no-source>
           {{ items("internalTemperature") }}
         </Partials.ListItem>

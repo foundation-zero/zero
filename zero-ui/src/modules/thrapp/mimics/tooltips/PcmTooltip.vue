@@ -17,9 +17,6 @@ import * as Partials from "./partials";
 const { items, labels } = useTranslations();
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.Pcm>>();
-
-const MAX_BATTERY_LOAD = 300;
-const transform = (value: number) => value / MAX_BATTERY_LOAD;
 </script>
 
 <template>
@@ -87,8 +84,12 @@ const transform = (value: number) => value / MAX_BATTERY_LOAD;
             field="energy"
           >
             <FieldRenderer.Auto />
-            /
-            <FieldRenderer.Percentage :transform="transform" />
+          </ControllerStateValue>
+          <ControllerStateValue
+            :source="controllerState.chargeController"
+            field="charge"
+          >
+            <FieldRenderer.Percentage />
           </ControllerStateValue>
         </template>
       </Partials.ListItem>

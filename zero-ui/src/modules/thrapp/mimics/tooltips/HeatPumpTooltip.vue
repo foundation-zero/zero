@@ -47,10 +47,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
           :source="controls.heatpump"
           field="on"
         >
-          <Partials.EditableListItem
-            no-source
-            :source="custom.controller?.controller"
-          >
+          <Partials.EditableListItem no-source>
             {{ items("onOff") }}
           </Partials.EditableListItem>
         </ControlValue>

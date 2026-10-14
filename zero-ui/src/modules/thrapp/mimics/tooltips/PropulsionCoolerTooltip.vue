@@ -28,7 +28,7 @@ const { labels } = useTranslations();
     <TooltipList class="border-b-0">
       <Partials.ComponentInfo :tooltip="tooltip" />
       <SensorGraph
-        :device="tooltip?.technicalName ? `${tooltip.technicalName}-heat` : undefined"
+        :device="tooltip?.technicalName"
         type="heat_transfers"
         field="heat"
       />

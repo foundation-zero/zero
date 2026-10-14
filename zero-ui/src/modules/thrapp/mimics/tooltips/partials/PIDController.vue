@@ -28,7 +28,6 @@ const props = defineProps<{
   measurement?: ModuleField<Type>;
   setpoint?: ModuleField<Parameter>;
   outputMinimum?: ModuleField<Parameter>;
-  noSource?: boolean;
 }>();
 
 const fieldRenderer = computed(() => {
@@ -134,10 +133,7 @@ const t = tScoped("thrapp.parameters.pid");
       :renderer="fieldRenderer"
     >
       {{ items("error") }}
-      <template
-        v-if="!noSource"
-        #sourceName
-      >
+      <template #sourceName>
         {{ sources("calculated") }}
       </template>
     </Partials.ListItem>

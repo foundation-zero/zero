@@ -13,7 +13,7 @@ import { DcMode } from "../components/dc-converter";
 import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import { DcConverterInstance } from "../instances";
-import { getField, getMimicDataProvider } from "../providers";
+import { getField, getMimicDataProvider, SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
 const { items, labels } = useTranslations();
@@ -70,6 +70,20 @@ const modeKey = useDcMode(props.custom.group);
     <TooltipList>
       <TooltipListHeader>{{ labels("heatExchange") }}</TooltipListHeader>
       <Partials.ExchangeCircuit :source="sensors.heatTransfer" />
+    </TooltipList>
+
+    <TooltipList>
+      <TooltipListHeader>{{ labels("output") }}</TooltipListHeader>
+      <SensorValue :source="sensors.power">
+        <Partials.ListItem no-source>
+          {{ items("power") }}
+        </Partials.ListItem>
+      </SensorValue>
+      <SensorValue :source="sensors.temperature">
+        <Partials.ListItem no-source>
+          {{ items("internalTemperature") }}
+        </Partials.ListItem>
+      </SensorValue>
     </TooltipList>
   </MimicTooltip>
 </template>
