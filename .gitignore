@@ -72,6 +72,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# marimo session cache
+__marimo__/
+
 # C extensions
 *.so
 

@@ -1,6 +1,11 @@
 generate-vector:
     uv run zero-data generate-vector
 
+# Open the weekly domestic energy report against a live Greptime tier.
+energy-report tier="zero":
+    GREPTIME_MYSQL_URL="mysql+pymysql://app@greptime-{{tier}}.tail0b4840.ts.net:4002/public" \
+        uv run marimo edit notebooks/energy_report.py
+
 # Build the dbt views on a live Greptime tier (zero, singel or subzero) over Tailscale.
 dbt-deploy tier:
     uv run zero-data greptime init --host greptime-{{tier}}.tail0b4840.ts.net
