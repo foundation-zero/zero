@@ -17,3 +17,4 @@ from dc_24v as dc
 join metadata as meta
     on dc.topic = meta.topic
 where dc.output_current__value is not null
+and meta.main_group is not null
