@@ -9,8 +9,6 @@ import { getField } from "../../../providers";
 const dcConverter = (
   converters: ModuleField<SensorComponentType.Ugrid | SensorComponentType.Brightloop>[],
   heatTransfer: ModuleField<SensorComponentType.HeatTransferDevice, "dc">,
-  power: ModuleField<SensorComponentType.Pvt, "dc">,
-  temperature: ModuleField<SensorComponentType.Temperature, "dc">,
   group: DcConverterGroup,
   tooltip: TooltipContent,
 ) =>
@@ -21,10 +19,8 @@ const dcConverter = (
     parameters: {},
     sensors: {
       heatTransfer: heatTransfer,
-      power: power,
-      temperature: temperature,
     },
-    source: heatTransfer,
+    source: converters[0], // TODO: Fix this!
     get tooltip(): TooltipContent {
       return {
         componentType: "DC converter",
@@ -43,8 +39,6 @@ export const DC_CONVERTER_DATA = toFieldsMap({
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopAft4"),
       ],
       getField(SensorComponentType.HeatTransferDevice, "dc", "dcAftHeat"),
-      getField(SensorComponentType.Pvt, "dc", "placeholder"),
-      getField(SensorComponentType.Temperature, "dc", "placeholder"),
       "brightloopsAft",
       { title: "group1", technicalName: "dc-brightloop-aft", mqttTopic: "dc-brightloop-aft" },
     ),
@@ -54,8 +48,6 @@ export const DC_CONVERTER_DATA = toFieldsMap({
         getField(SensorComponentType.Ugrid, "dc", "dcUgrid2"),
       ],
       getField(SensorComponentType.HeatTransferDevice, "dc", "dcUgridHeat"),
-      getField(SensorComponentType.Pvt, "dc", "placeholder"),
-      getField(SensorComponentType.Temperature, "dc", "placeholder"),
       "ugrids",
       { title: "group2", technicalName: "dc-ugrids", mqttTopic: "dc-ugrids" },
     ),
@@ -65,8 +57,6 @@ export const DC_CONVERTER_DATA = toFieldsMap({
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopFwd2"),
       ],
       getField(SensorComponentType.HeatTransferDevice, "dc", "dcFwdHeat"),
-      getField(SensorComponentType.Pvt, "dc", "placeholder"),
-      getField(SensorComponentType.Temperature, "dc", "placeholder"),
       "brightloopsFwd",
       { title: "group3", technicalName: "dc-brightloop-fwd", mqttTopic: "dc-brightloop-fwd" },
     ),

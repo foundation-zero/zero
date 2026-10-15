@@ -58,14 +58,26 @@ const { labels, items } = useTranslations();
         </Partials.ListItem>
       </SensorValue>
 
-      <SensorValue :source="sensors.power">
+      <SensorValue
+        :source="source"
+        field="power"
+      >
         <Partials.ListItem no-source>
           {{ items("power") }}
+          <template #value>
+            <FieldRenderer.Power />
+          </template>
         </Partials.ListItem>
       </SensorValue>
-      <SensorValue :source="sensors.temperature">
+      <SensorValue
+        :source="source"
+        field="esiIgbtMaxTemperature"
+      >
         <Partials.ListItem no-source>
           {{ items("internalTemperature") }}
+          <template #value>
+            <FieldRenderer.Temperature />
+          </template>
         </Partials.ListItem>
       </SensorValue>
     </TooltipList>

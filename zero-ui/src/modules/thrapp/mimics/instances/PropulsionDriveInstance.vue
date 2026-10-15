@@ -74,10 +74,14 @@ const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
         <ValueListDeltaTItem :source="sensors.heatTransfer" />
         <ValueListTemperatureItem
           class="text-brand"
-          :source="sensors.temperature"
+          :source="source"
+          field="tempPowerStage"
           temperature-label="internal"
         />
-        <ValueListPowerItem :source="sensors.power" />
+        <ValueListPowerItem
+          :source="source"
+          field="power"
+        />
 
         <ValueListSeparator />
       </ValueList>

@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="Definitions extends SimulationDefinitions">
+<script setup lang="ts">
 import {
   SIMULATION,
   SIMULATION_INPUT_QUERIES,
@@ -32,6 +32,10 @@ const COMPONENTS: Record<SimulationComponentType, Component | null> = {
   [SimulationComponentType.HvacExchanger]: HvacControl,
   [SimulationComponentType.AmcsControlMode]: null,
   [SimulationComponentType.AdsorptionChiller]: null,
+  [SimulationComponentType.Brightloop]: null,
+  [SimulationComponentType.Ugrid]: HeatSourceControl,
+  [SimulationComponentType.ShorePowerConverter]: null,
+  [SimulationComponentType.PropulsionDrive]: HeatSourceControl,
 };
 
 const { data } = toRefs(useThrsHistory());

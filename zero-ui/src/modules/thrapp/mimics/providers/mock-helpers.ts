@@ -195,19 +195,47 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   },
   [SensorComponentType.Brightloop]: () => {
     const active = useRandomizedBoolean();
-    return computed(() => ({ active: stamp(active) }));
+    const cell01Temperature1 = useRandomizedNumber(0, 100);
+    const power = useRandomizedNumber(0, 1000);
+    return computed(() => ({
+      active: stamp(active),
+      cell01Temperature1: stamp(cell01Temperature1),
+      power: stamp(power),
+    }));
   },
   [SensorComponentType.Ugrid]: () => {
     const active = useRandomizedBoolean();
-    return computed(() => ({ active: stamp(active) }));
+    const tempPowerStage = useRandomizedNumber(0, 100);
+    const power = useRandomizedNumber(0, 1000);
+    return computed(() => ({
+      active: stamp(active),
+      tempPowerStage: stamp(tempPowerStage),
+      power: stamp(power),
+    }));
   },
   [SensorComponentType.PropulsionDrive]: () => {
     const active = useRandomizedBoolean();
-    return computed(() => ({ active: stamp(active) }));
+    const tempPowerStage = useRandomizedNumber(0, 100);
+    const power = useRandomizedNumber(0, 1000);
+    return computed(() => ({
+      active: stamp(active),
+      tempPowerStage: stamp(tempPowerStage),
+      power: stamp(power),
+    }));
   },
   [SensorComponentType.ShorePowerConverter]: () => {
     const active = useRandomizedBoolean();
-    return computed(() => ({ active: stamp(active) }));
+    const esiIgbtMaxTemperature = useRandomizedNumber(0, 100);
+    const esiIgbtMinTemperature = useRandomizedNumber(0, 100);
+    const esiTransformerTemperature = useRandomizedNumber(0, 100);
+    const power = useRandomizedNumber(0, 1000);
+    return computed(() => ({
+      active: stamp(active),
+      esiIgbtMaxTemperature: stamp(esiIgbtMaxTemperature),
+      esiIgbtMinTemperature: stamp(esiIgbtMinTemperature),
+      esiTransformerTemperature: stamp(esiTransformerTemperature),
+      power: stamp(power),
+    }));
   },
   [SensorComponentType.Pyranometer]: () => {
     const irradiance = useRandomizedNumber(0, 1000);
