@@ -4,7 +4,7 @@ import { useI18n } from "vue-i18n";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip/index.ts";
 import { MimicComponentType } from "../../types/index.ts";
 import { AssetBox, AssetBoxTitle } from "../components/asset-box/index.ts";
-import { DC_CONVERTER_HEIGHT, DC_CONVERTER_WIDTH } from "../components/dc-converter/index.ts";
+import { DC_CONVERTER_WIDTH } from "../components/dc-converter/index.ts";
 import {
   ValueList,
   ValueListDeltaTItem,
@@ -29,7 +29,7 @@ const props = withDefaults(
   >(),
   {
     width: DC_CONVERTER_WIDTH,
-    height: DC_CONVERTER_HEIGHT,
+    height: 196,
     forceHeight: true,
   },
 );

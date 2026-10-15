@@ -401,6 +401,15 @@
       "off": "Off"
     },
     "tooltips": {
+      "titles": {
+        "DcConverter": "DC Converter",
+        "Pcm": "Flextherm Eco G2",
+        "Thruster": "Thruster",
+        "Pvt": "PVT",
+        "PropulsionDrive": "Propulsion drive",
+        "PropulsionCooler": "Propulsion cooler",
+        "ShorePowerConverter": "Shorepower converter"
+      },
       "actions": {
         "viewCircuitMimic": "Switch to circuit mimic",
         "viewControls": "View controls",
@@ -503,7 +512,12 @@
         "flow": "Flow",
         "empty": "Level",
         "pvt": "Pvt",
-        "heat": "Heat"
+        "heat": "Heat",
+        "charged": "Charged",
+        "estBatteryLoad": "Est. battery load",
+        "electricGeneration": "Electric generation",
+        "internalTemperature": "Internal temp",
+        "power": "Power"
       }
     },
     "mimics": {

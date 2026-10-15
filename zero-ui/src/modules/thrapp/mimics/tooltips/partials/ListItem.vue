@@ -5,11 +5,13 @@ import {
   TooltipListItemValue,
 } from "@/modules/thrapp/components/tooltip-list";
 import { type Component } from "vue";
+import { ModuleField } from "../../providers";
 import { FieldRenderer } from "../../renderers";
 
 withDefaults(
   defineProps<{
     size?: "sm" | "default";
+    source?: ModuleField;
     noSource?: boolean;
     renderer?: Component;
   }>(),
@@ -29,7 +31,7 @@ withDefaults(
         v-if="!noSource"
         name="source"
       >
-        <FieldRenderer.Source>
+        <FieldRenderer.Source :source="source">
           <slot name="sourceName" />
         </FieldRenderer.Source>
       </slot>

@@ -32,10 +32,7 @@ const props = defineProps<PidControllerTuning>();
       <Parameters.Description>{{ t(`${controller[2]}.description`) }}</Parameters.Description>
       <Parameters.Separator />
       <TooltipList class="border-0">
-        <Partials.PIDController
-          no-source
-          v-bind="props"
-        >
+        <Partials.PIDController v-bind="{ controller, type }">
           <template #header>
             <TooltipListItem>
               <TooltipListItemTitle>{{ t("components") }}</TooltipListItemTitle>

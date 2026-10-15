@@ -242,7 +242,9 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.MixValve]: EmptyObject;
   [MimicComponentType.CheckValve]: EmptyObject;
   [MimicComponentType.ThreeWaySwitchValve]: EmptyObject;
-  [MimicComponentType.HeatPump]: EmptyObject;
+  [MimicComponentType.HeatPump]: {
+    temperatureSetpoint?: ParametersType.Temperature;
+  };
   [MimicComponentType.HVAC]: EmptyObject;
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
@@ -369,7 +371,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.FlowControlValve]: SensorComponentType.Valve;
   [MimicComponentType.BoilerTank]: undefined;
   [MimicComponentType.ExchangeCircuit]: SensorComponentType.HeatTransferDevice;
-  [MimicComponentType.DcConverter]: undefined;
+  [MimicComponentType.DcConverter]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.PropulsionDrive]: SensorComponentType.PropulsionDrive;
   [MimicComponentType.PropulsionCooler]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.ShorePowerConverter]: SensorComponentType.ShorePowerConverter;
