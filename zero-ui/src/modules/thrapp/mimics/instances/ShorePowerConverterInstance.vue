@@ -5,7 +5,7 @@ import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import { AssetBox, AssetBoxTitle } from "../components/asset-box";
-import { DC_CONVERTER_WIDTH } from "../components/dc-converter";
+import { DC_CONVERTER_WIDTH, DcConverterStatus } from "../components/dc-converter";
 import {
   ValueList,
   ValueListDeltaTItem,
@@ -48,8 +48,10 @@ const state = getComponentState();
       v-bind="props"
       :state="state"
     >
-      <YardTag>{{ tooltip?.yardTag }}</YardTag>
-
+      <div class="flex items-center justify-between">
+        <YardTag class="flex flex-row-reverse items-center gap-0">{{ tooltip?.yardTag }}</YardTag>
+        <DcConverterStatus :sources="custom.converters" />
+      </div>
       <AssetBoxTitle class="gap-2 py-1">
         <ZiPlug3 class="size-6" />
         {{ t("thrapp.mimics.drives.assets.shorepower") }}
@@ -72,10 +74,14 @@ const state = getComponentState();
         <ValueListDeltaTItem :source="sensors.heatTransfer" />
         <ValueListTemperatureItem
           class="text-brand"
-          :source="sensors.temperature"
+          :source="source"
+          field="esiIgbtMaxTemperature"
           temperature-label="internal"
         />
-        <ValueListPowerItem :source="sensors.power" />
+        <ValueListPowerItem
+          :source="source"
+          field="power"
+        />
         <ValueListSeparator />
       </ValueList>
     </AssetBox>

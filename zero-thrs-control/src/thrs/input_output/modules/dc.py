@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from collections.abc import Sequence
 from typing import Annotated
 
 from pydantic import ConfigDict, computed_field
@@ -15,6 +15,10 @@ from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import GLYCOL_20_HEAT_TRANSFER_CONVERSION
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+
+
+def avg(values: Sequence[float]) -> float:
+    return sum(values) / len(values)
 
 
 class DcSensorValues(AmcsModeSensorValues):
@@ -217,94 +221,535 @@ class DcSensorValues(AmcsModeSensorValues):
         sensor.PressureSensor,
         component_meta(yard_tag="50001097-09", component_type="pressure_sensor"),
     ]
-    dc_brightloop_aft1: Annotated[
-        sensor.Brightloop,
+    dc_brightloop_aft1_string1: Annotated[
+        sensor.BrightloopString,
         component_meta(
+            yard_tag="45002073",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-41-1",
+        ),
+    ]
+    dc_brightloop_aft1_string2: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002073",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-41-2",
+        ),
+    ]
+    dc_brightloop_aft1_string3: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002073",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-41-3",
+        ),
+    ]
+    dc_brightloop_aft1_string4: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002073",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-41-4",
+        ),
+    ]
+    dc_brightloop_aft2_string1: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002074",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-42-1",
+        ),
+    ]
+    dc_brightloop_aft2_string2: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002074",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-42-2",
+        ),
+    ]
+    dc_brightloop_aft2_string3: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002074",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-42-3",
+        ),
+    ]
+    dc_brightloop_aft3_string1: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002075",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-43-1",
+        ),
+    ]
+    dc_brightloop_aft3_string2: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002075",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-43-2",
+        ),
+    ]
+    dc_brightloop_aft3_string3: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002075",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-43-3",
+        ),
+    ]
+    dc_brightloop_aft4_string1: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002076",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-44-1",
+        ),
+    ]
+    dc_brightloop_aft4_string2: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002076",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-44-2",
+        ),
+    ]
+    dc_brightloop_aft4_string3: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002076",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-44-3",
+        ),
+    ]
+    dc_brightloop_aft4_string4: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002076",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-44-4",
+        ),
+    ]
+    dc_brightloop_fwd1_string1: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002077",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-45-1",
+        ),
+    ]
+    dc_brightloop_fwd1_string2: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002077",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-45-2",
+        ),
+    ]
+    dc_brightloop_fwd1_string3: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002077",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-45-3",
+        ),
+    ]
+    dc_brightloop_fwd1_string4: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002077",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-45-4",
+        ),
+    ]
+    dc_brightloop_fwd2_string1: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002078",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-46-1",
+        ),
+    ]
+    dc_brightloop_fwd2_string2: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002078",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-46-2",
+        ),
+    ]
+    dc_brightloop_fwd2_string3: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002078",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-46-3",
+        ),
+    ]
+    dc_brightloop_fwd2_string4: Annotated[
+        sensor.BrightloopString,
+        component_meta(
+            yard_tag="45002078",
+            component_type="brightloop_string",
+            included_in_fmu=False,
+            topic_override="450000-main-power-storage-errors/5-46-4",
+        ),
+    ]
+
+    @computed_field(
+        json_schema_extra=computed_meta(
             yard_tag="45002076",
             component_type="brightloop",
             included_in_fmu=False,
-            topic_override="dummy-pms/brightloop-aft1-active",
-        ),
-    ] = sensor.Brightloop(
-        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+        )
     )
-    dc_brightloop_aft2: Annotated[
-        sensor.Brightloop,
-        component_meta(
+    @property
+    def dc_brightloop_aft1(self) -> sensor.Brightloop:
+        return sensor.Brightloop(
+            active=Stamped.combine(
+                self.dc_brightloop_aft1_string1.active,
+                self.dc_brightloop_aft1_string2.active,
+                self.dc_brightloop_aft1_string3.active,
+                self.dc_brightloop_aft1_string4.active,
+                value=any(
+                    (
+                        self.dc_brightloop_aft1_string1.active.value,
+                        self.dc_brightloop_aft1_string2.active.value,
+                        self.dc_brightloop_aft1_string3.active.value,
+                        self.dc_brightloop_aft1_string4.active.value,
+                    )
+                ),
+            ),
+            cell01_temperature1=Stamped.combine(
+                self.dc_brightloop_aft1_string1.cell01_temperature1,
+                self.dc_brightloop_aft1_string2.cell01_temperature1,
+                self.dc_brightloop_aft1_string3.cell01_temperature1,
+                self.dc_brightloop_aft1_string4.cell01_temperature1,
+                value=avg(
+                    (
+                        self.dc_brightloop_aft1_string1.cell01_temperature1.value,
+                        self.dc_brightloop_aft1_string2.cell01_temperature1.value,
+                        self.dc_brightloop_aft1_string3.cell01_temperature1.value,
+                        self.dc_brightloop_aft1_string4.cell01_temperature1.value,
+                    )
+                ),
+            ),
+            power=Stamped.combine(
+                self.dc_brightloop_aft1_string1.power,
+                self.dc_brightloop_aft1_string2.power,
+                self.dc_brightloop_aft1_string3.power,
+                self.dc_brightloop_aft1_string4.power,
+                value=sum(
+                    (
+                        self.dc_brightloop_aft1_string1.power.value,
+                        self.dc_brightloop_aft1_string2.power.value,
+                        self.dc_brightloop_aft1_string3.power.value,
+                        self.dc_brightloop_aft1_string4.power.value,
+                    )
+                ),
+            ),
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
             yard_tag="45002075",
             component_type="brightloop",
             included_in_fmu=False,
-            topic_override="dummy-pms/brightloop-aft2-active",
-        ),
-    ] = sensor.Brightloop(
-        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+        )
     )
-    dc_brightloop_aft3: Annotated[
-        sensor.Brightloop,
-        component_meta(
+    @property
+    def dc_brightloop_aft2(self) -> sensor.Brightloop:
+        return sensor.Brightloop(
+            active=Stamped.combine(
+                self.dc_brightloop_aft2_string1.active,
+                self.dc_brightloop_aft2_string2.active,
+                self.dc_brightloop_aft2_string3.active,
+                value=any(
+                    (
+                        self.dc_brightloop_aft2_string1.active.value,
+                        self.dc_brightloop_aft2_string2.active.value,
+                        self.dc_brightloop_aft2_string3.active.value,
+                    )
+                ),
+            ),
+            cell01_temperature1=Stamped.combine(
+                self.dc_brightloop_aft2_string1.cell01_temperature1,
+                self.dc_brightloop_aft2_string2.cell01_temperature1,
+                self.dc_brightloop_aft2_string3.cell01_temperature1,
+                value=avg(
+                    (
+                        self.dc_brightloop_aft2_string1.cell01_temperature1.value,
+                        self.dc_brightloop_aft2_string2.cell01_temperature1.value,
+                        self.dc_brightloop_aft2_string3.cell01_temperature1.value,
+                    )
+                ),
+            ),
+            power=Stamped.combine(
+                self.dc_brightloop_aft2_string1.power,
+                self.dc_brightloop_aft2_string2.power,
+                self.dc_brightloop_aft2_string3.power,
+                value=sum(
+                    (
+                        self.dc_brightloop_aft2_string1.power.value,
+                        self.dc_brightloop_aft2_string2.power.value,
+                        self.dc_brightloop_aft2_string3.power.value,
+                    )
+                ),
+            ),
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
             yard_tag="45002074",
             component_type="brightloop",
             included_in_fmu=False,
-            topic_override="dummy-pms/brightloop-aft3-active",
-        ),
-    ] = sensor.Brightloop(
-        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+        )
     )
-    dc_brightloop_aft4: Annotated[
-        sensor.Brightloop,
-        component_meta(
+    @property
+    def dc_brightloop_aft3(self) -> sensor.Brightloop:
+        return sensor.Brightloop(
+            active=Stamped.combine(
+                self.dc_brightloop_aft3_string1.active,
+                self.dc_brightloop_aft3_string2.active,
+                self.dc_brightloop_aft3_string3.active,
+                value=any(
+                    (
+                        self.dc_brightloop_aft3_string1.active.value,
+                        self.dc_brightloop_aft3_string2.active.value,
+                        self.dc_brightloop_aft3_string3.active.value,
+                    )
+                ),
+            ),
+            cell01_temperature1=Stamped.combine(
+                self.dc_brightloop_aft3_string1.cell01_temperature1,
+                self.dc_brightloop_aft3_string2.cell01_temperature1,
+                self.dc_brightloop_aft3_string3.cell01_temperature1,
+                value=avg(
+                    (
+                        self.dc_brightloop_aft3_string1.cell01_temperature1.value,
+                        self.dc_brightloop_aft3_string2.cell01_temperature1.value,
+                        self.dc_brightloop_aft3_string3.cell01_temperature1.value,
+                    )
+                ),
+            ),
+            power=Stamped.combine(
+                self.dc_brightloop_aft3_string1.power,
+                self.dc_brightloop_aft3_string2.power,
+                self.dc_brightloop_aft3_string3.power,
+                value=sum(
+                    (
+                        self.dc_brightloop_aft3_string1.power.value,
+                        self.dc_brightloop_aft3_string2.power.value,
+                        self.dc_brightloop_aft3_string3.power.value,
+                    )
+                ),
+            ),
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
             yard_tag="45002073",
             component_type="brightloop",
             included_in_fmu=False,
-            topic_override="dummy-pms/brightloop-aft4-active",
-        ),
-    ] = sensor.Brightloop(
-        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+        )
     )
-    dc_brightloop_fwd1: Annotated[
-        sensor.Brightloop,
-        component_meta(
+    @property
+    def dc_brightloop_aft4(self) -> sensor.Brightloop:
+        return sensor.Brightloop(
+            active=Stamped.combine(
+                self.dc_brightloop_aft4_string1.active,
+                self.dc_brightloop_aft4_string2.active,
+                self.dc_brightloop_aft4_string3.active,
+                self.dc_brightloop_aft4_string4.active,
+                value=any(
+                    (
+                        self.dc_brightloop_aft4_string1.active.value,
+                        self.dc_brightloop_aft4_string2.active.value,
+                        self.dc_brightloop_aft4_string3.active.value,
+                        self.dc_brightloop_aft4_string4.active.value,
+                    )
+                ),
+            ),
+            cell01_temperature1=Stamped.combine(
+                self.dc_brightloop_aft4_string1.cell01_temperature1,
+                self.dc_brightloop_aft4_string2.cell01_temperature1,
+                self.dc_brightloop_aft4_string3.cell01_temperature1,
+                self.dc_brightloop_aft4_string4.cell01_temperature1,
+                value=avg(
+                    (
+                        self.dc_brightloop_aft4_string1.cell01_temperature1.value,
+                        self.dc_brightloop_aft4_string2.cell01_temperature1.value,
+                        self.dc_brightloop_aft4_string3.cell01_temperature1.value,
+                        self.dc_brightloop_aft4_string4.cell01_temperature1.value,
+                    )
+                ),
+            ),
+            power=Stamped.combine(
+                self.dc_brightloop_aft4_string1.power,
+                self.dc_brightloop_aft4_string2.power,
+                self.dc_brightloop_aft4_string3.power,
+                self.dc_brightloop_aft4_string4.power,
+                value=sum(
+                    (
+                        self.dc_brightloop_aft4_string1.power.value,
+                        self.dc_brightloop_aft4_string2.power.value,
+                        self.dc_brightloop_aft4_string3.power.value,
+                        self.dc_brightloop_aft4_string4.power.value,
+                    )
+                ),
+            ),
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
             yard_tag="45002078",
             component_type="brightloop",
             included_in_fmu=False,
-            topic_override="dummy-pms/brightloop-fwd1-active",
-        ),
-    ] = sensor.Brightloop(
-        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+        )
     )
-    dc_brightloop_fwd2: Annotated[
-        sensor.Brightloop,
-        component_meta(
+    @property
+    def dc_brightloop_fwd1(self) -> sensor.Brightloop:
+        return sensor.Brightloop(
+            active=Stamped.combine(
+                self.dc_brightloop_fwd1_string1.active,
+                self.dc_brightloop_fwd1_string2.active,
+                self.dc_brightloop_fwd1_string3.active,
+                self.dc_brightloop_fwd1_string4.active,
+                value=any(
+                    (
+                        self.dc_brightloop_fwd1_string1.active.value,
+                        self.dc_brightloop_fwd1_string2.active.value,
+                        self.dc_brightloop_fwd1_string3.active.value,
+                        self.dc_brightloop_fwd1_string4.active.value,
+                    )
+                ),
+            ),
+            cell01_temperature1=Stamped.combine(
+                self.dc_brightloop_fwd1_string1.cell01_temperature1,
+                self.dc_brightloop_fwd1_string2.cell01_temperature1,
+                self.dc_brightloop_fwd1_string3.cell01_temperature1,
+                self.dc_brightloop_fwd1_string4.cell01_temperature1,
+                value=avg(
+                    (
+                        self.dc_brightloop_fwd1_string1.cell01_temperature1.value,
+                        self.dc_brightloop_fwd1_string2.cell01_temperature1.value,
+                        self.dc_brightloop_fwd1_string3.cell01_temperature1.value,
+                        self.dc_brightloop_fwd1_string4.cell01_temperature1.value,
+                    )
+                ),
+            ),
+            power=Stamped.combine(
+                self.dc_brightloop_fwd1_string1.power,
+                self.dc_brightloop_fwd1_string2.power,
+                self.dc_brightloop_fwd1_string3.power,
+                self.dc_brightloop_fwd1_string4.power,
+                value=sum(
+                    (
+                        self.dc_brightloop_fwd1_string1.power.value,
+                        self.dc_brightloop_fwd1_string2.power.value,
+                        self.dc_brightloop_fwd1_string3.power.value,
+                        self.dc_brightloop_fwd1_string4.power.value,
+                    )
+                ),
+            ),
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
             yard_tag="45002077",
             component_type="brightloop",
             included_in_fmu=False,
-            topic_override="dummy-pms/brightloop-fwd2-active",
-        ),
-    ] = sensor.Brightloop(
-        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
+        )
     )
+    @property
+    def dc_brightloop_fwd2(self) -> sensor.Brightloop:
+        return sensor.Brightloop(
+            active=Stamped.combine(
+                self.dc_brightloop_fwd2_string1.active,
+                self.dc_brightloop_fwd2_string2.active,
+                self.dc_brightloop_fwd2_string3.active,
+                self.dc_brightloop_fwd2_string4.active,
+                value=any(
+                    (
+                        self.dc_brightloop_fwd2_string1.active.value,
+                        self.dc_brightloop_fwd2_string2.active.value,
+                        self.dc_brightloop_fwd2_string3.active.value,
+                        self.dc_brightloop_fwd2_string4.active.value,
+                    )
+                ),
+            ),
+            cell01_temperature1=Stamped.combine(
+                self.dc_brightloop_fwd2_string1.cell01_temperature1,
+                self.dc_brightloop_fwd2_string2.cell01_temperature1,
+                self.dc_brightloop_fwd2_string3.cell01_temperature1,
+                self.dc_brightloop_fwd2_string4.cell01_temperature1,
+                value=avg(
+                    (
+                        self.dc_brightloop_fwd2_string1.cell01_temperature1.value,
+                        self.dc_brightloop_fwd2_string2.cell01_temperature1.value,
+                        self.dc_brightloop_fwd2_string3.cell01_temperature1.value,
+                        self.dc_brightloop_fwd2_string4.cell01_temperature1.value,
+                    )
+                ),
+            ),
+            power=Stamped.combine(
+                self.dc_brightloop_fwd2_string1.power,
+                self.dc_brightloop_fwd2_string2.power,
+                self.dc_brightloop_fwd2_string3.power,
+                self.dc_brightloop_fwd2_string4.power,
+                value=sum(
+                    (
+                        self.dc_brightloop_fwd2_string1.power.value,
+                        self.dc_brightloop_fwd2_string2.power.value,
+                        self.dc_brightloop_fwd2_string3.power.value,
+                        self.dc_brightloop_fwd2_string4.power.value,
+                    )
+                ),
+            ),
+        )
+
     dc_ugrid1: Annotated[
         sensor.Ugrid,
         component_meta(
             yard_tag="45002082",
             component_type="ugrid",
             included_in_fmu=False,
-            topic_override="dummy-pms/ugrid1-active",
+            topic_override="450000-dynamic-conv-ps-ara/5-11-u101",
         ),
-    ] = sensor.Ugrid(
-        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
-    )
+    ]
     dc_ugrid2: Annotated[
         sensor.Ugrid,
         component_meta(
             yard_tag="45002081",
             component_type="ugrid",
             included_in_fmu=False,
-            topic_override="dummy-pms/ugrid2-active",
+            topic_override="450000-dynamic-conv-sb/ara-5/12/u101",
         ),
-    ] = sensor.Ugrid(
-        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
-    )
+    ]
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -558,17 +1003,83 @@ class DcControlValues(AmcsWatchdogControlValues):
 
 
 class DcSimulationInputs(ThrsValues):
-    dc_brightloop_fwd1: simulation.Converter
-    dc_brightloop_fwd2: simulation.Converter
-    dc_ugrid1: simulation.Converter
-    dc_ugrid2: simulation.Converter
-    dc_brightloop_aft1: simulation.Converter
-    dc_brightloop_aft2: simulation.Converter
-    dc_brightloop_aft3: simulation.Converter
-    dc_brightloop_aft4: simulation.Converter
+    dc_brightloop_fwd1_string1: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd1_string2: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd1_string3: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd1_string4: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd2_string1: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd2_string2: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd2_string3: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd2_string4: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_ugrid1: simulation.Ugrid
+    dc_ugrid2: simulation.Ugrid
+    dc_brightloop_aft1_string1: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft1_string2: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft1_string3: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft1_string4: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft2_string1: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft2_string2: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft2_string3: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft3_string1: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft3_string2: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft3_string3: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft4_string1: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft4_string2: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft4_string3: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft4_string4: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
     dc_seawater_supply: simulation.Boundary
     dc_dhw_supply: simulation.Boundary
     mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    dc_brightloop_fwd1: simulation.HeatSource
+    dc_brightloop_fwd2: simulation.HeatSource
+    dc_brightloop_aft1: simulation.HeatSource
+    dc_brightloop_aft2: simulation.HeatSource
+    dc_brightloop_aft3: simulation.HeatSource
+    dc_brightloop_aft4: simulation.HeatSource
 
 
 class DcSimulationOutputs(ThrsValues):

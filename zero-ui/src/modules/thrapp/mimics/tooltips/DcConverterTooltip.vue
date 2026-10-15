@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ControllerStateComponentType } from "@/modules/thrsim/types";
+import { ControllerStateComponentType, SensorComponentType } from "@/modules/thrsim/types";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
@@ -13,7 +13,7 @@ import { DcMode } from "../components/dc-converter";
 import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import { DcConverterInstance } from "../instances";
-import { getField, getMimicDataProvider, SensorValue } from "../providers";
+import { getField, getMimicDataProvider, ModuleField, SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
 const { items, labels } = useTranslations();
@@ -74,14 +74,39 @@ const modeKey = useDcMode(props.custom.group);
 
     <TooltipList>
       <TooltipListHeader>{{ labels("output") }}</TooltipListHeader>
-      <SensorValue :source="sensors.power">
+      <SensorValue
+        :source="source"
+        field="power"
+      >
         <Partials.ListItem no-source>
           {{ items("power") }}
+          <template #value>
+            <FieldRenderer.Power />
+          </template>
         </Partials.ListItem>
       </SensorValue>
-      <SensorValue :source="sensors.temperature">
+      <SensorValue
+        v-if="source[0] === SensorComponentType.Ugrid"
+        :source="source as ModuleField<SensorComponentType.Ugrid>"
+        field="tempPowerStage"
+      >
         <Partials.ListItem no-source>
           {{ items("internalTemperature") }}
+          <template #value>
+            <FieldRenderer.Temperature />
+          </template>
+        </Partials.ListItem>
+      </SensorValue>
+      <SensorValue
+        v-if="source[0] === SensorComponentType.Brightloop"
+        :source="source as ModuleField<SensorComponentType.Brightloop>"
+        field="cell01Temperature1"
+      >
+        <Partials.ListItem no-source>
+          {{ items("internalTemperature") }}
+          <template #value>
+            <FieldRenderer.Temperature />
+          </template>
         </Partials.ListItem>
       </SensorValue>
     </TooltipList>

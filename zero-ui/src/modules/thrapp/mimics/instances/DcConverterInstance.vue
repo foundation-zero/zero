@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ZiDcConverter } from "@/modules/common/components/icons";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { first, last } from "lodash";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
@@ -18,7 +19,7 @@ import {
   ValueListTemperatureItem,
 } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
-import { getMimicDataProvider } from "../providers";
+import { getMimicDataProvider, ModuleField } from "../providers";
 import { FieldRenderer } from "../renderers";
 
 const props = withDefaults(
@@ -91,11 +92,23 @@ const modeKey = useDcMode(props.custom.group);
         <ValueListHeatPowerItem :source="sensors.heatTransfer" />
         <ValueListDeltaTItem :source="sensors.heatTransfer" />
         <ValueListTemperatureItem
+          v-if="source[0] === SensorComponentType.Ugrid"
           class="text-brand"
-          :source="sensors.temperature"
+          :source="source as ModuleField<SensorComponentType.Ugrid>"
+          field="tempPowerStage"
           temperature-label="internal"
         />
-        <ValueListPowerItem :source="sensors.power" />
+        <ValueListTemperatureItem
+          v-if="source[0] === SensorComponentType.Brightloop"
+          class="text-brand"
+          :source="source as ModuleField<SensorComponentType.Brightloop>"
+          field="cell01Temperature1"
+          temperature-label="internal"
+        />
+        <ValueListPowerItem
+          :source="source"
+          field="power"
+        />
 
         <ValueListSeparator />
       </ValueList>

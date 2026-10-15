@@ -50,15 +50,39 @@ class FlowBoundary(ThrsValues):
 
 
 class Thruster(HeatSource):
-    active: Annotated[Stamped[bool], field_meta(included_in_fmu=False)]
+    active: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
 
 
 class PropulsionDrive(HeatSource):
-    active: Annotated[Stamped[bool], field_meta(included_in_fmu=False)]
+    active: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
+    temp_power_stage: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
+    power: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)]
 
 
-class Converter(HeatSource):
-    active: Annotated[Stamped[bool], field_meta(included_in_fmu=False)]
+class BrightloopString(ThrsValues):
+    active: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
+    cell01_temperature1: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
+    power: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)]
+
+
+class Ugrid(HeatSource):
+    active: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
+    temp_power_stage: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
+    power: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)]
+
+
+class ShorePowerConverter(ThrsValues):
+    active: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
+    esi_transformer_temperature: Annotated[
+        Stamped[Celsius], field_meta(included_in_fmu=False)
+    ]
+    esi_igbt_min_temperature: Annotated[
+        Stamped[Celsius], field_meta(included_in_fmu=False)
+    ]
+    esi_igbt_max_temperature: Annotated[
+        Stamped[Celsius], field_meta(included_in_fmu=False)
+    ]
+    power: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)]
 
 
 class Pcs(ThrsValues):
@@ -75,12 +99,16 @@ class AdsorptionChiller(ThrsValues):
 __all__ = [
     "AdsorptionChiller",
     "Boundary",
+    "BrightloopString",
     "ExchangerBoundary",
     "FlowBoundary",
     "HeatSource",
     "HvacExchanger",
     "OverpressureTemperatureBoundary",
     "Pcs",
+    "PropulsionDrive",
+    "ShorePowerConverter",
     "TemperatureBoundary",
     "Thruster",
+    "Ugrid",
 ]

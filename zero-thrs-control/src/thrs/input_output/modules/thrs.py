@@ -102,14 +102,80 @@ class ThrsSimulationInputs(ThrsValues):
     dhw_seawater_supply: simulation.TemperatureBoundary
     dhw_hotwater_demand: simulation.FlowBoundary
     # dc
-    dc_brightloop_fwd1: simulation.Converter
-    dc_brightloop_fwd2: simulation.Converter
-    dc_ugrid1: simulation.Converter
-    dc_ugrid2: simulation.Converter
-    dc_brightloop_aft1: simulation.Converter
-    dc_brightloop_aft2: simulation.Converter
-    dc_brightloop_aft3: simulation.Converter
-    dc_brightloop_aft4: simulation.Converter
+    dc_brightloop_fwd1: simulation.HeatSource
+    dc_brightloop_fwd2: simulation.HeatSource
+    dc_brightloop_aft1: simulation.HeatSource
+    dc_brightloop_aft2: simulation.HeatSource
+    dc_brightloop_aft3: simulation.HeatSource
+    dc_brightloop_aft4: simulation.HeatSource
+    dc_brightloop_fwd1_string1: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd1_string2: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd1_string3: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd1_string4: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd2_string1: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd2_string2: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd2_string3: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_fwd2_string4: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_ugrid1: simulation.Ugrid
+    dc_ugrid2: simulation.Ugrid
+    dc_brightloop_aft1_string1: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft1_string2: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft1_string3: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft1_string4: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft2_string1: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft2_string2: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft2_string3: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft3_string1: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft3_string2: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft3_string3: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft4_string1: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft4_string2: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft4_string3: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
+    dc_brightloop_aft4_string4: Annotated[
+        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    ]
     dc_seawater_supply: simulation.Boundary
     # drives
     drives_oil_cooler_aft: simulation.HeatSource
@@ -118,7 +184,19 @@ class ThrsSimulationInputs(ThrsValues):
     drives_propdrive_aft2: simulation.PropulsionDrive
     drives_propdrive_fwd1: simulation.PropulsionDrive
     drives_propdrive_fwd2: simulation.PropulsionDrive
-    drives_shorepower: simulation.Converter
+    drives_shorepower: simulation.HeatSource
+    drives_shorepower1a: Annotated[
+        simulation.ShorePowerConverter, component_meta(included_in_fmu=False)
+    ]
+    drives_shorepower1b: Annotated[
+        simulation.ShorePowerConverter, component_meta(included_in_fmu=False)
+    ]
+    drives_shorepower2a: Annotated[
+        simulation.ShorePowerConverter, component_meta(included_in_fmu=False)
+    ]
+    drives_shorepower2b: Annotated[
+        simulation.ShorePowerConverter, component_meta(included_in_fmu=False)
+    ]
     drives_seawater_supply: simulation.Boundary
     mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 

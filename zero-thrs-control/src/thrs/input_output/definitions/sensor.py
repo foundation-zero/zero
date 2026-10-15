@@ -411,19 +411,37 @@ class Thruster(ThrsValues):
 
 
 class PropulsionDrive(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="VpEnable")]
+    temp_power_stage: Stamped[Celsius]
+    power: Stamped[Watt]
 
 
 class ShorePowerConverter(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="Online")]
+    esi_transformer_temperature: Stamped[Celsius]
+    esi_igbt_min_temperature: Stamped[Celsius]
+    esi_igbt_max_temperature: Stamped[Celsius]
+    power: Annotated[Stamped[Watt], Field(alias="EsiAcBusActivePower3Phase")]
 
 
 class Brightloop(ThrsValues):
     active: Stamped[OnOff]
+    cell01_temperature1: Stamped[Celsius]
+    power: Annotated[Stamped[Watt], Field(alias="PvPower")]
+
+
+class BrightloopString(ThrsValues):
+    active: Annotated[Stamped[OnOff], Field(alias="Running")]
+    cell01_temperature1: Stamped[Celsius] = Stamped(
+        value=-100.0, timestamp=datetime.fromtimestamp(0, UTC)
+    )
+    power: Annotated[Stamped[Watt], Field(alias="PvPower")]
 
 
 class Ugrid(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="Running")]
+    temp_power_stage: Stamped[Celsius]
+    power: Annotated[Stamped[Watt], Field(alias="PvPower")]
 
 
 class Heatpump(ThrsValues):
@@ -500,6 +518,7 @@ class Pyranometer(ThrsValues):
 __all__ = [
     "AdsorptionChiller",
     "Brightloop",
+    "BrightloopString",
     "CalculatedFlow",
     "CalculatedTemperature",
     "FlowOnlySensor",
