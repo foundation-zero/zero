@@ -29,7 +29,7 @@ const parts: TupleIndices<PID>[] = [0, 1, 2];
 
 <template>
   <div class="text-muted-foreground bg-dull border-border rounded-xs border">
-    <Table>
+    <Table class="overflow-hidden">
       <TableHeader>
         <TableRow>
           <TableHead class="text-foreground font-medium">{{ t("table.tuning") }}</TableHead>

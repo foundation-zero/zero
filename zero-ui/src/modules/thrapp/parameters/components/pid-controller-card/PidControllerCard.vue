@@ -9,6 +9,7 @@ import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltip
 import { SensorGraph } from "@/modules/thrapp/mimics/components/sensor-graph";
 import ControllerStateValue from "@/modules/thrapp/mimics/providers/ControllerStateValue.vue";
 import { FieldRenderer } from "@/modules/thrapp/mimics/renderers";
+import { useTranslations } from "@/modules/thrapp/mimics/tooltips";
 import { kebabCase } from "lodash";
 import { PidControllerTuning } from "../..";
 import * as Partials from "../../../mimics/tooltips/partials";
@@ -17,20 +18,25 @@ import PidTuningTable from "../../components/pid-tuning-table/PidTuningTable.vue
 const t = tScoped("thrapp.parameters.pid");
 
 const props = defineProps<PidControllerTuning>();
+
+const { sources } = useTranslations();
 </script>
 
 <template>
   <NoopTooltipProvider>
     <Parameters.Card>
-      <Parameters.CardTitle class="flex items-center justify-between">
-        {{ t(`${controller[2]}.title`) }}
+      <hgroup class="flex items-baseline justify-between">
+        <Parameters.CardTitle>
+          {{ sources(`${controller[0]}.${controller[2]}`) }}
+        </Parameters.CardTitle>
         <ControllerStateValue
           :source="props.controller"
           field="enabled"
         >
-          <FieldRenderer.HeatPumpMode />
+          <FieldRenderer.HeatPumpMode icon />
         </ControllerStateValue>
-      </Parameters.CardTitle>
+      </hgroup>
+
       <Parameters.Description>{{ t(`${controller[2]}.description`) }}</Parameters.Description>
       <Parameters.Separator />
       <TooltipList class="border-0">

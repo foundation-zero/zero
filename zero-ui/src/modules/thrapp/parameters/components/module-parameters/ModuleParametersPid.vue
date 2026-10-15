@@ -9,7 +9,7 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>();
   <section
     :class="
       cn(
-        'border-border 3xl:grid-cols-4 grid gap-4 rounded-2xl border px-4 py-3 sm:grid-cols-2 sm:gap-6 sm:px-6 sm:pb-8 md:grid-cols-2 lg:grid-cols-3',
+        'border-border 3xl:grid-cols-4 grid gap-4 rounded-2xl border px-4 py-3 sm:gap-6 sm:px-6 sm:pb-8 lg:grid-cols-2 xl:grid-cols-3',
         props.class,
       )
     "

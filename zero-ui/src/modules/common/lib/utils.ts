@@ -102,11 +102,14 @@ export const toCapitalized = (str: string) =>
   `${str.charAt(0).toLocaleUpperCase()}${str.slice(1).toLocaleLowerCase()}`;
 
 export const tScoped = (scope: string) => {
-  const { t } = useI18n();
+  const { t, te } = useI18n();
 
-  return (key: string, value?: NamedValue) => {
+  function _t(key: string = "", value?: NamedValue) {
     return value ? t(`${scope}.${key}`, value) : t(`${scope}.${key}`);
-  };
+  }
+  _t.exists = (key: string = "") => te(`${scope}.${key}`);
+
+  return _t;
 };
 
 export const toTimeSeriesData = <T extends ChartDataType>({
