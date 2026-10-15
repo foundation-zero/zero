@@ -8,7 +8,6 @@ image:
 mqtt:
   host: ""
   port: 1883
-  username: hull-temperature
   existingSecret: ""
   existingSecretPasswordKey: password
 

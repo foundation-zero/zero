@@ -1,4 +1,4 @@
-import { ControlComponentType, SensorComponentType } from "@/modules/thrsim/types";
+import { ControlComponentType, ParametersType, SensorComponentType } from "@/modules/thrsim/types";
 import { toInstance } from "../../..";
 import { MimicComponentType } from "../../../../../types";
 import { getField } from "../../../../providers";
@@ -9,10 +9,12 @@ export default toInstance<MimicComponentType.HeatPump>({
   controls: {
     heatpump: getField(ControlComponentType.Heatpump, "dhw", "dhwHeatpump"),
   },
-  controllerState: {},
+  controllerState: { controller: pumpFlowController },
   source: getField(SensorComponentType.HeatPump, "dhw", "dhwHeatpump"),
   custom: { controller: pumpFlowController },
-  parameters: {},
+  parameters: {
+    temperatureSetpoint: getField(ParametersType.Temperature, "dhw", "heatpumpTemperatureSetpoint"),
+  },
   sensors: {
     heatTransfer: getField(SensorComponentType.HeatTransferDevice, "dhw", "dhwHeatpumpHeat"),
   },

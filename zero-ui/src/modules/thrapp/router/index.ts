@@ -1,5 +1,7 @@
 import { defineAsyncComponent } from "vue";
 import { RouteRecordRaw } from "vue-router";
+import { MIMICS } from "./mimics";
+import { PARAMETERS } from "./parameters";
 
 export const thrappRoutes: RouteRecordRaw = {
   path: "/thrs",
@@ -22,6 +24,7 @@ export const thrappRoutes: RouteRecordRaw = {
         toolbarRight: defineAsyncComponent(
           () => import("@/modules/thrsim/components/ControlActions.vue"),
         ),
+        views: MIMICS,
       },
     },
     {
@@ -35,6 +38,7 @@ export const thrappRoutes: RouteRecordRaw = {
         toolbarRight: defineAsyncComponent(
           () => import("@/modules/thrsim/components/ControlActions.vue"),
         ),
+        views: PARAMETERS,
       },
     },
   ],

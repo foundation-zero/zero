@@ -4,7 +4,6 @@ import { DcConverterGroup } from "@/modules/thrapp/state";
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { SensorComponentType } from "@/modules/thrsim/types";
 import { toFieldsMap, toInstance } from "../../..";
-import { DcConverterTitleKey } from "../../../../components/dc-converter";
 import { getField } from "../../../../providers";
 
 const dcConverter = (
@@ -13,7 +12,7 @@ const dcConverter = (
   power: ModuleField<SensorComponentType.Pvt, "dc">,
   temperature: ModuleField<SensorComponentType.Temperature, "dc">,
   group: DcConverterGroup,
-  titleKey: DcConverterTitleKey,
+  tooltip: TooltipContent,
 ) =>
   toInstance<MimicComponentType.DcConverter>({
     controls: {},
@@ -25,10 +24,11 @@ const dcConverter = (
       power: power,
       temperature: temperature,
     },
-    source: undefined,
+    source: heatTransfer,
     get tooltip(): TooltipContent {
       return {
-        title: titleKey,
+        componentType: "DC converter",
+        ...tooltip,
       };
     },
   });
@@ -46,7 +46,7 @@ export const DC_CONVERTER_DATA = toFieldsMap({
       getField(SensorComponentType.Pvt, "dc", "placeholder"),
       getField(SensorComponentType.Temperature, "dc", "placeholder"),
       "brightloopsAft",
-      "group1",
+      { title: "group1", technicalName: "dc-brightloop-aft", mqttTopic: "dc-brightloop-aft" },
     ),
     ugrid: dcConverter(
       [
@@ -57,7 +57,7 @@ export const DC_CONVERTER_DATA = toFieldsMap({
       getField(SensorComponentType.Pvt, "dc", "placeholder"),
       getField(SensorComponentType.Temperature, "dc", "placeholder"),
       "ugrids",
-      "group2",
+      { title: "group2", technicalName: "dc-ugrids", mqttTopic: "dc-ugrids" },
     ),
     fwd: dcConverter(
       [
@@ -68,7 +68,7 @@ export const DC_CONVERTER_DATA = toFieldsMap({
       getField(SensorComponentType.Pvt, "dc", "placeholder"),
       getField(SensorComponentType.Temperature, "dc", "placeholder"),
       "brightloopsFwd",
-      "group3",
+      { title: "group3", technicalName: "dc-brightloop-fwd", mqttTopic: "dc-brightloop-fwd" },
     ),
   },
 });

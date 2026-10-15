@@ -2,7 +2,6 @@
 mqtt:
   host: rabbitmq.rabbitmq.svc.cluster.local
   port: 1883
-  username: thrs
   existingSecret: thrs-user-user-credentials
   existingSecretPasswordKey: password
   devicesTopicPrefix: thrs
@@ -23,6 +22,8 @@ postgresql:
   existingSecretPasswordKey: password
 
 api:
+  mqtt:
+    existingSecret: ""
   enabled: true
   image:
     repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-api
@@ -41,6 +42,8 @@ api:
     className: tailscale
 
 control:
+  mqtt:
+    existingSecret: ""
   enabled: false
   image:
     repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-control
@@ -53,6 +56,8 @@ control:
   modulePersistence: true
 
 simulation:
+  mqtt:
+    existingSecret: ""
   enabled: false
   resources: {}
   type: "thrs"

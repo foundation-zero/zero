@@ -28,7 +28,11 @@ class ConditionsStub:
     @staticmethod
     async def init_from_settings(settings: Settings):
         async with MqttClient(
-            settings.mqtt_host, settings.mqtt_port, identifier="loads_sensor_stub"
+            settings.mqtt_host,
+            settings.mqtt_port,
+            identifier=settings.mqtt_stub_client_id,
+            username=settings.mqtt_username,
+            password=settings.mqtt_password,
         ) as mqtt_client:
             yield ConditionsStub(mqtt_client=mqtt_client)
 

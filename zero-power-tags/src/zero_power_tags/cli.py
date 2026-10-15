@@ -2,11 +2,12 @@ import asyncio
 import json
 import logging
 import re
+from secrets import token_hex
 from typing import Any, Literal
 
 from faststream import FastStream
 from faststream.mqtt import MQTTBroker, ReconnectConfig
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from pydantic_settings import (
     BaseSettings,
     CliApp,
@@ -148,6 +149,7 @@ def local_topic_groups(
 
 
 class RunCmd(MqttSettings):
+    mqtt_client_id: str = Field(default_factory=lambda: f"power-tags-{token_hex(4)}")
     modbus_port: int = 502
     modbus_probe_interval: int = 1
 

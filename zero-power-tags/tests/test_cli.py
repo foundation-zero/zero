@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from unittest.mock import MagicMock
 
 import pytest
@@ -144,3 +145,15 @@ def test_make_broker_accepts_kwargs_on_real_broker():
         mqtt_password="p",
     )
     assert isinstance(cmd.make_broker(), MQTTBroker)
+
+
+def test_run_cmd_default_client_id(monkeypatch):
+    monkeypatch.delenv("MQTT_CLIENT_ID", raising=False)
+    cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
+    assert re.fullmatch(r"power-tags-[0-9a-f]{8}", cmd.mqtt_client_id)
+
+
+def test_run_cmd_client_id_from_env(monkeypatch):
+    monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
+    cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
+    assert cmd.mqtt_client_id == "custom-id"

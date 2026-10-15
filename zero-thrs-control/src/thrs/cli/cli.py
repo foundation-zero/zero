@@ -63,7 +63,13 @@ class ControlCmd(BaseSettings):
             self.restore_manual_control_values,
         )
 
-        async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
+        async with MqttClient(
+            settings.mqtt_host,
+            settings.mqtt_port,
+            identifier=settings.mqtt_control_client_id,
+            username=settings.mqtt_username,
+            password=settings.mqtt_password,
+        ) as mqtt_client:
             connector = MqttConnector(mqtt_client)
 
             control_modules: list[Module] = setup_control_modules(
@@ -98,7 +104,13 @@ class SimulationCmd(BaseSettings):
 
         simulation_mode = lookup_mode(self.mode)
 
-        async with MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client:
+        async with MqttClient(
+            settings.mqtt_host,
+            settings.mqtt_port,
+            identifier=settings.mqtt_simulation_client_id,
+            username=settings.mqtt_username,
+            password=settings.mqtt_password,
+        ) as mqtt_client:
             connector = MqttConnector(mqtt_client=mqtt_client)
 
             if simulation_mode.simulation_description is None:
@@ -194,7 +206,13 @@ class LockstepCmd(BaseSettings):
         settings = Config()  # type: ignore
 
         async with (
-            MqttClient(settings.mqtt_host, settings.mqtt_port) as mqtt_client,
+            MqttClient(
+                settings.mqtt_host,
+                settings.mqtt_port,
+                identifier=settings.mqtt_lockstep_client_id,
+                username=settings.mqtt_username,
+                password=settings.mqtt_password,
+            ) as mqtt_client,
         ):
             runtime = await self.setup(settings, mqtt_client)
             await runtime.clear_previous()

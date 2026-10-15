@@ -49,13 +49,9 @@
           "type": "string",
           "description": "MQTT topic prefix used for published telemetry."
         },
-        "username": {
-          "type": "string",
-          "description": "MQTT broker username."
-        },
         "existingSecret": {
           "type": "string",
-          "description": "Existing secret name containing MQTT password."
+          "description": "Existing secret name containing MQTT username (key `username`) and password."
         },
         "existingSecretPasswordKey": {
           "type": "string",

@@ -14,7 +14,6 @@
             "required": [
                 "host",
                 "port",
-                "username",
                 "existingSecret",
                 "devicesTopicPrefix",
                 "controllerTopicPrefix",
@@ -35,13 +34,9 @@
                     "default": 1883,
                     "description": "MQTT broker port"
                 },
-                "username": {
-                    "type": "string",
-                    "description": "MQTT username"
-                },
                 "existingSecret": {
                     "type": "string",
-                    "description": "Name of existing secret containing MQTT password"
+                    "description": "Name of existing secret containing MQTT username (key `username`) and password"
                 },
                 "devicesTopicPrefix": {
                     "type": "string",
@@ -94,6 +89,15 @@
         "api": {
             "type": "object",
             "properties": {
+                "mqtt": {
+                    "type": "object",
+                    "properties": {
+                        "existingSecret": {
+                            "type": "string",
+                            "description": "Name of existing secret containing MQTT username (key `username`) and password for this component; falls back to mqtt.existingSecret"
+                        }
+                    }
+                },
                 "enabled": {
                     "type": "boolean",
                     "default": true
@@ -113,6 +117,15 @@
         "control": {
             "type": "object",
             "properties": {
+                "mqtt": {
+                    "type": "object",
+                    "properties": {
+                        "existingSecret": {
+                            "type": "string",
+                            "description": "Name of existing secret containing MQTT username (key `username`) and password for this component; falls back to mqtt.existingSecret"
+                        }
+                    }
+                },
                 "enabled": {
                     "type": "boolean",
                     "default": false
@@ -146,6 +159,15 @@
         "simulation": {
             "type": "object",
             "properties": {
+                "mqtt": {
+                    "type": "object",
+                    "properties": {
+                        "existingSecret": {
+                            "type": "string",
+                            "description": "Name of existing secret containing MQTT username (key `username`) and password for this component; falls back to mqtt.existingSecret"
+                        }
+                    }
+                },
                 "enabled": {
                     "type": "boolean",
                     "default": false

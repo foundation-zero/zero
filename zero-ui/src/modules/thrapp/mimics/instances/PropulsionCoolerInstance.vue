@@ -5,7 +5,7 @@ import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import { AssetBox, AssetBoxTitle } from "../components/asset-box";
-import { DC_CONVERTER_HEIGHT, DC_CONVERTER_WIDTH } from "../components/dc-converter";
+import { DC_CONVERTER_WIDTH } from "../components/dc-converter";
 import {
   ValueList,
   ValueListDeltaTItem,
@@ -27,7 +27,7 @@ const props = withDefaults(
   >(),
   {
     width: DC_CONVERTER_WIDTH,
-    height: DC_CONVERTER_HEIGHT,
+    height: 158,
     forceHeight: true,
   },
 );

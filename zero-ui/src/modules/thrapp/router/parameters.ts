@@ -2,6 +2,9 @@ import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import { Component, defineAsyncComponent } from "vue";
 
 export const PARAMETERS: Partial<Record<keyof ThrsModules, Component>> = {
+  adsorption: defineAsyncComponent(
+    () => import("@/modules/thrapp/parameters/modules/adsorption/AdsorptionParameters.vue"),
+  ),
   dhw: defineAsyncComponent(
     () => import("@/modules/thrapp/parameters/modules/dhw/DhwParameters.vue"),
   ),

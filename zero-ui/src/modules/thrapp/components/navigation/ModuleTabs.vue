@@ -2,20 +2,15 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RouterLinkWithFallback from "@/modules/common/components/RouterLinkWithFallback.vue";
 import { ThrsModules } from "@/modules/thrsim/lib/consts";
+import { Component, computed } from "vue";
 import { useRoute } from "vue-router";
 
 defineProps<{ modules: Array<keyof ThrsModules>; activeModule?: keyof ThrsModules }>();
 
-const SUPPORTED_MIMICS: Array<keyof ThrsModules> = [
-  "dhw",
-  "thrusters",
-  "pvt",
-  "pcm",
-  "dc",
-  "drives",
-];
-
 const currentRoute = useRoute();
+const supportedViews = computed(
+  () => (currentRoute.meta.views as Partial<Record<keyof ThrsModules, Component>>) ?? {},
+);
 </script>
 
 <template>
@@ -31,12 +26,12 @@ const currentRoute = useRoute();
           name: currentRoute.name as string,
           params: { module: key },
         }"
-        :disabled="!SUPPORTED_MIMICS.includes(key)"
+        :disabled="!supportedViews[key]"
       >
         <TabsTrigger
           :value="key"
           class="uppercase"
-          :disabled="!SUPPORTED_MIMICS.includes(key)"
+          :disabled="!supportedViews[key]"
         >
           {{ key }}
         </TabsTrigger>
