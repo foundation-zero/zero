@@ -790,7 +790,7 @@
         "w": 12,
         "h": 7
       },
-      "description": "Solid: Aradex 1 + 2 DC power per pod, raw × 0.1 kW, positive when consuming. Dashed: the propeller's mechanical power from the PLC, raw / 10 kW, with the sign as the PLC sends it: negative when propelling. Shaft power is published since 8 Oct 2026.",
+      "description": "Solid: Aradex 1 + 2 DC power per pod, raw × 0.1 kW, positive when consuming. Dashed: the propeller's mechanical power from the PLC, raw / 10 kW, with the sign as the PLC sends it: negative when propelling. Shaft power is published since 8 Oct 2026. DC power per pod adds the latest drive 1 and drive 2 values at each sample, then averages per bucket, because the two drives log at different moments. The line starts once both drives have reported in the range.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -815,7 +815,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  (avg(CASE WHEN drive = 1 THEN power END) + avg(CASE WHEN drive = 2 THEN power END)) * 0.1 AS \"FWD DC\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_bin('$__interval', ts, TIMESTAMP '1970-01-01') AS time,\n  avg(dc) * 0.1 AS \"FWD DC\"\nFROM (SELECT ts,\n    last_value(CASE WHEN drive = 1 THEN power END) IGNORE NULLS OVER (ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)\n    + last_value(CASE WHEN drive = 2 THEN power END) IGNORE NULLS OVER (ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS dc\n  FROM (SELECT timestamp AS ts, 1 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp AS ts, 2 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a) f\nWHERE dc IS NOT NULL\nGROUP BY 1 ORDER BY 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -856,7 +856,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  (avg(CASE WHEN drive = 1 THEN power END) + avg(CASE WHEN drive = 2 THEN power END)) * 0.1 AS \"AFT DC\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_bin('$__interval', ts, TIMESTAMP '1970-01-01') AS time,\n  avg(dc) * 0.1 AS \"AFT DC\"\nFROM (SELECT ts,\n    last_value(CASE WHEN drive = 1 THEN power END) IGNORE NULLS OVER (ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)\n    + last_value(CASE WHEN drive = 2 THEN power END) IGNORE NULLS OVER (ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS dc\n  FROM (SELECT timestamp AS ts, 1 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp AS ts, 2 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a) f\nWHERE dc IS NOT NULL\nGROUP BY 1 ORDER BY 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -976,7 +976,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -1094,7 +1094,8 @@
           "hideZeros": false
         }
       },
-      "interval": "10s",
+      "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
@@ -1218,7 +1219,8 @@
             "limit": 50
           }
         }
-      ]
+      ],
+      "maxDataPoints": 600
     },
     {
       "id": 1052,
@@ -1338,7 +1340,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -1406,7 +1408,8 @@
           "hideZeros": false
         }
       },
-      "interval": "10s",
+      "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
@@ -2224,7 +2227,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -2392,7 +2395,8 @@
           "hideZeros": false
         }
       },
-      "interval": "10s",
+      "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
@@ -2521,7 +2525,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -2689,7 +2693,8 @@
           "hideZeros": false
         }
       },
-      "interval": "10s",
+      "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
@@ -2818,7 +2823,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -2881,7 +2886,8 @@
           "hideZeros": false
         }
       },
-      "interval": "10s",
+      "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
@@ -3686,7 +3692,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -3854,7 +3860,8 @@
           "hideZeros": false
         }
       },
-      "interval": "10s",
+      "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
@@ -3983,7 +3990,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -4151,7 +4158,8 @@
           "hideZeros": false
         }
       },
-      "interval": "10s",
+      "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
@@ -4280,7 +4288,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -4343,7 +4351,8 @@
           "hideZeros": false
         }
       },
-      "interval": "10s",
+      "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
@@ -7803,7 +7812,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -7869,6 +7878,10 @@
                     10
                   ]
                 }
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
               }
             ]
           },
@@ -7894,6 +7907,10 @@
                     10
                   ]
                 }
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
               }
             ]
           },
@@ -7919,6 +7936,10 @@
                     10
                   ]
                 }
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
               }
             ]
           },
@@ -7944,6 +7965,10 @@
                     10
                   ]
                 }
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
               }
             ]
           },
@@ -7995,6 +8020,7 @@
         }
       },
       "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
@@ -8123,7 +8149,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -8189,6 +8215,10 @@
                     10
                   ]
                 }
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
               }
             ]
           },
@@ -8214,6 +8244,10 @@
                     10
                   ]
                 }
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
               }
             ]
           },
@@ -8239,6 +8273,10 @@
                     10
                   ]
                 }
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
               }
             ]
           },
@@ -8264,6 +8302,10 @@
                     10
                   ]
                 }
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "never"
               }
             ]
           },
@@ -8315,6 +8357,7 @@
         }
       },
       "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
@@ -9450,7 +9493,8 @@
           "placement": "bottom",
           "showLegend": true
         }
-      }
+      },
+      "maxDataPoints": 600
     },
     {
       "id": 1041,
@@ -9529,7 +9573,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -9727,7 +9771,8 @@
           "hideZeros": false
         }
       },
-      "interval": "10s",
+      "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
@@ -10078,7 +10123,8 @@
           "placement": "bottom",
           "showLegend": true
         }
-      }
+      },
+      "maxDataPoints": 600
     },
     {
       "id": 1044,
@@ -10157,7 +10203,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -10355,7 +10401,8 @@
           "hideZeros": false
         }
       },
-      "interval": "10s",
+      "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
@@ -10575,7 +10622,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -10698,7 +10745,8 @@
           "hideZeros": false
         }
       },
-      "interval": "10s",
+      "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
@@ -10786,7 +10834,7 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": 60000,
             "stacking": {
               "group": "A",
@@ -10909,7 +10957,8 @@
           "hideZeros": false
         }
       },
-      "interval": "10s",
+      "interval": "1s",
+      "maxDataPoints": 600,
       "transformations": [
         {
           "id": "renameByRegex",
