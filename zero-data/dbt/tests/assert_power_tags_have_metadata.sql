@@ -8,7 +8,7 @@
         from {{ ref('stg_marpower__power_tags') }}
         where active_power_total is not null
         order by ts
-        limit 1000
+        limit 10000
     )
 
     select distinct pt.topic

@@ -30,6 +30,7 @@
 
         INSERT INTO {{ target_table }} (ts, description, name, topic, converter, converter_subnr, main_group, sub_group)
         VALUES
+            -- Converters
             ('1970-01-01 00:00:00', 'Converter W14E1_01V01', 'W14E1_01V01', 'marpower/450000-24vdc-system/conv/w14e1-01v01', 'W14E1_01', 1, NULL, NULL),
             ('1970-01-01 00:00:00', 'Converter W14E1_01V02', 'W14E1_01V02', 'marpower/450000-24vdc-system/conv/w14e1-01v02', 'W14E1_01', 2, NULL, NULL),
             ('1970-01-01 00:00:00', 'Converter W14E1_02V01', 'W14E1_02V01', 'marpower/450000-24vdc-system/conv/w14e1-02v01', 'W14E1_02', 1, NULL, NULL),
@@ -39,6 +40,11 @@
             ('1970-01-01 00:00:00', 'Converter W14E2_01V03', 'W14E2_01V03', 'marpower/450000-24vdc-system/conv/w14e2-01v03', 'W14E2_01', 3, NULL, NULL),
             ('1970-01-01 00:00:00', 'Converter W14E2_02V01', 'W14E2_02V01', 'marpower/450000-24vdc-system/conv/w14e2-02v01', 'W14E2_02', 1, NULL, NULL),
             ('1970-01-01 00:00:00', 'Converter W14E2_02V02', 'W14E2_02V02', 'marpower/450000-24vdc-system/conv/w14e2-02v02', 'W14E2_02', 2, NULL, NULL),
+            -- Unused converters
+            ('1970-01-01 00:00:00', 'Converter db-g-elv-serv', 'db-g-elv-serv', 'marpower/450000-24vdc-system/conv/db-g-elv-serv', 'db-g-elv-serv', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'Converter db-g-elv-em', 'db-g-elv-em', 'marpower/450000-24vdc-system/conv/db-g-elv-em', 'db-g-elv-em', NULL, NULL, NULL),
+
+            -- Actuators
             ('1970-01-01 00:00:00', 'Sea Cooling Actuator 38001153-1 & -2', '14E1_10F01', 'marpower/450000-24vdc-system/14e1-10f01', 'W14E1_01', NULL, 'Technical', 'THRS'),
             ('1970-01-01 00:00:00', 'Sea Cooling Actuator 38001153-3 & -4', '14E1_11F01', 'marpower/450000-24vdc-system/14e1-11f01', 'W14E1_01', NULL, 'Technical', 'THRS'),
             ('1970-01-01 00:00:00', 'Fwd Thruster Control Cabinet Status', '14E1_12F01', 'marpower/450000-24vdc-system/14e1-12f01', 'W14E1_01', NULL, 'Propulsion', NULL),
@@ -111,7 +117,24 @@
             ('1970-01-01 00:00:00', 'PCS 1 AFT', '14E2_81F01', 'marpower/450000-24vdc-system/14e2-81f01', 'W14E2_02', NULL, 'Technical', 'Lighting'),
             ('1970-01-01 00:00:00', 'Solar 1', '14E2_82F01', 'marpower/450000-24vdc-system/14e2-82f01', 'W14E2_02', NULL, 'Technical', 'Technical'),
             ('1970-01-01 00:00:00', 'Solar 2', '14E2_83F01', 'marpower/450000-24vdc-system/14e2-83f01', 'W14E2_02', NULL, 'Technical', 'Technical'),
-            ('1970-01-01 00:00:00', 'HELM CONSOLE PS', '14E2_42F24', 'marpower/450000-24vdc-system/14e2-42f24', 'W14E2_01', NULL, 'Technical', 'NavComm');
+            ('1970-01-01 00:00:00', 'HELM CONSOLE PS', '14E2_42F24', 'marpower/450000-24vdc-system/14e2-42f24', 'W14E2_01', NULL, 'Technical', 'NavComm'),
+            -- Unused spares
+            ('1970-01-01 00:00:00', 'SPARE', '14E1_40F01', 'marpower/450000-24vdc-system/14e1-40f01', '14E1', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E1_41F01', 'marpower/450000-24vdc-system/14e1-41f01', '14E1', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E1_42F01', 'marpower/450000-24vdc-system/14e1-42f01', '14E1', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E1_43F01', 'marpower/450000-24vdc-system/14e1-43f01', '14E1', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E1_44F01', 'marpower/450000-24vdc-system/14e1-44f01', '14E1', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E1_45F01', 'marpower/450000-24vdc-system/14e1-45f01', '14E1', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E1_90F01', 'marpower/450000-24vdc-system/14e1-90f01', '14E1', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E2_10F01', 'marpower/450000-24vdc-system/14e2-10f01', '14E2', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E2_13F01', 'marpower/450000-24vdc-system/14e2-13f01', '14E2', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E2_15F01', 'marpower/450000-24vdc-system/14e2-15f01', '14E2', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E2_36F01', 'marpower/450000-24vdc-system/14e2-36f01', '14E2', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E2_48F01', 'marpower/450000-24vdc-system/14e2-48f01', '14E2', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E2_66F01', 'marpower/450000-24vdc-system/14e2-66f01', '14E2', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E2_67F01', 'marpower/450000-24vdc-system/14e2-67f01', '14E2', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E2_84F01', 'marpower/450000-24vdc-system/14e2-84f01', '14E2', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'SPARE', '14E3_11F01', 'marpower/450000-24vdc-system/14e3-11f01', '14E3', NULL, NULL, NULL);
     {% endset %}
 
     {% do log("Create 24V DC metadata table and insert data...", info=True) %}
