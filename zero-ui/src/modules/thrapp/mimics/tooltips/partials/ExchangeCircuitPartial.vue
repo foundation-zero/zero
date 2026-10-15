@@ -7,13 +7,20 @@ import * as Partials from "./";
 
 const { items, sources } = useTranslations();
 
-defineProps<{
-  source: ModuleField<SensorComponentType.HeatTransferDevice>;
-}>();
+withDefaults(
+  defineProps<{
+    source: ModuleField<SensorComponentType.HeatTransferDevice>;
+    heatExchange?: boolean;
+  }>(),
+  {
+    heatExchange: true,
+  },
+);
 </script>
 
 <template>
   <SensorValue
+    v-if="heatExchange"
     :source="source"
     field="heat"
   >
@@ -24,6 +31,7 @@ defineProps<{
       </template>
     </Partials.ListItem>
   </SensorValue>
+
   <SensorValue
     :source="source"
     field="deltaT"

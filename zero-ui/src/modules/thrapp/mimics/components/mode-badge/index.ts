@@ -18,6 +18,7 @@ export { default as ModeBadges } from "./ModeBadges.vue";
 export const enum ModeBadgeMode {
   Idle = "Idle",
 
+  AlwaysActive = "AlwaysActive",
   Active = "Active",
   Using = "Using",
 
@@ -52,6 +53,7 @@ export const SIZE_ATTRIBUTES: Record<ModeBadgeSize, string> = {
 export const MODE_COLORS: Record<ModeBadgeMode, string> = {
   [ModeBadgeMode.Idle]: "var(--muted-foreground)",
   [ModeBadgeMode.Active]: "var(--constructive)",
+  [ModeBadgeMode.AlwaysActive]: "var(--constructive)",
   [ModeBadgeMode.Using]: "var(--flows-use-medium)",
   [ModeBadgeMode.CoolingLow]: "var(--cooling-low)",
   [ModeBadgeMode.Cooling]: "var(--cooling-medium)",

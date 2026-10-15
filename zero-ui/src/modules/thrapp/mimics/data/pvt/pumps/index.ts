@@ -16,7 +16,7 @@ import {
 export const PVT_PUMP_DATA = toFieldsMap({
   [MimicComponentType.Pump]: {
     "1018": toPump({
-      custom: { temperatureController: pvtMainFwdPumpController },
+      custom: { controllers: [pvtMainFwdPumpController] },
       source: getField(SensorComponentType.Pump, "pvt", "pvtPumpMainFwd"),
       controls: {
         pump: getField(ControlComponentType.Pump, "pvt", "pvtPumpMainFwd"),
@@ -27,7 +27,7 @@ export const PVT_PUMP_DATA = toFieldsMap({
       },
     }),
     "1019": toPump({
-      custom: { temperatureController: pvtMainAftPumpController },
+      custom: { controllers: [pvtMainAftPumpController] },
       source: getField(SensorComponentType.Pump, "pvt", "pvtPumpMainAft"),
       controls: {
         pump: getField(ControlComponentType.Pump, "pvt", "pvtPumpMainAft"),
@@ -38,7 +38,7 @@ export const PVT_PUMP_DATA = toFieldsMap({
       },
     }),
     "1021": toPump({
-      custom: { temperatureController: pvtOwnersPumpController },
+      custom: { controllers: [pvtOwnersPumpController] },
       source: getField(SensorComponentType.Pump, "pvt", "pvtPumpOwners"),
       controls: {
         pump: getField(ControlComponentType.Pump, "pvt", "pvtPumpOwners"),

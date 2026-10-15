@@ -67,8 +67,8 @@ const { labels, actions, items, sources } = useTranslations();
         <TooltipListHeader>{{ labels("heatExchange") }}</TooltipListHeader>
         <Partials.ListItem>
           {{ items("heatExchange") }}
-          <template #sourceName>
-            {{ sources("calculated") }}
+          <template #source>
+            <FieldRenderer.Source no-link>{{ sources("calculated") }}</FieldRenderer.Source>
           </template>
         </Partials.ListItem>
       </TooltipList>
@@ -78,7 +78,10 @@ const { labels, actions, items, sources } = useTranslations();
       <TooltipListHeader>
         {{ labels("thisCircuit") }}
       </TooltipListHeader>
-      <Circuit :source="source" />
+      <Circuit
+        :source="source"
+        :heat-exchange="false"
+      />
     </TooltipList>
 
     <TooltipList v-if="custom.exchangeCircuit">
@@ -86,7 +89,10 @@ const { labels, actions, items, sources } = useTranslations();
         {{ labels("exchangeCircuit") }}
         <TooltipListItemAction>{{ actions("viewCircuitMimic") }}</TooltipListItemAction>
       </TooltipListHeader>
-      <Circuit :source="custom.exchangeCircuit" />
+      <Circuit
+        :heat-exchange="false"
+        :source="custom.exchangeCircuit"
+      />
     </TooltipList>
   </MimicTooltip>
 </template>

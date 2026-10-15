@@ -466,6 +466,7 @@
         "hvacController": "HVAC controller",
         "hvacHeatFlow": "HVAC heatflow"
       },
+      "descriptions": {},
       "items": {
         "mode": "Mode",
         "outputMinimum": "Output minimum",

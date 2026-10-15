@@ -11,7 +11,7 @@ import { pumpFlowController } from "../controllers";
 export default toPump(
   {
     custom: {
-      flowController: pumpFlowController,
+      controllers: [pumpFlowController],
     },
     source: getField(SensorComponentType.Pump, "dhw", "dhwPump"),
     controls: {
