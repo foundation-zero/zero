@@ -16,5 +16,7 @@ from dc_24v as dc
 join metadata as meta
     on dc.topic = meta.topic
 where dc.voltage__value is not null
+and dc.voltage__has_value is true
+and dc.voltage__is_valid is true
 and meta.converter is not null
 and meta.converter_subnr is not null
