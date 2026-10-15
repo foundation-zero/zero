@@ -40,6 +40,8 @@
             ('1970-01-01 00:00:00', 'Converter W14E2_01V03', 'W14E2_01V03', 'marpower/450000-24vdc-system/conv/w14e2-01v03', 'W14E2_01', 3, NULL, NULL),
             ('1970-01-01 00:00:00', 'Converter W14E2_02V01', 'W14E2_02V01', 'marpower/450000-24vdc-system/conv/w14e2-02v01', 'W14E2_02', 1, NULL, NULL),
             ('1970-01-01 00:00:00', 'Converter W14E2_02V02', 'W14E2_02V02', 'marpower/450000-24vdc-system/conv/w14e2-02v02', 'W14E2_02', 2, NULL, NULL),
+            ('1970-01-01 00:00:00', 'Converter W14E1_03V01', 'W14E1_03V01', 'marpower/450000-24vdc-system/conv/w14e1-03v01', 'W14E1_03', 1, NULL, NULL),
+            ('1970-01-01 00:00:00', 'Converter W14E1_03V02', 'W14E1_03V02', 'marpower/450000-24vdc-system/conv/w14e1-03v02', 'W14E1_03', 2, NULL, NULL),
             -- Unused converters
             ('1970-01-01 00:00:00', 'Converter db-g-elv-serv', 'db-g-elv-serv', 'marpower/450000-24vdc-system/conv/db-g-elv-serv', 'db-g-elv-serv', NULL, NULL, NULL),
             ('1970-01-01 00:00:00', 'Converter db-g-elv-em', 'db-g-elv-em', 'marpower/450000-24vdc-system/conv/db-g-elv-em', 'db-g-elv-em', NULL, NULL, NULL),
