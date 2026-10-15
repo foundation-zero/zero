@@ -121,7 +121,7 @@
       "transparent": false,
       "options": {
         "mode": "markdown",
-        "content": "<center><h2>Hydrogeneration &amp; propulsion</h2></center>\n\n**In-between version (2026-10-05)** on the current R2.57 data.\n**DC power** = raw × 0.1 kW, positive when consuming. **Speed** = motor rpm (100 Hz scale), **propeller rpm** = motor rpm / 1.478.\n**Torque** = published % × 100 Nm (10 000 Nm scale in all four drives), at the motor shaft, in steps of 100 Nm. **Load pins** and **shear beams** in N.\n**Pitch and azimuth** are whole degrees, no P/D conversion. **Lever** % = (raw / 327 − 50) × 2, from the selected station.",
+        "content": "<center><h2>Hydrogeneration &amp; propulsion</h2></center>\n\n**Version of 2026-10-15** on the PMS IO list R2.63 data. The tags were renamed on 8 Oct 2026; queries spanning that day read both names.\n**DC power** = raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, raw / 10, in kW (negative when propelling) and rpm (without sign). **PMS power limits** in kW per drive, from the PMS's power object.\n**Speed** = motor rpm (100 Hz scale), propeller rpm = motor rpm / 1.478. **Torque** = published % × 100 Nm (10 000 Nm scale in all four drives), at the motor shaft, in steps of 100 Nm. **Load pins** and **shear beams** in N.\n**Pitch and azimuth** are whole degrees; P/D = tan(pitch) × 2.2 where shown. **Lever** % = (raw / 327 − 50) × 2, from the selected station, or from the other one when the selected one reads 0 (to be fixed). **BSP** from the speed log (NMEA VHW).\nThe info icon of each panel states its scaling and corrections.",
         "code": {
           "language": "plaintext",
           "showLineNumbers": false,
@@ -266,7 +266,7 @@
                         "index": 3
                       },
                       "4": {
-                        "text": "HydroGen",
+                        "text": "Hydrogen",
                         "color": "orange",
                         "index": 4
                       }
@@ -618,7 +618,7 @@
         "w": 4,
         "h": 3
       },
-      "description": "FWD + AFT, Aradex DC power, raw × 0.1 kW. Positive = consuming, negative = generating.",
+      "description": "FWD + AFT Aradex DC power, raw × 0.1 kW, with the sign as published: positive when consuming, negative when regenerating. FWD has not read negative in any data so far.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -704,7 +704,7 @@
         "w": 4,
         "h": 2
       },
-      "description": "FWD + AFT propeller mechanical power from the PLC, raw / 10 kW, negative when propelling, as the PLC sends it.",
+      "description": "FWD + AFT propeller mechanical power from the PLC, raw / 10 kW, with the sign as the PLC sends it: negative when propelling.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -778,7 +778,7 @@
     },
     {
       "id": 1008,
-      "title": "DC power per pod",
+      "title": "Power per pod",
       "type": "timeseries",
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
@@ -790,7 +790,7 @@
         "w": 12,
         "h": 7
       },
-      "description": "Aradex 1 + 2 DC power per pod, raw × 0.1 kW. Positive = consuming.",
+      "description": "Solid: Aradex 1 + 2 DC power per pod, raw × 0.1 kW, positive when consuming. Dashed: the propeller's mechanical power from the PLC, raw / 10 kW, with the sign as the PLC sends it: negative when propelling. Shaft power is published since 8 Oct 2026.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -815,7 +815,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  (avg(CASE WHEN drive = 1 THEN power END) + avg(CASE WHEN drive = 2 THEN power END)) * 0.1 AS \"FWD\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  (avg(CASE WHEN drive = 1 THEN power END) + avg(CASE WHEN drive = 2 THEN power END)) * 0.1 AS \"FWD DC\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -856,8 +856,90 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  (avg(CASE WHEN drive = 1 THEN power END) + avg(CASE WHEN drive = 2 THEN power END)) * 0.1 AS \"AFT\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  (avg(CASE WHEN drive = 1 THEN power END) + avg(CASE WHEN drive = 2 THEN power END)) * 0.1 AS \"AFT DC\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
           "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_mech_power__value) / 10.0 AS \"FWD shaft\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "C",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_mech_power__value) / 10.0 AS \"AFT shaft\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "D",
           "sql": {
             "columns": [
               {
@@ -916,7 +998,88 @@
           },
           "unit": "kwatt"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FWD DC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AFT DC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FWD shaft"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AFT shaft"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          }
+        ]
       },
       "options": {
         "legend": {
@@ -1059,7 +1222,7 @@
     },
     {
       "id": 1052,
-      "title": "Shaft power and propeller speed",
+      "title": "Propeller speed",
       "type": "timeseries",
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
@@ -1071,7 +1234,7 @@
         "w": 12,
         "h": 7
       },
-      "description": "From the PLC, per pod: the propeller's mechanical power (torque × rpm), raw / 10 kW, negative when propelling, as the PLC sends it; and the propeller speed, raw / 10 rpm, without sign. Published since 8 Oct 2026.",
+      "description": "Propeller speed per pod from the PLC, raw / 10 rpm, without sign. Published since 8 Oct 2026.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1096,7 +1259,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_mech_power__value) / 10.0 AS \"FWD shaft power\",\n  avg(azimuth_prop_speed__value) / 10.0 AS \"FWD propeller speed\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_speed__value) / 10.0 AS \"FWD\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1137,7 +1300,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_mech_power__value) / 10.0 AS \"AFT shaft power\",\n  avg(azimuth_prop_speed__value) / 10.0 AS \"AFT propeller speed\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_speed__value) / 10.0 AS \"AFT\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
           "refId": "B",
           "sql": {
             "columns": [
@@ -1195,13 +1358,13 @@
               }
             ]
           },
-          "unit": "kwatt"
+          "unit": "rotrpm"
         },
         "overrides": [
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "^FWD"
+              "id": "byName",
+              "options": "FWD"
             },
             "properties": [
               {
@@ -1215,8 +1378,8 @@
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "^AFT"
+              "id": "byName",
+              "options": "AFT"
             },
             "properties": [
               {
@@ -1224,32 +1387,6 @@
                 "value": {
                   "mode": "fixed",
                   "fixedColor": "yellow"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "propeller speed$"
-            },
-            "properties": [
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "unit",
-                "value": "rotrpm"
-              },
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "fill": "dash",
-                  "dash": [
-                    10,
-                    10
-                  ]
                 }
               }
             ]
@@ -1332,7 +1469,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT propellor_sailing_mode__value AS \"Mode\", pitch_mode__value AS \"Thrust mode (R54)\",\n  propellor_pitch__value AS \"Pitch [deg]\",\n  CASE WHEN propellor_pitch__value < 60 THEN 2.2 * tan(radians(propellor_pitch__value)) END AS \"P/D\",\n  propellor_azimuth__value AS \"Azimuth [deg]\",\n  (SELECT (lever_raw / 327.0 - 50) * 2 FROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_pshelm WHERE timestamp > now() - INTERVAL '1 minute' AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_sbhelm WHERE timestamp > now() - INTERVAL '1 minute' AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l ORDER BY selected DESC, timestamp DESC LIMIT 1) AS \"Lever [%]\",\n  CASE WHEN (SELECT station_selected__value FROM public.marpower__150000_propulsion__pcs_fwd_pshelm WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) THEN 'PS'\n       WHEN (SELECT station_selected__value FROM public.marpower__150000_propulsion__pcs_fwd_sbhelm WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) THEN 'SB' ELSE 'none' END AS \"Station\",\n  azimuth_prop_speed__value / 10.0 AS \"Prop rpm\",\n  (SELECT vp_enable__value FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"Drive 1 enabled\",\n  (SELECT vp_enable__value FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"Drive 2 enabled\",\n  (SELECT speed_or_torque_setpoint__value FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"SpeedOrTorqueSetpoint (constant)\",\n  (SELECT setpoint_power__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-31-u101' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS propulsion limit d1 [kW]\",\n  (SELECT produce_power_limit__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-31-u101' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS regeneration limit d1 [kW]\",\n  (SELECT setpoint_power__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-31-u102' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS propulsion limit d2 [kW]\",\n  (SELECT produce_power_limit__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-31-u102' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS regeneration limit d2 [kW]\",\n  pitch_setpoint_not_reached__value AS \"Pitch SP not reached\",\n  azimuth_setpoint_not_reached__value AS \"Azimuth SP not reached\",\n  rpm_setpoint_not_reached__value AS \"RPM SP not reached\",\n  lever_not_in_zero__value AS \"Lever not in zero\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE timestamp > now() - INTERVAL '1 minute'\nORDER BY timestamp DESC LIMIT 1",
+          "rawSql": "SELECT propellor_sailing_mode__value AS \"Mode\", pitch_mode__value AS \"Pitch mode\",\n  propellor_pitch__value AS \"Pitch [deg]\",\n  CASE WHEN propellor_pitch__value < 60 THEN 2.2 * tan(radians(propellor_pitch__value)) END AS \"P/D\",\n  propellor_azimuth__value AS \"Azimuth [deg]\",\n  (SELECT (lever_raw / 327.0 - 50) * 2 FROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_pshelm WHERE timestamp > now() - INTERVAL '1 minute' AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_sbhelm WHERE timestamp > now() - INTERVAL '1 minute' AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l ORDER BY selected DESC, timestamp DESC LIMIT 1) AS \"Lever [%]\",\n  CASE WHEN (SELECT station_selected__value FROM public.marpower__150000_propulsion__pcs_fwd_pshelm WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) THEN 'PS'\n       WHEN (SELECT station_selected__value FROM public.marpower__150000_propulsion__pcs_fwd_sbhelm WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) THEN 'SB' ELSE 'none' END AS \"Station\",\n  azimuth_prop_speed__value / 10.0 AS \"Prop rpm\",\n  (SELECT vp_enable__value FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"Drive 1 enabled\",\n  (SELECT vp_enable__value FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"Drive 2 enabled\",\n  (SELECT speed_or_torque_setpoint__value FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"SpeedOrTorqueSetpoint (constant)\",\n  (SELECT setpoint_power__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-31-u101' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS propulsion limit d1 [kW]\",\n  (SELECT produce_power_limit__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-31-u101' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS regeneration limit d1 [kW]\",\n  (SELECT setpoint_power__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-31-u102' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS propulsion limit d2 [kW]\",\n  (SELECT produce_power_limit__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-31-u102' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS regeneration limit d2 [kW]\",\n  pitch_setpoint_not_reached__value AS \"Pitch SP not reached\",\n  azimuth_setpoint_not_reached__value AS \"Azimuth SP not reached\",\n  rpm_setpoint_not_reached__value AS \"RPM SP not reached\",\n  lever_not_in_zero__value AS \"Lever not in zero\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE timestamp > now() - INTERVAL '1 minute'\nORDER BY timestamp DESC LIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1417,8 +1554,51 @@
                         "index": 3
                       },
                       "4": {
-                        "text": "HydroGen",
+                        "text": "Hydrogen",
                         "color": "orange",
+                        "index": 4
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Pitch mode"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "none",
+                        "color": "#808080",
+                        "index": 0
+                      },
+                      "1": {
+                        "text": "Normal",
+                        "color": "#4caf50",
+                        "index": 1
+                      },
+                      "2": {
+                        "text": "High thrust",
+                        "color": "#1a7f37",
+                        "index": 2
+                      },
+                      "3": {
+                        "text": "Motor sail",
+                        "color": "#a5d6a7",
+                        "index": 3
+                      },
+                      "4": {
+                        "text": "Auto",
+                        "color": "blue",
                         "index": 4
                       }
                     }
@@ -1448,9 +1628,9 @@
         "x": 0,
         "y": 34,
         "w": 12,
-        "h": 7
+        "h": 9
       },
-      "description": "Transitions only. Mode is R45; station selected and drive enable come from the helm and Aradex tables. The thrust mode (R54) is in the status table; the mode button and lamp registers are not published.",
+      "description": "Transitions only. Mode is R45. Pitch mode is R54 (1 Normal, 2 High thrust, 3 Motor sail, 4 Auto). The hydrogeneration sub-mode (torque or speed) is not published: the drive control mode (R30/31) has undocumented values and has read 32 throughout, and the SpeedOrTorqueSetpoint tag has no register and reads 0, so hydrogeneration is shown as one mode. Station selected and drive enable come from the helm and Aradex tables; the mode button and lamp registers are not published.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1477,6 +1657,47 @@
           "rawQuery": true,
           "rawSql": "SELECT time, mode FROM (\n  SELECT timestamp AS time, propellor_sailing_mode__value AS mode, LAG(propellor_sailing_mode__value) OVER (ORDER BY timestamp) AS prev\n  FROM public.marpower__150000_propulsion__pcs_fwd\n  WHERE $__timeFilter(timestamp)\n) t\nWHERE prev IS NULL OR prev <> mode\nORDER BY time",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time, pitch_mode FROM (\n  SELECT timestamp AS time, pitch_mode__value AS pitch_mode, LAG(pitch_mode__value) OVER (ORDER BY timestamp) AS prev\n  FROM public.marpower__150000_propulsion__pcs_fwd\n  WHERE $__timeFilter(timestamp)\n) t\nWHERE prev IS NULL OR prev <> pitch_mode\nORDER BY time",
+          "refId": "G",
           "sql": {
             "columns": [
               {
@@ -1777,7 +1998,7 @@
                         "index": 3
                       },
                       "4": {
-                        "text": "HydroGen",
+                        "text": "Hydrogen",
                         "color": "orange",
                         "index": 4
                       }
@@ -1850,6 +2071,53 @@
                 "value": "Lever not in zero"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pitch_mode"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "none",
+                        "color": "#808080",
+                        "index": 0
+                      },
+                      "1": {
+                        "text": "Normal",
+                        "color": "#4caf50",
+                        "index": 1
+                      },
+                      "2": {
+                        "text": "High thrust",
+                        "color": "#1a7f37",
+                        "index": 2
+                      },
+                      "3": {
+                        "text": "Motor sail",
+                        "color": "#a5d6a7",
+                        "index": 3
+                      },
+                      "4": {
+                        "text": "Auto",
+                        "color": "blue",
+                        "index": 4
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "displayName",
+                "value": "Pitch mode"
+              }
+            ]
           }
         ]
       },
@@ -1881,7 +2149,7 @@
     },
     {
       "id": 1013,
-      "title": "FWD — torque per drive and shear beams",
+      "title": "FWD — torque per drive and PLC limits",
       "type": "timeseries",
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
@@ -1889,11 +2157,11 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 41,
+        "y": 43,
         "w": 12,
         "h": 8
       },
-      "description": "Left: the torque each Aradex drive's winding set puts on the motor shaft (before the 1.478 gearbox), published as whole % of 10 000 Nm, so in steps of 100 Nm. Dashed: the maximum and minimum torque the PLC sends each drive (setpoints 2 and 3, the most restrictive value in each interval), derived from the PMS power limits, and the PLC's clamp of ±1163 Nm per drive. In torque mode the drive reads setpoints 2 and 3 as speed limits, so there they mean nothing on this axis. Right: R13, the shear beam torque. It should be Nm, but reads as a force in N: on AFT about −0.43 N per Nm propeller torque, on FWD about 1.25× that. Moves to the Nm axis once the PLC sends Nm.",
+      "description": "Solid: the torque each Aradex drive's winding set puts on the motor shaft (before the 1.478 gearbox), published as whole % of 10 000 Nm, so raw × 100 Nm in steps of 100 Nm. Dashed: the maximum and minimum torque the PLC sends each drive (setpoints 2 and 3, in Nm as sent, the most restrictive value in each interval), derived from the PMS power limits and clamped by the PLC at ±1163 Nm per drive. In torque mode the drive reads setpoints 2 and 3 as speed limits, so there they mean nothing on this axis. Setpoints are published since 8 Oct 2026.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1918,49 +2186,8 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN torque END) * 100 AS \"Drive 1\",\n  avg(CASE WHEN drive = 2 THEN torque END) * 100 AS \"Drive 2\",\n  min(CASE WHEN drive = 1 THEN max_torque END) AS \"Max torque sent d1\",\n  min(CASE WHEN drive = 2 THEN max_torque END) AS \"Max torque sent d2\",\n  max(CASE WHEN drive = 1 THEN min_torque END) AS \"Min torque sent d1\",\n  max(CASE WHEN drive = 2 THEN min_torque END) AS \"Min torque sent d2\",\n  1163 AS \"Clamp (±1163 Nm)\",\n  -1163 AS \"Clamp −\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN torque END) * 100 AS \"Drive 1\",\n  avg(CASE WHEN drive = 2 THEN torque END) * 100 AS \"Drive 2\",\n  min(CASE WHEN drive = 1 THEN max_torque END) AS \"Max torque sent d1\",\n  min(CASE WHEN drive = 2 THEN max_torque END) AS \"Max torque sent d2\",\n  max(CASE WHEN drive = 1 THEN min_torque END) AS \"Min torque sent d1\",\n  max(CASE WHEN drive = 2 THEN min_torque END) AS \"Min torque sent d2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
           "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(shear_beam_calculated__value) AS \"Shear beams (R13)\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
-          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -2023,72 +2250,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Shear beams (R13)"
-            },
-            "properties": [
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "unit",
-                "value": "forceN"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "d1$"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "green"
-                }
-              },
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "fill": "dash",
-                  "dash": [
-                    10,
-                    10
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "d2$"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "yellow"
-                }
-              },
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "fill": "dash",
-                  "dash": [
-                    10,
-                    10
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Drive 1"
             },
             "properties": [
@@ -2118,15 +2279,15 @@
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "^Clamp"
+              "id": "byName",
+              "options": "Max torque sent d1"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
                   "mode": "fixed",
-                  "fixedColor": "red"
+                  "fixedColor": "green"
                 }
               },
               {
@@ -2144,15 +2305,74 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Clamp −"
+              "options": "Min torque sent d1"
             },
             "properties": [
               {
-                "id": "custom.hideFrom",
+                "id": "color",
                 "value": {
-                  "legend": true,
-                  "tooltip": true,
-                  "viz": false
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Max torque sent d2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Min torque sent d2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
                 }
               }
             ]
@@ -2193,11 +2413,11 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 49,
+        "y": 51,
         "w": 12,
         "h": 8
       },
-      "description": "DC power per drive (raw × 0.1 kW, positive = consuming) against the power limits the PMS gives each drive: propulsion above zero, regeneration drawn below zero. The limits are the lowest value in each interval, so short drops show. Right: the drive's \"limit reached\" flag (tag power_failure). In Sailing the PLC limits the drives to ±1 kW, and in hydrogeneration with the lever at or behind zero the propulsion limit is 0. Astern, the PLC applies the regeneration limit to propulsion and the other way round.",
+      "description": "Solid: DC power per drive, raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS gives each drive, in kW as the PMS sends them, positive; the propulsion limit is drawn above zero, the regeneration limit negated below zero. The limits are the lowest value in each interval, so short drops show. In Sailing the PLC limits the drives to ±1 kW, and in hydrogeneration with the lever at or behind zero the propulsion limit is 0. Astern, the PLC applies the regeneration limit to propulsion and the other way round.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -2222,7 +2442,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN power END) * 0.1 AS \"DC drive 1\",\n  avg(CASE WHEN drive = 2 THEN power END) * 0.1 AS \"DC drive 2\",\n  max(CASE WHEN drive = 1 THEN CAST(limited AS INT) END) AS \"Limit reached d1\",\n  max(CASE WHEN drive = 2 THEN CAST(limited AS INT) END) AS \"Limit reached d2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, power_failure__value AS limited FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, power_failure__value AS limited FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN power END) * 0.1 AS \"DC drive 1\",\n  avg(CASE WHEN drive = 2 THEN power END) * 0.1 AS \"DC drive 2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2356,8 +2576,8 @@
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "limit d1$"
+              "id": "byName",
+              "options": "Propulsion limit d1"
             },
             "properties": [
               {
@@ -2381,8 +2601,33 @@
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "limit d2$"
+              "id": "byName",
+              "options": "Regeneration limit d1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Propulsion limit d2"
             },
             "properties": [
               {
@@ -2407,50 +2652,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Limit reached d1"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "green"
-                }
-              },
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "unit",
-                "value": "none"
-              },
-              {
-                "id": "custom.lineInterpolation",
-                "value": "stepAfter"
-              },
-              {
-                "id": "custom.fillOpacity",
-                "value": 15
-              },
-              {
-                "id": "max",
-                "value": 1
-              },
-              {
-                "id": "min",
-                "value": 0
-              },
-              {
-                "id": "custom.axisLabel",
-                "value": "limit reached"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Limit reached d2"
+              "options": "Regeneration limit d2"
             },
             "properties": [
               {
@@ -2461,32 +2663,14 @@
                 }
               },
               {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "unit",
-                "value": "none"
-              },
-              {
-                "id": "custom.lineInterpolation",
-                "value": "stepAfter"
-              },
-              {
-                "id": "custom.fillOpacity",
-                "value": 15
-              },
-              {
-                "id": "max",
-                "value": 1
-              },
-              {
-                "id": "min",
-                "value": 0
-              },
-              {
-                "id": "custom.axisLabel",
-                "value": "limit reached"
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
               }
             ]
           }
@@ -2526,7 +2710,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 57,
+        "y": 59,
         "w": 12,
         "h": 8
       },
@@ -2747,7 +2931,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT propellor_sailing_mode__value AS \"Mode\", pitch_mode__value AS \"Thrust mode (R54)\",\n  propellor_pitch__value AS \"Pitch [deg]\",\n  CASE WHEN propellor_pitch__value < 60 THEN 2.2 * tan(radians(propellor_pitch__value)) END AS \"P/D\",\n  propellor_azimuth__value AS \"Azimuth [deg]\",\n  (SELECT (lever_raw / 327.0 - 50) * 2 FROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_pshelm WHERE timestamp > now() - INTERVAL '1 minute' AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_sbhelm WHERE timestamp > now() - INTERVAL '1 minute' AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l ORDER BY selected DESC, timestamp DESC LIMIT 1) AS \"Lever [%]\",\n  CASE WHEN (SELECT station_selected__value FROM public.marpower__150000_propulsion__pcs_aft_pshelm WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) THEN 'PS'\n       WHEN (SELECT station_selected__value FROM public.marpower__150000_propulsion__pcs_aft_sbhelm WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) THEN 'SB' ELSE 'none' END AS \"Station\",\n  azimuth_prop_speed__value / 10.0 AS \"Prop rpm\",\n  (SELECT vp_enable__value FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"Drive 1 enabled\",\n  (SELECT vp_enable__value FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"Drive 2 enabled\",\n  (SELECT speed_or_torque_setpoint__value FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"SpeedOrTorqueSetpoint (constant)\",\n  (SELECT setpoint_power__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-11-u101' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS propulsion limit d1 [kW]\",\n  (SELECT produce_power_limit__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-11-u101' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS regeneration limit d1 [kW]\",\n  (SELECT setpoint_power__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-11-u102' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS propulsion limit d2 [kW]\",\n  (SELECT produce_power_limit__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-11-u102' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS regeneration limit d2 [kW]\",\n  pitch_setpoint_not_reached__value AS \"Pitch SP not reached\",\n  azimuth_setpoint_not_reached__value AS \"Azimuth SP not reached\",\n  rpm_setpoint_not_reached__value AS \"RPM SP not reached\",\n  lever_not_in_zero__value AS \"Lever not in zero\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE timestamp > now() - INTERVAL '1 minute'\nORDER BY timestamp DESC LIMIT 1",
+          "rawSql": "SELECT propellor_sailing_mode__value AS \"Mode\", pitch_mode__value AS \"Pitch mode\",\n  propellor_pitch__value AS \"Pitch [deg]\",\n  CASE WHEN propellor_pitch__value < 60 THEN 2.2 * tan(radians(propellor_pitch__value)) END AS \"P/D\",\n  propellor_azimuth__value AS \"Azimuth [deg]\",\n  (SELECT (lever_raw / 327.0 - 50) * 2 FROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_pshelm WHERE timestamp > now() - INTERVAL '1 minute' AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_sbhelm WHERE timestamp > now() - INTERVAL '1 minute' AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l ORDER BY selected DESC, timestamp DESC LIMIT 1) AS \"Lever [%]\",\n  CASE WHEN (SELECT station_selected__value FROM public.marpower__150000_propulsion__pcs_aft_pshelm WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) THEN 'PS'\n       WHEN (SELECT station_selected__value FROM public.marpower__150000_propulsion__pcs_aft_sbhelm WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) THEN 'SB' ELSE 'none' END AS \"Station\",\n  azimuth_prop_speed__value / 10.0 AS \"Prop rpm\",\n  (SELECT vp_enable__value FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"Drive 1 enabled\",\n  (SELECT vp_enable__value FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"Drive 2 enabled\",\n  (SELECT speed_or_torque_setpoint__value FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"SpeedOrTorqueSetpoint (constant)\",\n  (SELECT setpoint_power__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-11-u101' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS propulsion limit d1 [kW]\",\n  (SELECT produce_power_limit__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-11-u101' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS regeneration limit d1 [kW]\",\n  (SELECT setpoint_power__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-11-u102' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS propulsion limit d2 [kW]\",\n  (SELECT produce_power_limit__value FROM public.marpower__150000_propulsion_ara WHERE topic = 'marpower/150000-propulsion-ara/13-11-u102' AND timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1) AS \"PMS regeneration limit d2 [kW]\",\n  pitch_setpoint_not_reached__value AS \"Pitch SP not reached\",\n  azimuth_setpoint_not_reached__value AS \"Azimuth SP not reached\",\n  rpm_setpoint_not_reached__value AS \"RPM SP not reached\",\n  lever_not_in_zero__value AS \"Lever not in zero\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE timestamp > now() - INTERVAL '1 minute'\nORDER BY timestamp DESC LIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2832,8 +3016,51 @@
                         "index": 3
                       },
                       "4": {
-                        "text": "HydroGen",
+                        "text": "Hydrogen",
                         "color": "orange",
+                        "index": 4
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Pitch mode"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "none",
+                        "color": "#808080",
+                        "index": 0
+                      },
+                      "1": {
+                        "text": "Normal",
+                        "color": "#4caf50",
+                        "index": 1
+                      },
+                      "2": {
+                        "text": "High thrust",
+                        "color": "#1a7f37",
+                        "index": 2
+                      },
+                      "3": {
+                        "text": "Motor sail",
+                        "color": "#a5d6a7",
+                        "index": 3
+                      },
+                      "4": {
+                        "text": "Auto",
+                        "color": "blue",
                         "index": 4
                       }
                     }
@@ -2863,9 +3090,9 @@
         "x": 12,
         "y": 34,
         "w": 12,
-        "h": 7
+        "h": 9
       },
-      "description": "Transitions only. Mode is R45; station selected and drive enable come from the helm and Aradex tables. The thrust mode (R54) is in the status table; the mode button and lamp registers are not published.",
+      "description": "Transitions only. Mode is R45. Pitch mode is R54 (1 Normal, 2 High thrust, 3 Motor sail, 4 Auto). The hydrogeneration sub-mode (torque or speed) is not published: the drive control mode (R30/31) has undocumented values and has read 32 throughout, and the SpeedOrTorqueSetpoint tag has no register and reads 0, so hydrogeneration is shown as one mode. Station selected and drive enable come from the helm and Aradex tables; the mode button and lamp registers are not published.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -2892,6 +3119,47 @@
           "rawQuery": true,
           "rawSql": "SELECT time, mode FROM (\n  SELECT timestamp AS time, propellor_sailing_mode__value AS mode, LAG(propellor_sailing_mode__value) OVER (ORDER BY timestamp) AS prev\n  FROM public.marpower__150000_propulsion__pcs_aft\n  WHERE $__timeFilter(timestamp)\n) t\nWHERE prev IS NULL OR prev <> mode\nORDER BY time",
           "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time, pitch_mode FROM (\n  SELECT timestamp AS time, pitch_mode__value AS pitch_mode, LAG(pitch_mode__value) OVER (ORDER BY timestamp) AS prev\n  FROM public.marpower__150000_propulsion__pcs_aft\n  WHERE $__timeFilter(timestamp)\n) t\nWHERE prev IS NULL OR prev <> pitch_mode\nORDER BY time",
+          "refId": "G",
           "sql": {
             "columns": [
               {
@@ -3192,7 +3460,7 @@
                         "index": 3
                       },
                       "4": {
-                        "text": "HydroGen",
+                        "text": "Hydrogen",
                         "color": "orange",
                         "index": 4
                       }
@@ -3265,6 +3533,53 @@
                 "value": "Lever not in zero"
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pitch_mode"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "text": "none",
+                        "color": "#808080",
+                        "index": 0
+                      },
+                      "1": {
+                        "text": "Normal",
+                        "color": "#4caf50",
+                        "index": 1
+                      },
+                      "2": {
+                        "text": "High thrust",
+                        "color": "#1a7f37",
+                        "index": 2
+                      },
+                      "3": {
+                        "text": "Motor sail",
+                        "color": "#a5d6a7",
+                        "index": 3
+                      },
+                      "4": {
+                        "text": "Auto",
+                        "color": "blue",
+                        "index": 4
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "displayName",
+                "value": "Pitch mode"
+              }
+            ]
           }
         ]
       },
@@ -3296,7 +3611,7 @@
     },
     {
       "id": 1019,
-      "title": "AFT — torque per drive and shear beams",
+      "title": "AFT — torque per drive and PLC limits",
       "type": "timeseries",
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
@@ -3304,11 +3619,11 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 41,
+        "y": 43,
         "w": 12,
         "h": 8
       },
-      "description": "Left: the torque each Aradex drive's winding set puts on the motor shaft (before the 1.478 gearbox), published as whole % of 10 000 Nm, so in steps of 100 Nm. Dashed: the maximum and minimum torque the PLC sends each drive (setpoints 2 and 3, the most restrictive value in each interval), derived from the PMS power limits, and the PLC's clamp of ±3226 Nm per drive. In torque mode the drive reads setpoints 2 and 3 as speed limits, so there they mean nothing on this axis. Right: R13, the shear beam torque. It should be Nm, but reads as a force in N: on AFT about −0.43 N per Nm propeller torque, on FWD about 1.25× that. Moves to the Nm axis once the PLC sends Nm.",
+      "description": "Solid: the torque each Aradex drive's winding set puts on the motor shaft (before the 1.478 gearbox), published as whole % of 10 000 Nm, so raw × 100 Nm in steps of 100 Nm. Dashed: the maximum and minimum torque the PLC sends each drive (setpoints 2 and 3, in Nm as sent, the most restrictive value in each interval), derived from the PMS power limits and clamped by the PLC at ±3226 Nm per drive. In torque mode the drive reads setpoints 2 and 3 as speed limits, so there they mean nothing on this axis. Setpoints are published since 8 Oct 2026.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -3333,49 +3648,8 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN torque END) * 100 AS \"Drive 1\",\n  avg(CASE WHEN drive = 2 THEN torque END) * 100 AS \"Drive 2\",\n  min(CASE WHEN drive = 1 THEN max_torque END) AS \"Max torque sent d1\",\n  min(CASE WHEN drive = 2 THEN max_torque END) AS \"Max torque sent d2\",\n  max(CASE WHEN drive = 1 THEN min_torque END) AS \"Min torque sent d1\",\n  max(CASE WHEN drive = 2 THEN min_torque END) AS \"Min torque sent d2\",\n  3226 AS \"Clamp (±3226 Nm)\",\n  -3226 AS \"Clamp −\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN torque END) * 100 AS \"Drive 1\",\n  avg(CASE WHEN drive = 2 THEN torque END) * 100 AS \"Drive 2\",\n  min(CASE WHEN drive = 1 THEN max_torque END) AS \"Max torque sent d1\",\n  min(CASE WHEN drive = 2 THEN max_torque END) AS \"Max torque sent d2\",\n  max(CASE WHEN drive = 1 THEN min_torque END) AS \"Min torque sent d1\",\n  max(CASE WHEN drive = 2 THEN min_torque END) AS \"Min torque sent d2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
           "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(shear_beam_calculated__value) AS \"Shear beams (R13)\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
-          "refId": "B",
           "sql": {
             "columns": [
               {
@@ -3438,72 +3712,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Shear beams (R13)"
-            },
-            "properties": [
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "unit",
-                "value": "forceN"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "d1$"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "green"
-                }
-              },
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "fill": "dash",
-                  "dash": [
-                    10,
-                    10
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "d2$"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "yellow"
-                }
-              },
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "fill": "dash",
-                  "dash": [
-                    10,
-                    10
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Drive 1"
             },
             "properties": [
@@ -3533,15 +3741,15 @@
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "^Clamp"
+              "id": "byName",
+              "options": "Max torque sent d1"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
                   "mode": "fixed",
-                  "fixedColor": "red"
+                  "fixedColor": "green"
                 }
               },
               {
@@ -3559,15 +3767,74 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Clamp −"
+              "options": "Min torque sent d1"
             },
             "properties": [
               {
-                "id": "custom.hideFrom",
+                "id": "color",
                 "value": {
-                  "legend": true,
-                  "tooltip": true,
-                  "viz": false
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Max torque sent d2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Min torque sent d2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
                 }
               }
             ]
@@ -3608,11 +3875,11 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 49,
+        "y": 51,
         "w": 12,
         "h": 8
       },
-      "description": "DC power per drive (raw × 0.1 kW, positive = consuming) against the power limits the PMS gives each drive: propulsion above zero, regeneration drawn below zero. The limits are the lowest value in each interval, so short drops show. Right: the drive's \"limit reached\" flag (tag power_failure). In Sailing the PLC limits the drives to ±1 kW, and in hydrogeneration with the lever at or behind zero the propulsion limit is 0. Astern, the PLC applies the regeneration limit to propulsion and the other way round.",
+      "description": "Solid: DC power per drive, raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS gives each drive, in kW as the PMS sends them, positive; the propulsion limit is drawn above zero, the regeneration limit negated below zero. The limits are the lowest value in each interval, so short drops show. In Sailing the PLC limits the drives to ±1 kW, and in hydrogeneration with the lever at or behind zero the propulsion limit is 0. Astern, the PLC applies the regeneration limit to propulsion and the other way round.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -3637,7 +3904,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN power END) * 0.1 AS \"DC drive 1\",\n  avg(CASE WHEN drive = 2 THEN power END) * 0.1 AS \"DC drive 2\",\n  max(CASE WHEN drive = 1 THEN CAST(limited AS INT) END) AS \"Limit reached d1\",\n  max(CASE WHEN drive = 2 THEN CAST(limited AS INT) END) AS \"Limit reached d2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, power_failure__value AS limited FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, power_failure__value AS limited FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN power END) * 0.1 AS \"DC drive 1\",\n  avg(CASE WHEN drive = 2 THEN power END) * 0.1 AS \"DC drive 2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3771,8 +4038,8 @@
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "limit d1$"
+              "id": "byName",
+              "options": "Propulsion limit d1"
             },
             "properties": [
               {
@@ -3796,8 +4063,33 @@
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "limit d2$"
+              "id": "byName",
+              "options": "Regeneration limit d1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Propulsion limit d2"
             },
             "properties": [
               {
@@ -3822,50 +4114,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Limit reached d1"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "green"
-                }
-              },
-              {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "unit",
-                "value": "none"
-              },
-              {
-                "id": "custom.lineInterpolation",
-                "value": "stepAfter"
-              },
-              {
-                "id": "custom.fillOpacity",
-                "value": 15
-              },
-              {
-                "id": "max",
-                "value": 1
-              },
-              {
-                "id": "min",
-                "value": 0
-              },
-              {
-                "id": "custom.axisLabel",
-                "value": "limit reached"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Limit reached d2"
+              "options": "Regeneration limit d2"
             },
             "properties": [
               {
@@ -3876,32 +4125,14 @@
                 }
               },
               {
-                "id": "custom.axisPlacement",
-                "value": "right"
-              },
-              {
-                "id": "unit",
-                "value": "none"
-              },
-              {
-                "id": "custom.lineInterpolation",
-                "value": "stepAfter"
-              },
-              {
-                "id": "custom.fillOpacity",
-                "value": 15
-              },
-              {
-                "id": "max",
-                "value": 1
-              },
-              {
-                "id": "min",
-                "value": 0
-              },
-              {
-                "id": "custom.axisLabel",
-                "value": "limit reached"
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
               }
             ]
           }
@@ -3941,7 +4172,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 57,
+        "y": 59,
         "w": 12,
         "h": 8
       },
@@ -4130,7 +4361,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 65,
+        "y": 67,
         "w": 24,
         "h": 1
       },
@@ -4146,7 +4377,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 66,
+        "y": 68,
         "w": 12,
         "h": 10
       },
@@ -4560,7 +4791,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 66,
+        "y": 68,
         "w": 12,
         "h": 10
       },
@@ -4974,11 +5205,11 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 76,
+        "y": 78,
         "w": 12,
         "h": 12
       },
-      "description": "10 s buckets with a single mode. Lines: the specified pitch for the lever position, per thrust level and for hydrogeneration, converted to blade angle as angle = atan((P/D) / 2.2), 2.2 ≈ 0.7π (constant and encoder zero still to confirm with Hundested). Between ±5 % lever the propeller feathers (about 88°). The thrust level in use (R54) is not published, so propulsion points can match any of the three green curves. HydroGen forward of zero follows the motor-sail curve. The pitch tables are adjustable on the settings page, so a deviation can also be a changed setting. Lever % = (raw / 327 − 50) × 2, from the selected helm station, or from the other station when the selected one reads 0. To be fixed: since 8 Oct 2026 the speed lever is published only on the SB helm topic, while the PS topic reports PS as the selected station, so the station flag cannot be used to pick the lever.",
+      "description": "10 s buckets with a single mode. Lines: the specified pitch for the lever position, per thrust level and for hydrogeneration, converted to blade angle as angle = atan((P/D) / 2.2), 2.2 ≈ 0.7π (constant and encoder zero still to confirm with Hundested). Between ±5 % lever the propeller feathers (about 88°). Propulsion points are split by the pitch mode (R54) and coloured as its line; the pitch mode is published since 8 Oct 2026, so earlier propulsion points do not show. Auto (4) has no line and is not plotted. The Hydrogen line is the specified pitch for torque control; forward of zero hydrogeneration follows the motor-sail curve. The hydrogeneration sub-mode (torque or speed) is not published: the drive control mode (R30/31) has undocumented values and has read 32 throughout, and the SpeedOrTorqueSetpoint tag has no register and reads 0, so hydrogeneration is shown as one mode. The pitch tables are adjustable on the settings page, so a deviation can also be a changed setting. Lever % = (raw / 327 − 50) × 2, from the selected helm station, or from the other station when the selected one reads 0. To be fixed: since 8 Oct 2026 the speed lever is published only on the SB helm topic, while the PS topic reports PS as the selected station, so the station flag cannot be used to pick the lever.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -5331,8 +5562,90 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH lever AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, COALESCE(avg(CASE WHEN selected THEN (lever_raw / 327.0 - 50) * 2 END), avg((lever_raw / 327.0 - 50) * 2)) AS lever_pct\n  FROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_pshelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_sbhelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l\n  GROUP BY 1\n),\nara AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b,\n    avg(CASE WHEN drive = 1 THEN speed END) / 1.478 AS prop_rpm,\n    (avg(CASE WHEN drive = 1 THEN torque END) + avg(CASE WHEN drive = 2 THEN torque END)) * 100 AS motor_torque_nm\n  FROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\n  GROUP BY 1\n),\nplc AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, min(propellor_sailing_mode__value) AS mode_min,\n    max(propellor_sailing_mode__value) AS mode_max, avg(propellor_pitch__value) AS pitch\n  FROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\n  GROUP BY 1\n)\nSELECT lever.lever_pct AS lever, plc.pitch AS pitch\nFROM lever JOIN ara ON lever.b = ara.b JOIN plc ON plc.b = lever.b\nWHERE plc.mode_min = plc.mode_max AND plc.mode_min = 2\nORDER BY lever.b",
+          "rawSql": "WITH lever AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, COALESCE(avg(CASE WHEN selected THEN (lever_raw / 327.0 - 50) * 2 END), avg((lever_raw / 327.0 - 50) * 2)) AS lever_pct\n  FROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_pshelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_sbhelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l\n  GROUP BY 1\n),\nara AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b,\n    avg(CASE WHEN drive = 1 THEN speed END) / 1.478 AS prop_rpm,\n    (avg(CASE WHEN drive = 1 THEN torque END) + avg(CASE WHEN drive = 2 THEN torque END)) * 100 AS motor_torque_nm\n  FROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\n  GROUP BY 1\n),\nplc AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, min(propellor_sailing_mode__value) AS mode_min,\n    max(propellor_sailing_mode__value) AS mode_max, avg(propellor_pitch__value) AS pitch,\n    min(pitch_mode__value) AS pitch_mode_min, max(pitch_mode__value) AS pitch_mode_max\n  FROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\n  GROUP BY 1\n)\nSELECT lever.lever_pct AS lever, plc.pitch AS pitch\nFROM lever JOIN ara ON lever.b = ara.b JOIN plc ON plc.b = lever.b\nWHERE plc.mode_min = plc.mode_max AND plc.mode_min = 2\n  AND plc.pitch_mode_min = plc.pitch_mode_max AND plc.pitch_mode_min = 2\nORDER BY lever.b",
           "refId": "I",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH lever AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, COALESCE(avg(CASE WHEN selected THEN (lever_raw / 327.0 - 50) * 2 END), avg((lever_raw / 327.0 - 50) * 2)) AS lever_pct\n  FROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_pshelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_sbhelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l\n  GROUP BY 1\n),\nara AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b,\n    avg(CASE WHEN drive = 1 THEN speed END) / 1.478 AS prop_rpm,\n    (avg(CASE WHEN drive = 1 THEN torque END) + avg(CASE WHEN drive = 2 THEN torque END)) * 100 AS motor_torque_nm\n  FROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\n  GROUP BY 1\n),\nplc AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, min(propellor_sailing_mode__value) AS mode_min,\n    max(propellor_sailing_mode__value) AS mode_max, avg(propellor_pitch__value) AS pitch,\n    min(pitch_mode__value) AS pitch_mode_min, max(pitch_mode__value) AS pitch_mode_max\n  FROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\n  GROUP BY 1\n)\nSELECT lever.lever_pct AS lever, plc.pitch AS pitch\nFROM lever JOIN ara ON lever.b = ara.b JOIN plc ON plc.b = lever.b\nWHERE plc.mode_min = plc.mode_max AND plc.mode_min = 2\n  AND plc.pitch_mode_min = plc.pitch_mode_max AND plc.pitch_mode_min = 1\nORDER BY lever.b",
+          "refId": "L",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH lever AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, COALESCE(avg(CASE WHEN selected THEN (lever_raw / 327.0 - 50) * 2 END), avg((lever_raw / 327.0 - 50) * 2)) AS lever_pct\n  FROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_pshelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_sbhelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l\n  GROUP BY 1\n),\nara AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b,\n    avg(CASE WHEN drive = 1 THEN speed END) / 1.478 AS prop_rpm,\n    (avg(CASE WHEN drive = 1 THEN torque END) + avg(CASE WHEN drive = 2 THEN torque END)) * 100 AS motor_torque_nm\n  FROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\n  GROUP BY 1\n),\nplc AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, min(propellor_sailing_mode__value) AS mode_min,\n    max(propellor_sailing_mode__value) AS mode_max, avg(propellor_pitch__value) AS pitch,\n    min(pitch_mode__value) AS pitch_mode_min, max(pitch_mode__value) AS pitch_mode_max\n  FROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\n  GROUP BY 1\n)\nSELECT lever.lever_pct AS lever, plc.pitch AS pitch\nFROM lever JOIN ara ON lever.b = ara.b JOIN plc ON plc.b = lever.b\nWHERE plc.mode_min = plc.mode_max AND plc.mode_min = 2\n  AND plc.pitch_mode_min = plc.pitch_mode_max AND plc.pitch_mode_min = 3\nORDER BY lever.b",
+          "refId": "M",
           "sql": {
             "columns": [
               {
@@ -5500,7 +5813,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -5508,10 +5821,6 @@
                   "mode": "fixed",
                   "fixedColor": "#1a7f37"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               }
             ]
           },
@@ -5527,7 +5836,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -5535,10 +5844,6 @@
                   "mode": "fixed",
                   "fixedColor": "#1a7f37"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               },
               {
                 "id": "custom.hideFrom",
@@ -5562,7 +5867,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -5570,10 +5875,6 @@
                   "mode": "fixed",
                   "fixedColor": "#4caf50"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               }
             ]
           },
@@ -5589,7 +5890,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -5597,10 +5898,6 @@
                   "mode": "fixed",
                   "fixedColor": "#4caf50"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               },
               {
                 "id": "custom.hideFrom",
@@ -5624,7 +5921,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -5632,10 +5929,6 @@
                   "mode": "fixed",
                   "fixedColor": "#a5d6a7"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               }
             ]
           },
@@ -5651,7 +5944,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -5659,10 +5952,6 @@
                   "mode": "fixed",
                   "fixedColor": "#a5d6a7"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               },
               {
                 "id": "custom.hideFrom",
@@ -5686,7 +5975,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -5694,10 +5983,6 @@
                   "mode": "fixed",
                   "fixedColor": "#c39bd3"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               }
             ]
           },
@@ -5713,7 +5998,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -5721,10 +6006,6 @@
                   "mode": "fixed",
                   "fixedColor": "#f5b041"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               }
             ]
           },
@@ -5738,7 +6019,61 @@
                 "id": "color",
                 "value": {
                   "mode": "fixed",
-                  "fixedColor": "green"
+                  "fixedColor": "#1a7f37"
+                }
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": false,
+                  "viz": false
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "L"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#4caf50"
+                }
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": false,
+                  "viz": false
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "M"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#a5d6a7"
+                }
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": false,
+                  "viz": false
                 }
               }
             ]
@@ -5753,7 +6088,15 @@
                 "id": "color",
                 "value": {
                   "mode": "fixed",
-                  "fixedColor": "purple"
+                  "fixedColor": "#c39bd3"
+                }
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": false,
+                  "viz": false
                 }
               }
             ]
@@ -5768,7 +6111,15 @@
                 "id": "color",
                 "value": {
                   "mode": "fixed",
-                  "fixedColor": "orange"
+                  "fixedColor": "#f5b041"
+                }
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": false,
+                  "viz": false
                 }
               }
             ]
@@ -5798,7 +6149,7 @@
               }
             },
             "name": {
-              "fixed": "High thrust (specified)"
+              "fixed": "Propulsion: High thrust"
             }
           },
           {
@@ -5821,7 +6172,7 @@
               }
             },
             "name": {
-              "fixed": "High thrust (specified)"
+              "fixed": "Propulsion: High thrust"
             }
           },
           {
@@ -5844,7 +6195,7 @@
               }
             },
             "name": {
-              "fixed": "Normal (specified)"
+              "fixed": "Propulsion: Normal"
             }
           },
           {
@@ -5867,7 +6218,7 @@
               }
             },
             "name": {
-              "fixed": "Normal (specified)"
+              "fixed": "Propulsion: Normal"
             }
           },
           {
@@ -5890,7 +6241,7 @@
               }
             },
             "name": {
-              "fixed": "Motor sail (specified)"
+              "fixed": "Propulsion: Motor sail"
             }
           },
           {
@@ -5913,7 +6264,7 @@
               }
             },
             "name": {
-              "fixed": "Motor sail (specified)"
+              "fixed": "Propulsion: Motor sail"
             }
           },
           {
@@ -5936,7 +6287,7 @@
               }
             },
             "name": {
-              "fixed": "Maneuvering (specified)"
+              "fixed": "Maneuvering"
             }
           },
           {
@@ -5959,7 +6310,7 @@
               }
             },
             "name": {
-              "fixed": "HydroGen torque mode (specified)"
+              "fixed": "Hydrogen"
             }
           },
           {
@@ -5982,7 +6333,7 @@
               }
             },
             "name": {
-              "fixed": "Propulsion"
+              "fixed": "Propulsion: High thrust"
             }
           },
           {
@@ -6005,7 +6356,7 @@
               }
             },
             "name": {
-              "fixed": "Maneuvering"
+              "fixed": "Propulsion: Normal"
             }
           },
           {
@@ -6028,7 +6379,53 @@
               }
             },
             "name": {
-              "fixed": "HydroGen"
+              "fixed": "Propulsion: Motor sail"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 11
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "lever"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "pitch"
+              }
+            },
+            "name": {
+              "fixed": "Maneuvering"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 12
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "lever"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "pitch"
+              }
+            },
+            "name": {
+              "fixed": "Hydrogen"
             }
           }
         ],
@@ -6053,11 +6450,11 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 76,
+        "y": 78,
         "w": 12,
         "h": 12
       },
-      "description": "10 s buckets with a single mode. Lines: the specified pitch for the lever position, per thrust level and for hydrogeneration, converted to blade angle as angle = atan((P/D) / 2.2), 2.2 ≈ 0.7π (constant and encoder zero still to confirm with Hundested). Between ±5 % lever the propeller feathers (about 88°). The thrust level in use (R54) is not published, so propulsion points can match any of the three green curves. HydroGen forward of zero follows the motor-sail curve. The pitch tables are adjustable on the settings page, so a deviation can also be a changed setting. Lever % = (raw / 327 − 50) × 2, from the selected helm station, or from the other station when the selected one reads 0. To be fixed: since 8 Oct 2026 the speed lever is published only on the SB helm topic, while the PS topic reports PS as the selected station, so the station flag cannot be used to pick the lever.",
+      "description": "10 s buckets with a single mode. Lines: the specified pitch for the lever position, per thrust level and for hydrogeneration, converted to blade angle as angle = atan((P/D) / 2.2), 2.2 ≈ 0.7π (constant and encoder zero still to confirm with Hundested). Between ±5 % lever the propeller feathers (about 88°). Propulsion points are split by the pitch mode (R54) and coloured as its line; the pitch mode is published since 8 Oct 2026, so earlier propulsion points do not show. Auto (4) has no line and is not plotted. The Hydrogen line is the specified pitch for torque control; forward of zero hydrogeneration follows the motor-sail curve. The hydrogeneration sub-mode (torque or speed) is not published: the drive control mode (R30/31) has undocumented values and has read 32 throughout, and the SpeedOrTorqueSetpoint tag has no register and reads 0, so hydrogeneration is shown as one mode. The pitch tables are adjustable on the settings page, so a deviation can also be a changed setting. Lever % = (raw / 327 − 50) × 2, from the selected helm station, or from the other station when the selected one reads 0. To be fixed: since 8 Oct 2026 the speed lever is published only on the SB helm topic, while the PS topic reports PS as the selected station, so the station flag cannot be used to pick the lever.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -6410,8 +6807,90 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "WITH lever AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, COALESCE(avg(CASE WHEN selected THEN (lever_raw / 327.0 - 50) * 2 END), avg((lever_raw / 327.0 - 50) * 2)) AS lever_pct\n  FROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_pshelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_sbhelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l\n  GROUP BY 1\n),\nara AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b,\n    avg(CASE WHEN drive = 1 THEN speed END) / 1.478 AS prop_rpm,\n    (avg(CASE WHEN drive = 1 THEN torque END) + avg(CASE WHEN drive = 2 THEN torque END)) * 100 AS motor_torque_nm\n  FROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\n  GROUP BY 1\n),\nplc AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, min(propellor_sailing_mode__value) AS mode_min,\n    max(propellor_sailing_mode__value) AS mode_max, avg(propellor_pitch__value) AS pitch\n  FROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\n  GROUP BY 1\n)\nSELECT lever.lever_pct AS lever, plc.pitch AS pitch\nFROM lever JOIN ara ON lever.b = ara.b JOIN plc ON plc.b = lever.b\nWHERE plc.mode_min = plc.mode_max AND plc.mode_min = 2\nORDER BY lever.b",
+          "rawSql": "WITH lever AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, COALESCE(avg(CASE WHEN selected THEN (lever_raw / 327.0 - 50) * 2 END), avg((lever_raw / 327.0 - 50) * 2)) AS lever_pct\n  FROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_pshelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_sbhelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l\n  GROUP BY 1\n),\nara AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b,\n    avg(CASE WHEN drive = 1 THEN speed END) / 1.478 AS prop_rpm,\n    (avg(CASE WHEN drive = 1 THEN torque END) + avg(CASE WHEN drive = 2 THEN torque END)) * 100 AS motor_torque_nm\n  FROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\n  GROUP BY 1\n),\nplc AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, min(propellor_sailing_mode__value) AS mode_min,\n    max(propellor_sailing_mode__value) AS mode_max, avg(propellor_pitch__value) AS pitch,\n    min(pitch_mode__value) AS pitch_mode_min, max(pitch_mode__value) AS pitch_mode_max\n  FROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\n  GROUP BY 1\n)\nSELECT lever.lever_pct AS lever, plc.pitch AS pitch\nFROM lever JOIN ara ON lever.b = ara.b JOIN plc ON plc.b = lever.b\nWHERE plc.mode_min = plc.mode_max AND plc.mode_min = 2\n  AND plc.pitch_mode_min = plc.pitch_mode_max AND plc.pitch_mode_min = 2\nORDER BY lever.b",
           "refId": "I",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH lever AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, COALESCE(avg(CASE WHEN selected THEN (lever_raw / 327.0 - 50) * 2 END), avg((lever_raw / 327.0 - 50) * 2)) AS lever_pct\n  FROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_pshelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_sbhelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l\n  GROUP BY 1\n),\nara AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b,\n    avg(CASE WHEN drive = 1 THEN speed END) / 1.478 AS prop_rpm,\n    (avg(CASE WHEN drive = 1 THEN torque END) + avg(CASE WHEN drive = 2 THEN torque END)) * 100 AS motor_torque_nm\n  FROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\n  GROUP BY 1\n),\nplc AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, min(propellor_sailing_mode__value) AS mode_min,\n    max(propellor_sailing_mode__value) AS mode_max, avg(propellor_pitch__value) AS pitch,\n    min(pitch_mode__value) AS pitch_mode_min, max(pitch_mode__value) AS pitch_mode_max\n  FROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\n  GROUP BY 1\n)\nSELECT lever.lever_pct AS lever, plc.pitch AS pitch\nFROM lever JOIN ara ON lever.b = ara.b JOIN plc ON plc.b = lever.b\nWHERE plc.mode_min = plc.mode_max AND plc.mode_min = 2\n  AND plc.pitch_mode_min = plc.pitch_mode_max AND plc.pitch_mode_min = 1\nORDER BY lever.b",
+          "refId": "L",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH lever AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, COALESCE(avg(CASE WHEN selected THEN (lever_raw / 327.0 - 50) * 2 END), avg((lever_raw / 327.0 - 50) * 2)) AS lever_pct\n  FROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_pshelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_sbhelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l\n  GROUP BY 1\n),\nara AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b,\n    avg(CASE WHEN drive = 1 THEN speed END) / 1.478 AS prop_rpm,\n    (avg(CASE WHEN drive = 1 THEN torque END) + avg(CASE WHEN drive = 2 THEN torque END)) * 100 AS motor_torque_nm\n  FROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\n  GROUP BY 1\n),\nplc AS (\n  SELECT date_bin('10s', timestamp, TIMESTAMP '1970-01-01') AS b, min(propellor_sailing_mode__value) AS mode_min,\n    max(propellor_sailing_mode__value) AS mode_max, avg(propellor_pitch__value) AS pitch,\n    min(pitch_mode__value) AS pitch_mode_min, max(pitch_mode__value) AS pitch_mode_max\n  FROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\n  GROUP BY 1\n)\nSELECT lever.lever_pct AS lever, plc.pitch AS pitch\nFROM lever JOIN ara ON lever.b = ara.b JOIN plc ON plc.b = lever.b\nWHERE plc.mode_min = plc.mode_max AND plc.mode_min = 2\n  AND plc.pitch_mode_min = plc.pitch_mode_max AND plc.pitch_mode_min = 3\nORDER BY lever.b",
+          "refId": "M",
           "sql": {
             "columns": [
               {
@@ -6579,7 +7058,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -6587,10 +7066,6 @@
                   "mode": "fixed",
                   "fixedColor": "#1a7f37"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               }
             ]
           },
@@ -6606,7 +7081,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -6614,10 +7089,6 @@
                   "mode": "fixed",
                   "fixedColor": "#1a7f37"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               },
               {
                 "id": "custom.hideFrom",
@@ -6641,7 +7112,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -6649,10 +7120,6 @@
                   "mode": "fixed",
                   "fixedColor": "#4caf50"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               }
             ]
           },
@@ -6668,7 +7135,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -6676,10 +7143,6 @@
                   "mode": "fixed",
                   "fixedColor": "#4caf50"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               },
               {
                 "id": "custom.hideFrom",
@@ -6703,7 +7166,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -6711,10 +7174,6 @@
                   "mode": "fixed",
                   "fixedColor": "#a5d6a7"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               }
             ]
           },
@@ -6730,7 +7189,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -6738,10 +7197,6 @@
                   "mode": "fixed",
                   "fixedColor": "#a5d6a7"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               },
               {
                 "id": "custom.hideFrom",
@@ -6765,7 +7220,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -6773,10 +7228,6 @@
                   "mode": "fixed",
                   "fixedColor": "#c39bd3"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               }
             ]
           },
@@ -6792,7 +7243,7 @@
               },
               {
                 "id": "custom.lineWidth",
-                "value": 2
+                "value": 1
               },
               {
                 "id": "color",
@@ -6800,10 +7251,6 @@
                   "mode": "fixed",
                   "fixedColor": "#f5b041"
                 }
-              },
-              {
-                "id": "custom.lineWidth",
-                "value": 1
               }
             ]
           },
@@ -6817,7 +7264,61 @@
                 "id": "color",
                 "value": {
                   "mode": "fixed",
-                  "fixedColor": "green"
+                  "fixedColor": "#1a7f37"
+                }
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": false,
+                  "viz": false
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "L"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#4caf50"
+                }
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": false,
+                  "viz": false
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "M"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#a5d6a7"
+                }
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": false,
+                  "viz": false
                 }
               }
             ]
@@ -6832,7 +7333,15 @@
                 "id": "color",
                 "value": {
                   "mode": "fixed",
-                  "fixedColor": "purple"
+                  "fixedColor": "#c39bd3"
+                }
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": false,
+                  "viz": false
                 }
               }
             ]
@@ -6847,7 +7356,15 @@
                 "id": "color",
                 "value": {
                   "mode": "fixed",
-                  "fixedColor": "orange"
+                  "fixedColor": "#f5b041"
+                }
+              },
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": true,
+                  "tooltip": false,
+                  "viz": false
                 }
               }
             ]
@@ -6877,7 +7394,7 @@
               }
             },
             "name": {
-              "fixed": "High thrust (specified)"
+              "fixed": "Propulsion: High thrust"
             }
           },
           {
@@ -6900,7 +7417,7 @@
               }
             },
             "name": {
-              "fixed": "High thrust (specified)"
+              "fixed": "Propulsion: High thrust"
             }
           },
           {
@@ -6923,7 +7440,7 @@
               }
             },
             "name": {
-              "fixed": "Normal (specified)"
+              "fixed": "Propulsion: Normal"
             }
           },
           {
@@ -6946,7 +7463,7 @@
               }
             },
             "name": {
-              "fixed": "Normal (specified)"
+              "fixed": "Propulsion: Normal"
             }
           },
           {
@@ -6969,7 +7486,7 @@
               }
             },
             "name": {
-              "fixed": "Motor sail (specified)"
+              "fixed": "Propulsion: Motor sail"
             }
           },
           {
@@ -6992,7 +7509,7 @@
               }
             },
             "name": {
-              "fixed": "Motor sail (specified)"
+              "fixed": "Propulsion: Motor sail"
             }
           },
           {
@@ -7015,7 +7532,7 @@
               }
             },
             "name": {
-              "fixed": "Maneuvering (specified)"
+              "fixed": "Maneuvering"
             }
           },
           {
@@ -7038,7 +7555,7 @@
               }
             },
             "name": {
-              "fixed": "HydroGen torque mode (specified)"
+              "fixed": "Hydrogen"
             }
           },
           {
@@ -7061,7 +7578,7 @@
               }
             },
             "name": {
-              "fixed": "Propulsion"
+              "fixed": "Propulsion: High thrust"
             }
           },
           {
@@ -7084,7 +7601,7 @@
               }
             },
             "name": {
-              "fixed": "Maneuvering"
+              "fixed": "Propulsion: Normal"
             }
           },
           {
@@ -7107,7 +7624,53 @@
               }
             },
             "name": {
-              "fixed": "HydroGen"
+              "fixed": "Propulsion: Motor sail"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 11
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "lever"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "pitch"
+              }
+            },
+            "name": {
+              "fixed": "Maneuvering"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 12
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "lever"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "pitch"
+              }
+            },
+            "name": {
+              "fixed": "Hydrogen"
             }
           }
         ],
@@ -7132,7 +7695,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 88,
+        "y": 90,
         "w": 12,
         "h": 8
       },
@@ -7229,7 +7792,7 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisPlacement": "auto",
+            "axisPlacement": "left",
             "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 0,
@@ -7248,7 +7811,8 @@
             },
             "thresholdsStyle": {
               "mode": "off"
-            }
+            },
+            "axisLabel": "rpm/s"
           },
           "mappings": [],
           "thresholds": {
@@ -7266,18 +7830,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Propeller speed rate"
-            },
-            "properties": [
-              {
-                "id": "custom.axisLabel",
-                "value": "rpm/s"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Propeller speed"
             },
             "properties": [
@@ -7288,13 +7840,17 @@
               {
                 "id": "unit",
                 "value": "rotrpm"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Propeller speed"
               }
             ]
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "^Specified limit"
+              "id": "byName",
+              "options": "Specified limit (±83.3 rpm/s)"
             },
             "properties": [
               {
@@ -7318,8 +7874,58 @@
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "^Drive ramp"
+              "id": "byName",
+              "options": "Specified limit −"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Drive ramp (±121.8 rpm/s)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Drive ramp −"
             },
             "properties": [
               {
@@ -7409,7 +8015,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 88,
+        "y": 90,
         "w": 12,
         "h": 8
       },
@@ -7506,7 +8112,7 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "axisPlacement": "auto",
+            "axisPlacement": "left",
             "barAlignment": 0,
             "drawStyle": "line",
             "fillOpacity": 0,
@@ -7525,7 +8131,8 @@
             },
             "thresholdsStyle": {
               "mode": "off"
-            }
+            },
+            "axisLabel": "rpm/s"
           },
           "mappings": [],
           "thresholds": {
@@ -7543,18 +8150,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Propeller speed rate"
-            },
-            "properties": [
-              {
-                "id": "custom.axisLabel",
-                "value": "rpm/s"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Propeller speed"
             },
             "properties": [
@@ -7565,13 +8160,17 @@
               {
                 "id": "unit",
                 "value": "rotrpm"
+              },
+              {
+                "id": "custom.axisLabel",
+                "value": "Propeller speed"
               }
             ]
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "^Specified limit"
+              "id": "byName",
+              "options": "Specified limit (±66.7 rpm/s)"
             },
             "properties": [
               {
@@ -7595,8 +8194,58 @@
           },
           {
             "matcher": {
-              "id": "byRegexp",
-              "options": "^Drive ramp"
+              "id": "byName",
+              "options": "Specified limit −"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Drive ramp (±121.8 rpm/s)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Drive ramp −"
             },
             "properties": [
               {
@@ -7686,7 +8335,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 96,
+        "y": 98,
         "w": 12,
         "h": 10
       },
@@ -7951,7 +8600,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 96,
+        "y": 98,
         "w": 12,
         "h": 10
       },
@@ -8213,7 +8862,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 106,
+        "y": 108,
         "w": 24,
         "h": 1
       },
@@ -8229,7 +8878,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 107,
+        "y": 109,
         "w": 12,
         "h": 10
       },
@@ -8403,7 +9052,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 107,
+        "y": 109,
         "w": 12,
         "h": 10
       },
@@ -8574,7 +9223,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 117,
+        "y": 119,
         "w": 24,
         "h": 1
       },
@@ -8590,7 +9239,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 118,
+        "y": 120,
         "w": 12,
         "h": 10
       },
@@ -8813,7 +9462,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 128,
+        "y": 130,
         "w": 12,
         "h": 8
       },
@@ -9099,11 +9748,11 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 136,
+        "y": 138,
         "w": 12,
         "h": 5
       },
-      "description": "Latest load pins and shear beams, in N. Shear beam calculated (R13) should be torque in Nm, but reads as a force in N.",
+      "description": "Latest load pins, in N.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -9128,7 +9777,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "(SELECT '1' AS \"#\", loadpin_1_horizontal__value AS \"Load pin H\", loadpin_1_vertical__value AS \"Load pin V\",\n  shear_beam_1__value AS \"Shear beam\", shear_beam_calculated__value AS \"Shear beam calculated\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)\nUNION ALL\n(SELECT '2' AS \"#\", loadpin_2_horizontal__value AS \"Load pin H\", loadpin_2_vertical__value AS \"Load pin V\",\n  shear_beam_2__value AS \"Shear beam\", shear_beam_calculated__value AS \"Shear beam calculated\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)\nUNION ALL\n(SELECT '3' AS \"#\", loadpin_3_horizontal__value AS \"Load pin H\", loadpin_3_vertical__value AS \"Load pin V\",\n  shear_beam_3__value AS \"Shear beam\", shear_beam_calculated__value AS \"Shear beam calculated\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)\nUNION ALL\n(SELECT '4' AS \"#\", loadpin_4_horizontal__value AS \"Load pin H\", loadpin_4_vertical__value AS \"Load pin V\",\n  shear_beam_4__value AS \"Shear beam\", shear_beam_calculated__value AS \"Shear beam calculated\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)",
+          "rawSql": "(SELECT '1' AS \"#\", loadpin_1_horizontal__value AS \"Load pin H\", loadpin_1_vertical__value AS \"Load pin V\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)\nUNION ALL\n(SELECT '2' AS \"#\", loadpin_2_horizontal__value AS \"Load pin H\", loadpin_2_vertical__value AS \"Load pin V\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)\nUNION ALL\n(SELECT '3' AS \"#\", loadpin_3_horizontal__value AS \"Load pin H\", loadpin_3_vertical__value AS \"Load pin V\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)\nUNION ALL\n(SELECT '4' AS \"#\", loadpin_4_horizontal__value AS \"Load pin H\", loadpin_4_vertical__value AS \"Load pin V\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -9203,30 +9852,6 @@
                 "value": "forceN"
               }
             ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Shear beam"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "forceN"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Shear beam calculated"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "forceN"
-              }
-            ]
           }
         ]
       },
@@ -9242,7 +9867,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 118,
+        "y": 120,
         "w": 12,
         "h": 10
       },
@@ -9465,7 +10090,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 128,
+        "y": 130,
         "w": 12,
         "h": 8
       },
@@ -9751,11 +10376,11 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 136,
+        "y": 138,
         "w": 12,
         "h": 5
       },
-      "description": "Latest load pins and shear beams, in N. Shear beam calculated (R13) should be torque in Nm, but reads as a force in N.",
+      "description": "Latest load pins, in N.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -9780,7 +10405,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "(SELECT '1' AS \"#\", loadpin_1_horizontal__value AS \"Load pin H\", loadpin_1_vertical__value AS \"Load pin V\",\n  shear_beam_1__value AS \"Shear beam\", shear_beam_calculated__value AS \"Shear beam calculated\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)\nUNION ALL\n(SELECT '2' AS \"#\", loadpin_2_horizontal__value AS \"Load pin H\", loadpin_2_vertical__value AS \"Load pin V\",\n  shear_beam_2__value AS \"Shear beam\", shear_beam_calculated__value AS \"Shear beam calculated\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)\nUNION ALL\n(SELECT '3' AS \"#\", loadpin_3_horizontal__value AS \"Load pin H\", loadpin_3_vertical__value AS \"Load pin V\",\n  shear_beam_3__value AS \"Shear beam\", shear_beam_calculated__value AS \"Shear beam calculated\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)\nUNION ALL\n(SELECT '4' AS \"#\", loadpin_4_horizontal__value AS \"Load pin H\", loadpin_4_vertical__value AS \"Load pin V\",\n  shear_beam_4__value AS \"Shear beam\", shear_beam_calculated__value AS \"Shear beam calculated\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)",
+          "rawSql": "(SELECT '1' AS \"#\", loadpin_1_horizontal__value AS \"Load pin H\", loadpin_1_vertical__value AS \"Load pin V\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)\nUNION ALL\n(SELECT '2' AS \"#\", loadpin_2_horizontal__value AS \"Load pin H\", loadpin_2_vertical__value AS \"Load pin V\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)\nUNION ALL\n(SELECT '3' AS \"#\", loadpin_3_horizontal__value AS \"Load pin H\", loadpin_3_vertical__value AS \"Load pin V\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)\nUNION ALL\n(SELECT '4' AS \"#\", loadpin_4_horizontal__value AS \"Load pin H\", loadpin_4_vertical__value AS \"Load pin V\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -9855,32 +10480,633 @@
                 "value": "forceN"
               }
             ]
+          }
+        ]
+      },
+      "transformations": []
+    },
+    {
+      "id": 1053,
+      "type": "row",
+      "title": "Shear beams",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 143,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 1054,
+      "title": "FWD — shear beams",
+      "type": "timeseries",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 144,
+        "w": 12,
+        "h": 8
+      },
+      "description": "The four shear beams (R14–17), raw, in N. Dashed: R13, the calculated shear beam value. It should be torque in Nm, but reads as a force in N: on AFT about −0.43 N per Nm propeller torque, on FWD about 1.25× that.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
           },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(shear_beam_1__value) AS \"Beam 1\",\n  avg(shear_beam_2__value) AS \"Beam 2\",\n  avg(shear_beam_3__value) AS \"Beam 3\",\n  avg(shear_beam_4__value) AS \"Beam 4\",\n  avg(shear_beam_calculated__value) AS \"Calculated (R13)\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "forceN"
+        },
+        "overrides": [
           {
             "matcher": {
               "id": "byName",
-              "options": "Shear beam"
+              "options": "Beam 1"
             },
             "properties": [
               {
-                "id": "unit",
-                "value": "forceN"
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Shear beam calculated"
+              "options": "Beam 2"
             },
             "properties": [
               {
-                "id": "unit",
-                "value": "forceN"
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Beam 3"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Beam 4"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "purple"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Calculated (R13)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
               }
             ]
           }
         ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "interval": "10s",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(.*) Result \\d+$",
+            "renamePattern": "$1"
+          }
+        }
+      ]
+    },
+    {
+      "id": 1055,
+      "title": "AFT — shear beams",
+      "type": "timeseries",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 144,
+        "w": 12,
+        "h": 8
+      },
+      "description": "The four shear beams (R14–17), raw, in N. Dashed: R13, the calculated shear beam value. It should be torque in Nm, but reads as a force in N: on AFT about −0.43 N per Nm propeller torque, on FWD about 1.25× that.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(shear_beam_1__value) AS \"Beam 1\",\n  avg(shear_beam_2__value) AS \"Beam 2\",\n  avg(shear_beam_3__value) AS \"Beam 3\",\n  avg(shear_beam_4__value) AS \"Beam 4\",\n  avg(shear_beam_calculated__value) AS \"Calculated (R13)\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "forceN"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Beam 1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Beam 2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Beam 3"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Beam 4"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "purple"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Calculated (R13)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "interval": "10s",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(.*) Result \\d+$",
+            "renamePattern": "$1"
+          }
+        }
+      ]
+    },
+    {
+      "id": 1056,
+      "title": "FWD — shear beams, latest",
+      "type": "table",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 152,
+        "w": 12,
+        "h": 3
+      },
+      "description": "Latest shear beams (R14–17) and the calculated value (R13), raw, in N. R13 should be torque in Nm.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT shear_beam_1__value AS \"Beam 1\", shear_beam_2__value AS \"Beam 2\", shear_beam_3__value AS \"Beam 3\", shear_beam_4__value AS \"Beam 4\", shear_beam_calculated__value AS \"Calculated (R13)\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "forceN"
+        },
+        "overrides": []
+      },
+      "transformations": []
+    },
+    {
+      "id": 1057,
+      "title": "AFT — shear beams, latest",
+      "type": "table",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 152,
+        "w": 12,
+        "h": 3
+      },
+      "description": "Latest shear beams (R14–17) and the calculated value (R13), raw, in N. R13 should be torque in Nm.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT shear_beam_1__value AS \"Beam 1\", shear_beam_2__value AS \"Beam 2\", shear_beam_3__value AS \"Beam 3\", shear_beam_4__value AS \"Beam 4\", shear_beam_calculated__value AS \"Calculated (R13)\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE timestamp > now() - INTERVAL '1 minute' ORDER BY timestamp DESC LIMIT 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "forceN"
+        },
+        "overrides": []
       },
       "transformations": []
     },
@@ -9891,7 +11117,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 141,
+        "y": 155,
         "w": 24,
         "h": 1
       },
@@ -9907,7 +11133,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 142,
+        "y": 156,
         "w": 12,
         "h": 14
       },
@@ -10006,7 +11232,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 142,
+        "y": 156,
         "w": 12,
         "h": 14
       },
@@ -10102,7 +11328,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 156,
+        "y": 170,
         "w": 24,
         "h": 1
       },
@@ -10118,7 +11344,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 157,
+        "y": 171,
         "w": 12,
         "h": 14
       },
@@ -10724,7 +11950,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 157,
+        "y": 171,
         "w": 12,
         "h": 14
       },
@@ -11330,7 +12556,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 171,
+        "y": 185,
         "w": 12,
         "h": 10
       },
@@ -11682,7 +12908,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 171,
+        "y": 185,
         "w": 12,
         "h": 10
       },
@@ -12030,7 +13256,7 @@
       "type": "text",
       "gridPos": {
         "x": 0,
-        "y": 181,
+        "y": 195,
         "w": 12,
         "h": 3
       },
@@ -12052,7 +13278,7 @@
       "type": "text",
       "gridPos": {
         "x": 12,
-        "y": 181,
+        "y": 195,
         "w": 12,
         "h": 3
       },
