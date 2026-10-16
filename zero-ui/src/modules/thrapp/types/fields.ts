@@ -283,7 +283,7 @@ export type PIDController<
   controller: ModuleField<ControllerStateComponentType.PIDController>;
   measurement?: ModuleField<Type>;
   actuator?: ModuleField;
-  setpoint?: ModuleField<Parameter>;
+  target?: ModuleField<Parameter>;
   outputMinimum?: ModuleField<ParametersType>;
 };
 

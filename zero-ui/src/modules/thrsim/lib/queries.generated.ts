@@ -18,7 +18,7 @@ export const ADSORPTION_CONTROL_QUERY = `
 
 export const ADSORPTION_CONTROLLER_STATE_QUERY = `
   adsorptionHotMixController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -27,7 +27,7 @@ export const ADSORPTION_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   adsorptionRecoveryController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -36,7 +36,7 @@ export const ADSORPTION_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   adsorptionWasteCoolingController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -280,7 +280,7 @@ export const CONSUMERS_CONTROL_QUERY = `
 
 export const CONSUMERS_CONTROLLER_STATE_QUERY = `
   consumersAdsorptionFlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -289,7 +289,7 @@ export const CONSUMERS_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   consumersBypassFlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -298,7 +298,7 @@ export const CONSUMERS_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   consumersDhwFlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -492,7 +492,7 @@ export const DC_CONTROL_QUERY = `
 
 export const DC_CONTROLLER_STATE_QUERY = `
   dcBrightloopsAftPumpController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -501,7 +501,7 @@ export const DC_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   dcBrightloopsAftWarmupMixController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -510,7 +510,7 @@ export const DC_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   dcBrightloopsFwdPumpController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -519,7 +519,7 @@ export const DC_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   dcBrightloopsFwdWarmupMixController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -528,7 +528,7 @@ export const DC_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   dcHeatDumpController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -537,7 +537,7 @@ export const DC_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   dcRecoveryMixController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -546,7 +546,7 @@ export const DC_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   dcUgridsPumpController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -555,7 +555,7 @@ export const DC_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   dcUgridsWarmupMixController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -1240,7 +1240,7 @@ export const DHW_CONTROL_QUERY = `
 
 export const DHW_CONTROLLER_STATE_QUERY = `
   dhwDcFlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -1249,7 +1249,7 @@ export const DHW_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   dhwDrivesFlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -1258,7 +1258,7 @@ export const DHW_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   dhwPumpFlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -1705,7 +1705,7 @@ export const DRIVES_CONTROL_QUERY = `
 
 export const DRIVES_CONTROLLER_STATE_QUERY = `
   drivesAftFlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -1714,7 +1714,7 @@ export const DRIVES_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   drivesFwdFlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -1723,7 +1723,7 @@ export const DRIVES_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   drivesHeatDumpController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -1732,7 +1732,7 @@ export const DRIVES_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   drivesPumpControllerPropulsion {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -1741,7 +1741,7 @@ export const DRIVES_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   drivesPumpControllerShorepower {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -1750,7 +1750,7 @@ export const DRIVES_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   drivesRecoveryMixController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -2246,7 +2246,7 @@ export const PCM_CONTROLLER_STATE_QUERY = `
     chargeStatus { value timestamp }
   }
   pcmModule1FlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -2261,7 +2261,7 @@ export const PCM_CONTROLLER_STATE_QUERY = `
     chargeStatus { value timestamp }
   }
   pcmModule2FlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -2276,7 +2276,7 @@ export const PCM_CONTROLLER_STATE_QUERY = `
     chargeStatus { value timestamp }
   }
   pcmModule3FlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -2291,7 +2291,7 @@ export const PCM_CONTROLLER_STATE_QUERY = `
     chargeStatus { value timestamp }
   }
   pcmModule4FlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -2300,7 +2300,7 @@ export const PCM_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   pcmPumpFlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -2599,7 +2599,7 @@ export const PVT_CONTROL_QUERY = `
 
 export const PVT_CONTROLLER_STATE_QUERY = `
   pvtHeatDumpController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -2608,7 +2608,7 @@ export const PVT_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   pvtMainAftPumpController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -2617,7 +2617,7 @@ export const PVT_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   pvtMainAftWarmupMixController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -2626,7 +2626,7 @@ export const PVT_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   pvtMainFwdPumpController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -2635,7 +2635,7 @@ export const PVT_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   pvtMainFwdWarmupMixController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -2644,7 +2644,7 @@ export const PVT_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   pvtOwnersPumpController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -2653,7 +2653,7 @@ export const PVT_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   pvtOwnersWarmupMixController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -3491,7 +3491,7 @@ export const THRUSTERS_CONTROL_QUERY = `
 
 export const THRUSTERS_CONTROLLER_STATE_QUERY = `
   thrustersAftFlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -3500,7 +3500,7 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   thrustersAftRecoveryTemperatureController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -3509,7 +3509,7 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   thrustersFwdFlowController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -3518,7 +3518,7 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   thrustersFwdRecoveryTemperatureController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -3527,7 +3527,7 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   thrustersHeatDumpController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -3536,7 +3536,7 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   thrustersPumpController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }
@@ -3545,7 +3545,7 @@ export const THRUSTERS_CONTROLLER_STATE_QUERY = `
     components { value timestamp }
   }
   thrustersWarmupMixController {
-    setpoint { value timestamp }
+    target { value timestamp }
     measurement { value timestamp }
     output { value timestamp }
     error { value timestamp }

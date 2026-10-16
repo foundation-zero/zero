@@ -9,7 +9,7 @@ import {
 export const dcFlowController: PIDController<SensorComponentType.Temperature> = {
   type: SensorComponentType.Temperature,
   controller: getField(ControllerStateComponentType.PIDController, "dhw", "dhwDcFlowController"),
-  setpoint: getField(ParametersType.Temperature, "dhw", "fillingTemperatureSetpoint"),
+  target: getField(ParametersType.Temperature, "dhw", "fillingTemperatureSetpoint"),
   outputMinimum: getField(ParametersType.FlowControl, "dhw", "dcFlowcontrolMinimumSetpoint"),
 };
 
@@ -20,7 +20,7 @@ export const drivesFlowController: PIDController<SensorComponentType.Temperature
     "dhw",
     "dhwDrivesFlowController",
   ),
-  setpoint: getField(ParametersType.Temperature, "dhw", "fillingTemperatureSetpoint"),
+  target: getField(ParametersType.Temperature, "dhw", "fillingTemperatureSetpoint"),
   outputMinimum: getField(ParametersType.FlowControl, "dhw", "drivesFlowcontrolMinimumSetpoint"),
 };
 

@@ -10,7 +10,7 @@ export const pvtHeatDumpController: PIDController<SensorComponentType.Temperatur
   type: SensorComponentType.Temperature,
   controller: getField(ControllerStateComponentType.PIDController, "pvt", "pvtHeatDumpController"),
   measurement: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureSupply"),
-  setpoint: getField(ParametersType.Temperature, "pvt", "maximumSupplyTemperature"),
+  target: getField(ParametersType.Temperature, "pvt", "maximumSupplyTemperature"),
 };
 
 export const pvtMainFwdPumpController: PIDController<SensorComponentType.Temperature> = {
@@ -21,7 +21,7 @@ export const pvtMainFwdPumpController: PIDController<SensorComponentType.Tempera
     "pvtMainFwdPumpController",
   ),
   measurement: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainFwdReturn"),
-  setpoint: getField(ParametersType.Temperature, "pvt", "recoveryTemperature"),
+  target: getField(ParametersType.Temperature, "pvt", "recoveryTemperature"),
 };
 
 export const pvtMainAftPumpController: PIDController<SensorComponentType.Temperature> = {
@@ -32,7 +32,7 @@ export const pvtMainAftPumpController: PIDController<SensorComponentType.Tempera
     "pvtMainAftPumpController",
   ),
   measurement: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainAftReturn"),
-  setpoint: getField(ParametersType.Temperature, "pvt", "recoveryTemperature"),
+  target: getField(ParametersType.Temperature, "pvt", "recoveryTemperature"),
 };
 
 export const pvtOwnersPumpController: PIDController<SensorComponentType.Temperature> = {
@@ -43,7 +43,7 @@ export const pvtOwnersPumpController: PIDController<SensorComponentType.Temperat
     "pvtOwnersPumpController",
   ),
   measurement: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureOwnersReturn"),
-  setpoint: getField(ParametersType.Temperature, "pvt", "recoveryTemperature"),
+  target: getField(ParametersType.Temperature, "pvt", "recoveryTemperature"),
 };
 
 export const pvtMainFwdWarmupMixController: PIDController<SensorComponentType.Temperature> = {
@@ -54,7 +54,7 @@ export const pvtMainFwdWarmupMixController: PIDController<SensorComponentType.Te
     "pvtMainFwdWarmupMixController",
   ),
   measurement: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainFwdReturn"),
-  setpoint: getField(ParametersType.Temperature, "pvt", "warmupTemperature"),
+  target: getField(ParametersType.Temperature, "pvt", "warmupTemperature"),
 };
 
 export const pvtMainAftWarmupMixController: PIDController<SensorComponentType.Temperature> = {
@@ -65,7 +65,7 @@ export const pvtMainAftWarmupMixController: PIDController<SensorComponentType.Te
     "pvtMainAftWarmupMixController",
   ),
   measurement: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainAftReturn"),
-  setpoint: getField(ParametersType.Temperature, "pvt", "warmupTemperature"),
+  target: getField(ParametersType.Temperature, "pvt", "warmupTemperature"),
 };
 
 export const pvtOwnersWarmupMixController: PIDController<SensorComponentType.Temperature> = {
@@ -76,5 +76,5 @@ export const pvtOwnersWarmupMixController: PIDController<SensorComponentType.Tem
     "pvtOwnersWarmupMixController",
   ),
   measurement: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureOwnersReturn"),
-  setpoint: getField(ParametersType.Temperature, "pvt", "warmupTemperature"),
+  target: getField(ParametersType.Temperature, "pvt", "warmupTemperature"),
 };

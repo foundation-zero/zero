@@ -143,7 +143,7 @@ def _modules_get_flow_until(
             ):
                 is_exhausted = status is exhausted
                 assert flow_controller.enabled.value is not is_exhausted
-                assert flow_controller.setpoint.value == (0 if is_exhausted else flow)
+                assert flow_controller.target.value == (0 if is_exhausted else flow)
         previous_statuses[:] = [
             PcmChargeStatus(charge_controller.charge_status.value)
             for charge_controller in _charge_controllers(controller_state)
@@ -280,7 +280,7 @@ def test_stalled_module_is_dropped_and_charging_retried_after_lockout(
         flow_controller.enabled.value
         for flow_controller in _flow_controllers(controller_state)
     ] == [False, True, True, True]
-    assert controller_state.pcm_module1_flow_controller.setpoint.value == 0
+    assert controller_state.pcm_module1_flow_controller.target.value == 0
 
     runner.run_until(lambda *_: control.mode.is_idle, within=timedelta(minutes=30))
     for _ in runner.ticks_for(
@@ -346,7 +346,7 @@ def test_supplying_from_charged_modules(
                 Valve.OPEN,
             ]
             assert [
-                flow_controller.setpoint.value
+                flow_controller.target.value
                 for flow_controller in _flow_controllers(controller_state)
             ] == [discharge_flow] * 4
 

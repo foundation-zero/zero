@@ -65,7 +65,7 @@ PCM_MODULE_PURGE_VOLUME: Liter = PCM_EXCHANGER_BC_VOLUME + PCM_EXCHANGER_AD_VOLU
 class PidControllerValues(
     ThrsValues
 ):  # Not using generics here for strawberry compatibility.
-    setpoint: Stamped[float]
+    target: Stamped[float]
     measurement: Stamped[float | None]
     output: Stamped[float | None]
     error: Stamped[float | None]

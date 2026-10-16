@@ -291,7 +291,7 @@ type ControllerPcmChargeControllerValuesType {
 }
 
 type ControllerPidControllerValuesType {
-  setpoint: FloatStampedType!
+  target: FloatStampedType!
   measurement: FloatOptionalStampedType!
   output: FloatOptionalStampedType!
   error: FloatOptionalStampedType!

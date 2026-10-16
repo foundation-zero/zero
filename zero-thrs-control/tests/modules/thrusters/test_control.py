@@ -8,12 +8,17 @@ from thrs.control.modules.thrusters import (
     RECOVERY_MIX_LOWER_BOUND,
     RECOVERY_MIX_UPPER_BOUND,
     ThrustersControl,
+    ThrustersControllerState,
 )
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.simulation import Pcs, Thruster
 from thrs.input_output.definitions.units import PcsMode
-from thrs.input_output.modules.thrusters import ThrustersSimulationInputs
+from thrs.input_output.modules.thrusters import (
+    ThrustersControlValues,
+    ThrustersSensorValues,
+    ThrustersSimulationInputs,
+)
 
 OFF = Thruster(heat_flow=Stamped.stamp(0))
 
@@ -57,12 +62,16 @@ def test_idle(runner: ThrustersRunner, simulation_inputs: ThrustersSimulationInp
 def test_warmup_until_mix_opens(runner: ThrustersRunner, control: ThrustersControl):
     minimum_flow = control.parameters.thrusters_minimum_flow
 
-    def check_warmup(sensor_values, control_values, controller_state):
+    def check_warmup(
+        sensor_values: ThrustersSensorValues,
+        control_values: ThrustersControlValues,
+        controller_state: ThrustersControllerState,
+    ):
         if control.mode.is_warmup:
-            assert controller_state.thrusters_aft_flow_controller.setpoint.value == (
+            assert controller_state.thrusters_aft_flow_controller.target.value == (
                 minimum_flow
             )
-            assert controller_state.thrusters_fwd_flow_controller.setpoint.value == (
+            assert controller_state.thrusters_fwd_flow_controller.target.value == (
                 minimum_flow
             )
             assert not (
@@ -179,10 +188,10 @@ def test_recovery_falls_back_to_warmup(
     assert control_values.thrusters_mix_recovery.setpoint.value < (
         RECOVERY_MIX_LOWER_BOUND
     )
-    assert controller_state.thrusters_aft_flow_controller.setpoint.value == (
+    assert controller_state.thrusters_aft_flow_controller.target.value == (
         control.parameters.thrusters_minimum_flow
     )
-    assert controller_state.thrusters_fwd_flow_controller.setpoint.value == (
+    assert controller_state.thrusters_fwd_flow_controller.target.value == (
         control.parameters.thrusters_minimum_flow
     )
     assert not (
@@ -366,15 +375,19 @@ def test_cooldown(
         _with_thrusters(simulation_inputs, PcsMode.OFF, aft=OFF, fwd=OFF)
     )
 
-    def check_cooldown(_, control_values, controller_state):
+    def check_cooldown(
+        _,
+        control_values: ThrustersControlValues,
+        controller_state: ThrustersControllerState,
+    ):
         if control.mode.mode == "cooldown":
             assert control_values.thrusters_mix_recovery.setpoint.value == (
                 Valve.MIXING_B_TO_AB
             )
-            assert controller_state.thrusters_aft_flow_controller.setpoint.value == (
+            assert controller_state.thrusters_aft_flow_controller.target.value == (
                 control.parameters.cooling_flow
             )
-            assert controller_state.thrusters_fwd_flow_controller.setpoint.value == (
+            assert controller_state.thrusters_fwd_flow_controller.target.value == (
                 control.parameters.cooling_flow
             )
 
