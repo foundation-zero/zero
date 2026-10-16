@@ -30,7 +30,7 @@ const { labels } = useTranslations();
       <SensorGraph
         :device="tooltip?.technicalName"
         type="heat_transfers"
-        field="heat"
+        :field="['heat', 'flow', 'delta_t']"
       />
     </TooltipList>
 

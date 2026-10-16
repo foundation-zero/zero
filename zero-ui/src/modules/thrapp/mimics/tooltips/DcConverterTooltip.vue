@@ -44,7 +44,7 @@ const modeKey = useDcMode(props.custom.group);
       <SensorGraph
         :device="tooltip?.technicalName ? `${tooltip.technicalName}-heat` : undefined"
         type="heat_transfers"
-        field="heat"
+        :field="['heat', 'flow', 'delta_t']"
       />
       <Partials.ManualControl />
     </TooltipList>
