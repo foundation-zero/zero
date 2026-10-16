@@ -106,6 +106,77 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
             "thrusters-pcm-heat",
         ),
     },
+    "pid_controllers": {
+        "adsorption": (
+            "adsorption-hot-mix-controller",
+            "adsorption-recovery-controller",
+            "adsorption-waste-cooling-controller",
+        ),
+        "consumers": (
+            "consumers-dhw-flow-controller",
+            "consumers-bypass-flow-controller",
+            "consumers-adsorption-flow-controller",
+        ),
+        "dc": (
+            "dc-heat-dump-controller",
+            "dc-recovery-mix-controller",
+            "dc-brightloops-aft-pump-controller",
+            "dc-brightloops-aft-warmup-mix-controller",
+            "dc-brightloops-fwd-pump-controller",
+            "dc-brightloops-fwd-warmup-mix-controller",
+            "dc-ugrids-pump-controller",
+            "dc-ugrids-warmup-mix-controller",
+        ),
+        "dhw": (
+            "dhw-pump-flow-controller",
+            "dhw-drives-flow-controller",
+            "dhw-dc-flow-controller",
+        ),
+        "drives": (
+            "drives-heat-dump-controller",
+            "drives-recovery-mix-controller",
+            "drives-pump-controller-shorepower",
+            "drives-pump-controller-propulsion",
+            "drives-aft-flow-controller",
+            "drives-fwd-flow-controller",
+        ),
+        "pcm": (
+            "pcm-pump-flow-controller",
+            "pcm-module1-flow-controller",
+            "pcm-module2-flow-controller",
+            "pcm-module3-flow-controller",
+            "pcm-module4-flow-controller",
+        ),
+        "pvt": (
+            "pvt-heat-dump-controller",
+            "pvt-main-aft-warmup-mix-controller",
+            "pvt-main-aft-pump-controller",
+            "pvt-main-fwd-warmup-mix-controller",
+            "pvt-main-fwd-pump-controller",
+            "pvt-owners-warmup-mix-controller",
+            "pvt-owners-pump-controller",
+        ),
+        "thrusters": (
+            "thrusters-heat-dump-controller",
+            "thrusters-warmup-mix-controller",
+            "thrusters-pump-controller",
+            "thrusters-aft-recovery-temperature-controller",
+            "thrusters-fwd-recovery-temperature-controller",
+            "thrusters-aft-flow-controller",
+            "thrusters-fwd-flow-controller",
+        ),
+    },
+    "tank_controller": {
+        "dhw": ("dhw-tanks-controller",),
+    },
+    "pcm_charger": {
+        "pcm": (
+            "pcm-module1-charge-controller",
+            "pcm-module2-charge-controller",
+            "pcm-module3-charge-controller",
+            "pcm-module4-charge-controller",
+        ),
+    },
 }
 
 
