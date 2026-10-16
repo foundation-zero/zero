@@ -468,6 +468,7 @@
         "speed": "Speed",
         "powerInput": "Power input",
         "energyConsumption": "Energy consumption",
+        "irradiance": "Irradiance",
         "pressure": "Pressure",
         "relativeDutyPoint": "Dutypoint",
         "onOff": "On-off",

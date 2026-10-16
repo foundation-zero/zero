@@ -1,18 +1,23 @@
 <script setup lang="ts">
-import { ExpansionTank } from "../../../components/expansion-tank";
-import { ExpansionValve } from "../../../components/expansion-valve";
-import { TagLabelInstance } from "../../../instances";
+import {
+  ExpansionTankInstance,
+  ExpansionValveInstance,
+  TagLabelInstance,
+} from "../../../instances";
+import { THRUSTERS_EXPANSION_TANK_DATA, THRUSTERS_EXPANSION_VALVE_DATA } from "../data";
 </script>
 
 <template>
-  <ExpansionTank
+  <ExpansionTankInstance
     x="1108"
     y="135"
+    v-bind="THRUSTERS_EXPANSION_TANK_DATA.ExpansionTank['1092']"
   />
 
-  <ExpansionValve
+  <ExpansionValveInstance
     x="1050"
     y="108"
+    v-bind="THRUSTERS_EXPANSION_VALVE_DATA.ExpansionValve['1041-04']"
   />
   <TagLabelInstance
     :target-x="1050"
