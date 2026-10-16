@@ -71,6 +71,20 @@ LoadAlarm: TypeAlias = Annotated[
     VariableMeta(unit="bool", name="max_load_alarm", type="alarm", alarm_for="load"),
 ]
 
+LoadPinLoad: TypeAlias = Annotated[Load, Field(validation_alias="st_LoadLc/i_Load")]
+
+LoadPinMaxLoad: TypeAlias = Annotated[
+    MaxLoad, Field(validation_alias="st_LoadLc/i_MaxLoadSetting")
+]
+
+LoadPinLoadFailure: TypeAlias = Annotated[
+    LoadFailure, Field(validation_alias="st_LoadLc/x_Failure")
+]
+
+LoadPinLoadAlarm: TypeAlias = Annotated[
+    LoadAlarm, Field(validation_alias="st_LoadLc/x_MaxLimitReached")
+]
+
 RelativePosition: TypeAlias = Annotated[
     BaseRelativePosition,
     Field(validation_alias="st_position/i_Position_permille"),
@@ -88,11 +102,25 @@ Position: TypeAlias = Annotated[
     VariableMeta(name="position"),
 ]
 
+PositionFailure: TypeAlias = Annotated[
+    BaseAlarm,
+    Field(validation_alias="st_position/x_Failure"),
+    VariableMeta(
+        unit="bool",
+        name="position_sensor_failure",
+        type="alarm",
+        alarm_for="relative_position",
+    ),
+]
+
 MaxPositionAlarm: TypeAlias = Annotated[
     BaseAlarm,
     Field(validation_alias="st_position/x_MaxLimitReached"),
     VariableMeta(
-        name="max-position-alarm", type="alarm", alarm_for="relative_position"
+        name="max-position-alarm",
+        type="alarm",
+        alarm_for="relative_position",
+        value_from="position",
     ),
 ]
 
@@ -100,29 +128,22 @@ MinPositionAlarm: TypeAlias = Annotated[
     BaseAlarm,
     Field(validation_alias="st_position/x_MinLimitReached"),
     VariableMeta(
-        name="min-position-alarm", type="alarm", alarm_for="relative_position"
+        name="min-position-alarm",
+        type="alarm",
+        alarm_for="relative_position",
+        value_from="position",
     ),
 ]
 
 MaxPosition: TypeAlias = Annotated[
     BaseMaxPosition,
     Field(validation_alias="st_position/i_MaxPosition"),
-    BeforeValidator(per_mille_to_ratio),
-    ScalingMeta(
-        conversion=per_mille_to_ratio,
-        inverse_conversion=ratio_to_per_mille,
-    ),
     VariableMeta(threshold_for="max_position_alarm"),
 ]
 
 MinPosition: TypeAlias = Annotated[
     BaseMinPosition,
     Field(validation_alias="st_position/i_MinPosition"),
-    BeforeValidator(per_mille_to_ratio),
-    ScalingMeta(
-        conversion=per_mille_to_ratio,
-        inverse_conversion=ratio_to_per_mille,
-    ),
     VariableMeta(threshold_for="min_position_alarm"),
 ]
 
@@ -133,8 +154,6 @@ class PrimaryWinchPs(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Primary PT",
-            applies_to_tack="port",
-            variable_key="primary-winch-load",
         ),
     ]
     load_failure: LoadFailure
@@ -148,8 +167,6 @@ class PrimaryWinchSb(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Primary SB",
-            applies_to_tack="starboard",
-            variable_key="primary-winch-load",
         ),
     ]
     load_failure: LoadFailure
@@ -163,8 +180,6 @@ class AftWinchPs(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Aft Winch PT",
-            applies_to_tack="port",
-            variable_key="aft-winch-load",
         ),
     ]
     load_failure: LoadFailure
@@ -178,8 +193,6 @@ class AftWinchSb(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Aft Winch SB",
-            applies_to_tack="starboard",
-            variable_key="aft-winch-load",
         ),
     ]
     load_failure: LoadFailure
@@ -193,6 +206,24 @@ class BladeAdjuster(LoadsModel, ABC):
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    headstay_combined_load: Annotated[
+        Load,
+        Field(validation_alias="i_ActualLoad2"),
+        VariableMeta(
+            name="headstay_combined_load",
+            display_name="Headstay Comb",
+            technical_name="main-headstay-combined-load",
+        ),
+    ]
+    # TODO: Confirm this alarm and add its max load setting once the max loads sheet is finished.
+    headstay_combined_load_alarm: Annotated[
+        LoadAlarm,
+        Field(validation_alias="ox_LoadAlarm"),
+        VariableMeta(
+            name="headstay_combined_max_load_alarm",
+            alarm_for="headstay_combined_load",
+        ),
+    ]
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
@@ -201,6 +232,8 @@ class BladeAdjuster(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -229,6 +262,22 @@ class BladeCunningham(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position_ps_failure: Annotated[
+        PositionFailure,
+        Field(validation_alias="st_positionPs/x_Failure"),
+        VariableMeta(
+            name="position-ps-sensor-failure",
+            display_name="Blade Cunningham PT Position Failure",
+        ),
+    ]
+    position_sb_failure: Annotated[
+        PositionFailure,
+        Field(validation_alias="st_positionSb/x_Failure"),
+        VariableMeta(
+            name="position-sb-sensor-failure",
+            display_name="Blade Cunningham SB Position Failure",
+        ),
+    ]
 
 
 class BladeSheetFeederPs(LoadsModel, ABC):
@@ -237,8 +286,7 @@ class BladeSheetFeederPs(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Sheet PT",
-            applies_to_tack="port",
-            variable_key="blade-sheet-feeder-load",
+            technical_name="blade-sheet-ps-load",
         ),
     ]
     load_failure: LoadFailure
@@ -252,8 +300,7 @@ class BladeSheetFeederSb(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Sheet SB",
-            applies_to_tack="starboard",
-            variable_key="blade-sheet-feeder-load",
+            technical_name="blade-sheet-sb-load",
         ),
     ]
     load_failure: LoadFailure
@@ -267,8 +314,6 @@ class BladeTweakerPs(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Tweaker PT",
-            applies_to_tack="port",
-            variable_key="blade-tweaker-load",
         ),
     ]
     load_failure: LoadFailure
@@ -280,10 +325,10 @@ class BladeTweakerPs(LoadsModel, ABC):
             display_name="Tweaker PT",
             scale_min_label="out",
             scale_max_label="in",
-            applies_to_tack="port",
-            variable_key="blade-tweaker-relative-position",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -296,8 +341,6 @@ class BladeTweakerSb(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Tweaker SB",
-            applies_to_tack="starboard",
-            variable_key="blade-tweaker-load",
         ),
     ]
     load_failure: LoadFailure
@@ -309,10 +352,10 @@ class BladeTweakerSb(LoadsModel, ABC):
             display_name="Tweaker SB",
             scale_min_label="out",
             scale_max_label="in",
-            applies_to_tack="starboard",
-            variable_key="blade-tweaker-relative-position",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -337,22 +380,27 @@ class CodeZeroTack(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position_ps_failure: Annotated[
+        PositionFailure,
+        Field(validation_alias="st_positionPs/x_Failure"),
+        VariableMeta(
+            name="position-ps-sensor-failure",
+            display_name="Code Zero Tack PT Position Failure",
+        ),
+    ]
+    position_sb_failure: Annotated[
+        PositionFailure,
+        Field(validation_alias="st_positionSb/x_Failure"),
+        VariableMeta(
+            name="position-sb-sensor-failure",
+            display_name="Code Zero Tack SB Position Failure",
+        ),
+    ]
 
 
 class A2Tack(LoadsModel, ABC):
     TOPIC = "sail-systems/a2-tack-placeholder"
     load: Annotated[Load, VariableMeta(display_name="Tack")]
-    load_failure: LoadFailure
-    load_alarm: LoadAlarm
-    max_load: MaxLoad
-
-
-class MainHeadstayCombined(LoadsModel, ABC):
-    TOPIC = "sail-systems/combined-headstay-placeholder"
-    load: Annotated[
-        Load,
-        VariableMeta(display_name="Headstay Comb"),
-    ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
@@ -547,7 +595,11 @@ class Mast(LoadsModel, ABC):
     storm_jib_load: Annotated[
         Load,
         Field(validation_alias="StormSailFurlerLoad/i_Load"),
-        VariableMeta(name="storm_jib_load", display_name="Tack"),
+        VariableMeta(
+            name="storm_jib_load",
+            display_name="Tack",
+            technical_name="storm-jib-tack-load",
+        ),
     ]
     storm_jib_load_failure: Annotated[
         LoadFailure,
@@ -565,6 +617,25 @@ class Mast(LoadsModel, ABC):
         VariableMeta(threshold_for="storm_jib_load_alarm"),
     ]
 
+    main_compression: Annotated[
+        Load,
+        Field(validation_alias="i_MainMastLoadShim"),
+        VariableMeta(
+            name="main_compression",
+            display_name="Compression",
+            technical_name="main-mast-compression-load",
+        ),
+    ]
+    mizzen_compression: Annotated[
+        Load,
+        Field(validation_alias="i_MzznMastLoadShim"),
+        VariableMeta(
+            name="mizzen_compression",
+            display_name="Compression",
+            technical_name="mizzen-mast-compression-load",
+        ),
+    ]
+
 
 class MainCheckstay(LoadsModel, ABC):
     TOPIC = "sail-systems/f0203-main-checkstay-deflector"
@@ -577,16 +648,28 @@ class MainCheckstay(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    deflector_position: Annotated[Position, VariableMeta(name="deflector-position")]
+    deflector_position_failure: Annotated[
+        PositionFailure,
+        VariableMeta(
+            name="deflector-position-sensor-failure",
+            alarm_for="deflector_relative_position",
+        ),
+    ]
     deflector_max_position_alarm: Annotated[
         MaxPositionAlarm,
         VariableMeta(
-            name="deflector-max-position-alarm", alarm_for="deflector_relative_position"
+            name="deflector-max-position-alarm",
+            alarm_for="deflector_relative_position",
+            value_from="deflector_position",
         ),
     ]
     deflector_min_position_alarm: Annotated[
         MinPositionAlarm,
         VariableMeta(
-            name="deflector-min-position-alarm", alarm_for="deflector_relative_position"
+            name="deflector-min-position-alarm",
+            alarm_for="deflector_relative_position",
+            value_from="deflector_position",
         ),
     ]
     deflector_max_position: Annotated[
@@ -599,33 +682,17 @@ class MainCheckstay(LoadsModel, ABC):
     ]
     deflector_load: Annotated[
         Load,
+        Field(validation_alias="i_Load"),
         VariableMeta(name="deflector-load", display_name="Deflector"),
     ]
-    deflector_load_failure: Annotated[
-        LoadFailure,
-        Field(validation_alias="st_Load/x_Failure"),
-        VariableMeta(
-            name="deflector-load-failure",
-            display_name="Main Deflector Load Failure",
-            alarm_for="deflector_load",
-        ),
-    ]
+    # TODO: Confirm this alarm and add its max load setting once the max loads sheet is finished.
     deflector_load_alarm: Annotated[
         LoadAlarm,
-        Field(validation_alias="st_Load/x_MaxLimitReached"),
+        Field(validation_alias="ox_LoadAlarm"),
         VariableMeta(
             name="deflector-load-alarm",
             display_name="Main Deflector Load Alarm",
             alarm_for="deflector_load",
-        ),
-    ]
-    deflector_max_load: Annotated[
-        MaxLoad,
-        Field(validation_alias="st_Load/i_MaxLoadSetting"),
-        VariableMeta(
-            name="deflector-max-load",
-            display_name="Main Deflector Max Load",
-            threshold_for="deflector_load_alarm",
         ),
     ]
 
@@ -635,8 +702,6 @@ class MainCheckstay(LoadsModel, ABC):
         VariableMeta(
             name="ps-load",
             display_name="Checkstay PT",
-            applies_to_tack="port",
-            variable_key="main-checkstay-load",
         ),
     ]
     load_ps_failure: Annotated[
@@ -681,8 +746,6 @@ class MainCheckstay(LoadsModel, ABC):
         VariableMeta(
             name="sb-load",
             display_name="Checkstay SB",
-            applies_to_tack="starboard",
-            variable_key="main-checkstay-load",
         ),
     ]
     max_load_sb: Annotated[
@@ -722,6 +785,8 @@ class MainCunningham(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -738,6 +803,7 @@ class MainHalyard(LoadsModel, ABC):
 
 class MainOuthaul(LoadsModel, ABC):
     TOPIC = "sail-systems/f0201-main-outhaul"
+    # TODO: Read the load pin in the boom (st_LoadLc) once the PLC publishes it, as the IO list does.
     load: Annotated[
         Load,
         VariableMeta(display_name="Outhaul"),
@@ -751,6 +817,8 @@ class MainOuthaul(LoadsModel, ABC):
             display_name="Outhaul", scale_min_label="out", scale_max_label="in"
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -760,12 +828,12 @@ class MainOuthaul(LoadsModel, ABC):
 class MainPreventer(LoadsModel, ABC):
     TOPIC = "sail-systems/f0204-main-boom-preventer"
     load: Annotated[
-        Load,
+        LoadPinLoad,
         VariableMeta(display_name="Preventer"),
     ]
-    load_failure: LoadFailure
-    load_alarm: LoadAlarm
-    max_load: MaxLoad
+    load_failure: LoadPinLoadFailure
+    load_alarm: LoadPinLoadAlarm
+    max_load: LoadPinMaxLoad
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
@@ -774,6 +842,8 @@ class MainPreventer(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -785,14 +855,31 @@ class MainRunnerPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         VariableMeta(
-            display_name="Runner PT",
-            applies_to_tack="port",
-            variable_key="main-runner-load",
+            display_name="Runner Tail PT",
+            technical_name="main-runner-tail-ps-load",
         ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    stay_load: Annotated[
+        Load,
+        Field(validation_alias="i_stayLoad"),
+        VariableMeta(
+            name="stay_load",
+            display_name="Runner Stay PT",
+            technical_name="main-runner-stay-ps-load",
+        ),
+    ]
+    block_load: Annotated[
+        Load,
+        Field(validation_alias="i_blockLoad"),
+        VariableMeta(
+            name="block_load",
+            display_name="Runner Block PT",
+            technical_name="main-runner-block-ps-load",
+        ),
+    ]
 
 
 class MainRunnerSb(LoadsModel, ABC):
@@ -800,18 +887,36 @@ class MainRunnerSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         VariableMeta(
-            display_name="Runner SB",
-            applies_to_tack="starboard",
-            variable_key="main-runner-load",
+            display_name="Runner Tail SB",
+            technical_name="main-runner-tail-sb-load",
         ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    stay_load: Annotated[
+        Load,
+        Field(validation_alias="i_stayLoad"),
+        VariableMeta(
+            name="stay_load",
+            display_name="Runner Stay SB",
+            technical_name="main-runner-stay-sb-load",
+        ),
+    ]
+    block_load: Annotated[
+        Load,
+        Field(validation_alias="i_blockLoad"),
+        VariableMeta(
+            name="block_load",
+            display_name="Runner Block SB",
+            technical_name="main-runner-block-sb-load",
+        ),
+    ]
 
 
 class MainSheet(LoadsModel, ABC):
     TOPIC = "sail-systems/fe205-main-sheet-captive-winch"
+    # TODO: Read the sheet load (i_sheetLoad) once the PLC publishes it, as the IO list does.
     load: Annotated[
         Load,
         VariableMeta(display_name="Sheet"),
@@ -842,6 +947,8 @@ class MainVang(LoadsModel, ABC):
         RelativePosition,
         VariableMeta(display_name="Vang", scale_min_label="out", scale_max_label="in"),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -862,7 +969,7 @@ class MainTraveller(LoadsModel, ABC):
         ),
     ]
     inner_limit_alarm: Annotated[
-        MinPositionAlarm,
+        BaseAlarm,
         Field(validation_alias="xInnerLimit"),
         VariableMeta(
             name="inner-limit-alarm",
@@ -871,7 +978,7 @@ class MainTraveller(LoadsModel, ABC):
         ),
     ]
     outer_limit_alarm: Annotated[
-        MaxPositionAlarm,
+        BaseAlarm,
         Field(validation_alias="xOuterLimit"),
         VariableMeta(
             name="outer-limit-alarm",
@@ -892,6 +999,14 @@ class MizzenCheckstay(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    deflector_position: Annotated[Position, VariableMeta(name="deflector-position")]
+    deflector_position_failure: Annotated[
+        PositionFailure,
+        VariableMeta(
+            name="deflector-position-sensor-failure",
+            alarm_for="deflector_relative_position",
+        ),
+    ]
     deflector_max_position_alarm: Annotated[
         MaxPositionAlarm,
         Field(validation_alias="st_position/x_MaxLimitReached"),
@@ -899,6 +1014,7 @@ class MizzenCheckstay(LoadsModel, ABC):
             name="deflector-max-position-alarm",
             display_name="Mizzen Deflector Max Position Alarm",
             alarm_for="deflector_relative_position",
+            value_from="deflector_position",
         ),
     ]
     deflector_min_position_alarm: Annotated[
@@ -908,6 +1024,7 @@ class MizzenCheckstay(LoadsModel, ABC):
             name="deflector-min-position-alarm",
             display_name="Mizzen Deflector Min Position Alarm",
             alarm_for="deflector_relative_position",
+            value_from="deflector_position",
         ),
     ]
     deflector_max_position: Annotated[
@@ -921,33 +1038,17 @@ class MizzenCheckstay(LoadsModel, ABC):
 
     deflector_load: Annotated[
         Load,
+        Field(validation_alias="i_Load"),
         VariableMeta(name="deflector-load", display_name="Deflector"),
     ]
-    deflector_load_failure: Annotated[
-        LoadFailure,
-        Field(validation_alias="st_Load/x_Failure"),
-        VariableMeta(
-            name="deflector-load-failure",
-            display_name="Mizzen Deflector Load Failure",
-            alarm_for="deflector_load",
-        ),
-    ]
+    # TODO: Confirm this alarm and add its max load setting once the max loads sheet is finished.
     deflector_load_alarm: Annotated[
         LoadAlarm,
-        Field(validation_alias="st_Load/x_MaxLimitReached"),
+        Field(validation_alias="ox_LoadAlarm"),
         VariableMeta(
             name="deflector-load-alarm",
             display_name="Mizzen Deflector Load Alarm",
             alarm_for="deflector_load",
-        ),
-    ]
-    deflector_max_load: Annotated[
-        MaxLoad,
-        Field(validation_alias="st_Load/i_MaxLoadSetting"),
-        VariableMeta(
-            name="deflector-max-load",
-            display_name="Mizzen Deflector Max Load",
-            threshold_for="deflector_load_alarm",
         ),
     ]
 
@@ -957,8 +1058,6 @@ class MizzenCheckstay(LoadsModel, ABC):
         VariableMeta(
             name="ps-load",
             display_name="Checkstay PT",
-            applies_to_tack="port",
-            variable_key="mizzen-checkstay-load",
         ),
     ]
     load_ps_failure: Annotated[
@@ -1003,8 +1102,6 @@ class MizzenCheckstay(LoadsModel, ABC):
         VariableMeta(
             name="sb-load",
             display_name="Checkstay SB",
-            applies_to_tack="starboard",
-            variable_key="mizzen-checkstay-load",
         ),
     ]
     max_load_sb: Annotated[
@@ -1042,6 +1139,8 @@ class MizzenCunningham(LoadsModel, ABC):
             display_name="Cunningham", scale_min_label="out", scale_max_label="in"
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -1073,6 +1172,8 @@ class MizzenHeadsailTackAdjuster(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -1081,6 +1182,7 @@ class MizzenHeadsailTackAdjuster(LoadsModel, ABC):
 
 class MizzenOuthaul(LoadsModel, ABC):
     TOPIC = "sail-systems/f0501-mizzen-outhaul"
+    # TODO: Read the load pin in the boom (st_LoadLc) once the PLC publishes it, as the IO list does.
     load: Annotated[
         Load,
         VariableMeta(display_name="Outhaul"),
@@ -1094,6 +1196,8 @@ class MizzenOuthaul(LoadsModel, ABC):
             display_name="Outhaul", scale_min_label="out", scale_max_label="in"
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -1103,12 +1207,12 @@ class MizzenOuthaul(LoadsModel, ABC):
 class MizzenPreventer(LoadsModel, ABC):
     TOPIC = "sail-systems/f0506-mizzen-boom-preventer"
     load: Annotated[
-        Load,
+        LoadPinLoad,
         VariableMeta(display_name="Preventer"),
     ]
-    load_failure: LoadFailure
-    load_alarm: LoadAlarm
-    max_load: MaxLoad
+    load_failure: LoadPinLoadFailure
+    load_alarm: LoadPinLoadAlarm
+    max_load: LoadPinMaxLoad
     relative_position: Annotated[
         RelativePosition,
         VariableMeta(
@@ -1117,6 +1221,8 @@ class MizzenPreventer(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -1128,14 +1234,31 @@ class MizzenRunnerPs(LoadsModel, ABC):
     load: Annotated[
         Load,
         VariableMeta(
-            display_name="Runner PT",
-            applies_to_tack="port",
-            variable_key="mizzen-runner-load",
+            display_name="Runner Tail PT",
+            technical_name="mizzen-runner-tail-ps-load",
         ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    stay_load: Annotated[
+        Load,
+        Field(validation_alias="i_stayLoad"),
+        VariableMeta(
+            name="stay_load",
+            display_name="Runner Stay PT",
+            technical_name="mizzen-runner-stay-ps-load",
+        ),
+    ]
+    block_load: Annotated[
+        Load,
+        Field(validation_alias="i_blockLoad"),
+        VariableMeta(
+            name="block_load",
+            display_name="Runner Block PT",
+            technical_name="mizzen-runner-block-ps-load",
+        ),
+    ]
 
 
 class MizzenRunnerSb(LoadsModel, ABC):
@@ -1143,14 +1266,31 @@ class MizzenRunnerSb(LoadsModel, ABC):
     load: Annotated[
         Load,
         VariableMeta(
-            display_name="Runner SB",
-            applies_to_tack="starboard",
-            variable_key="mizzen-runner-load",
+            display_name="Runner Tail SB",
+            technical_name="mizzen-runner-tail-sb-load",
         ),
     ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    stay_load: Annotated[
+        Load,
+        Field(validation_alias="i_stayLoad"),
+        VariableMeta(
+            name="stay_load",
+            display_name="Runner Stay SB",
+            technical_name="mizzen-runner-stay-sb-load",
+        ),
+    ]
+    block_load: Annotated[
+        Load,
+        Field(validation_alias="i_blockLoad"),
+        VariableMeta(
+            name="block_load",
+            display_name="Runner Block SB",
+            technical_name="mizzen-runner-block-sb-load",
+        ),
+    ]
 
 
 class MizzenSheet(LoadsModel, ABC):
@@ -1185,6 +1325,8 @@ class MizzenVang(LoadsModel, ABC):
         RelativePosition,
         VariableMeta(display_name="Vang", scale_min_label="out", scale_max_label="in"),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition
@@ -1197,8 +1339,7 @@ class StaysailSheetFeederPs(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Sheet PT",
-            applies_to_tack="port",
-            variable_key="staysail-sheet-feeder-load",
+            technical_name="staysail-sheet-ps-load",
         ),
     ]
     load_failure: LoadFailure
@@ -1212,8 +1353,7 @@ class StaysailSheetFeederSb(LoadsModel, ABC):
         Load,
         VariableMeta(
             display_name="Sheet SB",
-            applies_to_tack="starboard",
-            variable_key="staysail-sheet-feeder-load",
+            technical_name="staysail-sheet-sb-load",
         ),
     ]
     load_failure: LoadFailure
@@ -1238,6 +1378,8 @@ class StaysailStayAdjuster(LoadsModel, ABC):
             scale_max_label="in",
         ),
     ]
+    position: Position
+    position_failure: PositionFailure
     max_position_alarm: MaxPositionAlarm
     min_position_alarm: MinPositionAlarm
     max_position: MaxPosition

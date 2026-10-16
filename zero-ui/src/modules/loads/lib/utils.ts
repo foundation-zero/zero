@@ -1,6 +1,21 @@
 import { formatFixed, formatInt } from "@/modules/common/lib/utils";
 import { NumRangeId, Range, ReferenceThresholds, VariableState, VariableUnit } from "../types";
 
+export const getLoadFractionDigits = (value: number): number =>
+  Math.abs(Number(value.toFixed(2))) < 1 ? 2 : 1;
+
+export const splitLoad = (value: number) => {
+  const fractionDigits = getLoadFractionDigits(value);
+  const [integer, fraction] = Math.abs(value).toFixed(fractionDigits).split(".");
+
+  return {
+    sign: Number(value.toFixed(fractionDigits)) < 0 ? "-" : "",
+    integer: Number(integer),
+    fraction: Number(fraction),
+    fractionDigits,
+  };
+};
+
 export const formatLoad = (value: number | undefined | null, type: VariableUnit): string => {
   if (value == undefined) return "-";
 
@@ -9,19 +24,19 @@ export const formatLoad = (value: number | undefined | null, type: VariableUnit)
     return formatInt(value * 100);
   }
 
-  return formatFixed(1, value);
-};
+  if (type === VariableUnit.Mm) {
+    return formatInt(value);
+  }
 
-export const formatLoadFn = (type: VariableUnit) => (value: number | undefined | null) => {
-  if (value == undefined) return "-";
-
-  if (type === VariableUnit.Ratio) {
-    // Values from backend are ratios
-    return formatInt(value * 100);
+  if (type === VariableUnit.Tonne) {
+    return formatFixed(getLoadFractionDigits(value), value);
   }
 
   return formatFixed(1, value);
 };
+
+export const formatLoadFn = (type: VariableUnit) => (value: number | undefined | null) =>
+  formatLoad(value, type);
 
 export const getLoadState = (
   value?: number | null,
@@ -48,6 +63,19 @@ export const getLoadState = (
   }
 
   return VariableState.Neutral;
+};
+
+export const getAlarmMessageKey = (
+  actualValue: number | null,
+  thresholdValue: number | null,
+): string => {
+  if (actualValue == undefined || thresholdValue == undefined) {
+    return "loads.dashboard.alarmValue";
+  }
+
+  return actualValue < thresholdValue
+    ? "loads.dashboard.alarmBelowMin"
+    : "loads.dashboard.alarmAboveMax";
 };
 
 export const toNumRangeId =

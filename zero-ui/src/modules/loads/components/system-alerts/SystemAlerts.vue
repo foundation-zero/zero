@@ -6,7 +6,7 @@ import { RiAlertLine } from "@remixicon/vue";
 import { HTMLAttributes, ref, toRefs, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { LOAD_UNIT } from "../../lib/consts";
-import { formatLoad } from "../../lib/utils";
+import { formatLoad, getAlarmMessageKey } from "../../lib/utils";
 import { useAlarmsStore } from "../../stores/alarms";
 import { VariableUnit } from "../../types";
 
@@ -14,9 +14,8 @@ const { t } = useI18n();
 
 const { status: alarmsStatus, activeAlarms } = toRefs(useAlarmsStore());
 
-const getFormattedValue = (value: number | null, unit: string) =>
-  formatLoad(value, unit as VariableUnit);
-const getDisplayUnit = (unit: string) => (LOAD_UNIT as Record<string, string>)[unit] ?? unit;
+const getFormattedValue = (value: number | null, unit: VariableUnit) => formatLoad(value, unit);
+const getDisplayUnit = (unit: VariableUnit) => LOAD_UNIT[unit] ?? unit;
 
 const props = defineProps<{ class?: HTMLAttributes["class"] }>();
 const isOpen = ref(false);
@@ -60,11 +59,10 @@ watch(alarmsStatus, (newStatus) => {
         <p
           class="text-sm font-normal"
           v-html="
-            t('loads.dashboard.alarmActive', {
-              alarm: alarm.name,
-              actualValue: getFormattedValue(alarm.actualValue, alarm.actual.variable.unit),
-              thresholdValue: getFormattedValue(alarm.thresholdValue, alarm.actual.variable.unit),
-              unit: getDisplayUnit(alarm.actual.variable.unit),
+            t(getAlarmMessageKey(alarm.actualValue, alarm.thresholdValue), {
+              actualValue: getFormattedValue(alarm.actualValue, alarm.unit),
+              thresholdValue: getFormattedValue(alarm.thresholdValue, alarm.unit),
+              unit: getDisplayUnit(alarm.unit),
             })
           "
         ></p>

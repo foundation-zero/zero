@@ -2,7 +2,7 @@
 import { cn } from "@/modules/common/lib/utils";
 import { computed, HTMLAttributes } from "vue";
 import { getLoadState } from "../../lib/utils";
-import { ReferenceThresholds, VariableUnit } from "../../types";
+import { ReferenceThresholds, VariableState, VariableUnit } from "../../types";
 import { Card } from "../card";
 import { Gauge, GaugeTarget, Range } from "../loads-gauge";
 import { ReferenceBoxLine } from "../reference-box";
@@ -15,10 +15,13 @@ const props = defineProps<{
   value?: number;
   thresholds?: ReferenceThresholds;
   scale: Range;
+  alarm?: boolean;
   class?: HTMLAttributes["class"];
 }>();
 
-const state = computed(() => getLoadState(props.value, props.thresholds));
+const state = computed(() =>
+  props.alarm ? VariableState.Alarm : getLoadState(props.value, props.thresholds),
+);
 </script>
 
 <template>
