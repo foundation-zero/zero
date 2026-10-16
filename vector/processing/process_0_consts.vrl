@@ -2102,10 +2102,20 @@ managed_tables = {
     "yard_tag": null,
     "technical_name": "adsorption-hot-heat"
   },
+  "thrs/controller/adsorption/adsorption-hot-mix-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "adsorption-hot-mix-controller"
+  },
   "thrs/controller/adsorption/adsorption-ht-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
     "technical_name": "adsorption-ht-exchanger"
+  },
+  "thrs/controller/adsorption/adsorption-recovery-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "adsorption-recovery-controller"
   },
   "thrs/controller/adsorption/adsorption-seawater-exchanger": {
     "table": "marpower__thrs__heat_transfers",
@@ -2117,6 +2127,11 @@ managed_tables = {
     "yard_tag": null,
     "technical_name": "adsorption-temperature-waste-supply-before-seawater"
   },
+  "thrs/controller/adsorption/adsorption-waste-cooling-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "adsorption-waste-cooling-controller"
+  },
   "thrs/controller/adsorption/adsorption-waste-heat": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
@@ -2127,10 +2142,25 @@ managed_tables = {
     "yard_tag": null,
     "technical_name": "consumers-adsorption-exchanger"
   },
+  "thrs/controller/consumers/consumers-adsorption-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "consumers-adsorption-flow-controller"
+  },
+  "thrs/controller/consumers/consumers-bypass-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "consumers-bypass-flow-controller"
+  },
   "thrs/controller/consumers/consumers-dhw-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
     "technical_name": "consumers-dhw-exchanger"
+  },
+  "thrs/controller/consumers/consumers-dhw-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "consumers-dhw-flow-controller"
   },
   "thrs/controller/dc/dc-aft-flow": {
     "table": "marpower__thrs__calculated_flows",
@@ -2141,6 +2171,26 @@ managed_tables = {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
     "technical_name": "dc-aft-heat"
+  },
+  "thrs/controller/dc/dc-brightloops-aft-pump-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "dc-brightloops-aft-pump-controller"
+  },
+  "thrs/controller/dc/dc-brightloops-aft-warmup-mix-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "dc-brightloops-aft-warmup-mix-controller"
+  },
+  "thrs/controller/dc/dc-brightloops-fwd-pump-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "dc-brightloops-fwd-pump-controller"
+  },
+  "thrs/controller/dc/dc-brightloops-fwd-warmup-mix-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "dc-brightloops-fwd-warmup-mix-controller"
   },
   "thrs/controller/dc/dc-dhw-exchanger": {
     "table": "marpower__thrs__heat_transfers",
@@ -2156,6 +2206,16 @@ managed_tables = {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
     "technical_name": "dc-fwd-heat"
+  },
+  "thrs/controller/dc/dc-heat-dump-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "dc-heat-dump-controller"
+  },
+  "thrs/controller/dc/dc-recovery-mix-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "dc-recovery-mix-controller"
   },
   "thrs/controller/dc/dc-seawater-exchanger": {
     "table": "marpower__thrs__heat_transfers",
@@ -2177,6 +2237,16 @@ managed_tables = {
     "yard_tag": null,
     "technical_name": "dc-ugrid-heat"
   },
+  "thrs/controller/dc/dc-ugrids-pump-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "dc-ugrids-pump-controller"
+  },
+  "thrs/controller/dc/dc-ugrids-warmup-mix-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "dc-ugrids-warmup-mix-controller"
+  },
   "thrs/controller/dhw/dhw-adsorption-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
@@ -2192,10 +2262,20 @@ managed_tables = {
     "yard_tag": null,
     "technical_name": "dhw-dc-exchanger"
   },
+  "thrs/controller/dhw/dhw-dc-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "dhw-dc-flow-controller"
+  },
   "thrs/controller/dhw/dhw-drives-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
     "technical_name": "dhw-drives-exchanger"
+  },
+  "thrs/controller/dhw/dhw-drives-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "dhw-drives-flow-controller"
   },
   "thrs/controller/dhw/dhw-freshwater-flow-supply": {
     "table": "marpower__thrs__calculated_flows",
@@ -2212,6 +2292,21 @@ managed_tables = {
     "yard_tag": null,
     "technical_name": "dhw-hvac-exchanger"
   },
+  "thrs/controller/dhw/dhw-pump-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "dhw-pump-flow-controller"
+  },
+  "thrs/controller/dhw/dhw-tanks-controller": {
+    "table": "marpower__thrs__tank_controller",
+    "yard_tag": null,
+    "technical_name": "dhw-tanks-controller"
+  },
+  "thrs/controller/drives/drives-aft-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "drives-aft-flow-controller"
+  },
   "thrs/controller/drives/drives-aft-oil-cooler-heat": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
@@ -2222,10 +2317,20 @@ managed_tables = {
     "yard_tag": null,
     "technical_name": "drives-dhw-exchanger"
   },
+  "thrs/controller/drives/drives-fwd-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "drives-fwd-flow-controller"
+  },
   "thrs/controller/drives/drives-fwd-oil-cooler-heat": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
     "technical_name": "drives-fwd-oil-cooler-heat"
+  },
+  "thrs/controller/drives/drives-heat-dump-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "drives-heat-dump-controller"
   },
   "thrs/controller/drives/drives-propdrive-aft1-heat": {
     "table": "marpower__thrs__heat_transfers",
@@ -2246,6 +2351,21 @@ managed_tables = {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
     "technical_name": "drives-propdrive-fwd2-heat"
+  },
+  "thrs/controller/drives/drives-pump-controller-propulsion": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "drives-pump-controller-propulsion"
+  },
+  "thrs/controller/drives/drives-pump-controller-shorepower": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "drives-pump-controller-shorepower"
+  },
+  "thrs/controller/drives/drives-recovery-mix-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "drives-recovery-mix-controller"
   },
   "thrs/controller/drives/drives-seawater-exchanger": {
     "table": "marpower__thrs__heat_transfers",
@@ -2287,6 +2407,51 @@ managed_tables = {
     "yard_tag": null,
     "technical_name": "pcm-heat-module4"
   },
+  "thrs/controller/pcm/pcm-module1-charge-controller": {
+    "table": "marpower__thrs__pcm_charger",
+    "yard_tag": null,
+    "technical_name": "pcm-module1-charge-controller"
+  },
+  "thrs/controller/pcm/pcm-module1-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "pcm-module1-flow-controller"
+  },
+  "thrs/controller/pcm/pcm-module2-charge-controller": {
+    "table": "marpower__thrs__pcm_charger",
+    "yard_tag": null,
+    "technical_name": "pcm-module2-charge-controller"
+  },
+  "thrs/controller/pcm/pcm-module2-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "pcm-module2-flow-controller"
+  },
+  "thrs/controller/pcm/pcm-module3-charge-controller": {
+    "table": "marpower__thrs__pcm_charger",
+    "yard_tag": null,
+    "technical_name": "pcm-module3-charge-controller"
+  },
+  "thrs/controller/pcm/pcm-module3-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "pcm-module3-flow-controller"
+  },
+  "thrs/controller/pcm/pcm-module4-charge-controller": {
+    "table": "marpower__thrs__pcm_charger",
+    "yard_tag": null,
+    "technical_name": "pcm-module4-charge-controller"
+  },
+  "thrs/controller/pcm/pcm-module4-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "pcm-module4-flow-controller"
+  },
+  "thrs/controller/pcm/pcm-pump-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "pcm-pump-flow-controller"
+  },
   "thrs/controller/pcm/pcm-temperature-consumers-return": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
@@ -2307,6 +2472,31 @@ managed_tables = {
     "yard_tag": null,
     "technical_name": "pvt-flow-owners-strings"
   },
+  "thrs/controller/pvt/pvt-heat-dump-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "pvt-heat-dump-controller"
+  },
+  "thrs/controller/pvt/pvt-main-aft-pump-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "pvt-main-aft-pump-controller"
+  },
+  "thrs/controller/pvt/pvt-main-aft-warmup-mix-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "pvt-main-aft-warmup-mix-controller"
+  },
+  "thrs/controller/pvt/pvt-main-fwd-pump-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "pvt-main-fwd-pump-controller"
+  },
+  "thrs/controller/pvt/pvt-main-fwd-warmup-mix-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "pvt-main-fwd-warmup-mix-controller"
+  },
   "thrs/controller/pvt/pvt-max-temperature-main-aft-strings": {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
@@ -2321,6 +2511,16 @@ managed_tables = {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
     "technical_name": "pvt-max-temperature-owners-strings"
+  },
+  "thrs/controller/pvt/pvt-owners-pump-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "pvt-owners-pump-controller"
+  },
+  "thrs/controller/pvt/pvt-owners-warmup-mix-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "pvt-owners-warmup-mix-controller"
   },
   "thrs/controller/pvt/pvt-pcm-heat": {
     "table": "marpower__thrs__heat_transfers",
@@ -2392,15 +2592,45 @@ managed_tables = {
     "yard_tag": null,
     "technical_name": "pvt-total-flow"
   },
+  "thrs/controller/thrusters/thrusters-aft-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "thrusters-aft-flow-controller"
+  },
+  "thrs/controller/thrusters/thrusters-aft-recovery-temperature-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "thrusters-aft-recovery-temperature-controller"
+  },
   "thrs/controller/thrusters/thrusters-flow": {
     "table": "marpower__thrs__calculated_flows",
     "yard_tag": null,
     "technical_name": "thrusters-flow"
   },
+  "thrs/controller/thrusters/thrusters-fwd-flow-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "thrusters-fwd-flow-controller"
+  },
+  "thrs/controller/thrusters/thrusters-fwd-recovery-temperature-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "thrusters-fwd-recovery-temperature-controller"
+  },
+  "thrs/controller/thrusters/thrusters-heat-dump-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "thrusters-heat-dump-controller"
+  },
   "thrs/controller/thrusters/thrusters-pcm-heat": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
     "technical_name": "thrusters-pcm-heat"
+  },
+  "thrs/controller/thrusters/thrusters-pump-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "thrusters-pump-controller"
   },
   "thrs/controller/thrusters/thrusters-seawater-exchanger": {
     "table": "marpower__thrs__heat_transfers",
@@ -2426,5 +2656,10 @@ managed_tables = {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
     "technical_name": "thrusters-thruster-fwd-heat"
+  },
+  "thrs/controller/thrusters/thrusters-warmup-mix-controller": {
+    "table": "marpower__thrs__pid_controllers",
+    "yard_tag": null,
+    "technical_name": "thrusters-warmup-mix-controller"
   }
 }

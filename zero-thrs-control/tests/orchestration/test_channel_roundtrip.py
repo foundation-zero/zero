@@ -51,7 +51,7 @@ class DemoMode(ThrsValues):
 
 
 class DemoControllerState(ThrsValues):
-    state: str = "ok"
+    state: DemoComponent = DemoComponent()
 
 
 class DemoSimulationInputs(ThrsValues):
@@ -116,7 +116,7 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
                 command=DemoComponent(value=10.5)
             )
             expected_parameters = DemoParameters(value=3.14)
-            expected_state = DemoControllerState(state="running")
+            expected_state = DemoControllerState(state=DemoComponent(value=2))
             expected_mode = SwitchingControlMode(
                 automatic_mode=DemoMode(mode="automatic")
             )
