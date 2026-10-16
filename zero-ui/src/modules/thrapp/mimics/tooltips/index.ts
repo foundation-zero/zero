@@ -4,6 +4,16 @@ import { useI18n } from "vue-i18n";
 import { MimicComponentType } from "../../types/index.ts";
 
 export const TOOLTIPS: Partial<Record<MimicComponentType, Component>> = {
+  [MimicComponentType.ExpansionValve]: defineAsyncComponent(
+    () => import("./ExpansionValveTooltip.vue"),
+  ),
+  [MimicComponentType.ExpansionTank]: defineAsyncComponent(
+    () => import("./ExpansionTankTooltip.vue"),
+  ),
+  [MimicComponentType.Pyranometer]: defineAsyncComponent(() => import("./PyranometerTooltip.vue")),
+  [MimicComponentType.AirTrapVessel]: defineAsyncComponent(
+    () => import("./AirTrapVesselTooltip.vue"),
+  ),
   [MimicComponentType.BoilerTank]: defineAsyncComponent(() => import("./BoilerTankTooltip.vue")),
   [MimicComponentType.SwitchValve]: defineAsyncComponent(() => import("./SwitchValveTooltip.vue")),
   [MimicComponentType.FlowControlValve]: defineAsyncComponent(

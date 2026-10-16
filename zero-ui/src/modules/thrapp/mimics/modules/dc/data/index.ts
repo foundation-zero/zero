@@ -2,6 +2,8 @@ import { toFieldsMap } from "../..";
 import { DC_CHECK_VALVE_DATA } from "./check-valves";
 import { DC_CONVERTER_DATA } from "./converters";
 import { DC_EXCHANGE_CIRCUIT_DATA } from "./exchange-circuits";
+import { DC_EXPANSION_TANK_DATA } from "./expansion-tanks";
+import { DC_EXPANSION_VALVE_DATA } from "./expansion-valves";
 import { DC_FLOW_SENSOR_DATA } from "./flow-sensors";
 import { DC_HEAT_EXCHANGER_DATA } from "./heat-exchangers";
 import { DC_MANUAL_VALVE_DATA } from "./manual-valves";
@@ -14,6 +16,8 @@ import { DC_TEMPERATURE_SENSOR_DATA } from "./temperature-sensors";
 export { DC_CHECK_VALVE_DATA } from "./check-valves";
 export { DC_CONVERTER_DATA } from "./converters";
 export { DC_EXCHANGE_CIRCUIT_DATA } from "./exchange-circuits";
+export { DC_EXPANSION_TANK_DATA } from "./expansion-tanks";
+export { DC_EXPANSION_VALVE_DATA } from "./expansion-valves";
 export { DC_FLOW_SENSOR_DATA } from "./flow-sensors";
 export { DC_HEAT_EXCHANGER_DATA } from "./heat-exchangers";
 export { DC_MANUAL_VALVE_DATA } from "./manual-valves";
@@ -24,6 +28,8 @@ export { DC_PUMP_DATA } from "./pumps";
 export { DC_TEMPERATURE_SENSOR_DATA } from "./temperature-sensors";
 
 export const DC_MIMIC_DATA = toFieldsMap({
+  ...DC_EXPANSION_TANK_DATA,
+  ...DC_EXPANSION_VALVE_DATA,
   ...DC_CONVERTER_DATA,
   ...DC_EXCHANGE_CIRCUIT_DATA,
   ...DC_CHECK_VALVE_DATA,
