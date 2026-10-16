@@ -242,10 +242,24 @@ export type LevelSwitchSensor = {
 };
 
 export type ThrusterSensor = Toggle;
-export type BrightloopSensor = Toggle;
-export type UgridSensor = Toggle;
-export type PropulsionDriveSensor = Toggle;
-export type ShorePowerConverterSensor = Toggle;
+export type BrightloopSensor = Toggle & {
+  cell01Temperature1: Stamped<number>;
+  power: Stamped<number>;
+};
+export type UgridSensor = Toggle & {
+  tempPowerStage: Stamped<number>;
+  power: Stamped<number>;
+};
+export type PropulsionDriveSensor = Toggle & {
+  tempPowerStage: Stamped<number>;
+  power: Stamped<number>;
+};
+export type ShorePowerConverterSensor = Toggle & {
+  esiTransformerTemperature: Stamped<number>;
+  esiIgbtMinTemperature: Stamped<number>;
+  esiIgbtMaxTemperature: Stamped<number>;
+  power: Stamped<number>;
+};
 export type PyranometerSensor = {
   irradiance: Stamped<number>;
 };
@@ -676,6 +690,10 @@ export const enum SimulationComponentType {
   HvacExchanger = "hvacExchanger",
   AmcsControlMode = "amcsControlMode",
   AdsorptionChiller = "adsorptionChiller",
+  Ugrid = "ugrid",
+  Brightloop = "brightloop",
+  ShorePowerConverter = "shorePowerConverter",
+  PropulsionDrive = "propulsionDrive",
 }
 
 export type SimulationDefinition<T extends SimulationComponentType = SimulationComponentType> =

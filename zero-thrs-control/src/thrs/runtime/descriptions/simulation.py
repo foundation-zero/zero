@@ -13,15 +13,17 @@ from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
     AdsorptionChiller,
     Boundary,
-    Converter,
+    BrightloopString,
     FlowBoundary,
     HeatSource,
     HvacExchanger,
     OverpressureTemperatureBoundary,
     Pcs,
     PropulsionDrive,
+    ShorePowerConverter,
     TemperatureBoundary,
     Thruster,
+    Ugrid,
 )
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.definitions.units import PcsMode
@@ -210,19 +212,59 @@ SIMULATION_INPUTS = {
         drives_oil_cooler_aft=HeatSource(heat_flow=Stamped.stamp(0)),
         drives_oil_cooler_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
         drives_propdrive_aft1=PropulsionDrive(
-            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
+            heat_flow=Stamped.stamp(2800),
+            active=Stamped.stamp(True),
+            temp_power_stage=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
         drives_propdrive_aft2=PropulsionDrive(
-            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
+            heat_flow=Stamped.stamp(2800),
+            active=Stamped.stamp(True),
+            temp_power_stage=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
         drives_propdrive_fwd1=PropulsionDrive(
-            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
+            heat_flow=Stamped.stamp(1250),
+            active=Stamped.stamp(True),
+            temp_power_stage=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
         drives_propdrive_fwd2=PropulsionDrive(
-            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
+            heat_flow=Stamped.stamp(1250),
+            active=Stamped.stamp(True),
+            temp_power_stage=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
-        drives_shorepower=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        drives_shorepower=HeatSource(
+            heat_flow=Stamped.stamp(15000),
+        ),
+        drives_shorepower1a=ShorePowerConverter(
+            active=Stamped.stamp(False),
+            esi_igbt_max_temperature=Stamped.stamp(100),
+            esi_igbt_min_temperature=Stamped.stamp(100),
+            esi_transformer_temperature=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        drives_shorepower1b=ShorePowerConverter(
+            active=Stamped.stamp(False),
+            esi_igbt_max_temperature=Stamped.stamp(100),
+            esi_igbt_min_temperature=Stamped.stamp(100),
+            esi_transformer_temperature=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        drives_shorepower2a=ShorePowerConverter(
+            active=Stamped.stamp(False),
+            esi_igbt_max_temperature=Stamped.stamp(100),
+            esi_igbt_min_temperature=Stamped.stamp(100),
+            esi_transformer_temperature=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        drives_shorepower2b=ShorePowerConverter(
+            active=Stamped.stamp(False),
+            esi_igbt_max_temperature=Stamped.stamp(100),
+            esi_igbt_min_temperature=Stamped.stamp(100),
+            esi_transformer_temperature=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
         drives_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
@@ -234,25 +276,133 @@ SIMULATION_INPUTS = {
         mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
     "dc": DcSimulationInputs(
-        dc_brightloop_fwd1=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        dc_brightloop_fwd1=HeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_fwd2=HeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft1=HeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft2=HeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft3=HeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft4=HeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_fwd1_string1=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
-        dc_brightloop_fwd2=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        dc_brightloop_fwd1_string2=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
-        dc_ugrid1=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
-        dc_ugrid2=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
-        dc_brightloop_aft1=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        dc_brightloop_fwd1_string3=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft2=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        dc_brightloop_fwd1_string4=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft3=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        dc_brightloop_fwd2_string1=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft4=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        dc_brightloop_fwd2_string2=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_fwd2_string3=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_fwd2_string4=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_ugrid1=Ugrid(
+            heat_flow=Stamped.stamp(2000),
+            active=Stamped.stamp(True),
+            temp_power_stage=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_ugrid2=Ugrid(
+            heat_flow=Stamped.stamp(2000),
+            active=Stamped.stamp(True),
+            temp_power_stage=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft1_string1=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft1_string2=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft1_string3=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft1_string4=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft2_string1=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft2_string2=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft2_string3=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft3_string1=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft3_string2=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft3_string3=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft4_string1=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft4_string2=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft4_string3=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft4_string4=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
         dc_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
@@ -307,25 +457,133 @@ SIMULATION_INPUTS = {
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE)
         ),
         dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(20)),
-        dc_brightloop_fwd1=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        dc_brightloop_fwd1=HeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_fwd2=HeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft1=HeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft2=HeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft3=HeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft4=HeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_fwd1_string1=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
-        dc_brightloop_fwd2=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        dc_brightloop_fwd1_string2=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
-        dc_ugrid1=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
-        dc_ugrid2=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
-        dc_brightloop_aft1=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        dc_brightloop_fwd1_string3=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft2=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        dc_brightloop_fwd1_string4=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft3=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        dc_brightloop_fwd2_string1=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft4=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
+        dc_brightloop_fwd2_string2=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_fwd2_string3=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_fwd2_string4=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_ugrid1=Ugrid(
+            heat_flow=Stamped.stamp(2000),
+            active=Stamped.stamp(True),
+            temp_power_stage=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_ugrid2=Ugrid(
+            heat_flow=Stamped.stamp(2000),
+            active=Stamped.stamp(True),
+            temp_power_stage=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft1_string1=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft1_string2=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft1_string3=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft1_string4=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft2_string1=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft2_string2=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft2_string3=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft3_string1=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft3_string2=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft3_string3=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft4_string1=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft4_string2=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft4_string3=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        dc_brightloop_aft4_string4=BrightloopString(
+            active=Stamped.stamp(True),
+            cell01_temperature1=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
         dc_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
@@ -333,19 +591,59 @@ SIMULATION_INPUTS = {
         drives_oil_cooler_aft=HeatSource(heat_flow=Stamped.stamp(0)),
         drives_oil_cooler_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
         drives_propdrive_aft1=PropulsionDrive(
-            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
+            heat_flow=Stamped.stamp(2800),
+            active=Stamped.stamp(True),
+            temp_power_stage=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
         drives_propdrive_aft2=PropulsionDrive(
-            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
+            heat_flow=Stamped.stamp(2800),
+            active=Stamped.stamp(True),
+            temp_power_stage=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
         drives_propdrive_fwd1=PropulsionDrive(
-            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
+            heat_flow=Stamped.stamp(1250),
+            active=Stamped.stamp(True),
+            temp_power_stage=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
         drives_propdrive_fwd2=PropulsionDrive(
-            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
+            heat_flow=Stamped.stamp(1250),
+            active=Stamped.stamp(True),
+            temp_power_stage=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
-        drives_shorepower=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+        drives_shorepower=HeatSource(
+            heat_flow=Stamped.stamp(15000),
+        ),
+        drives_shorepower1a=ShorePowerConverter(
+            active=Stamped.stamp(False),
+            esi_igbt_max_temperature=Stamped.stamp(100),
+            esi_igbt_min_temperature=Stamped.stamp(100),
+            esi_transformer_temperature=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        drives_shorepower1b=ShorePowerConverter(
+            active=Stamped.stamp(False),
+            esi_igbt_max_temperature=Stamped.stamp(100),
+            esi_igbt_min_temperature=Stamped.stamp(100),
+            esi_transformer_temperature=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        drives_shorepower2a=ShorePowerConverter(
+            active=Stamped.stamp(False),
+            esi_igbt_max_temperature=Stamped.stamp(100),
+            esi_igbt_min_temperature=Stamped.stamp(100),
+            esi_transformer_temperature=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        drives_shorepower2b=ShorePowerConverter(
+            active=Stamped.stamp(False),
+            esi_igbt_max_temperature=Stamped.stamp(100),
+            esi_igbt_min_temperature=Stamped.stamp(100),
+            esi_transformer_temperature=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
         drives_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)

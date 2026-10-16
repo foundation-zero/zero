@@ -9,7 +9,14 @@ import { ModuleField } from "../../providers";
 import SensorValue from "../../providers/SensorValue.vue";
 const props = defineProps<{
   value?: number;
-  source: ModuleField<SensorComponentType.Pvt | SensorComponentType.Thruster>;
+  source: ModuleField<
+    | SensorComponentType.Pvt
+    | SensorComponentType.Thruster
+    | SensorComponentType.PropulsionDrive
+    | SensorComponentType.Ugrid
+    | SensorComponentType.Brightloop
+    | SensorComponentType.ShorePowerConverter
+  >;
   class?: HTMLAttributes["class"];
 }>();
 </script>

@@ -6,6 +6,10 @@
       | SensorComponentType.Temperature
       | SensorComponentType.CalculatedTemperature
       | SensorComponentType.HeatTransferDevice
+      | SensorComponentType.PropulsionDrive
+      | SensorComponentType.Ugrid
+      | SensorComponentType.Brightloop
+      | SensorComponentType.ShorePowerConverter
   "
 >
 import { SensorComponentType, SensorDefinitionMap } from "@/modules/thrsim/types/index.ts";

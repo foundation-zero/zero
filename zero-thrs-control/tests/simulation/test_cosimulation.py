@@ -59,7 +59,11 @@ class DrivesDhwSimulationInputs(ThrsValues):
     drives_propdrive_aft2: simulation.PropulsionDrive
     drives_propdrive_fwd1: simulation.PropulsionDrive
     drives_propdrive_fwd2: simulation.PropulsionDrive
-    drives_shorepower: simulation.Converter
+    drives_shorepower: simulation.HeatSource
+    drives_shorepower1a: simulation.ShorePowerConverter
+    drives_shorepower1b: simulation.ShorePowerConverter
+    drives_shorepower2a: simulation.ShorePowerConverter
+    drives_shorepower2b: simulation.ShorePowerConverter
     drives_seawater_supply: simulation.Boundary
     dhw_dc_supply: simulation.Boundary
     dhw_adsorption_supply: simulation.Boundary
@@ -185,19 +189,59 @@ def test_cosimulation_input_routing():
         drives_oil_cooler_aft=simulation.HeatSource(heat_flow=Stamped.stamp(0)),
         drives_oil_cooler_fwd=simulation.HeatSource(heat_flow=Stamped.stamp(0)),
         drives_propdrive_aft1=simulation.PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+            heat_flow=Stamped.stamp(0),
+            active=Stamped.stamp(False),
+            temp_power_stage=Stamped.stamp(0),
+            power=Stamped.stamp(0),
         ),
         drives_propdrive_aft2=simulation.PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+            heat_flow=Stamped.stamp(0),
+            active=Stamped.stamp(False),
+            temp_power_stage=Stamped.stamp(0),
+            power=Stamped.stamp(0),
         ),
         drives_propdrive_fwd1=simulation.PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+            heat_flow=Stamped.stamp(0),
+            active=Stamped.stamp(False),
+            temp_power_stage=Stamped.stamp(0),
+            power=Stamped.stamp(0),
         ),
         drives_propdrive_fwd2=simulation.PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
+            heat_flow=Stamped.stamp(0),
+            active=Stamped.stamp(False),
+            temp_power_stage=Stamped.stamp(0),
+            power=Stamped.stamp(0),
         ),
-        drives_shorepower=simulation.Converter(
-            heat_flow=Stamped.stamp(15000), active=Stamped.stamp(True)
+        drives_shorepower=simulation.HeatSource(
+            heat_flow=Stamped.stamp(15000),
+        ),
+        drives_shorepower1a=simulation.ShorePowerConverter(
+            active=Stamped.stamp(True),
+            esi_igbt_max_temperature=Stamped.stamp(100),
+            esi_igbt_min_temperature=Stamped.stamp(100),
+            esi_transformer_temperature=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        drives_shorepower1b=simulation.ShorePowerConverter(
+            active=Stamped.stamp(True),
+            esi_igbt_max_temperature=Stamped.stamp(100),
+            esi_igbt_min_temperature=Stamped.stamp(100),
+            esi_transformer_temperature=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        drives_shorepower2a=simulation.ShorePowerConverter(
+            active=Stamped.stamp(True),
+            esi_igbt_max_temperature=Stamped.stamp(100),
+            esi_igbt_min_temperature=Stamped.stamp(100),
+            esi_transformer_temperature=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
+        ),
+        drives_shorepower2b=simulation.ShorePowerConverter(
+            active=Stamped.stamp(True),
+            esi_igbt_max_temperature=Stamped.stamp(100),
+            esi_igbt_min_temperature=Stamped.stamp(100),
+            esi_transformer_temperature=Stamped.stamp(100),
+            power=Stamped.stamp(1000),
         ),
         drives_seawater_supply=simulation.Boundary(
             temperature=Stamped.stamp(20.0), flow=Stamped.stamp(64)

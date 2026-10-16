@@ -1,4 +1,3 @@
-from datetime import UTC, datetime
 from typing import Annotated
 
 from pydantic import ConfigDict, computed_field
@@ -149,14 +148,12 @@ class DrivesSensorValues(AmcsModeSensorValues):
     drives_propdrive_aft1: Annotated[
         sensor.PropulsionDrive,
         component_meta(
-            yard_tag="45002079",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
+            yard_tag="45002079",
             component_type="propulsion_drive",
             included_in_fmu=False,
-            topic_override="dummy-pms/esi_active",
+            topic_override="150000-propulsion/pcs-aft-ara1",
         ),
-    ] = sensor.PropulsionDrive(
-        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
-    )
+    ]
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -185,14 +182,12 @@ class DrivesSensorValues(AmcsModeSensorValues):
     drives_propdrive_aft2: Annotated[
         sensor.PropulsionDrive,
         component_meta(
-            yard_tag="45002079",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
+            yard_tag="45002079",
             component_type="propulsion_drive",
             included_in_fmu=False,
-            topic_override="dummy-pcs/aradex-aft2-active",
+            topic_override="150000-propulsion/pcs-aft-ara2",
         ),
-    ] = sensor.PropulsionDrive(
-        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
-    )
+    ]
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -262,14 +257,12 @@ class DrivesSensorValues(AmcsModeSensorValues):
     drives_propdrive_fwd1: Annotated[
         sensor.PropulsionDrive,
         component_meta(
-            yard_tag="45002080",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
+            yard_tag="45002080",
             component_type="propulsion_drive",
             included_in_fmu=False,
-            topic_override="dummy-pcs/aradex-fwd1-active",
+            topic_override="150000-propulsion/pcs-fwd-ara1",
         ),
-    ] = sensor.PropulsionDrive(
-        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
-    )
+    ]
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -298,14 +291,12 @@ class DrivesSensorValues(AmcsModeSensorValues):
     drives_propdrive_fwd2: Annotated[
         sensor.PropulsionDrive,
         component_meta(
-            yard_tag="45002080",  # TODO: figure out correct yard tag. We do expect separate signal from each Aradex
+            yard_tag="45002080",
             component_type="propulsion_drive",
             included_in_fmu=False,
-            topic_override="dummy-pcs/aradex-fwd2-active",
+            topic_override="150000-propulsion/pcs-fwd-ara2",
         ),
-    ] = sensor.PropulsionDrive(
-        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
-    )
+    ]
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -372,17 +363,43 @@ class DrivesSensorValues(AmcsModeSensorValues):
             flow_source="unknown",
         )
 
-    drives_shorepower: Annotated[
+    drives_shorepower1a: Annotated[
         sensor.ShorePowerConverter,
         component_meta(
             yard_tag="45002001",
             component_type="shore_power_converter",
             included_in_fmu=False,
-            topic_override="dummy-pcs/shorepower-active",  # TODO
+            topic_override="450000-dc-distribution-esi/70-11-tbc1a",
         ),
-    ] = sensor.ShorePowerConverter(
-        active=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC))
-    )
+    ]
+
+    drives_shorepower1b: Annotated[
+        sensor.ShorePowerConverter,
+        component_meta(
+            yard_tag="45002001",
+            component_type="shore_power_converter",
+            included_in_fmu=False,
+            topic_override="450000-dc-distribution-esi/70-11-tbc1b",
+        ),
+    ]
+    drives_shorepower2a: Annotated[
+        sensor.ShorePowerConverter,
+        component_meta(
+            yard_tag="45002001",
+            component_type="shore_power_converter",
+            included_in_fmu=False,
+            topic_override="450000-dc-distribution-esi/70-12-tbc1a",
+        ),
+    ]
+    drives_shorepower2b: Annotated[
+        sensor.ShorePowerConverter,
+        component_meta(
+            yard_tag="45002001",
+            component_type="shore_power_converter",
+            included_in_fmu=False,
+            topic_override="450000-dc-distribution-esi/70-12-tbc1b",
+        ),
+    ]
 
     @computed_field(
         json_schema_extra=computed_meta(
@@ -543,7 +560,19 @@ class DrivesSimulationInputs(ThrsValues):
     drives_propdrive_aft2: simulation.PropulsionDrive
     drives_propdrive_fwd1: simulation.PropulsionDrive
     drives_propdrive_fwd2: simulation.PropulsionDrive
-    drives_shorepower: simulation.Converter
+    drives_shorepower: simulation.HeatSource
+    drives_shorepower1a: Annotated[
+        simulation.ShorePowerConverter, component_meta(included_in_fmu=False)
+    ]
+    drives_shorepower1b: Annotated[
+        simulation.ShorePowerConverter, component_meta(included_in_fmu=False)
+    ]
+    drives_shorepower2a: Annotated[
+        simulation.ShorePowerConverter, component_meta(included_in_fmu=False)
+    ]
+    drives_shorepower2b: Annotated[
+        simulation.ShorePowerConverter, component_meta(included_in_fmu=False)
+    ]
     drives_seawater_supply: simulation.Boundary
     drives_dhw_supply: simulation.Boundary
     mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
