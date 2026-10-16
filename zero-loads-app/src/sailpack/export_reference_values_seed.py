@@ -174,16 +174,16 @@ COMMIT;
 
 def export_reference_values_seed_sql(
     input_source: Path,
-    mapping_path: Path,
-    max_loads_path: Path,
+    mapping_csv: str,
+    max_loads_csv: str,
     output_sql: Path,
     conflicts_output: Path,
 ) -> tuple[int, int, int]:
     sailpack_data = parse_directory(input_source)
     reference_values = extract_reference_values(
-        sailpack_data, read_reference_values_mapping(mapping_path)
+        sailpack_data, read_reference_values_mapping(mapping_csv)
     )
-    max_loads = read_max_loads(max_loads_path)
+    max_loads = read_max_loads(max_loads_csv)
     targets, conflicts = drop_targets_outside_thresholds(reference_values, max_loads)
     load_case_records = build_load_case_records(sailpack_data)
     reference_records = build_reference_records(targets)

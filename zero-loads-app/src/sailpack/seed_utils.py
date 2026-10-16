@@ -1,6 +1,6 @@
+import io
 import math
 import re
-from pathlib import Path
 from typing import Any
 
 import polars as pl
@@ -25,9 +25,8 @@ KNOWN_SAIL_ABBREVIATIONS = {
     "MZSS",
 }
 
-SAIL_ABBREVIATION_ALIASES = {"MH0": "C0", "TSONLY": "TS"}
-
-MAPPING_FILE_NAME = "sailpack_mapping.csv"
+# M12R is a typo for MZ1R in the "M1R M12R SS Upwind 20261009" calculation ID.
+SAIL_ABBREVIATION_ALIASES = {"MH0": "C0", "TSONLY": "TS", "M12R": "MZ1R"}
 
 NEWTON_PER_TONNE_FORCE = 9806.65
 
@@ -246,11 +245,8 @@ def assert_port_tack(load_cases: pl.DataFrame) -> None:
         raise ValueError(f"Expected only port tack load cases, got: {starboard_cases}")
 
 
-def read_reference_values_mapping(mapping_path: Path) -> pl.DataFrame:
-    if not mapping_path.exists():
-        raise FileNotFoundError(f"Mapping file not found: {mapping_path}")
-
-    return pl.read_csv(mapping_path)
+def read_reference_values_mapping(mapping_csv: str) -> pl.DataFrame:
+    return pl.read_csv(io.StringIO(mapping_csv))
 
 
 def resolve_sail_set_id_sql(payload_alias: str = "payload") -> str:

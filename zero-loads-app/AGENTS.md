@@ -18,19 +18,20 @@ not obvious from the code: where the data comes from and how to look at live dat
 
 ## Sheet workflow
 
-The repo CSVs are synced copies of the sheet tabs (`TABS` in `src/loads/registry/sheets.py`).
+The seed commands download the sheet tabs (`LoadsSheet` in `src/loads/registry/sheets.py`)
+directly; there are no CSV copies in the repo.
 
 ```bash
-just download_sheets                      # all tabs, or e.g. --tabs max-loads
-just export_seed                          # regenerate the seeds and the conflicts CSV
-just check_seed                           # also in CI
+just export_seed                          # download, check and regenerate the seeds and the conflicts CSV
+just check_seed                           # download, check and compare with the committed seeds; also in CI
 ```
 
-`download_sheets` overwrites the CSVs and checks them: technical names against the registry,
-numeric and ordered thresholds, every Vitters IO list row with a display name against a registry
-variable, and whether the seeds are stale. A CSV edited in the repo is lost on the next download,
-so produce the CSV and let the user import it into the tab with "replace current sheet" (keeps the
-gid). The claude.ai Google Drive connector is not authenticated, so a session cannot edit the sheet.
+Both first check the sheet: technical names against the registry, numeric and ordered thresholds,
+and every Vitters IO list row with a display name against a registry variable. A sheet edit can
+therefore turn CI red until the seeds are regenerated. The live sheet is also checked by
+`tests/integration/test_loads_sheet.py`. To change the sheet, produce a CSV and let the user import
+it into the tab with "replace current sheet" (keeps the gid). The claude.ai Google Drive connector
+is not authenticated, so a session cannot edit the sheet.
 
 - **Max loads** are read by header name (`src/sailpack/max_loads.py`). The runner block thresholds
   are not in the sheet; they are derived from the runner tail thresholds with the Vitters PLC

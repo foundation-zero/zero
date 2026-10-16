@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import polars as pl
 import pytest
 
@@ -27,12 +25,6 @@ THRESHOLDS_SCHEMA = {
 }
 
 
-def _write_max_loads(tmp_path: Path, header: str, rows: str) -> Path:
-    path = tmp_path / "max_loads.csv"
-    path.write_text(header + rows, encoding="utf-8")
-    return path
-
-
 def _thresholds(
     variable: str,
     alarm_low: float | None = None,
@@ -49,18 +41,16 @@ def _thresholds(
     }
 
 
-def test_read_max_loads_converts_kilogram_to_tonne(tmp_path):
-    path = _write_max_loads(
-        tmp_path,
-        HEADER,
-        ",,,,,,,\n"
+def test_read_max_loads_converts_kilogram_to_tonne():
+    max_loads_csv = (
+        HEADER + ",,,,,,,\n"
         'main-sheet-load,E2.05,"12,800",,,"11,000","12,000",\n'
         'main-vang-load,2.02,"61,111","-20,000","-24,000","40,000","45,750",\n'
         "mizzen-halyard-load,E4.04,,,,2000,2500,\n"
-        "staysail-sheet-ps-load,???,???,,,???,???,\n",
+        "staysail-sheet-ps-load,???,???,,,???,???,\n"
     )
 
-    assert read_max_loads(path).to_dicts() == [
+    assert read_max_loads(max_loads_csv).to_dicts() == [
         _thresholds("main-sheet-load", warning_high=11.0, alarm_high=12.0),
         _thresholds("main-vang-load", -24.0, -20.0, 40.0, 45.75),
         _thresholds("mizzen-halyard-load", warning_high=2.0, alarm_high=2.5),
@@ -68,27 +58,24 @@ def test_read_max_loads_converts_kilogram_to_tonne(tmp_path):
     ]
 
 
-def test_read_max_loads_finds_columns_by_header(tmp_path):
+def test_read_max_loads_finds_columns_by_header():
     reordered_header = (
         ",,,,,\n"
         "Upper Alarm Setting (kg),Upper Warning Setting (kg),Lower Alarm Setting (kg),"
         "Lower Warning Setting (kg),Loads app technical name\n"
     )
-    path = _write_max_loads(
-        tmp_path, reordered_header, '"12,000","11,000",,,main-sheet-load\n'
-    )
+    max_loads_csv = reordered_header + '"12,000","11,000",,,main-sheet-load\n'
 
-    assert read_max_loads(path).to_dicts() == [
+    assert read_max_loads(max_loads_csv).to_dicts() == [
         _thresholds("main-sheet-load", warning_high=11.0, alarm_high=12.0)
     ]
 
 
-def test_read_max_loads_rejects_missing_columns(tmp_path):
+def test_read_max_loads_rejects_missing_columns():
     header_without_lower_alarm = HEADER.replace("Lower Alarm Setting (kg)", "Notes")
-    path = _write_max_loads(tmp_path, header_without_lower_alarm, "")
 
     with pytest.raises(ValueError, match="Lower Alarm Setting"):
-        read_max_loads(path)
+        read_max_loads(header_without_lower_alarm)
 
 
 @pytest.mark.parametrize(
@@ -98,11 +85,9 @@ def test_read_max_loads_rejects_missing_columns(tmp_path):
         'main-vang-load,,,"-24,000","-20,000",,,\n',
     ],
 )
-def test_read_max_loads_rejects_thresholds_out_of_order(tmp_path, row: str):
-    path = _write_max_loads(tmp_path, HEADER, row)
-
+def test_read_max_loads_rejects_thresholds_out_of_order(row: str):
     with pytest.raises(ValueError, match="-load"):
-        read_max_loads(path)
+        read_max_loads(HEADER + row)
 
 
 def test_drop_targets_outside_thresholds():

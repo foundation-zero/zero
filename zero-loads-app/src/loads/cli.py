@@ -2,6 +2,7 @@ import logging
 import sys
 import tempfile
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import uvicorn
 from generator import DataGenerator
@@ -24,8 +25,12 @@ from loads.registry import (
     fiber_optic_sensors,
     sail_system_sensors,
 )
-from loads.registry.sheets import TABS, TabName, consistency_problems, download_tab
 from loads.util import ensure_list
+
+# The seed code needs dev dependencies that the Docker image does not install.
+if TYPE_CHECKING:
+    from loads.registry.sheets import LoadsSheet
+    from sailpack.export_load_case_mapping_seed import AmbiguousLoadCases
 
 setup_logging()
 
@@ -121,8 +126,6 @@ class SeedPaths(BaseSettings, cli_kebab_case=True):
     )
 
     input: Path = Path("src/sailpack/load_cases")
-    sailpack_mapping: Path = TABS["sailpack-mapping"].path
-    max_loads: Path = TABS["max-loads"].path
     reference_values_output: Path = Path(
         "../hasura/seeds/zero/loads_reference_values.sql"
     )
@@ -134,24 +137,68 @@ class SeedPaths(BaseSettings, cli_kebab_case=True):
     )
 
 
+def _download_consistent_sheet() -> "LoadsSheet":
+    from loads.registry.sheets import LoadsSheet, consistency_problems
+
+    sheet = LoadsSheet.download()
+    if problems := consistency_problems(sheet):
+        for problem in problems:
+            logger.error(problem)
+        sys.exit(1)
+    logger.info("The loads sheet is consistent with the registry.")
+    return sheet
+
+
+def _export_seeds(
+    paths: SeedPaths,
+    sheet: "LoadsSheet",
+    reference_values_output: Path,
+    target_threshold_conflicts_output: Path,
+    load_case_mapping_output: Path,
+) -> tuple[int, int, int, int, list["AmbiguousLoadCases"]]:
+    from sailpack.export_load_case_mapping_seed import (
+        export_load_case_mapping_seed_sql,
+    )
+    from sailpack.export_reference_values_seed import (
+        export_reference_values_seed_sql,
+    )
+
+    load_case_count, reference_count, conflict_count = export_reference_values_seed_sql(
+        input_source=paths.input,
+        mapping_csv=sheet.sailpack_mapping,
+        max_loads_csv=sheet.max_loads,
+        output_sql=reference_values_output,
+        conflicts_output=target_threshold_conflicts_output,
+    )
+    load_case_mapping_count, ambiguous_load_cases = export_load_case_mapping_seed_sql(
+        input_source=paths.input, output_sql=load_case_mapping_output
+    )
+    return (
+        load_case_count,
+        reference_count,
+        conflict_count,
+        load_case_mapping_count,
+        ambiguous_load_cases,
+    )
+
+
 class ExportSeedCmd(SeedPaths):
     async def cli_cmd(self) -> None:
-        from sailpack.export_load_case_mapping_seed import (
-            export_load_case_mapping_seed_sql,
-        )
-        from sailpack.export_reference_values_seed import (
-            export_reference_values_seed_sql,
-        )
+        sheet = _download_consistent_sheet()
 
         logger.info("Exporting sailpack seed SQL...")
-        load_case_count, reference_count, conflict_count = (
-            export_reference_values_seed_sql(
-                input_source=self.input,
-                mapping_path=self.sailpack_mapping,
-                max_loads_path=self.max_loads,
-                output_sql=self.reference_values_output,
-                conflicts_output=self.target_threshold_conflicts_output,
-            )
+        (
+            load_case_count,
+            reference_count,
+            conflict_count,
+            load_case_mapping_count,
+            ambiguous_load_cases,
+        ) = _export_seeds(
+            self,
+            sheet,
+            self.reference_values_output,
+            self.target_threshold_conflicts_output,
+            self.load_case_mapping_output,
         )
         logger.info(
             f"Generated {self.reference_values_output} with {load_case_count} load cases and "
@@ -162,38 +209,33 @@ class ExportSeedCmd(SeedPaths):
                 f"Dropped {conflict_count} targets outside their warning or alarm thresholds, "
                 f"see {self.target_threshold_conflicts_output}."
             )
-
-        load_case_mapping_count, _ = export_load_case_mapping_seed_sql(
-            input_source=self.input, output_sql=self.load_case_mapping_output
-        )
         logger.info(
             f"Generated {self.load_case_mapping_output} with {load_case_mapping_count} load case mappings."
         )
+        for ambiguous in ambiguous_load_cases:
+            lower, upper = ambiguous.aws_range
+            aws_range = f"{lower:g}–{upper:g}" if upper is not None else f"{lower:g}+"
+            logger.warning(
+                f"Load cases {ambiguous.load_case_ids} share the sail set "
+                f"{'+'.join(ambiguous.sail_abbreviations)}, the {ambiguous.awa_range_id} AWA range "
+                f"and the AWS range {aws_range} kn; "
+                f"only {ambiguous.load_case_ids[0]} is mapped there."
+            )
 
 
-def _stale_seed_files(paths: SeedPaths) -> list[Path]:
-    from sailpack.export_load_case_mapping_seed import (
-        export_load_case_mapping_seed_sql,
-    )
-    from sailpack.export_reference_values_seed import (
-        export_reference_values_seed_sql,
-    )
-
+def _stale_seed_files(paths: SeedPaths, sheet: "LoadsSheet") -> list[Path]:
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)
         generated_reference_values = temp_path / paths.reference_values_output.name
         generated_case_mappings = temp_path / paths.load_case_mapping_output.name
         generated_conflicts = temp_path / paths.target_threshold_conflicts_output.name
 
-        export_reference_values_seed_sql(
-            input_source=paths.input,
-            mapping_path=paths.sailpack_mapping,
-            max_loads_path=paths.max_loads,
-            output_sql=generated_reference_values,
-            conflicts_output=generated_conflicts,
-        )
-        export_load_case_mapping_seed_sql(
-            input_source=paths.input, output_sql=generated_case_mappings
+        _export_seeds(
+            paths,
+            sheet,
+            generated_reference_values,
+            generated_conflicts,
+            generated_case_mappings,
         )
 
         return [
@@ -207,42 +249,21 @@ def _stale_seed_files(paths: SeedPaths) -> list[Path]:
         ]
 
 
-def _log_stale_seed_files(stale: list[Path]) -> None:
-    for path in stale:
-        logger.error(f"Seed file is out of date: {path}")
-    logger.error(
-        "Run 'uv run loads export-seed' from zero-loads-app to regenerate the seed files."
-    )
-
-
 class CheckSeedCmd(SeedPaths):
     async def cli_cmd(self) -> None:
-        if stale := _stale_seed_files(self):
-            _log_stale_seed_files(stale)
+        sheet = _download_consistent_sheet()
+
+        if stale := _stale_seed_files(self, sheet):
+            for path in stale:
+                logger.error(f"Seed file is out of date: {path}")
+            logger.error(
+                "Run 'uv run loads export-seed' from zero-loads-app to regenerate the seed files."
+            )
             sys.exit(1)
 
-        logger.info("Seed files are consistent with the sailpack export.")
-
-
-class DownloadSheetsCmd(SeedPaths):
-    tabs: list[TabName] = list(TABS)
-
-    async def cli_cmd(self) -> None:
-        for tab_name in self.tabs:
-            tab = TABS[tab_name]
-            download_tab(tab)
-            logger.info(f"Downloaded {tab_name} to {tab.path}")
-
-        if problems := consistency_problems():
-            for problem in problems:
-                logger.error(problem)
-            sys.exit(1)
-        logger.info("Sheet exports are consistent with the registry.")
-
-        if stale := _stale_seed_files(self):
-            _log_stale_seed_files(stale)
-            sys.exit(1)
-        logger.info("Seed files are consistent with the sheet exports.")
+        logger.info(
+            "Seed files are consistent with the loads sheet and the sailpack export."
+        )
 
 
 class ZeroLoads(BaseSettings, cli_kebab_case=True):
@@ -263,7 +284,6 @@ class ZeroLoads(BaseSettings, cli_kebab_case=True):
     sensors_stub: CliSubCommand[SensorsStubCmd]
     export_seed: CliSubCommand[ExportSeedCmd]
     check_seed: CliSubCommand[CheckSeedCmd]
-    download_sheets: CliSubCommand[DownloadSheetsCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)

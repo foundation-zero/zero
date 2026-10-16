@@ -1,47 +1,76 @@
-from pathlib import Path
-
 import pytest
 
 from loads.registry.sheets import (
-    TABS,
     IoListLabel,
     io_list_labels,
     io_list_topics_without_variable,
     max_loads_problems,
-    stale_io_list_exceptions,
     unknown_technical_names,
 )
 
-
-@pytest.mark.parametrize(
-    ("path", "header_rows"),
-    [
-        (TABS["sailpack-mapping"].path, TABS["sailpack-mapping"].header_rows),
-        (TABS["max-loads"].path, TABS["max-loads"].header_rows),
-    ],
+IO_LIST_HEADER = (
+    "Issued,14/07/2026,,,\n"
+    'Type,Topic,Display name,"Abbreviated\n display name",Display units\n'
 )
-def test_sheet_technical_names_are_in_registry(path: Path, header_rows: int):
-    assert unknown_technical_names(path, header_rows) == set()
+
+MAX_LOADS_HEADER = (
+    ",,Alarms,,,\n"
+    "Loads app technical name,Lower Warning Setting (kg),Lower Alarm Setting (kg),"
+    "Upper Warning Setting (kg),Upper Alarm Setting (kg)\n"
+)
 
 
-def test_io_list_display_names_match_a_registry_variable():
-    assert io_list_topics_without_variable() == []
+def test_unknown_technical_names_skips_the_header_rows_and_blank_names():
+    csv_text = (
+        "Loads app technical name,Note\n"
+        "main-sheet-load,\n"
+        ",a row without a technical name\n"
+        "main-sheet-lod,\n"
+    )
 
-
-def test_io_list_exceptions_are_labelled_topics_outside_the_registry():
-    assert stale_io_list_exceptions() == []
+    assert unknown_technical_names(csv_text, header_rows=1) == {"main-sheet-lod"}
 
 
 def test_io_list_labels_join_on_topic_regardless_of_case():
-    labels = io_list_labels()
-
-    assert labels["blade-adjuster-load"] == IoListLabel(
-        display_name="Blade RTA Load",
-        abbreviated_display_name="B RTA",
-        display_units="t",
+    io_list_csv = (
+        IO_LIST_HEADER
+        + "InputReg,F0103_BladeAdjuster.st_load.i_Load,Blade RTA Load,B RTA,t\n"
+        + "InputReg,F0103_BladeAdjuster.st_position.i_Unknown,,,\n"
     )
-    assert labels["mast-lock-main-1"].display_name == "Main Reef 1 lock"
+
+    assert io_list_labels(io_list_csv) == {
+        "blade-adjuster-load": IoListLabel(
+            display_name="Blade RTA Load",
+            abbreviated_display_name="B RTA",
+            display_units="t",
+        )
+    }
 
 
-def test_max_loads_parse():
-    assert max_loads_problems() == []
+def test_io_list_topics_without_variable_lists_labelled_topics_outside_the_registry():
+    io_list_csv = (
+        IO_LIST_HEADER
+        + "InputReg,F0103_BladeAdjuster.st_load.i_Load,Blade RTA Load,B RTA,t\n"
+        + "InputReg,F9999_Unknown.i_Load,Unknown Load,UNK,t\n"
+        + "InputReg,F9998_Unlabelled.i_Load,,,\n"
+    )
+
+    assert io_list_topics_without_variable(io_list_csv) == ["F9999_Unknown.i_Load"]
+
+
+@pytest.mark.parametrize(
+    ("row", "problem"),
+    [
+        ('main-sheet-load,,,"11,000","12,000"\n', None),
+        ("main-sheet-load,,,???,n/a\n", None),
+        ("main-sheet-load,,,11 t,12000\n", "non-numeric warning_high"),
+        ('main-sheet-load,,,"13,000","12,000"\n', "Upper warning above upper alarm"),
+    ],
+)
+def test_max_loads_problems(row: str, problem: str | None):
+    problems = max_loads_problems(MAX_LOADS_HEADER + row)
+
+    if problem is None:
+        assert problems == []
+    else:
+        assert any(problem.lower() in found.lower() for found in problems), problems

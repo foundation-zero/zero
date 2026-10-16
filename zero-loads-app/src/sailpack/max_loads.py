@@ -1,4 +1,5 @@
 import csv
+import io
 from pathlib import Path
 
 import polars as pl
@@ -8,7 +9,7 @@ from sailpack.seed_utils import RUNNER_BLOCK_LOAD_PER_TAIL_LOAD, mirror_side
 KILOGRAM_PER_TONNE = 1000.0
 
 # The "Max loads" tab export has a row of column groups above the column headers.
-HEADER_ROWS = 2
+MAX_LOADS_HEADER_ROWS = 2
 TECHNICAL_NAME_HEADER = "Loads app technical name"
 THRESHOLD_HEADERS = {
     "alarm_low": "Lower Alarm Setting (kg)",
@@ -26,24 +27,18 @@ def _kilogram_to_tonne(cell: str) -> float | None:
         return None
 
 
-def read_max_loads_cells(max_loads_path: Path) -> list[dict[str, str]]:
+def read_max_loads_cells(max_loads_csv: str) -> list[dict[str, str]]:
     """Return the technical name and raw threshold cells of every named row."""
-    if not max_loads_path.exists():
-        raise FileNotFoundError(f"Max loads file not found: {max_loads_path}")
+    rows = list(csv.reader(io.StringIO(max_loads_csv, newline="")))
 
-    with max_loads_path.open(newline="", encoding="utf-8") as file:
-        rows = list(csv.reader(file))
-
-    headers = [header.strip() for header in rows[HEADER_ROWS - 1]]
+    headers = [header.strip() for header in rows[MAX_LOADS_HEADER_ROWS - 1]]
     missing_headers = [
         header
         for header in [TECHNICAL_NAME_HEADER, *THRESHOLD_HEADERS.values()]
         if header not in headers
     ]
     if missing_headers:
-        raise ValueError(
-            f"Columns not found in {max_loads_path.name}: {missing_headers}"
-        )
+        raise ValueError(f"Columns not found in the max loads: {missing_headers}")
 
     column_positions = {
         "variable": headers.index(TECHNICAL_NAME_HEADER),
@@ -54,7 +49,7 @@ def read_max_loads_cells(max_loads_path: Path) -> list[dict[str, str]]:
     }
     return [
         {column: row[position].strip() for column, position in column_positions.items()}
-        for row in rows[HEADER_ROWS:]
+        for row in rows[MAX_LOADS_HEADER_ROWS:]
         if row and row[column_positions["variable"]].strip()
     ]
 
@@ -77,7 +72,7 @@ def runner_block_thresholds(max_loads: pl.DataFrame) -> pl.DataFrame:
     )
 
 
-def read_max_loads(max_loads_path: Path) -> pl.DataFrame:
+def read_max_loads(max_loads_csv: str) -> pl.DataFrame:
     """Read the max loads in tonnes, including the runner block thresholds derived from the tails."""
     sheet_max_loads = pl.DataFrame(
         [
@@ -88,7 +83,7 @@ def read_max_loads(max_loads_path: Path) -> pl.DataFrame:
                     for column in THRESHOLD_COLUMNS
                 },
             }
-            for cells in read_max_loads_cells(max_loads_path)
+            for cells in read_max_loads_cells(max_loads_csv)
         ],
         schema={
             "variable": pl.String,
