@@ -4,6 +4,47 @@ This directory contains Node.js scripts for automatically extracting GraphQL sch
 
 ## Scripts
 
+### `generate-tooltips.ts`
+
+Generates `src/modules/thrapp/mimics/data/tooltips.json` from every
+`src/modules/thrapp/mimics/modules/*/data/index.ts` module aggregate.
+
+```bash
+pnpm generate-tooltips
+pnpm generate-tooltips --check
+```
+
+The output contains each complete tooltip context, including sources, sensors,
+controls, parameters, controller state, custom data, and evaluated `tooltip`
+getters. Nested getters are evaluated too. The original TypeScript data is not
+changed, and switching application consumers to JSON is a separate step.
+
+The JSON has two root objects: `register` and `contexts`. Contexts are grouped
+by `MimicComponentType`, with unprefixed `YardTagOrModuleField` keys inside each
+group, for example, `contexts.CheckValve["1188-03"]`. Register values retain the
+component-type prefix. Tagged tooltips have two registry aliases, using the
+instance key and `module:instance`: both `"1188-03"` and `"pvt:1188-03"` map to
+`"CheckValve/1188-03"`. Tooltips without a yard tag only have the qualified
+alias, for example, `"dc:aft": "DcConverter/dc:aft"`. Inferred numeric yard tags
+also get both aliases. Component types sharing a tag keep separate entries in
+their respective groups; each registry alias points to its first match in module
+and instance iteration order.
+
+Tag selection uses the resolved tooltip's `yardTag`, then a numeric instance
+key, otherwise `module:instance`. Inferred tags are also added to the generated
+tooltip content. If the selected tag is empty, the key falls back to
+`module/field`.
+Structurally identical contexts under the same typed key are deduplicated,
+regardless of object property order. A key with one distinct context holds a
+single object; a key with multiple distinct contexts holds an array, preserving
+first-occurrence order. Contexts with different data are retained.
+
+The script uses Vite to build a temporary Node bundle, replacing Vue component
+imports with inert exports while evaluating the real data helpers. No browser,
+running dev server, or backend is required. Temporary files are cleaned up even
+on failure. `--check` verifies that the checked-in JSON matches the source data
+without writing it.
+
 ### `extract-schema-values.ts`
 
 Extracts fields from GraphQL schema types and generates TypeScript definition objects. Supports control, sensor, parameter, and simulation definitions with automatic type inference.

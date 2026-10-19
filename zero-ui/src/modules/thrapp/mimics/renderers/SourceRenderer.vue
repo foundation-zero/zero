@@ -49,13 +49,12 @@ const backendSource = computed(() => {
 const sourceName = computed(() => {
   if (backendSource.value || (props.apiOnly && !props.source)) {
     const apiTag = backendSource.value;
-    const sourceTag = tooltipContext.value?.[1]?.tooltip?.yardTag;
+    const sourceTag = tooltipContext.value?.tooltip?.yardTag;
 
     if (apiTag && apiTag === sourceTag) return sources("this");
 
     return apiTag ?? "";
-  } else if (tooltipContext.value?.[1]?.tooltip?.yardTag)
-    return tooltipContext.value[1].tooltip.yardTag;
+  } else if (tooltipContext.value?.tooltip?.yardTag) return tooltipContext.value.tooltip.yardTag;
   else if (!definition.value || !("yardTag" in definition.value))
     return snakeCase(source.value?.[2]);
 
@@ -64,7 +63,7 @@ const sourceName = computed(() => {
 
 const { findTooltipContext } = getTooltipContext();
 
-const tooltipContext = computed(() => (source.value ? findTooltipContext(source.value) : null));
+const tooltipContext = computed(() => (source.value ? findTooltipContext(source.value)[0] : null));
 const isParameter = computed(() => isParameterField(source.value));
 const showLink = computed(() => !props.noLink && !backendSource.value);
 </script>
