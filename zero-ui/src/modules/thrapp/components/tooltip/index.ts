@@ -7,8 +7,11 @@ import { createContext } from "reka-ui";
 import { type Component, markRaw, ref, type Ref, toRefs, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
-import { findTooltipContext, RegisterField } from "../../mimics/data";
-import { MimicComponentFieldsMap } from "../../mimics/modules";
+import {
+  getTooltipContext as _getTooltipContext,
+  findTooltipContext,
+  RegisterField,
+} from "../../mimics/data";
 import { ModuleField } from "../../mimics/providers";
 import { TOOLTIPS } from "../../mimics/tooltips";
 import { MimicComponentType } from "../../types";
@@ -26,6 +29,7 @@ export type TooltipComponentContext<Type extends MimicComponentType = MimicCompo
   tooltip?: TooltipContent;
   registerField?: RegisterField<Type>;
   type?: Type;
+  index?: number;
 } & ExtractComponentFields<Type>;
 
 export type TooltipContext = {
@@ -40,7 +44,7 @@ export type TooltipContext = {
   ) => void;
   setDialog(component: Component): void;
   closeDialog(): void;
-  findTooltipContext: (source: ModuleField) => TooltipComponentContext[];
+  findTooltipContext: (source: ModuleField | string) => TooltipComponentContext[];
   getData: <Type extends MimicComponentType>() => TooltipComponentContext<Type> | null;
   clear(): void;
 };
@@ -48,9 +52,7 @@ export type TooltipContext = {
 export const [getTooltipContext, provideTooltipContext] =
   createContext<TooltipContext>("TooltipContext");
 
-export const createTooltipContext = (
-  sourceData: Partial<MimicComponentFieldsMap>,
-): TooltipContext => {
+export const createTooltipContext = (): TooltipContext => {
   const { te, t } = useI18n();
   const component = ref<Component | null>(null);
   const dialog = ref<Component | null>(null);
@@ -96,16 +98,17 @@ export const createTooltipContext = (
       } else if (next.tooltip !== prev?.tooltip) {
         const field = String(next.tooltip);
         const type = String(next.type) as MimicComponentType;
+        const index = Number(next.index) || 0;
 
         if (!field) return;
 
-        const tooltipContext = findTooltipContext(field);
+        const tooltipContext = _getTooltipContext(type)(field as never, index);
 
-        if (!tooltipContext?.length) return;
+        if (!tooltipContext) return;
 
-        setTooltip(tooltipContext[0], TOOLTIPS[type]);
+        setTooltip(tooltipContext, TOOLTIPS[type]);
         const titleKey = `thrapp.tooltips.titles.${type}`;
-        title.value = te(titleKey) ? t(titleKey) : (tooltipContext[0]?.tooltip?.title ?? null);
+        title.value = te(titleKey) ? t(titleKey) : (tooltipContext?.tooltip?.title ?? null);
       }
     },
     { immediate: true },

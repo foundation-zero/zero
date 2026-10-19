@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
+import { getTooltipContexts } from "../../../data";
 import {
   ExpansionTankInstance,
   ExpansionValveInstance,
   TagLabelInstance,
 } from "../../../instances";
-import { DRIVES_EXPANSION_TANK_DATA, DRIVES_EXPANSION_VALVE_DATA } from "../data";
+
+const expansionTanks = getTooltipContexts(MimicComponentType.ExpansionTank, ["1040-04"]);
+const expansionValves = getTooltipContexts(MimicComponentType.ExpansionValve, ["1041-05"]);
 </script>
 
 <template>
@@ -12,7 +16,7 @@ import { DRIVES_EXPANSION_TANK_DATA, DRIVES_EXPANSION_VALVE_DATA } from "../data
     <ExpansionTankInstance
       x="1612"
       y="102"
-      v-bind="DRIVES_EXPANSION_TANK_DATA.ExpansionTank['1040-04']"
+      v-bind="expansionTanks['1040-04']"
     />
     <TagLabelInstance
       x="1568"
@@ -20,7 +24,7 @@ import { DRIVES_EXPANSION_TANK_DATA, DRIVES_EXPANSION_VALVE_DATA } from "../data
       tag-id="1040-04"
     />
     <g transform="matrix(0 1 1 0 1657 71)">
-      <ExpansionValveInstance v-bind="DRIVES_EXPANSION_VALVE_DATA.ExpansionValve['1041-05']" />
+      <ExpansionValveInstance v-bind="expansionValves['1041-05']" />
     </g>
     <TagLabelInstance
       x="1607"

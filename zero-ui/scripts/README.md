@@ -7,7 +7,7 @@ This directory contains Node.js scripts for automatically extracting GraphQL sch
 ### `generate-tooltips.ts`
 
 Generates `src/modules/thrapp/mimics/data/tooltips.json` from every
-`src/modules/thrapp/mimics/modules/*/data/index.ts` module aggregate.
+`src/modules/thrapp/mimics/data/*/index.ts` module aggregate.
 
 ```bash
 pnpm generate-tooltips

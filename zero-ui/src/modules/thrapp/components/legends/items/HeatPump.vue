@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils.ts";
 import { MimicComponentType } from "@/modules/thrapp/types";
+import { getTooltipContext } from "../../../mimics/data";
 import HeatPumpInstance from "../../../mimics/instances/HeatPumpInstance.vue";
-import { DHW_MIMIC_DATA } from "../../../mimics/modules/dhw/data/index.ts";
 import {
   LegendItem,
   LegendItemDescription,
@@ -12,13 +12,13 @@ import {
 } from "../../legend";
 
 const t = tScoped("thrapp.legends.heatPump");
-const assets = DHW_MIMIC_DATA[MimicComponentType.HeatPump];
+const heatPump = getTooltipContext(MimicComponentType.HeatPump)("1035");
 </script>
 
 <template>
   <LegendItem class="min-h-27">
     <LegendItemPreview>
-      <HeatPumpInstance v-bind="assets['1035']" />
+      <HeatPumpInstance v-bind="heatPump" />
     </LegendItemPreview>
     <LegendItemInfo class="gap-2">
       <LegendItemTitle>{{ t("title") }}</LegendItemTitle>

@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
+import { getTooltipContexts } from "../../../data";
 import { HeatExchangerInstance, HeatExchangerLabelInstance } from "../../../instances";
-import { PCM_MIMIC_DATA } from "../data";
 
-const heatExchangers = PCM_MIMIC_DATA[MimicComponentType.HeatExchanger];
+const heatExchangers = {
+  ...getTooltipContexts(MimicComponentType.HeatExchanger, ["1003"]),
+  ...getTooltipContexts(MimicComponentType.HeatExchanger, ["1007"], 1),
+};
 </script>
 
 <template>

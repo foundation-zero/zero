@@ -10,7 +10,7 @@ const t = tScoped("thrapp.legends.manualFlowControlValve");
 <template>
   <LegendItem>
     <LegendItemPreview size="sm">
-      <ManualValve :type="ManualValveType.FlowControl" />
+      <ManualValve :valve-type="ManualValveType.FlowControl" />
     </LegendItemPreview>
     <LegendItemInfo>
       <LegendItemTitle>{{ t("title") }}</LegendItemTitle>

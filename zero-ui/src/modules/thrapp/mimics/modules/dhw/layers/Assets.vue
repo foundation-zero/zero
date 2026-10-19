@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
+import { getTooltipContexts } from "../../../data";
 import HeatPumpInstance from "../../../instances/HeatPumpInstance.vue";
 import HVACInstance from "../../../instances/HVACInstance.vue";
-import { DHW_MIMIC_DATA } from "../data/index.ts";
 
-const heatpumps = DHW_MIMIC_DATA[MimicComponentType.HeatPump];
-const hvacs = DHW_MIMIC_DATA[MimicComponentType.HVAC];
+const heatpumps = getTooltipContexts(MimicComponentType.HeatPump, ["1035"]);
+const hvacs = getTooltipContexts(MimicComponentType.HVAC, ["41001001"]);
 </script>
 
 <template>

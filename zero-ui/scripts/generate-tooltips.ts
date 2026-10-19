@@ -13,8 +13,8 @@ type TooltipData = {
 type ModuleData = Record<string, Record<string, TooltipData>>;
 
 const root = fileURLToPath(new URL("..", import.meta.url));
-const modulesPath = join(root, "src/modules/thrapp/mimics/modules");
-const outputPath = join(root, "src/modules/thrapp/mimics/data/tooltips.json");
+const dataPath = join(root, "src/modules/thrapp/mimics/data");
+const outputPath = join(dataPath, "tooltips.json");
 
 const stripData = <T>(data: T): Partial<T> => {
   const copy = JSON.parse(JSON.stringify(data));
@@ -28,19 +28,16 @@ const stripData = <T>(data: T): Partial<T> => {
   ) as Partial<T>;
 };
 
-const moduleNames = (await readdir(modulesPath, { withFileTypes: true }))
+const moduleNames = (await readdir(dataPath, { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
   .sort();
 const modulePaths: Record<string, string> = {};
 
 for (const module of moduleNames) {
-  const dataPath = join(modulesPath, module, "data");
-  const files = await readdir(dataPath).catch((error: NodeJS.ErrnoException) => {
-    if (error.code === "ENOENT") return [] as string[];
-    throw error;
-  });
-  if (files.includes("index.ts")) modulePaths[module] = join(dataPath, "index.ts");
+  const modulePath = join(dataPath, module);
+  const files = await readdir(modulePath);
+  if (files.includes("index.ts")) modulePaths[module] = join(modulePath, "index.ts");
 }
 
 const temporaryRoot = join(root, "node_modules/.tmp");
@@ -101,18 +98,23 @@ try {
       for (const [instance, context] of Object.entries(instances)) {
         const resolved = stripData(context);
         const source = resolved.source;
-        const hasYardTag = Boolean(resolved.tooltip?.yardTag) || /^\d+(?:-\d+)*$/.test(instance);
-        const yardTag =
-          resolved.tooltip?.yardTag ||
-          (/^\d+(?:-\d+)*$/.test(instance) ? instance : `${module}:${instance}`);
+        const isNamed = !/^\d+(?:-\d+)*$/.test(instance);
+        const hasYardTag = Boolean(resolved.tooltip?.yardTag) || !isNamed;
+        const yardTag = resolved.tooltip?.yardTag || (isNamed ? `${module}:${instance}` : instance);
         if (yardTag && resolved.tooltip) resolved.tooltip.yardTag = yardTag;
-        const key = yardTag || (source && `${source[1]}/${source[2]}`);
+        // Named instances (e.g. circuits) can share a yard tag with another module's view of the
+        // same component, so key them by name to keep their contexts apart.
+        const key =
+          (isNamed ? `${module}:${instance}` : yardTag) || (source && `${source[1]}/${source[2]}`);
         if (!key) throw new Error(`Tooltip in ${module} has neither a yardTag nor a source`);
         entries.push({
           key,
-          registerKeys: hasYardTag
-            ? [instance, `${module}:${instance}`]
-            : [`${module}:${instance}`],
+          registerKeys:
+            !source || source[0] === "custom"
+              ? []
+              : hasYardTag
+                ? [instance, `${module}:${source?.[2]}`]
+                : [`${module}:${instance}`],
           componentType,
           context: resolved,
         });

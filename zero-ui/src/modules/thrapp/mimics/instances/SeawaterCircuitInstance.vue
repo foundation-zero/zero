@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { reactiveOmit } from "@vueuse/core";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
@@ -15,17 +16,13 @@ const props = withDefaults(
   >(),
   { height: 90 },
 );
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.SeawaterCircuit"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <HTMLWrapper v-bind="{ width, height, x, y }">
-      <SeawaterCircuitContent
-        v-bind="{ sensors, controllerState, controls, parameters, source, tooltip, custom }"
-      />
+      <SeawaterCircuitContent v-bind="forwardedProps" />
     </HTMLWrapper>
   </MimicTooltipTrigger>
 </template>

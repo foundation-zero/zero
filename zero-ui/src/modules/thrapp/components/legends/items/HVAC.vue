@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils.ts";
 import { MimicComponentType } from "@/modules/thrapp/types";
+import { getTooltipContext } from "../../../mimics/data";
 import HVACInstance from "../../../mimics/instances/HVACInstance.vue";
-import { DHW_MIMIC_DATA } from "../../../mimics/modules/dhw/data/index.ts";
 import {
   LegendItem,
   LegendItemDescription,
@@ -12,7 +12,7 @@ import {
 } from "../../legend";
 
 const t = tScoped("thrapp.legends.hvac");
-const assets = DHW_MIMIC_DATA[MimicComponentType.HVAC];
+const hvac = getTooltipContext(MimicComponentType.HVAC)("41001001");
 </script>
 
 <template>
@@ -20,7 +20,7 @@ const assets = DHW_MIMIC_DATA[MimicComponentType.HVAC];
     <LegendItemPreview>
       <HVACInstance
         :force-height="false"
-        v-bind="assets['41001001']"
+        v-bind="hvac"
       />
     </LegendItemPreview>
     <LegendItemInfo class="gap-2">

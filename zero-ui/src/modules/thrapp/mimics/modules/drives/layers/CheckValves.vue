@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { CHECK_VALVE_WIDTH } from "../../../components/check-valve";
+import { getTooltipContexts } from "../../../data";
 import { CheckValveInstance, TagLabelInstance } from "../../../instances";
-import { DRIVES_CHECK_VALVE_DATA } from "../data";
 
-const checkValves = DRIVES_CHECK_VALVE_DATA.CheckValve;
+const checkValves = getTooltipContexts(MimicComponentType.CheckValve, ["1090-01", "1090-02"]);
 </script>
 
 <template>

@@ -11,7 +11,6 @@ import { useDcMode } from "../../state";
 import { MimicComponentType } from "../../types";
 import { DcMode } from "../components/dc-converter";
 import { SensorGraph } from "../components/sensor-graph";
-import { YardTag } from "../components/yard-tag";
 import { DcConverterInstance } from "../instances";
 import { getField, getMimicDataProvider, SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
@@ -36,7 +35,6 @@ const modeKey = useDcMode(props.custom.group);
           force-height
         />
       </NoopTooltipProvider>
-      <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 
     <TooltipList class="border-b-0">

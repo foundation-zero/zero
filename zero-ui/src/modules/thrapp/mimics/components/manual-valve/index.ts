@@ -17,7 +17,7 @@ export const enum ManualValveType {
 }
 
 export interface ManualValveProps {
-  type?: ManualValveType;
+  valveType?: ManualValveType;
 }
 
 export const MANUAL_VALVE_WIDTH = 36;

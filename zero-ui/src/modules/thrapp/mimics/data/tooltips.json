@@ -26,14 +26,8 @@
     "1050": "Pcm/1050",
     "1051": "Pcm/1051",
     "1052": "Pcm/1052",
-    "1053": "BoilerTank/1053",
-    "1054": "BoilerTank/1054",
-    "1055": "BoilerTank/1055",
     "1061": "FlowControlValve/1061",
     "1074": "MixValve/1074",
-    "1084": "AirTrapVessel/1084",
-    "1092": "ExpansionTank/1092",
-    "1182": "ManualPump/1182",
     "1192": "FlowSensor/1192",
     "1194": "Pump/1194",
     "1195": "Pump/1195",
@@ -41,7 +35,6 @@
     "9043": "Pyranometer/9043",
     "9044": "Pyranometer/9044",
     "41001001": "HVAC/41001001",
-    "??????": "ManualValve/??????",
     "1038-01": "TemperatureSensor/1038-01",
     "1038-02": "TemperatureSensor/1038-02",
     "1038-03": "TemperatureSensor/1038-03",
@@ -94,13 +87,6 @@
     "1038-71": "TemperatureSensor/1038-71",
     "1038-72": "TemperatureSensor/1038-72",
     "1038-73": "TemperatureSensor/1038-73",
-    "1040-01": "ExpansionTank/1040-01",
-    "1040-04": "ExpansionTank/1040-04",
-    "1040-05": "ExpansionTank/1040-05",
-    "1041-01": "ExpansionValve/1041-01",
-    "1041-04": "ExpansionValve/1041-04",
-    "1041-05": "ExpansionValve/1041-05",
-    "1041-06": "ExpansionValve/1041-06",
     "1042-03": "MixValve/1042-03",
     "1043-01": "MixValve/1043-01",
     "1043-02": "MixValve/1043-02",
@@ -159,8 +145,8 @@
     "1067-04": "SwitchValve/1067-04",
     "1067-05": "SwitchValve/1067-05",
     "1067-06": "SwitchValve/1067-06",
-    "1067-07": "ManualValve/1067-07",
-    "1067-08": "ManualValve/1067-08",
+    "1067-07": "SwitchValve/1067-07",
+    "1067-08": "SwitchValve/1067-08",
     "1067-09": "SwitchValve/1067-09",
     "1067-10": "SwitchValve/1067-10",
     "1067-11": "SwitchValve/1067-11",
@@ -171,7 +157,6 @@
     "1067-16": "SwitchValve/1067-16",
     "1067-17": "SwitchValve/1067-17",
     "1067-18": "SwitchValve/1067-18",
-    "1068-22": "ManualValve/1068-22",
     "1069-01": "SwitchValve/1069-01",
     "1069-04": "SwitchValve/1069-04",
     "1069-05": "SwitchValve/1069-05",
@@ -179,61 +164,9 @@
     "1069-07": "SwitchValve/1069-07",
     "1069-08": "SwitchValve/1069-08",
     "1069-09": "SwitchValve/1069-09",
-    "1069-10": "ManualValve/1069-10",
-    "1069-17": "ManualValve/1069-17",
-    "1069-18": "ManualValve/1069-18",
     "1071-02": "SwitchValve/1071-02",
-    "1073-01": "ManualValve/1073-01",
-    "1073-02": "ManualValve/1073-02",
-    "1075-01": "CheckValve/1075-01",
-    "1075-06": "CheckValve/1075-06",
-    "1076-01": "CheckValve/1076-01",
-    "1076-02": "CheckValve/1076-02",
-    "1076-03": "CheckValve/1076-03",
-    "1077-01": "CheckValve/1077-01",
-    "1077-02": "CheckValve/1077-02",
-    "1077-03": "CheckValve/1077-03",
-    "1077-04": "CheckValve/1077-04",
-    "1078-01": "CheckValve/1078-01",
-    "1084-01": "ManualValve/1084-01",
-    "1084-02": "ManualValve/1084-02",
-    "1085-01": "CheckValve/1085-01",
-    "1085-02": "ManualValve/1085-02",
-    "1085-03": "ManualValve/1085-03",
-    "1085-04": "ManualValve/1085-04",
-    "1085-05": "ManualValve/1085-05",
-    "1086-01": "ManualValve/1086-01",
-    "1086-02": "ManualValve/1086-02",
-    "1086-05": "ManualValve/1086-05",
-    "1086-06": "ManualValve/1086-06",
-    "1086-07": "ManualValve/1086-07",
-    "1086-08": "ManualValve/1086-08",
-    "1086-09": "ManualValve/1086-09",
-    "1086-10": "ManualValve/1086-10",
-    "1087-01": "ManualValve/1087-01",
-    "1087-03": "ManualValve/1087-03",
-    "1087-04": "ManualValve/1087-04",
-    "1087-05": "ManualValve/1087-05",
-    "1087-06": "ManualValve/1087-06",
-    "1087-07": "ManualValve/1087-07",
-    "1087-08": "ManualValve/1087-08",
-    "1090-01": "CheckValve/1090-01",
-    "1090-02": "CheckValve/1090-02",
     "1091-01": "ThreeWaySwitchValve/1091-01",
     "1091-02": "ThreeWaySwitchValve/1091-02",
-    "1095-01": "PressureGauge/1095-01",
-    "1095-03": "PressureGauge/1095-03",
-    "1095-04": "PressureGauge/1095-04",
-    "1095-05": "PressureGauge/1095-05",
-    "1095-06": "PressureGauge/1095-06",
-    "1095-10": "PressureGauge/1095-10",
-    "1095-11": "PressureGauge/1095-11",
-    "1095-12": "PressureGauge/1095-12",
-    "1095-13": "PressureGauge/1095-13",
-    "1095-14": "PressureGauge/1095-14",
-    "1096-05": "PressureGauge/1096-05",
-    "1096-06": "PressureGauge/1096-06",
-    "1096-09": "PressureGauge/1096-09",
     "1097-01": "PressureSensor/1097-01",
     "1097-02": "PressureSensor/1097-02",
     "1097-03": "PressureSensor/1097-03",
@@ -248,441 +181,248 @@
     "1098-01": "LevelSwitch/1098-01",
     "1098-02": "LevelSwitch/1098-02",
     "1098-03": "LevelSwitch/1098-03",
-    "1167-11": "ManualValve/1167-11",
-    "1167-13": "ManualValve/1167-13",
-    "1168-04": "ManualValve/1168-04",
-    "1168-05": "ManualValve/1168-05",
-    "1168-06": "ManualValve/1168-06",
-    "1168-12": "ManualValve/1168-12",
-    "1168-15": "ManualValve/1168-15",
-    "1168-16": "ManualValve/1168-16",
-    "1168-19": "ManualValve/1168-19",
-    "1168-23": "ManualValve/1168-23",
-    "1168-24": "ManualValve/1168-24",
-    "1168-25": "ManualValve/1168-25",
-    "1168-26": "ManualValve/1168-26",
-    "1168-27": "ManualValve/1168-27",
-    "1168-28": "ManualValve/1168-28",
-    "1168-29": "ManualValve/1168-29",
-    "1168-30": "ManualValve/1168-30",
-    "1168-31": "ManualValve/1168-31",
-    "1168-32": "ManualValve/1168-32",
-    "1169-01": "ManualValve/1169-01",
-    "1169-02": "ManualValve/1169-02",
-    "1169-03": "ManualValve/1169-03",
-    "1169-04": "ManualValve/1169-04",
-    "1169-05": "ManualValve/1169-05",
-    "1169-07": "ManualValve/1169-07",
-    "1169-08": "ManualValve/1169-08",
-    "1169-09": "ManualValve/1169-09",
-    "1169-17": "ManualValve/1169-17",
-    "1170-03": "ManualValve/1170-03",
-    "1170-04": "ManualValve/1170-04",
-    "1170-05": "ManualValve/1170-05",
-    "1170-06": "ManualValve/1170-06",
-    "1172-05": "ManualValve/1172-05",
-    "1172-06": "ManualValve/1172-06",
-    "1174-01": "ManualValve/1174-01",
-    "1174-02": "ManualValve/1174-02",
-    "1177-01": "ManualValve/1177-01",
-    "1177-02": "ManualValve/1177-02",
-    "1188-01": "CheckValve/1188-01",
-    "1188-02": "CheckValve/1188-02",
-    "1188-03": "CheckValve/1188-03",
     "1190-01": "SwitchValve/1190-01",
-    "1191-01": "ManualValve/1191-01",
-    "1191-02": "ManualValve/1191-02",
-    "1212-01": "ManualValve/1212-01",
-    "1212-02": "ManualValve/1212-02",
-    "1212-03": "ManualValve/1212-03",
-    "1212-04": "ManualValve/1212-04",
-    "1212-05": "ManualValve/1212-05",
-    "1212-06": "ManualValve/1212-06",
-    "1212-07": "ManualValve/1212-07",
-    "1213-01": "CheckValve/1213-01",
-    "1213-02": "CheckValve/1213-02",
     "1214-01": "MixValve/1214-01",
-    "1217-01": "CheckValve/1217-01",
-    "1217-02": "CheckValve/1217-02",
     "1218-01": "FlowSensor/1218-01",
     "1218-02": "FlowSensor/1218-02",
     "9001-01": "Pvt/9001-01",
     "9001-03": "Pvt/9001-03",
     "9002-01": "Pvt/9002-01",
-    "adsorption": "ExchangeCircuit/1004",
-    "dc:1006": "HeatExchanger/1006",
-    "dc:1008": "HeatExchanger/1008",
-    "dc:1020": "Pump/1020",
-    "dc:1023": "Pump/1023",
-    "dc:1025": "Pump/1025",
-    "dc:1038-15": "TemperatureSensor/1038-15",
-    "dc:1038-17": "TemperatureSensor/1038-17",
-    "dc:1038-18": "TemperatureSensor/1038-18",
-    "dc:1038-19": "TemperatureSensor/1038-19",
-    "dc:1038-20": "TemperatureSensor/1038-20",
-    "dc:1038-52": "TemperatureSensor/1038-52",
-    "dc:1038-58": "TemperatureSensor/1038-58",
-    "dc:1038-69": "TemperatureSensor/1038-69",
-    "dc:1038-70": "TemperatureSensor/1038-70",
-    "dc:1038-71": "TemperatureSensor/1038-71",
-    "dc:1040-05": "ExpansionTank/1040-05",
-    "dc:1041-06": "ExpansionValve/1041-06",
-    "dc:1042-03": "MixValve/1042-03",
-    "dc:1043-02": "MixValve/1043-02",
-    "dc:1045-01": "MixValve/1045-01",
-    "dc:1046-04": "MixValve/1046-04",
-    "dc:1046-05": "MixValve/1046-05",
-    "dc:1057-25": "FlowSensor/1057-25",
-    "dc:1057-26": "FlowSensor/1057-26",
-    "dc:1058-04": "FlowSensor/1058-04",
-    "dc:1058-06": "FlowSensor/1058-06",
-    "dc:1067-07": "ManualValve/1067-07",
-    "dc:1067-08": "ManualValve/1067-08",
-    "dc:1068-22": "ManualValve/1068-22",
-    "dc:1069-18": "ManualValve/1069-18",
-    "dc:1075-01": "CheckValve/1075-01",
-    "dc:1075-06": "CheckValve/1075-06",
-    "dc:1076-02": "CheckValve/1076-02",
-    "dc:1076-03": "CheckValve/1076-03",
-    "dc:1077-03": "CheckValve/1077-03",
-    "dc:1077-04": "CheckValve/1077-04",
-    "dc:1095-10": "PressureGauge/1095-10",
-    "dc:1095-11": "PressureGauge/1095-11",
-    "dc:1095-12": "PressureGauge/1095-12",
-    "dc:1096-06": "PressureGauge/1096-06",
-    "dc:1097-07": "PressureSensor/1097-07",
-    "dc:1097-08": "PressureSensor/1097-08",
-    "dc:1097-09": "PressureSensor/1097-09",
-    "dc:1167-13": "ManualValve/1167-13",
-    "dc:1168-15": "ManualValve/1168-15",
-    "dc:1168-16": "ManualValve/1168-16",
-    "dc:1168-27": "ManualValve/1168-27",
-    "dc:1168-28": "ManualValve/1168-28",
-    "dc:1168-29": "ManualValve/1168-29",
-    "dc:1169-17": "ManualValve/1169-17",
-    "dc:1170-03": "ManualValve/1170-03",
-    "dc:1170-04": "ManualValve/1170-04",
-    "dc:1172-05": "ManualValve/1172-05",
-    "dc:1172-06": "ManualValve/1172-06",
+    "adsorption": "ExchangeCircuit/dhw:adsorption",
     "dc:aft": "DcConverter/dc:aft",
-    "dc:domesticHotWater": "ExchangeCircuit/1008",
+    "dc:dcDhwExchanger": "HeatExchanger/1008",
+    "dc:dcFlowAftReturn": "FlowSensor/1057-25",
+    "dc:dcFlowFwdReturn": "FlowSensor/1057-26",
+    "dc:dcFlowRecovery": "FlowSensor/1058-04",
+    "dc:dcFlowUgridReturn": "FlowSensor/1058-06",
+    "dc:dcMixAft": "MixValve/1043-02",
+    "dc:dcMixExchanger": "MixValve/1046-05",
+    "dc:dcMixFwd": "MixValve/1042-03",
+    "dc:dcMixRecovery": "MixValve/1046-04",
+    "dc:dcMixUgrid": "MixValve/1045-01",
+    "dc:dcPressureAft": "PressureSensor/1097-07",
+    "dc:dcPressureFwd": "PressureSensor/1097-09",
+    "dc:dcPressureUgrid": "PressureSensor/1097-08",
+    "dc:dcPumpAft": "Pump/1020",
+    "dc:dcPumpFwd": "Pump/1025",
+    "dc:dcPumpUgrid": "Pump/1023",
+    "dc:dcSeawaterExchanger": "HeatExchanger/1006",
+    "dc:dcTemperatureAftReturn": "TemperatureSensor/1038-20",
+    "dc:dcTemperatureAftSupply": "TemperatureSensor/1038-15",
+    "dc:dcTemperatureFwdReturn": "TemperatureSensor/1038-19",
+    "dc:dcTemperatureFwdSupply": "TemperatureSensor/1038-69",
+    "dc:dcTemperatureRecovery": "TemperatureSensor/1038-52",
+    "dc:dcTemperatureRecoveryMix": "TemperatureSensor/1038-17",
+    "dc:dcTemperatureRecoveryReturn": "TemperatureSensor/1038-58",
+    "dc:dcTemperatureSupply": "TemperatureSensor/1038-18",
+    "dc:dcTemperatureUgridReturn": "TemperatureSensor/1038-71",
+    "dc:dcTemperatureUgridSupply": "TemperatureSensor/1038-70",
+    "dc:dhwDcExchanger": "ExchangeCircuit/dc:domesticHotWater",
     "dc:fwd": "DcConverter/dc:fwd",
     "dc:seawater": "SeawaterCircuit/dc:seawater",
     "dc:ugrid": "DcConverter/dc:ugrid",
-    "dcConverters": "ExchangeCircuit/1008",
-    "dhw": "ExchangeCircuit/1007",
-    "dhw:1004": "HeatExchanger/1004",
-    "dhw:1007": "HeatExchanger/1007",
-    "dhw:1008": "HeatExchanger/1008",
-    "dhw:1009": "HeatExchanger/1009",
-    "dhw:1022": "Pump/1022",
-    "dhw:1035": "HeatPump/1035",
-    "dhw:1038-25": "TemperatureSensor/1038-25",
-    "dhw:1038-26": "TemperatureSensor/1038-26",
-    "dhw:1038-27": "TemperatureSensor/1038-27",
-    "dhw:1038-44": "TemperatureSensor/1038-44",
-    "dhw:1038-45": "TemperatureSensor/1038-45",
-    "dhw:1038-46": "TemperatureSensor/1038-46",
-    "dhw:1038-47": "TemperatureSensor/1038-47",
-    "dhw:1038-51": "TemperatureSensor/1038-51",
-    "dhw:1038-65": "TemperatureSensor/1038-65",
-    "dhw:1038-66": "TemperatureSensor/1038-66",
-    "dhw:1053": "BoilerTank/1053",
-    "dhw:1054": "BoilerTank/1054",
-    "dhw:1055": "BoilerTank/1055",
-    "dhw:1056-01": "LevelSensor/1056-01",
-    "dhw:1056-02": "LevelSensor/1056-02",
-    "dhw:1056-03": "LevelSensor/1056-03",
-    "dhw:1057-17": "FlowSensor/1057-17",
-    "dhw:1057-24": "FlowSensor/1057-24",
-    "dhw:1058-11": "FlowSensor/1058-11",
-    "dhw:1064-03": "FlowControlValve/1064-03",
-    "dhw:1064-08": "FlowControlValve/1064-08",
-    "dhw:1067-03": "SwitchValve/1067-03",
-    "dhw:1067-04": "SwitchValve/1067-04",
-    "dhw:1067-05": "SwitchValve/1067-05",
-    "dhw:1067-06": "SwitchValve/1067-06",
-    "dhw:1067-07": "SwitchValve/1067-07",
-    "dhw:1067-08": "SwitchValve/1067-08",
-    "dhw:1067-09": "SwitchValve/1067-09",
-    "dhw:1067-10": "SwitchValve/1067-10",
-    "dhw:1067-11": "SwitchValve/1067-11",
-    "dhw:1067-12": "SwitchValve/1067-12",
-    "dhw:1067-13": "SwitchValve/1067-13",
-    "dhw:1067-14": "SwitchValve/1067-14",
-    "dhw:1067-16": "SwitchValve/1067-16",
-    "dhw:1067-17": "SwitchValve/1067-17",
-    "dhw:1067-18": "SwitchValve/1067-18",
-    "dhw:1069-10": "ManualValve/1069-10",
-    "dhw:1069-17": "ManualValve/1069-17",
-    "dhw:1069-18": "ManualValve/1069-18",
-    "dhw:1095-14": "PressureGauge/1095-14",
-    "dhw:1097-11": "PressureSensor/1097-11",
-    "dhw:1098-01": "LevelSwitch/1098-01",
-    "dhw:1098-02": "LevelSwitch/1098-02",
-    "dhw:1098-03": "LevelSwitch/1098-03",
-    "dhw:1168-04": "ManualValve/1168-04",
-    "dhw:1168-05": "ManualValve/1168-05",
-    "dhw:1168-06": "ManualValve/1168-06",
-    "dhw:1169-01": "ManualValve/1169-01",
-    "dhw:1169-02": "ManualValve/1169-02",
-    "dhw:1169-03": "ManualValve/1169-03",
-    "dhw:1174-01": "ManualValve/1174-01",
-    "dhw:1174-02": "ManualValve/1174-02",
-    "dhw:41001001": "HVAC/41001001",
-    "dhw:adsorption": "ExchangeCircuit/1004",
-    "dhw:dcConverters": "ExchangeCircuit/1008",
-    "dhw:drives": "ExchangeCircuit/1009",
-    "dhw:freshwater": "FreshwaterCircuit/dhw:freshwater",
-    "dhw:highTempLoop": "ExchangeCircuit/1007",
-    "domesticHotWater": "ExchangeCircuit/1008",
-    "drives": "ExchangeCircuit/1009",
-    "drives:1009": "HeatExchanger/1009",
-    "drives:1011": "HeatExchanger/1011",
-    "drives:1012": "PropulsionCooler/1012",
-    "drives:1013": "PropulsionCooler/1013",
-    "drives:1028": "Pump/1028",
-    "drives:1029": "Pump/1029",
-    "drives:1038-11": "TemperatureSensor/1038-11",
-    "drives:1038-14": "TemperatureSensor/1038-14",
-    "drives:1038-16": "TemperatureSensor/1038-16",
-    "drives:1038-32": "TemperatureSensor/1038-32",
-    "drives:1038-57": "TemperatureSensor/1038-57",
-    "drives:1038-59": "TemperatureSensor/1038-59",
-    "drives:1038-61": "TemperatureSensor/1038-61",
-    "drives:1038-62": "TemperatureSensor/1038-62",
-    "drives:1038-63": "TemperatureSensor/1038-63",
-    "drives:1038-64": "TemperatureSensor/1038-64",
-    "drives:1038-72": "TemperatureSensor/1038-72",
-    "drives:1040-04": "ExpansionTank/1040-04",
-    "drives:1041-05": "ExpansionValve/1041-05",
-    "drives:1046-01": "MixValve/1046-01",
-    "drives:1046-03": "MixValve/1046-03",
-    "drives:1057-10": "FlowSensor/1057-10",
-    "drives:1057-13": "FlowSensor/1057-13",
-    "drives:1057-14": "FlowSensor/1057-14",
-    "drives:1057-15": "FlowSensor/1057-15",
-    "drives:1057-16": "FlowSensor/1057-16",
-    "drives:1058-03": "FlowSensor/1058-03",
-    "drives:1065-02": "FlowControlValve/1065-02",
-    "drives:1065-03": "FlowControlValve/1065-03",
-    "drives:1069-04": "SwitchValve/1069-04",
-    "drives:1069-05": "SwitchValve/1069-05",
-    "drives:1069-06": "SwitchValve/1069-06",
-    "drives:1069-07": "SwitchValve/1069-07",
-    "drives:1069-08": "SwitchValve/1069-08",
-    "drives:1069-09": "SwitchValve/1069-09",
-    "drives:1073-01": "ManualValve/1073-01",
-    "drives:1073-02": "ManualValve/1073-02",
-    "drives:1084-02": "ManualValve/1084-02",
-    "drives:1085-02": "ManualValve/1085-02",
-    "drives:1085-03": "ManualValve/1085-03",
-    "drives:1085-04": "ManualValve/1085-04",
-    "drives:1085-05": "ManualValve/1085-05",
-    "drives:1086-01": "ManualValve/1086-01",
-    "drives:1086-02": "ManualValve/1086-02",
-    "drives:1086-05": "ManualValve/1086-05",
-    "drives:1086-06": "ManualValve/1086-06",
-    "drives:1086-07": "ManualValve/1086-07",
-    "drives:1086-08": "ManualValve/1086-08",
-    "drives:1086-09": "ManualValve/1086-09",
-    "drives:1086-10": "ManualValve/1086-10",
-    "drives:1087-01": "ManualValve/1087-01",
-    "drives:1087-04": "ManualValve/1087-04",
-    "drives:1087-05": "ManualValve/1087-05",
-    "drives:1087-06": "ManualValve/1087-06",
-    "drives:1087-07": "ManualValve/1087-07",
-    "drives:1090-01": "CheckValve/1090-01",
-    "drives:1090-02": "CheckValve/1090-02",
-    "drives:1095-13": "PressureGauge/1095-13",
-    "drives:1096-05": "PressureGauge/1096-05",
-    "drives:1097-10": "PressureSensor/1097-10",
-    "drives:domesticHotWater": "ExchangeCircuit/1009",
-    "drives:propdriveAft1": "PropulsionDrive/45002079",
-    "drives:propdriveAft2": "PropulsionDrive/45002079",
-    "drives:propdriveFwd1": "PropulsionDrive/45002080",
-    "drives:propdriveFwd2": "PropulsionDrive/45002080",
+    "dcConverters": "ExchangeCircuit/dhw:dcConverters",
+    "dhw": "ExchangeCircuit/pcm:dhw",
+    "dhw:adsorptionDhwExchanger": "ExchangeCircuit/dhw:adsorption",
+    "dhw:consumersDhwExchanger": "ExchangeCircuit/dhw:highTempLoop",
+    "dhw:dcDhwExchanger": "ExchangeCircuit/dhw:dcConverters",
+    "dhw:dhwAdsorptionExchanger": "HeatExchanger/1004",
+    "dhw:dhwConsumersExchanger": "HeatExchanger/1007",
+    "dhw:dhwDcExchanger": "HeatExchanger/1008",
+    "dhw:dhwDrivesExchanger": "HeatExchanger/1009",
+    "dhw:dhwFlowBoosting": "FlowSensor/1058-11",
+    "dhw:dhwFlowcontrolDc": "FlowControlValve/1064-03",
+    "dhw:dhwFlowcontrolDrives": "FlowControlValve/1064-08",
+    "dhw:dhwFlowDc": "FlowSensor/1057-17",
+    "dhw:dhwFlowDrives": "FlowSensor/1057-24",
+    "dhw:dhwHeatpump": "HeatPump/1035",
+    "dhw:dhwHvacExchanger": "HVAC/41001001",
+    "dhw:dhwLevelSwitchTank1": "LevelSwitch/1098-01",
+    "dhw:dhwLevelSwitchTank2": "LevelSwitch/1098-02",
+    "dhw:dhwLevelSwitchTank3": "LevelSwitch/1098-03",
+    "dhw:dhwLevelTank1": "LevelSensor/1056-01",
+    "dhw:dhwLevelTank2": "LevelSensor/1056-02",
+    "dhw:dhwLevelTank3": "LevelSensor/1056-03",
+    "dhw:dhwPressure": "PressureSensor/1097-11",
+    "dhw:dhwPump": "Pump/1022",
+    "dhw:dhwSwitchHeatpump": "SwitchValve/1067-17",
+    "dhw:dhwSwitchHighTemperature": "SwitchValve/1067-18",
+    "dhw:dhwSwitchLowTemperature": "SwitchValve/1067-16",
+    "dhw:dhwSwitchTank1BoostingReturn": "SwitchValve/1067-12",
+    "dhw:dhwSwitchTank1BoostingSupply": "SwitchValve/1067-14",
+    "dhw:dhwSwitchTank1Inlet": "SwitchValve/1067-11",
+    "dhw:dhwSwitchTank1Outlet": "SwitchValve/1067-13",
+    "dhw:dhwSwitchTank2BoostingReturn": "SwitchValve/1067-08",
+    "dhw:dhwSwitchTank2BoostingSupply": "SwitchValve/1067-10",
+    "dhw:dhwSwitchTank2Inlet": "SwitchValve/1067-07",
+    "dhw:dhwSwitchTank2Outlet": "SwitchValve/1067-09",
+    "dhw:dhwSwitchTank3BoostingReturn": "SwitchValve/1067-04",
+    "dhw:dhwSwitchTank3BoostingSupply": "SwitchValve/1067-06",
+    "dhw:dhwSwitchTank3Inlet": "SwitchValve/1067-03",
+    "dhw:dhwSwitchTank3Outlet": "SwitchValve/1067-05",
+    "dhw:dhwTemperatureAdsorptionReturn": "TemperatureSensor/1038-51",
+    "dhw:dhwTemperatureBoostingReturn": "TemperatureSensor/1038-65",
+    "dhw:dhwTemperatureBoostingSupply": "TemperatureSensor/1038-66",
+    "dhw:dhwTemperatureDcReturn": "TemperatureSensor/1038-26",
+    "dhw:dhwTemperatureDrivesReturn": "TemperatureSensor/1038-46",
+    "dhw:dhwTemperatureFreshwaterSupply": "TemperatureSensor/1038-47",
+    "dhw:dhwTemperatureHvacExchangerReturn": "TemperatureSensor/1038-25",
+    "dhw:dhwTemperatureTank1": "TemperatureSensor/1038-45",
+    "dhw:dhwTemperatureTank2": "TemperatureSensor/1038-44",
+    "dhw:dhwTemperatureTank3": "TemperatureSensor/1038-27",
+    "dhw:drivesDhwExchanger": "ExchangeCircuit/dhw:drives",
+    "domesticHotWater": "ExchangeCircuit/dc:domesticHotWater",
+    "drives": "ExchangeCircuit/dhw:drives",
+    "drives:dhwDrivesExchanger": "ExchangeCircuit/drives:domesticHotWater",
+    "drives:drivesAftOilCoolerHeat": "PropulsionCooler/1012",
+    "drives:drivesDhwExchanger": "HeatExchanger/1009",
+    "drives:drivesFlowcontrolPropdriveAft": "FlowControlValve/1065-02",
+    "drives:drivesFlowcontrolPropdriveFwd": "FlowControlValve/1065-03",
+    "drives:drivesFlowPropdriveAft1": "FlowSensor/1057-13",
+    "drives:drivesFlowPropdriveAft2": "FlowSensor/1057-16",
+    "drives:drivesFlowPropdriveFwd1": "FlowSensor/1057-15",
+    "drives:drivesFlowPropdriveFwd2": "FlowSensor/1057-14",
+    "drives:drivesFlowRecovery": "FlowSensor/1058-03",
+    "drives:drivesFlowShorepower": "FlowSensor/1057-10",
+    "drives:drivesFwdOilCoolerHeat": "PropulsionCooler/1013",
+    "drives:drivesMixExchanger": "MixValve/1046-01",
+    "drives:drivesMixRecovery": "MixValve/1046-03",
+    "drives:drivesPressure": "PressureSensor/1097-10",
+    "drives:drivesPropdriveAft1": "PropulsionDrive/drives:propdriveAft1",
+    "drives:drivesPropdriveAft2": "PropulsionDrive/drives:propdriveAft2",
+    "drives:drivesPropdriveFwd1": "PropulsionDrive/drives:propdriveFwd1",
+    "drives:drivesPropdriveFwd2": "PropulsionDrive/drives:propdriveFwd2",
+    "drives:drivesPump1": "Pump/1028",
+    "drives:drivesPump2": "Pump/1029",
+    "drives:drivesSeawaterExchanger": "HeatExchanger/1011",
+    "drives:drivesShorepower": "ShorePowerConverter/drives:shorepower",
+    "drives:drivesSwitchPropdriveAft1": "SwitchValve/1069-06",
+    "drives:drivesSwitchPropdriveAft2": "SwitchValve/1069-09",
+    "drives:drivesSwitchPropdriveFwd1": "SwitchValve/1069-07",
+    "drives:drivesSwitchPropdriveFwd2": "SwitchValve/1069-08",
+    "drives:drivesSwitchShorepowerReturn": "SwitchValve/1069-05",
+    "drives:drivesSwitchShorepowerSupply": "SwitchValve/1069-04",
+    "drives:drivesTemperaturePropdriveAft1Return": "TemperatureSensor/1038-32",
+    "drives:drivesTemperaturePropdriveAft2Return": "TemperatureSensor/1038-64",
+    "drives:drivesTemperaturePropdriveFwd1Return": "TemperatureSensor/1038-61",
+    "drives:drivesTemperaturePropdriveFwd2Return": "TemperatureSensor/1038-72",
+    "drives:drivesTemperaturePropdrivesAftSupply": "TemperatureSensor/1038-63",
+    "drives:drivesTemperaturePropdrivesFwdSupply": "TemperatureSensor/1038-62",
+    "drives:drivesTemperatureRecovery": "TemperatureSensor/1038-16",
+    "drives:drivesTemperatureRecoveryMix": "TemperatureSensor/1038-57",
+    "drives:drivesTemperatureRecoveryReturn": "TemperatureSensor/1038-59",
+    "drives:drivesTemperatureShorepowerReturn": "TemperatureSensor/1038-11",
+    "drives:drivesTemperatureSupply": "TemperatureSensor/1038-14",
     "drives:seawater": "SeawaterCircuit/drives:seawater",
-    "drives:shorepower": "ShorePowerConverter/45002001",
-    "highTempLoop": "ExchangeCircuit/1007",
-    "pcm:??????": "ManualValve/??????",
-    "pcm:1003": "HeatExchanger/1003",
-    "pcm:1007": "HeatExchanger/1007",
-    "pcm:1017": "Pump/1017",
-    "pcm:1038-31": "TemperatureSensor/1038-31",
-    "pcm:1038-33": "TemperatureSensor/1038-33",
-    "pcm:1038-34": "TemperatureSensor/1038-34",
-    "pcm:1038-35": "TemperatureSensor/1038-35",
-    "pcm:1038-48": "TemperatureSensor/1038-48",
-    "pcm:1038-49": "TemperatureSensor/1038-49",
-    "pcm:1038-53": "TemperatureSensor/1038-53",
-    "pcm:1038-54": "TemperatureSensor/1038-54",
-    "pcm:1038-55": "TemperatureSensor/1038-55",
-    "pcm:1038-60": "TemperatureSensor/1038-60",
-    "pcm:1049": "Pcm/1049",
-    "pcm:1050": "Pcm/1050",
-    "pcm:1051": "Pcm/1051",
-    "pcm:1052": "Pcm/1052",
-    "pcm:1057-18": "FlowSensor/1057-18",
-    "pcm:1057-19": "FlowSensor/1057-19",
-    "pcm:1057-20": "FlowSensor/1057-20",
-    "pcm:1057-21": "FlowSensor/1057-21",
-    "pcm:1058-07": "FlowSensor/1058-07",
-    "pcm:1058-08": "FlowSensor/1058-08",
-    "pcm:1061": "FlowControlValve/1061",
-    "pcm:1062-01": "FlowControlValve/1062-01",
-    "pcm:1062-02": "SwitchValve/1062-02",
-    "pcm:1064-04": "FlowControlValve/1064-04",
-    "pcm:1064-05": "FlowControlValve/1064-05",
-    "pcm:1064-06": "FlowControlValve/1064-06",
-    "pcm:1064-07": "FlowControlValve/1064-07",
-    "pcm:1065-01": "FlowControlValve/1065-01",
-    "pcm:1066-01": "SwitchValve/1066-01",
-    "pcm:1066-02": "SwitchValve/1066-02",
-    "pcm:1067-09": "ManualValve/1067-09",
-    "pcm:1067-10": "ManualValve/1067-10",
-    "pcm:1067-15": "SwitchValve/1067-15",
-    "pcm:1071-02": "SwitchValve/1071-02",
-    "pcm:1078-01": "CheckValve/1078-01",
-    "pcm:1084": "AirTrapVessel/1084",
-    "pcm:1085-02": "CheckValve/1085-02",
-    "pcm:1095-06": "PressureGauge/1095-06",
-    "pcm:1096-09": "PressureGauge/1096-09",
-    "pcm:1168-23": "ManualValve/1168-23",
-    "pcm:1168-24": "ManualValve/1168-24",
-    "pcm:1168-25": "ManualValve/1168-25",
-    "pcm:1168-26": "ManualValve/1168-26",
-    "pcm:1190-01": "SwitchValve/1190-01",
-    "pcm:1192": "FlowSensor/1192",
-    "pcm:adsorption": "ExchangeCircuit/1003",
-    "pcm:dhw": "ExchangeCircuit/1007",
+    "highTempLoop": "ExchangeCircuit/dhw:highTempLoop",
+    "pcm:adsorptionHtExchanger": "ExchangeCircuit/pcm:adsorption",
+    "pcm:consumersAdsorptionExchanger": "HeatExchanger/1003",
+    "pcm:consumersDhwExchanger": "HeatExchanger/1007",
+    "pcm:consumersFlowAdsorption": "FlowSensor/1058-08",
+    "pcm:consumersFlowBypass": "FlowSensor/1192",
+    "pcm:consumersFlowcontrolAdsorption": "FlowControlValve/1061",
+    "pcm:consumersFlowcontrolBypass": "FlowControlValve/1062-01",
+    "pcm:consumersFlowcontrolDhw": "FlowControlValve/1065-01",
+    "pcm:consumersFlowDhw": "FlowSensor/1058-07",
+    "pcm:consumersSwitchAdsorption": "SwitchValve/1066-02",
+    "pcm:consumersSwitchDhw": "SwitchValve/1067-15",
+    "pcm:consumersTemperatureAdsorptionReturn": "TemperatureSensor/1038-49",
+    "pcm:consumersTemperatureAdsorptionSupply": "TemperatureSensor/1038-54",
+    "pcm:consumersTemperatureDhwReturn": "TemperatureSensor/1038-48",
+    "pcm:consumersTemperatureDhwSupply": "TemperatureSensor/1038-53",
+    "pcm:dhwConsumersExchanger": "ExchangeCircuit/pcm:dhw",
     "pcm:freshwater": "ConnectingCircuit/pcm:freshwater",
+    "pcm:pcmFlowcontrolModule1": "FlowControlValve/1064-04",
+    "pcm:pcmFlowcontrolModule2": "FlowControlValve/1064-05",
+    "pcm:pcmFlowcontrolModule3": "FlowControlValve/1064-06",
+    "pcm:pcmFlowcontrolModule4": "FlowControlValve/1064-07",
+    "pcm:pcmFlowModule1": "FlowSensor/1057-18",
+    "pcm:pcmFlowModule2": "FlowSensor/1057-19",
+    "pcm:pcmFlowModule3": "FlowSensor/1057-20",
+    "pcm:pcmFlowModule4": "FlowSensor/1057-21",
+    "pcm:pcmHeatModule1": "Pcm/1049",
+    "pcm:pcmHeatModule2": "Pcm/1050",
+    "pcm:pcmHeatModule3": "Pcm/1051",
+    "pcm:pcmHeatModule4": "Pcm/1052",
+    "pcm:pcmPump": "Pump/1017",
+    "pcm:pcmSwitchChargingReturn": "SwitchValve/1062-02",
+    "pcm:pcmSwitchChargingSupply": "SwitchValve/1190-01",
+    "pcm:pcmSwitchConsumers": "SwitchValve/1071-02",
+    "pcm:pcmSwitchDischarging": "SwitchValve/1066-01",
+    "pcm:pcmTemperatureModule1": "TemperatureSensor/1038-60",
+    "pcm:pcmTemperatureModule2": "TemperatureSensor/1038-33",
+    "pcm:pcmTemperatureModule3": "TemperatureSensor/1038-34",
+    "pcm:pcmTemperatureModule4": "TemperatureSensor/1038-35",
+    "pcm:pcmTemperatureProducersReturn": "TemperatureSensor/1038-31",
+    "pcm:pcmTemperatureProducersSupply": "TemperatureSensor/1038-55",
     "pcm:pvt": "ConnectingCircuit/pcm:pvt",
     "pcm:thrusters": "ConnectingCircuit/pcm:thrusters",
-    "propdriveAft1": "PropulsionDrive/45002079",
-    "propdriveAft2": "PropulsionDrive/45002079",
-    "propdriveFwd1": "PropulsionDrive/45002080",
-    "propdriveFwd2": "PropulsionDrive/45002080",
-    "pvt:1002": "HeatExchanger/1002",
-    "pvt:1018": "Pump/1018",
-    "pvt:1019": "Pump/1019",
-    "pvt:1021": "Pump/1021",
-    "pvt:1038-03": "TemperatureSensor/1038-03",
-    "pvt:1038-04": "TemperatureSensor/1038-04",
-    "pvt:1038-21": "TemperatureSensor/1038-21",
-    "pvt:1038-22": "TemperatureSensor/1038-22",
-    "pvt:1038-23": "TemperatureSensor/1038-23",
-    "pvt:1038-24": "TemperatureSensor/1038-24",
-    "pvt:1038-73": "TemperatureSensor/1038-73",
-    "pvt:1040-01": "ExpansionTank/1040-01",
-    "pvt:1041-01": "ExpansionValve/1041-01",
-    "pvt:1043-01": "MixValve/1043-01",
-    "pvt:1044-01": "MixValve/1044-01",
-    "pvt:1044-02": "MixValve/1044-02",
-    "pvt:1047-02": "MixValve/1047-02",
-    "pvt:1057-03": "FlowSensor/1057-03",
-    "pvt:1058-12": "FlowSensor/1058-12",
-    "pvt:1058-13": "FlowSensor/1058-13",
-    "pvt:1067-01": "SwitchValve/1067-01",
-    "pvt:1067-02": "SwitchValve/1067-02",
-    "pvt:1069-01": "SwitchValve/1069-01",
-    "pvt:1069-06": "ManualValve/1069-06",
-    "pvt:1076-01": "CheckValve/1076-01",
-    "pvt:1077-01": "CheckValve/1077-01",
-    "pvt:1077-02": "CheckValve/1077-02",
-    "pvt:1085-01": "CheckValve/1085-01",
-    "pvt:1095-03": "PressureGauge/1095-03",
-    "pvt:1095-04": "PressureGauge/1095-04",
-    "pvt:1095-05": "PressureGauge/1095-05",
-    "pvt:1097-03": "PressureSensor/1097-03",
-    "pvt:1097-04": "PressureSensor/1097-04",
-    "pvt:1097-05": "PressureSensor/1097-05",
-    "pvt:1097-06": "PressureSensor/1097-06",
-    "pvt:1167-11": "ManualValve/1167-11",
-    "pvt:1168-12": "ManualValve/1168-12",
-    "pvt:1168-19": "ManualValve/1168-19",
-    "pvt:1168-30": "ManualValve/1168-30",
-    "pvt:1168-31": "ManualValve/1168-31",
-    "pvt:1168-32": "ManualValve/1168-32",
-    "pvt:1169-04": "ManualValve/1169-04",
-    "pvt:1169-05": "ManualValve/1169-05",
-    "pvt:1169-07": "ManualValve/1169-07",
-    "pvt:1169-08": "ManualValve/1169-08",
-    "pvt:1169-09": "ManualValve/1169-09",
-    "pvt:1170-05": "ManualValve/1170-05",
-    "pvt:1170-06": "ManualValve/1170-06",
-    "pvt:1177-01": "ManualValve/1177-01",
-    "pvt:1177-02": "ManualValve/1177-02",
-    "pvt:1182": "ManualPump/1182",
-    "pvt:1188-01": "CheckValve/1188-01",
-    "pvt:1188-02": "CheckValve/1188-02",
-    "pvt:1188-03": "CheckValve/1188-03",
-    "pvt:1191-01": "ManualValve/1191-01",
-    "pvt:1191-02": "ManualValve/1191-02",
-    "pvt:9001-01": "Pvt/9001-01",
-    "pvt:9001-03": "Pvt/9001-03",
-    "pvt:9002-01": "Pvt/9002-01",
-    "pvt:9043": "Pyranometer/9043",
-    "pvt:9044": "Pyranometer/9044",
+    "propdriveAft1": "PropulsionDrive/drives:propdriveAft1",
+    "propdriveAft2": "PropulsionDrive/drives:propdriveAft2",
+    "propdriveFwd1": "PropulsionDrive/drives:propdriveFwd1",
+    "propdriveFwd2": "PropulsionDrive/drives:propdriveFwd2",
     "pvt:pcm": "ConnectingCircuit/pvt:pcm",
+    "pvt:pvtFlowMainAftRecovery": "FlowSensor/1058-13",
+    "pvt:pvtFlowMainFwdRecovery": "FlowSensor/1058-12",
+    "pvt:pvtFlowOwnersRecovery": "FlowSensor/1057-03",
+    "pvt:pvtMixExchanger": "MixValve/1047-02",
+    "pvt:pvtMixMainAft": "MixValve/1044-02",
+    "pvt:pvtMixMainFwd": "MixValve/1044-01",
+    "pvt:pvtMixOwners": "MixValve/1043-01",
+    "pvt:pvtPressureMainAft": "PressureSensor/1097-04",
+    "pvt:pvtPressureMainFwd": "PressureSensor/1097-03",
+    "pvt:pvtPressureOwners": "PressureSensor/1097-05",
+    "pvt:pvtPressureSystem": "PressureSensor/1097-06",
+    "pvt:pvtPumpMainAft": "Pump/1019",
+    "pvt:pvtPumpMainFwd": "Pump/1018",
+    "pvt:pvtPumpOwners": "Pump/1021",
+    "pvt:pvtPvtMainAft": "Pvt/9002-01",
+    "pvt:pvtPvtMainFwd": "Pvt/9001-01",
+    "pvt:pvtPvtOwners": "Pvt/9001-03",
+    "pvt:pvtPyranometerPs": "Pyranometer/9043",
+    "pvt:pvtPyranometerSb": "Pyranometer/9044",
+    "pvt:pvtSeawaterExchanger": "HeatExchanger/1002",
+    "pvt:pvtSwitchMainAft": "SwitchValve/1067-02",
+    "pvt:pvtSwitchMainFwd": "SwitchValve/1067-01",
+    "pvt:pvtSwitchOwners": "SwitchValve/1069-01",
+    "pvt:pvtTemperatureMainAftReturn": "TemperatureSensor/1038-73",
+    "pvt:pvtTemperatureMainAftSupply": "TemperatureSensor/1038-22",
+    "pvt:pvtTemperatureMainFwdReturn": "TemperatureSensor/1038-03",
+    "pvt:pvtTemperatureMainFwdSupply": "TemperatureSensor/1038-23",
+    "pvt:pvtTemperatureOwnersReturn": "TemperatureSensor/1038-04",
+    "pvt:pvtTemperatureOwnersSupply": "TemperatureSensor/1038-21",
+    "pvt:pvtTemperatureSupply": "TemperatureSensor/1038-24",
     "pvt:seawater": "SeawaterCircuit/pvt:seawater",
-    "shorepower": "ShorePowerConverter/45002001",
-    "thrusters:1001": "HeatExchanger/1001",
-    "thrusters:1038-01": "TemperatureSensor/1038-01",
-    "thrusters:1038-02": "TemperatureSensor/1038-02",
-    "thrusters:1038-28": "TemperatureSensor/1038-28",
-    "thrusters:1038-30": "TemperatureSensor/1038-30",
-    "thrusters:1041-04": "ExpansionValve/1041-04",
-    "thrusters:1057-22": "FlowSensor/1057-22",
-    "thrusters:1064-02": "FlowControlValve/1064-02",
-    "thrusters:1066-03": "SwitchValve/1066-03",
-    "thrusters:1074": "MixValve/1074",
-    "thrusters:1084-01": "ManualValve/1084-01",
-    "thrusters:1087-03": "ManualValve/1087-03",
-    "thrusters:1087-08": "ManualValve/1087-08",
-    "thrusters:1091-01": "ThreeWaySwitchValve/1091-01",
-    "thrusters:1091-02": "ThreeWaySwitchValve/1091-02",
-    "thrusters:1092": "ExpansionTank/1092",
-    "thrusters:1095-01": "PressureGauge/1095-01",
-    "thrusters:1097-01": "PressureSensor/1097-01",
-    "thrusters:1097-02": "PressureSensor/1097-02",
-    "thrusters:1194": "Pump/1194",
-    "thrusters:1195": "Pump/1195",
-    "thrusters:1212-01": "ManualValve/1212-01",
-    "thrusters:1212-02": "ManualValve/1212-02",
-    "thrusters:1212-03": "ManualValve/1212-03",
-    "thrusters:1212-04": "ManualValve/1212-04",
-    "thrusters:1212-05": "ManualValve/1212-05",
-    "thrusters:1212-06": "ManualValve/1212-06",
-    "thrusters:1212-07": "ManualValve/1212-07",
-    "thrusters:1213-01": "CheckValve/1213-01",
-    "thrusters:1213-02": "CheckValve/1213-02",
-    "thrusters:1214-01": "MixValve/1214-01",
-    "thrusters:1215": "FlowControlValve/1215",
-    "thrusters:1217-01": "CheckValve/1217-01",
-    "thrusters:1217-02": "CheckValve/1217-02",
-    "thrusters:1218-01": "FlowSensor/1218-01",
-    "thrusters:1218-02": "FlowSensor/1218-02",
-    "thrusters:9001-01": "Thruster/15001002",
-    "thrusters:9002-01": "Thruster/15001001",
+    "shorepower": "ShorePowerConverter/drives:shorepower",
     "thrusters:pcm": "ConnectingCircuit/thrusters:pcm",
-    "thrusters:seawater": "SeawaterCircuit/thrusters:seawater"
+    "thrusters:seawater": "SeawaterCircuit/thrusters:seawater",
+    "thrusters:thrustersFlowAft": "FlowSensor/1218-02",
+    "thrusters:thrustersFlowcontrolAft": "FlowControlValve/1215",
+    "thrusters:thrustersFlowcontrolFwd": "FlowControlValve/1064-02",
+    "thrusters:thrustersFlowFwd": "FlowSensor/1057-22",
+    "thrusters:thrustersFlowRecovery": "FlowSensor/1218-01",
+    "thrusters:thrustersMixExchanger": "MixValve/1214-01",
+    "thrusters:thrustersMixRecovery": "MixValve/1074",
+    "thrusters:thrustersPressureDischarge": "PressureSensor/1097-01",
+    "thrusters:thrustersPressureSystem": "PressureSensor/1097-02",
+    "thrusters:thrustersPump1": "Pump/1194",
+    "thrusters:thrustersPump2": "Pump/1195",
+    "thrusters:thrustersSeawaterExchanger": "HeatExchanger/1001",
+    "thrusters:thrustersSwitchAft": "ThreeWaySwitchValve/1091-01",
+    "thrusters:thrustersSwitchFwd": "ThreeWaySwitchValve/1091-02",
+    "thrusters:thrustersSwitchRecovery": "SwitchValve/1066-03",
+    "thrusters:thrustersTemperatureAft": "TemperatureSensor/1038-01",
+    "thrusters:thrustersTemperatureFwd": "TemperatureSensor/1038-02",
+    "thrusters:thrustersTemperatureRecoveryMix": "TemperatureSensor/1038-30",
+    "thrusters:thrustersTemperatureSupply": "TemperatureSensor/1038-28",
+    "thrusters:thrustersThrusterAft": "Thruster/15001001",
+    "thrusters:thrustersThrusterFwd": "Thruster/15001002"
   },
   "contexts": {
     "AirTrapVessel": {
       "1084": {
-        "source": [
-          "custom",
-          "pcm",
-          "pcm-air-trap-vessel-1084",
-          {
-            "yardTag": "1084",
-            "technicalName": "pcm-air-trap-vessel-1084"
-          }
-        ],
         "tooltip": {
           "yardTag": "1084",
-          "technicalName": "pcm-air-trap-vessel-1084",
           "title": "Air trap vessel",
           "componentType": "Air trap vessel"
         }
@@ -812,304 +552,148 @@
     },
     "CheckValve": {
       "1075-01": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1075-01",
           "title": "Check valve",
-          "componentType": "Check valve",
-          "yardTag": "1075-01"
+          "componentType": "Check valve"
         }
       },
       "1075-06": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1075-06",
           "title": "Check valve",
-          "componentType": "Check valve",
-          "yardTag": "1075-06"
+          "componentType": "Check valve"
         }
       },
       "1076-01": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-check-valve-1076-01",
-          {
-            "yardTag": "1076-01",
-            "technicalName": "pvt-check-valve-1076-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1076-01",
-          "technicalName": "pvt-check-valve-1076-01",
           "title": "Check valve",
           "componentType": "3 way valve DN 25"
         }
       },
       "1076-02": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1076-02",
           "title": "Check valve",
-          "componentType": "Check valve",
-          "yardTag": "1076-02"
+          "componentType": "Check valve"
         }
       },
       "1076-03": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1076-03",
           "title": "Check valve",
-          "componentType": "Check valve",
-          "yardTag": "1076-03"
+          "componentType": "Check valve"
         }
       },
       "1077-01": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-check-valve-1077-01",
-          {
-            "yardTag": "1077-01",
-            "technicalName": "pvt-check-valve-1077-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1077-01",
-          "technicalName": "pvt-check-valve-1077-01",
           "title": "Check valve",
           "componentType": "3 way valve DN 25"
         }
       },
       "1077-02": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-check-valve-1077-02",
-          {
-            "yardTag": "1077-02",
-            "technicalName": "pvt-check-valve-1077-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1077-02",
-          "technicalName": "pvt-check-valve-1077-02",
           "title": "Check valve",
           "componentType": "3 way valve DN 25"
         }
       },
       "1077-03": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1077-03",
           "title": "Check valve",
-          "componentType": "Check valve",
-          "yardTag": "1077-03"
+          "componentType": "Check valve"
         }
       },
       "1077-04": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1077-04",
           "title": "Check valve",
-          "componentType": "Check valve",
-          "yardTag": "1077-04"
+          "componentType": "Check valve"
         }
       },
       "1078-01": {
-        "source": [
-          "custom",
-          "pcm",
-          "pcm-check-valve-1078-01",
-          {
-            "yardTag": "1078-01",
-            "technicalName": "pcm-check-valve-1078-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1078-01",
-          "technicalName": "pcm-check-valve-1078-01",
           "title": "Check valve",
           "componentType": "Check valve"
         }
       },
       "1085-01": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-check-valve-1085-01",
-          {
-            "yardTag": "1085-01",
-            "technicalName": "pvt-check-valve-1085-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1085-01",
-          "technicalName": "pvt-check-valve-1085-01",
           "title": "Check valve",
           "componentType": "3 way valve DN 25"
         }
       },
       "1085-02": {
-        "source": [
-          "custom",
-          "pcm",
-          "pcm-check-valve-1085-02",
-          {
-            "yardTag": "1085-02",
-            "technicalName": "pcm-check-valve-1085-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1085-02",
-          "technicalName": "pcm-check-valve-1085-02",
           "title": "Check valve",
           "componentType": "Check valve"
         }
       },
       "1090-01": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-check-valve-1090-01",
-          {
-            "yardTag": "1090-01",
-            "technicalName": "drives-check-valve-1090-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1090-01",
-          "technicalName": "drives-check-valve-1090-01",
           "title": "Check valve",
           "componentType": "Check valve"
         }
       },
       "1090-02": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-check-valve-1090-02",
-          {
-            "yardTag": "1090-02",
-            "technicalName": "drives-check-valve-1090-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1090-02",
-          "technicalName": "drives-check-valve-1090-02",
           "title": "Check valve",
           "componentType": "Check valve"
         }
       },
       "1188-01": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-check-valve-1188-01",
-          {
-            "yardTag": "1188-01",
-            "technicalName": "pvt-check-valve-1188-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1188-01",
-          "technicalName": "pvt-check-valve-1188-01",
           "title": "Check valve",
           "componentType": "3 way valve DN 25"
         }
       },
       "1188-02": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-check-valve-1188-02",
-          {
-            "yardTag": "1188-02",
-            "technicalName": "pvt-check-valve-1188-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1188-02",
-          "technicalName": "pvt-check-valve-1188-02",
           "title": "Check valve",
           "componentType": "3 way valve DN 25"
         }
       },
       "1188-03": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-check-valve-1188-03",
-          {
-            "yardTag": "1188-03",
-            "technicalName": "pvt-check-valve-1188-03"
-          }
-        ],
         "tooltip": {
           "yardTag": "1188-03",
-          "technicalName": "pvt-check-valve-1188-03",
           "title": "Check valve",
           "componentType": "3 way valve DN 25"
         }
       },
       "1213-01": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-check-valve-1213-01",
-          {
-            "yardTag": "1213-01",
-            "technicalName": "thrusters-check-valve-1213-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1213-01",
-          "technicalName": "thrusters-check-valve-1213-01",
           "title": "Check valve",
           "componentType": "Check valve"
         }
       },
       "1213-02": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-check-valve-1213-02",
-          {
-            "yardTag": "1213-02",
-            "technicalName": "thrusters-check-valve-1213-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1213-02",
-          "technicalName": "thrusters-check-valve-1213-02",
           "title": "Check valve",
           "componentType": "Check valve"
         }
       },
       "1217-01": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-check-valve-1217-01",
-          {
-            "yardTag": "1217-01",
-            "technicalName": "thrusters-check-valve-1217-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1217-01",
-          "technicalName": "thrusters-check-valve-1217-01",
           "title": "Check valve",
           "componentType": "Check valve"
         }
       },
       "1217-02": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-check-valve-1217-02",
-          {
-            "yardTag": "1217-02",
-            "technicalName": "thrusters-check-valve-1217-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1217-02",
-          "technicalName": "thrusters-check-valve-1217-02",
           "title": "Check valve",
           "componentType": "Check valve"
         }
@@ -1257,21 +841,21 @@
       }
     },
     "ExchangeCircuit": {
-      "1003": {
+      "dc:domesticHotWater": {
         "custom": {
-          "circuitName": "Adsorption circuit",
-          "modeModule": "adsorption"
+          "circuitName": "Domestic Hot Water",
+          "modeModule": "dhw"
         },
-        "source": ["sensor:heatTransferDevice", "adsorption", "adsorptionHtExchanger", null],
+        "source": ["sensor:heatTransferDevice", "dhw", "dhwDcExchanger", null],
         "tooltip": {
           "title": "Exchange circuit",
-          "yardTag": "1003",
-          "technicalName": "adsorption-ht-exchanger",
-          "mqttTopic": ".../adsorption-ht-exchanger",
-          "componentType": "Exchange circuit"
+          "yardTag": "1008",
+          "technicalName": "dhw-dc-exchanger",
+          "mqttTopic": ".../dhw-dc-exchanger",
+          "componentType": "Domestic Hot Water loop"
         }
       },
-      "1004": {
+      "dhw:adsorption": {
         "custom": {
           "circuitName": "Adsorption",
           "modeModule": "adsorption"
@@ -1285,162 +869,116 @@
           "componentType": "Exchange circuit"
         }
       },
-      "1007": [
-        {
-          "custom": {
-            "circuitName": "High temperature",
-            "modeModule": "pcm"
-          },
-          "source": ["sensor:heatTransferDevice", "consumers", "consumersDhwExchanger", null],
-          "tooltip": {
-            "title": "Exchange circuit",
-            "yardTag": "1007",
-            "technicalName": "consumers-dhw-exchanger",
-            "mqttTopic": ".../consumers-dhw-exchanger",
-            "componentType": "Exchange circuit"
-          }
+      "dhw:dcConverters": {
+        "custom": {
+          "circuitName": "DC Converters",
+          "modeModule": "dc"
         },
-        {
-          "custom": {
-            "circuitName": "Domestic hot water",
-            "modeModule": "dhw"
-          },
-          "source": ["sensor:heatTransferDevice", "dhw", "dhwConsumersExchanger", null],
-          "tooltip": {
-            "title": "Exchange circuit",
-            "yardTag": "1007",
-            "technicalName": "dhw-consumers-exchanger",
-            "mqttTopic": ".../dhw-consumers-exchanger",
-            "componentType": "Exchange circuit"
-          }
+        "source": ["sensor:heatTransferDevice", "dc", "dcDhwExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1008",
+          "technicalName": "dc-dhw-exchanger",
+          "mqttTopic": ".../dc-dhw-exchanger",
+          "componentType": "Exchange circuit"
         }
-      ],
-      "1008": [
-        {
-          "custom": {
-            "circuitName": "Domestic Hot Water",
-            "modeModule": "dhw"
-          },
-          "source": ["sensor:heatTransferDevice", "dhw", "dhwDcExchanger", null],
-          "tooltip": {
-            "title": "Exchange circuit",
-            "yardTag": "1008",
-            "technicalName": "dhw-dc-exchanger",
-            "mqttTopic": ".../dhw-dc-exchanger",
-            "componentType": "Domestic Hot Water loop"
-          }
+      },
+      "dhw:drives": {
+        "custom": {
+          "circuitName": "Drives & shore",
+          "modeModule": "drives"
         },
-        {
-          "custom": {
-            "circuitName": "DC Converters",
-            "modeModule": "dc"
-          },
-          "source": ["sensor:heatTransferDevice", "dc", "dcDhwExchanger", null],
-          "tooltip": {
-            "title": "Exchange circuit",
-            "yardTag": "1008",
-            "technicalName": "dc-dhw-exchanger",
-            "mqttTopic": ".../dc-dhw-exchanger",
-            "componentType": "Exchange circuit"
-          }
+        "source": ["sensor:heatTransferDevice", "drives", "drivesDhwExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1009",
+          "technicalName": "drives-dhw-exchanger",
+          "mqttTopic": ".../drives-dhw-exchanger",
+          "componentType": "Exchange circuit"
         }
-      ],
-      "1009": [
-        {
-          "custom": {
-            "circuitName": "Drives & shore",
-            "modeModule": "drives"
-          },
-          "source": ["sensor:heatTransferDevice", "drives", "drivesDhwExchanger", null],
-          "tooltip": {
-            "title": "Exchange circuit",
-            "yardTag": "1009",
-            "technicalName": "drives-dhw-exchanger",
-            "mqttTopic": ".../drives-dhw-exchanger",
-            "componentType": "Exchange circuit"
-          }
+      },
+      "dhw:highTempLoop": {
+        "custom": {
+          "circuitName": "High temperature",
+          "modeModule": "pcm"
         },
-        {
-          "custom": {
-            "circuitName": "Domestic Hot Water",
-            "modeModule": "dhw"
-          },
-          "source": ["sensor:heatTransferDevice", "dhw", "dhwDrivesExchanger", null],
-          "tooltip": {
-            "title": "Exchange circuit",
-            "yardTag": "1009",
-            "technicalName": "dhw-drives-exchanger",
-            "mqttTopic": ".../dhw-drives-exchanger",
-            "componentType": "Domestic Hot Water loop"
-          }
+        "source": ["sensor:heatTransferDevice", "consumers", "consumersDhwExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1007",
+          "technicalName": "consumers-dhw-exchanger",
+          "mqttTopic": ".../consumers-dhw-exchanger",
+          "componentType": "Exchange circuit"
         }
-      ]
+      },
+      "drives:domesticHotWater": {
+        "custom": {
+          "circuitName": "Domestic Hot Water",
+          "modeModule": "dhw"
+        },
+        "source": ["sensor:heatTransferDevice", "dhw", "dhwDrivesExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1009",
+          "technicalName": "dhw-drives-exchanger",
+          "mqttTopic": ".../dhw-drives-exchanger",
+          "componentType": "Domestic Hot Water loop"
+        }
+      },
+      "pcm:adsorption": {
+        "custom": {
+          "circuitName": "Adsorption circuit",
+          "modeModule": "adsorption"
+        },
+        "source": ["sensor:heatTransferDevice", "adsorption", "adsorptionHtExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1003",
+          "technicalName": "adsorption-ht-exchanger",
+          "mqttTopic": ".../adsorption-ht-exchanger",
+          "componentType": "Exchange circuit"
+        }
+      },
+      "pcm:dhw": {
+        "custom": {
+          "circuitName": "Domestic hot water",
+          "modeModule": "dhw"
+        },
+        "source": ["sensor:heatTransferDevice", "dhw", "dhwConsumersExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1007",
+          "technicalName": "dhw-consumers-exchanger",
+          "mqttTopic": ".../dhw-consumers-exchanger",
+          "componentType": "Exchange circuit"
+        }
+      }
     },
     "ExpansionTank": {
       "1092": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-expansion-tank-1092",
-          {
-            "yardTag": "1092",
-            "technicalName": "thrusters-expansion-tank-1092"
-          }
-        ],
         "tooltip": {
           "yardTag": "1092",
-          "technicalName": "thrusters-expansion-tank-1092",
           "title": "Expansion tank",
           "componentType": "Expansion tank"
         }
       },
       "1040-01": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-expansion-tank-1040-01",
-          {
-            "yardTag": "1040-01",
-            "technicalName": "pvt-expansion-tank-1040-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1040-01",
-          "technicalName": "pvt-expansion-tank-1040-01",
           "title": "Expansion tank",
           "componentType": "Expansion tank"
         }
       },
       "1040-04": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-expansion-tank-1040-04",
-          {
-            "yardTag": "1040-04",
-            "technicalName": "drives-expansion-tank-1040-04"
-          }
-        ],
         "tooltip": {
           "yardTag": "1040-04",
-          "technicalName": "drives-expansion-tank-1040-04",
           "title": "Expansion tank",
           "componentType": "Expansion tank"
         }
       },
       "1040-05": {
-        "source": [
-          "custom",
-          "dc",
-          "dc-expansion-tank-1040-05",
-          {
-            "yardTag": "1040-05",
-            "technicalName": "dc-expansion-tank-1040-05"
-          }
-        ],
         "tooltip": {
           "yardTag": "1040-05",
-          "technicalName": "dc-expansion-tank-1040-05",
           "title": "Expansion tank",
           "componentType": "Expansion tank"
         }
@@ -1448,69 +986,29 @@
     },
     "ExpansionValve": {
       "1041-01": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-expansion-valve-1041-01",
-          {
-            "yardTag": "1041-01",
-            "technicalName": "pvt-expansion-valve-1041-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1041-01",
-          "technicalName": "pvt-expansion-valve-1041-01",
           "title": "Pressure valve",
           "componentType": "Pressure valve"
         }
       },
       "1041-04": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-expansion-valve-1041-04",
-          {
-            "yardTag": "1041-04",
-            "technicalName": "thrusters-expansion-valve-1041-04"
-          }
-        ],
         "tooltip": {
           "yardTag": "1041-04",
-          "technicalName": "thrusters-expansion-valve-1041-04",
           "title": "Pressure valve",
           "componentType": "Pressure valve"
         }
       },
       "1041-05": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-expansion-valve-1041-05",
-          {
-            "yardTag": "1041-05",
-            "technicalName": "drives-expansion-valve-1041-05"
-          }
-        ],
         "tooltip": {
           "yardTag": "1041-05",
-          "technicalName": "drives-expansion-valve-1041-05",
           "title": "Pressure valve",
           "componentType": "Pressure valve"
         }
       },
       "1041-06": {
-        "source": [
-          "custom",
-          "dc",
-          "dc-expansion-valve-1041-06",
-          {
-            "yardTag": "1041-06",
-            "technicalName": "dc-expansion-valve-1041-06"
-          }
-        ],
         "tooltip": {
           "yardTag": "1041-06",
-          "technicalName": "dc-expansion-valve-1041-06",
           "title": "Pressure valve",
           "componentType": "Pressure valve"
         }
@@ -1545,10 +1043,10 @@
         "parameters": {
           "flow": ["parameter:tuning", "thrusters", "aftFlowBalanceTuning", null]
         },
-        "source": ["sensor:valve", "thrusters", "thrustersFlowcontrolAft", null],
         "sensors": {
           "measurement": ["sensor:flow", "thrusters", "thrustersFlowAft", null]
         },
+        "source": ["sensor:valve", "thrusters", "thrustersFlowcontrolAft", null],
         "tooltip": {
           "title": "Flow Control valve",
           "yardTag": "1215",
@@ -1585,10 +1083,10 @@
         "parameters": {
           "flow": ["parameter:tuning", "thrusters", "fwdFlowBalanceTuning", null]
         },
-        "source": ["sensor:valve", "thrusters", "thrustersFlowcontrolFwd", null],
         "sensors": {
           "measurement": ["sensor:flow", "thrusters", "thrustersFlowFwd", null]
         },
+        "source": ["sensor:valve", "thrusters", "thrustersFlowcontrolFwd", null],
         "tooltip": {
           "title": "Flow Control valve",
           "yardTag": "1064-02",
@@ -1754,10 +1252,10 @@
         "parameters": {
           "flow": ["parameter:dutypoint", "pvt", "ownersMinimumPumpDutypoint", null]
         },
-        "source": ["sensor:flow", "pvt", "pvtFlowOwnersRecovery", null],
         "sensors": {
           "temperature": ["sensor:temperature", "pvt", "pvtTemperatureOwnersReturn", null]
         },
+        "source": ["sensor:flow", "pvt", "pvtFlowOwnersRecovery", null],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "1057-03",
@@ -1823,10 +1321,10 @@
         "parameters": {
           "flow": ["parameter:flowcontrol", "dhw", "dcFlowcontrolMinimumSetpoint", null]
         },
-        "source": ["sensor:flow", "dhw", "dhwFlowDc", null],
         "sensors": {
           "temperature": ["sensor:temperature", "dhw", "dhwTemperatureFreshwaterSupply", null]
         },
+        "source": ["sensor:flow", "dhw", "dhwFlowDc", null],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "1057-17",
@@ -1882,10 +1380,10 @@
         "parameters": {
           "flow": ["parameter:flow", "thrusters", "thrustersMaximumFlow", null]
         },
-        "source": ["sensor:flow", "thrusters", "thrustersFlowFwd", null],
         "sensors": {
           "temperature": ["sensor:temperature", "thrusters", "thrustersTemperatureFwd", null]
         },
+        "source": ["sensor:flow", "thrusters", "thrustersFlowFwd", null],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "1057-22",
@@ -1901,10 +1399,10 @@
         "parameters": {
           "flow": ["parameter:flowcontrol", "dhw", "drivesFlowcontrolMinimumSetpoint", null]
         },
-        "source": ["sensor:flow", "dhw", "dhwFlowDrives", null],
         "sensors": {
           "temperature": ["sensor:temperature", "dhw", "dhwTemperatureFreshwaterSupply", null]
         },
+        "source": ["sensor:flow", "dhw", "dhwFlowDrives", null],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "1057-24",
@@ -1997,10 +1495,10 @@
         "parameters": {
           "flow": ["parameter:flow", "dhw", "heatpumpFlowSetpoint", null]
         },
-        "source": ["sensor:flow", "dhw", "dhwFlowBoosting", null],
         "sensors": {
           "temperature": ["sensor:temperature", "dhw", "dhwTemperatureBoostingReturn", null]
         },
+        "source": ["sensor:flow", "dhw", "dhwFlowBoosting", null],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "1058-11",
@@ -2016,10 +1514,10 @@
         "parameters": {
           "flow": ["parameter:dutypoint", "pvt", "mainFwdMinimumPumpDutypoint", null]
         },
-        "source": ["sensor:flow", "pvt", "pvtFlowMainFwdRecovery", null],
         "sensors": {
           "temperature": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdReturn", null]
         },
+        "source": ["sensor:flow", "pvt", "pvtFlowMainFwdRecovery", null],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "1058-12",
@@ -2035,10 +1533,10 @@
         "parameters": {
           "flow": ["parameter:dutypoint", "pvt", "mainAftMinimumPumpDutypoint", null]
         },
-        "source": ["sensor:flow", "pvt", "pvtFlowMainAftRecovery", null],
         "sensors": {
           "temperature": ["sensor:temperature", "pvt", "pvtTemperatureMainAftReturn", null]
         },
+        "source": ["sensor:flow", "pvt", "pvtFlowMainAftRecovery", null],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "1058-13",
@@ -2054,7 +1552,6 @@
         "parameters": {
           "flow": ["parameter:flow", "thrusters", "thrustersMinimumFlow", null]
         },
-        "source": ["sensor:flow", "thrusters", "thrustersFlowRecovery", null],
         "sensors": {
           "temperature": [
             "sensor:temperature",
@@ -2063,6 +1560,7 @@
             null
           ]
         },
+        "source": ["sensor:flow", "thrusters", "thrustersFlowRecovery", null],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "1218-01",
@@ -2078,10 +1576,10 @@
         "parameters": {
           "flow": ["parameter:flow", "thrusters", "thrustersMinimumFlow", null]
         },
-        "source": ["sensor:flow", "thrusters", "thrustersFlowAft", null],
         "sensors": {
           "temperature": ["sensor:temperature", "thrusters", "thrustersTemperatureAft", null]
         },
+        "source": ["sensor:flow", "thrusters", "thrustersFlowAft", null],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "1218-02",
@@ -2131,13 +1629,11 @@
         },
         "source": ["sensor:heatTransferDevice", "pvt", "pvtSeawaterExchanger", null],
         "tooltip": {
-          "0": "sensor:heatTransferDevice",
-          "1": "pvt",
-          "2": "pvtSeawaterExchanger",
-          "3": null,
-          "title": "Exchange circuit",
-          "componentType": "Heat Exchanger",
-          "yardTag": "1002"
+          "title": "Heat exchanger",
+          "yardTag": "1002",
+          "technicalName": "pvt-seawater-exchanger",
+          "mqttTopic": ".../pvt-seawater-exchanger",
+          "componentType": "Heat exchanger"
         }
       },
       "1003": {
@@ -2428,1266 +1924,572 @@
     },
     "ManualPump": {
       "1182": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-pump-bypass-a",
-          {
-            "yardTag": "1182",
-            "technicalName": "pvt-pump-bypass-a"
-          }
-        ],
         "tooltip": {
           "yardTag": "1182",
-          "technicalName": "pvt-pump-bypass-a",
           "title": "Pump",
           "componentType": "Circulation pump"
         }
       }
     },
     "ManualValve": {
-      "??????": {
-        "source": [
-          "custom",
-          "pcm",
-          "pcm-manual-valve-??????",
-          {
-            "yardTag": "??????",
-            "technicalName": "pcm-manual-valve-??????"
-          }
-        ],
-        "tooltip": {
-          "yardTag": "??????",
-          "technicalName": "pcm-manual-valve-??????",
-          "title": "Manual valve",
-          "componentType": "Manual valve"
-        }
-      },
       "1067-07": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1067-07",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1067-07"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1067-08": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1067-08",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1067-08"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1067-09": {
-        "source": [
-          "custom",
-          "pcm",
-          "pcm-manual-valve-1067-09",
-          {
-            "yardTag": "1067-09",
-            "technicalName": "pcm-manual-valve-1067-09"
-          }
-        ],
         "tooltip": {
           "yardTag": "1067-09",
-          "technicalName": "pcm-manual-valve-1067-09",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1067-10": {
-        "source": [
-          "custom",
-          "pcm",
-          "pcm-manual-valve-1067-10",
-          {
-            "yardTag": "1067-10",
-            "technicalName": "pcm-manual-valve-1067-10"
-          }
-        ],
         "tooltip": {
           "yardTag": "1067-10",
-          "technicalName": "pcm-manual-valve-1067-10",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1068-22": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1068-22",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1068-22"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1069-06": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1069-06",
-          {
-            "yardTag": "1069-06",
-            "technicalName": "pvt-manual-valve-1069-06"
-          }
-        ],
         "tooltip": {
           "yardTag": "1069-06",
-          "technicalName": "pvt-manual-valve-1069-06",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1069-10": {
-        "source": [
-          "custom",
-          "dhw",
-          "dhw-manual-valve-1069-10",
-          {
-            "technicalName": "dhw-manual-valve-1069-10",
-            "yardTag": "1069-10"
-          }
-        ],
         "tooltip": {
           "yardTag": "1069-10",
-          "technicalName": "dhw-manual-valve-1069-10",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1069-17": {
-        "source": [
-          "custom",
-          "dhw",
-          "dhw-manual-valve-1069-17",
-          {
-            "technicalName": "dhw-manual-valve-1069-17",
-            "yardTag": "1069-17"
-          }
-        ],
         "tooltip": {
           "yardTag": "1069-17",
-          "technicalName": "dhw-manual-valve-1069-17",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
-      "1069-18": [
-        {
-          "source": ["sensor:valve", "dc", "placeholder", null],
-          "tooltip": {
-            "title": "Manual valve",
-            "componentType": "Manual valve",
-            "yardTag": "1069-18"
-          }
-        },
-        {
-          "source": [
-            "custom",
-            "dhw",
-            "dhw-manual-valve-1069-18",
-            {
-              "technicalName": "dhw-manual-valve-1069-18",
-              "yardTag": "1069-18"
-            }
-          ],
-          "tooltip": {
-            "yardTag": "1069-18",
-            "technicalName": "dhw-manual-valve-1069-18",
-            "title": "Manual valve",
-            "componentType": "Manual valve"
-          }
+      "1069-18": {
+        "tooltip": {
+          "yardTag": "1069-18",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
         }
-      ],
+      },
       "1073-01": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1073-01",
-          {
-            "yardTag": "1073-01",
-            "technicalName": "drives-manual-valve-1073-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1073-01",
-          "technicalName": "drives-manual-valve-1073-01",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1073-02": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1073-02",
-          {
-            "yardTag": "1073-02",
-            "technicalName": "drives-manual-valve-1073-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1073-02",
-          "technicalName": "drives-manual-valve-1073-02",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1084-01": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-manual-valve-1084-01",
-          {
-            "yardTag": "1084-01",
-            "technicalName": "thrusters-manual-valve-1084-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1084-01",
-          "technicalName": "thrusters-manual-valve-1084-01",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1084-02": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1084-02",
-          {
-            "yardTag": "1084-02",
-            "technicalName": "drives-manual-valve-1084-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1084-02",
-          "technicalName": "drives-manual-valve-1084-02",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1085-02": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1085-02",
-          {
-            "yardTag": "1085-02",
-            "technicalName": "drives-manual-valve-1085-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1085-02",
-          "technicalName": "drives-manual-valve-1085-02",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1085-03": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1085-03",
-          {
-            "yardTag": "1085-03",
-            "technicalName": "drives-manual-valve-1085-03"
-          }
-        ],
         "tooltip": {
           "yardTag": "1085-03",
-          "technicalName": "drives-manual-valve-1085-03",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1085-04": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1085-04",
-          {
-            "yardTag": "1085-04",
-            "technicalName": "drives-manual-valve-1085-04"
-          }
-        ],
         "tooltip": {
           "yardTag": "1085-04",
-          "technicalName": "drives-manual-valve-1085-04",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1085-05": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1085-05",
-          {
-            "yardTag": "1085-05",
-            "technicalName": "drives-manual-valve-1085-05"
-          }
-        ],
         "tooltip": {
           "yardTag": "1085-05",
-          "technicalName": "drives-manual-valve-1085-05",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1086-01": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1086-01",
-          {
-            "yardTag": "1086-01",
-            "technicalName": "drives-manual-valve-1086-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1086-01",
-          "technicalName": "drives-manual-valve-1086-01",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1086-02": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1086-02",
-          {
-            "yardTag": "1086-02",
-            "technicalName": "drives-manual-valve-1086-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1086-02",
-          "technicalName": "drives-manual-valve-1086-02",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1086-05": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1086-05",
-          {
-            "yardTag": "1086-05",
-            "technicalName": "drives-manual-valve-1086-05"
-          }
-        ],
         "tooltip": {
           "yardTag": "1086-05",
-          "technicalName": "drives-manual-valve-1086-05",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1086-06": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1086-06",
-          {
-            "yardTag": "1086-06",
-            "technicalName": "drives-manual-valve-1086-06"
-          }
-        ],
         "tooltip": {
           "yardTag": "1086-06",
-          "technicalName": "drives-manual-valve-1086-06",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1086-07": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1086-07",
-          {
-            "yardTag": "1086-07",
-            "technicalName": "drives-manual-valve-1086-07"
-          }
-        ],
         "tooltip": {
           "yardTag": "1086-07",
-          "technicalName": "drives-manual-valve-1086-07",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1086-08": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1086-08",
-          {
-            "yardTag": "1086-08",
-            "technicalName": "drives-manual-valve-1086-08"
-          }
-        ],
         "tooltip": {
           "yardTag": "1086-08",
-          "technicalName": "drives-manual-valve-1086-08",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1086-09": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1086-09",
-          {
-            "yardTag": "1086-09",
-            "technicalName": "drives-manual-valve-1086-09"
-          }
-        ],
         "tooltip": {
           "yardTag": "1086-09",
-          "technicalName": "drives-manual-valve-1086-09",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1086-10": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1086-10",
-          {
-            "yardTag": "1086-10",
-            "technicalName": "drives-manual-valve-1086-10"
-          }
-        ],
         "tooltip": {
           "yardTag": "1086-10",
-          "technicalName": "drives-manual-valve-1086-10",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1087-01": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1087-01",
-          {
-            "yardTag": "1087-01",
-            "technicalName": "drives-manual-valve-1087-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1087-01",
-          "technicalName": "drives-manual-valve-1087-01",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1087-03": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-manual-valve-1087-03",
-          {
-            "yardTag": "1087-03",
-            "technicalName": "thrusters-manual-valve-1087-03"
-          }
-        ],
         "tooltip": {
           "yardTag": "1087-03",
-          "technicalName": "thrusters-manual-valve-1087-03",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1087-04": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1087-04",
-          {
-            "yardTag": "1087-04",
-            "technicalName": "drives-manual-valve-1087-04"
-          }
-        ],
         "tooltip": {
           "yardTag": "1087-04",
-          "technicalName": "drives-manual-valve-1087-04",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1087-05": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1087-05",
-          {
-            "yardTag": "1087-05",
-            "technicalName": "drives-manual-valve-1087-05"
-          }
-        ],
         "tooltip": {
           "yardTag": "1087-05",
-          "technicalName": "drives-manual-valve-1087-05",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1087-06": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1087-06",
-          {
-            "yardTag": "1087-06",
-            "technicalName": "drives-manual-valve-1087-06"
-          }
-        ],
         "tooltip": {
           "yardTag": "1087-06",
-          "technicalName": "drives-manual-valve-1087-06",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1087-07": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-manual-valve-1087-07",
-          {
-            "yardTag": "1087-07",
-            "technicalName": "drives-manual-valve-1087-07"
-          }
-        ],
         "tooltip": {
           "yardTag": "1087-07",
-          "technicalName": "drives-manual-valve-1087-07",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1087-08": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-manual-valve-1087-08",
-          {
-            "yardTag": "1087-08",
-            "technicalName": "thrusters-manual-valve-1087-08"
-          }
-        ],
         "tooltip": {
           "yardTag": "1087-08",
-          "technicalName": "thrusters-manual-valve-1087-08",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1167-11": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1167-11",
-          {
-            "yardTag": "1167-11",
-            "technicalName": "pvt-manual-valve-1167-11"
-          }
-        ],
         "tooltip": {
           "yardTag": "1167-11",
-          "technicalName": "pvt-manual-valve-1167-11",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1167-13": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1167-13",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1167-13"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-04": {
-        "source": [
-          "custom",
-          "dhw",
-          "dhw-manual-valve-1168-04",
-          {
-            "technicalName": "dhw-manual-valve-1168-04",
-            "yardTag": "1168-04"
-          }
-        ],
         "tooltip": {
           "yardTag": "1168-04",
-          "technicalName": "dhw-manual-valve-1168-04",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-05": {
-        "source": [
-          "custom",
-          "dhw",
-          "dhw-manual-valve-1168-05",
-          {
-            "technicalName": "dhw-manual-valve-1168-05",
-            "yardTag": "1168-05"
-          }
-        ],
         "tooltip": {
           "yardTag": "1168-05",
-          "technicalName": "dhw-manual-valve-1168-05",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-06": {
-        "source": [
-          "custom",
-          "dhw",
-          "dhw-manual-valve-1168-06",
-          {
-            "technicalName": "dhw-manual-valve-1168-06",
-            "yardTag": "1168-06"
-          }
-        ],
         "tooltip": {
           "yardTag": "1168-06",
-          "technicalName": "dhw-manual-valve-1168-06",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-12": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1168-12",
-          {
-            "yardTag": "1168-12",
-            "technicalName": "pvt-manual-valve-1168-12"
-          }
-        ],
         "tooltip": {
           "yardTag": "1168-12",
-          "technicalName": "pvt-manual-valve-1168-12",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-15": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1168-15",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1168-15"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-16": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1168-16",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1168-16"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-19": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1168-19",
-          {
-            "yardTag": "1168-19",
-            "technicalName": "pvt-manual-valve-1168-19"
-          }
-        ],
         "tooltip": {
           "yardTag": "1168-19",
-          "technicalName": "pvt-manual-valve-1168-19",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-23": {
-        "source": [
-          "custom",
-          "pcm",
-          "pcm-manual-valve-1168-23",
-          {
-            "yardTag": "1168-23",
-            "technicalName": "pcm-manual-valve-1168-23"
-          }
-        ],
         "tooltip": {
           "yardTag": "1168-23",
-          "technicalName": "pcm-manual-valve-1168-23",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-24": {
-        "source": [
-          "custom",
-          "pcm",
-          "pcm-manual-valve-1168-24",
-          {
-            "yardTag": "1168-24",
-            "technicalName": "pcm-manual-valve-1168-24"
-          }
-        ],
         "tooltip": {
           "yardTag": "1168-24",
-          "technicalName": "pcm-manual-valve-1168-24",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-25": {
-        "source": [
-          "custom",
-          "pcm",
-          "pcm-manual-valve-1168-25",
-          {
-            "yardTag": "1168-25",
-            "technicalName": "pcm-manual-valve-1168-25"
-          }
-        ],
         "tooltip": {
           "yardTag": "1168-25",
-          "technicalName": "pcm-manual-valve-1168-25",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-26": {
-        "source": [
-          "custom",
-          "pcm",
-          "pcm-manual-valve-1168-26",
-          {
-            "yardTag": "1168-26",
-            "technicalName": "pcm-manual-valve-1168-26"
-          }
-        ],
         "tooltip": {
           "yardTag": "1168-26",
-          "technicalName": "pcm-manual-valve-1168-26",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-27": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1168-27",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1168-27"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-28": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1168-28",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1168-28"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-29": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1168-29",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1168-29"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-30": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1168-30",
-          {
-            "yardTag": "1168-30",
-            "technicalName": "pvt-manual-valve-1168-30"
-          }
-        ],
         "tooltip": {
           "yardTag": "1168-30",
-          "technicalName": "pvt-manual-valve-1168-30",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-31": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1168-31",
-          {
-            "yardTag": "1168-31",
-            "technicalName": "pvt-manual-valve-1168-31"
-          }
-        ],
         "tooltip": {
           "yardTag": "1168-31",
-          "technicalName": "pvt-manual-valve-1168-31",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1168-32": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1168-32",
-          {
-            "yardTag": "1168-32",
-            "technicalName": "pvt-manual-valve-1168-32"
-          }
-        ],
         "tooltip": {
           "yardTag": "1168-32",
-          "technicalName": "pvt-manual-valve-1168-32",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1169-01": {
-        "source": [
-          "custom",
-          "dhw",
-          "dhw-manual-valve-1169-01",
-          {
-            "technicalName": "dhw-manual-valve-1169-01",
-            "yardTag": "1169-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1169-01",
-          "technicalName": "dhw-manual-valve-1169-01",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1169-02": {
-        "source": [
-          "custom",
-          "dhw",
-          "dhw-manual-valve-1169-02",
-          {
-            "technicalName": "dhw-manual-valve-1169-02",
-            "yardTag": "1169-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1169-02",
-          "technicalName": "dhw-manual-valve-1169-02",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1169-03": {
-        "source": [
-          "custom",
-          "dhw",
-          "dhw-manual-valve-1169-03",
-          {
-            "technicalName": "dhw-manual-valve-1169-03",
-            "yardTag": "1169-03"
-          }
-        ],
         "tooltip": {
           "yardTag": "1169-03",
-          "technicalName": "dhw-manual-valve-1169-03",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1169-04": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1169-04",
-          {
-            "yardTag": "1169-04",
-            "technicalName": "pvt-manual-valve-1169-04"
-          }
-        ],
         "tooltip": {
           "yardTag": "1169-04",
-          "technicalName": "pvt-manual-valve-1169-04",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1169-05": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1169-05",
-          {
-            "yardTag": "1169-05",
-            "technicalName": "pvt-manual-valve-1169-05"
-          }
-        ],
         "tooltip": {
           "yardTag": "1169-05",
-          "technicalName": "pvt-manual-valve-1169-05",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1169-07": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1169-07",
-          {
-            "yardTag": "1169-07",
-            "technicalName": "pvt-manual-valve-1169-07"
-          }
-        ],
         "tooltip": {
           "yardTag": "1169-07",
-          "technicalName": "pvt-manual-valve-1169-07",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1169-08": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1169-08",
-          {
-            "yardTag": "1169-08",
-            "technicalName": "pvt-manual-valve-1169-08"
-          }
-        ],
         "tooltip": {
           "yardTag": "1169-08",
-          "technicalName": "pvt-manual-valve-1169-08",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1169-09": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1169-09",
-          {
-            "yardTag": "1169-09",
-            "technicalName": "pvt-manual-valve-1169-09"
-          }
-        ],
         "tooltip": {
           "yardTag": "1169-09",
-          "technicalName": "pvt-manual-valve-1169-09",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1169-17": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1169-17",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1169-17"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1170-03": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1170-03",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1170-03"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1170-04": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1170-04",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1170-04"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1170-05": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1170-05",
-          {
-            "yardTag": "1170-05",
-            "technicalName": "pvt-manual-valve-1170-05"
-          }
-        ],
         "tooltip": {
           "yardTag": "1170-05",
-          "technicalName": "pvt-manual-valve-1170-05",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1170-06": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1170-06",
-          {
-            "yardTag": "1170-06",
-            "technicalName": "pvt-manual-valve-1170-06"
-          }
-        ],
         "tooltip": {
           "yardTag": "1170-06",
-          "technicalName": "pvt-manual-valve-1170-06",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1172-05": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1172-05",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1172-05"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1172-06": {
-        "source": ["sensor:valve", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1172-06",
           "title": "Manual valve",
-          "componentType": "Manual valve",
-          "yardTag": "1172-06"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1174-01": {
-        "source": [
-          "custom",
-          "dhw",
-          "dhw-manual-valve-1174-01",
-          {
-            "technicalName": "dhw-manual-valve-1174-01",
-            "yardTag": "1174-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1174-01",
-          "technicalName": "dhw-manual-valve-1174-01",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1174-02": {
-        "source": [
-          "custom",
-          "dhw",
-          "dhw-manual-valve-1174-02",
-          {
-            "technicalName": "dhw-manual-valve-1174-02",
-            "yardTag": "1174-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1174-02",
-          "technicalName": "dhw-manual-valve-1174-02",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1177-01": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1177-01",
-          {
-            "yardTag": "1177-01",
-            "technicalName": "pvt-manual-valve-1177-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1177-01",
-          "technicalName": "pvt-manual-valve-1177-01",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1177-02": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1177-02",
-          {
-            "yardTag": "1177-02",
-            "technicalName": "pvt-manual-valve-1177-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1177-02",
-          "technicalName": "pvt-manual-valve-1177-02",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1191-01": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1191-01",
-          {
-            "yardTag": "1191-01",
-            "technicalName": "pvt-manual-valve-1191-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1191-01",
-          "technicalName": "pvt-manual-valve-1191-01",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1191-02": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-manual-valve-1191-02",
-          {
-            "yardTag": "1191-02",
-            "technicalName": "pvt-manual-valve-1191-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1191-02",
-          "technicalName": "pvt-manual-valve-1191-02",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1212-01": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-manual-valve-1212-01",
-          {
-            "yardTag": "1212-01",
-            "technicalName": "thrusters-manual-valve-1212-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1212-01",
-          "technicalName": "thrusters-manual-valve-1212-01",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1212-02": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-manual-valve-1212-02",
-          {
-            "yardTag": "1212-02",
-            "technicalName": "thrusters-manual-valve-1212-02"
-          }
-        ],
         "tooltip": {
           "yardTag": "1212-02",
-          "technicalName": "thrusters-manual-valve-1212-02",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1212-03": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-manual-valve-1212-03",
-          {
-            "yardTag": "1212-03",
-            "technicalName": "thrusters-manual-valve-1212-03"
-          }
-        ],
         "tooltip": {
           "yardTag": "1212-03",
-          "technicalName": "thrusters-manual-valve-1212-03",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1212-04": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-manual-valve-1212-04",
-          {
-            "yardTag": "1212-04",
-            "technicalName": "thrusters-manual-valve-1212-04"
-          }
-        ],
         "tooltip": {
           "yardTag": "1212-04",
-          "technicalName": "thrusters-manual-valve-1212-04",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1212-05": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-manual-valve-1212-05",
-          {
-            "yardTag": "1212-05",
-            "technicalName": "thrusters-manual-valve-1212-05"
-          }
-        ],
         "tooltip": {
           "yardTag": "1212-05",
-          "technicalName": "thrusters-manual-valve-1212-05",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1212-06": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-manual-valve-1212-06",
-          {
-            "yardTag": "1212-06",
-            "technicalName": "thrusters-manual-valve-1212-06"
-          }
-        ],
         "tooltip": {
           "yardTag": "1212-06",
-          "technicalName": "thrusters-manual-valve-1212-06",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
         }
       },
       "1212-07": {
-        "source": [
-          "custom",
-          "thrusters",
-          "thrusters-manual-valve-1212-07",
-          {
-            "yardTag": "1212-07",
-            "technicalName": "thrusters-manual-valve-1212-07"
-          }
-        ],
         "tooltip": {
           "yardTag": "1212-07",
-          "technicalName": "thrusters-manual-valve-1212-07",
           "title": "Manual valve",
-          "componentType": "Manual valve"
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "pcm:??????": {
+        "tooltip": {
+          "yardTag": "??????",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
         }
       }
     },
@@ -4008,185 +2810,92 @@
     },
     "PressureGauge": {
       "1095-01": {
-        "source": [
-          "custom",
-          "thrusters",
-          "manual-pressure-sensor-1095-01",
-          {
-            "yardTag": "1095-01",
-            "technicalName": "manual-pressure-sensor-1095-01"
-          }
-        ],
         "tooltip": {
           "yardTag": "1095-01",
-          "technicalName": "manual-pressure-sensor-1095-01",
-          "title": "Manual Pressure Sensor"
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
         }
       },
       "1095-03": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-pressure-gauge-1095-03",
-          {
-            "yardTag": "1095-03",
-            "technicalName": "pvt-pressure-gauge-1095-03"
-          }
-        ],
         "tooltip": {
           "yardTag": "1095-03",
-          "technicalName": "pvt-pressure-gauge-1095-03",
           "title": "Manual pressure sensor",
           "componentType": "Manual pressure sensor"
         }
       },
       "1095-04": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-pressure-gauge-1095-04",
-          {
-            "yardTag": "1095-04",
-            "technicalName": "pvt-pressure-gauge-1095-04"
-          }
-        ],
         "tooltip": {
           "yardTag": "1095-04",
-          "technicalName": "pvt-pressure-gauge-1095-04",
           "title": "Manual pressure sensor",
           "componentType": "Manual pressure sensor"
         }
       },
       "1095-05": {
-        "source": [
-          "custom",
-          "pvt",
-          "pvt-pressure-gauge-1095-05",
-          {
-            "yardTag": "1095-05",
-            "technicalName": "pvt-pressure-gauge-1095-05"
-          }
-        ],
         "tooltip": {
           "yardTag": "1095-05",
-          "technicalName": "pvt-pressure-gauge-1095-05",
           "title": "Manual pressure sensor",
           "componentType": "Manual pressure sensor"
         }
       },
       "1095-06": {
-        "source": [
-          "custom",
-          "pcm",
-          "pcm-manual-pressure-sensor-1095-06",
-          {
-            "yardTag": "1095-06",
-            "technicalName": "pcm-manual-pressure-sensor-1095-06"
-          }
-        ],
         "tooltip": {
           "yardTag": "1095-06",
-          "technicalName": "pcm-manual-pressure-sensor-1095-06",
           "title": "Manual pressure sensor",
           "componentType": "Manual pressure sensor"
         }
       },
       "1095-10": {
-        "source": ["sensor:pressure", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1095-10",
           "title": "Manual pressure sensor",
-          "componentType": "Manual pressure sensor",
-          "yardTag": "1095-10"
+          "componentType": "Manual pressure sensor"
         }
       },
       "1095-11": {
-        "source": ["sensor:pressure", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1095-11",
           "title": "Manual pressure sensor",
-          "componentType": "Manual pressure sensor",
-          "yardTag": "1095-11"
+          "componentType": "Manual pressure sensor"
         }
       },
       "1095-12": {
-        "source": ["sensor:pressure", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1095-12",
           "title": "Manual pressure sensor",
-          "componentType": "Manual pressure sensor",
-          "yardTag": "1095-12"
+          "componentType": "Manual pressure sensor"
         }
       },
       "1095-13": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-pressure-gauge-1095-13",
-          {
-            "yardTag": "1095-13",
-            "technicalName": "drives-pressure-gauge-1095-13"
-          }
-        ],
         "tooltip": {
           "yardTag": "1095-13",
-          "technicalName": "drives-pressure-gauge-1095-13",
           "title": "Manual pressure sensor",
           "componentType": "Manual pressure sensor"
         }
       },
       "1095-14": {
-        "source": [
-          "custom",
-          "dhw",
-          "dhw-manual-pressure-sensor-1095-14",
-          {
-            "technicalName": "dhw-manual-pressure-sensor-1095-14",
-            "yardTag": "1095-14"
-          }
-        ],
         "tooltip": {
           "yardTag": "1095-14",
-          "technicalName": "dhw-manual-pressure-sensor-1095-14",
           "title": "Manual pressure sensor",
           "componentType": "Manual pressure sensor"
         }
       },
       "1096-05": {
-        "source": [
-          "custom",
-          "drives",
-          "drives-pressure-gauge-1096-05",
-          {
-            "yardTag": "1096-05",
-            "technicalName": "drives-pressure-gauge-1096-05"
-          }
-        ],
         "tooltip": {
           "yardTag": "1096-05",
-          "technicalName": "drives-pressure-gauge-1096-05",
           "title": "Manual pressure sensor",
           "componentType": "Manual pressure sensor"
         }
       },
       "1096-06": {
-        "source": ["sensor:pressure", "dc", "placeholder", null],
         "tooltip": {
+          "yardTag": "1096-06",
           "title": "Manual pressure sensor",
-          "componentType": "Manual pressure sensor",
-          "yardTag": "1096-06"
+          "componentType": "Manual pressure sensor"
         }
       },
       "1096-09": {
-        "source": [
-          "custom",
-          "pcm",
-          "pcm-manual-pressure-sensor-1096-09",
-          {
-            "yardTag": "1096-09",
-            "technicalName": "pcm-manual-pressure-sensor-1096-09"
-          }
-        ],
         "tooltip": {
           "yardTag": "1096-09",
-          "technicalName": "pcm-manual-pressure-sensor-1096-09",
           "title": "Manual pressure sensor",
           "componentType": "Manual pressure sensor"
         }
@@ -4200,10 +2909,10 @@
         "parameters": {
           "flow": ["parameter:flow", "thrusters", "thrustersMinimumFlow", null]
         },
-        "source": ["sensor:pressure", "thrusters", "thrustersPressureDischarge", null],
         "sensors": {
           "flow": ["sensor:flow", "thrusters", "thrustersFlowAft", null]
         },
+        "source": ["sensor:pressure", "thrusters", "thrustersPressureDischarge", null],
         "tooltip": {
           "title": "Pressure sensor",
           "yardTag": "1097-01",
@@ -4219,10 +2928,10 @@
         "parameters": {
           "flow": ["parameter:flow", "thrusters", "thrustersMaximumFlow", null]
         },
-        "source": ["sensor:pressure", "thrusters", "thrustersPressureSystem", null],
         "sensors": {
           "flow": ["sensor:flow", "thrusters", "thrustersFlowFwd", null]
         },
+        "source": ["sensor:pressure", "thrusters", "thrustersPressureSystem", null],
         "tooltip": {
           "title": "Pressure sensor",
           "yardTag": "1097-02",
@@ -4238,10 +2947,10 @@
         "parameters": {
           "flow": ["parameter:dutypoint", "pvt", "mainFwdMinimumPumpDutypoint", null]
         },
-        "source": ["sensor:pressure", "pvt", "pvtPressureMainFwd", null],
         "sensors": {
           "flow": ["sensor:flow", "pvt", "pvtFlowMainFwdRecovery", null]
         },
+        "source": ["sensor:pressure", "pvt", "pvtPressureMainFwd", null],
         "tooltip": {
           "title": "Pressure sensor",
           "yardTag": "1097-03",
@@ -4257,10 +2966,10 @@
         "parameters": {
           "flow": ["parameter:dutypoint", "pvt", "mainAftMinimumPumpDutypoint", null]
         },
-        "source": ["sensor:pressure", "pvt", "pvtPressureMainAft", null],
         "sensors": {
           "flow": ["sensor:flow", "pvt", "pvtFlowMainAftRecovery", null]
         },
+        "source": ["sensor:pressure", "pvt", "pvtPressureMainAft", null],
         "tooltip": {
           "title": "Pressure sensor",
           "yardTag": "1097-04",
@@ -4276,10 +2985,10 @@
         "parameters": {
           "flow": ["parameter:dutypoint", "pvt", "ownersMinimumPumpDutypoint", null]
         },
-        "source": ["sensor:pressure", "pvt", "pvtPressureOwners", null],
         "sensors": {
           "flow": ["sensor:flow", "pvt", "pvtFlowOwnersRecovery", null]
         },
+        "source": ["sensor:pressure", "pvt", "pvtPressureOwners", null],
         "tooltip": {
           "title": "Pressure sensor",
           "yardTag": "1097-05",
@@ -4295,10 +3004,10 @@
         "parameters": {
           "flow": ["parameter:dutypoint", "pvt", "mainFwdMinimumPumpDutypoint", null]
         },
-        "source": ["sensor:pressure", "pvt", "pvtPressureSystem", null],
         "sensors": {
           "flow": ["sensor:flow", "pvt", "pvtFlowMainFwdRecovery", null]
         },
+        "source": ["sensor:pressure", "pvt", "pvtPressureSystem", null],
         "tooltip": {
           "title": "Pressure sensor",
           "yardTag": "1097-06",
@@ -4379,93 +3088,69 @@
       }
     },
     "PropulsionDrive": {
-      "45002079": [
-        {
-          "sensors": {
-            "heatTransfer": [
-              "sensor:heatTransferDevice",
-              "drives",
-              "drivesPropdriveAft1Heat",
-              null
-            ],
-            "power": ["sensor:pvt", "drives", "placeholder", null],
-            "temperature": ["sensor:temperature", "drives", "placeholder", null]
-          },
-          "source": ["sensor:propulsionDrive", "drives", "drivesPropdriveAft1", null],
-          "tooltip": {
-            "title": "propdrive",
-            "yardTag": "45002079",
-            "technicalName": "drives-propdrive-aft-1",
-            "mqttTopic": ".../drives-propdrive-aft-1"
-          }
+      "drives:propdriveAft1": {
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "drives", "drivesPropdriveAft1Heat", null],
+          "power": ["sensor:pvt", "drives", "placeholder", null],
+          "temperature": ["sensor:temperature", "drives", "placeholder", null]
         },
-        {
-          "sensors": {
-            "heatTransfer": [
-              "sensor:heatTransferDevice",
-              "drives",
-              "drivesPropdriveAft2Heat",
-              null
-            ],
-            "power": ["sensor:pvt", "drives", "placeholder", null],
-            "temperature": ["sensor:temperature", "drives", "placeholder", null]
-          },
-          "source": ["sensor:propulsionDrive", "drives", "drivesPropdriveAft2", null],
-          "tooltip": {
-            "title": "propdrive",
-            "yardTag": "45002079",
-            "technicalName": "drives-propdrive-aft-2",
-            "mqttTopic": ".../drives-propdrive-aft-2"
-          }
+        "source": ["sensor:propulsionDrive", "drives", "drivesPropdriveAft1", null],
+        "tooltip": {
+          "title": "propdrive",
+          "yardTag": "45002079",
+          "technicalName": "drives-propdrive-aft-1",
+          "mqttTopic": ".../drives-propdrive-aft-1"
         }
-      ],
-      "45002080": [
-        {
-          "sensors": {
-            "heatTransfer": [
-              "sensor:heatTransferDevice",
-              "drives",
-              "drivesPropdriveFwd1Heat",
-              null
-            ],
-            "power": ["sensor:pvt", "drives", "placeholder", null],
-            "temperature": ["sensor:temperature", "drives", "placeholder", null]
-          },
-          "source": ["sensor:propulsionDrive", "drives", "drivesPropdriveFwd1", null],
-          "tooltip": {
-            "title": "propdrive",
-            "yardTag": "45002080",
-            "technicalName": "drives-propdrive-fwd-1",
-            "mqttTopic": ".../drives-propdrive-fwd-1"
-          }
+      },
+      "drives:propdriveAft2": {
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "drives", "drivesPropdriveAft2Heat", null],
+          "power": ["sensor:pvt", "drives", "placeholder", null],
+          "temperature": ["sensor:temperature", "drives", "placeholder", null]
         },
-        {
-          "sensors": {
-            "heatTransfer": [
-              "sensor:heatTransferDevice",
-              "drives",
-              "drivesPropdriveFwd2Heat",
-              null
-            ],
-            "power": ["sensor:pvt", "drives", "placeholder", null],
-            "temperature": ["sensor:temperature", "drives", "placeholder", null]
-          },
-          "source": ["sensor:propulsionDrive", "drives", "drivesPropdriveFwd2", null],
-          "tooltip": {
-            "title": "propdrive",
-            "yardTag": "45002080",
-            "technicalName": "drives-propdrive-fwd-2",
-            "mqttTopic": ".../drives-propdrive-fwd-2"
-          }
+        "source": ["sensor:propulsionDrive", "drives", "drivesPropdriveAft2", null],
+        "tooltip": {
+          "title": "propdrive",
+          "yardTag": "45002079",
+          "technicalName": "drives-propdrive-aft-2",
+          "mqttTopic": ".../drives-propdrive-aft-2"
         }
-      ]
+      },
+      "drives:propdriveFwd1": {
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "drives", "drivesPropdriveFwd1Heat", null],
+          "power": ["sensor:pvt", "drives", "placeholder", null],
+          "temperature": ["sensor:temperature", "drives", "placeholder", null]
+        },
+        "source": ["sensor:propulsionDrive", "drives", "drivesPropdriveFwd1", null],
+        "tooltip": {
+          "title": "propdrive",
+          "yardTag": "45002080",
+          "technicalName": "drives-propdrive-fwd-1",
+          "mqttTopic": ".../drives-propdrive-fwd-1"
+        }
+      },
+      "drives:propdriveFwd2": {
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "drives", "drivesPropdriveFwd2Heat", null],
+          "power": ["sensor:pvt", "drives", "placeholder", null],
+          "temperature": ["sensor:temperature", "drives", "placeholder", null]
+        },
+        "source": ["sensor:propulsionDrive", "drives", "drivesPropdriveFwd2", null],
+        "tooltip": {
+          "title": "propdrive",
+          "yardTag": "45002080",
+          "technicalName": "drives-propdrive-fwd-2",
+          "mqttTopic": ".../drives-propdrive-fwd-2"
+        }
+      }
     },
     "Pump": {
       "1017": {
-        "source": ["sensor:pump", "pcm", "pcmPump", null],
         "controls": {
           "pump": ["control:pump", "pcm", "pcmPump", null]
         },
+        "source": ["sensor:pump", "pcm", "pcmPump", null],
         "tooltip": {
           "title": "Pump",
           "yardTag": "1017",
@@ -4475,6 +3160,9 @@
         }
       },
       "1018": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainFwd", null]
+        },
         "custom": {
           "temperatureController": {
             "type": "sensor:temperature",
@@ -4483,14 +3171,11 @@
             "setpoint": ["parameter:temperature", "pvt", "recoveryTemperature", null]
           }
         },
-        "source": ["sensor:pump", "pvt", "pvtPumpMainFwd", null],
-        "controls": {
-          "pump": ["control:pump", "pvt", "pvtPumpMainFwd", null]
-        },
         "parameters": {
           "flow": ["parameter:dutypoint", "pvt", "mainFwdMinimumPumpDutypoint", null],
           "temperature": ["parameter:temperature", "pvt", "recoveryTemperature", null]
         },
+        "source": ["sensor:pump", "pvt", "pvtPumpMainFwd", null],
         "tooltip": {
           "title": "Pump",
           "yardTag": "1018",
@@ -4500,6 +3185,9 @@
         }
       },
       "1019": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainAft", null]
+        },
         "custom": {
           "temperatureController": {
             "type": "sensor:temperature",
@@ -4508,14 +3196,11 @@
             "setpoint": ["parameter:temperature", "pvt", "recoveryTemperature", null]
           }
         },
-        "source": ["sensor:pump", "pvt", "pvtPumpMainAft", null],
-        "controls": {
-          "pump": ["control:pump", "pvt", "pvtPumpMainAft", null]
-        },
         "parameters": {
           "flow": ["parameter:dutypoint", "pvt", "mainAftMinimumPumpDutypoint", null],
           "temperature": ["parameter:temperature", "pvt", "recoveryTemperature", null]
         },
+        "source": ["sensor:pump", "pvt", "pvtPumpMainAft", null],
         "tooltip": {
           "title": "Pump",
           "yardTag": "1019",
@@ -4538,6 +3223,9 @@
         }
       },
       "1021": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpOwners", null]
+        },
         "custom": {
           "temperatureController": {
             "type": "sensor:temperature",
@@ -4546,14 +3234,11 @@
             "setpoint": ["parameter:temperature", "pvt", "recoveryTemperature", null]
           }
         },
-        "source": ["sensor:pump", "pvt", "pvtPumpOwners", null],
-        "controls": {
-          "pump": ["control:pump", "pvt", "pvtPumpOwners", null]
-        },
         "parameters": {
           "flow": ["parameter:dutypoint", "pvt", "ownersMinimumPumpDutypoint", null],
           "temperature": ["parameter:temperature", "pvt", "recoveryTemperature", null]
         },
+        "source": ["sensor:pump", "pvt", "pvtPumpOwners", null],
         "tooltip": {
           "title": "Pump",
           "yardTag": "1021",
@@ -4563,6 +3248,9 @@
         }
       },
       "1022": {
+        "controls": {
+          "pump": ["control:pump", "dhw", "dhwPump", null]
+        },
         "custom": {
           "flowController": {
             "type": "sensor:flow",
@@ -4570,14 +3258,11 @@
             "measurement": ["sensor:flow", "dhw", "dhwFlowBoosting", null]
           }
         },
-        "source": ["sensor:pump", "dhw", "dhwPump", null],
-        "controls": {
-          "pump": ["control:pump", "dhw", "dhwPump", null]
-        },
         "parameters": {
           "flow": ["parameter:flow", "dhw", "heatpumpFlowSetpoint", null],
           "temperature": ["parameter:temperature", "dhw", "heatpumpTemperatureSetpoint", null]
         },
+        "source": ["sensor:pump", "dhw", "dhwPump", null],
         "tooltip": {
           "title": "Pump",
           "yardTag": "1022",
@@ -4639,20 +3324,20 @@
         }
       },
       "1194": {
+        "controls": {
+          "pump": ["control:pump", "thrusters", "thrustersPump1", null]
+        },
         "custom": {
           "flowController": {
             "type": "sensor:flow",
             "controller": ["controller:pidController", "thrusters", "thrustersPumpController", null]
           }
         },
-        "source": ["sensor:pump", "thrusters", "thrustersPump1", null],
-        "controls": {
-          "pump": ["control:pump", "thrusters", "thrustersPump1", null]
-        },
         "parameters": {
           "flow": ["parameter:flow", "thrusters", "thrustersMinimumFlow", null],
           "temperature": ["parameter:temperature", "thrusters", "recoveryTemperature", null]
         },
+        "source": ["sensor:pump", "thrusters", "thrustersPump1", null],
         "tooltip": {
           "title": "Pump",
           "yardTag": "1194",
@@ -4662,20 +3347,20 @@
         }
       },
       "1195": {
+        "controls": {
+          "pump": ["control:pump", "thrusters", "thrustersPump2", null]
+        },
         "custom": {
           "flowController": {
             "type": "sensor:flow",
             "controller": ["controller:pidController", "thrusters", "thrustersPumpController", null]
           }
         },
-        "source": ["sensor:pump", "thrusters", "thrustersPump2", null],
-        "controls": {
-          "pump": ["control:pump", "thrusters", "thrustersPump2", null]
-        },
         "parameters": {
           "flow": ["parameter:flow", "thrusters", "thrustersMaximumFlow", null],
           "temperature": ["parameter:temperature", "thrusters", "maximumSupplyTemperature", null]
         },
+        "source": ["sensor:pump", "thrusters", "thrustersPump2", null],
         "tooltip": {
           "title": "Pump",
           "yardTag": "1195",
@@ -4804,7 +3489,7 @@
       }
     },
     "ShorePowerConverter": {
-      "45002001": {
+      "drives:shorepower": {
         "custom": {
           "converters": []
         },
@@ -5872,10 +4557,10 @@
         "parameters": {
           "temperature": ["parameter:temperature", "thrusters", "warmupTemperature", null]
         },
-        "source": ["sensor:temperature", "thrusters", "thrustersTemperatureAft", null],
         "sensors": {
           "measurement": ["sensor:temperature", "thrusters", "thrustersTemperatureAft", null]
         },
+        "source": ["sensor:temperature", "thrusters", "thrustersTemperatureAft", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-01",
@@ -5903,10 +4588,10 @@
         "parameters": {
           "temperature": ["parameter:temperature", "thrusters", "coolingTemperature", null]
         },
-        "source": ["sensor:temperature", "thrusters", "thrustersTemperatureFwd", null],
         "sensors": {
           "measurement": ["sensor:temperature", "thrusters", "thrustersTemperatureFwd", null]
         },
+        "source": ["sensor:temperature", "thrusters", "thrustersTemperatureFwd", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-02",
@@ -5922,10 +4607,10 @@
         "parameters": {
           "temperature": ["parameter:temperature", "pvt", "warmupTemperature", null]
         },
-        "source": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdReturn", null],
         "sensors": {
           "measurement": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdReturn", null]
         },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdReturn", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-03",
@@ -5941,10 +4626,10 @@
         "parameters": {
           "temperature": ["parameter:temperature", "pvt", "minimumReturnTemperature", null]
         },
-        "source": ["sensor:temperature", "pvt", "pvtTemperatureOwnersReturn", null],
         "sensors": {
           "measurement": ["sensor:temperature", "pvt", "pvtTemperatureOwnersReturn", null]
         },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureOwnersReturn", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-04",
@@ -6064,10 +4749,10 @@
         "parameters": {
           "temperature": ["parameter:temperature", "pvt", "recoveryTemperature", null]
         },
-        "source": ["sensor:temperature", "pvt", "pvtTemperatureOwnersSupply", null],
         "sensors": {
           "measurement": ["sensor:temperature", "pvt", "pvtTemperatureOwnersSupply", null]
         },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureOwnersSupply", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-21",
@@ -6083,10 +4768,10 @@
         "parameters": {
           "temperature": ["parameter:temperature", "pvt", "recoveryTemperature", null]
         },
-        "source": ["sensor:temperature", "pvt", "pvtTemperatureMainAftSupply", null],
         "sensors": {
           "measurement": ["sensor:temperature", "pvt", "pvtTemperatureMainAftSupply", null]
         },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureMainAftSupply", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-22",
@@ -6102,10 +4787,10 @@
         "parameters": {
           "temperature": ["parameter:temperature", "pvt", "recoveryTemperature", null]
         },
-        "source": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdSupply", null],
         "sensors": {
           "measurement": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdSupply", null]
         },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdSupply", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-23",
@@ -6121,10 +4806,10 @@
         "parameters": {
           "temperature": ["parameter:temperature", "pvt", "maximumSupplyTemperature", null]
         },
-        "source": ["sensor:temperature", "pvt", "pvtTemperatureSupply", null],
         "sensors": {
           "measurement": ["sensor:temperature", "pvt", "pvtTemperatureSupply", null]
         },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureSupply", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-24",
@@ -6186,10 +4871,10 @@
         "parameters": {
           "temperature": ["parameter:temperature", "thrusters", "maximumSupplyTemperature", null]
         },
-        "source": ["sensor:temperature", "thrusters", "thrustersTemperatureSupply", null],
         "sensors": {
           "measurement": ["sensor:temperature", "thrusters", "thrustersTemperatureSupply", null]
         },
+        "source": ["sensor:temperature", "thrusters", "thrustersTemperatureSupply", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-28",
@@ -6205,7 +4890,6 @@
         "parameters": {
           "temperature": ["parameter:temperature", "thrusters", "recoveryTemperature", null]
         },
-        "source": ["sensor:temperature", "thrusters", "thrustersTemperatureRecoveryMix", null],
         "sensors": {
           "measurement": [
             "sensor:temperature",
@@ -6214,6 +4898,7 @@
             null
           ]
         },
+        "source": ["sensor:temperature", "thrusters", "thrustersTemperatureRecoveryMix", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-30",
@@ -6314,10 +4999,10 @@
             ]
           }
         },
-        "source": ["sensor:temperature", "dhw", "dhwTemperatureDrivesReturn", null],
         "sensors": {
           "actuator": ["sensor:valve", "dhw", "dhwFlowcontrolDrives", null]
         },
+        "source": ["sensor:temperature", "dhw", "dhwTemperatureDrivesReturn", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-46",
@@ -6365,10 +5050,10 @@
             "outputMinimum": ["parameter:flowcontrol", "dhw", "dcFlowcontrolMinimumSetpoint", null]
           }
         },
-        "source": ["sensor:temperature", "dhw", "dhwTemperatureAdsorptionReturn", null],
         "sensors": {
           "actuator": ["sensor:valve", "dhw", "dhwFlowcontrolDc", null]
         },
+        "source": ["sensor:temperature", "dhw", "dhwTemperatureAdsorptionReturn", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-51",
@@ -6542,10 +5227,10 @@
         }
       },
       "1038-65": {
-        "source": ["sensor:temperature", "dhw", "dhwTemperatureBoostingReturn", null],
         "sensors": {
           "actuator": ["sensor:valve", "dhw", "dhwSwitchHighTemperature", null]
         },
+        "source": ["sensor:temperature", "dhw", "dhwTemperatureBoostingReturn", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-65",
@@ -6628,10 +5313,10 @@
         "parameters": {
           "temperature": ["parameter:temperature", "pvt", "warmupTemperature", null]
         },
-        "source": ["sensor:temperature", "pvt", "pvtTemperatureMainAftReturn", null],
         "sensors": {
           "measurement": ["sensor:temperature", "pvt", "pvtTemperatureMainAftReturn", null]
         },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureMainAftReturn", null],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "1038-73",

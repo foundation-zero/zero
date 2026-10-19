@@ -2,10 +2,10 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { PRESSURE_SENSOR_WIDTH } from "../../../components/pressure-sensor";
+import { getTooltipContexts } from "../../../data";
 import { PressureLabelInstance, PressureSensorInstance } from "../../../instances";
-import { DHW_MIMIC_DATA } from "../data";
 
-const pressureSensors = DHW_MIMIC_DATA[MimicComponentType.PressureSensor];
+const pressureSensors = getTooltipContexts(MimicComponentType.PressureSensor, ["1097-11"]);
 </script>
 
 <template>

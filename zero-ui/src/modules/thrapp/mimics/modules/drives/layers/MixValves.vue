@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { ACTUATED_VALVE_WIDTH, ValveLeg, ValvePortName } from "../../../components/actuated-valve";
+import { getTooltipContexts } from "../../../data";
 import { MixValveInstance, ThreeWayValveLabelInstance } from "../../../instances";
-import { DRIVES_MIX_VALVE_DATA } from "../data";
 
-const mixValves = DRIVES_MIX_VALVE_DATA.MixValve;
+const mixValves = getTooltipContexts(MimicComponentType.MixValve, ["1046-01", "1046-03"]);
 </script>
 
 <template>

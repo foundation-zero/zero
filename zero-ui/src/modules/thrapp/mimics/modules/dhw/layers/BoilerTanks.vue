@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types/index.ts";
+import { getTooltipContexts } from "../../../data";
 import BoilerTankInstance from "../../../instances/BoilerTankInstance.vue";
-import { DHW_MIMIC_DATA } from "../data/index.ts";
 
-const boilerTanks = DHW_MIMIC_DATA[MimicComponentType.BoilerTank];
+const boilerTanks = getTooltipContexts(MimicComponentType.BoilerTank, ["1053", "1054", "1055"]);
 </script>
 
 <template>

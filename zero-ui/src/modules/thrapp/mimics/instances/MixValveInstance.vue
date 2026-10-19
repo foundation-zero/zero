@@ -21,14 +21,11 @@ const { getSensorValue, getComponentState } = getMimicDataProvider();
 const valve = getSensorValue(props.source);
 const state = getComponentState();
 const stateWithAlarms = computed(() => componentStateFromAlarms(state.value, valve.value));
-const forwardedProps = reactiveOmit(props, ["legs"]);
+const forwardedProps = reactiveOmit(props, ["legs", "registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.MixValve"
-    :data="forwardedProps"
-  >
+  <MimicTooltipTrigger :data="props">
     <ActuatedValve
       v-bind="forwardedProps"
       :state="stateWithAlarms"

@@ -3,13 +3,8 @@ import { ResponsivePopup } from "@/modules/common/components/responsive-dialog";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { createTooltipContext, provideTooltipContext } from ".";
-import { MimicComponentFieldsMap } from "../../mimics/modules";
 
-const props = defineProps<{
-  source: Partial<MimicComponentFieldsMap>;
-}>();
-
-const tooltipContext = createTooltipContext(props.source);
+const tooltipContext = createTooltipContext();
 provideTooltipContext(tooltipContext);
 
 const router = useRouter();

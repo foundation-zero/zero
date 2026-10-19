@@ -54,6 +54,7 @@ export const getTooltipContext =
     return {
       registerField,
       type,
+      index: arrayIndexIfMultiple,
       ...defaultContext,
       ...(context ?? {}),
     } as TooltipComponentContext<Type>;
@@ -99,5 +100,5 @@ export const findTooltipContext = <Type extends MimicComponentType = MimicCompon
 
   const ctxs = Array.isArray(context) ? context : context !== undefined ? [context] : [];
 
-  return ctxs.map((ctx) => ({ ...defaultContext, ...ctx }));
+  return ctxs.map((ctx) => ({ ...defaultContext, ...ctx, type, registerField: yardTag }));
 };

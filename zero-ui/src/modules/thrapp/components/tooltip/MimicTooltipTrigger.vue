@@ -1,11 +1,9 @@
 <script setup lang="ts" generic="Type extends MimicComponentType">
 import { useRouter } from "vue-router";
 import { getTooltipContext, TooltipComponentContext } from ".";
-import { findTooltipContext } from "../../mimics/data";
 import { MimicComponentType } from "../../types";
 
 const props = defineProps<{
-  type: Type;
   data: TooltipComponentContext<Type> & Record<string, unknown>;
 }>();
 
@@ -13,17 +11,13 @@ const router = useRouter();
 const { disabled } = getTooltipContext();
 
 const setTooltip = () => {
-  console.log(
-    "set tooltip",
-    props.data.registerField,
-    findTooltipContext(props.data.registerField!),
-  );
-  if (!disabled && props.data.source) {
+  if (!disabled && props.data.registerField && props.data.type) {
     router.push({
       query: {
         ...router.currentRoute.value.query,
         tooltip: String(props.data.registerField),
         type: props.data.type,
+        index: props.data.index != undefined && props.data.index > 0 ? props.data.index : undefined,
       },
     });
   }

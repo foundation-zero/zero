@@ -2,13 +2,13 @@
 import { tScoped } from "@/modules/common/lib/utils";
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { RiArrowDownLine, RiArrowRightLine } from "@remixicon/vue";
+import { getTooltipContexts } from "../../../data";
 import { ConnectingCircuitInstance, SeawaterCircuitInstance } from "../../../instances";
-import { PVT_MIMIC_DATA } from "../data";
-
-const circuits = PVT_MIMIC_DATA[MimicComponentType.SeawaterCircuit];
-const hotWaterCircuits = PVT_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
 
 const t = tScoped("labels");
+
+const circuits = getTooltipContexts(MimicComponentType.SeawaterCircuit, ["pvt:seawater"]);
+const hotWaterCircuits = getTooltipContexts(MimicComponentType.ConnectingCircuit, ["pvt:pcm"]);
 </script>
 
 <template>
@@ -17,7 +17,7 @@ const t = tScoped("labels");
       x="885"
       y="40"
       height="195"
-      v-bind="hotWaterCircuits?.['pcm']"
+      v-bind="hotWaterCircuits['pvt:pcm']"
     >
       <template #from>
         <RiArrowRightLine class="text-muted-foreground size-3" />
@@ -34,7 +34,7 @@ const t = tScoped("labels");
       y="355"
       width="194"
       height="90"
-      v-bind="circuits?.['seawater']"
+      v-bind="circuits['pvt:seawater']"
     />
   </g>
 </template>

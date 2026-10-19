@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ZiAradexPropDrive } from "@/modules/common/components/icons";
+import { reactiveOmit } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip/index.ts";
 import { MimicComponentType } from "../../types/index.ts";
@@ -39,15 +40,13 @@ const { t } = useI18n();
 const { getComponentState } = getMimicDataProvider();
 
 const state = getComponentState();
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.PropulsionDrive"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <AssetBox
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="state"
     >
       <YardTag>{{ tooltip?.yardTag }}</YardTag>

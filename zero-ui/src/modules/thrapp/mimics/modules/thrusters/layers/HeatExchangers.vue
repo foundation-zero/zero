@@ -2,10 +2,10 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { PIPE_HEAT_EXCHANGER_WIDTH } from "../../../components/pipe-heat-exchanger";
+import { getTooltipContexts } from "../../../data";
 import { HeatExchangerInstance, HeatExchangerLabelInstance } from "../../../instances";
-import { THRUSTERS_MIMIC_DATA } from "../data";
 
-const heatExchangers = THRUSTERS_MIMIC_DATA[MimicComponentType.HeatExchanger];
+const heatExchangers = getTooltipContexts(MimicComponentType.HeatExchanger, ["1001"]);
 </script>
 
 <template>

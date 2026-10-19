@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { PcmLayout } from "../../../components/pcm";
+import { getTooltipContexts } from "../../../data";
 import PcmInstance from "../../../instances/PcmInstance.vue";
-import { PCM_MIMIC_DATA } from "../data/index.ts";
 
-const heatBatteries = PCM_MIMIC_DATA[MimicComponentType.Pcm];
+const heatBatteries = getTooltipContexts(MimicComponentType.Pcm, ["1049", "1050", "1051", "1052"]);
 </script>
 
 <template>
