@@ -118,3 +118,20 @@ models:
         description: "Power of the 24V DC converter aggregated per minute."
         tests:
           - not_null
+  - name: gld_aradex_power_per_minute
+    description: >
+      Aradex power aggregated per minute.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the minute interval for the aggregated Aradex power."
+        tests:
+          - not_null
+      - name: propulsion_power
+        description: "Propulsion power of the Aradex aggregated per minute."
+        tests:
+          - not_null
+      - name: hydrogeneration_power
+        description: "Hydrogeneration power of the Aradex aggregated per minute."
+        tests:
+          - not_null
