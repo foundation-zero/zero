@@ -3,7 +3,7 @@ with power_tags as (
 ),
 
 metadata as (
-    select * from {{ ref('stg_power_tag_metadata') }}
+    select * from {{ source('metadata', 'power_tag_metadata') }}
 )
 
 select
@@ -13,3 +13,5 @@ select
 from power_tags as pt
 left join metadata as meta
     on pt.topic = meta.topic
+where pt.active_power_total is not null
+and meta.main_group is not null
