@@ -131,3 +131,28 @@ models:
         description: "Voltage of the 24V DC system."
         tests:
           - not_null
+  - name: slv_pcs_aradexes
+    description: >
+      PCS power measurements of the AFT and FWD Aradexes.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: thruster
+        description: "The thruster associated with the PCS Aradex."
+        tests:
+          - not_null
+      - name: aradex
+        description: "The Aradex number associated with the PCS."
+        tests:
+          - not_null
+      - name: power
+        description: "Power measurement of the PCS Aradex."
+        tests:
+          - not_null
