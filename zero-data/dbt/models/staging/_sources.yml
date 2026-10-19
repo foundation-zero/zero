@@ -105,6 +105,1146 @@ sources:
             description: "Phase B-to-neutral voltage."
           - name: voltage_cn
             description: "Phase C-to-neutral voltage."
+      - name: marpower__150000_propulsion__pcs_aft_ara1
+        description: "AFT thruster Aradex 1 telemetry from Marpower."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: can_comm_failure__has_value
+            description: "Indicates whether the CAN communication failure signal has a recorded value."
+          - name: can_comm_failure__is_valid
+            description: "Indicates whether the CAN communication failure value is valid."
+          - name: can_comm_failure__timestamp
+            description: "Timestamp when the CAN communication failure state was recorded."
+          - name: can_comm_failure__value
+            description: "Status flag indicating a CAN communication failure."
+          - name: comm_error__has_value
+            description: "Indicates whether the communication error signal has a recorded value."
+          - name: comm_error__is_valid
+            description: "Indicates whether the communication error value is valid."
+          - name: comm_error__timestamp
+            description: "Timestamp when the communication error state was recorded."
+          - name: comm_error__value
+            description: "Status flag indicating a general communication error."
+          - name: comm_warning__has_value
+            description: "Indicates whether the communication warning signal has a recorded value."
+          - name: comm_warning__is_valid
+            description: "Indicates whether the communication warning value is valid."
+          - name: comm_warning__timestamp
+            description: "Timestamp when the communication warning state was recorded."
+          - name: comm_warning__value
+            description: "Status flag indicating a communication warning."
+          - name: control_error__has_value
+            description: "Indicates whether the control error signal has a recorded value."
+          - name: control_error__is_valid
+            description: "Indicates whether the control error value is valid."
+          - name: control_error__timestamp
+            description: "Timestamp when the control error state was recorded."
+          - name: control_error__value
+            description: "Status flag indicating a control system error."
+          - name: control_warning__has_value
+            description: "Indicates whether the control warning signal has a recorded value."
+          - name: control_warning__is_valid
+            description: "Indicates whether the control warning value is valid."
+          - name: control_warning__timestamp
+            description: "Timestamp when the control warning state was recorded."
+          - name: control_warning__value
+            description: "Status flag indicating a control system warning."
+          - name: encoder_warning__has_value
+            description: "Indicates whether the encoder warning signal has a recorded value."
+          - name: encoder_warning__is_valid
+            description: "Indicates whether the encoder warning value is valid."
+          - name: encoder_warning__timestamp
+            description: "Timestamp when the encoder warning state was recorded."
+          - name: encoder_warning__value
+            description: "Status flag indicating an encoder warning."
+          - name: encodererror__has_value
+            description: "Indicates whether the encoder error signal has a recorded value."
+          - name: encodererror__is_valid
+            description: "Indicates whether the encoder error value is valid."
+          - name: encodererror__timestamp
+            description: "Timestamp when the encoder error state was recorded."
+          - name: encodererror__value
+            description: "Status flag indicating an encoder error."
+          - name: error_word__has_value
+            description: "Indicates whether the error word signal has a recorded value."
+          - name: error_word__is_valid
+            description: "Indicates whether the error word value is valid."
+          - name: error_word__timestamp
+            description: "Timestamp when the error word value was recorded."
+          - name: error_word__value
+            description: "Bitmask containing active system error flags."
+          - name: fc_temp_error__has_value
+            description: "Indicates whether the frequency converter temperature error signal has a recorded value."
+          - name: fc_temp_error__is_valid
+            description: "Indicates whether the frequency converter temperature error value is valid."
+          - name: fc_temp_error__timestamp
+            description: "Timestamp when the frequency converter temperature error state was recorded."
+          - name: fc_temp_error__value
+            description: "Status flag indicating a frequency converter over-temperature error."
+          - name: fc_temp_warning__has_value
+            description: "Indicates whether the frequency converter temperature warning signal has a recorded value."
+          - name: fc_temp_warning__is_valid
+            description: "Indicates whether the frequency converter temperature warning value is valid."
+          - name: fc_temp_warning__timestamp
+            description: "Timestamp when the frequency converter temperature warning state was recorded."
+          - name: fc_temp_warning__value
+            description: "Status flag indicating a frequency converter temperature warning."
+          - name: hv_input_warning__has_value
+            description: "Indicates whether the high-voltage input warning signal has a recorded value."
+          - name: hv_input_warning__is_valid
+            description: "Indicates whether the high-voltage input warning value is valid."
+          - name: hv_input_warning__timestamp
+            description: "Timestamp when the high-voltage input warning state was recorded."
+          - name: hv_input_warning__value
+            description: "Status flag indicating a high-voltage input warning."
+          - name: hv_inputerror__has_value
+            description: "Indicates whether the high-voltage input error signal has a recorded value."
+          - name: hv_inputerror__is_valid
+            description: "Indicates whether the high-voltage input error value is valid."
+          - name: hv_inputerror__timestamp
+            description: "Timestamp when the high-voltage input error state was recorded."
+          - name: hv_inputerror__value
+            description: "Status flag indicating a high-voltage input error."
+          - name: max_power_setpoint_generator__has_value
+            description: "Indicates whether the maximum power setpoint generator signal has a recorded value."
+          - name: max_power_setpoint_generator__is_valid
+            description: "Indicates whether the maximum power setpoint generator value is valid."
+          - name: max_power_setpoint_generator__timestamp
+            description: "Timestamp when the maximum power setpoint generator value was recorded."
+          - name: max_power_setpoint_generator__value
+            description: "Maximum allowable power setpoint for the generator."
+          - name: max_power_setpoint_motor__has_value
+            description: "Indicates whether the maximum power setpoint motor signal has a recorded value."
+          - name: max_power_setpoint_motor__is_valid
+            description: "Indicates whether the maximum power setpoint motor value is valid."
+          - name: max_power_setpoint_motor__timestamp
+            description: "Timestamp when the maximum power setpoint motor value was recorded."
+          - name: max_power_setpoint_motor__value
+            description: "Maximum allowable power setpoint for the motor."
+          - name: motor_output_igbt_errors__has_value
+            description: "Indicates whether the motor output IGBT error signal has a recorded value."
+          - name: motor_output_igbt_errors__is_valid
+            description: "Indicates whether the motor output IGBT error value is valid."
+          - name: motor_output_igbt_errors__timestamp
+            description: "Timestamp when the motor output IGBT error state was recorded."
+          - name: motor_output_igbt_errors__value
+            description: "Status flag indicating motor output IGBT errors."
+          - name: motor_output_igbt_warnings__has_value
+            description: "Indicates whether the motor output IGBT warning signal has a recorded value."
+          - name: motor_output_igbt_warnings__is_valid
+            description: "Indicates whether the motor output IGBT warning value is valid."
+          - name: motor_output_igbt_warnings__timestamp
+            description: "Timestamp when the motor output IGBT warning state was recorded."
+          - name: motor_output_igbt_warnings__value
+            description: "Status flag indicating motor output IGBT warnings."
+          - name: motor_temp_error__has_value
+            description: "Indicates whether the motor temperature error signal has a recorded value."
+          - name: motor_temp_error__is_valid
+            description: "Indicates whether the motor temperature error value is valid."
+          - name: motor_temp_error__timestamp
+            description: "Timestamp when the motor temperature error state was recorded."
+          - name: motor_temp_error__value
+            description: "Status flag indicating a motor over-temperature error."
+          - name: motor_temp_warning__has_value
+            description: "Indicates whether the motor temperature warning signal has a recorded value."
+          - name: motor_temp_warning__is_valid
+            description: "Indicates whether the motor temperature warning value is valid."
+          - name: motor_temp_warning__timestamp
+            description: "Timestamp when the motor temperature warning state was recorded."
+          - name: motor_temp_warning__value
+            description: "Status flag indicating a motor temperature warning."
+          - name: not_ready_for_use__has_value
+            description: "Indicates whether the not ready for use signal has a recorded value."
+          - name: not_ready_for_use__is_valid
+            description: "Indicates whether the not ready for use value is valid."
+          - name: not_ready_for_use__timestamp
+            description: "Timestamp when the not ready for use state was recorded."
+          - name: not_ready_for_use__value
+            description: "Status flag indicating that the system is not ready for operation."
+          - name: other_error__has_value
+            description: "Indicates whether the general error signal has a recorded value."
+          - name: other_error__is_valid
+            description: "Indicates whether the general error value is valid."
+          - name: other_error__timestamp
+            description: "Timestamp when the general error state was recorded."
+          - name: other_error__value
+            description: "Status flag indicating another unspecified error."
+          - name: other_warning__has_value
+            description: "Indicates whether the general warning signal has a recorded value."
+          - name: other_warning__is_valid
+            description: "Indicates whether the general warning value is valid."
+          - name: other_warning__timestamp
+            description: "Timestamp when the general warning state was recorded."
+          - name: other_warning__value
+            description: "Status flag indicating another unspecified warning."
+          - name: power__has_value
+            description: "Indicates whether the power measurement signal has a recorded value."
+          - name: power__is_valid
+            description: "Indicates whether the power measurement value is valid."
+          - name: power__timestamp
+            description: "Timestamp when the power value was recorded."
+          - name: power__value
+            description: "Measured electrical or mechanical power value."
+          - name: source_type
+            description: "Type of data source or communication protocol."
+          - name: speed__has_value
+            description: "Indicates whether the speed measurement signal has a recorded value."
+          - name: speed__is_valid
+            description: "Indicates whether the speed measurement value is valid."
+          - name: speed__timestamp
+            description: "Timestamp when the speed value was recorded."
+          - name: speed__value
+            description: "Measured rotational speed value."
+          - name: speed_or_torque_setpoint__has_value
+            description: "Indicates whether the speed or torque setpoint signal has a recorded value."
+          - name: speed_or_torque_setpoint__is_valid
+            description: "Indicates whether the speed or torque setpoint value is valid."
+          - name: speed_or_torque_setpoint__timestamp
+            description: "Timestamp when the speed or torque setpoint state was recorded."
+          - name: speed_or_torque_setpoint__value
+            description: "Status flag indicating the active setpoint mode (speed or torque)."
+          - name: table
+            description: "Originating table identifier."
+          - name: temp_igbt__has_value
+            description: "Indicates whether the IGBT temperature signal has a recorded value."
+          - name: temp_igbt__is_valid
+            description: "Indicates whether the IGBT temperature value is valid."
+          - name: temp_igbt__timestamp
+            description: "Timestamp when the IGBT temperature value was recorded."
+          - name: temp_igbt__value
+            description: "Measured temperature of the IGBT power components."
+          - name: temp_power_stage__has_value
+            description: "Indicates whether the power stage temperature signal has a recorded value."
+          - name: temp_power_stage__is_valid
+            description: "Indicates whether the power stage temperature value is valid."
+          - name: temp_power_stage__timestamp
+            description: "Timestamp when the power stage temperature value was recorded."
+          - name: temp_power_stage__value
+            description: "Measured temperature of the power stage."
+          - name: topic
+            description: "MQTT or messaging system topic string."
+          - name: torque__has_value
+            description: "Indicates whether the torque measurement signal has a recorded value."
+          - name: torque__is_valid
+            description: "Indicates whether the torque measurement value is valid."
+          - name: torque__timestamp
+            description: "Timestamp when the torque value was recorded."
+          - name: torque__value
+            description: "Measured torque value."
+          - name: vp_enable__has_value
+            description: "Indicates whether the variable pitch enable signal has a recorded value."
+          - name: vp_enable__is_valid
+            description: "Indicates whether the variable pitch enable value is valid."
+          - name: vp_enable__timestamp
+            description: "Timestamp when the variable pitch enable state was recorded."
+          - name: vp_enable__value
+            description: "Status flag indicating whether variable pitch is enabled."
+          - name: warning_word__has_value
+            description: "Indicates whether the warning word signal has a recorded value."
+          - name: warning_word__is_valid
+            description: "Indicates whether the warning word value is valid."
+          - name: warning_word__timestamp
+            description: "Timestamp when the warning word value was recorded."
+          - name: warning_word__value
+            description: "Bitmask containing active system warning flags."
+          - name: power_failure__has_value
+            description: "Indicates whether the power failure signal has a recorded value."
+          - name: power_failure__is_valid
+            description: "Indicates whether the power failure value is valid."
+          - name: power_failure__timestamp
+            description: "Timestamp when the power failure state was recorded."
+          - name: power_failure__value
+            description: "Status flag indicating a main power failure."
+          - name: control_mode__has_value
+            description: "Indicates whether the control mode signal has a recorded value."
+          - name: control_mode__is_valid
+            description: "Indicates whether the control mode value is valid."
+          - name: control_mode__timestamp
+            description: "Timestamp when the control mode value was recorded."
+          - name: control_mode__value
+            description: "Active control mode identifier."
+          - name: setpoint_1__has_value
+            description: "Indicates whether setpoint 1 has a recorded value."
+          - name: setpoint_1__is_valid
+            description: "Indicates whether setpoint 1 value is valid."
+          - name: setpoint_1__timestamp
+            description: "Timestamp when setpoint 1 value was recorded."
+          - name: setpoint_1__value
+            description: "Target value for setpoint 1."
+          - name: setpoint_2__has_value
+            description: "Indicates whether setpoint 2 has a recorded value."
+          - name: setpoint_2__is_valid
+            description: "Indicates whether setpoint 2 value is valid."
+          - name: setpoint_2__timestamp
+            description: "Timestamp when setpoint 2 value was recorded."
+          - name: setpoint_2__value
+            description: "Target value for setpoint 2."
+          - name: setpoint_3__has_value
+            description: "Indicates whether setpoint 3 has a recorded value."
+          - name: setpoint_3__is_valid
+            description: "Indicates whether setpoint 3 value is valid."
+          - name: setpoint_3__timestamp
+            description: "Timestamp when setpoint 3 value was recorded."
+          - name: setpoint_3__value
+            description: "Target value for setpoint 3."
+      - name: marpower__150000_propulsion__pcs_aft_ara2
+        description: "AFT thruster Aradex 2 telemetry from Marpower."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: can_comm_failure__has_value
+            description: "Indicates whether the CAN communication failure signal has a recorded value."
+          - name: can_comm_failure__is_valid
+            description: "Indicates whether the CAN communication failure value is valid."
+          - name: can_comm_failure__timestamp
+            description: "Timestamp when the CAN communication failure state was recorded."
+          - name: can_comm_failure__value
+            description: "Status flag indicating a CAN communication failure."
+          - name: comm_error__has_value
+            description: "Indicates whether the communication error signal has a recorded value."
+          - name: comm_error__is_valid
+            description: "Indicates whether the communication error value is valid."
+          - name: comm_error__timestamp
+            description: "Timestamp when the communication error state was recorded."
+          - name: comm_error__value
+            description: "Status flag indicating a general communication error."
+          - name: comm_warning__has_value
+            description: "Indicates whether the communication warning signal has a recorded value."
+          - name: comm_warning__is_valid
+            description: "Indicates whether the communication warning value is valid."
+          - name: comm_warning__timestamp
+            description: "Timestamp when the communication warning state was recorded."
+          - name: comm_warning__value
+            description: "Status flag indicating a communication warning."
+          - name: control_error__has_value
+            description: "Indicates whether the control error signal has a recorded value."
+          - name: control_error__is_valid
+            description: "Indicates whether the control error value is valid."
+          - name: control_error__timestamp
+            description: "Timestamp when the control error state was recorded."
+          - name: control_error__value
+            description: "Status flag indicating a control system error."
+          - name: control_warning__has_value
+            description: "Indicates whether the control warning signal has a recorded value."
+          - name: control_warning__is_valid
+            description: "Indicates whether the control warning value is valid."
+          - name: control_warning__timestamp
+            description: "Timestamp when the control warning state was recorded."
+          - name: control_warning__value
+            description: "Status flag indicating a control system warning."
+          - name: encoder_warning__has_value
+            description: "Indicates whether the encoder warning signal has a recorded value."
+          - name: encoder_warning__is_valid
+            description: "Indicates whether the encoder warning value is valid."
+          - name: encoder_warning__timestamp
+            description: "Timestamp when the encoder warning state was recorded."
+          - name: encoder_warning__value
+            description: "Status flag indicating an encoder warning."
+          - name: encodererror__has_value
+            description: "Indicates whether the encoder error signal has a recorded value."
+          - name: encodererror__is_valid
+            description: "Indicates whether the encoder error value is valid."
+          - name: encodererror__timestamp
+            description: "Timestamp when the encoder error state was recorded."
+          - name: encodererror__value
+            description: "Status flag indicating an encoder error."
+          - name: error_word__has_value
+            description: "Indicates whether the error word signal has a recorded value."
+          - name: error_word__is_valid
+            description: "Indicates whether the error word value is valid."
+          - name: error_word__timestamp
+            description: "Timestamp when the error word value was recorded."
+          - name: error_word__value
+            description: "Bitmask containing active system error flags."
+          - name: fc_temp_error__has_value
+            description: "Indicates whether the frequency converter temperature error signal has a recorded value."
+          - name: fc_temp_error__is_valid
+            description: "Indicates whether the frequency converter temperature error value is valid."
+          - name: fc_temp_error__timestamp
+            description: "Timestamp when the frequency converter temperature error state was recorded."
+          - name: fc_temp_error__value
+            description: "Status flag indicating a frequency converter over-temperature error."
+          - name: fc_temp_warning__has_value
+            description: "Indicates whether the frequency converter temperature warning signal has a recorded value."
+          - name: fc_temp_warning__is_valid
+            description: "Indicates whether the frequency converter temperature warning value is valid."
+          - name: fc_temp_warning__timestamp
+            description: "Timestamp when the frequency converter temperature warning state was recorded."
+          - name: fc_temp_warning__value
+            description: "Status flag indicating a frequency converter temperature warning."
+          - name: hv_input_warning__has_value
+            description: "Indicates whether the high-voltage input warning signal has a recorded value."
+          - name: hv_input_warning__is_valid
+            description: "Indicates whether the high-voltage input warning value is valid."
+          - name: hv_input_warning__timestamp
+            description: "Timestamp when the high-voltage input warning state was recorded."
+          - name: hv_input_warning__value
+            description: "Status flag indicating a high-voltage input warning."
+          - name: hv_inputerror__has_value
+            description: "Indicates whether the high-voltage input error signal has a recorded value."
+          - name: hv_inputerror__is_valid
+            description: "Indicates whether the high-voltage input error value is valid."
+          - name: hv_inputerror__timestamp
+            description: "Timestamp when the high-voltage input error state was recorded."
+          - name: hv_inputerror__value
+            description: "Status flag indicating a high-voltage input error."
+          - name: max_power_setpoint_generator__has_value
+            description: "Indicates whether the maximum power setpoint generator signal has a recorded value."
+          - name: max_power_setpoint_generator__is_valid
+            description: "Indicates whether the maximum power setpoint generator value is valid."
+          - name: max_power_setpoint_generator__timestamp
+            description: "Timestamp when the maximum power setpoint generator value was recorded."
+          - name: max_power_setpoint_generator__value
+            description: "Maximum allowable power setpoint for the generator."
+          - name: max_power_setpoint_motor__has_value
+            description: "Indicates whether the maximum power setpoint motor signal has a recorded value."
+          - name: max_power_setpoint_motor__is_valid
+            description: "Indicates whether the maximum power setpoint motor value is valid."
+          - name: max_power_setpoint_motor__timestamp
+            description: "Timestamp when the maximum power setpoint motor value was recorded."
+          - name: max_power_setpoint_motor__value
+            description: "Maximum allowable power setpoint for the motor."
+          - name: motor_output_igbt_errors__has_value
+            description: "Indicates whether the motor output IGBT error signal has a recorded value."
+          - name: motor_output_igbt_errors__is_valid
+            description: "Indicates whether the motor output IGBT error value is valid."
+          - name: motor_output_igbt_errors__timestamp
+            description: "Timestamp when the motor output IGBT error state was recorded."
+          - name: motor_output_igbt_errors__value
+            description: "Status flag indicating motor output IGBT errors."
+          - name: motor_output_igbt_warnings__has_value
+            description: "Indicates whether the motor output IGBT warning signal has a recorded value."
+          - name: motor_output_igbt_warnings__is_valid
+            description: "Indicates whether the motor output IGBT warning value is valid."
+          - name: motor_output_igbt_warnings__timestamp
+            description: "Timestamp when the motor output IGBT warning state was recorded."
+          - name: motor_output_igbt_warnings__value
+            description: "Status flag indicating motor output IGBT warnings."
+          - name: motor_temp_error__has_value
+            description: "Indicates whether the motor temperature error signal has a recorded value."
+          - name: motor_temp_error__is_valid
+            description: "Indicates whether the motor temperature error value is valid."
+          - name: motor_temp_error__timestamp
+            description: "Timestamp when the motor temperature error state was recorded."
+          - name: motor_temp_error__value
+            description: "Status flag indicating a motor over-temperature error."
+          - name: motor_temp_warning__has_value
+            description: "Indicates whether the motor temperature warning signal has a recorded value."
+          - name: motor_temp_warning__is_valid
+            description: "Indicates whether the motor temperature warning value is valid."
+          - name: motor_temp_warning__timestamp
+            description: "Timestamp when the motor temperature warning state was recorded."
+          - name: motor_temp_warning__value
+            description: "Status flag indicating a motor temperature warning."
+          - name: not_ready_for_use__has_value
+            description: "Indicates whether the not ready for use signal has a recorded value."
+          - name: not_ready_for_use__is_valid
+            description: "Indicates whether the not ready for use value is valid."
+          - name: not_ready_for_use__timestamp
+            description: "Timestamp when the not ready for use state was recorded."
+          - name: not_ready_for_use__value
+            description: "Status flag indicating that the system is not ready for operation."
+          - name: other_error__has_value
+            description: "Indicates whether the general error signal has a recorded value."
+          - name: other_error__is_valid
+            description: "Indicates whether the general error value is valid."
+          - name: other_error__timestamp
+            description: "Timestamp when the general error state was recorded."
+          - name: other_error__value
+            description: "Status flag indicating another unspecified error."
+          - name: other_warning__has_value
+            description: "Indicates whether the general warning signal has a recorded value."
+          - name: other_warning__is_valid
+            description: "Indicates whether the general warning value is valid."
+          - name: other_warning__timestamp
+            description: "Timestamp when the general warning state was recorded."
+          - name: other_warning__value
+            description: "Status flag indicating another unspecified warning."
+          - name: power__has_value
+            description: "Indicates whether the power measurement signal has a recorded value."
+          - name: power__is_valid
+            description: "Indicates whether the power measurement value is valid."
+          - name: power__timestamp
+            description: "Timestamp when the power value was recorded."
+          - name: power__value
+            description: "Measured electrical or mechanical power value."
+          - name: source_type
+            description: "Type of data source or communication protocol."
+          - name: speed__has_value
+            description: "Indicates whether the speed measurement signal has a recorded value."
+          - name: speed__is_valid
+            description: "Indicates whether the speed measurement value is valid."
+          - name: speed__timestamp
+            description: "Timestamp when the speed value was recorded."
+          - name: speed__value
+            description: "Measured rotational speed value."
+          - name: speed_or_torque_setpoint__has_value
+            description: "Indicates whether the speed or torque setpoint signal has a recorded value."
+          - name: speed_or_torque_setpoint__is_valid
+            description: "Indicates whether the speed or torque setpoint value is valid."
+          - name: speed_or_torque_setpoint__timestamp
+            description: "Timestamp when the speed or torque setpoint state was recorded."
+          - name: speed_or_torque_setpoint__value
+            description: "Status flag indicating the active setpoint mode (speed or torque)."
+          - name: table
+            description: "Originating table identifier."
+          - name: temp_igbt__has_value
+            description: "Indicates whether the IGBT temperature signal has a recorded value."
+          - name: temp_igbt__is_valid
+            description: "Indicates whether the IGBT temperature value is valid."
+          - name: temp_igbt__timestamp
+            description: "Timestamp when the IGBT temperature value was recorded."
+          - name: temp_igbt__value
+            description: "Measured temperature of the IGBT power components."
+          - name: temp_power_stage__has_value
+            description: "Indicates whether the power stage temperature signal has a recorded value."
+          - name: temp_power_stage__is_valid
+            description: "Indicates whether the power stage temperature value is valid."
+          - name: temp_power_stage__timestamp
+            description: "Timestamp when the power stage temperature value was recorded."
+          - name: temp_power_stage__value
+            description: "Measured temperature of the power stage."
+          - name: topic
+            description: "MQTT or messaging system topic string."
+          - name: torque__has_value
+            description: "Indicates whether the torque measurement signal has a recorded value."
+          - name: torque__is_valid
+            description: "Indicates whether the torque measurement value is valid."
+          - name: torque__timestamp
+            description: "Timestamp when the torque value was recorded."
+          - name: torque__value
+            description: "Measured torque value."
+          - name: vp_enable__has_value
+            description: "Indicates whether the variable pitch enable signal has a recorded value."
+          - name: vp_enable__is_valid
+            description: "Indicates whether the variable pitch enable value is valid."
+          - name: vp_enable__timestamp
+            description: "Timestamp when the variable pitch enable state was recorded."
+          - name: vp_enable__value
+            description: "Status flag indicating whether variable pitch is enabled."
+          - name: warning_word__has_value
+            description: "Indicates whether the warning word signal has a recorded value."
+          - name: warning_word__is_valid
+            description: "Indicates whether the warning word value is valid."
+          - name: warning_word__timestamp
+            description: "Timestamp when the warning word value was recorded."
+          - name: warning_word__value
+            description: "Bitmask containing active system warning flags."
+          - name: power_failure__has_value
+            description: "Indicates whether the power failure signal has a recorded value."
+          - name: power_failure__is_valid
+            description: "Indicates whether the power failure value is valid."
+          - name: power_failure__timestamp
+            description: "Timestamp when the power failure state was recorded."
+          - name: power_failure__value
+            description: "Status flag indicating a main power failure."
+          - name: control_mode__has_value
+            description: "Indicates whether the control mode signal has a recorded value."
+          - name: control_mode__is_valid
+            description: "Indicates whether the control mode value is valid."
+          - name: control_mode__timestamp
+            description: "Timestamp when the control mode value was recorded."
+          - name: control_mode__value
+            description: "Active control mode identifier."
+          - name: setpoint_1__has_value
+            description: "Indicates whether setpoint 1 has a recorded value."
+          - name: setpoint_1__is_valid
+            description: "Indicates whether setpoint 1 value is valid."
+          - name: setpoint_1__timestamp
+            description: "Timestamp when setpoint 1 value was recorded."
+          - name: setpoint_1__value
+            description: "Target value for setpoint 1."
+          - name: setpoint_2__has_value
+            description: "Indicates whether setpoint 2 has a recorded value."
+          - name: setpoint_2__is_valid
+            description: "Indicates whether setpoint 2 value is valid."
+          - name: setpoint_2__timestamp
+            description: "Timestamp when setpoint 2 value was recorded."
+          - name: setpoint_2__value
+            description: "Target value for setpoint 2."
+          - name: setpoint_3__has_value
+            description: "Indicates whether setpoint 3 has a recorded value."
+          - name: setpoint_3__is_valid
+            description: "Indicates whether setpoint 3 value is valid."
+          - name: setpoint_3__timestamp
+            description: "Timestamp when setpoint 3 value was recorded."
+          - name: setpoint_3__value
+            description: "Target value for setpoint 3."
+      - name: marpower__150000_propulsion__pcs_fwd_ara1
+        description: "FWD thruster Aradex 1 telemetry from Marpower."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: can_comm_failure__has_value
+            description: "Indicates whether the CAN communication failure signal has a recorded value."
+          - name: can_comm_failure__is_valid
+            description: "Indicates whether the CAN communication failure value is valid."
+          - name: can_comm_failure__timestamp
+            description: "Timestamp when the CAN communication failure state was recorded."
+          - name: can_comm_failure__value
+            description: "Status flag indicating a CAN communication failure."
+          - name: comm_error__has_value
+            description: "Indicates whether the communication error signal has a recorded value."
+          - name: comm_error__is_valid
+            description: "Indicates whether the communication error value is valid."
+          - name: comm_error__timestamp
+            description: "Timestamp when the communication error state was recorded."
+          - name: comm_error__value
+            description: "Status flag indicating a general communication error."
+          - name: comm_warning__has_value
+            description: "Indicates whether the communication warning signal has a recorded value."
+          - name: comm_warning__is_valid
+            description: "Indicates whether the communication warning value is valid."
+          - name: comm_warning__timestamp
+            description: "Timestamp when the communication warning state was recorded."
+          - name: comm_warning__value
+            description: "Status flag indicating a communication warning."
+          - name: control_error__has_value
+            description: "Indicates whether the control error signal has a recorded value."
+          - name: control_error__is_valid
+            description: "Indicates whether the control error value is valid."
+          - name: control_error__timestamp
+            description: "Timestamp when the control error state was recorded."
+          - name: control_error__value
+            description: "Status flag indicating a control system error."
+          - name: control_warning__has_value
+            description: "Indicates whether the control warning signal has a recorded value."
+          - name: control_warning__is_valid
+            description: "Indicates whether the control warning value is valid."
+          - name: control_warning__timestamp
+            description: "Timestamp when the control warning state was recorded."
+          - name: control_warning__value
+            description: "Status flag indicating a control system warning."
+          - name: encoder_warning__has_value
+            description: "Indicates whether the encoder warning signal has a recorded value."
+          - name: encoder_warning__is_valid
+            description: "Indicates whether the encoder warning value is valid."
+          - name: encoder_warning__timestamp
+            description: "Timestamp when the encoder warning state was recorded."
+          - name: encoder_warning__value
+            description: "Status flag indicating an encoder warning."
+          - name: encodererror__has_value
+            description: "Indicates whether the encoder error signal has a recorded value."
+          - name: encodererror__is_valid
+            description: "Indicates whether the encoder error value is valid."
+          - name: encodererror__timestamp
+            description: "Timestamp when the encoder error state was recorded."
+          - name: encodererror__value
+            description: "Status flag indicating an encoder error."
+          - name: error_word__has_value
+            description: "Indicates whether the error word signal has a recorded value."
+          - name: error_word__is_valid
+            description: "Indicates whether the error word value is valid."
+          - name: error_word__timestamp
+            description: "Timestamp when the error word value was recorded."
+          - name: error_word__value
+            description: "Bitmask containing active system error flags."
+          - name: fc_temp_error__has_value
+            description: "Indicates whether the frequency converter temperature error signal has a recorded value."
+          - name: fc_temp_error__is_valid
+            description: "Indicates whether the frequency converter temperature error value is valid."
+          - name: fc_temp_error__timestamp
+            description: "Timestamp when the frequency converter temperature error state was recorded."
+          - name: fc_temp_error__value
+            description: "Status flag indicating a frequency converter over-temperature error."
+          - name: fc_temp_warning__has_value
+            description: "Indicates whether the frequency converter temperature warning signal has a recorded value."
+          - name: fc_temp_warning__is_valid
+            description: "Indicates whether the frequency converter temperature warning value is valid."
+          - name: fc_temp_warning__timestamp
+            description: "Timestamp when the frequency converter temperature warning state was recorded."
+          - name: fc_temp_warning__value
+            description: "Status flag indicating a frequency converter temperature warning."
+          - name: hv_input_warning__has_value
+            description: "Indicates whether the high-voltage input warning signal has a recorded value."
+          - name: hv_input_warning__is_valid
+            description: "Indicates whether the high-voltage input warning value is valid."
+          - name: hv_input_warning__timestamp
+            description: "Timestamp when the high-voltage input warning state was recorded."
+          - name: hv_input_warning__value
+            description: "Status flag indicating a high-voltage input warning."
+          - name: hv_inputerror__has_value
+            description: "Indicates whether the high-voltage input error signal has a recorded value."
+          - name: hv_inputerror__is_valid
+            description: "Indicates whether the high-voltage input error value is valid."
+          - name: hv_inputerror__timestamp
+            description: "Timestamp when the high-voltage input error state was recorded."
+          - name: hv_inputerror__value
+            description: "Status flag indicating a high-voltage input error."
+          - name: max_power_setpoint_generator__has_value
+            description: "Indicates whether the maximum power setpoint generator signal has a recorded value."
+          - name: max_power_setpoint_generator__is_valid
+            description: "Indicates whether the maximum power setpoint generator value is valid."
+          - name: max_power_setpoint_generator__timestamp
+            description: "Timestamp when the maximum power setpoint generator value was recorded."
+          - name: max_power_setpoint_generator__value
+            description: "Maximum allowable power setpoint for the generator."
+          - name: max_power_setpoint_motor__has_value
+            description: "Indicates whether the maximum power setpoint motor signal has a recorded value."
+          - name: max_power_setpoint_motor__is_valid
+            description: "Indicates whether the maximum power setpoint motor value is valid."
+          - name: max_power_setpoint_motor__timestamp
+            description: "Timestamp when the maximum power setpoint motor value was recorded."
+          - name: max_power_setpoint_motor__value
+            description: "Maximum allowable power setpoint for the motor."
+          - name: motor_output_igbt_errors__has_value
+            description: "Indicates whether the motor output IGBT error signal has a recorded value."
+          - name: motor_output_igbt_errors__is_valid
+            description: "Indicates whether the motor output IGBT error value is valid."
+          - name: motor_output_igbt_errors__timestamp
+            description: "Timestamp when the motor output IGBT error state was recorded."
+          - name: motor_output_igbt_errors__value
+            description: "Status flag indicating motor output IGBT errors."
+          - name: motor_output_igbt_warnings__has_value
+            description: "Indicates whether the motor output IGBT warning signal has a recorded value."
+          - name: motor_output_igbt_warnings__is_valid
+            description: "Indicates whether the motor output IGBT warning value is valid."
+          - name: motor_output_igbt_warnings__timestamp
+            description: "Timestamp when the motor output IGBT warning state was recorded."
+          - name: motor_output_igbt_warnings__value
+            description: "Status flag indicating motor output IGBT warnings."
+          - name: motor_temp_error__has_value
+            description: "Indicates whether the motor temperature error signal has a recorded value."
+          - name: motor_temp_error__is_valid
+            description: "Indicates whether the motor temperature error value is valid."
+          - name: motor_temp_error__timestamp
+            description: "Timestamp when the motor temperature error state was recorded."
+          - name: motor_temp_error__value
+            description: "Status flag indicating a motor over-temperature error."
+          - name: motor_temp_warning__has_value
+            description: "Indicates whether the motor temperature warning signal has a recorded value."
+          - name: motor_temp_warning__is_valid
+            description: "Indicates whether the motor temperature warning value is valid."
+          - name: motor_temp_warning__timestamp
+            description: "Timestamp when the motor temperature warning state was recorded."
+          - name: motor_temp_warning__value
+            description: "Status flag indicating a motor temperature warning."
+          - name: not_ready_for_use__has_value
+            description: "Indicates whether the not ready for use signal has a recorded value."
+          - name: not_ready_for_use__is_valid
+            description: "Indicates whether the not ready for use value is valid."
+          - name: not_ready_for_use__timestamp
+            description: "Timestamp when the not ready for use state was recorded."
+          - name: not_ready_for_use__value
+            description: "Status flag indicating that the system is not ready for operation."
+          - name: other_error__has_value
+            description: "Indicates whether the general error signal has a recorded value."
+          - name: other_error__is_valid
+            description: "Indicates whether the general error value is valid."
+          - name: other_error__timestamp
+            description: "Timestamp when the general error state was recorded."
+          - name: other_error__value
+            description: "Status flag indicating another unspecified error."
+          - name: other_warning__has_value
+            description: "Indicates whether the general warning signal has a recorded value."
+          - name: other_warning__is_valid
+            description: "Indicates whether the general warning value is valid."
+          - name: other_warning__timestamp
+            description: "Timestamp when the general warning state was recorded."
+          - name: other_warning__value
+            description: "Status flag indicating another unspecified warning."
+          - name: power__has_value
+            description: "Indicates whether the power measurement signal has a recorded value."
+          - name: power__is_valid
+            description: "Indicates whether the power measurement value is valid."
+          - name: power__timestamp
+            description: "Timestamp when the power value was recorded."
+          - name: power__value
+            description: "Measured electrical or mechanical power value."
+          - name: source_type
+            description: "Type of data source or communication protocol."
+          - name: speed__has_value
+            description: "Indicates whether the speed measurement signal has a recorded value."
+          - name: speed__is_valid
+            description: "Indicates whether the speed measurement value is valid."
+          - name: speed__timestamp
+            description: "Timestamp when the speed value was recorded."
+          - name: speed__value
+            description: "Measured rotational speed value."
+          - name: speed_or_torque_setpoint__has_value
+            description: "Indicates whether the speed or torque setpoint signal has a recorded value."
+          - name: speed_or_torque_setpoint__is_valid
+            description: "Indicates whether the speed or torque setpoint value is valid."
+          - name: speed_or_torque_setpoint__timestamp
+            description: "Timestamp when the speed or torque setpoint state was recorded."
+          - name: speed_or_torque_setpoint__value
+            description: "Status flag indicating the active setpoint mode (speed or torque)."
+          - name: table
+            description: "Originating table identifier."
+          - name: temp_igbt__has_value
+            description: "Indicates whether the IGBT temperature signal has a recorded value."
+          - name: temp_igbt__is_valid
+            description: "Indicates whether the IGBT temperature value is valid."
+          - name: temp_igbt__timestamp
+            description: "Timestamp when the IGBT temperature value was recorded."
+          - name: temp_igbt__value
+            description: "Measured temperature of the IGBT power components."
+          - name: temp_power_stage__has_value
+            description: "Indicates whether the power stage temperature signal has a recorded value."
+          - name: temp_power_stage__is_valid
+            description: "Indicates whether the power stage temperature value is valid."
+          - name: temp_power_stage__timestamp
+            description: "Timestamp when the power stage temperature value was recorded."
+          - name: temp_power_stage__value
+            description: "Measured temperature of the power stage."
+          - name: topic
+            description: "MQTT or messaging system topic string."
+          - name: torque__has_value
+            description: "Indicates whether the torque measurement signal has a recorded value."
+          - name: torque__is_valid
+            description: "Indicates whether the torque measurement value is valid."
+          - name: torque__timestamp
+            description: "Timestamp when the torque value was recorded."
+          - name: torque__value
+            description: "Measured torque value."
+          - name: vp_enable__has_value
+            description: "Indicates whether the variable pitch enable signal has a recorded value."
+          - name: vp_enable__is_valid
+            description: "Indicates whether the variable pitch enable value is valid."
+          - name: vp_enable__timestamp
+            description: "Timestamp when the variable pitch enable state was recorded."
+          - name: vp_enable__value
+            description: "Status flag indicating whether variable pitch is enabled."
+          - name: warning_word__has_value
+            description: "Indicates whether the warning word signal has a recorded value."
+          - name: warning_word__is_valid
+            description: "Indicates whether the warning word value is valid."
+          - name: warning_word__timestamp
+            description: "Timestamp when the warning word value was recorded."
+          - name: warning_word__value
+            description: "Bitmask containing active system warning flags."
+          - name: power_failure__has_value
+            description: "Indicates whether the power failure signal has a recorded value."
+          - name: power_failure__is_valid
+            description: "Indicates whether the power failure value is valid."
+          - name: power_failure__timestamp
+            description: "Timestamp when the power failure state was recorded."
+          - name: power_failure__value
+            description: "Status flag indicating a main power failure."
+          - name: control_mode__has_value
+            description: "Indicates whether the control mode signal has a recorded value."
+          - name: control_mode__is_valid
+            description: "Indicates whether the control mode value is valid."
+          - name: control_mode__timestamp
+            description: "Timestamp when the control mode value was recorded."
+          - name: control_mode__value
+            description: "Active control mode identifier."
+          - name: setpoint_1__has_value
+            description: "Indicates whether setpoint 1 has a recorded value."
+          - name: setpoint_1__is_valid
+            description: "Indicates whether setpoint 1 value is valid."
+          - name: setpoint_1__timestamp
+            description: "Timestamp when setpoint 1 value was recorded."
+          - name: setpoint_1__value
+            description: "Target value for setpoint 1."
+          - name: setpoint_2__has_value
+            description: "Indicates whether setpoint 2 has a recorded value."
+          - name: setpoint_2__is_valid
+            description: "Indicates whether setpoint 2 value is valid."
+          - name: setpoint_2__timestamp
+            description: "Timestamp when setpoint 2 value was recorded."
+          - name: setpoint_2__value
+            description: "Target value for setpoint 2."
+          - name: setpoint_3__has_value
+            description: "Indicates whether setpoint 3 has a recorded value."
+          - name: setpoint_3__is_valid
+            description: "Indicates whether setpoint 3 value is valid."
+          - name: setpoint_3__timestamp
+            description: "Timestamp when setpoint 3 value was recorded."
+          - name: setpoint_3__value
+            description: "Target value for setpoint 3."
+      - name: marpower__150000_propulsion__pcs_fwd_ara2
+        description: "FWD thruster Aradex 2 telemetry from Marpower."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: can_comm_failure__has_value
+            description: "Indicates whether the CAN communication failure signal has a recorded value."
+          - name: can_comm_failure__is_valid
+            description: "Indicates whether the CAN communication failure value is valid."
+          - name: can_comm_failure__timestamp
+            description: "Timestamp when the CAN communication failure state was recorded."
+          - name: can_comm_failure__value
+            description: "Status flag indicating a CAN communication failure."
+          - name: comm_error__has_value
+            description: "Indicates whether the communication error signal has a recorded value."
+          - name: comm_error__is_valid
+            description: "Indicates whether the communication error value is valid."
+          - name: comm_error__timestamp
+            description: "Timestamp when the communication error state was recorded."
+          - name: comm_error__value
+            description: "Status flag indicating a general communication error."
+          - name: comm_warning__has_value
+            description: "Indicates whether the communication warning signal has a recorded value."
+          - name: comm_warning__is_valid
+            description: "Indicates whether the communication warning value is valid."
+          - name: comm_warning__timestamp
+            description: "Timestamp when the communication warning state was recorded."
+          - name: comm_warning__value
+            description: "Status flag indicating a communication warning."
+          - name: control_error__has_value
+            description: "Indicates whether the control error signal has a recorded value."
+          - name: control_error__is_valid
+            description: "Indicates whether the control error value is valid."
+          - name: control_error__timestamp
+            description: "Timestamp when the control error state was recorded."
+          - name: control_error__value
+            description: "Status flag indicating a control system error."
+          - name: control_warning__has_value
+            description: "Indicates whether the control warning signal has a recorded value."
+          - name: control_warning__is_valid
+            description: "Indicates whether the control warning value is valid."
+          - name: control_warning__timestamp
+            description: "Timestamp when the control warning state was recorded."
+          - name: control_warning__value
+            description: "Status flag indicating a control system warning."
+          - name: encoder_warning__has_value
+            description: "Indicates whether the encoder warning signal has a recorded value."
+          - name: encoder_warning__is_valid
+            description: "Indicates whether the encoder warning value is valid."
+          - name: encoder_warning__timestamp
+            description: "Timestamp when the encoder warning state was recorded."
+          - name: encoder_warning__value
+            description: "Status flag indicating an encoder warning."
+          - name: encodererror__has_value
+            description: "Indicates whether the encoder error signal has a recorded value."
+          - name: encodererror__is_valid
+            description: "Indicates whether the encoder error value is valid."
+          - name: encodererror__timestamp
+            description: "Timestamp when the encoder error state was recorded."
+          - name: encodererror__value
+            description: "Status flag indicating an encoder error."
+          - name: error_word__has_value
+            description: "Indicates whether the error word signal has a recorded value."
+          - name: error_word__is_valid
+            description: "Indicates whether the error word value is valid."
+          - name: error_word__timestamp
+            description: "Timestamp when the error word value was recorded."
+          - name: error_word__value
+            description: "Bitmask containing active system error flags."
+          - name: fc_temp_error__has_value
+            description: "Indicates whether the frequency converter temperature error signal has a recorded value."
+          - name: fc_temp_error__is_valid
+            description: "Indicates whether the frequency converter temperature error value is valid."
+          - name: fc_temp_error__timestamp
+            description: "Timestamp when the frequency converter temperature error state was recorded."
+          - name: fc_temp_error__value
+            description: "Status flag indicating a frequency converter over-temperature error."
+          - name: fc_temp_warning__has_value
+            description: "Indicates whether the frequency converter temperature warning signal has a recorded value."
+          - name: fc_temp_warning__is_valid
+            description: "Indicates whether the frequency converter temperature warning value is valid."
+          - name: fc_temp_warning__timestamp
+            description: "Timestamp when the frequency converter temperature warning state was recorded."
+          - name: fc_temp_warning__value
+            description: "Status flag indicating a frequency converter temperature warning."
+          - name: hv_input_warning__has_value
+            description: "Indicates whether the high-voltage input warning signal has a recorded value."
+          - name: hv_input_warning__is_valid
+            description: "Indicates whether the high-voltage input warning value is valid."
+          - name: hv_input_warning__timestamp
+            description: "Timestamp when the high-voltage input warning state was recorded."
+          - name: hv_input_warning__value
+            description: "Status flag indicating a high-voltage input warning."
+          - name: hv_inputerror__has_value
+            description: "Indicates whether the high-voltage input error signal has a recorded value."
+          - name: hv_inputerror__is_valid
+            description: "Indicates whether the high-voltage input error value is valid."
+          - name: hv_inputerror__timestamp
+            description: "Timestamp when the high-voltage input error state was recorded."
+          - name: hv_inputerror__value
+            description: "Status flag indicating a high-voltage input error."
+          - name: max_power_setpoint_generator__has_value
+            description: "Indicates whether the maximum power setpoint generator signal has a recorded value."
+          - name: max_power_setpoint_generator__is_valid
+            description: "Indicates whether the maximum power setpoint generator value is valid."
+          - name: max_power_setpoint_generator__timestamp
+            description: "Timestamp when the maximum power setpoint generator value was recorded."
+          - name: max_power_setpoint_generator__value
+            description: "Maximum allowable power setpoint for the generator."
+          - name: max_power_setpoint_motor__has_value
+            description: "Indicates whether the maximum power setpoint motor signal has a recorded value."
+          - name: max_power_setpoint_motor__is_valid
+            description: "Indicates whether the maximum power setpoint motor value is valid."
+          - name: max_power_setpoint_motor__timestamp
+            description: "Timestamp when the maximum power setpoint motor value was recorded."
+          - name: max_power_setpoint_motor__value
+            description: "Maximum allowable power setpoint for the motor."
+          - name: motor_output_igbt_errors__has_value
+            description: "Indicates whether the motor output IGBT error signal has a recorded value."
+          - name: motor_output_igbt_errors__is_valid
+            description: "Indicates whether the motor output IGBT error value is valid."
+          - name: motor_output_igbt_errors__timestamp
+            description: "Timestamp when the motor output IGBT error state was recorded."
+          - name: motor_output_igbt_errors__value
+            description: "Status flag indicating motor output IGBT errors."
+          - name: motor_output_igbt_warnings__has_value
+            description: "Indicates whether the motor output IGBT warning signal has a recorded value."
+          - name: motor_output_igbt_warnings__is_valid
+            description: "Indicates whether the motor output IGBT warning value is valid."
+          - name: motor_output_igbt_warnings__timestamp
+            description: "Timestamp when the motor output IGBT warning state was recorded."
+          - name: motor_output_igbt_warnings__value
+            description: "Status flag indicating motor output IGBT warnings."
+          - name: motor_temp_error__has_value
+            description: "Indicates whether the motor temperature error signal has a recorded value."
+          - name: motor_temp_error__is_valid
+            description: "Indicates whether the motor temperature error value is valid."
+          - name: motor_temp_error__timestamp
+            description: "Timestamp when the motor temperature error state was recorded."
+          - name: motor_temp_error__value
+            description: "Status flag indicating a motor over-temperature error."
+          - name: motor_temp_warning__has_value
+            description: "Indicates whether the motor temperature warning signal has a recorded value."
+          - name: motor_temp_warning__is_valid
+            description: "Indicates whether the motor temperature warning value is valid."
+          - name: motor_temp_warning__timestamp
+            description: "Timestamp when the motor temperature warning state was recorded."
+          - name: motor_temp_warning__value
+            description: "Status flag indicating a motor temperature warning."
+          - name: not_ready_for_use__has_value
+            description: "Indicates whether the not ready for use signal has a recorded value."
+          - name: not_ready_for_use__is_valid
+            description: "Indicates whether the not ready for use value is valid."
+          - name: not_ready_for_use__timestamp
+            description: "Timestamp when the not ready for use state was recorded."
+          - name: not_ready_for_use__value
+            description: "Status flag indicating that the system is not ready for operation."
+          - name: other_error__has_value
+            description: "Indicates whether the general error signal has a recorded value."
+          - name: other_error__is_valid
+            description: "Indicates whether the general error value is valid."
+          - name: other_error__timestamp
+            description: "Timestamp when the general error state was recorded."
+          - name: other_error__value
+            description: "Status flag indicating another unspecified error."
+          - name: other_warning__has_value
+            description: "Indicates whether the general warning signal has a recorded value."
+          - name: other_warning__is_valid
+            description: "Indicates whether the general warning value is valid."
+          - name: other_warning__timestamp
+            description: "Timestamp when the general warning state was recorded."
+          - name: other_warning__value
+            description: "Status flag indicating another unspecified warning."
+          - name: power__has_value
+            description: "Indicates whether the power measurement signal has a recorded value."
+          - name: power__is_valid
+            description: "Indicates whether the power measurement value is valid."
+          - name: power__timestamp
+            description: "Timestamp when the power value was recorded."
+          - name: power__value
+            description: "Measured electrical or mechanical power value."
+          - name: source_type
+            description: "Type of data source or communication protocol."
+          - name: speed__has_value
+            description: "Indicates whether the speed measurement signal has a recorded value."
+          - name: speed__is_valid
+            description: "Indicates whether the speed measurement value is valid."
+          - name: speed__timestamp
+            description: "Timestamp when the speed value was recorded."
+          - name: speed__value
+            description: "Measured rotational speed value."
+          - name: speed_or_torque_setpoint__has_value
+            description: "Indicates whether the speed or torque setpoint signal has a recorded value."
+          - name: speed_or_torque_setpoint__is_valid
+            description: "Indicates whether the speed or torque setpoint value is valid."
+          - name: speed_or_torque_setpoint__timestamp
+            description: "Timestamp when the speed or torque setpoint state was recorded."
+          - name: speed_or_torque_setpoint__value
+            description: "Status flag indicating the active setpoint mode (speed or torque)."
+          - name: table
+            description: "Originating table identifier."
+          - name: temp_igbt__has_value
+            description: "Indicates whether the IGBT temperature signal has a recorded value."
+          - name: temp_igbt__is_valid
+            description: "Indicates whether the IGBT temperature value is valid."
+          - name: temp_igbt__timestamp
+            description: "Timestamp when the IGBT temperature value was recorded."
+          - name: temp_igbt__value
+            description: "Measured temperature of the IGBT power components."
+          - name: temp_power_stage__has_value
+            description: "Indicates whether the power stage temperature signal has a recorded value."
+          - name: temp_power_stage__is_valid
+            description: "Indicates whether the power stage temperature value is valid."
+          - name: temp_power_stage__timestamp
+            description: "Timestamp when the power stage temperature value was recorded."
+          - name: temp_power_stage__value
+            description: "Measured temperature of the power stage."
+          - name: topic
+            description: "MQTT or messaging system topic string."
+          - name: torque__has_value
+            description: "Indicates whether the torque measurement signal has a recorded value."
+          - name: torque__is_valid
+            description: "Indicates whether the torque measurement value is valid."
+          - name: torque__timestamp
+            description: "Timestamp when the torque value was recorded."
+          - name: torque__value
+            description: "Measured torque value."
+          - name: vp_enable__has_value
+            description: "Indicates whether the variable pitch enable signal has a recorded value."
+          - name: vp_enable__is_valid
+            description: "Indicates whether the variable pitch enable value is valid."
+          - name: vp_enable__timestamp
+            description: "Timestamp when the variable pitch enable state was recorded."
+          - name: vp_enable__value
+            description: "Status flag indicating whether variable pitch is enabled."
+          - name: warning_word__has_value
+            description: "Indicates whether the warning word signal has a recorded value."
+          - name: warning_word__is_valid
+            description: "Indicates whether the warning word value is valid."
+          - name: warning_word__timestamp
+            description: "Timestamp when the warning word value was recorded."
+          - name: warning_word__value
+            description: "Bitmask containing active system warning flags."
+          - name: power_failure__has_value
+            description: "Indicates whether the power failure signal has a recorded value."
+          - name: power_failure__is_valid
+            description: "Indicates whether the power failure value is valid."
+          - name: power_failure__timestamp
+            description: "Timestamp when the power failure state was recorded."
+          - name: power_failure__value
+            description: "Status flag indicating a main power failure."
+          - name: control_mode__has_value
+            description: "Indicates whether the control mode signal has a recorded value."
+          - name: control_mode__is_valid
+            description: "Indicates whether the control mode value is valid."
+          - name: control_mode__timestamp
+            description: "Timestamp when the control mode value was recorded."
+          - name: control_mode__value
+            description: "Active control mode identifier."
+          - name: setpoint_1__has_value
+            description: "Indicates whether setpoint 1 has a recorded value."
+          - name: setpoint_1__is_valid
+            description: "Indicates whether setpoint 1 value is valid."
+          - name: setpoint_1__timestamp
+            description: "Timestamp when setpoint 1 value was recorded."
+          - name: setpoint_1__value
+            description: "Target value for setpoint 1."
+          - name: setpoint_2__has_value
+            description: "Indicates whether setpoint 2 has a recorded value."
+          - name: setpoint_2__is_valid
+            description: "Indicates whether setpoint 2 value is valid."
+          - name: setpoint_2__timestamp
+            description: "Timestamp when setpoint 2 value was recorded."
+          - name: setpoint_2__value
+            description: "Target value for setpoint 2."
+          - name: setpoint_3__has_value
+            description: "Indicates whether setpoint 3 has a recorded value."
+          - name: setpoint_3__is_valid
+            description: "Indicates whether setpoint 3 value is valid."
+          - name: setpoint_3__timestamp
+            description: "Timestamp when setpoint 3 value was recorded."
+          - name: setpoint_3__value
+            description: "Target value for setpoint 3."
       - name: marpower__450000_24vdc_system
         description: "24V DC system telemetry from Marpower."
         columns:
