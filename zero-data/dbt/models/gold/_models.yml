@@ -127,11 +127,13 @@ models:
         description: "Timestamp representing the start of the minute interval for the aggregated Aradex power."
         tests:
           - not_null
-      - name: propulsion_power
-        description: "Propulsion power of the Aradex aggregated per minute."
+      - name: main_group
+        description: >
+          The main group classification of the aradexes.
+          When power is positive, it represents propulsion; when power is negative, it represents hydrogeneration.
         tests:
           - not_null
-      - name: hydrogeneration_power
-        description: "Hydrogeneration power of the Aradex aggregated per minute."
+      - name: power
+        description: "Power of the Aradexes aggregated per minute."
         tests:
           - not_null
