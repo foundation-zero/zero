@@ -5,9 +5,10 @@ with aradex_powers as (
 		aradex,
 		avg(case when power > 0 then power else 0 end) as avg_propulsion_power,
 		avg(case when power < 0 then power else 0 end) as avg_hydrogeneration_power
-	from  views.slv_pcs_aradexes
+	from {{ ref('slv_pcs_aradexes') }}
 	group by time, thruster, aradex
 )
+
 select
 	time,
 	sum(avg_propulsion_power) as propulsion_power,
