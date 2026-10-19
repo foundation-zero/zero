@@ -2298,7 +2298,7 @@ managed_tables = {
     "technical_name": "dhw-pump-flow-controller"
   },
   "thrs/controller/dhw/dhw-tanks-controller": {
-    "table": "marpower__thrs__tank_controller",
+    "table": "marpower__thrs__tank_controllers",
     "yard_tag": null,
     "technical_name": "dhw-tanks-controller"
   },
@@ -2408,7 +2408,7 @@ managed_tables = {
     "technical_name": "pcm-heat-module4"
   },
   "thrs/controller/pcm/pcm-module1-charge-controller": {
-    "table": "marpower__thrs__pcm_charger",
+    "table": "marpower__thrs__pcm_charge_controllers",
     "yard_tag": null,
     "technical_name": "pcm-module1-charge-controller"
   },
@@ -2418,7 +2418,7 @@ managed_tables = {
     "technical_name": "pcm-module1-flow-controller"
   },
   "thrs/controller/pcm/pcm-module2-charge-controller": {
-    "table": "marpower__thrs__pcm_charger",
+    "table": "marpower__thrs__pcm_charge_controllers",
     "yard_tag": null,
     "technical_name": "pcm-module2-charge-controller"
   },
@@ -2428,7 +2428,7 @@ managed_tables = {
     "technical_name": "pcm-module2-flow-controller"
   },
   "thrs/controller/pcm/pcm-module3-charge-controller": {
-    "table": "marpower__thrs__pcm_charger",
+    "table": "marpower__thrs__pcm_charge_controllers",
     "yard_tag": null,
     "technical_name": "pcm-module3-charge-controller"
   },
@@ -2438,7 +2438,7 @@ managed_tables = {
     "technical_name": "pcm-module3-flow-controller"
   },
   "thrs/controller/pcm/pcm-module4-charge-controller": {
-    "table": "marpower__thrs__pcm_charger",
+    "table": "marpower__thrs__pcm_charge_controllers",
     "yard_tag": null,
     "technical_name": "pcm-module4-charge-controller"
   },

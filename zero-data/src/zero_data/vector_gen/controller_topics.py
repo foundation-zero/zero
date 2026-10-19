@@ -166,10 +166,10 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
             "thrusters-fwd-flow-controller",
         ),
     },
-    "tank_controller": {
+    "tank_controllers": {
         "dhw": ("dhw-tanks-controller",),
     },
-    "pcm_charger": {
+    "pcm_charge_controllers": {
         "pcm": (
             "pcm-module1-charge-controller",
             "pcm-module2-charge-controller",
