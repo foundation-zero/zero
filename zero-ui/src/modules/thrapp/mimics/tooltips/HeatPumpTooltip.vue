@@ -35,7 +35,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HeatPump>>(
       <SensorGraph
         :device="tooltip?.technicalName ? `${tooltip.technicalName}-heat` : undefined"
         type="heat_transfers"
-        field="heat"
+        :field="['heat', 'flow', 'delta_t']"
       />
       <Partials.ManualControl />
     </TooltipList>
