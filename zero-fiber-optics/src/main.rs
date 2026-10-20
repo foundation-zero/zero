@@ -14,7 +14,9 @@ use crate::mqtt::{MqttHandler, PublishError};
 use anyhow::{bail, Context, Result};
 use clap::{Parser, Subcommand};
 use log::{debug, error, info, warn};
+use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
+use std::hash::{BuildHasher, Hasher};
 use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::Duration;
@@ -24,9 +26,6 @@ use tokio::sync::mpsc::{Receiver, Sender};
 use tokio::task::{JoinHandle, JoinSet};
 use tokio_stream::wrappers::ReceiverStream;
 use tokio_stream::StreamExt;
-
-/// Fallback MQTT client ID, used when the pod name is not available.
-const DEFAULT_CLIENT_ID: &str = "fiber-adapter";
 
 /// How often the watchdog checks that each port is still receiving packets.
 const WATCHDOG_INTERVAL: Duration = Duration::from_secs(10);
@@ -165,15 +164,13 @@ fn read_runtime_config(config_path: &str) -> Result<crate::config::UdpChannels> 
 
 /// Client ID for the MQTT connection.
 ///
-/// Under Kubernetes `HOSTNAME` is the pod name, so each pod gets its own ID and
-/// a rolling update cannot leave two replicas fighting over a single broker
-/// session. Publish-only clients create no queues on the broker, so there is no
-/// session state to orphan.
+/// The random suffix gives every pod its own ID, so a rolling update cannot
+/// leave two replicas fighting over a single broker session. Publish-only
+/// clients create no queues on the broker, so there is no session state to
+/// orphan.
 fn mqtt_client_id() -> String {
-    std::env::var("HOSTNAME")
-        .ok()
-        .filter(|hostname| !hostname.is_empty())
-        .unwrap_or_else(|| DEFAULT_CLIENT_ID.to_string())
+    let suffix = RandomState::new().build_hasher().finish();
+    format!("zero-fiber-optics-{suffix:016x}")
 }
 
 /// Log what the process is about to connect to.

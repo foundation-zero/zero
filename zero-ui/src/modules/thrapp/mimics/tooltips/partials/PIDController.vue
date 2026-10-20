@@ -8,6 +8,7 @@
       : ParametersType.Flow | ParametersType.FlowControl
   "
 >
+import { tScoped } from "@/modules/common/lib/utils";
 import {
   ControllerStateComponentType,
   ParametersType,
@@ -27,7 +28,6 @@ const props = defineProps<{
   measurement?: ModuleField<Type>;
   setpoint?: ModuleField<Parameter>;
   outputMinimum?: ModuleField<Parameter>;
-  noSource?: boolean;
 }>();
 
 const fieldRenderer = computed(() => {
@@ -37,6 +37,8 @@ const fieldRenderer = computed(() => {
     return FieldRenderer.FlowRate;
   }
 });
+
+const t = tScoped("thrapp.parameters.pid");
 </script>
 
 <template>
@@ -46,6 +48,14 @@ const fieldRenderer = computed(() => {
       field="enabled"
     >
       <Partials.ListItem>
+        <template #source>
+          <FieldRenderer.Source
+            :source="controller"
+            class="text-foreground"
+          >
+            {{ t(`${controller[2]}.title`) }}
+          </FieldRenderer.Source>
+        </template>
         <template #value>
           <FieldRenderer.HeatPumpMode />
         </template>
@@ -59,17 +69,15 @@ const fieldRenderer = computed(() => {
   >
     <Partials.ListItem
       size="sm"
-      :no-source="noSource"
       :renderer="FieldRenderer.Percentage"
     >
       {{ items("actuator") }}
       <template #source>
         <slot name="actuator">
-          <FieldRenderer.Source :source="actuator">
-            <template v-if="!actuator">
-              {{ sources("this") }}
-            </template>
-          </FieldRenderer.Source>
+          <FieldRenderer.Source
+            :source="actuator"
+            api-only
+          />
         </slot>
       </template>
     </Partials.ListItem>
@@ -81,16 +89,16 @@ const fieldRenderer = computed(() => {
   >
     <Partials.ListItem
       size="sm"
-      :no-source="noSource"
       :renderer="fieldRenderer"
+      :no-source="!setpoint"
     >
       {{ items("setpoint") }}
-      <template
-        v-if="!noSource"
-        #source
-      >
+      <template #source>
         <slot name="setpoint">
-          <FieldRenderer.Source :source="setpoint" />
+          <FieldRenderer.Source
+            v-if="setpoint"
+            :source="setpoint"
+          />
         </slot>
       </template>
     </Partials.ListItem>
@@ -102,17 +110,15 @@ const fieldRenderer = computed(() => {
   >
     <Partials.ListItem
       size="sm"
-      :no-source="noSource"
       :renderer="fieldRenderer"
     >
       {{ items("measurement") }}
       <template #source>
         <slot name="measurement">
-          <FieldRenderer.Source :source="measurement">
-            <template v-if="!measurement && !noSource">
-              {{ sources("this") }}
-            </template>
-          </FieldRenderer.Source>
+          <FieldRenderer.Source
+            :source="measurement"
+            api-only
+          />
         </slot>
       </template>
     </Partials.ListItem>
@@ -124,14 +130,10 @@ const fieldRenderer = computed(() => {
   >
     <Partials.ListItem
       size="sm"
-      :no-source="noSource"
       :renderer="fieldRenderer"
     >
       {{ items("error") }}
-      <template
-        v-if="!noSource"
-        #sourceName
-      >
+      <template #sourceName>
         {{ sources("calculated") }}
       </template>
     </Partials.ListItem>
@@ -143,7 +145,6 @@ const fieldRenderer = computed(() => {
   >
     <Partials.ListItem
       size="sm"
-      :no-source="noSource"
       :renderer="FieldRenderer.Percentage"
     >
       {{ items("outputMinimum") }}

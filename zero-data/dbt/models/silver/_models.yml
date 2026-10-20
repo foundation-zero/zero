@@ -20,6 +20,8 @@ models:
         description: "Source type reported by the device."
       - name: active_power_total
         description: "Total active power consumption."
+        tests:
+          - not_null
       - name: power_factor_total
         description: "Total power factor."
       - name: current_a
@@ -79,3 +81,53 @@ models:
         description: "Power used for charging the battery."
       - name: battery_power
         description: "Total power of the battery."
+  - name: slv_24vdc_currents
+    description: >
+      24V DC system output currents enriched with metadata.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: converter
+        description: "The converter associated with the 24V DC tag."
+      - name: output_current
+        description: "Output current of the 24V DC system."
+        tests:
+          - not_null
+      - name: main_group
+        description: "The main group classification of the 24V DC tag."
+        tests:
+          - not_null
+      - name: sub_group
+        description: "The sub group classification, within the main group, of the 24V DC tag."
+  - name: slv_24vdc_converter_voltages
+    description: >
+      24V DC system converter voltages enriched with metadata.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: converter
+        description: "The converter associated with the 24V DC tag."
+        tests:
+          - not_null
+      - name: converter_subnr
+        description: "The sub-number of the converter associated with the 24V DC tag."
+        tests:
+          - not_null
+      - name: voltage
+        description: "Voltage of the 24V DC system."
+        tests:
+          - not_null

@@ -30,7 +30,7 @@ class ConditionsStub:
         async with MqttClient(
             settings.mqtt_host,
             settings.mqtt_port,
-            identifier="loads_sensor_stub",
+            identifier=settings.mqtt_stub_client_id,
             username=settings.mqtt_username,
             password=settings.mqtt_password,
         ) as mqtt_client:

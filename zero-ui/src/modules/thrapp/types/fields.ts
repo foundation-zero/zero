@@ -83,6 +83,10 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.MixValve]: EmptyObject;
   [MimicComponentType.CheckValve]: EmptyObject;
+  [MimicComponentType.ExpansionValve]: EmptyObject;
+  [MimicComponentType.ExpansionTank]: EmptyObject;
+  [MimicComponentType.Pyranometer]: EmptyObject;
+  [MimicComponentType.AirTrapVessel]: EmptyObject;
   [MimicComponentType.ThreeWaySwitchValve]: EmptyObject;
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.DcConverter]: {
@@ -149,6 +153,10 @@ export type ControlFieldDefinitions = ControlFields<{
     valve: ControlComponentType.Valve;
   };
   [MimicComponentType.CheckValve]: EmptyObject;
+  [MimicComponentType.ExpansionValve]: EmptyObject;
+  [MimicComponentType.ExpansionTank]: EmptyObject;
+  [MimicComponentType.Pyranometer]: EmptyObject;
+  [MimicComponentType.AirTrapVessel]: EmptyObject;
   [MimicComponentType.ThreeWaySwitchValve]: {
     valve: ControlComponentType.Valve;
   };
@@ -195,6 +203,10 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
     controller?: ControllerStateComponentType.PIDController;
   };
   [MimicComponentType.CheckValve]: EmptyObject;
+  [MimicComponentType.ExpansionValve]: EmptyObject;
+  [MimicComponentType.ExpansionTank]: EmptyObject;
+  [MimicComponentType.Pyranometer]: EmptyObject;
+  [MimicComponentType.AirTrapVessel]: EmptyObject;
   [MimicComponentType.ThreeWaySwitchValve]: EmptyObject;
   [MimicComponentType.HeatPump]: EmptyObject;
   [MimicComponentType.HVAC]: EmptyObject;
@@ -241,8 +253,14 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.ManualValve]: EmptyObject;
   [MimicComponentType.MixValve]: EmptyObject;
   [MimicComponentType.CheckValve]: EmptyObject;
+  [MimicComponentType.ExpansionValve]: EmptyObject;
+  [MimicComponentType.ExpansionTank]: EmptyObject;
+  [MimicComponentType.Pyranometer]: EmptyObject;
+  [MimicComponentType.AirTrapVessel]: EmptyObject;
   [MimicComponentType.ThreeWaySwitchValve]: EmptyObject;
-  [MimicComponentType.HeatPump]: EmptyObject;
+  [MimicComponentType.HeatPump]: {
+    temperatureSetpoint?: ParametersType.Temperature;
+  };
   [MimicComponentType.HVAC]: EmptyObject;
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
@@ -329,6 +347,10 @@ export type CustomFieldDefinitions = CustomFields<{
     controller?: PIDController<SensorComponentType.Temperature>;
   };
   [MimicComponentType.CheckValve]: EmptyObject;
+  [MimicComponentType.ExpansionValve]: EmptyObject;
+  [MimicComponentType.ExpansionTank]: EmptyObject;
+  [MimicComponentType.Pyranometer]: EmptyObject;
+  [MimicComponentType.AirTrapVessel]: EmptyObject;
   [MimicComponentType.ThreeWaySwitchValve]: EmptyObject;
   [MimicComponentType.HeatPump]: {
     controller?: PIDController;
@@ -362,6 +384,10 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.ManualValve]: undefined;
   [MimicComponentType.MixValve]: SensorComponentType.Valve;
   [MimicComponentType.CheckValve]: undefined;
+  [MimicComponentType.ExpansionValve]: undefined;
+  [MimicComponentType.ExpansionTank]: undefined;
+  [MimicComponentType.Pyranometer]: SensorComponentType.Pyranometer;
+  [MimicComponentType.AirTrapVessel]: undefined;
   [MimicComponentType.ThreeWaySwitchValve]: SensorComponentType.Valve;
   [MimicComponentType.HeatPump]: SensorComponentType.HeatPump;
   [MimicComponentType.HVAC]: SensorComponentType.HeatTransferDevice;
@@ -369,7 +395,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.FlowControlValve]: SensorComponentType.Valve;
   [MimicComponentType.BoilerTank]: undefined;
   [MimicComponentType.ExchangeCircuit]: SensorComponentType.HeatTransferDevice;
-  [MimicComponentType.DcConverter]: undefined;
+  [MimicComponentType.DcConverter]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.PropulsionDrive]: SensorComponentType.PropulsionDrive;
   [MimicComponentType.PropulsionCooler]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.ShorePowerConverter]: SensorComponentType.ShorePowerConverter;

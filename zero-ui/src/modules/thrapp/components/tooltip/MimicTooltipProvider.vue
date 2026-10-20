@@ -13,7 +13,7 @@ const tooltipContext = createTooltipContext(props.source);
 provideTooltipContext(tooltipContext);
 
 const router = useRouter();
-const { component, dialog, data, clear, closeDialog } = tooltipContext;
+const { component, dialog, data, clear, closeDialog, title } = tooltipContext;
 
 const isOpen = computed({
   get() {
@@ -38,8 +38,11 @@ const isOpen = computed({
       v-if="!dialog"
       #title
     >
-      <h2 class="px-4 text-left text-3xl text-[2rem] font-semibold sm:px-6">
-        {{ data?.tooltip?.title }}
+      <h2
+        v-if="title"
+        class="px-4 text-left text-3xl text-[2rem] font-semibold sm:px-6"
+      >
+        {{ title }}
       </h2>
     </template>
 

@@ -354,6 +354,9 @@ export function isStamped(input: unknown): boolean {
   return typeof input === "object" && input !== null && "value" in input && "timestamp" in input;
 }
 
+export const isStampedWithSource = <T>(input: unknown): input is StampedWithSource<T> =>
+  isStamped(input) && (input as StampedWithSource<T>).source != null;
+
 export const stamp = <T>(value: MaybeRef<T>, timestamp = new Date()): Stamped<T> => ({
   value: unref(value),
   timestamp,

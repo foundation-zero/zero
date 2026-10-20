@@ -19,7 +19,7 @@ const isAdvisoryEnabled = useAdvisoryEnabled();
         'border-b border-dashed px-2 pb-0.5 whitespace-nowrap',
         {
           'border-attention-muted': isAutomaticMode || !isAdvisoryEnabled,
-          'border-warning': !isAutomaticMode && !isAdvisoryEnabled,
+          'border-brand-muted': !isAutomaticMode && !isAdvisoryEnabled,
         },
         props.class,
       )

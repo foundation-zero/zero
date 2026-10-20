@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { ExpansionTank } from "../../../components/expansion-tank";
-import { ExpansionValve } from "../../../components/expansion-valve";
-import { TagLabelInstance } from "../../../instances";
+import {
+  ExpansionTankInstance,
+  ExpansionValveInstance,
+  TagLabelInstance,
+} from "../../../instances";
+import { DRIVES_EXPANSION_TANK_DATA, DRIVES_EXPANSION_VALVE_DATA } from "../data";
 </script>
 
 <template>
   <g>
-    <ExpansionTank
+    <ExpansionTankInstance
       x="1612"
       y="102"
+      v-bind="DRIVES_EXPANSION_TANK_DATA.ExpansionTank['1040-04']"
     />
     <TagLabelInstance
       x="1568"
@@ -16,7 +20,7 @@ import { TagLabelInstance } from "../../../instances";
       tag-id="1040-04"
     />
     <g transform="matrix(0 1 1 0 1657 71)">
-      <ExpansionValve />
+      <ExpansionValveInstance v-bind="DRIVES_EXPANSION_VALVE_DATA.ExpansionValve['1041-05']" />
     </g>
     <TagLabelInstance
       x="1607"

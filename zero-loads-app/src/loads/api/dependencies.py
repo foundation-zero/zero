@@ -51,6 +51,7 @@ async def lifespan(app: FastAPI):
     async with MqttClient(
         settings.mqtt_host,
         settings.mqtt_port,
+        identifier=settings.mqtt_api_client_id,
         username=settings.mqtt_username,
         password=settings.mqtt_password,
     ) as mqtt:

@@ -2,6 +2,8 @@ import { toFieldsMap } from "../..";
 import { THRUSTERS_ASSET_DATA } from "./assets";
 import { THRUSTERS_CHECK_VALVE_DATA } from "./check-valves";
 import { THRUSTERS_EXCHANGE_CIRCUIT_DATA } from "./exchange-circuits";
+import { THRUSTERS_EXPANSION_TANK_DATA } from "./expansion-tanks";
+import { THRUSTERS_EXPANSION_VALVE_DATA } from "./expansion-valves";
 import { THRUSTERS_FLOW_CONTROL_VALVE_DATA } from "./flow-control-valves";
 import { THRUSTERS_FLOW_SENSOR_DATA } from "./flow-sensors";
 import { THRUSTERS_HEAT_EXCHANGER_DATA } from "./heat-exchangers";
@@ -16,6 +18,8 @@ import { THRUSTERS_THREE_WAY_SWITCH_VALVE_DATA } from "./three-way-switch-valves
 export { THRUSTERS_ASSET_DATA } from "./assets";
 export { THRUSTERS_CHECK_VALVE_DATA } from "./check-valves";
 export { THRUSTERS_EXCHANGE_CIRCUIT_DATA } from "./exchange-circuits";
+export { THRUSTERS_EXPANSION_TANK_DATA } from "./expansion-tanks";
+export { THRUSTERS_EXPANSION_VALVE_DATA } from "./expansion-valves";
 export { THRUSTERS_FLOW_CONTROL_VALVE_DATA } from "./flow-control-valves";
 export { THRUSTERS_FLOW_SENSOR_DATA } from "./flow-sensors";
 export { THRUSTERS_HEAT_EXCHANGER_DATA } from "./heat-exchangers";
@@ -27,6 +31,8 @@ export { THRUSTERS_SWITCH_VALVE_DATA } from "./switch-valves";
 export { THRUSTERS_TEMPERATURE_SENSOR_DATA } from "./temperature-sensors";
 
 export const THRUSTERS_MIMIC_DATA = toFieldsMap({
+  ...THRUSTERS_EXPANSION_TANK_DATA,
+  ...THRUSTERS_EXPANSION_VALVE_DATA,
   ...THRUSTERS_HEAT_EXCHANGER_DATA,
   ...THRUSTERS_SWITCH_VALVE_DATA,
   ...THRUSTERS_FLOW_CONTROL_VALVE_DATA,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { cn } from "@/modules/common/lib/utils";
+import { cn, isStampedWithSource } from "@/modules/common/lib/utils";
 import { THRS_YARDTAG_PREFIX_REGEX } from "@/modules/thrsim/lib/consts";
 import { snakeCase } from "lodash";
 import { computed, type HTMLAttributes } from "vue";
@@ -18,6 +18,7 @@ import { useTranslations } from "../tooltips";
 const props = defineProps<{
   class?: HTMLAttributes["class"];
   source?: ModuleField;
+  apiOnly?: boolean;
   noLink?: boolean;
 }>();
 
@@ -33,10 +34,9 @@ const definition = computed(() => {
 });
 
 const backendSource = computed(() => {
-  const sourcedataTyped = sourceData.value as unknown as { source?: string } | undefined;
+  const sourcedataTyped = sourceData.value;
 
-  if (!sourcedataTyped || (sourcedataTyped && !Object.keys(sourcedataTyped).includes("source")))
-    return null;
+  if (!isStampedWithSource(sourcedataTyped)) return null;
 
   if (!sourcedataTyped.source) return "";
 
@@ -47,8 +47,15 @@ const backendSource = computed(() => {
 });
 
 const sourceName = computed(() => {
-  if (backendSource.value) return backendSource.value;
-  if (tooltipContext.value?.[1]?.tooltip?.yardTag) return tooltipContext.value[1].tooltip.yardTag;
+  if (backendSource.value || (props.apiOnly && !props.source)) {
+    const apiTag = backendSource.value;
+    const sourceTag = tooltipContext.value?.[1]?.tooltip?.yardTag;
+
+    if (apiTag && apiTag === sourceTag) return sources("this");
+
+    return apiTag ?? "";
+  } else if (tooltipContext.value?.[1]?.tooltip?.yardTag)
+    return tooltipContext.value[1].tooltip.yardTag;
   else if (!definition.value || !("yardTag" in definition.value))
     return snakeCase(source.value?.[2]);
 
