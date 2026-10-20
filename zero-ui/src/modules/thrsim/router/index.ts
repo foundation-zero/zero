@@ -30,7 +30,7 @@ export const thrsimRoutes: RouteRecordRaw = {
         {
           path: "parameters",
           name: "thrsim/parameters",
-          component: () => import("@/modules/thrsim/views/Parameters.vue"),
+          component: () => import("@/modules/thrapp/views/Control.vue"),
         },
         {
           path: "mimic",

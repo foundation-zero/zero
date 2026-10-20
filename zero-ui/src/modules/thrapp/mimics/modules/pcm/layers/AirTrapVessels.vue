@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ComponentOrientation } from "../../../components";
-import { AirTrapVessel } from "../../../components/air-trap-vessel";
+import { AirTrapVesselInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
+import { PCM_AIR_TRAP_VESSEL_DATA } from "../data";
 </script>
 
 <template>
   <g>
-    <AirTrapVessel
+    <AirTrapVesselInstance
       x="200"
       y="-30"
       :orientation="ComponentOrientation.Up"
+      v-bind="PCM_AIR_TRAP_VESSEL_DATA.AirTrapVessel['1084']"
     />
     <TagLabelInstance
       x="230"

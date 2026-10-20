@@ -1,4 +1,5 @@
 import { toFieldsMap } from "../..";
+import { PCM_AIR_TRAP_VESSEL_DATA } from "./air-trap-vessels";
 import { PCM_CHECK_VALVE_DATA } from "./check-valves";
 import { PCM_CONNECTING_CIRCUIT_DATA } from "./connecting-circuits";
 import { PCM_EXCHANGE_CIRCUIT_DATA } from "./exchange-circuits";
@@ -12,9 +13,11 @@ import { PCM_PUMP_DATA } from "./pumps";
 import { PCM_SWITCH_VALVE_DATA } from "./switch-valves";
 import { PCM_TEMPERATURE_SENSOR_DATA } from "./temperature-sensors";
 
+export { PCM_AIR_TRAP_VESSEL_DATA } from "./air-trap-vessels";
 export { PCM_TEMPERATURE_SENSOR_DATA } from "./temperature-sensors";
 
 export const PCM_MIMIC_DATA = toFieldsMap({
+  ...PCM_AIR_TRAP_VESSEL_DATA,
   ...PCM_CONNECTING_CIRCUIT_DATA,
   ...PCM_FLOW_SENSOR_DATA,
   ...PCM_FLOW_CONTROL_VALVE_DATA,

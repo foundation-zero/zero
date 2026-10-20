@@ -1,10 +1,13 @@
 import { MimicComponentBaseProps } from "../components";
 
+export { default as AirTrapVesselInstance } from "./AirTrapVesselInstance.vue";
 export { default as CheckValveInstance } from "./CheckValveInstance.vue";
 export { default as ConnectingCircuitInstance } from "./ConnectingCircuitInstance.vue";
 export { default as DcConverterInstance } from "./DcConverterInstance.vue";
 export { default as DutypointLabelInstance } from "./DutypointLabelInstance.vue";
 export { default as ExchangeCircuitInstance } from "./ExchangeCircuitInstance.vue";
+export { default as ExpansionTankInstance } from "./ExpansionTankInstance.vue";
+export { default as ExpansionValveInstance } from "./ExpansionValveInstance.vue";
 export { default as FlowControlValveInstance } from "./FlowControlValveInstance.vue";
 export { default as FlowSensorInstance } from "./FlowSensorInstance.vue";
 export { default as FreshwaterCircuitInstance } from "./FreshwaterCircuitInstance.vue";
@@ -26,6 +29,7 @@ export { default as PropulsionCoolerInstance } from "./PropulsionCoolerInstance.
 export { default as PropulsionDriveInstance } from "./PropulsionDriveInstance.vue";
 export { default as PumpInstance } from "./PumpInstance.vue";
 export { default as PvtInstance } from "./PvtInstance.vue";
+export { default as PyranometerInstance } from "./PyranometerInstance.vue";
 export { default as SeawaterCircuitInstance } from "./SeawaterCircuitInstance.vue";
 export { default as ShorePowerConverterInstance } from "./ShorePowerConverterInstance.vue";
 export { default as SwitchValveInstance } from "./SwitchValveInstance.vue";

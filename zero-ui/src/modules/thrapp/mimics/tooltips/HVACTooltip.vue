@@ -9,12 +9,11 @@ import { MimicComponentType } from "../../types/index.ts";
 import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag/index.ts";
 import HVACInstance from "../instances/HVACInstance.vue";
-import { SensorValue } from "../providers/index.ts";
 import { useTranslations } from "./index.ts";
 import Circuit from "./partials/ExchangeCircuitPartial.vue";
 
 import * as Partials from "./partials/index.ts";
-const { items, labels, sources } = useTranslations();
+const { labels } = useTranslations();
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.HVAC>>();
 </script>
@@ -36,23 +35,12 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.HVAC>>();
       <SensorGraph
         :device="tooltip?.technicalName"
         type="heat_transfers"
-        field="heat"
+        :field="['heat', 'flow', 'delta_t']"
       />
     </TooltipList>
 
     <TooltipList>
       <TooltipListHeader>{{ labels("heatExchange") }}</TooltipListHeader>
-      <SensorValue
-        :source="source"
-        field="heat"
-      >
-        <Partials.ListItem no-source>
-          {{ items("heatExchange") }}
-          <template #sourceName>
-            {{ sources("calculated") }}
-          </template>
-        </Partials.ListItem>
-      </SensorValue>
       <Circuit :source="source" />
     </TooltipList>
   </MimicTooltip>

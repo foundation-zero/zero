@@ -387,7 +387,7 @@
         "title": "Advisory mode disabled",
         "content": [
           "The advisory mode for this circuit is disabled in the AMCS.",
-          "Automatic control or manual control via the THRS app is unavailable. The mimics are ‘read-only’. The controls and parameters in the THRS app are disregarded.",
+          "Automatic control or manual control via the heat system app is unavailable. The mimics are ‘read-only’. The controls and parameters in the heat system app are disregarded.",
           "To enable the advisory mode, please check the AMCS systems."
         ],
         "action": "OK"
@@ -401,6 +401,15 @@
       "off": "Off"
     },
     "tooltips": {
+      "titles": {
+        "DcConverter": "DC Converter",
+        "Pcm": "Flextherm Eco G2",
+        "Thruster": "Thruster",
+        "Pvt": "PVT",
+        "PropulsionDrive": "Propulsion drive",
+        "PropulsionCooler": "Propulsion cooler",
+        "ShorePowerConverter": "Shorepower converter"
+      },
       "actions": {
         "viewCircuitMimic": "Switch to circuit mimic",
         "viewControls": "View controls",
@@ -459,6 +468,7 @@
         "speed": "Speed",
         "powerInput": "Power input",
         "energyConsumption": "Energy consumption",
+        "irradiance": "Irradiance",
         "pressure": "Pressure",
         "relativeDutyPoint": "Dutypoint",
         "onOff": "On-off",
@@ -503,7 +513,12 @@
         "flow": "Flow",
         "empty": "Level",
         "pvt": "Pvt",
-        "heat": "Heat"
+        "heat": "Heat",
+        "charged": "Charged",
+        "estBatteryLoad": "Est. battery load",
+        "electricGeneration": "Electric generation",
+        "internalTemperature": "Internal temp",
+        "power": "Power"
       }
     },
     "mimics": {

@@ -9,12 +9,9 @@ const isOpen = ref(false);
 </script>
 
 <template>
-  <InfoTooltip
-    v-model:open="isOpen"
-    icon-class="fill-destructive"
-  >
+  <InfoTooltip v-model:open="isOpen">
     <template #trigger>
-      <span class="text-destructive flex justify-center text-sm">
+      <span class="flex justify-center text-sm">
         {{ t("thrapp.dialogs.advisoryModeDisabled.title") }}
       </span>
     </template>

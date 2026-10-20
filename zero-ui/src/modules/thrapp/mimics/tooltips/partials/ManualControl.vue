@@ -32,7 +32,7 @@ const toggleMode = async () => {
 <template>
   <TooltipListItem class="mt-3">
     <template v-if="!advisoryEnabled">
-      <TooltipListItemTitle class="text-destructive">
+      <TooltipListItemTitle class="text-brand-muted">
         {{ t("thrapp.dialogs.manualMode.advisoryDisabled") }}
       </TooltipListItemTitle>
     </template>

@@ -463,11 +463,10 @@ class ControlChannels[
             qos=publish_qos,
         )
         self.send_controller_state = connector._create_publisher(
-            DirectMqttMapping[CS].for_module(
+            PartialMqttMapping[CS](
                 control_module.controller_state_cls,
                 config.mqtt_controller_topic_prefix,
                 module_name,
-                type_topic="controller-state",
             ),
             qos=publish_qos,
         )
@@ -616,11 +615,10 @@ class ControlApiChannels[
         )
         connector._register_listener(parameters_mapping)
 
-        controller_state_mapping = DirectMqttMapping[CS].for_module(
+        controller_state_mapping = PartialMqttMapping[CS](
             module_description.controller_state_cls,
             config.mqtt_controller_topic_prefix,
             module_name,
-            type_topic="controller-state",
         )
         connector._register_listener(controller_state_mapping)
 

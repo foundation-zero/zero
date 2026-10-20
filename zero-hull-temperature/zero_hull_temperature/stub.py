@@ -41,6 +41,7 @@ class Stub:
         async with MqttClient(
             mqtt_settings.mqtt_host,
             mqtt_settings.mqtt_port,
+            identifier=mqtt_settings.mqtt_client_id,
             username=mqtt_settings.mqtt_username,
             password=mqtt_settings.mqtt_password,
         ) as mqtt:

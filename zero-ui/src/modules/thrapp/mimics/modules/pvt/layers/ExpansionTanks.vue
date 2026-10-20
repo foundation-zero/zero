@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { ExpansionTank } from "../../../components/expansion-tank";
-import { ExpansionValve } from "../../../components/expansion-valve";
-import { TagLabelInstance } from "../../../instances";
+import {
+  ExpansionTankInstance,
+  ExpansionValveInstance,
+  TagLabelInstance,
+} from "../../../instances";
+import { PVT_EXPANSION_TANK_DATA, PVT_EXPANSION_VALVE_DATA } from "../data";
 </script>
 
 <template>
-  <ExpansionTank
+  <ExpansionTankInstance
     x="1215"
     y="165"
+    v-bind="PVT_EXPANSION_TANK_DATA.ExpansionTank['1040-01']"
   />
   <TagLabelInstance
     :target-x="1215"
@@ -15,9 +19,10 @@ import { TagLabelInstance } from "../../../instances";
     y="220"
     tag-id="1040-01"
   />
-  <ExpansionValve
+  <ExpansionValveInstance
     x="1145"
     y="145"
+    v-bind="PVT_EXPANSION_VALVE_DATA.ExpansionValve['1041-01']"
   />
   <TagLabelInstance
     x="1165"

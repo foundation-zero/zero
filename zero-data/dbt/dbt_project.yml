@@ -20,3 +20,7 @@ models:
       +materialized: view
     gold:
       +materialized: view
+
+on-run-start:
+  - "{{ load_power_tag_metadata() }}"
+  - "{{ load_24vdc_metadata() }}"

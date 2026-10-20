@@ -2,6 +2,8 @@ import { toFieldsMap } from "../..";
 import { DRIVES_ASSET_DATA } from "./assets";
 import { DRIVES_CHECK_VALVE_DATA } from "./check-valves";
 import { DRIVES_EXCHANGE_CIRCUIT_DATA } from "./exchange-circuits";
+import { DRIVES_EXPANSION_TANK_DATA } from "./expansion-tanks";
+import { DRIVES_EXPANSION_VALVE_DATA } from "./expansion-valves";
 import { DRIVES_FLOW_CONTROL_VALVE_DATA } from "./flow-control-valves";
 import { DRIVES_FLOW_SENSOR_DATA } from "./flow-sensors";
 import { DRIVES_HEAT_EXCHANGER_DATA } from "./heat-exchangers";
@@ -16,6 +18,8 @@ import { DRIVES_TEMPERATURE_SENSOR_DATA } from "./temperature-sensors";
 export { DRIVES_ASSET_DATA } from "./assets";
 export { DRIVES_CHECK_VALVE_DATA } from "./check-valves";
 export { DRIVES_EXCHANGE_CIRCUIT_DATA } from "./exchange-circuits";
+export { DRIVES_EXPANSION_TANK_DATA } from "./expansion-tanks";
+export { DRIVES_EXPANSION_VALVE_DATA } from "./expansion-valves";
 export { DRIVES_FLOW_CONTROL_VALVE_DATA } from "./flow-control-valves";
 export { DRIVES_FLOW_SENSOR_DATA } from "./flow-sensors";
 export { DRIVES_HEAT_EXCHANGER_DATA } from "./heat-exchangers";
@@ -28,6 +32,8 @@ export { DRIVES_SWITCH_VALVE_DATA } from "./switch-valves";
 export { DRIVES_TEMPERATURE_SENSOR_DATA } from "./temperature-sensors";
 
 export const DRIVES_MIMIC_DATA = toFieldsMap({
+  ...DRIVES_EXPANSION_TANK_DATA,
+  ...DRIVES_EXPANSION_VALVE_DATA,
   ...DRIVES_ASSET_DATA,
   ...DRIVES_CHECK_VALVE_DATA,
   ...DRIVES_EXCHANGE_CIRCUIT_DATA,

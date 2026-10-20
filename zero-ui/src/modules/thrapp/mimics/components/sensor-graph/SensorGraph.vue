@@ -1,9 +1,15 @@
+<script lang="ts">
+import { GraphType } from ".";
+</script>
 <script setup lang="ts">
 import { TooltipListItem } from "@/modules/thrapp/components/tooltip-list";
 import { ENV } from "@/settings";
 import { computed } from "vue";
 
-const props = defineProps<{ type: string; device?: string; field: string }>();
+const props = withDefaults(
+  defineProps<{ type: string; device?: string; field: string | string[]; graphType?: GraphType }>(),
+  {},
+);
 
 const grafanaBaseUrl = computed(() => (ENV.VITE_GRAFANA_URL ?? "").trim());
 
@@ -21,8 +27,12 @@ const iframeSrc = computed(() => {
   url.searchParams.set("to", now.getTime().toString());
   url.searchParams.set("var-type", props.type);
   url.searchParams.set("var-device", props.device);
-  url.searchParams.set("var-field", props.field);
-  url.searchParams.set("panelId", "panel-1");
+  if (Array.isArray(props.field)) {
+    props.field.forEach((value) => url.searchParams.append("var-field", value));
+  } else {
+    url.searchParams.set("var-field", props.field);
+  }
+  url.searchParams.set("panelId", props.graphType ?? GraphType.TIMESERIES);
   url.searchParams.set("__feature.dashboardSceneSolo", "true");
   return url.toString();
 });

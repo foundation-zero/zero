@@ -1,8 +1,15 @@
+import re
 from unittest.mock import patch
 
+import pytest
 from pydantic_settings import CliApp
 
-from zero_hull_temperature.cli import ZeroHullTemperature
+from zero_hull_temperature.cli import (
+    ReadWithMqttCmd,
+    RunCmd,
+    StubCmd,
+    ZeroHullTemperature,
+)
 
 
 def test_read_mqtt_no_skip():
@@ -52,3 +59,45 @@ def test_buffer_size_covers_five_minutes():
     from zero_hull_temperature.bridge_relay import buffer_size_for
 
     assert buffer_size_for(probe_interval=10, topic_count=1) == 30
+
+
+@pytest.fixture
+def required_env(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setenv("MODBUS_HOST", "localhost")
+    monkeypatch.setenv("MODBUS_PORT", "502")
+    monkeypatch.setenv("MQTT_HOST", "localhost")
+    monkeypatch.setenv("MQTT_PORT", "1883")
+    monkeypatch.delenv("MQTT_CLIENT_ID", raising=False)
+
+
+def test_read_with_mqtt_default_client_id(required_env):
+    cmd = ReadWithMqttCmd(_env_file=None)  # type: ignore[call-arg]
+    assert re.fullmatch(r"hull-temperature-[0-9a-f]{8}", cmd.mqtt_client_id)
+
+
+def test_read_with_mqtt_client_id_from_env(required_env, monkeypatch):
+    monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
+    cmd = ReadWithMqttCmd(_env_file=None)  # type: ignore[call-arg]
+    assert cmd.mqtt_client_id == "custom-id"
+
+
+def test_run_default_client_id(required_env):
+    cmd = RunCmd(_env_file=None)  # type: ignore[call-arg]
+    assert re.fullmatch(r"hull-temperature-[0-9a-f]{8}", cmd.mqtt_client_id)
+
+
+def test_run_client_id_from_env(required_env, monkeypatch):
+    monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
+    cmd = RunCmd(_env_file=None)  # type: ignore[call-arg]
+    assert cmd.mqtt_client_id == "custom-id"
+
+
+def test_stub_default_client_id(required_env):
+    cmd = StubCmd(_env_file=None)  # type: ignore[call-arg]
+    assert re.fullmatch(r"hull-temperature-stub-[0-9a-f]{8}", cmd.mqtt_client_id)
+
+
+def test_stub_client_id_from_env(required_env, monkeypatch):
+    monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
+    cmd = StubCmd(_env_file=None)  # type: ignore[call-arg]
+    assert cmd.mqtt_client_id == "custom-id"

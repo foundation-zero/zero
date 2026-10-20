@@ -28,7 +28,7 @@ class Control:
         async with MqttClient(
             settings.mqtt_host,
             settings.mqtt_port,
-            identifier="loads_control",
+            identifier=settings.mqtt_control_client_id,
             username=settings.mqtt_username,
             password=settings.mqtt_password,
         ) as mqtt_client:
