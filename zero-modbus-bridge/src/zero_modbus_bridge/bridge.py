@@ -2,11 +2,14 @@
 
 import asyncio
 import logging
+from collections import deque
+from datetime import UTC, datetime
 from typing import Any
 
 from faststream.mqtt import MQTTBroker
+from pydantic import BaseModel
 from pyModbusTCP.client import ModbusClient
-from zmqtt import MQTTDisconnectedError, MQTTTimeoutError
+from zmqtt import MQTTDisconnectedError, MQTTPublishError, MQTTTimeoutError
 
 from zero_modbus_bridge.io import ModbusTopic
 from zero_modbus_bridge.publisher import MqttPublisher, TopicPublisher
@@ -15,9 +18,15 @@ from zero_modbus_bridge.settings import ModbusSettings
 
 logger = logging.getLogger(__name__)
 
-# Transient failures worth dropping and retrying next probe; other MQTTErrors
-# (auth, protocol, invalid topic) are misconfigs that must surface.
-_TRANSIENT_PUBLISH_ERRORS = (MQTTDisconnectedError, MQTTTimeoutError)
+# Failures that buffer the message for replay; other MQTTErrors (auth,
+# protocol, invalid topic) are misconfigs that must surface.
+TRANSIENT_PUBLISH_ERRORS = (
+    MQTTPublishError,
+    MQTTDisconnectedError,
+    MQTTTimeoutError,
+)
+
+type _Reading = tuple[str, BaseModel, datetime]
 
 
 class ModbusBridge:
@@ -30,22 +39,41 @@ class ModbusBridge:
         topics: list[ModbusTopic],
         probe_interval: float = 10.0,
         *,
-        drop_failed_publishes: bool = False,
+        buffer_size: int,
     ):
-        """``drop_failed_publishes`` drops a publish that fails with a transient
-        broker error (see ``_TRANSIENT_PUBLISH_ERRORS``); the default raises."""
+        """``buffer_size`` bounds the in-memory queue of readings whose publish
+        failed with a transient broker error (see ``TRANSIENT_PUBLISH_ERRORS``).
+        They are replayed in order, with their original read time, once the
+        broker accepts again; when the queue is full the oldest is dropped."""
+        if buffer_size <= 0:
+            raise ValueError("buffer_size must be > 0")
+        self._buffer_size = buffer_size
+        self._buffer: deque[_Reading] = deque()
+        self._dropped = 0
+        self._failing = False
         self._reader = reader
         self._publisher = publisher
         if probe_interval <= 0:
             raise ValueError("probe_interval must be > 0")
         self._probe_interval = probe_interval
-        self._drop_failed_publishes = drop_failed_publishes
+
+    @property
+    def buffered_count(self) -> int:
+        """Readings currently waiting for the broker to accept them."""
+        return len(self._buffer)
+
+    @property
+    def dropped_count(self) -> int:
+        """Readings discarded because the buffer was full, since start."""
+        return self._dropped
 
     @staticmethod
     def from_settings(
         modbus_settings: ModbusSettings,
         broker: MQTTBroker,
         topics: list[ModbusTopic],
+        *,
+        buffer_size: int,
     ) -> "ModbusBridge":
         reader = ModbusReader(modbus_settings.modbus_client(), topics)
         publisher = MqttPublisher(broker, topics)
@@ -54,6 +82,7 @@ class ModbusBridge:
             publisher,
             topics,
             modbus_settings.modbus_probe_interval,
+            buffer_size=buffer_size,
         )
 
     @classmethod
@@ -66,7 +95,7 @@ class ModbusBridge:
         probe_interval: float = 10.0,
         *,
         modbus_timeout: float | None = None,
-        drop_failed_publishes: bool = False,
+        buffer_size: int,
     ) -> "ModbusBridge":
         """Bridge sharing a publisher while dialing its own gateway address.
 
@@ -84,7 +113,7 @@ class ModbusBridge:
             publisher,
             topics,
             probe_interval,
-            drop_failed_publishes=drop_failed_publishes,
+            buffer_size=buffer_size,
         )
 
     async def run(self) -> None:
@@ -101,28 +130,54 @@ class ModbusBridge:
         readings = await asyncio.to_thread(self._probe)
         if readings is None:
             logger.warning("Modbus connection not available - skipping probe")
-            return
+        else:
+            self._enqueue(readings)
+        await self._flush()
+
+    def _enqueue(self, readings: list[_Reading]) -> None:
         dropped = 0
-        last_error: BaseException | None = None
-        for topic_name, payload in readings:
-            try:
-                await self._publisher.publish(topic_name, payload)
-            except _TRANSIENT_PUBLISH_ERRORS as exc:
-                # No retry: at this cadence the next probe supersedes the sample.
-                if not self._drop_failed_publishes:
-                    raise
+        for reading in readings:
+            if len(self._buffer) >= self._buffer_size:
+                self._buffer.popleft()
                 dropped += 1
-                last_error = exc
+            self._buffer.append(reading)
         if dropped:
-            # One line per probe, not a traceback per topic: an outage drops all.
+            self._dropped += dropped
             logger.warning(
-                "Dropped %d publish(es) this probe (broker unavailable?): %s",
+                "Buffer full (%d): dropped the %d oldest reading(s), %d dropped in total",
+                self._buffer_size,
                 dropped,
-                last_error,
+                self._dropped,
             )
 
-    def _probe(self) -> list[tuple[str, Any]] | None:
+    async def _flush(self) -> None:
+        """Publish buffered readings oldest first; stop at the first failure."""
+        replayed = 0
+        while self._buffer:
+            topic_name, payload, read_at = self._buffer[0]
+            try:
+                await self._publisher.publish(topic_name, payload, read_at)
+            except TRANSIENT_PUBLISH_ERRORS as exc:
+                logger.warning(
+                    "Publish failed (broker unavailable?), %d reading(s) buffered, "
+                    "%d dropped in total: %r",
+                    len(self._buffer),
+                    self._dropped,
+                    exc,
+                )
+                self._failing = True
+                return
+            self._buffer.popleft()
+            replayed += 1
+        if self._failing:
+            logger.info("Broker accepting again: replayed %d reading(s)", replayed)
+            self._failing = False
+
+    def _probe(self) -> list[_Reading] | None:
         """Run the blocking Modbus probe; ``None`` means the gateway is down.
+
+        Each reading is stamped when the lazy ``read_all()`` yields it, i.e.
+        right after its registers were read.
 
         ``read_all()`` reopens per topic, so the up-front ``ensure_open`` only
         tells a dead gateway (skip the probe) from a mid-cycle drop (skip the
@@ -130,4 +185,7 @@ class ModbusBridge:
         """
         if not self._reader.ensure_open():
             return None
-        return list(self._reader.read_all())
+        return [
+            (topic_name, payload, datetime.now(UTC))
+            for topic_name, payload in self._reader.read_all()
+        ]
