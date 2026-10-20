@@ -55,7 +55,7 @@ def timestamped_body(payload: BaseModel, read_at: datetime) -> dict[str, Any]:
     if read_at.tzinfo is None:
         raise ValueError("read_at must be timezone-aware")
     return {
-        **to_jsonable_python(payload),
+        **to_jsonable_python(payload, by_alias=True),
         TIMESTAMP_FIELD: to_jsonable_python(read_at),
     }
 
