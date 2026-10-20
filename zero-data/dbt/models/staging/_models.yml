@@ -276,13 +276,13 @@ models:
         description: "Timestamp when the encoder warning state was recorded."
       - name: encoder_warning__value
         description: "Status flag indicating an encoder warning."
-      - name: encodererror__has_value
+      - name: encoder_error__has_value
         description: "Indicates whether the encoder error signal has a recorded value."
-      - name: encodererror__is_valid
+      - name: encoder_error__is_valid
         description: "Indicates whether the encoder error value is valid."
-      - name: encodererror__timestamp
+      - name: encoder_error__timestamp
         description: "Timestamp when the encoder error state was recorded."
-      - name: encodererror__value
+      - name: encoder_error__value
         description: "Status flag indicating an encoder error."
       - name: error_word__has_value
         description: "Indicates whether the error word signal has a recorded value."
@@ -316,13 +316,13 @@ models:
         description: "Timestamp when the high-voltage input warning state was recorded."
       - name: hv_input_warning__value
         description: "Status flag indicating a high-voltage input warning."
-      - name: hv_inputerror__has_value
+      - name: hv_input_error__has_value
         description: "Indicates whether the high-voltage input error signal has a recorded value."
-      - name: hv_inputerror__is_valid
+      - name: hv_input_error__is_valid
         description: "Indicates whether the high-voltage input error value is valid."
-      - name: hv_inputerror__timestamp
+      - name: hv_input_error__timestamp
         description: "Timestamp when the high-voltage input error state was recorded."
-      - name: hv_inputerror__value
+      - name: hv_input_error__value
         description: "Status flag indicating a high-voltage input error."
       - name: max_power_setpoint_generator__has_value
         description: "Indicates whether the maximum power setpoint generator signal has a recorded value."
@@ -850,13 +850,13 @@ models:
         description: "Timestamp when the encoder warning state was recorded."
       - name: encoder_warning__value
         description: "Status flag indicating an encoder warning."
-      - name: encodererror__has_value
+      - name: encoder_error__has_value
         description: "Indicates whether the encoder error signal has a recorded value."
-      - name: encodererror__is_valid
+      - name: encoder_error__is_valid
         description: "Indicates whether the encoder error value is valid."
-      - name: encodererror__timestamp
+      - name: encoder_error__timestamp
         description: "Timestamp when the encoder error state was recorded."
-      - name: encodererror__value
+      - name: encoder_error__value
         description: "Status flag indicating an encoder error."
       - name: error_word__has_value
         description: "Indicates whether the error word signal has a recorded value."
@@ -890,13 +890,13 @@ models:
         description: "Timestamp when the high-voltage input warning state was recorded."
       - name: hv_input_warning__value
         description: "Status flag indicating a high-voltage input warning."
-      - name: hv_inputerror__has_value
+      - name: hv_input_error__has_value
         description: "Indicates whether the high-voltage input error signal has a recorded value."
-      - name: hv_inputerror__is_valid
+      - name: hv_input_error__is_valid
         description: "Indicates whether the high-voltage input error value is valid."
-      - name: hv_inputerror__timestamp
+      - name: hv_input_error__timestamp
         description: "Timestamp when the high-voltage input error state was recorded."
-      - name: hv_inputerror__value
+      - name: hv_input_error__value
         description: "Status flag indicating a high-voltage input error."
       - name: max_power_setpoint_generator__has_value
         description: "Indicates whether the maximum power setpoint generator signal has a recorded value."
