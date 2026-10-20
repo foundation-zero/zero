@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from faststream.mqtt import MQTTBroker
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, Field
 
 from tests.conftest import FloatModel
 from zero_modbus_bridge.io import AnnotationModbusTopic
@@ -160,11 +160,11 @@ def test_timestamped_body_requires_timezone():
 
 def test_timestamped_body_uses_field_aliases():
     class Aliased(BaseModel):
-        model_config = ConfigDict(populate_by_name=True)
         s_94455001_26: float = Field(alias="94455001-26")
 
     body = timestamped_body(
-        Aliased(s_94455001_26=20.0), datetime(2026, 10, 13, tzinfo=UTC)
+        Aliased.model_validate({"94455001-26": 20.0}),
+        datetime(2026, 10, 13, tzinfo=UTC),
     )
 
     assert body == {"94455001-26": 20.0, "TimeStamp": "2026-10-13T00:00:00Z"}
