@@ -1124,13 +1124,177 @@
       ]
     },
     {
+      "id": 40,
+      "type": "row",
+      "title": "Propulsion, live",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 39,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 41,
+          "title": "Pod",
+          "type": "table",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 40,
+            "w": 24,
+            "h": 4
+          },
+          "description": "Propeller speed and shaft power, pitch and azimuth from the PLC. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "pluginVersion": "12.3.0",
+          "transparent": false,
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT round(last_value(azimuth_prop_speed__value ORDER BY timestamp) / 10.0, 1) AS \"Propeller speed [rpm]\",\n  round(last_value(azimuth_prop_mech_power__value ORDER BY timestamp) / 10.0, 1) AS \"Shaft power [kW]\",\n  last_value(propellor_pitch__value ORDER BY timestamp) AS \"Pitch [°]\",\n  last_value(propellor_azimuth__value ORDER BY timestamp) AS \"Azimuth [°]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '5 minutes'",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Updated"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeFromNow"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "footer": {
+              "show": false
+            }
+          }
+        },
+        {
+          "id": 42,
+          "title": "Drive loads",
+          "type": "table",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 44,
+            "w": 24,
+            "h": 5
+          },
+          "description": "DC power, positive when consuming; torque at the motor shaft; the torque limits the PLC sends and the power limits the PMS gives each drive, both as sent. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "pluginVersion": "12.3.0",
+          "transparent": false,
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "WITH drives AS (\n  SELECT 1 AS drive, last_value(power__value ORDER BY timestamp) * 0.1 AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE timestamp > now() - INTERVAL '5 minutes'\n  UNION ALL\n  SELECT 2 AS drive, last_value(power__value ORDER BY timestamp) * 0.1 AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE timestamp > now() - INTERVAL '5 minutes'),\nlimits AS (\n  SELECT CASE right(topic, 4) WHEN 'u101' THEN 1 ELSE 2 END AS drive,\n    last_value(setpoint_power__value ORDER BY timestamp) AS propulsion_limit, last_value(produce_power_limit__value ORDER BY timestamp) AS regeneration_limit\n  FROM public.marpower__150000_propulsion_ara\n  WHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u101' ELSE '13-11-u101' END, 'marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u102' ELSE '13-11-u102' END)\n  GROUP BY topic)\nSELECT 'Drive ' || CAST(d.drive AS VARCHAR) AS \"Drive\",\n  round(d.power, 1) AS \"DC power [kW]\",\n  d.torque AS \"Torque [Nm]\",\n  d.max_torque AS \"Max torque sent [Nm]\",\n  d.min_torque AS \"Min torque sent [Nm]\",\n  round(l.propulsion_limit, 1) AS \"Propulsion limit [kW]\",\n  round(l.regeneration_limit, 1) AS \"Regeneration limit [kW]\",\n  d.updated AS \"Updated\"\nFROM drives d LEFT JOIN limits l ON l.drive = d.drive\nORDER BY d.drive",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Updated"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeFromNow"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "footer": {
+              "show": false
+            }
+          }
+        }
+      ]
+    },
+    {
       "id": 9,
       "type": "row",
       "title": "Motor",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 39,
+        "y": 40,
         "w": 24,
         "h": 1
       },
@@ -1146,7 +1310,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 40,
+        "y": 41,
         "w": 12,
         "h": 8
       },
@@ -1244,7 +1408,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 40,
+        "y": 41,
         "w": 12,
         "h": 8
       },
@@ -1333,13 +1497,102 @@
       ]
     },
     {
+      "id": 43,
+      "type": "row",
+      "title": "Motor, live",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 49,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 44,
+          "title": "Motor temperatures",
+          "type": "table",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 50,
+            "w": 24,
+            "h": 4
+          },
+          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "pluginVersion": "12.3.0",
+          "transparent": false,
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT last_value(windingtempu_1__value ORDER BY timestamp) AS \"U1 [°C]\",\n  last_value(windingtempv_1__value ORDER BY timestamp) AS \"V1 [°C]\",\n  last_value(${winding_w1}__value ORDER BY timestamp) AS \"W1 [°C]\",\n  last_value(windingtempu_2__value ORDER BY timestamp) AS \"U2 [°C]\",\n  last_value(windingtempv_2__value ORDER BY timestamp) AS \"V2 [°C]\",\n  last_value(windingtempw_2__value ORDER BY timestamp) AS \"W2 [°C]\",\n  last_value(bearing_de_temp__value ORDER BY timestamp) AS \"Bearing DE [°C]\",\n  last_value(bearing_nde_temp__value ORDER BY timestamp) AS \"Bearing NDE [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '5 minutes'",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Updated"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeFromNow"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "footer": {
+              "show": false
+            }
+          }
+        }
+      ]
+    },
+    {
       "id": 12,
       "type": "row",
       "title": "Drives",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 48,
+        "y": 50,
         "w": 24,
         "h": 1
       },
@@ -1355,7 +1608,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 49,
+        "y": 51,
         "w": 12,
         "h": 8
       },
@@ -1484,7 +1737,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 49,
+        "y": 51,
         "w": 12,
         "h": 8
       },
@@ -1604,13 +1857,102 @@
       ]
     },
     {
+      "id": 45,
+      "type": "row",
+      "title": "Drives, live",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 59,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 46,
+          "title": "Drive temperatures",
+          "type": "table",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 60,
+            "w": 12,
+            "h": 5
+          },
+          "description": "The drives publish 199 while off; those values are left out. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "pluginVersion": "12.3.0",
+          "transparent": false,
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT 'Drive 1' AS \"Drive\",\n  last_value(NULLIF(temp_igbt__value, 199) ORDER BY timestamp) AS \"IGBT [°C]\",\n  last_value(NULLIF(temp_power_stage__value, 199) ORDER BY timestamp) AS \"Power stage [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE timestamp > now() - INTERVAL '5 minutes'\nUNION ALL\nSELECT 'Drive 2' AS \"Drive\",\n  last_value(NULLIF(temp_igbt__value, 199) ORDER BY timestamp) AS \"IGBT [°C]\",\n  last_value(NULLIF(temp_power_stage__value, 199) ORDER BY timestamp) AS \"Power stage [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE timestamp > now() - INTERVAL '5 minutes'\nORDER BY 1",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Updated"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeFromNow"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "footer": {
+              "show": false
+            }
+          }
+        }
+      ]
+    },
+    {
       "id": 15,
       "type": "row",
       "title": "Cooling water",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 57,
+        "y": 60,
         "w": 24,
         "h": 1
       },
@@ -1626,7 +1968,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 58,
+        "y": 61,
         "w": 12,
         "h": 8
       },
@@ -1776,7 +2118,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 58,
+        "y": 61,
         "w": 12,
         "h": 8
       },
@@ -1926,7 +2268,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 66,
+        "y": 69,
         "w": 12,
         "h": 8
       },
@@ -2076,7 +2418,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 66,
+        "y": 69,
         "w": 12,
         "h": 8
       },
@@ -2226,7 +2568,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 74,
+        "y": 77,
         "w": 24,
         "h": 8
       },
@@ -2367,13 +2709,102 @@
       ]
     },
     {
+      "id": 47,
+      "type": "row",
+      "title": "Cooling water, live",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 85,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 48,
+          "title": "Cooling circuits",
+          "type": "table",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 86,
+            "w": 16,
+            "h": 12
+          },
+          "description": "Updated: the oldest of the circuit's three sensors. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "pluginVersion": "12.3.0",
+          "transparent": false,
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "WITH circuits AS (SELECT * FROM (VALUES\n    (1, 'Thruster', '50001038-28', CASE '${pod}' WHEN 'fwd' THEN '50001038-02' ELSE '50001038-01' END, CASE '${pod}' WHEN 'fwd' THEN '50001057-22' ELSE '50001218-02' END),\n    (2, 'Drive 1 (U101)', CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-61' ELSE '50001038-32' END, CASE '${pod}' WHEN 'fwd' THEN '50001057-15' ELSE '50001057-13' END),\n    (3, 'Drive 2 (U102)', CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-72' ELSE '50001038-64' END, CASE '${pod}' WHEN 'fwd' THEN '50001057-14' ELSE '50001057-16' END),\n    (4, 'Brightloop FWD 1', '50001038-69', '50001038-13', '50001057-12'),\n    (5, 'Brightloop FWD 2', '50001038-69', '50001038-12', '50001057-11'),\n    (6, 'Brightloop AFT 1', '50001038-15', '50001038-08', '50001057-07'),\n    (7, 'Brightloop AFT 2', '50001038-15', '50001038-07', '50001057-06'),\n    (8, 'Brightloop AFT 3', '50001038-15', '50001038-06', '50001057-05'),\n    (9, 'Brightloop AFT 4', '50001038-15', '50001038-05', '50001057-04')) v (sort, circuit, in_tag, out_tag, flow_tag)),\ntemperatures AS (\n  SELECT yard_tag, last_value(temperature__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__temperatures WHERE timestamp > now() - INTERVAL '5 minutes' GROUP BY yard_tag),\nflows AS (\n  SELECT yard_tag, last_value(flow__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__flows WHERE timestamp > now() - INTERVAL '5 minutes' GROUP BY yard_tag)\nSELECT c.circuit AS \"Circuit\",\n  round(t_in.value, 1) AS \"In [°C]\",\n  round(t_out.value, 1) AS \"Out [°C]\",\n  round(f.value, 1) AS \"Flow [l/min]\",\n  least(t_in.updated, t_out.updated, f.updated) AS \"Updated\"\nFROM circuits c\n  LEFT JOIN temperatures t_in ON t_in.yard_tag = c.in_tag\n  LEFT JOIN temperatures t_out ON t_out.yard_tag = c.out_tag\n  LEFT JOIN flows f ON f.yard_tag = c.flow_tag\nORDER BY c.sort",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Updated"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeFromNow"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "footer": {
+              "show": false
+            }
+          }
+        }
+      ]
+    },
+    {
       "id": 21,
       "type": "row",
       "title": "Hydraulics",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 82,
+        "y": 86,
         "w": 24,
         "h": 1
       },
@@ -2389,7 +2820,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 83,
+        "y": 87,
         "w": 24,
         "h": 7
       },
@@ -2478,13 +2909,102 @@
       ]
     },
     {
+      "id": 49,
+      "type": "row",
+      "title": "Hydraulics, live",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 94,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 50,
+          "title": "Hydraulic oil temperature",
+          "type": "table",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 95,
+            "w": 8,
+            "h": 4
+          },
+          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "pluginVersion": "12.3.0",
+          "transparent": false,
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT last_value(hydr_tank_temp__value ORDER BY timestamp) AS \"Oil temperature [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '5 minutes'",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Updated"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeFromNow"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "footer": {
+              "show": false
+            }
+          }
+        }
+      ]
+    },
+    {
       "id": 23,
       "type": "row",
       "title": "Mounts",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 90,
+        "y": 95,
         "w": 24,
         "h": 1
       },
@@ -2500,7 +3020,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 91,
+        "y": 96,
         "w": 24,
         "h": 8
       },
@@ -2675,13 +3195,102 @@
       ]
     },
     {
+      "id": 51,
+      "type": "row",
+      "title": "Mounts, live",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 104,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 52,
+          "title": "Shear beams",
+          "type": "table",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 105,
+            "w": 16,
+            "h": 4
+          },
+          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "pluginVersion": "12.3.0",
+          "transparent": false,
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT last_value(shear_beam_1__value ORDER BY timestamp) AS \"Beam 1 [N]\",\n  last_value(shear_beam_2__value ORDER BY timestamp) AS \"Beam 2 [N]\",\n  last_value(shear_beam_3__value ORDER BY timestamp) AS \"Beam 3 [N]\",\n  last_value(shear_beam_4__value ORDER BY timestamp) AS \"Beam 4 [N]\",\n  last_value(shear_beam_calculated__value ORDER BY timestamp) AS \"Calculated [N]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '5 minutes'",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Updated"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeFromNow"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "footer": {
+              "show": false
+            }
+          }
+        }
+      ]
+    },
+    {
       "id": 25,
       "type": "row",
       "title": "Batteries",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 99,
+        "y": 105,
         "w": 24,
         "h": 1
       },
@@ -2697,7 +3306,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 100,
+        "y": 106,
         "w": 12,
         "h": 8
       },
@@ -2795,7 +3404,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 100,
+        "y": 106,
         "w": 12,
         "h": 8
       },
@@ -2893,7 +3502,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 108,
+        "y": 114,
         "w": 12,
         "h": 8
       },
@@ -2991,7 +3600,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 108,
+        "y": 114,
         "w": 12,
         "h": 8
       },
@@ -3089,7 +3698,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 116,
+        "y": 122,
         "w": 12,
         "h": 12
       },
@@ -3151,7 +3760,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 116,
+        "y": 122,
         "w": 12,
         "h": 12
       },
@@ -3291,13 +3900,177 @@
       ]
     },
     {
+      "id": 53,
+      "type": "row",
+      "title": "Batteries, live",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 134,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 54,
+          "title": "Packs",
+          "type": "table",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 135,
+            "w": 18,
+            "h": 28
+          },
+          "description": "SoC is the minimum of the pack's strings; DC:DC max is the highest of the four channel temperatures of the pack's brightloop converter. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "pluginVersion": "12.3.0",
+          "transparent": false,
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT '05_' || split_part(split_part(topic, '/', 3), '-', 2) AS \"System\",\n  '05_' || split_part(split_part(topic, '/', 3), '-', 2) || '_' || split_part(split_part(topic, '/', 3), '-', 3) AS \"Pack\",\n  last_value(minimum_soc__value ORDER BY timestamp) AS \"SoC [%]\",\n  last_value(maximum_cell_temperature__value ORDER BY timestamp) AS \"Max temp [°C]\",\n  round(last_value(battery_power__value ORDER BY timestamp), 1) AS \"Power [kW]\",\n  last_value(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value) ORDER BY timestamp) AS \"DC:DC max [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_main_power_storage_errors\nWHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-main-power-storage-errors/5-41-1', 'marpower/450000-main-power-storage-errors/5-41-2', 'marpower/450000-main-power-storage-errors/5-41-3', 'marpower/450000-main-power-storage-errors/5-41-4', 'marpower/450000-main-power-storage-errors/5-42-1', 'marpower/450000-main-power-storage-errors/5-42-2', 'marpower/450000-main-power-storage-errors/5-42-3', 'marpower/450000-main-power-storage-errors/5-43-1', 'marpower/450000-main-power-storage-errors/5-43-2', 'marpower/450000-main-power-storage-errors/5-43-3', 'marpower/450000-main-power-storage-errors/5-44-1', 'marpower/450000-main-power-storage-errors/5-44-2', 'marpower/450000-main-power-storage-errors/5-44-3', 'marpower/450000-main-power-storage-errors/5-44-4', 'marpower/450000-main-power-storage-errors/5-45-1', 'marpower/450000-main-power-storage-errors/5-45-2', 'marpower/450000-main-power-storage-errors/5-45-3', 'marpower/450000-main-power-storage-errors/5-45-4', 'marpower/450000-main-power-storage-errors/5-46-1', 'marpower/450000-main-power-storage-errors/5-46-2', 'marpower/450000-main-power-storage-errors/5-46-3', 'marpower/450000-main-power-storage-errors/5-46-4')\nGROUP BY topic ORDER BY 2",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Updated"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeFromNow"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "footer": {
+              "show": false
+            }
+          }
+        },
+        {
+          "id": 55,
+          "title": "Available battery energy and SoC",
+          "type": "table",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "gridPos": {
+            "x": 18,
+            "y": 135,
+            "w": 6,
+            "h": 4
+          },
+          "description": "As the PMS sends them to the PCS of the selected pod. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "pluginVersion": "12.3.0",
+          "transparent": false,
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT last_value(total_energy_avail_batteries__value ORDER BY timestamp) AS \"Energy [kWh]\",\n  last_value(total_so_c_avail_batteries__value ORDER BY timestamp) AS \"SoC [%]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '5 minutes'",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Updated"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeFromNow"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "footer": {
+              "show": false
+            }
+          }
+        }
+      ]
+    },
+    {
       "id": 32,
       "type": "row",
       "title": "DC grid",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 128,
+        "y": 135,
         "w": 24,
         "h": 1
       },
@@ -3313,7 +4086,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 129,
+        "y": 136,
         "w": 12,
         "h": 8
       },
@@ -3407,7 +4180,7 @@
       "title": "Heat sink temperature",
       "gridPos": {
         "x": 12,
-        "y": 129,
+        "y": 136,
         "w": 12,
         "h": 8
       },
@@ -3428,7 +4201,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 137,
+        "y": 144,
         "w": 8,
         "h": 8
       },
@@ -3526,7 +4299,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 137,
+        "y": 144,
         "w": 8,
         "h": 8
       },
@@ -3624,7 +4397,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 137,
+        "y": 144,
         "w": 8,
         "h": 8
       },
@@ -3722,7 +4495,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 145,
+        "y": 152,
         "w": 12,
         "h": 8
       },
@@ -3820,7 +4593,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 145,
+        "y": 152,
         "w": 12,
         "h": 8
       },
@@ -3904,6 +4677,95 @@
           "options": {
             "regex": "^(.*) Result \\d+$",
             "renamePattern": "$1"
+          }
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "type": "row",
+      "title": "DC grid, live",
+      "collapsed": true,
+      "gridPos": {
+        "x": 0,
+        "y": 160,
+        "w": 24,
+        "h": 1
+      },
+      "panels": [
+        {
+          "id": 57,
+          "title": "DC switches",
+          "type": "table",
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "gridPos": {
+            "x": 0,
+            "y": 161,
+            "w": 24,
+            "h": 12
+          },
+          "description": "The current scaling is unknown, so the currents are raw. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "pluginVersion": "12.3.0",
+          "transparent": false,
+          "targets": [
+            {
+              "datasource": {
+                "type": "info8fcc-greptimedb-datasource",
+                "uid": "${datasource}"
+              },
+              "editorType": "sql",
+              "format": 1,
+              "pluginVersion": "2.1.4",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT CASE right(topic, 2) WHEN '71' THEN 'SB.01.P01' WHEN '72' THEN 'SB.01.P01' WHEN '73' THEN 'SB.01.P02' WHEN '74' THEN 'SB.01.P03' WHEN '75' THEN 'SB.01.P04' ELSE 'SB.02' END AS \"Switchboard\",\n  '05.' || right(topic, 2) AS \"DC switch\",\n  round(last_value(board_temp__value ORDER BY timestamp) * 0.1, 1) AS \"Board temperature [°C]\",\n  last_value(dcv_s_0__value ORDER BY timestamp) AS \"Voltage left [V]\",\n  last_value(dcv_s_1__value ORDER BY timestamp) AS \"Voltage right [V]\",\n  last_value(dcv_ext__value ORDER BY timestamp) AS \"Voltage external [V]\",\n  last_value(dcc_s_0__value ORDER BY timestamp) AS \"Current left (raw)\",\n  last_value(dcc_s_1__value ORDER BY timestamp) AS \"Current right (raw)\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__dc_switch\nWHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-dc-distribution/dc-switch/keb6-0571', 'marpower/450000-dc-distribution/dc-switch/keb6-0572', 'marpower/450000-dc-distribution/dc-switch/keb6-0573', 'marpower/450000-dc-distribution/dc-switch/keb7-0574', 'marpower/450000-dc-distribution/dc-switch/keb7-0575', 'marpower/450000-dc-distribution/dc-switch/keb8-0576', 'marpower/450000-dc-distribution/dc-switch/keb8-0577', 'marpower/450000-dc-distribution/dc-switch/keb9-0578')\nGROUP BY topic ORDER BY 2",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Updated"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "dateTimeFromNow"
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "footer": {
+              "show": false
+            }
           }
         }
       ]
