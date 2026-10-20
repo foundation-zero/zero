@@ -1,6 +1,0 @@
-if !is_timestamp(.timestamp) {
-    _, err = parse_timestamp(.timestamp, "%+")
-    if err != null {
-        abort
-    }
-}

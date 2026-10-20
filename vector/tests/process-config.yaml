@@ -37,7 +37,6 @@ transforms:
       - "./processing/process_5_spell_fix.vrl"
       - "./processing/process_6_snakecase.vrl"
       - "./processing/process_7_drop_nans.vrl"
-      - "./processing/process_8_valid_timestamp.vrl"
     drop_on_error: true
     reroute_dropped: true
   dropped_append_timestamp:
@@ -45,11 +44,14 @@ transforms:
     inputs: ["*.dropped"]
     files:
       - "./processing/dropped_append_timestamp.vrl"
-  mask_ingest_time:
+  # Tags rerouted events, so an event that should have been dropped but wasn't
+  # cannot match a dead letter line in the expected output.
+  mark_dead_letter:
     type: remap
     inputs: ["dropped_append_timestamp"]
     source: |
       del(.metadata)
+      .dead_letter = true
       if is_timestamp(.timestamp) {
         .timestamp = "<ingest-time>"
       }
@@ -66,6 +68,6 @@ sinks:
       codec: json
   dead_letter_queue:
     type: console
-    inputs: ["mask_ingest_time"]
+    inputs: ["mark_dead_letter"]
     encoding:
       codec: json

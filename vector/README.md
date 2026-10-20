@@ -41,18 +41,20 @@ The main pipeline. It subscribes to the everyday topics (`marpower/#`,
 | 5 | `process_5_spell_fix.vrl` | Normalises `TimeStamp` → `Timestamp` in key names. |
 | 6 | `process_6_snakecase.vrl` | Converts all keys from `PascalCase` to `snake_case`. |
 | 7 | `process_7_drop_nans.vrl` | Drops messages where the value is 'NaN'. Greptime can't deal with those values. |
-| 8 | `process_8_valid_timestamp.vrl` | Sends events whose `timestamp` is present but not RFC 3339 (e.g. `not-a-timestamp`, a zone-less datetime, a number) to the dead letter queue. |
 
 The result lands in a per-domain table via the `greptimedb` sink.
 
 The `greptimedb` sink keeps Vector's default unlimited retries on purpose. A
 Greptime outage (connection refused, 5xx) is retried too, and the 4 GiB disk
 buffer only helps if those retries outlast the outage. The one input Greptime
-answers with a retried 500 is an unparseable `timestamp`; step 4 already
-replaces missing or null ones with `now()`, and step 8 keeps the malformed
-rest out of the sink. In the dead letter queue the bad value moves to
-`original_timestamp` and `timestamp` is set to ingestion time. Type
-mismatches and bad table names answer 400, which Vector drops without retrying.
+answers with a retried 500 is an unparseable `timestamp`. The general pipeline
+never sends one: `timestamp` starts as the MQTT ingest time and step 4 only
+replaces it with a `*TimeStamp` it can parse. A JSON-decoded NMEA payload
+can carry its own `timestamp`, though, and reaches the dead letter queue
+unchanged if routing fails. There the bad value moves to `original_timestamp`
+and `timestamp` is set to ingestion time (`dropped_append_timestamp.vrl`).
+Type mismatches, bad table names and timestamps outside Greptime's range
+(roughly 1677–2262) answer 400, which Vector drops without retrying.
 
 #### A+T NMEA 0183 → `atpx__nmea_*`
 

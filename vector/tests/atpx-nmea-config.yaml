@@ -25,6 +25,25 @@ transforms:
     inputs: ["take_msg"]
     files:
       - "./processing/atpx_nmea_route.vrl"
+    drop_on_error: true
+    drop_on_abort: true
+    reroute_dropped: true
+  dropped_append_timestamp:
+    type: remap
+    inputs: ["*.dropped"]
+    files:
+      - "./processing/dropped_append_timestamp.vrl"
+  # Tags rerouted events, so an event that should have been dropped but wasn't
+  # cannot match a dead letter line in the expected output.
+  mark_dead_letter:
+    type: remap
+    inputs: ["dropped_append_timestamp"]
+    source: |
+      del(.metadata)
+      .dead_letter = true
+      if is_timestamp(.timestamp) {
+        .timestamp = "<ingest-time>"
+      }
   # .timestamp is set to now() in atpx_nmea_route.vrl, so it's non-deterministic;
   # strip it here so the test can do an exact diff against expected output.
   strip_timestamp:
@@ -41,5 +60,10 @@ sinks:
   output:
     type: console
     inputs: ["re_add_table"]
+    encoding:
+      codec: json
+  dead_letter_queue:
+    type: console
+    inputs: ["mark_dead_letter"]
     encoding:
       codec: json
