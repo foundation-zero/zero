@@ -2483,7 +2483,7 @@
           "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(time),\r\n  MAX(CASE WHEN name = 'cold-flow-adiabatic-cooling-line-b03' THEN flow END) AS adiabatic_cool_b03,\r\n  MAX(CASE WHEN name = 'cold-flow-adiabatic-cooling-line-b07' THEN flow END) AS adiabatic_cool_b07,\r\n  MAX(CASE WHEN name = 'cold-flow-adiabatic-cooling-line-b08' THEN flow END) AS adiabatic_cool_b08,\r\n  MAX(CASE WHEN name = 'cold-flow-adiabatic-cooling-line-b09' THEN flow END) AS adiabatic_cool_b09,\r\n  MAX(CASE WHEN name = 'cold-flow-reel-deckwash-aft' THEN flow END) AS deckwash_reel_aft,\r\n  MAX(CASE WHEN name = 'cold-flow-reel-deckwash-mid' THEN flow END) AS deckwash_reel_mid,\r\n  MAX(CASE WHEN name = 'cold-flow-reel-deckwash-fwd' THEN flow END) AS deckwash_reel_fwd,\r\n  MAX(CASE WHEN name = 'cold-flow-charcoal-filter' THEN flow END)   AS charcoal_filter\r\nFROM (\r\n  SELECT\r\n    timestamp      AS time,\r\n    technical_name AS name,\r\n    flow__value    AS flow\r\n  FROM marpower__tech_water__flows\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY timestamp DESC\r\n)",
+          "rawSql": "SELECT \r\n  MAX(time),\r\n  MAX(CASE WHEN name = 'cold-flow-adiabatic-cooling-line-b03' THEN flow END) AS adiabatic_cool_b03,\r\n  MAX(CASE WHEN name = 'cold-flow-adiabatic-cooling-line-b07' THEN flow END) AS adiabatic_cool_b07,\r\n  MAX(CASE WHEN name = 'cold-flow-adiabatic-cooling-line-b08' THEN flow END) AS adiabatic_cool_b08,\r\n  MAX(CASE WHEN name = 'cold-flow-adiabatic-cooling-line-b09' THEN flow END) AS adiabatic_cool_b09,\r\n  MAX(CASE WHEN name = 'cold-flow-reel-deckwash-aft' THEN flow END) AS deckwash_reel_aft,\r\n  MAX(CASE WHEN name = 'cold-flow-reel-deckwash-mid' THEN flow END) AS deckwash_reel_mid,\r\n  MAX(CASE WHEN name = 'cold-flow-reel-deckwash-fwd' THEN flow END) AS deckwash_reel_fwd,\r\n  MAX(CASE WHEN name = 'cold-flow-charcoal-filter' THEN flow END)   AS charcoal_filter\r\nFROM (\r\n  SELECT DISTINCT ON (technical_name)\r\n    timestamp      AS time,\r\n    technical_name AS name,\r\n    flow__value    AS flow\r\n  FROM marpower__tech_water__flows\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY technical_name, timestamp DESC\r\n)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4152,7 +4152,7 @@
                   }
                 ]
               },
-              "unit": "mamp"
+              "unit": "L"
             },
             "overrides": [
               {

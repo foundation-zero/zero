@@ -3451,10 +3451,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp              AS time,\r\n\tTANK_LEVEL__value*1000 AS bilge_tank\r\nfrom marpower__210000_bilge_fifi_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
+              "rawSql": "SELECT\r\n  timestamp         AS time,\r\n\tTANK_LEVEL__value AS bilge_tank\r\nfrom marpower__210000_bilge_fifi_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
               "refId": "A",
               "sql": {
                 "columns": [
