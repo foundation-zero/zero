@@ -1,6 +1,5 @@
 from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
-from typing import Any, cast
 from unittest.mock import AsyncMock, Mock, call
 
 from tests.helpers.collector import PolarsCollector
@@ -203,7 +202,6 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     module = Module(
         "module",
         description=_mock_description(control, alarms),
-        parameters=cast(Any, parameters),
         channels=control_channels,
         time_fn=datetime.now,
         state_logger=MachineStateLoggingServiceNoop(),
@@ -337,7 +335,6 @@ async def test_control_runner_ticks_and_uses_channels():
     module = Module(
         "module",
         description=_mock_description(control, alarms),
-        parameters=cast(Any, parameters),
         channels=channels,
         time_fn=datetime.now,
         state_logger=MachineStateLoggingServiceNoop(),

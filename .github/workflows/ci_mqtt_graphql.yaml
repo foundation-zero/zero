@@ -10,6 +10,7 @@ on:
       - zero-atpx-nmea/**
       - zero-data/**
       - zero-fiber-optics/**
+      - zero-thrs-control/**
       - .github/workflows/ci_mqtt_graphql.yaml
   push:
     branches:
@@ -23,6 +24,7 @@ on:
       - zero-atpx-nmea/**
       - zero-data/**
       - zero-fiber-optics/**
+      - zero-thrs-control/**
       - .github/workflows/ci_mqtt_graphql.yaml
   release:
     types: [released]
@@ -56,6 +58,9 @@ jobs:
       - name: Sync hull-temperature
         run: uv sync --locked
         working-directory: zero-hull-temperature
+      - name: Sync thrs-control
+        run: uv sync --locked
+        working-directory: zero-thrs-control
       - name: Sync atpx-nmea
         run: uv sync --locked
         working-directory: zero-atpx-nmea

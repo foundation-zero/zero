@@ -17,7 +17,6 @@ from thrs.classes.persistence.engine import (
     PostgresPersistentEngine,
 )
 from thrs.classes.persistence.manager import PersistManager
-from thrs.control.switching import SwitchingControlMode
 from thrs.orchestration.comms import (
     ControlChannels,
     MqttConnector,
@@ -148,12 +147,6 @@ def setup_control_modules(
             database, machine_state_logging_service_enabled
         )
 
-        parameters = module.parameters_cls()
-
-        # This line should not be here since it exposes that we are dealing with a switching module
-        # We need to refactor the switching control functionality to be more local/abstractable
-        module.control_mode_cls = SwitchingControlMode[module.control_mode_cls]
-
         channel = ControlChannels(
             connector, config, module_name, module, publish_qos=publish_qos
         )
@@ -162,7 +155,6 @@ def setup_control_modules(
             Module(
                 module_name,
                 description=module,
-                parameters=parameters,
                 channels=channel,
                 time_fn=time_fn,
                 state_logger=machine_state_logger,

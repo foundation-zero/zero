@@ -27,6 +27,8 @@ dependencies = [
   "strawberry-graphql[debug-server,asgi,fastapi,cli]",
   "fastapi[standard]>=0.117.1,<0.118.0",
   "uvicorn>=0.40.0,<0.41.0",
+  "asyncapi3==0.0.2",
+  "more_itertools==11.2.1",
 ]
 dynamic = ["version"]
 license-files = ["LICENSE"]

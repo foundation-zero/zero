@@ -400,6 +400,7 @@ class ControlChannels[
         control_module: ModuleDescription[S, C, P, M, CS],
         publish_qos: int = 1,
     ) -> None:
+
         sensor_values_mapping = PartialMqttMapping[S](
             control_module.sensor_values_cls,
             config.mqtt_devices_topic_prefix,
@@ -479,9 +480,12 @@ class ControlChannels[
             ),
             qos=publish_qos,
         )
+
+        # We should not need to wrap here with SwitchingControlMode because it exposes SwitchingControlMode
+        # which we should not have to know about here... This needs a refactor of how switching control is handled
         self.send_control_modes = connector._create_publisher(
-            DirectMqttMapping[M].for_module(
-                control_module.control_mode_cls,
+            DirectMqttMapping[SwitchingControlMode[M]].for_module(
+                SwitchingControlMode[control_module.control_mode_cls],
                 config.mqtt_controller_topic_prefix,
                 module_name,
                 type_topic="control-mode",
@@ -515,8 +519,8 @@ class SimulationChannels[
         config: "Config",
         sensor_values_clss: ModuleClassMap,
         control_values_clss: ModuleClassMap,
-        simulation_inputs_cls: type[I] | tuple[type[I], ...],
-        simulation_outputs_cls: type[O] | tuple[type[O], ...],
+        simulation_inputs_cls: type[I],
+        simulation_outputs_cls: type[O],
     ) -> None:
         simulation_inputs_topic = (
             f"{config.mqtt_simulator_topic_prefix}/simulation-inputs"
