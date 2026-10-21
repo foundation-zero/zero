@@ -472,6 +472,11 @@ managed_tables = {
     "yard_tag": "50001038-39",
     "technical_name": "adsorption-temperature-waste-supply"
   },
+  "marpower/500000-thrs/adsorption/mode": {
+    "table": "marpower__thrs__amcs_modes",
+    "yard_tag": null,
+    "technical_name": "adsorption-mode"
+  },
   "marpower/500000-thrs/consumers/consumers-flow-adsorption": {
     "table": "marpower__thrs__flows",
     "yard_tag": "50001058-08",
@@ -1067,6 +1072,11 @@ managed_tables = {
     "yard_tag": "50001038-09",
     "technical_name": "dc-temperature-ugrid2-return"
   },
+  "marpower/500000-thrs/dc/mode": {
+    "table": "marpower__thrs__amcs_modes",
+    "yard_tag": null,
+    "technical_name": "dc-mode"
+  },
   "marpower/500000-thrs/dhw/dhw-flow-boosting": {
     "table": "marpower__thrs__flows",
     "yard_tag": "50001058-11",
@@ -1257,6 +1267,11 @@ managed_tables = {
     "yard_tag": "50001038-27",
     "technical_name": "dhw-temperature-tank3"
   },
+  "marpower/500000-thrs/dhw/mode": {
+    "table": "marpower__thrs__amcs_modes",
+    "yard_tag": null,
+    "technical_name": "dhw-mode"
+  },
   "marpower/500000-thrs/drives/drives-flow-propdrive-aft1": {
     "table": "marpower__thrs__flows",
     "yard_tag": "50001057-13",
@@ -1407,6 +1422,16 @@ managed_tables = {
     "yard_tag": "50001038-14",
     "technical_name": "drives-temperature-supply"
   },
+  "marpower/500000-thrs/drives/mode": {
+    "table": "marpower__thrs__amcs_modes",
+    "yard_tag": null,
+    "technical_name": "drives-mode"
+  },
+  "marpower/500000-thrs/pcm/mode": {
+    "table": "marpower__thrs__amcs_modes",
+    "yard_tag": null,
+    "technical_name": "pcm-mode"
+  },
   "marpower/500000-thrs/pcm/pcm-flow-module1": {
     "table": "marpower__thrs__flows",
     "yard_tag": "50001057-18",
@@ -1501,6 +1526,11 @@ managed_tables = {
     "table": "marpower__thrs__temperatures",
     "yard_tag": "50001038-55",
     "technical_name": "pcm-temperature-producers-supply"
+  },
+  "marpower/500000-thrs/pvt/mode": {
+    "table": "marpower__thrs__amcs_modes",
+    "yard_tag": null,
+    "technical_name": "pvt-mode"
   },
   "marpower/500000-thrs/pvt/pvt-flow-main-aft-recovery": {
     "table": "marpower__thrs__flows",
@@ -1996,6 +2026,11 @@ managed_tables = {
     "table": "marpower__thrs__temperatures",
     "yard_tag": "50001038-24",
     "technical_name": "pvt-temperature-supply"
+  },
+  "marpower/500000-thrs/thrusters/mode": {
+    "table": "marpower__thrs__amcs_modes",
+    "yard_tag": null,
+    "technical_name": "thrusters-mode"
   },
   "marpower/500000-thrs/thrusters/thrusters-flow-aft": {
     "table": "marpower__thrs__flows",

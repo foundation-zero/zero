@@ -18,13 +18,13 @@ class MarpowerStruct[T](BaseModel):
 
 
 class MarpowerGenerator(Generator):
-    def get_topic(self, topic: IOTopic):
+    def get_topic(self, topic: IOTopic) -> str:
         return topic.topic
 
-    def serialize_message(self, message):
+    def serialize_message(self, message) -> bytes:
         return TypeAdapter(dict[str, dict[str, Any]]).dump_json(message, by_alias=True)
 
-    def generate_random_value(self, field: IOValue):
+    def generate_random_value(self, field: IOValue) -> Any:
         return self._random_message(field.data_type).model_dump(by_alias=True)
 
     def _random_message(self, data_type: str) -> MarpowerStruct:
@@ -53,6 +53,9 @@ class MarpowerGenerator(Generator):
         raise KeyError(f"Unknown type: {data_type}")
 
     def _generate_marpower_struct[T](self, value: T) -> MarpowerStruct[T]:
-        return MarpowerStruct[T](
-            value=value, timestamp=datetime.now(tz=UTC), is_valid=True, has_value=True
+        return MarpowerStruct(
+            value=value,
+            timestamp=datetime.now(tz=UTC),
+            is_valid=True,
+            has_value=True,
         )

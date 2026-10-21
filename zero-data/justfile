@@ -1,12 +1,35 @@
 generate-vector:
     uv run zero-data generate-vector
 
+generate-asyncapi file="../specs/marpower.json":
+    uv run zero-data generate-asyncapi {{ file }}
+
+check: lint type_check test
+
+lint:
+    uv run ruff check src tests
+
+lint_no_fix:
+    uv run ruff check --no-fix src tests
+
+type_check:
+    uv run mypy src tests/greptime
+
+test *args:
+    uv run pytest {{ args }}
+
+format:
+    uv run ruff format --check src tests
+
+format_fix:
+    uv run ruff format src tests
+
 # Open the weekly domestic energy report against a live Greptime tier.
 energy-report tier="zero":
-    GREPTIME_MYSQL_URL="mysql+pymysql://app@greptime-{{tier}}.tail0b4840.ts.net:4002/public" \
+    GREPTIME_MYSQL_URL="mysql+pymysql://app@greptime-{{ tier }}.tail0b4840.ts.net:4002/public" \
         uv run marimo edit notebooks/energy_report.py
 
 # Build the dbt views on a live Greptime tier (zero, singel or subzero) over Tailscale.
 dbt-deploy tier:
-    uv run zero-data greptime init --host greptime-{{tier}}.tail0b4840.ts.net
-    cd dbt && DBT_PROFILES_DIR="$PWD" uv run --project .. dbt build --target greptime-{{tier}}
+    uv run zero-data greptime init --host greptime-{{ tier }}.tail0b4840.ts.net
+    cd dbt && DBT_PROFILES_DIR="$PWD" uv run --project .. dbt build --target greptime-{{ tier }}
