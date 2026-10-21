@@ -28,3 +28,19 @@ def test_shore_power_group_from_converters():
     assert shorepower.min_esi_igbt_min_temperature.value == 0
     assert shorepower.max_esi_igbt_max_temperature.value == 67.5
     assert shorepower.total_power.value == 67_600
+
+
+def test_propulsion_drive_ignores_temperature_while_disabled():
+    disabled = sensor.PropulsionDrive(
+        active=Stamped.stamp(False),
+        temp_power_stage=Stamped.stamp(198),
+        power=Stamped.stamp(0),
+    )
+    enabled = sensor.PropulsionDrive(
+        active=Stamped.stamp(True),
+        temp_power_stage=Stamped.stamp(52),
+        power=Stamped.stamp(120_000),
+    )
+
+    assert disabled.temp_power_stage.value is None
+    assert enabled.temp_power_stage.value == 52

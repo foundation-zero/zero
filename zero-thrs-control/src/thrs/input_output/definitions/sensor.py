@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from typing import Annotated, Self, cast
 
-from pydantic import Field, field_validator
+from pydantic import Field, ValidationInfo, field_validator
 
 from thrs.input_output.base import Stamped, StampedWithSource, ThrsValues, field_meta
 from thrs.input_output.definitions import control
@@ -410,11 +410,22 @@ class Thruster(ThrsValues):
     active: Stamped[OnOff]
 
 
+def _without_disabled_reading(
+    temp_power_stage: Stamped[Celsius | None], info: ValidationInfo
+) -> Stamped[Celsius | None]:
+    # The power stage reports 198 °C while the unit is disabled
+    active = info.data.get("active")
+    if active is None or active.value:
+        return temp_power_stage
+    return Stamped(value=None, timestamp=temp_power_stage.timestamp)
+
+
 class PropulsionDrive(ThrsValues):
     active: Annotated[Stamped[OnOff], Field(alias="VpEnable")]
-    # TODO: reads 198 while VpEnable is false; treat it as no value
-    temp_power_stage: Stamped[Celsius]
+    temp_power_stage: Stamped[Celsius | None]
     power: Stamped[Watt]
+
+    _temp_power_stage = field_validator("temp_power_stage")(_without_disabled_reading)
 
 
 class ShorePowerConverter(ThrsValues):
@@ -539,14 +550,15 @@ class BrightloopGroup(ThrsValues):
 
 class Ugrid(ThrsValues):
     active: Annotated[Stamped[OnOff], Field(alias="Running")]
-    # TODO: reads 198 while Running is false; treat it as no value
-    temp_power_stage: Stamped[Celsius]
+    temp_power_stage: Stamped[Celsius | None]
     power: Annotated[Stamped[Watt], Field(alias="PvPower")]
+
+    _temp_power_stage = field_validator("temp_power_stage")(_without_disabled_reading)
 
 
 class UgridGroup(ThrsValues):
     any_active: Stamped[OnOff]
-    max_temp_power_stage: Stamped[Celsius]
+    max_temp_power_stage: Stamped[Celsius | None]
     total_power: Stamped[Watt]
 
     @classmethod
@@ -558,7 +570,14 @@ class UgridGroup(ThrsValues):
             ),
             max_temp_power_stage=Stamped.combine(
                 *(ugrid.temp_power_stage for ugrid in ugrids),
-                value=max(ugrid.temp_power_stage.value for ugrid in ugrids),
+                value=max(
+                    (
+                        ugrid.temp_power_stage.value
+                        for ugrid in ugrids
+                        if ugrid.temp_power_stage.value is not None
+                    ),
+                    default=None,
+                ),
             ),
             total_power=Stamped.combine(
                 *(ugrid.power for ugrid in ugrids),

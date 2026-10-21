@@ -72,6 +72,31 @@ def test_ugrid_group_from_ugrids():
     assert ugrids.total_power.value == 26_400
 
 
+def _ugrid(active: bool, temp_power_stage: float) -> sensor.Ugrid:
+    return sensor.Ugrid(
+        active=Stamped.stamp(active),
+        temp_power_stage=Stamped.stamp(temp_power_stage),
+        power=Stamped.stamp(0),
+    )
+
+
+def test_ugrid_ignores_temperature_while_idle():
+    assert _ugrid(False, 198).temp_power_stage.value is None
+    assert _ugrid(True, 46).temp_power_stage.value == 46
+
+
+def test_ugrid_group_skips_idle_ugrids():
+    ugrids = sensor.UgridGroup.from_ugrids((_ugrid(False, 198), _ugrid(True, 40)))
+
+    assert ugrids.max_temp_power_stage.value == 40
+
+
+def test_ugrid_group_without_running_ugrids_has_no_temperature():
+    ugrids = sensor.UgridGroup.from_ugrids((_ugrid(False, 198), _ugrid(False, 198)))
+
+    assert ugrids.max_temp_power_stage.value is None
+
+
 def test_brightloop_converter_parses_mqtt_payload():
     def stamped(value: object) -> dict:
         return {"Value": value, "TimeStamp": "2026-10-20T14:16:28.6058779Z"}

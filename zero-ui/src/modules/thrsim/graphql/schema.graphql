@@ -1807,7 +1807,7 @@ type SensorPressureSensorType {
 
 type SensorPropulsionDriveType {
   active: BoolStampedType!
-  tempPowerStage: FloatStampedType!
+  tempPowerStage: FloatOptionalStampedType!
   power: FloatStampedType!
 }
 
@@ -1858,13 +1858,13 @@ type SensorThrusterType {
 
 type SensorUgridGroupType {
   anyActive: BoolStampedType!
-  maxTempPowerStage: FloatStampedType!
+  maxTempPowerStage: FloatOptionalStampedType!
   totalPower: FloatStampedType!
 }
 
 type SensorUgridType {
   active: BoolStampedType!
-  tempPowerStage: FloatStampedType!
+  tempPowerStage: FloatOptionalStampedType!
   power: FloatStampedType!
 }
 
