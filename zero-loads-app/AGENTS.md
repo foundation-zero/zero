@@ -43,8 +43,9 @@ is not authenticated, so a session cannot edit the sheet.
   payload path (`i_blockLoad`), ignoring case. IO list rows with a display name that the app does
   not read are listed in `IO_LIST_TOPICS_NOT_IN_REGISTRY`.
 - **Seeds**: SailPack targets go into `loads.reference_values`, the max loads into
-  `loads.thresholds`. Targets outside their thresholds are dropped (the DB CHECK constraints require
-  `alarm_low ≤ warning_low ≤ target ≤ warning_high ≤ alarm_high`) and listed in
+  `loads.thresholds`. Targets outside their thresholds are clamped to the warning, or to the alarm
+  where that side has no warning (the DB CHECK constraints require
+  `alarm_low ≤ warning_low ≤ target ≤ warning_high ≤ alarm_high`), and listed in
   `src/sailpack/target_threshold_conflicts.csv`.
 
 ## Live MQTT data

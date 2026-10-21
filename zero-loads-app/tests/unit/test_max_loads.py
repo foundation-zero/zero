@@ -2,7 +2,7 @@ import polars as pl
 import pytest
 
 from sailpack.max_loads import (
-    drop_targets_outside_thresholds,
+    clamp_targets_to_thresholds,
     read_max_loads,
     runner_block_thresholds,
     thresholded_variables,
@@ -100,7 +100,7 @@ def test_read_max_loads_rejects_thresholds_out_of_order(row: str):
         read_max_loads(HEADER + row)
 
 
-def test_drop_targets_outside_thresholds():
+def test_clamp_targets_to_thresholds_clamps_to_the_warnings():
     reference_values = pl.DataFrame(
         {
             "Calculation ID": ["LC1", "LC2", "LC1", "LC2", "LC1", "LC2"],
@@ -115,19 +115,47 @@ def test_drop_targets_outside_thresholds():
         schema=THRESHOLDS_SCHEMA,
     )
 
-    targets, conflicts = drop_targets_outside_thresholds(reference_values, max_loads)
+    targets, conflicts = clamp_targets_to_thresholds(reference_values, max_loads)
 
-    assert conflicts.sort("value").select(
-        "Calculation ID", "tack", "value"
-    ).to_dicts() == [
-        {"Calculation ID": "LC2", "tack": "port", "value": 1.0},
-        {"Calculation ID": "LC2", "tack": "port", "value": 11.5},
+    assert conflicts.sort("sailpack_value").select(
+        "Calculation ID", "tack", "sailpack_value", "value"
+    ).rows() == [
+        ("LC2", "port", 1.0, 2.0),
+        ("LC2", "port", 11.5, 11.0),
     ]
-    assert targets.sort("variable", "Calculation ID", "tack").rows() == [
+    assert targets.sort("variable", "Calculation ID", "tack", "value").rows() == [
         ("LC1", "code-zero-tack-load", 30.0, "port"),
         ("LC1", "main-sheet-load", 10.0, "port"),
+        ("LC2", "main-sheet-load", 2.0, "port"),
+        ("LC2", "main-sheet-load", 11.0, "port"),
         ("LC2", "main-sheet-load", 9.0, "starboard"),
     ]
+
+
+def test_clamp_targets_to_thresholds_clamps_to_the_alarm_without_a_warning():
+    reference_values = pl.DataFrame(
+        {
+            "Calculation ID": ["LC1", "LC2"],
+            "variable": ["main-outhaul-load", "main-vang-load"],
+            "value": [15.0, -25.0],
+            "tack": ["port", "port"],
+        }
+    )
+    max_loads = pl.DataFrame(
+        [
+            _thresholds("main-outhaul-load", alarm_high=14.0),
+            _thresholds("main-vang-load", alarm_low=-20.0),
+        ],
+        schema=THRESHOLDS_SCHEMA,
+    )
+
+    targets, conflicts = clamp_targets_to_thresholds(reference_values, max_loads)
+
+    assert targets.sort("Calculation ID").rows() == [
+        ("LC1", "main-outhaul-load", 14.0, "port"),
+        ("LC2", "main-vang-load", -20.0, "port"),
+    ]
+    assert conflicts.height == 2
 
 
 def test_thresholded_variables_skips_variables_without_thresholds():
