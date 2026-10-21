@@ -1,6 +1,7 @@
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions import sensor
 from thrs.input_output.modules.dc import (
+    DcSensorValues,
     brightloop_from_converters,
     combine_brightloops,
     combine_ugrids,
@@ -99,3 +100,25 @@ def test_brightloop_converter_parses_mqtt_payload():
         33,
     ]
     assert converter.power.value == 3.0285
+
+
+def test_converters_share_their_brightloop_yard_tag():
+    brightloop_yard_tags = {
+        name: field.json_schema_extra["yard_tag"]
+        for name, field in DcSensorValues.model_computed_fields.items()
+        if isinstance(field.json_schema_extra, dict)
+        and field.json_schema_extra["component_type"] == "brightloop"
+        and field.json_schema_extra["yard_tag"]
+    }
+    converter_yard_tags = {
+        name: field.json_schema_extra["yard_tag"]
+        for name, field in DcSensorValues.model_fields.items()
+        if isinstance(field.json_schema_extra, dict)
+        and field.json_schema_extra["component_type"] == "brightloop_converter"
+    }
+
+    assert len(brightloop_yard_tags) == 6
+    assert len(converter_yard_tags) == 22
+    for converter, yard_tag in converter_yard_tags.items():
+        brightloop = converter.rsplit("_converter", 1)[0]
+        assert yard_tag == brightloop_yard_tags[brightloop], converter

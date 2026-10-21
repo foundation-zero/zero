@@ -591,19 +591,19 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Brightloop,
   },
   dcBrightloopAft1Converter1: {
-    yardTag: "45002073",
+    yardTag: "45002076",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft1Converter2: {
-    yardTag: "45002073",
+    yardTag: "45002076",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft1Converter3: {
-    yardTag: "45002073",
+    yardTag: "45002076",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft1Converter4: {
-    yardTag: "45002073",
+    yardTag: "45002076",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft2: {
@@ -611,15 +611,15 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Brightloop,
   },
   dcBrightloopAft2Converter1: {
-    yardTag: "45002074",
+    yardTag: "45002075",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft2Converter2: {
-    yardTag: "45002074",
+    yardTag: "45002075",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft2Converter3: {
-    yardTag: "45002074",
+    yardTag: "45002075",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft3: {
@@ -627,15 +627,15 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Brightloop,
   },
   dcBrightloopAft3Converter1: {
-    yardTag: "45002075",
+    yardTag: "45002074",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft3Converter2: {
-    yardTag: "45002075",
+    yardTag: "45002074",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft3Converter3: {
-    yardTag: "45002075",
+    yardTag: "45002074",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft4: {
@@ -643,19 +643,19 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Brightloop,
   },
   dcBrightloopAft4Converter1: {
-    yardTag: "45002076",
+    yardTag: "45002073",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft4Converter2: {
-    yardTag: "45002076",
+    yardTag: "45002073",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft4Converter3: {
-    yardTag: "45002076",
+    yardTag: "45002073",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft4Converter4: {
-    yardTag: "45002076",
+    yardTag: "45002073",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopFwd1: {
@@ -663,19 +663,19 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Brightloop,
   },
   dcBrightloopFwd1Converter1: {
-    yardTag: "45002077",
+    yardTag: "45002078",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopFwd1Converter2: {
-    yardTag: "45002077",
+    yardTag: "45002078",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopFwd1Converter3: {
-    yardTag: "45002077",
+    yardTag: "45002078",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopFwd1Converter4: {
-    yardTag: "45002077",
+    yardTag: "45002078",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopFwd2: {
@@ -683,19 +683,19 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     componentType: SensorComponentType.Brightloop,
   },
   dcBrightloopFwd2Converter1: {
-    yardTag: "45002078",
+    yardTag: "45002077",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopFwd2Converter2: {
-    yardTag: "45002078",
+    yardTag: "45002077",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopFwd2Converter3: {
-    yardTag: "45002078",
+    yardTag: "45002077",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopFwd2Converter4: {
-    yardTag: "45002078",
+    yardTag: "45002077",
     componentType: SensorComponentType.BrightloopConverter,
   },
   dcDhwExchanger: {
