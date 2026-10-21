@@ -1,0 +1,2203 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [
+        "commissioning"
+      ],
+      "targetBlank": false,
+      "title": "Dashboards",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "title": "",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 25
+      },
+      "description": "",
+      "transparent": false,
+      "options": {
+        "mode": "markdown",
+        "content": "<center><h2>Load balance</h2></center>\n\nPower per source, storage, DC/DC conversion and consumer group, and the energy per consumer over the selected time range. **Times are UTC.** All power is shown in **W** (Grafana switches to kW where it reads better), temperatures in °C. The info icon of each panel states its source and scaling.\n\n**Scaling: current vs requested.** Values not yet published in W are scaled in the dashboard; the request to Marpower is to publish them in W.\n\n| Signal | Now on MQTT | Requested | In this dashboard |\n|---|---|---|---|\n| uGrid PS/SB `PvPower` (`…dynamic-conv-ps-ara/5-11-u101`, `…dynamic-conv-sb/ara-5/12/u101`) | kW | W | × 1000 |\n| uGrid topic names | PS `dynamic-conv-ps-ara/5-11-u101`, SB `dynamic-conv-sb/ara-5/12/u101` | one pattern for both | both read |\n| Brightloop `PvPower` (`main-power-storage-errors/5-4x-y`) | kW, never negative | W, signed (charge / discharge) | × 1000, shown as is |\n| BMS `BatteryPower` | kW, signed | W | × 1000 |\n| Shore power `esi_ac_bus_active_power_3_phase` | kW | W | × 1000 |\n| Shore power `esi_bms_charge_limit_ac_power` | presumably kW | W | not shown |\n| Shore power `esi_ac_bus_frequency`, 70.12 TBC1a | ≈ 605, where 70.11 sends 50.05 Hz | Hz, to be checked | not shown |\n| 350 V DCOPP `PosLinePower`, `NegLinePower` | kW (IO list); no data since 19 Oct 2026 | W, and publish | × 1000 |\n| Epic power and solar `hvdc_power` (`busbar/epc-…`) | unknown, converters not running | W, to be confirmed | shown as is |\n| Leuze `OutputCurrent` (`24vdc-system/14ex-yyf01`) | mA, no power | A, or W per module | ÷ 1000; power computed |\n\n**Already in order:** the 10P0.1 meters (W), the power tags (W), the Weidmuller converters (W, V, A, °C), the transformer temperatures (°C).\n\n**Notes.**\n\n- **Power tags:** the overview total counts only the main switchboard 10P0-1 and 10P0-3. Their feeders to 10P1 (135Q01) and 10P2 (335Q01) are power tags themselves, so adding 10P1 and 10P2 would count those loads twice. The energy tree map leaves those two feeders out for the same reason. The power tags of 10P3 are configured but not published: nothing arrives on MQTT, and GreptimeDB holds three empty rows (29 Sep to 11 Oct 2026). Until they publish, its feeder 336Q01 on 10P0-3 is its only measurement and is shown as the group 10P3 in the tree map.\n- **Leuze power** is computed in this dashboard as output current × the voltage of the Weidmuller pair that feeds it, until the dbt views that compute it are deployed. The feeding converter comes from the 24 V metadata: the 14E3 modules are fed by the emergency Weidmuller W14E2_01, so they are grouped with emergency. The 16 spare modules have no known converter and use the average voltage of their bus.\n- **Brightloops:** `PvPower` is shown as published, without sign; the BMS battery power is shown beside it for the direction. Packs 05_42 and 05_45 publish −500 A and no power. 05_46 sent constant values (about 27 kW) on 21 Oct 2026, which inflates the brightloop total in the overview. Which brightloop is which yard tag (aft 1–4, fwd 1–2) is not settled.\n- **uGrid temperatures:** `TempIgbt` and `TempPowerStage` read 199 / 198 °C while a uGrid converter is not enabled. That is a fault value, not a temperature.\n- **350 V DCOPP:** nothing published since 19 Oct 2026, so those panels stay empty until the modules publish again.\n- **Solar and Epic power** converters were not running on 21 Oct 2026; their power unit is not confirmed."
+      }
+    },
+    {
+      "id": 2,
+      "type": "row",
+      "title": "Overview",
+      "gridPos": {
+        "x": 0,
+        "y": 25,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 3,
+      "title": "Power per group",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 26,
+        "w": 24,
+        "h": 9
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Total power per group, each the sum of its topics: shore power converters (`esi_ac_bus_active_power_3_phase` × 1000), uGrid PS and SB (`PvPower` × 1000), brightloops (`PvPower` × 1000, without sign), the Weidmuller converters of the 24 V service and emergency supply (`Power`, W), and the power tags of the main switchboard 10P0-1 and 10P0-3 (`active_power_total`, W). 10P1 and 10P2 are left out of the total, as their feeders 135Q01 and 335Q01 are power tags on 10P0.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH parts AS (\n  SELECT 'Shore power' AS grp, time, sum(p) AS p FROM (\n    SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(esi_ac_bus_active_power_3_phase__value) * 1000 AS p\n    FROM public.marpower__450000_dc_distribution_esi WHERE $__timeFilter(timestamp) GROUP BY 1, 2) t GROUP BY 2\n  UNION ALL\n  SELECT 'uGrid PS', date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01'), avg(pv_power__value) * 1000\n    FROM public.marpower__450000_dynamic_conv_ps_ara__5_11_u101 WHERE $__timeFilter(timestamp) GROUP BY 2\n  UNION ALL\n  SELECT 'uGrid SB', date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01'), avg(pv_power__value) * 1000\n    FROM public.marpower__450000_dynamic_conv_sb WHERE $__timeFilter(timestamp) AND topic = 'marpower/450000-dynamic-conv-sb/ara-5/12/u101' GROUP BY 2\n  UNION ALL\n  SELECT 'Brightloops', time, sum(p) FROM (\n    SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(pv_power__value) * 1000 AS p\n    FROM public.marpower__450000_main_power_storage_errors WHERE $__timeFilter(timestamp) GROUP BY 1, 2) t GROUP BY 2\n  UNION ALL\n  SELECT CASE WHEN topic LIKE '%/w14e1-%' THEN '24 V service' ELSE '24 V emergency' END, time, sum(p) FROM (\n    SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(power__value) AS p\n    FROM public.marpower__450000_24vdc_system WHERE $__timeFilter(timestamp) AND topic LIKE 'marpower/450000-24vdc-system/conv/w14e%' GROUP BY 1, 2) t GROUP BY 1, 2\n  UNION ALL\n  SELECT 'Power tags 10P0', time, sum(p) FROM (\n    SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(active_power_total) AS p\n    FROM public.power_tags WHERE $__timeFilter(timestamp) AND panel IN ('10P0-1', '10P0-3') GROUP BY 1, 2) t GROUP BY 2)\nSELECT time, grp AS \"Group\", p AS \"Power\" FROM parts ORDER BY 2, 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Group"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "row",
+      "title": "Shore power",
+      "gridPos": {
+        "x": 0,
+        "y": 35,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 5,
+      "title": "Shore power converters",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 24,
+        "h": 8
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "AC active power of the four shore power converters, `esi_ac_bus_active_power_3_phase` × 1000 W (sent in kW). Topic `marpower/450000-dc-distribution-esi/70-1x-tbc1{a,b}`, table `marpower__450000_dc_distribution_esi`.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time,\n  sum(CASE WHEN topic IN ('marpower/450000-dc-distribution-esi/70-11-tbc1a') THEN p END) AS \"70.11 TBC1a\",\n  sum(CASE WHEN topic IN ('marpower/450000-dc-distribution-esi/70-11-tbc1b') THEN p END) AS \"70.11 TBC1b\",\n  sum(CASE WHEN topic IN ('marpower/450000-dc-distribution-esi/70-12-tbc1a') THEN p END) AS \"70.12 TBC1a\",\n  sum(CASE WHEN topic IN ('marpower/450000-dc-distribution-esi/70-12-tbc1b') THEN p END) AS \"70.12 TBC1b\"\nFROM (SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(esi_ac_bus_active_power_3_phase__value * 1000) AS p\n  FROM public.marpower__450000_dc_distribution_esi\n  WHERE $__timeFilter(timestamp) AND topic IN ('marpower/450000-dc-distribution-esi/70-11-tbc1a', 'marpower/450000-dc-distribution-esi/70-11-tbc1b', 'marpower/450000-dc-distribution-esi/70-12-tbc1a', 'marpower/450000-dc-distribution-esi/70-12-tbc1b')\n  GROUP BY 1, 2) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(.*) Result \\d+$",
+            "renamePattern": "$1"
+          }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "row",
+      "title": "uGrid",
+      "gridPos": {
+        "x": 0,
+        "y": 44,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 7,
+      "title": "uGrid converters",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 45,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "DC power of the uGrid converters, `PvPower` × 1000 W (sent in kW): PS 05.11-U101 on `marpower/450000-dynamic-conv-ps-ara/5-11-u101`, SB 05.12-U101 on `marpower/450000-dynamic-conv-sb/ara-5/12/u101`.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, 'uGrid PS' AS \"Converter\", avg(pv_power__value) * 1000 AS \"Power\"\nFROM public.marpower__450000_dynamic_conv_ps_ara__5_11_u101 WHERE $__timeFilter(timestamp) GROUP BY 1\nUNION ALL\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, 'uGrid SB', avg(pv_power__value) * 1000\nFROM public.marpower__450000_dynamic_conv_sb WHERE $__timeFilter(timestamp) AND topic = 'marpower/450000-dynamic-conv-sb/ara-5/12/u101' GROUP BY 1\nORDER BY 2, 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Converter"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "AC grid meters 10P0.1",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 45,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Total active power of the 10P0.1 meters, PS and SB, in W as sent (`TOTALACTIVEPOWER` on `marpower/450000-dynamic-conv-{ps,sb}-general`). The AC side of the uGrid converters, for comparison.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, 'PS' AS \"Meter\", avg(totalactivepower__value) AS \"Power\"\nFROM public.marpower__450000_dynamic_conv_ps_general WHERE $__timeFilter(timestamp) GROUP BY 1\nUNION ALL\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, 'SB', avg(totalactivepower__value)\nFROM public.marpower__450000_dynamic_conv_sb_general WHERE $__timeFilter(timestamp) GROUP BY 1\nORDER BY 2, 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Meter"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "row",
+      "title": "Solar",
+      "gridPos": {
+        "x": 0,
+        "y": 53,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 10,
+      "title": "Solar converters",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 54,
+        "w": 24,
+        "h": 8
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "`hvdc_power` of the solar converters 04.31-T101, 04.32-T101 and 04.32-T102 (`marpower/busbar/epc-3x-t10x`), as sent: the unit is not confirmed, as the converters have not run yet.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time,\n  sum(CASE WHEN topic IN ('marpower/busbar/epc-31-t101') THEN p END) AS \"04.31-T101\",\n  sum(CASE WHEN topic IN ('marpower/busbar/epc-32-t101') THEN p END) AS \"04.32-T101\",\n  sum(CASE WHEN topic IN ('marpower/busbar/epc-32-t102') THEN p END) AS \"04.32-T102\"\nFROM (SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(hvdc_power__value) AS p\n  FROM public.marpower__busbar\n  WHERE $__timeFilter(timestamp) AND topic IN ('marpower/busbar/epc-31-t101', 'marpower/busbar/epc-32-t101', 'marpower/busbar/epc-32-t102')\n  GROUP BY 1, 2) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(.*) Result \\d+$",
+            "renamePattern": "$1"
+          }
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "row",
+      "title": "Brightloops",
+      "gridPos": {
+        "x": 0,
+        "y": 62,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 12,
+      "title": "Brightloop PvPower",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 63,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "`PvPower` × 1000 W (sent in kW, without sign), summed over the packs of each brightloop (05_41 … 05_46). Topic `marpower/450000-main-power-storage-errors/5-4x-y`.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time,\n  sum(CASE WHEN topic IN ('marpower/450000-main-power-storage-errors/5-41-1', 'marpower/450000-main-power-storage-errors/5-41-2', 'marpower/450000-main-power-storage-errors/5-41-3', 'marpower/450000-main-power-storage-errors/5-41-4') THEN p END) AS \"05_41\",\n  sum(CASE WHEN topic IN ('marpower/450000-main-power-storage-errors/5-42-1', 'marpower/450000-main-power-storage-errors/5-42-2', 'marpower/450000-main-power-storage-errors/5-42-3') THEN p END) AS \"05_42\",\n  sum(CASE WHEN topic IN ('marpower/450000-main-power-storage-errors/5-43-1', 'marpower/450000-main-power-storage-errors/5-43-2', 'marpower/450000-main-power-storage-errors/5-43-3') THEN p END) AS \"05_43\",\n  sum(CASE WHEN topic IN ('marpower/450000-main-power-storage-errors/5-44-1', 'marpower/450000-main-power-storage-errors/5-44-2', 'marpower/450000-main-power-storage-errors/5-44-3', 'marpower/450000-main-power-storage-errors/5-44-4') THEN p END) AS \"05_44\",\n  sum(CASE WHEN topic IN ('marpower/450000-main-power-storage-errors/5-45-1', 'marpower/450000-main-power-storage-errors/5-45-2', 'marpower/450000-main-power-storage-errors/5-45-3', 'marpower/450000-main-power-storage-errors/5-45-4') THEN p END) AS \"05_45\",\n  sum(CASE WHEN topic IN ('marpower/450000-main-power-storage-errors/5-46-1', 'marpower/450000-main-power-storage-errors/5-46-2', 'marpower/450000-main-power-storage-errors/5-46-3', 'marpower/450000-main-power-storage-errors/5-46-4') THEN p END) AS \"05_46\"\nFROM (SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(pv_power__value * 1000) AS p\n  FROM public.marpower__450000_main_power_storage_errors\n  WHERE $__timeFilter(timestamp) AND topic IN ('marpower/450000-main-power-storage-errors/5-41-1', 'marpower/450000-main-power-storage-errors/5-41-2', 'marpower/450000-main-power-storage-errors/5-41-3', 'marpower/450000-main-power-storage-errors/5-41-4', 'marpower/450000-main-power-storage-errors/5-42-1', 'marpower/450000-main-power-storage-errors/5-42-2', 'marpower/450000-main-power-storage-errors/5-42-3', 'marpower/450000-main-power-storage-errors/5-43-1', 'marpower/450000-main-power-storage-errors/5-43-2', 'marpower/450000-main-power-storage-errors/5-43-3', 'marpower/450000-main-power-storage-errors/5-44-1', 'marpower/450000-main-power-storage-errors/5-44-2', 'marpower/450000-main-power-storage-errors/5-44-3', 'marpower/450000-main-power-storage-errors/5-44-4', 'marpower/450000-main-power-storage-errors/5-45-1', 'marpower/450000-main-power-storage-errors/5-45-2', 'marpower/450000-main-power-storage-errors/5-45-3', 'marpower/450000-main-power-storage-errors/5-45-4', 'marpower/450000-main-power-storage-errors/5-46-1', 'marpower/450000-main-power-storage-errors/5-46-2', 'marpower/450000-main-power-storage-errors/5-46-3', 'marpower/450000-main-power-storage-errors/5-46-4')\n  GROUP BY 1, 2) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(.*) Result \\d+$",
+            "renamePattern": "$1"
+          }
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Brightloop battery power (BMS)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 63,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "BMS `BatteryPower` × 1000 W (sent in kW, signed), summed over the packs of each brightloop.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time,\n  sum(CASE WHEN topic IN ('marpower/450000-main-power-storage-errors/5-41-1', 'marpower/450000-main-power-storage-errors/5-41-2', 'marpower/450000-main-power-storage-errors/5-41-3', 'marpower/450000-main-power-storage-errors/5-41-4') THEN p END) AS \"05_41\",\n  sum(CASE WHEN topic IN ('marpower/450000-main-power-storage-errors/5-42-1', 'marpower/450000-main-power-storage-errors/5-42-2', 'marpower/450000-main-power-storage-errors/5-42-3') THEN p END) AS \"05_42\",\n  sum(CASE WHEN topic IN ('marpower/450000-main-power-storage-errors/5-43-1', 'marpower/450000-main-power-storage-errors/5-43-2', 'marpower/450000-main-power-storage-errors/5-43-3') THEN p END) AS \"05_43\",\n  sum(CASE WHEN topic IN ('marpower/450000-main-power-storage-errors/5-44-1', 'marpower/450000-main-power-storage-errors/5-44-2', 'marpower/450000-main-power-storage-errors/5-44-3', 'marpower/450000-main-power-storage-errors/5-44-4') THEN p END) AS \"05_44\",\n  sum(CASE WHEN topic IN ('marpower/450000-main-power-storage-errors/5-45-1', 'marpower/450000-main-power-storage-errors/5-45-2', 'marpower/450000-main-power-storage-errors/5-45-3', 'marpower/450000-main-power-storage-errors/5-45-4') THEN p END) AS \"05_45\",\n  sum(CASE WHEN topic IN ('marpower/450000-main-power-storage-errors/5-46-1', 'marpower/450000-main-power-storage-errors/5-46-2', 'marpower/450000-main-power-storage-errors/5-46-3', 'marpower/450000-main-power-storage-errors/5-46-4') THEN p END) AS \"05_46\"\nFROM (SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(battery_power__value * 1000) AS p\n  FROM public.marpower__450000_main_power_storage_errors\n  WHERE $__timeFilter(timestamp) AND topic IN ('marpower/450000-main-power-storage-errors/5-41-1', 'marpower/450000-main-power-storage-errors/5-41-2', 'marpower/450000-main-power-storage-errors/5-41-3', 'marpower/450000-main-power-storage-errors/5-41-4', 'marpower/450000-main-power-storage-errors/5-42-1', 'marpower/450000-main-power-storage-errors/5-42-2', 'marpower/450000-main-power-storage-errors/5-42-3', 'marpower/450000-main-power-storage-errors/5-43-1', 'marpower/450000-main-power-storage-errors/5-43-2', 'marpower/450000-main-power-storage-errors/5-43-3', 'marpower/450000-main-power-storage-errors/5-44-1', 'marpower/450000-main-power-storage-errors/5-44-2', 'marpower/450000-main-power-storage-errors/5-44-3', 'marpower/450000-main-power-storage-errors/5-44-4', 'marpower/450000-main-power-storage-errors/5-45-1', 'marpower/450000-main-power-storage-errors/5-45-2', 'marpower/450000-main-power-storage-errors/5-45-3', 'marpower/450000-main-power-storage-errors/5-45-4', 'marpower/450000-main-power-storage-errors/5-46-1', 'marpower/450000-main-power-storage-errors/5-46-2', 'marpower/450000-main-power-storage-errors/5-46-3', 'marpower/450000-main-power-storage-errors/5-46-4')\n  GROUP BY 1, 2) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(.*) Result \\d+$",
+            "renamePattern": "$1"
+          }
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "type": "row",
+      "title": "350 V distribution",
+      "gridPos": {
+        "x": 0,
+        "y": 71,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 15,
+      "title": "Epic power converters 700/350 V",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 72,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "`hvdc_power` of the Epic power converters 02.71-T101/T102 and 02.72-T101/T102 (`marpower/busbar/epc-7x-t10x`), as sent: the unit is not confirmed, as the converters have not run yet.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time,\n  sum(CASE WHEN topic IN ('marpower/busbar/epc-71-t101') THEN p END) AS \"02.71-T101\",\n  sum(CASE WHEN topic IN ('marpower/busbar/epc-71-t102') THEN p END) AS \"02.71-T102\",\n  sum(CASE WHEN topic IN ('marpower/busbar/epc-72-t101') THEN p END) AS \"02.72-T101\",\n  sum(CASE WHEN topic IN ('marpower/busbar/epc-72-t102') THEN p END) AS \"02.72-T102\"\nFROM (SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(hvdc_power__value) AS p\n  FROM public.marpower__busbar\n  WHERE $__timeFilter(timestamp) AND topic IN ('marpower/busbar/epc-71-t101', 'marpower/busbar/epc-71-t102', 'marpower/busbar/epc-72-t101', 'marpower/busbar/epc-72-t102')\n  GROUP BY 1, 2) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(.*) Result \\d+$",
+            "renamePattern": "$1"
+          }
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "title": "350 V DCOPP line power",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 72,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Positive and negative line power of the 350 V DCOPP modules, × 1000 W (kW according to the IO list). Topic `marpower/450000-350vdc-system/350vdc-dcoppN-mX`.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, upper(split_part(topic, '-', 4)) || ' ' || upper(split_part(topic, '-', 5)) AS \"Module\",\n  avg(pos_line_power__value) * 1000 AS \"positive line\", avg(neg_line_power__value) * 1000 AS \"negative line\"\nFROM public.marpower__450000_350vdc_system\nWHERE $__timeFilter(timestamp) AND topic IN ('marpower/450000-350vdc-system/350vdc-dcopp1-m0', 'marpower/450000-350vdc-system/350vdc-dcopp1-m1', 'marpower/450000-350vdc-system/350vdc-dcopp1-m2', 'marpower/450000-350vdc-system/350vdc-dcopp2-m0', 'marpower/450000-350vdc-system/350vdc-dcopp2-m1', 'marpower/450000-350vdc-system/350vdc-dcopp2-m2')\nGROUP BY 1, 2 ORDER BY 2, 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Module"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "row",
+      "title": "24 V converters",
+      "gridPos": {
+        "x": 0,
+        "y": 80,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 18,
+      "title": "Weidmuller service (14E1)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 81,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Output power per Weidmuller converter of the service supply, `Power` in W as sent. Topic `marpower/450000-24vdc-system/conv/w14e1-0xv0y`. 03V01 and 03V02 publish zeros.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time,\n  sum(CASE WHEN topic IN ('marpower/450000-24vdc-system/conv/w14e1-01v01') THEN p END) AS \"W14E1-01V01\",\n  sum(CASE WHEN topic IN ('marpower/450000-24vdc-system/conv/w14e1-01v02') THEN p END) AS \"W14E1-01V02\",\n  sum(CASE WHEN topic IN ('marpower/450000-24vdc-system/conv/w14e1-02v01') THEN p END) AS \"W14E1-02V01\",\n  sum(CASE WHEN topic IN ('marpower/450000-24vdc-system/conv/w14e1-02v02') THEN p END) AS \"W14E1-02V02\",\n  sum(CASE WHEN topic IN ('marpower/450000-24vdc-system/conv/w14e1-03v01') THEN p END) AS \"W14E1-03V01\",\n  sum(CASE WHEN topic IN ('marpower/450000-24vdc-system/conv/w14e1-03v02') THEN p END) AS \"W14E1-03V02\"\nFROM (SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(power__value) AS p\n  FROM public.marpower__450000_24vdc_system\n  WHERE $__timeFilter(timestamp) AND topic IN ('marpower/450000-24vdc-system/conv/w14e1-01v01', 'marpower/450000-24vdc-system/conv/w14e1-01v02', 'marpower/450000-24vdc-system/conv/w14e1-02v01', 'marpower/450000-24vdc-system/conv/w14e1-02v02', 'marpower/450000-24vdc-system/conv/w14e1-03v01', 'marpower/450000-24vdc-system/conv/w14e1-03v02')\n  GROUP BY 1, 2) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(.*) Result \\d+$",
+            "renamePattern": "$1"
+          }
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "title": "Weidmuller emergency (14E2)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 81,
+        "w": 12,
+        "h": 8
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Output power per Weidmuller converter of the emergency supply, `Power` in W as sent. Topic `marpower/450000-24vdc-system/conv/w14e2-0xv0y`.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT time,\n  sum(CASE WHEN topic IN ('marpower/450000-24vdc-system/conv/w14e2-01v01') THEN p END) AS \"W14E2-01V01\",\n  sum(CASE WHEN topic IN ('marpower/450000-24vdc-system/conv/w14e2-01v02') THEN p END) AS \"W14E2-01V02\",\n  sum(CASE WHEN topic IN ('marpower/450000-24vdc-system/conv/w14e2-01v03') THEN p END) AS \"W14E2-01V03\",\n  sum(CASE WHEN topic IN ('marpower/450000-24vdc-system/conv/w14e2-02v01') THEN p END) AS \"W14E2-02V01\",\n  sum(CASE WHEN topic IN ('marpower/450000-24vdc-system/conv/w14e2-02v02') THEN p END) AS \"W14E2-02V02\"\nFROM (SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(power__value) AS p\n  FROM public.marpower__450000_24vdc_system\n  WHERE $__timeFilter(timestamp) AND topic IN ('marpower/450000-24vdc-system/conv/w14e2-01v01', 'marpower/450000-24vdc-system/conv/w14e2-01v02', 'marpower/450000-24vdc-system/conv/w14e2-01v03', 'marpower/450000-24vdc-system/conv/w14e2-02v01', 'marpower/450000-24vdc-system/conv/w14e2-02v02')\n  GROUP BY 1, 2) t\nGROUP BY 1 ORDER BY 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(.*) Result \\d+$",
+            "renamePattern": "$1"
+          }
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "row",
+      "title": "24 V consumers (Leuze)",
+      "gridPos": {
+        "x": 0,
+        "y": 89,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 21,
+      "title": "Leuze energy per DB",
+      "type": "marcusolsson-treemap-panel",
+      "gridPos": {
+        "x": 0,
+        "y": 90,
+        "w": 24,
+        "h": 12
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Energy per Leuze module over the selected time range, grouped by DB: per-minute power (`OutputCurrent` / 1000 × the voltage of the feeding Weidmuller pair, or the bus average for modules without a known converter), summed and divided by 60, in Wh. Modules without energy in the range are left out.",
+      "pluginVersion": "2.1.1",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH modules (topic, label, converter, bus) AS (SELECT * FROM (VALUES\n    ('marpower/450000-24vdc-system/14e1-10f01', '14E1_10F01 · Sea Cooling Actuator 38001153-1 & -2', 'W14E1-01', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-11f01', '14E1_11F01 · Sea Cooling Actuator 38001153-3 & -4', 'W14E1-01', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-12f01', '14E1_12F01 · Fwd Thruster Control Cabinet Status', 'W14E1-01', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-13f01', '14E1_13F01 · Aft Thruster Control Cabinet Status', 'W14E1-01', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-20f01', '14E1_20F01 · Stripping Pump 21001004', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-21f01', '14E1_21F01 · Chain Locker Pump', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-22f01', '14E1_22F01 · 10P0 Section 1 Panel Light', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-23f01', '14E1_23F01 · 10P0 Section 3 Panel Light', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-24f01', '14E1_24F01 · Passerelle', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-25f01', '14E1_25F01 · Boarding Ladder', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-26f01', '14E1_26F01 · SOS Panel Main Power Supply 1', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-27f01', '14E1_27F01 · SOS Panel Main Power Supply 2', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-28f01', '14E1_28F01 · Navigation Lights - Main Supply', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-29f01', '14E1_29F01 · Cabinet Sliding Window Owner Private Salon', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-30f01', '14E1_30F01 · Spare - Main Supply', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-31f01', '14E1_31F01 · Bed Gimball', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-32f01', '14E1_32F01 · WT DOOR CREW MESS ENTRY', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-33f01', '14E1_33F01 · A&T ATP2 Iinstruments (Navcom)', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-80f01', '14E1_80F01 · Lights Technical Area - 901JB102', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-81f01', '14E1_81F01 · Lights Technical Area - 901JB103', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-82f01', '14E1_82F01 · SOS PANEL MAIN POWER SUPPLY 3', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-83f01', '14E1_83F01 · Hatches Nr33/34/44', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-84f01', '14E1_84F01 · Gyrocompass', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-85f01', '14E1_85F01 · Technical Water Salinity Sensor', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-86f01', '14E1_86F01 · Foldable Windows Main Cockpit', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-87f01', '14E1_87F01 · Foldable Windows Private Salon', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-88f01', '14E1_88F01 · Sunbed PS', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-89f01', '14E1_89F01 · Sunbed SB', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e2-11f01', '14E2_11F01 · Fire Door Galley', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-12f01', '14E2_12F01 · Fire Detection Panel', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-14f01', '14E2_14F01 · Fire Dampers PS & SB', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-16f01', '14E2_16F01 · Bilge LVL Petrol Locker', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-18f01', '14E2_18F01 · SOS Panel Back-up PSU 3 Hull Valves', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-21f01', '14E2_21F01 · Signal Panel System', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-22f01', '14E2_22F01 · Talk Back System', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-24f01', '14E2_24F01 · WT Door Crew Corridor', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-25f01', '14E2_25F01 · SOS Panel Back-UP Power Supply 1', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-25f02', '14E2_25F02 · SOS Panel Back-UP Power Supply 2', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-26f01', '14E2_26F01 · Navigation Lights - EM Supply', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-33f01', '14E2_33F01 · GALLEY FIRE DAMPER', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-34f01', '14E2_34F01 · OXYCELL FIRE DAMPER', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-42f23', '14E2_42F23 · Helm Console SB', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-24f24', '14E2_24F24 · Helm Console SB', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-68f01', '14E2_68F01 · Navtex', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-69f01', '14E2_69F01 · RAI', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-70f01', '14E2_70F01 · Deck Crane (MOB)', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-71f01', '14E2_71F01 · Valve For Battery Comp. Fan PS/SB Aft/Fwd', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-73f01', '14E2_73F01 · Electric Horn (Air Whistle)', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-74f01', '14E2_74F01 · Iridium', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-75f01', '14E2_75F01 · Bnwas', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-76f01', '14E2_76F01 · VHF 2', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-77f01', '14E2_77F01 · Fleetbroad Band', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-78f01', '14E2_78F01 · Butterfly Control', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-79f01', '14E2_79F01 · Butterfly Control', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e3-10f01', '14E3_10F01 · VHF 1', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e3-12f01', '14E3_12F01 · MF/HF SSB', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e3-13f01', '14E3_13F01 · Dgps', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e3-14f01', '14E3_14F01 · Iridium', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e3-15f01', '14E3_15F01 · Chart Red Light', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-41f01', '14E2_41F01 · EM LIGHTS TECHNICAL AREA - 903JB103', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-42f01', '14E2_42F01 · EM LIGHTS TECHNICAL AREA 903JB102', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-45f01', '14E2_45F01 · EM LIGHTS AFT SHIP', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-46f01', '14E2_46F01 · EM LIGHTS FWD SHIP', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-47f01', '14E2_47F01 · EM LIGHTS OUTSIDE AFT/FWD', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-27f01', '14E2_27F01 · STEERING SYSTEM CONTROL - EM SUPPLY', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-60f01', '14E2_60F01 · AIS', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-61f01', '14E2_61F01 · AutoPilot', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-63f01', '14E2_63F01 · Gyro Compass', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-80f01', '14E2_80F01 · PCS 1 AFT', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-81f01', '14E2_81F01 · PCS 1 AFT', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-82f01', '14E2_82F01 · Solar 1', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-83f01', '14E2_83F01 · Solar 2', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-42f24', '14E2_42F24 · HELM CONSOLE PS', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e1-40f01', '14E1_40F01 · SPARE', NULL, 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-41f01', '14E1_41F01 · SPARE', NULL, 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-42f01', '14E1_42F01 · SPARE', NULL, 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-43f01', '14E1_43F01 · SPARE', NULL, 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-44f01', '14E1_44F01 · SPARE', NULL, 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-45f01', '14E1_45F01 · SPARE', NULL, 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-90f01', '14E1_90F01 · SPARE', NULL, 'W14E1'),\n    ('marpower/450000-24vdc-system/14e2-10f01', '14E2_10F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-13f01', '14E2_13F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-15f01', '14E2_15F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-36f01', '14E2_36F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-48f01', '14E2_48F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-66f01', '14E2_66F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-67f01', '14E2_67F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-84f01', '14E2_84F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e3-11f01', '14E3_11F01 · SPARE', NULL, 'W14E2')) v (topic, label, converter, bus)),\nvoltages AS (\n  SELECT date_bin('1 minute'::INTERVAL, timestamp, TIMESTAMP '1970-01-01') AS time, upper(substr(split_part(topic, '/', 4), 1, 8)) AS converter, avg(voltage__value) AS voltage\n  FROM public.marpower__450000_24vdc_system\n  WHERE $__timeFilter(timestamp) AND topic LIKE 'marpower/450000-24vdc-system/conv/w14e%' AND voltage__value > 0\n  GROUP BY 1, 2),\nbus_voltages AS (SELECT time, substr(converter, 1, 5) AS bus, avg(voltage) AS voltage FROM voltages GROUP BY 1, 2),\ncurrents AS (\n  SELECT date_bin('1 minute'::INTERVAL, timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(output_current__value) / 1000.0 AS current\n  FROM public.marpower__450000_24vdc_system\n  WHERE $__timeFilter(timestamp) AND topic IN (SELECT topic FROM modules)\n  GROUP BY 1, 2)\nSELECT group_name, item_name, sum(power) / 60 AS energy, sum(sum(power) / 60) OVER (PARTITION BY group_name) AS group_energy\nFROM (SELECT c.time, 'DB ' || substr(m.label, 1, 4) AS group_name, m.label AS item_name, c.current * coalesce(v.voltage, b.voltage) AS power\n  FROM currents c\n  JOIN modules m ON m.topic = c.topic\n  LEFT JOIN voltages v ON v.time = c.time AND v.converter = m.converter\n  LEFT JOIN bus_voltages b ON b.time = c.time AND b.bus = m.bus) m\nGROUP BY group_name, item_name\nHAVING sum(power) > 0\nORDER BY group_name, energy DESC",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-YlRd"
+          },
+          "decimals": 1,
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watth"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorByField": "group_energy",
+        "groupByField": "group_name",
+        "labelFields": [],
+        "sizeField": "energy",
+        "textField": "item_name",
+        "tiling": "treemapSquarify"
+      }
+    },
+    {
+      "id": 22,
+      "title": "Leuze 14E1 (service)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 102,
+        "w": 24,
+        "h": 12
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Power per Leuze module of DB 14E1, stacked: `OutputCurrent` (mA) / 1000 × the voltage of the Weidmuller pair that feeds it, or the service bus average for modules without a known converter. Computed here until the dbt views are deployed. Topic `marpower/450000-24vdc-system/14e1-yyf01`.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH modules (topic, label, converter, bus) AS (SELECT * FROM (VALUES\n    ('marpower/450000-24vdc-system/14e1-10f01', '14E1_10F01 · Sea Cooling Actuator 38001153-1 & -2', 'W14E1-01', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-11f01', '14E1_11F01 · Sea Cooling Actuator 38001153-3 & -4', 'W14E1-01', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-12f01', '14E1_12F01 · Fwd Thruster Control Cabinet Status', 'W14E1-01', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-13f01', '14E1_13F01 · Aft Thruster Control Cabinet Status', 'W14E1-01', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-20f01', '14E1_20F01 · Stripping Pump 21001004', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-21f01', '14E1_21F01 · Chain Locker Pump', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-22f01', '14E1_22F01 · 10P0 Section 1 Panel Light', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-23f01', '14E1_23F01 · 10P0 Section 3 Panel Light', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-24f01', '14E1_24F01 · Passerelle', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-25f01', '14E1_25F01 · Boarding Ladder', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-26f01', '14E1_26F01 · SOS Panel Main Power Supply 1', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-27f01', '14E1_27F01 · SOS Panel Main Power Supply 2', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-28f01', '14E1_28F01 · Navigation Lights - Main Supply', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-29f01', '14E1_29F01 · Cabinet Sliding Window Owner Private Salon', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-30f01', '14E1_30F01 · Spare - Main Supply', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-31f01', '14E1_31F01 · Bed Gimball', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-32f01', '14E1_32F01 · WT DOOR CREW MESS ENTRY', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-33f01', '14E1_33F01 · A&T ATP2 Iinstruments (Navcom)', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-80f01', '14E1_80F01 · Lights Technical Area - 901JB102', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-81f01', '14E1_81F01 · Lights Technical Area - 901JB103', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-82f01', '14E1_82F01 · SOS PANEL MAIN POWER SUPPLY 3', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-83f01', '14E1_83F01 · Hatches Nr33/34/44', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-84f01', '14E1_84F01 · Gyrocompass', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-85f01', '14E1_85F01 · Technical Water Salinity Sensor', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-86f01', '14E1_86F01 · Foldable Windows Main Cockpit', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-87f01', '14E1_87F01 · Foldable Windows Private Salon', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-88f01', '14E1_88F01 · Sunbed PS', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-89f01', '14E1_89F01 · Sunbed SB', 'W14E1-02', 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-40f01', '14E1_40F01 · SPARE', NULL, 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-41f01', '14E1_41F01 · SPARE', NULL, 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-42f01', '14E1_42F01 · SPARE', NULL, 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-43f01', '14E1_43F01 · SPARE', NULL, 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-44f01', '14E1_44F01 · SPARE', NULL, 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-45f01', '14E1_45F01 · SPARE', NULL, 'W14E1'),\n    ('marpower/450000-24vdc-system/14e1-90f01', '14E1_90F01 · SPARE', NULL, 'W14E1')) v (topic, label, converter, bus)),\nvoltages AS (\n  SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, upper(substr(split_part(topic, '/', 4), 1, 8)) AS converter, avg(voltage__value) AS voltage\n  FROM public.marpower__450000_24vdc_system\n  WHERE $__timeFilter(timestamp) AND topic LIKE 'marpower/450000-24vdc-system/conv/w14e%' AND voltage__value > 0\n  GROUP BY 1, 2),\nbus_voltages AS (SELECT time, substr(converter, 1, 5) AS bus, avg(voltage) AS voltage FROM voltages GROUP BY 1, 2),\ncurrents AS (\n  SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(output_current__value) / 1000.0 AS current\n  FROM public.marpower__450000_24vdc_system\n  WHERE $__timeFilter(timestamp) AND topic IN (SELECT topic FROM modules)\n  GROUP BY 1, 2)\nSELECT c.time, m.label AS \"Module\", c.current * coalesce(v.voltage, b.voltage) AS \"Power\"\nFROM currents c\nJOIN modules m ON m.topic = c.topic\nLEFT JOIN voltages v ON v.time = c.time AND v.converter = m.converter\nLEFT JOIN bus_voltages b ON b.time = c.time AND b.bus = m.bus\nORDER BY 2, 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Module"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "title": "Leuze 14E2 (emergency)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 114,
+        "w": 24,
+        "h": 12
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Power per Leuze module of DB 14E2, stacked: `OutputCurrent` (mA) / 1000 × the voltage of the Weidmuller pair that feeds it, or the emergency bus average for modules without a known converter. Computed here until the dbt views are deployed. Topic `marpower/450000-24vdc-system/14e2-yyf01`.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH modules (topic, label, converter, bus) AS (SELECT * FROM (VALUES\n    ('marpower/450000-24vdc-system/14e2-11f01', '14E2_11F01 · Fire Door Galley', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-12f01', '14E2_12F01 · Fire Detection Panel', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-14f01', '14E2_14F01 · Fire Dampers PS & SB', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-16f01', '14E2_16F01 · Bilge LVL Petrol Locker', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-18f01', '14E2_18F01 · SOS Panel Back-up PSU 3 Hull Valves', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-21f01', '14E2_21F01 · Signal Panel System', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-22f01', '14E2_22F01 · Talk Back System', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-24f01', '14E2_24F01 · WT Door Crew Corridor', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-25f01', '14E2_25F01 · SOS Panel Back-UP Power Supply 1', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-25f02', '14E2_25F02 · SOS Panel Back-UP Power Supply 2', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-26f01', '14E2_26F01 · Navigation Lights - EM Supply', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-33f01', '14E2_33F01 · GALLEY FIRE DAMPER', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-34f01', '14E2_34F01 · OXYCELL FIRE DAMPER', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-42f23', '14E2_42F23 · Helm Console SB', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-24f24', '14E2_24F24 · Helm Console SB', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-68f01', '14E2_68F01 · Navtex', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-69f01', '14E2_69F01 · RAI', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-70f01', '14E2_70F01 · Deck Crane (MOB)', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-71f01', '14E2_71F01 · Valve For Battery Comp. Fan PS/SB Aft/Fwd', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-73f01', '14E2_73F01 · Electric Horn (Air Whistle)', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-74f01', '14E2_74F01 · Iridium', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-75f01', '14E2_75F01 · Bnwas', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-76f01', '14E2_76F01 · VHF 2', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-77f01', '14E2_77F01 · Fleetbroad Band', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-78f01', '14E2_78F01 · Butterfly Control', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-79f01', '14E2_79F01 · Butterfly Control', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-41f01', '14E2_41F01 · EM LIGHTS TECHNICAL AREA - 903JB103', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-42f01', '14E2_42F01 · EM LIGHTS TECHNICAL AREA 903JB102', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-45f01', '14E2_45F01 · EM LIGHTS AFT SHIP', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-46f01', '14E2_46F01 · EM LIGHTS FWD SHIP', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-47f01', '14E2_47F01 · EM LIGHTS OUTSIDE AFT/FWD', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-27f01', '14E2_27F01 · STEERING SYSTEM CONTROL - EM SUPPLY', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-60f01', '14E2_60F01 · AIS', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-61f01', '14E2_61F01 · AutoPilot', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-63f01', '14E2_63F01 · Gyro Compass', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-80f01', '14E2_80F01 · PCS 1 AFT', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-81f01', '14E2_81F01 · PCS 1 AFT', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-82f01', '14E2_82F01 · Solar 1', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-83f01', '14E2_83F01 · Solar 2', 'W14E2-02', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-42f24', '14E2_42F24 · HELM CONSOLE PS', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-10f01', '14E2_10F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-13f01', '14E2_13F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-15f01', '14E2_15F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-36f01', '14E2_36F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-48f01', '14E2_48F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-66f01', '14E2_66F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-67f01', '14E2_67F01 · SPARE', NULL, 'W14E2'),\n    ('marpower/450000-24vdc-system/14e2-84f01', '14E2_84F01 · SPARE', NULL, 'W14E2')) v (topic, label, converter, bus)),\nvoltages AS (\n  SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, upper(substr(split_part(topic, '/', 4), 1, 8)) AS converter, avg(voltage__value) AS voltage\n  FROM public.marpower__450000_24vdc_system\n  WHERE $__timeFilter(timestamp) AND topic LIKE 'marpower/450000-24vdc-system/conv/w14e%' AND voltage__value > 0\n  GROUP BY 1, 2),\nbus_voltages AS (SELECT time, substr(converter, 1, 5) AS bus, avg(voltage) AS voltage FROM voltages GROUP BY 1, 2),\ncurrents AS (\n  SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(output_current__value) / 1000.0 AS current\n  FROM public.marpower__450000_24vdc_system\n  WHERE $__timeFilter(timestamp) AND topic IN (SELECT topic FROM modules)\n  GROUP BY 1, 2)\nSELECT c.time, m.label AS \"Module\", c.current * coalesce(v.voltage, b.voltage) AS \"Power\"\nFROM currents c\nJOIN modules m ON m.topic = c.topic\nLEFT JOIN voltages v ON v.time = c.time AND v.converter = m.converter\nLEFT JOIN bus_voltages b ON b.time = c.time AND b.bus = m.bus\nORDER BY 2, 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Module"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "title": "Leuze 14E3 (emergency)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 126,
+        "w": 24,
+        "h": 12
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Power per Leuze module of DB 14E3, stacked: `OutputCurrent` (mA) / 1000 × the voltage of the Weidmuller pair that feeds it, or the emergency bus average for modules without a known converter. Computed here until the dbt views are deployed. Topic `marpower/450000-24vdc-system/14e3-yyf01`.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "WITH modules (topic, label, converter, bus) AS (SELECT * FROM (VALUES\n    ('marpower/450000-24vdc-system/14e3-10f01', '14E3_10F01 · VHF 1', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e3-12f01', '14E3_12F01 · MF/HF SSB', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e3-13f01', '14E3_13F01 · Dgps', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e3-14f01', '14E3_14F01 · Iridium', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e3-15f01', '14E3_15F01 · Chart Red Light', 'W14E2-01', 'W14E2'),\n    ('marpower/450000-24vdc-system/14e3-11f01', '14E3_11F01 · SPARE', NULL, 'W14E2')) v (topic, label, converter, bus)),\nvoltages AS (\n  SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, upper(substr(split_part(topic, '/', 4), 1, 8)) AS converter, avg(voltage__value) AS voltage\n  FROM public.marpower__450000_24vdc_system\n  WHERE $__timeFilter(timestamp) AND topic LIKE 'marpower/450000-24vdc-system/conv/w14e%' AND voltage__value > 0\n  GROUP BY 1, 2),\nbus_voltages AS (SELECT time, substr(converter, 1, 5) AS bus, avg(voltage) AS voltage FROM voltages GROUP BY 1, 2),\ncurrents AS (\n  SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, topic, avg(output_current__value) / 1000.0 AS current\n  FROM public.marpower__450000_24vdc_system\n  WHERE $__timeFilter(timestamp) AND topic IN (SELECT topic FROM modules)\n  GROUP BY 1, 2)\nSELECT c.time, m.label AS \"Module\", c.current * coalesce(v.voltage, b.voltage) AS \"Power\"\nFROM currents c\nJOIN modules m ON m.topic = c.topic\nLEFT JOIN voltages v ON v.time = c.time AND v.converter = m.converter\nLEFT JOIN bus_voltages b ON b.time = c.time AND b.bus = m.bus\nORDER BY 2, 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Module"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "type": "row",
+      "title": "400/230 V consumers (power tags)",
+      "gridPos": {
+        "x": 0,
+        "y": 138,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "id": 26,
+      "title": "Power tag energy per panel",
+      "type": "marcusolsson-treemap-panel",
+      "gridPos": {
+        "x": 0,
+        "y": 139,
+        "w": 24,
+        "h": 12
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Energy per consumer over the selected time range, grouped by panel: per-minute average of `active_power_total` (W), summed and divided by 60, in Wh. The feeders 135Q01 (10P0-1 to 10P1) and 335Q01 (10P0-3 to 10P2) are left out, as their loads appear under 10P1 and 10P2. The power tags of 10P3 are not published, so its feeder 336Q01 (on 10P0-3) is shown as the group 10P3. Consumers without energy in the range are left out.",
+      "pluginVersion": "2.1.1",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT group_name, item_name, sum(power) / 60 AS energy, sum(sum(power) / 60) OVER (PARTITION BY group_name) AS group_energy\nFROM (SELECT date_bin('1 minute'::INTERVAL, timestamp, TIMESTAMP '1970-01-01') AS time, CASE WHEN component = '336Q01' THEN '10P3' ELSE panel END AS group_name,\n    CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' · ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS item_name,\n    avg(active_power_total) AS power\n  FROM public.power_tags\n  WHERE $__timeFilter(timestamp) AND active_power_total IS NOT NULL AND coalesce(component, '') NOT IN ('135Q01', '335Q01')\n  GROUP BY 1, 2, topic, component, consumer) m\nGROUP BY group_name, item_name\nHAVING sum(power) > 0\nORDER BY group_name, energy DESC",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-YlRd"
+          },
+          "decimals": 1,
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "watth"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorByField": "group_energy",
+        "groupByField": "group_name",
+        "labelFields": [],
+        "sizeField": "energy",
+        "textField": "item_name",
+        "tiling": "treemapSquarify"
+      }
+    },
+    {
+      "id": 27,
+      "title": "Power tags 10P0-1",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 151,
+        "w": 12,
+        "h": 10
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Total active power per consumer on panel 10P0-1, stacked, in W as sent. Table `power_tags`. The feeders 135Q01 (to 10P1), 335Q01 (to 10P2) and 336Q01 (to 10P3) are consumers here too.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' · ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_total) AS \"Power\"\nFROM public.power_tags\nWHERE $__timeFilter(timestamp) AND panel = '10P0-1' AND active_power_total IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Consumer"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "title": "Power tags 10P0-3",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 151,
+        "w": 12,
+        "h": 10
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Total active power per consumer on panel 10P0-3, stacked, in W as sent. Table `power_tags`. The feeders 135Q01 (to 10P1), 335Q01 (to 10P2) and 336Q01 (to 10P3) are consumers here too.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' · ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_total) AS \"Power\"\nFROM public.power_tags\nWHERE $__timeFilter(timestamp) AND panel = '10P0-3' AND active_power_total IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Consumer"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "title": "Power tags 10P1",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 161,
+        "w": 12,
+        "h": 10
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Total active power per consumer on panel 10P1, stacked, in W as sent. Table `power_tags`.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' · ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_total) AS \"Power\"\nFROM public.power_tags\nWHERE $__timeFilter(timestamp) AND panel = '10P1' AND active_power_total IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Consumer"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "title": "Power tags 10P2",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 161,
+        "w": 12,
+        "h": 10
+      },
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "description": "Total active power per consumer on panel 10P2, stacked, in W as sent. Table `power_tags`.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  CASE WHEN coalesce(component, '') <> '' AND coalesce(consumer, '') <> '' THEN component || ' · ' || consumer WHEN coalesce(consumer, '') <> '' THEN consumer WHEN coalesce(component, '') <> '' THEN component ELSE topic END AS \"Consumer\",\n  avg(active_power_total) AS \"Power\"\nFROM public.power_tags\nWHERE $__timeFilter(timestamp) AND panel = '10P2' AND active_power_total IS NOT NULL\nGROUP BY 1, topic, component, consumer\nORDER BY 2, 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 30,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      },
+      "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Consumer"
+            ],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 42,
+  "tags": [
+    "commissioning",
+    "power"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "greptimedb-zero",
+          "value": "PBAD09CF7391C3C43"
+        },
+        "name": "datasource",
+        "options": [],
+        "query": "info8fcc-greptimedb-datasource",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "utc",
+  "title": "Load balance",
+  "uid": "commissioning-load-balance",
+  "version": 1
+}
