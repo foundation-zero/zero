@@ -41,6 +41,42 @@ def brightloop_from_converters(
     )
 
 
+def combine_brightloops(brightloops: Sequence[sensor.Brightloop]) -> sensor.Brightloop:
+    return sensor.Brightloop(
+        active=Stamped.combine(
+            *(brightloop.active for brightloop in brightloops),
+            value=any(brightloop.active.value for brightloop in brightloops),
+        ),
+        max_channel_temperature=Stamped.combine(
+            *(brightloop.max_channel_temperature for brightloop in brightloops),
+            value=max(
+                brightloop.max_channel_temperature.value for brightloop in brightloops
+            ),
+        ),
+        power=Stamped.combine(
+            *(brightloop.power for brightloop in brightloops),
+            value=sum(brightloop.power.value for brightloop in brightloops),
+        ),
+    )
+
+
+def combine_ugrids(ugrids: Sequence[sensor.Ugrid]) -> sensor.Ugrid:
+    return sensor.Ugrid(
+        active=Stamped.combine(
+            *(ugrid.active for ugrid in ugrids),
+            value=any(ugrid.active.value for ugrid in ugrids),
+        ),
+        temp_power_stage=Stamped.combine(
+            *(ugrid.temp_power_stage for ugrid in ugrids),
+            value=max(ugrid.temp_power_stage.value for ugrid in ugrids),
+        ),
+        power=Stamped.combine(
+            *(ugrid.power for ugrid in ugrids),
+            value=sum(ugrid.power.value for ugrid in ugrids),
+        ),
+    )
+
+
 class DcSensorValues(AmcsModeSensorValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
@@ -564,6 +600,43 @@ class DcSensorValues(AmcsModeSensorValues):
             topic_override="450000-dynamic-conv-sb/ara-5/12/u101",
         ),
     ]
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="brightloop",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def dc_aft_brightloops(self) -> sensor.Brightloop:
+        return combine_brightloops(
+            (
+                self.dc_brightloop_aft1,
+                self.dc_brightloop_aft2,
+                self.dc_brightloop_aft3,
+                self.dc_brightloop_aft4,
+            )
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="brightloop",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def dc_fwd_brightloops(self) -> sensor.Brightloop:
+        return combine_brightloops((self.dc_brightloop_fwd1, self.dc_brightloop_fwd2))
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="ugrid",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def dc_ugrids(self) -> sensor.Ugrid:
+        return combine_ugrids((self.dc_ugrid1, self.dc_ugrid2))
 
     @computed_field(
         json_schema_extra=computed_meta(

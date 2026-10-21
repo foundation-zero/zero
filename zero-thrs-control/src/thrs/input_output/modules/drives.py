@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import Annotated
 
 from pydantic import ConfigDict, computed_field
@@ -14,6 +15,39 @@ from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import GLYCOL_20_HEAT_TRANSFER_CONVERSION
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+
+
+def combine_shore_power_converters(
+    converters: Sequence[sensor.ShorePowerConverter],
+) -> sensor.ShorePowerConverter:
+    return sensor.ShorePowerConverter(
+        active=Stamped.combine(
+            *(converter.active for converter in converters),
+            value=any(converter.active.value for converter in converters),
+        ),
+        esi_transformer_temperature=Stamped.combine(
+            *(converter.esi_transformer_temperature for converter in converters),
+            value=max(
+                converter.esi_transformer_temperature.value for converter in converters
+            ),
+        ),
+        esi_igbt_min_temperature=Stamped.combine(
+            *(converter.esi_igbt_min_temperature for converter in converters),
+            value=min(
+                converter.esi_igbt_min_temperature.value for converter in converters
+            ),
+        ),
+        esi_igbt_max_temperature=Stamped.combine(
+            *(converter.esi_igbt_max_temperature for converter in converters),
+            value=max(
+                converter.esi_igbt_max_temperature.value for converter in converters
+            ),
+        ),
+        power=Stamped.combine(
+            *(converter.power for converter in converters),
+            value=sum(converter.power.value for converter in converters),
+        ),
+    )
 
 
 class DrivesSensorValues(AmcsModeSensorValues):
@@ -400,6 +434,24 @@ class DrivesSensorValues(AmcsModeSensorValues):
             topic_override="450000-dc-distribution-esi/70-12-tbc1b",
         ),
     ]
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            yard_tag="45002001",
+            component_type="shore_power_converter",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def drives_shorepower(self) -> sensor.ShorePowerConverter:
+        return combine_shore_power_converters(
+            (
+                self.drives_shorepower1a,
+                self.drives_shorepower1b,
+                self.drives_shorepower2a,
+                self.drives_shorepower2b,
+            )
+        )
 
     @computed_field(
         json_schema_extra=computed_meta(

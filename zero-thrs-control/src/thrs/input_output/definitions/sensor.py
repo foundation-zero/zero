@@ -412,6 +412,7 @@ class Thruster(ThrsValues):
 
 class PropulsionDrive(ThrsValues):
     active: Annotated[Stamped[OnOff], Field(alias="VpEnable")]
+    # TODO: reads 198 while VpEnable is false; treat it as no value
     temp_power_stage: Stamped[Celsius]
     power: Stamped[Watt]
 
@@ -450,6 +451,7 @@ class BrightloopConverter(ThrsValues):
 
 class Ugrid(ThrsValues):
     active: Annotated[Stamped[OnOff], Field(alias="Running")]
+    # TODO: reads 198 while Running is false; treat it as no value
     temp_power_stage: Stamped[Celsius]
     power: Annotated[Stamped[Watt], Field(alias="PvPower")]
 

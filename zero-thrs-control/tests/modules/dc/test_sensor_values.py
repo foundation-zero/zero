@@ -1,6 +1,10 @@
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions import sensor
-from thrs.input_output.modules.dc import brightloop_from_converters
+from thrs.input_output.modules.dc import (
+    brightloop_from_converters,
+    combine_brightloops,
+    combine_ugrids,
+)
 
 
 def _converter(
@@ -28,6 +32,48 @@ def test_brightloop_from_converters():
     assert brightloop.active.value
     assert brightloop.max_channel_temperature.value == 41
     assert brightloop.power.value == 33_000
+
+
+def test_combine_brightloops():
+    brightloops = combine_brightloops(
+        (
+            sensor.Brightloop(
+                active=Stamped.stamp(False),
+                max_channel_temperature=Stamped.stamp(31),
+                power=Stamped.stamp(0),
+            ),
+            sensor.Brightloop(
+                active=Stamped.stamp(True),
+                max_channel_temperature=Stamped.stamp(44),
+                power=Stamped.stamp(60_000),
+            ),
+        )
+    )
+
+    assert brightloops.active.value
+    assert brightloops.max_channel_temperature.value == 44
+    assert brightloops.power.value == 60_000
+
+
+def test_combine_ugrids():
+    ugrids = combine_ugrids(
+        (
+            sensor.Ugrid(
+                active=Stamped.stamp(True),
+                temp_power_stage=Stamped.stamp(46),
+                power=Stamped.stamp(17_900),
+            ),
+            sensor.Ugrid(
+                active=Stamped.stamp(True),
+                temp_power_stage=Stamped.stamp(40),
+                power=Stamped.stamp(8_500),
+            ),
+        )
+    )
+
+    assert ugrids.active.value
+    assert ugrids.temp_power_stage.value == 46
+    assert ugrids.power.value == 26_400
 
 
 def test_brightloop_converter_parses_mqtt_payload():

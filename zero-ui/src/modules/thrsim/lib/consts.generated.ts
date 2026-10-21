@@ -577,6 +577,9 @@ export const DC_PARAMETER_DEFINITION = toParameterDefinition({
 });
 
 export const DC_SENSOR_DEFINITION = toSensorDefinition({
+  dcAftBrightloops: {
+    componentType: SensorComponentType.Brightloop,
+  },
   dcAftFlow: {
     componentType: SensorComponentType.CalculatedFlow,
   },
@@ -746,6 +749,9 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
   dcFlowUgridReturn: {
     yardTag: "50001058-06",
     componentType: SensorComponentType.Flow,
+  },
+  dcFwdBrightloops: {
+    componentType: SensorComponentType.Brightloop,
   },
   dcFwdFlow: {
     componentType: SensorComponentType.CalculatedFlow,
@@ -934,6 +940,9 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
   },
   dcUgridHeat: {
     componentType: SensorComponentType.HeatTransferDevice,
+  },
+  dcUgrids: {
+    componentType: SensorComponentType.Ugrid,
   },
   mode: {
     componentType: SensorComponentType.AmcsControlMode,
@@ -1747,6 +1756,10 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
   drivesSeawaterExchanger: {
     yardTag: "50001011",
     componentType: SensorComponentType.HeatTransferDevice,
+  },
+  drivesShorepower: {
+    yardTag: "45002001",
+    componentType: SensorComponentType.ShorePowerConverter,
   },
   drivesShorepower1a: {
     yardTag: "45002001",

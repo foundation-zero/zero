@@ -7,6 +7,7 @@ import { toFieldsMap, toInstance } from "../../../modules";
 import { getField } from "../../../providers";
 
 const dcConverter = (
+  source: ModuleField<SensorComponentType.Ugrid | SensorComponentType.Brightloop, "dc">,
   converters: ModuleField<SensorComponentType.Ugrid | SensorComponentType.Brightloop>[],
   heatTransfer: ModuleField<SensorComponentType.HeatTransferDevice, "dc">,
   group: DcConverterGroup,
@@ -20,7 +21,8 @@ const dcConverter = (
     sensors: {
       heatTransfer: heatTransfer,
     },
-    source: converters[0], // TODO: Fix this!
+    // TODO: design how a group tile shows its total (summed power, max temperature)
+    source,
     get tooltip(): TooltipContent {
       return {
         componentType: "DC converter",
@@ -32,6 +34,7 @@ const dcConverter = (
 export const DC_CONVERTER_DATA = toFieldsMap({
   [MimicComponentType.DcConverter]: {
     aft: dcConverter(
+      getField(SensorComponentType.Brightloop, "dc", "dcAftBrightloops"),
       [
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopAft1"),
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopAft2"),
@@ -43,6 +46,7 @@ export const DC_CONVERTER_DATA = toFieldsMap({
       { title: "group1", technicalName: "dc-brightloop-aft", mqttTopic: "dc-brightloop-aft" },
     ),
     ugrid: dcConverter(
+      getField(SensorComponentType.Ugrid, "dc", "dcUgrids"),
       [
         getField(SensorComponentType.Ugrid, "dc", "dcUgrid1"),
         getField(SensorComponentType.Ugrid, "dc", "dcUgrid2"),
@@ -52,6 +56,7 @@ export const DC_CONVERTER_DATA = toFieldsMap({
       { title: "group2", technicalName: "dc-ugrids", mqttTopic: "dc-ugrids" },
     ),
     fwd: dcConverter(
+      getField(SensorComponentType.Brightloop, "dc", "dcFwdBrightloops"),
       [
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopFwd1"),
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopFwd2"),
