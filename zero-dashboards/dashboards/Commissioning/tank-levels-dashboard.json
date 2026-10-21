@@ -144,7 +144,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "fresh_water_tank_1_level",
+                  "field": "tank1",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -156,7 +156,8 @@
               "name": "Fresh water tank 1",
               "placement": {
                 "height": 30,
-                "left": 277,
+                "left": 310,
+                "rotation": 0,
                 "top": 10,
                 "width": 180
               },
@@ -216,7 +217,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "fresh_water_tank_2_level",
+                  "field": "tank2",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -228,7 +229,7 @@
               "name": "Fresh water tank 2",
               "placement": {
                 "height": 30,
-                "left": 277,
+                "left": 310,
                 "top": 45,
                 "width": 180
               },
@@ -301,7 +302,7 @@
               "name": "fresh_water_tank_1_level_tag",
               "placement": {
                 "height": 30,
-                "left": 167,
+                "left": 200,
                 "rotation": 0,
                 "top": 10,
                 "width": 96
@@ -339,8 +340,7 @@
               "name": "fresh_water_tank_2_level_tag",
               "placement": {
                 "height": 30,
-                "left": 167,
-                "rotation": 0,
+                "left": 200,
                 "top": 45,
                 "width": 96
               },
@@ -381,10 +381,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                         AS time,\r\n  tank_1_fr_45_ps_level__value*1000 AS fresh_water_tank_1_level,\r\n  tank_2_fr_45_sb_level__value*1000 AS fresh_water_tank_2_level\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\tMAX(time) AS time,\r\n\tMAX(CASE WHEN name = 'cold-level-tank1' THEN level END) AS tank1,\r\n\tMAX(CASE WHEN name = 'cold-level-tank2' THEN level END) AS tank2\r\nFROM (\r\n\tSELECT DISTINCT ON (technical_name)\r\n\t\ttimestamp      AS time,\r\n\t\ttechnical_name AS name,\r\n\t\tlevel__value   AS level\r\n\tFROM public.marpower__fresh_water__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tORDER BY technical_name, timestamp DESC\r\n)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -521,7 +521,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "tank1_level",
+                  "field": "clean",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -534,7 +534,8 @@
               "name": "tank1_level",
               "placement": {
                 "height": 30,
-                "left": 320,
+                "left": 315,
+                "rotation": 0,
                 "top": 10,
                 "width": 180
               },
@@ -558,7 +559,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Technical water tank 1"
+                  "fixed": "Clean water tank"
                 },
                 "valign": "middle"
               },
@@ -594,7 +595,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "tank2_level",
+                  "field": "dirty",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -607,7 +608,7 @@
               "name": "tank2_level",
               "placement": {
                 "height": 30,
-                "left": 320,
+                "left": 315,
                 "top": 45,
                 "width": 180
               },
@@ -631,7 +632,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Technical water tank 2"
+                  "fixed": "Dirty water tank"
                 },
                 "valign": "middle"
               },
@@ -680,7 +681,7 @@
               "name": "tank1_level_tag",
               "placement": {
                 "height": 30,
-                "left": 205,
+                "left": 200,
                 "rotation": 0,
                 "top": 10,
                 "width": 109
@@ -718,8 +719,7 @@
               "name": "tank2_level_tag",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
+                "left": 200,
                 "top": 45,
                 "width": 109
               },
@@ -760,10 +760,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                AS time,\r\n\ttank_1_level__value*1000 AS tank1_level,\r\n\ttank_2_level__value*1000 AS tank2_level\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\tMAX(time) AS time,\r\n\tMAX(CASE WHEN name = 'clean-level' THEN level END) AS clean,\r\n\tMAX(CASE WHEN name = 'dirty-level' THEN level END) AS dirty\r\nFROM (\r\n\tSELECT DISTINCT ON (technical_name)\r\n\t\ttimestamp      AS time,\r\n\t\ttechnical_name AS name,\r\n\t\tlevel__value   AS level\r\n\tFROM public.marpower__tech_water__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tORDER BY technical_name, timestamp DESC\r\n)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -990,7 +990,7 @@
               "name": "tank_level_tag",
               "placement": {
                 "height": 30,
-                "left": 107,
+                "left": 125,
                 "rotation": 0,
                 "top": 10,
                 "width": 92
@@ -1037,10 +1037,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp              AS time,\r\n  tank_level__value*1000 AS tank_level\r\nFROM public.marpower__210000_bilge_fifi_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  timestamp         AS time,\r\n  tank_level__value AS tank_level\r\nFROM public.marpower__210000_bilge_fifi_general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1177,7 +1177,7 @@
                 },
                 "size": 20,
                 "text": {
-                  "field": "sludge_tank",
+                  "field": "sludge",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -1267,7 +1267,7 @@
               "name": "sludge_tank_tag",
               "placement": {
                 "height": 30,
-                "left": 122,
+                "left": 125,
                 "rotation": 0,
                 "top": 10,
                 "width": 107
@@ -1314,10 +1314,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                        AS time,\r\n\tsludge_tank_ps_level__value*1000 AS sludge_tank\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\tMAX(time) AS time,\r\n\tMAX(CASE WHEN name = 'sludge-level' THEN level END) AS sludge\r\nFROM (\r\n\tSELECT DISTINCT ON (technical_name)\r\n\t\ttimestamp      AS time,\r\n\t\ttechnical_name AS name,\r\n\t\tlevel__value   AS level\r\n\tFROM public.marpower__sewage__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tORDER BY technical_name, timestamp DESC\r\n)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1454,7 +1454,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "tank1_level",
+                  "field": "aft",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1466,7 +1466,7 @@
               "name": "tank1_level",
               "placement": {
                 "height": 30,
-                "left": 277,
+                "left": 317,
                 "rotation": 0,
                 "top": 10,
                 "width": 180
@@ -1491,7 +1491,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Hot water tank 1"
+                  "fixed": "Hot water tank AFT"
                 },
                 "valign": "middle"
               },
@@ -1505,7 +1505,7 @@
                 "left": 10,
                 "rotation": 0,
                 "top": 10,
-                "width": 146
+                "width": 180
               },
               "type": "text"
             },
@@ -1527,7 +1527,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "tank2_level",
+                  "field": "mid",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1540,8 +1540,7 @@
               "name": "tank2_level",
               "placement": {
                 "height": 30,
-                "left": 277,
-                "rotation": 0,
+                "left": 317,
                 "top": 45,
                 "width": 180
               },
@@ -1565,7 +1564,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Hot water tank 2"
+                  "fixed": "Hot water tank MID"
                 },
                 "valign": "middle"
               },
@@ -1580,7 +1579,7 @@
                 "left": 10,
                 "rotation": 0,
                 "top": 45,
-                "width": 150
+                "width": 180
               },
               "type": "text"
             },
@@ -1602,7 +1601,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "tank3_level",
+                  "field": "fwd",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1614,8 +1613,7 @@
               "name": "tank3_level",
               "placement": {
                 "height": 30,
-                "left": 277,
-                "rotation": 0,
+                "left": 317,
                 "top": 80,
                 "width": 180
               },
@@ -1639,7 +1637,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Hot water tank 3"
+                  "fixed": "Hot water tank FWD"
                 },
                 "valign": "middle"
               },
@@ -1653,7 +1651,7 @@
                 "left": 10,
                 "rotation": 0,
                 "top": 80,
-                "width": 150
+                "width": 180
               },
               "type": "text"
             },
@@ -1688,7 +1686,7 @@
               "name": "tank1_level_tag",
               "placement": {
                 "height": 30,
-                "left": 160,
+                "left": 200,
                 "rotation": 0,
                 "top": 10,
                 "width": 98
@@ -1726,7 +1724,7 @@
               "name": "tank2_level_tag",
               "placement": {
                 "height": 30,
-                "left": 160,
+                "left": 200,
                 "rotation": 0,
                 "top": 45,
                 "width": 98
@@ -1764,8 +1762,7 @@
               "name": "tank3_level_tag",
               "placement": {
                 "height": 30,
-                "left": 160,
-                "rotation": 0,
+                "left": 200,
                 "top": 80,
                 "width": 98
               },
@@ -1806,97 +1803,11 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp    AS time,\r\n\tlevel__value*1000 AS tank1_level\r\nFROM marpower__500000_thrs__dhw__dhw_level_tank1\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "Tank 1",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp    AS time,\r\n\tlevel__value*1000 AS tank2_level\r\nFROM marpower__500000_thrs__dhw__dhw_level_tank2\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "Tank 2",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp    AS time,\r\n\tlevel__value*1000 AS tank3_level\r\nFROM marpower__500000_thrs__dhw__dhw_level_tank3\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "Tank 3",
+          "rawSql": "SELECT\r\n\tMAX(time) AS time,\r\n\tMAX(CASE WHEN name = 'dhw-level-tank1' THEN level END) AS aft,\r\n\tMAX(CASE WHEN name = 'dhw-level-tank2' THEN level END) AS mid,\r\n\tMAX(CASE WHEN name = 'dhw-level-tank3' THEN level END) AS fwd\r\nFROM (\r\n\tSELECT DISTINCT ON (technical_name)\r\n\t\ttimestamp      AS time,\r\n\t\ttechnical_name AS name,\r\n\t\tlevel__value   AS level\r\n\tFROM public.marpower__thrs__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tORDER BY technical_name, timestamp DESC\r\n)",
+          "refId": "A",
           "sql": {
             "columns": [
               {
@@ -2032,7 +1943,7 @@
                 },
                 "size": 20,
                 "text": {
-                  "field": "grey_wat_aft_tank",
+                  "field": "grey_aft",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -2047,7 +1958,8 @@
               "name": "grey_wat_aft_tank",
               "placement": {
                 "height": 30,
-                "left": 309,
+                "left": 318,
+                "rotation": 0,
                 "top": 10,
                 "width": 175
               },
@@ -2071,7 +1983,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Grey water AFT tank"
+                  "fixed": "Grey water tank AFT"
                 },
                 "valign": "middle"
               },
@@ -2108,7 +2020,7 @@
                 },
                 "size": 20,
                 "text": {
-                  "field": "grey_wat_fwd_tank",
+                  "field": "grey_fwd",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -2122,7 +2034,8 @@
               "name": "grey_wat_fwd_tank",
               "placement": {
                 "height": 30,
-                "left": 309,
+                "left": 318,
+                "rotation": 0,
                 "top": 45,
                 "width": 175
               },
@@ -2146,7 +2059,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Grey water FWD tank"
+                  "fixed": "Grey water tank FWD"
                 },
                 "valign": "middle"
               },
@@ -2159,6 +2072,7 @@
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 45,
                 "width": 176
               },
@@ -2182,7 +2096,7 @@
                 },
                 "size": 20,
                 "text": {
-                  "field": "black_wat_aft_tank",
+                  "field": "black",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -2196,7 +2110,8 @@
               "name": "black_wat_aft_tank",
               "placement": {
                 "height": 30,
-                "left": 309,
+                "left": 318,
+                "rotation": 0,
                 "top": 80,
                 "width": 175
               },
@@ -2220,7 +2135,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Black water AFT tank"
+                  "fixed": "Black water tank"
                 },
                 "valign": "middle"
               },
@@ -2233,6 +2148,7 @@
               "placement": {
                 "height": 30,
                 "left": 15,
+                "rotation": 0,
                 "top": 80,
                 "width": 176
               },
@@ -2270,9 +2186,9 @@
               "name": "grey_wat_aft_tank_tag",
               "placement": {
                 "height": 30,
-                "left": 191,
+                "left": 200,
                 "rotation": 0,
-                "top": 15,
+                "top": 10,
                 "width": 104
               },
               "type": "text"
@@ -2309,9 +2225,9 @@
               "name": "grey_wat_fwd_tank_tag",
               "placement": {
                 "height": 30,
-                "left": 191,
+                "left": 200,
                 "rotation": 0,
-                "top": 50,
+                "top": 45,
                 "width": 104
               },
               "type": "text"
@@ -2348,9 +2264,9 @@
               "name": "black_wat_aft_tank_tag",
               "placement": {
                 "height": 30,
-                "left": 191,
+                "left": 200,
                 "rotation": 0,
-                "top": 85,
+                "top": 80,
                 "width": 104
               },
               "type": "text"
@@ -2395,10 +2311,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                                      AS time,\r\n\tgrey_water_tank_aft_sb_level__value*1000       AS grey_wat_aft_tank,\r\n\tgrey_water_tank_fwd_sb_level__value*1000       AS grey_wat_fwd_tank,\r\n\tblack_grey_water_tank_aft_ps_level__value*1000 AS black_wat_aft_tank\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n\tMAX(time) AS time,\r\n\tMAX(CASE WHEN name = 'grey-level-aft' THEN level END) AS grey_aft,\r\n\tMAX(CASE WHEN name = 'grey-level-fwd' THEN level END) AS grey_fwd,\r\n\tMAX(CASE WHEN name = 'blac-level' THEN level END) AS black\r\nFROM (\r\n\tSELECT DISTINCT ON (technical_name)\r\n\t\ttimestamp      AS time,\r\n\t\ttechnical_name AS name,\r\n\t\tlevel__value   AS level\r\n\tFROM public.marpower__sewage__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tORDER BY technical_name, timestamp DESC\r\n)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2535,7 +2451,7 @@
                 },
                 "size": 20,
                 "text": {
-                  "field": "tank_level",
+                  "field": "sludge",
                   "fixed": "",
                   "mode": "field"
                 },
@@ -2672,10 +2588,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                     AS time,\r\n\tsludge_tank_level__value*1000 AS tank_level\r\nFROM marpower__300000_dirty_oil\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp      AS time,\r\n\tlevel__value   AS sludge\r\nFROM public.marpower__300000_dirty_oil__sludge__sludge_level\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2862,10 +2778,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\ttimestamp \t\t\t\t\t\t\t\t\t\t    AS time,\r\n\tTANK_1_FR_45_PS_LEVEL__value*1000 AS tank1_level,\r\n\tTANK_2_FR_45_SB_LEVEL__value*1000 AS tank2_level\r\nFROM marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC ;",
+              "rawSql": "SELECT\r\n\ttimestamp      AS time,\r\n\ttechnical_name AS name,\r\n\tlevel__value   AS level\r\nFROM public.marpower__fresh_water__level_sensors\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY technical_name, timestamp DESC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -2889,15 +2805,19 @@
           "title": "Fresh water tanks",
           "transformations": [
             {
-              "id": "organize",
+              "id": "partitionByValues",
               "options": {
-                "excludeByName": {},
-                "includeByName": {},
-                "indexByName": {},
-                "renameByName": {
-                  "tank1_level": "Fresh water - Tank 1",
-                  "tank2_level": "Fresh water - Tank 2"
-                }
+                "fields": [
+                  "name"
+                ],
+                "keepFields": false
+              }
+            },
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "/level cold-level-tank(\\d+)/",
+                "renamePattern": "Tank $1"
               }
             }
           ],
@@ -2972,6 +2892,42 @@
                     "id": "unit"
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "level dhw-level-tank1"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Tank AFT"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "level dhw-level-tank2"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Tank MID"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "level dhw-level-tank3"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Tank FWD"
+                  }
+                ]
               }
             ]
           },
@@ -3013,99 +2969,11 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\ttimestamp         AS time,\r\n\tlevel__value*1000 AS tank1_level\r\nFROM marpower__500000_thrs__dhw__dhw_level_tank1\r\nWHERE $__timeFilter(timestamp)",
+              "rawSql": "SELECT\r\n\ttimestamp      AS time,\r\n\ttechnical_name AS name,\r\n\tlevel__value   AS level\r\nFROM public.marpower__thrs__level_sensors\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY technical_name, timestamp DESC",
               "refId": "A",
-              "sql": {
-                "columns": [
-                  {
-                    "parameters": [],
-                    "type": "function"
-                  }
-                ],
-                "groupBy": [
-                  {
-                    "property": {
-                      "type": "string"
-                    },
-                    "type": "groupBy"
-                  }
-                ],
-                "limit": 50
-              }
-            },
-            {
-              "dataset": "dev",
-              "datasource": {
-                "type": "info8fcc-greptimedb-datasource",
-                "uid": "${datasource}"
-              },
-              "editorMode": "code",
-              "editorType": "sql",
-              "format": 1,
-              "hide": false,
-              "meta": {
-                "builderOptions": {
-                  "columns": [],
-                  "database": "",
-                  "limit": 1000,
-                  "meta": {},
-                  "mode": "list",
-                  "queryType": "table",
-                  "table": ""
-                }
-              },
-              "pluginVersion": "2.1.4",
-              "queryType": "table",
-              "rawQuery": true,
-              "rawSql": "SELECT\r\n\ttimestamp         AS time,\r\n\tlevel__value*1000 AS tank2_level\r\nFROM marpower__500000_thrs__dhw__dhw_level_tank2\r\nWHERE $__timeFilter(timestamp)",
-              "refId": "B",
-              "sql": {
-                "columns": [
-                  {
-                    "parameters": [],
-                    "type": "function"
-                  }
-                ],
-                "groupBy": [
-                  {
-                    "property": {
-                      "type": "string"
-                    },
-                    "type": "groupBy"
-                  }
-                ],
-                "limit": 50
-              }
-            },
-            {
-              "dataset": "dev",
-              "datasource": {
-                "type": "info8fcc-greptimedb-datasource",
-                "uid": "${datasource}"
-              },
-              "editorMode": "code",
-              "editorType": "sql",
-              "format": 1,
-              "hide": false,
-              "meta": {
-                "builderOptions": {
-                  "columns": [],
-                  "database": "",
-                  "limit": 1000,
-                  "meta": {},
-                  "mode": "list",
-                  "queryType": "table",
-                  "table": ""
-                }
-              },
-              "pluginVersion": "2.1.4",
-              "queryType": "table",
-              "rawQuery": true,
-              "rawSql": "SELECT\r\n\ttimestamp         AS time,\r\n\tlevel__value*1000 AS tank3_level\r\nFROM marpower__500000_thrs__dhw__dhw_level_tank3\r\nWHERE $__timeFilter(timestamp)",
-              "refId": "C",
               "sql": {
                 "columns": [
                   {
@@ -3128,16 +2996,12 @@
           "title": "Hot water tanks",
           "transformations": [
             {
-              "id": "organize",
+              "id": "partitionByValues",
               "options": {
-                "excludeByName": {},
-                "includeByName": {},
-                "indexByName": {},
-                "renameByName": {
-                  "tank1_level": "Hot water - Tank 1",
-                  "tank2_level": "Hot water - Tank 2",
-                  "tank3_level": "Hot water - Tank 3"
-                }
+                "fields": [
+                  "name"
+                ],
+                "keepFields": false
               }
             }
           ],
@@ -3153,7 +3017,7 @@
             "defaults": {
               "color": {
                 "fixedColor": "text",
-                "mode": "palette-classic-by-name"
+                "mode": "palette-classic"
               },
               "custom": {
                 "axisBorderShow": false,
@@ -3212,6 +3076,30 @@
                     "id": "unit"
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "level clean-level"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Clean"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "level dirty-level"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Dirty"
+                  }
+                ]
               }
             ]
           },
@@ -3253,10 +3141,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\ttimestamp                AS time,\r\n\ttank_1_level__value*1000 AS tank1_level,\r\n\ttank_2_level__value*1000 AS tank2_level\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)",
+              "rawSql": "SELECT\r\n\ttimestamp      AS time,\r\n\ttechnical_name AS name,\r\n\tlevel__value   AS level\r\nFROM public.marpower__tech_water__level_sensors\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY technical_name, timestamp DESC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3280,15 +3168,12 @@
           "title": "Technical water tanks",
           "transformations": [
             {
-              "id": "organize",
+              "id": "partitionByValues",
               "options": {
-                "excludeByName": {},
-                "includeByName": {},
-                "indexByName": {},
-                "renameByName": {
-                  "tank1_level": "Tech. water - Tank 1",
-                  "tank2_level": "Tech. water - Tank 2"
-                }
+                "fields": [
+                  "name"
+                ],
+                "keepFields": false
               }
             }
           ],
@@ -3304,7 +3189,7 @@
             "defaults": {
               "color": {
                 "fixedColor": "text",
-                "mode": "palette-classic-by-name"
+                "mode": "palette-classic"
               },
               "custom": {
                 "axisBorderShow": false,
@@ -3404,10 +3289,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\ttimestamp                                      AS time,\r\n\tGREY_WATER_TANK_AFT_SB_LEVEL__value*1000       AS grey_wat_aft_tank,\r\n\tGREY_WATER_TANK_FWD_SB_LEVEL__value*1000       AS grey_wat_fwd_tank,\r\n\tBLACK_GREY_WATER_TANK_AFT_PS_LEVEL__value*1000 AS black_wat_aft_tank\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
+              "rawSql": "SELECT\r\n\ttimestamp             AS time,\r\n\tUPPER(technical_name) AS name,\r\n\tlevel__value          AS level\r\nFROM public.marpower__sewage__level_sensors\r\nWHERE $__timeFilter(timestamp)\r\nAND technical_name <> 'sludge-level'\r\nORDER BY technical_name, timestamp DESC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3431,16 +3316,26 @@
           "title": "Grey/Black water tanks",
           "transformations": [
             {
-              "id": "organize",
+              "id": "partitionByValues",
               "options": {
-                "excludeByName": {},
-                "includeByName": {},
-                "indexByName": {},
-                "renameByName": {
-                  "black_wat_aft_tank": "Black water AFT",
-                  "grey_wat_aft_tank": "Grey water AFT",
-                  "grey_wat_fwd_tank": "Grey water FWD"
-                }
+                "fields": [
+                  "name"
+                ],
+                "keepFields": false
+              }
+            },
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "level GREY-LEVEL-(.*)",
+                "renamePattern": "Grey water $1"
+              }
+            },
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "level BLAC.?-LEVEL",
+                "renamePattern": "Black water"
               }
             }
           ],
@@ -3707,10 +3602,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp                        AS time,\r\n\tSLUDGE_TANK_PS_LEVEL__value*1000 AS sludge_tank\r\nfrom marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
+              "rawSql": "SELECT\r\n\ttimestamp      AS time,\r\n\ttechnical_name AS name,\r\n\tlevel__value   AS level\r\nFROM public.marpower__sewage__level_sensors\r\nWHERE $__timeFilter(timestamp)\r\nAND technical_name = 'sludge-level'\r\nORDER BY technical_name, timestamp DESC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3732,19 +3627,6 @@
             }
           ],
           "title": "Sludge tank",
-          "transformations": [
-            {
-              "id": "organize",
-              "options": {
-                "excludeByName": {},
-                "includeByName": {},
-                "indexByName": {},
-                "renameByName": {
-                  "sludge_tank": "Sludge tank"
-                }
-              }
-            }
-          ],
           "transparent": true,
           "type": "timeseries"
         },
@@ -3857,10 +3739,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp \t\t\t\t\t\t\t      AS time,\r\n\tSLUDGE_TANK_LEVEL__value*1000 AS sludge_tank\r\nfrom marpower__300000_dirty_oil\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
+              "rawSql": "SELECT\r\n\ttimestamp      AS time,\r\n\tlevel__value   AS sludge\r\nFROM public.marpower__300000_dirty_oil__sludge__sludge_level\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3882,19 +3764,6 @@
             }
           ],
           "title": "Dirty oil sludge tank",
-          "transformations": [
-            {
-              "id": "organize",
-              "options": {
-                "excludeByName": {},
-                "includeByName": {},
-                "indexByName": {},
-                "renameByName": {
-                  "sludge_tank": "Dirty oil sludge tank"
-                }
-              }
-            }
-          ],
           "transparent": true,
           "type": "timeseries"
         }
