@@ -118,32 +118,35 @@ def read_max_loads(max_loads_csv: str) -> pl.DataFrame:
     return max_loads
 
 
-def drop_targets_outside_thresholds(
+def clamp_targets_to_thresholds(
     reference_values: pl.DataFrame, max_loads: pl.DataFrame
 ) -> tuple[pl.DataFrame, pl.DataFrame]:
-    """Split the SailPack targets into those within their thresholds and the conflicts.
+    """Clamp the SailPack targets to their warnings, or alarms where a side has no warning.
 
     The API falls back to the thresholds wherever a reference value has none, so a target
-    outside them would show beyond its own warning or alarm.
+    outside them would show beyond its own warning or alarm. Returns the targets and the
+    conflicts, the targets that were clamped.
     """
-    targets = reference_values.filter(pl.col("value").is_not_null()).join(
-        max_loads, on="variable", how="left"
-    )
-    outside_thresholds = pl.any_horizontal(
-        (pl.col("value") < pl.col("alarm_low")).fill_null(False),
-        (pl.col("value") < pl.col("warning_low")).fill_null(False),
-        (pl.col("value") > pl.col("warning_high")).fill_null(False),
-        (pl.col("value") > pl.col("alarm_high")).fill_null(False),
+    targets = (
+        reference_values.filter(pl.col("value").is_not_null())
+        .join(max_loads, on="variable", how="left")
+        .rename({"value": "sailpack_value"})
+        .with_columns(
+            pl.col("sailpack_value")
+            .clip(
+                pl.coalesce("warning_low", "alarm_low"),
+                pl.coalesce("warning_high", "alarm_high"),
+            )
+            .alias("value")
+        )
     )
 
-    conflicts = targets.filter(outside_thresholds).sort(
+    conflicts = targets.filter(pl.col("value") != pl.col("sailpack_value")).sort(
         "variable", "Calculation ID", "tack"
     )
-    targets_within_thresholds = targets.filter(~outside_thresholds).select(
-        "Calculation ID", "variable", "value", "tack"
-    )
+    clamped_targets = targets.select("Calculation ID", "variable", "value", "tack")
 
-    return targets_within_thresholds, conflicts
+    return clamped_targets, conflicts
 
 
 def thresholded_variables(max_loads: pl.DataFrame) -> pl.DataFrame:
@@ -157,6 +160,7 @@ def write_conflicts(conflicts: pl.DataFrame, output_csv: Path) -> None:
         pl.col("variable").alias("technical_name"),
         pl.col("Calculation ID").alias("load_case_id"),
         "tack",
-        pl.col("value").round(3).alias("dropped_target"),
+        pl.col("sailpack_value").round(3).alias("sailpack_target"),
+        pl.col("value").round(3).alias("seeded_target"),
         *THRESHOLD_COLUMNS,
     ).write_csv(output_csv)

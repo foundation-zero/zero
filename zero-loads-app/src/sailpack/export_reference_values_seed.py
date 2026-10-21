@@ -6,7 +6,7 @@ import polars as pl
 
 from sailpack.max_loads import (
     THRESHOLD_COLUMNS,
-    drop_targets_outside_thresholds,
+    clamp_targets_to_thresholds,
     read_max_loads,
     thresholded_variables,
     write_conflicts,
@@ -184,7 +184,7 @@ def export_reference_values_seed_sql(
         sailpack_data, read_reference_values_mapping(mapping_csv)
     )
     max_loads = read_max_loads(max_loads_csv)
-    targets, conflicts = drop_targets_outside_thresholds(reference_values, max_loads)
+    targets, conflicts = clamp_targets_to_thresholds(reference_values, max_loads)
     load_case_records = build_load_case_records(sailpack_data)
     reference_records = build_reference_records(targets)
     sql = render_sql(
