@@ -206,7 +206,7 @@ class ExportSeedCmd(SeedPaths):
         )
         if conflict_count:
             logger.warning(
-                f"Dropped {conflict_count} targets outside their warning or alarm thresholds, "
+                f"Clamped {conflict_count} targets outside their warning or alarm thresholds, "
                 f"see {self.target_threshold_conflicts_output}."
             )
         logger.info(
