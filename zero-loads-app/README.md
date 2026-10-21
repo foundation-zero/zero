@@ -100,8 +100,7 @@ uv run loads generate-jwt --roles captain
 
 #### Seeds
 
-The Hasura seed files `hasura/seeds/zero/loads_reference_values.sql` and
-`hasura/seeds/zero/loads_case_mappings.sql` are generated from the Sailpack
+The Hasura seed file `hasura/seeds/zero/loads.sql` is generated from the Sailpack
 load cases in `src/sailpack/load_cases` and the loads Google Sheet, which is the source of truth
 for the SailPack mapping and the max loads. The SailPack targets go into `loads.reference_values`
 and the lower and upper warning and alarm thresholds from the max loads tab into
