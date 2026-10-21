@@ -253,6 +253,40 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
       power: stamp(power),
     }));
   },
+  [SensorComponentType.BrightloopGroup]: () => {
+    const anyActive = useRandomizedBoolean();
+    const maxChannelTemperature = useRandomizedNumber(0, 100);
+    const totalPower = useRandomizedNumber(0, 4000);
+    return computed(() => ({
+      anyActive: stamp(anyActive),
+      maxChannelTemperature: stamp(maxChannelTemperature),
+      totalPower: stamp(totalPower),
+    }));
+  },
+  [SensorComponentType.UgridGroup]: () => {
+    const anyActive = useRandomizedBoolean();
+    const maxTempPowerStage = useRandomizedNumber(0, 100);
+    const totalPower = useRandomizedNumber(0, 2000);
+    return computed(() => ({
+      anyActive: stamp(anyActive),
+      maxTempPowerStage: stamp(maxTempPowerStage),
+      totalPower: stamp(totalPower),
+    }));
+  },
+  [SensorComponentType.ShorePowerGroup]: () => {
+    const anyActive = useRandomizedBoolean();
+    const maxEsiTransformerTemperature = useRandomizedNumber(0, 100);
+    const minEsiIgbtMinTemperature = useRandomizedNumber(0, 100);
+    const maxEsiIgbtMaxTemperature = useRandomizedNumber(0, 100);
+    const totalPower = useRandomizedNumber(0, 4000);
+    return computed(() => ({
+      anyActive: stamp(anyActive),
+      maxEsiTransformerTemperature: stamp(maxEsiTransformerTemperature),
+      minEsiIgbtMinTemperature: stamp(minEsiIgbtMinTemperature),
+      maxEsiIgbtMaxTemperature: stamp(maxEsiIgbtMaxTemperature),
+      totalPower: stamp(totalPower),
+    }));
+  },
   [SensorComponentType.Pyranometer]: () => {
     const irradiance = useRandomizedNumber(0, 1000);
     return computed(() => ({ irradiance: stamp(irradiance) }));

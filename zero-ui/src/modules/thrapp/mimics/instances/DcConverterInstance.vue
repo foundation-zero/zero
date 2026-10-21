@@ -91,22 +91,22 @@ const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
         <ValueListHeatPowerItem :source="sensors.heatTransfer" />
         <ValueListDeltaTItem :source="sensors.heatTransfer" />
         <ValueListTemperatureItem
-          v-if="source[0] === SensorComponentType.Ugrid"
+          v-if="source[0] === SensorComponentType.UgridGroup"
           class="text-brand"
-          :source="source as ModuleField<SensorComponentType.Ugrid>"
-          field="tempPowerStage"
+          :source="source as ModuleField<SensorComponentType.UgridGroup>"
+          field="maxTempPowerStage"
           temperature-label="internal"
         />
         <ValueListTemperatureItem
-          v-if="source[0] === SensorComponentType.Brightloop"
+          v-if="source[0] === SensorComponentType.BrightloopGroup"
           class="text-brand"
-          :source="source as ModuleField<SensorComponentType.Brightloop>"
+          :source="source as ModuleField<SensorComponentType.BrightloopGroup>"
           field="maxChannelTemperature"
           temperature-label="internal"
         />
         <ValueListPowerItem
           :source="source"
-          field="power"
+          field="totalPower"
         />
 
         <ValueListSeparator />

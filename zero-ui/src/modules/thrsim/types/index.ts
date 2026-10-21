@@ -253,6 +253,11 @@ export type BrightloopConverterSensor = Toggle & {
   cell02Temperature2: Stamped<number>;
   power: Stamped<number>;
 };
+export type BrightloopGroupSensor = {
+  anyActive: Stamped<boolean>;
+  maxChannelTemperature: Stamped<number>;
+  totalPower: Stamped<number>;
+};
 export type UgridSensor = Toggle & {
   tempPowerStage: Stamped<number>;
   power: Stamped<number>;
@@ -261,11 +266,23 @@ export type PropulsionDriveSensor = Toggle & {
   tempPowerStage: Stamped<number>;
   power: Stamped<number>;
 };
+export type UgridGroupSensor = {
+  anyActive: Stamped<boolean>;
+  maxTempPowerStage: Stamped<number>;
+  totalPower: Stamped<number>;
+};
 export type ShorePowerConverterSensor = Toggle & {
   esiTransformerTemperature: Stamped<number>;
   esiIgbtMinTemperature: Stamped<number>;
   esiIgbtMaxTemperature: Stamped<number>;
   power: Stamped<number>;
+};
+export type ShorePowerGroupSensor = {
+  anyActive: Stamped<boolean>;
+  maxEsiTransformerTemperature: Stamped<number>;
+  minEsiIgbtMinTemperature: Stamped<number>;
+  maxEsiIgbtMaxTemperature: Stamped<number>;
+  totalPower: Stamped<number>;
 };
 export type PyranometerSensor = {
   irradiance: Stamped<number>;
@@ -300,6 +317,9 @@ export type SensorType =
   | UgridSensor
   | PropulsionDriveSensor
   | ShorePowerConverterSensor
+  | BrightloopGroupSensor
+  | UgridGroupSensor
+  | ShorePowerGroupSensor
   | PyranometerSensor;
 
 export type ControlType =
@@ -452,6 +472,9 @@ export const enum SensorComponentType {
   Ugrid = "sensor:ugrid",
   PropulsionDrive = "sensor:propulsionDrive",
   ShorePowerConverter = "sensor:shorePowerConverter",
+  BrightloopGroup = "sensor:brightloopGroup",
+  UgridGroup = "sensor:ugridGroup",
+  ShorePowerGroup = "sensor:shorePowerGroup",
   AmcsControlMode = "system:amcsControlMode",
 }
 
@@ -476,6 +499,9 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Ugrid,
   SensorComponentType.PropulsionDrive,
   SensorComponentType.ShorePowerConverter,
+  SensorComponentType.BrightloopGroup,
+  SensorComponentType.UgridGroup,
+  SensorComponentType.ShorePowerGroup,
   SensorComponentType.Pyranometer,
 ];
 
@@ -544,6 +570,9 @@ export type SensorDefinitionMap = {
   [SensorComponentType.Ugrid]: UgridSensor;
   [SensorComponentType.PropulsionDrive]: PropulsionDriveSensor;
   [SensorComponentType.ShorePowerConverter]: ShorePowerConverterSensor;
+  [SensorComponentType.BrightloopGroup]: BrightloopGroupSensor;
+  [SensorComponentType.UgridGroup]: UgridGroupSensor;
+  [SensorComponentType.ShorePowerGroup]: ShorePowerGroupSensor;
   [SensorComponentType.Pyranometer]: PyranometerSensor;
   [SensorComponentType.AmcsControlMode]: AmcsControlModeSensor;
 };

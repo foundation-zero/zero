@@ -48,7 +48,7 @@ const { labels, items } = useTranslations();
       <SensorValue
         v-if="source"
         :source="source"
-        field="active"
+        field="anyActive"
       >
         <Partials.ListItem no-source>
           {{ items("state") }}
@@ -60,7 +60,7 @@ const { labels, items } = useTranslations();
 
       <SensorValue
         :source="source"
-        field="power"
+        field="totalPower"
       >
         <Partials.ListItem no-source>
           {{ items("power") }}
@@ -71,7 +71,7 @@ const { labels, items } = useTranslations();
       </SensorValue>
       <SensorValue
         :source="source"
-        field="esiIgbtMaxTemperature"
+        field="maxEsiIgbtMaxTemperature"
       >
         <Partials.ListItem no-source>
           {{ items("internalTemperature") }}

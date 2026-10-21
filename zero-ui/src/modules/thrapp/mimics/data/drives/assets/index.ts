@@ -88,7 +88,7 @@ export const DRIVES_ASSET_DATA = toFieldsMap({
         ),
       },
       // TODO: design how a group tile shows its total (summed power, max temperature)
-      source: getField(SensorComponentType.ShorePowerConverter, "drives", "drivesShorepower"),
+      source: getField(SensorComponentType.ShorePowerGroup, "drives", "drivesShorepower"),
       get tooltip() {
         return fieldTooltip(this.source, {
           title: "shorepower",

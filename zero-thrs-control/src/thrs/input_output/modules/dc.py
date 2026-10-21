@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from typing import Annotated
 
 from pydantic import ConfigDict, computed_field
@@ -15,66 +14,6 @@ from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import GLYCOL_20_HEAT_TRANSFER_CONVERSION
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
-
-
-def brightloop_from_converters(
-    converters: Sequence[sensor.BrightloopConverter],
-) -> sensor.Brightloop:
-    channel_temperatures = [
-        temperature
-        for converter in converters
-        for temperature in converter.channel_temperatures
-    ]
-    return sensor.Brightloop(
-        active=Stamped.combine(
-            *(converter.active for converter in converters),
-            value=any(converter.active.value for converter in converters),
-        ),
-        max_channel_temperature=Stamped.combine(
-            *channel_temperatures,
-            value=max(temperature.value for temperature in channel_temperatures),
-        ),
-        power=Stamped.combine(
-            *(converter.power for converter in converters),
-            value=sum(converter.power.value for converter in converters),
-        ),
-    )
-
-
-def combine_brightloops(brightloops: Sequence[sensor.Brightloop]) -> sensor.Brightloop:
-    return sensor.Brightloop(
-        active=Stamped.combine(
-            *(brightloop.active for brightloop in brightloops),
-            value=any(brightloop.active.value for brightloop in brightloops),
-        ),
-        max_channel_temperature=Stamped.combine(
-            *(brightloop.max_channel_temperature for brightloop in brightloops),
-            value=max(
-                brightloop.max_channel_temperature.value for brightloop in brightloops
-            ),
-        ),
-        power=Stamped.combine(
-            *(brightloop.power for brightloop in brightloops),
-            value=sum(brightloop.power.value for brightloop in brightloops),
-        ),
-    )
-
-
-def combine_ugrids(ugrids: Sequence[sensor.Ugrid]) -> sensor.Ugrid:
-    return sensor.Ugrid(
-        active=Stamped.combine(
-            *(ugrid.active for ugrid in ugrids),
-            value=any(ugrid.active.value for ugrid in ugrids),
-        ),
-        temp_power_stage=Stamped.combine(
-            *(ugrid.temp_power_stage for ugrid in ugrids),
-            value=max(ugrid.temp_power_stage.value for ugrid in ugrids),
-        ),
-        power=Stamped.combine(
-            *(ugrid.power for ugrid in ugrids),
-            value=sum(ugrid.power.value for ugrid in ugrids),
-        ),
-    )
 
 
 class DcSensorValues(AmcsModeSensorValues):
@@ -486,7 +425,7 @@ class DcSensorValues(AmcsModeSensorValues):
     )
     @property
     def dc_brightloop_aft1(self) -> sensor.Brightloop:
-        return brightloop_from_converters(
+        return sensor.Brightloop.from_converters(
             (
                 self.dc_brightloop_aft1_converter1,
                 self.dc_brightloop_aft1_converter2,
@@ -504,7 +443,7 @@ class DcSensorValues(AmcsModeSensorValues):
     )
     @property
     def dc_brightloop_aft2(self) -> sensor.Brightloop:
-        return brightloop_from_converters(
+        return sensor.Brightloop.from_converters(
             (
                 self.dc_brightloop_aft2_converter1,
                 self.dc_brightloop_aft2_converter2,
@@ -521,7 +460,7 @@ class DcSensorValues(AmcsModeSensorValues):
     )
     @property
     def dc_brightloop_aft3(self) -> sensor.Brightloop:
-        return brightloop_from_converters(
+        return sensor.Brightloop.from_converters(
             (
                 self.dc_brightloop_aft3_converter1,
                 self.dc_brightloop_aft3_converter2,
@@ -538,7 +477,7 @@ class DcSensorValues(AmcsModeSensorValues):
     )
     @property
     def dc_brightloop_aft4(self) -> sensor.Brightloop:
-        return brightloop_from_converters(
+        return sensor.Brightloop.from_converters(
             (
                 self.dc_brightloop_aft4_converter1,
                 self.dc_brightloop_aft4_converter2,
@@ -556,7 +495,7 @@ class DcSensorValues(AmcsModeSensorValues):
     )
     @property
     def dc_brightloop_fwd1(self) -> sensor.Brightloop:
-        return brightloop_from_converters(
+        return sensor.Brightloop.from_converters(
             (
                 self.dc_brightloop_fwd1_converter1,
                 self.dc_brightloop_fwd1_converter2,
@@ -574,7 +513,7 @@ class DcSensorValues(AmcsModeSensorValues):
     )
     @property
     def dc_brightloop_fwd2(self) -> sensor.Brightloop:
-        return brightloop_from_converters(
+        return sensor.Brightloop.from_converters(
             (
                 self.dc_brightloop_fwd2_converter1,
                 self.dc_brightloop_fwd2_converter2,
@@ -604,13 +543,13 @@ class DcSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            component_type="brightloop",
+            component_type="brightloop_group",
             included_in_fmu=False,
         )
     )
     @property
-    def dc_aft_brightloops(self) -> sensor.Brightloop:
-        return combine_brightloops(
+    def dc_aft_brightloops(self) -> sensor.BrightloopGroup:
+        return sensor.BrightloopGroup.from_brightloops(
             (
                 self.dc_brightloop_aft1,
                 self.dc_brightloop_aft2,
@@ -621,23 +560,25 @@ class DcSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
-            component_type="brightloop",
+            component_type="brightloop_group",
             included_in_fmu=False,
         )
     )
     @property
-    def dc_fwd_brightloops(self) -> sensor.Brightloop:
-        return combine_brightloops((self.dc_brightloop_fwd1, self.dc_brightloop_fwd2))
+    def dc_fwd_brightloops(self) -> sensor.BrightloopGroup:
+        return sensor.BrightloopGroup.from_brightloops(
+            (self.dc_brightloop_fwd1, self.dc_brightloop_fwd2)
+        )
 
     @computed_field(
         json_schema_extra=computed_meta(
-            component_type="ugrid",
+            component_type="ugrid_group",
             included_in_fmu=False,
         )
     )
     @property
-    def dc_ugrids(self) -> sensor.Ugrid:
-        return combine_ugrids((self.dc_ugrid1, self.dc_ugrid2))
+    def dc_ugrids(self) -> sensor.UgridGroup:
+        return sensor.UgridGroup.from_ugrids((self.dc_ugrid1, self.dc_ugrid2))
 
     @computed_field(
         json_schema_extra=computed_meta(

@@ -94,6 +94,9 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorPvtType: "Pvt",
   SensorHeatpumpType: "HeatPump",
   SensorShorePowerConverterType: "ShorePowerConverter",
+  SensorBrightloopGroupType: "BrightloopGroup",
+  SensorUgridGroupType: "UgridGroup",
+  SensorShorePowerGroupType: "ShorePowerGroup",
   SensorPyranometerType: "Pyranometer",
   SystemAmcsControlModeType: "AmcsControlMode",
 };

@@ -391,10 +391,12 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.FlowControlValve]: SensorComponentType.Valve;
   [MimicComponentType.BoilerTank]: undefined;
   [MimicComponentType.ExchangeCircuit]: SensorComponentType.HeatTransferDevice;
-  [MimicComponentType.DcConverter]: SensorComponentType.Brightloop | SensorComponentType.Ugrid;
+  [MimicComponentType.DcConverter]:
+    | SensorComponentType.BrightloopGroup
+    | SensorComponentType.UgridGroup;
   [MimicComponentType.PropulsionDrive]: SensorComponentType.PropulsionDrive;
   [MimicComponentType.PropulsionCooler]: SensorComponentType.HeatTransferDevice;
-  [MimicComponentType.ShorePowerConverter]: SensorComponentType.ShorePowerConverter;
+  [MimicComponentType.ShorePowerConverter]: SensorComponentType.ShorePowerGroup;
   [MimicComponentType.Pvt]: SensorComponentType.Pvt;
   [MimicComponentType.Thruster]: SensorComponentType.Thruster;
   [MimicComponentType.FreshwaterCircuit]: undefined;

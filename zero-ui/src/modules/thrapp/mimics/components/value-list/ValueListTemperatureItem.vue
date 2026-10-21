@@ -10,6 +10,9 @@
       | SensorComponentType.Ugrid
       | SensorComponentType.Brightloop
       | SensorComponentType.ShorePowerConverter
+      | SensorComponentType.BrightloopGroup
+      | SensorComponentType.UgridGroup
+      | SensorComponentType.ShorePowerGroup
   "
 >
 import { SensorComponentType, SensorDefinitionMap } from "@/modules/thrsim/types/index.ts";

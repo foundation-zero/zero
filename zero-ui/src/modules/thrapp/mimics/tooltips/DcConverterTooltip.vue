@@ -74,7 +74,7 @@ const modeKey = useDcMode(props.custom.group);
       <TooltipListHeader>{{ labels("output") }}</TooltipListHeader>
       <SensorValue
         :source="source"
-        field="power"
+        field="totalPower"
       >
         <Partials.ListItem no-source>
           {{ items("power") }}
@@ -84,9 +84,9 @@ const modeKey = useDcMode(props.custom.group);
         </Partials.ListItem>
       </SensorValue>
       <SensorValue
-        v-if="source[0] === SensorComponentType.Ugrid"
-        :source="source as ModuleField<SensorComponentType.Ugrid>"
-        field="tempPowerStage"
+        v-if="source[0] === SensorComponentType.UgridGroup"
+        :source="source as ModuleField<SensorComponentType.UgridGroup>"
+        field="maxTempPowerStage"
       >
         <Partials.ListItem no-source>
           {{ items("internalTemperature") }}
@@ -96,8 +96,8 @@ const modeKey = useDcMode(props.custom.group);
         </Partials.ListItem>
       </SensorValue>
       <SensorValue
-        v-if="source[0] === SensorComponentType.Brightloop"
-        :source="source as ModuleField<SensorComponentType.Brightloop>"
+        v-if="source[0] === SensorComponentType.BrightloopGroup"
+        :source="source as ModuleField<SensorComponentType.BrightloopGroup>"
         field="maxChannelTemperature"
       >
         <Partials.ListItem no-source>

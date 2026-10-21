@@ -59,7 +59,7 @@ const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
       <SensorValue
         v-if="source"
         :source="source"
-        field="active"
+        field="anyActive"
       >
         <FieldRenderer.HeatPumpMode />
       </SensorValue>
@@ -74,12 +74,12 @@ const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
         <ValueListTemperatureItem
           class="text-brand"
           :source="source"
-          field="esiIgbtMaxTemperature"
+          field="maxEsiIgbtMaxTemperature"
           temperature-label="internal"
         />
         <ValueListPowerItem
           :source="source"
-          field="power"
+          field="totalPower"
         />
         <ValueListSeparator />
       </ValueList>

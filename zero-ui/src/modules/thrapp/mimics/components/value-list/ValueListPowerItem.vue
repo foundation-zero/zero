@@ -16,6 +16,9 @@ const props = defineProps<{
     | SensorComponentType.Ugrid
     | SensorComponentType.Brightloop
     | SensorComponentType.ShorePowerConverter
+    | SensorComponentType.BrightloopGroup
+    | SensorComponentType.UgridGroup
+    | SensorComponentType.ShorePowerGroup
   >;
   class?: HTMLAttributes["class"];
 }>();

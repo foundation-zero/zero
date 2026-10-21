@@ -1,6 +1,5 @@
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions import sensor
-from thrs.input_output.modules.drives import combine_shore_power_converters
 
 
 def _converter(
@@ -15,8 +14,8 @@ def _converter(
     )
 
 
-def test_combine_shore_power_converters():
-    shorepower = combine_shore_power_converters(
+def test_shore_power_group_from_converters():
+    shorepower = sensor.ShorePowerGroup.from_converters(
         (
             _converter(True, (34.7, 38.2), 16_200),
             _converter(False, (0, 0), 0),
@@ -24,8 +23,8 @@ def test_combine_shore_power_converters():
         )
     )
 
-    assert shorepower.active.value
-    assert shorepower.esi_transformer_temperature.value == 65.5
-    assert shorepower.esi_igbt_min_temperature.value == 0
-    assert shorepower.esi_igbt_max_temperature.value == 67.5
-    assert shorepower.power.value == 67_600
+    assert shorepower.any_active.value
+    assert shorepower.max_esi_transformer_temperature.value == 65.5
+    assert shorepower.min_esi_igbt_min_temperature.value == 0
+    assert shorepower.max_esi_igbt_max_temperature.value == 67.5
+    assert shorepower.total_power.value == 67_600

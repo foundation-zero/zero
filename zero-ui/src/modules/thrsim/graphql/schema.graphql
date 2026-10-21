@@ -455,9 +455,9 @@ type DcSensorValuesType {
   dcBrightloopAft4: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop", valveType: null)
   dcBrightloopFwd1: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop", valveType: null)
   dcBrightloopFwd2: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop", valveType: null)
-  dcAftBrightloops: SensorBrightloopType! @jsonSchemaDirective(yardTag: "", componentType: "brightloop", valveType: null)
-  dcFwdBrightloops: SensorBrightloopType! @jsonSchemaDirective(yardTag: "", componentType: "brightloop", valveType: null)
-  dcUgrids: SensorUgridType! @jsonSchemaDirective(yardTag: "", componentType: "ugrid", valveType: null)
+  dcAftBrightloops: SensorBrightloopGroupType! @jsonSchemaDirective(yardTag: "", componentType: "brightloop_group", valveType: null)
+  dcFwdBrightloops: SensorBrightloopGroupType! @jsonSchemaDirective(yardTag: "", componentType: "brightloop_group", valveType: null)
+  dcUgrids: SensorUgridGroupType! @jsonSchemaDirective(yardTag: "", componentType: "ugrid_group", valveType: null)
   dcDhwExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001008", componentType: "heat_transfer", valveType: null)
   dcTotalFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   dcSeawaterExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001006", componentType: "heat_transfer", valveType: null)
@@ -804,7 +804,7 @@ type DrivesSensorValuesType {
   drivesPropdriveFwd1Heat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
   drivesPropdriveFwd2Heat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
   drivesFwdOilCoolerHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001013", componentType: "heat_transfer", valveType: null)
-  drivesShorepower: SensorShorePowerConverterType! @jsonSchemaDirective(yardTag: "45002001", componentType: "shore_power_converter", valveType: null)
+  drivesShorepower: SensorShorePowerGroupType! @jsonSchemaDirective(yardTag: "45002001", componentType: "shore_power_group", valveType: null)
   drivesShorepowerHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
   drivesDhwExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001009", componentType: "heat_transfer", valveType: null)
   drivesSeawaterExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001011", componentType: "heat_transfer", valveType: null)
@@ -1747,6 +1747,12 @@ type SensorBrightloopConverterType {
   power: FloatStampedType!
 }
 
+type SensorBrightloopGroupType {
+  anyActive: BoolStampedType!
+  maxChannelTemperature: FloatStampedType!
+  totalPower: FloatStampedType!
+}
+
 type SensorBrightloopType {
   active: BoolStampedType!
   maxChannelTemperature: FloatStampedType!
@@ -1834,12 +1840,26 @@ type SensorShorePowerConverterType {
   power: FloatStampedType!
 }
 
+type SensorShorePowerGroupType {
+  anyActive: BoolStampedType!
+  maxEsiTransformerTemperature: FloatStampedType!
+  minEsiIgbtMinTemperature: FloatStampedType!
+  maxEsiIgbtMaxTemperature: FloatStampedType!
+  totalPower: FloatStampedType!
+}
+
 type SensorTemperatureSensorType {
   temperature: FloatStampedType!
 }
 
 type SensorThrusterType {
   active: BoolStampedType!
+}
+
+type SensorUgridGroupType {
+  anyActive: BoolStampedType!
+  maxTempPowerStage: FloatStampedType!
+  totalPower: FloatStampedType!
 }
 
 type SensorUgridType {

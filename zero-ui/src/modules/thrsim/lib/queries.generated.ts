@@ -584,9 +584,9 @@ export const DC_PARAMETERS_QUERY = `
 
 export const DC_SENSOR_QUERY = `
   dcAftBrightloops {
-    active { value timestamp }
+    anyActive { value timestamp }
     maxChannelTemperature { value timestamp }
-    power { value timestamp }
+    totalPower { value timestamp }
   }
   dcAftFlow {
     flow { value timestamp }
@@ -872,9 +872,9 @@ export const DC_SENSOR_QUERY = `
     quantity { value timestamp }
   }
   dcFwdBrightloops {
-    active { value timestamp }
+    anyActive { value timestamp }
     maxChannelTemperature { value timestamp }
-    power { value timestamp }
+    totalPower { value timestamp }
   }
   dcFwdFlow {
     flow { value timestamp }
@@ -1120,9 +1120,9 @@ export const DC_SENSOR_QUERY = `
     deltaT { value timestamp }
   }
   dcUgrids {
-    active { value timestamp }
-    tempPowerStage { value timestamp }
-    power { value timestamp }
+    anyActive { value timestamp }
+    maxTempPowerStage { value timestamp }
+    totalPower { value timestamp }
   }
   mode {
     mode { value timestamp }
@@ -2032,11 +2032,11 @@ export const DRIVES_SENSOR_QUERY = `
     deltaT { value timestamp }
   }
   drivesShorepower {
-    active { value timestamp }
-    esiIgbtMaxTemperature { value timestamp }
-    esiIgbtMinTemperature { value timestamp }
-    esiTransformerTemperature { value timestamp }
-    power { value timestamp }
+    anyActive { value timestamp }
+    maxEsiTransformerTemperature { value timestamp }
+    minEsiIgbtMinTemperature { value timestamp }
+    maxEsiIgbtMaxTemperature { value timestamp }
+    totalPower { value timestamp }
   }
   drivesShorepower1a {
     active { value timestamp }
