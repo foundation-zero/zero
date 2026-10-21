@@ -6,7 +6,7 @@ from typing import Annotated
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, CliApp, CliSubCommand
 
-from zero_data.data_gen import generate_data
+from zero_data.data_gen import DEFAULT_PUBLISH_INTERVAL_SECONDS, generate_data
 from zero_data.greptime.cli import GreptimeCmd
 from zero_data.vector_gen import generate_vector
 
@@ -34,10 +34,15 @@ class GenerateDataCmd(BaseModel):
         ),
     ]
 
+    interval: Annotated[
+        float, Field(gt=0, description="Seconds between published values")
+    ] = DEFAULT_PUBLISH_INTERVAL_SECONDS
+
     def cli_cmd(self):
         generate_data(
             excluded_io_list_names=self.exclude_io_lists,
             cache_dir=Path(self.cache_dir) if self.cache_dir else None,
+            interval=self.interval,
         )
 
 

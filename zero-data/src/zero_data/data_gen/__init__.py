@@ -16,6 +16,7 @@ from zero_data.io_list.types import IOResult, Source
 logger = logging.getLogger(__name__)
 
 __all__ = [
+    "DEFAULT_PUBLISH_INTERVAL_SECONDS",
     "AtpxGenerator",
     "AtpxNmeaGenerator",
     "Generator",
@@ -24,7 +25,7 @@ __all__ = [
     "generate_data",
 ]
 
-_PUBLISH_INTERVAL_SECONDS = 10
+DEFAULT_PUBLISH_INTERVAL_SECONDS = 10.0
 
 # Builds a runnable generator from a source's io_list. Each source maps to one
 # builder so generator selection lives in a single dispatch, not a special case.
@@ -57,6 +58,7 @@ _GENERATORS: dict[Source, GeneratorBuilder] = {
 
 async def _run_all_generators(
     mqtt_config: MQTTConfig,
+    interval: float,
     excluded_io_list_names: list[str] | None = None,
     cache_dir: Path | None = None,
 ):
@@ -67,7 +69,7 @@ async def _run_all_generators(
         # NMEA is a fixed corpus, not io_list-driven, so it's started here
         # rather than dispatched via `_GENERATORS`.
         logger.info("Starting atpx_nmea generator")
-        tg.create_task(AtpxNmeaGenerator(_PUBLISH_INTERVAL_SECONDS, mqtt_config).run())
+        tg.create_task(AtpxNmeaGenerator(interval, mqtt_config).run())
 
         for source, file_names in io_lists:
             if source in excluded_set:
@@ -84,13 +86,13 @@ async def _run_all_generators(
 
             io_result = read_io_list(paths, source, cache_dir=cache_dir)
             logger.info(f"Starting {source} generator")
-            tg.create_task(
-                build(_PUBLISH_INTERVAL_SECONDS, mqtt_config, io_result).run()
-            )
+            tg.create_task(build(interval, mqtt_config, io_result).run())
 
 
 def generate_data(
-    excluded_io_list_names: list[str] | None = None, cache_dir: Path | None = None
+    excluded_io_list_names: list[str] | None = None,
+    cache_dir: Path | None = None,
+    interval: float = DEFAULT_PUBLISH_INTERVAL_SECONDS,
 ):
     """Generate data for all IO lists."""
     logger.info("Generating data for all IO lists")
@@ -98,4 +100,6 @@ def generate_data(
         logger.info(f"Excluding IO lists: {excluded_io_list_names}")
     mqtt_config = MQTTConfig()  # pyright: ignore
     logger.info(f"Using MQTTConfig: {mqtt_config.model_dump_json()}")
-    asyncio.run(_run_all_generators(mqtt_config, excluded_io_list_names, cache_dir))
+    asyncio.run(
+        _run_all_generators(mqtt_config, interval, excluded_io_list_names, cache_dir)
+    )
