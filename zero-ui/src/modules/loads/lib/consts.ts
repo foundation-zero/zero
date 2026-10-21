@@ -30,13 +30,7 @@ export const formatUnit = (unit: string | null | undefined, t: (key: string) => 
 };
 
 const AWAS = [AWA.Upwind, AWA.Reaching, AWA.Downwind];
-export const AWA_VALUES: Range<AWA>[] = toRange(
-  (_from, _to, index) => AWAS[index],
-  0,
-  60,
-  120,
-  180,
-);
+export const AWA_VALUES: Range<AWA>[] = toRange((_from, _to, index) => AWAS[index], 0, 40, 80, 180);
 export const AWS_VALUES: Range[] = toRange(
   toNumRangeId("aws"),
   0,

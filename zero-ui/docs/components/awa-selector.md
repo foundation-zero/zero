@@ -6,12 +6,12 @@ A select component for choosing Apparent Wind Angle (AWA) ranges in degrees.
 import AWASelector from '@/modules/loads/components/awa-selector/AWASelector.vue'
 import { ref } from 'vue'
 
-const selectedAWA = ref(0)
+const selectedAWA = ref('upwind')
 </script>
 
 ## Overview
 
-The AWASelector component provides a dropdown interface for selecting predefined True Wind Angle ranges. It uses the Select component from shadcn-vue and displays angle ranges in degrees.
+The AWASelector component provides a dropdown interface for selecting the Apparent Wind Angle range of a load case. It uses the Select component from shadcn-vue and shows each range by name.
 
 ### Basic Example
 
@@ -24,7 +24,7 @@ The AWASelector component provides a dropdown interface for selecting predefined
 import AWASelector from '@/modules/loads/components/awa-selector/AWASelector.vue'
 import { ref } from 'vue'
 
-const selectedAWA = ref(0)
+const selectedAWA = ref('upwind')
 </script>
 
 <template>
@@ -58,7 +58,7 @@ const selectedAWA = ref(0)
   <div class="space-y-4">
     <AWASelector v-model="selectedAWA" />
     <div class="text-sm text-muted-foreground">
-      Selected range index: {{ selectedAWA }}
+      Selected range: {{ selectedAWA }}
     </div>
   </div>
 </div>
@@ -68,7 +68,7 @@ const selectedAWA = ref(0)
   <div class="space-y-4">
     <AWASelector v-model="selectedAWA" />
     <div class="text-sm text-muted-foreground">
-      Selected range index: {{ selectedAWA }}
+      Selected range: {{ selectedAWA }}
     </div>
   </div>
 </template>
@@ -76,16 +76,13 @@ const selectedAWA = ref(0)
 
 ## Available Ranges
 
-The TWA selector provides the following predefined angle ranges:
+The AWA selector provides the following ranges:
 
-- 0 - 40°
-- 40 - 50°
-- 50 - 60°
-- 60 - 90°
-- 90 - 120°
-- 120 - 150°
+- Upwind: 0 - 40°
+- Reaching: 40 - 80°
+- Downwind: 80 - 180°
 
-These ranges are defined in the `TWA_VALUES` constant and represent common sailing wind angle classifications.
+These ranges are defined in the `AWA_VALUES` constant in `src/modules/loads/lib/consts.ts`. They must match `loads.awa_ranges` in the database and `AWA_RANGES` in the loads app's seed export.
 
 ## API Reference
 
@@ -95,13 +92,13 @@ The component uses `v-model` for two-way binding:
 
 | Model | Type | Required | Description |
 |-------|------|----------|-------------|
-| `v-model` | `number` | Yes | The index of the selected TWA range (0-based) |
+| `v-model` | `AWA` | Yes | The id of the selected AWA range (`upwind`, `reaching` or `downwind`) |
 
 ### Emits
 
 | Event | Payload | Description |
 |-------|---------|-------------|
-| `update:modelValue` | `number` | Emitted when the selected range changes |
+| `update:modelValue` | `AWA` | Emitted when the selected range changes |
 
 ## Usage Guidelines
 

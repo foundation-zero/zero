@@ -12,9 +12,9 @@ from sailpack.seed_utils import (
 )
 
 AWA_RANGES: dict[str, tuple[float, float]] = {
-    "upwind": (0.0, 60.0),
-    "reaching": (60.0, 120.0),
-    "downwind": (120.0, 180.0),
+    "upwind": (0.0, 40.0),
+    "reaching": (40.0, 80.0),
+    "downwind": (80.0, 180.0),
 }
 
 AWS_RANGES: list[tuple[float, float | None]] = [
