@@ -141,7 +141,7 @@ async def reset_mutable_tables(sessionmanager: SessionManager):
 class LoadCaseFactory(DictFactory):
     id = LazyFunction(lambda: str(uuid4()))
     name = Sequence(lambda n: f"it-case-{n}")
-    awa = 30.0
+    awa = 20.0
     aws = 22.0
     sail_set_id = 1
 
@@ -299,7 +299,7 @@ class ScenarioFactory:
         default_sails = ["full-main", "full-mizzen", "blade"]
         load_case_id = await self.create_case_with_mapping(
             name="graphql-default-upwind-20-25",
-            awa=35,
+            awa=25,
             aws=22,
             sails=default_sails,
             awa_range_id="upwind",
@@ -369,7 +369,7 @@ class ScenarioFactory:
     async def seed_sentinel_reference(self, target: float = 777.77) -> None:
         load_case_id = await self.create_case_with_mapping(
             name="fixture-sentinel",
-            awa=90,
+            awa=60,
             aws=35,
             sails=["full-main", "full-mizzen", "blade"],
             awa_range_id="reaching",

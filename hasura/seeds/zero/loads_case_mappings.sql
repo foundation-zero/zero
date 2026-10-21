@@ -10,7 +10,7 @@ WITH mapping_payload AS (
     FROM jsonb_to_recordset($$[
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 1,
     "sail_abbreviations": [
       "A3",
@@ -20,7 +20,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 2,
     "sail_abbreviations": [
       "A3",
@@ -30,7 +30,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 3,
     "sail_abbreviations": [
       "A3",
@@ -40,7 +40,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 4,
     "sail_abbreviations": [
       "A3",
@@ -50,7 +50,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 5,
     "sail_abbreviations": [
       "A3",
@@ -60,7 +60,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 6,
     "sail_abbreviations": [
       "A3",
@@ -70,7 +70,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 7,
     "sail_abbreviations": [
       "A3",
@@ -174,6 +174,76 @@ WITH mapping_payload AS (
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "awa_range_id": "upwind",
+    "aws_range_id": 4,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "awa_range_id": "upwind",
+    "aws_range_id": 5,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "awa_range_id": "upwind",
+    "aws_range_id": 6,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
+    "awa_range_id": "upwind",
+    "aws_range_id": 7,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 1,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 2,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 3,
+    "sail_abbreviations": [
+      "B",
+      "FM",
+      "FMZ"
+    ]
+  },
+  {
+    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
+    "awa_range_id": "reaching",
     "aws_range_id": 4,
     "sail_abbreviations": [
       "B",
@@ -183,7 +253,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 5,
     "sail_abbreviations": [
       "B",
@@ -193,7 +263,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 6,
     "sail_abbreviations": [
       "B",
@@ -203,7 +273,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 7,
     "sail_abbreviations": [
       "B",
@@ -437,7 +507,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 1,
     "sail_abbreviations": [
       "B",
@@ -446,7 +516,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 2,
     "sail_abbreviations": [
       "B",
@@ -455,7 +525,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 3,
     "sail_abbreviations": [
       "B",
@@ -464,7 +534,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 4,
     "sail_abbreviations": [
       "B",
@@ -473,7 +543,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 5,
     "sail_abbreviations": [
       "B",
@@ -482,7 +552,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 6,
     "sail_abbreviations": [
       "B",
@@ -491,7 +561,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 7,
     "sail_abbreviations": [
       "B",
@@ -710,7 +780,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 1,
     "sail_abbreviations": [
       "FM",
@@ -719,7 +789,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 2,
     "sail_abbreviations": [
       "FM",
@@ -728,7 +798,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 3,
     "sail_abbreviations": [
       "FM",
@@ -737,7 +807,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 4,
     "sail_abbreviations": [
       "FM",
@@ -746,7 +816,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 5,
     "sail_abbreviations": [
       "FM",
@@ -755,7 +825,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 6,
     "sail_abbreviations": [
       "FM",
@@ -764,7 +834,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 7,
     "sail_abbreviations": [
       "FM",
@@ -772,7 +842,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "load_case_id": "M1R M12R SS Upwind 20261009",
     "awa_range_id": "upwind",
     "aws_range_id": 1,
     "sail_abbreviations": [
@@ -782,7 +852,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "load_case_id": "M1R M12R SS Upwind 20261009",
     "awa_range_id": "upwind",
     "aws_range_id": 2,
     "sail_abbreviations": [
@@ -792,7 +862,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "load_case_id": "M1R M12R SS Upwind 20261009",
     "awa_range_id": "upwind",
     "aws_range_id": 3,
     "sail_abbreviations": [
@@ -802,7 +872,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "load_case_id": "M1R M12R SS Upwind 20261009",
     "awa_range_id": "upwind",
     "aws_range_id": 4,
     "sail_abbreviations": [
@@ -812,7 +882,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "load_case_id": "M1R M12R SS Upwind 20261009",
     "awa_range_id": "upwind",
     "aws_range_id": 5,
     "sail_abbreviations": [
@@ -822,7 +892,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "load_case_id": "M1R M12R SS Upwind 20261009",
     "awa_range_id": "upwind",
     "aws_range_id": 6,
     "sail_abbreviations": [
@@ -842,6 +912,76 @@ WITH mapping_payload AS (
     ]
   },
   {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 1,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ1R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 2,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ1R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 3,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ1R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 4,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ1R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 5,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ1R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 6,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ1R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 7,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ1R",
+      "SS"
+    ]
+  },
+  {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "awa_range_id": "upwind",
     "aws_range_id": 1,
@@ -884,6 +1024,76 @@ WITH mapping_payload AS (
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "awa_range_id": "upwind",
+    "aws_range_id": 5,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "awa_range_id": "upwind",
+    "aws_range_id": 6,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
+    "awa_range_id": "upwind",
+    "aws_range_id": 7,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "awa_range_id": "reaching",
+    "aws_range_id": 1,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "awa_range_id": "reaching",
+    "aws_range_id": 2,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "awa_range_id": "reaching",
+    "aws_range_id": 3,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "awa_range_id": "reaching",
+    "aws_range_id": 4,
+    "sail_abbreviations": [
+      "M1R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
+    "awa_range_id": "reaching",
     "aws_range_id": 5,
     "sail_abbreviations": [
       "M1R",
@@ -893,7 +1103,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 6,
     "sail_abbreviations": [
       "M1R",
@@ -903,7 +1113,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 7,
     "sail_abbreviations": [
       "M1R",
@@ -1017,6 +1227,76 @@ WITH mapping_payload AS (
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "awa_range_id": "upwind",
+    "aws_range_id": 5,
+    "sail_abbreviations": [
+      "M2R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "awa_range_id": "upwind",
+    "aws_range_id": 6,
+    "sail_abbreviations": [
+      "M2R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
+    "awa_range_id": "upwind",
+    "aws_range_id": 7,
+    "sail_abbreviations": [
+      "M2R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 1,
+    "sail_abbreviations": [
+      "M2R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 2,
+    "sail_abbreviations": [
+      "M2R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 3,
+    "sail_abbreviations": [
+      "M2R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "awa_range_id": "reaching",
+    "aws_range_id": 4,
+    "sail_abbreviations": [
+      "M2R",
+      "MZ2R",
+      "SS"
+    ]
+  },
+  {
+    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
+    "awa_range_id": "reaching",
     "aws_range_id": 5,
     "sail_abbreviations": [
       "M2R",
@@ -1026,7 +1306,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 6,
     "sail_abbreviations": [
       "M2R",
@@ -1036,7 +1316,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 7,
     "sail_abbreviations": [
       "M2R",
@@ -1172,7 +1452,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 1,
     "sail_abbreviations": [
       "M3R"
@@ -1180,7 +1460,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 2,
     "sail_abbreviations": [
       "M3R"
@@ -1188,7 +1468,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 3,
     "sail_abbreviations": [
       "M3R"
@@ -1196,7 +1476,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 4,
     "sail_abbreviations": [
       "M3R"
@@ -1204,7 +1484,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 5,
     "sail_abbreviations": [
       "M3R"
@@ -1212,7 +1492,7 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 6,
     "sail_abbreviations": [
       "M3R"
@@ -1220,14 +1500,14 @@ WITH mapping_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "awa_range_id": "upwind",
+    "awa_range_id": "reaching",
     "aws_range_id": 7,
     "sail_abbreviations": [
       "M3R"
     ]
   },
   {
-    "load_case_id": "M3R SJ Rchng 20261008",
+    "load_case_id": "M3R SJ Upwind 20261008",
     "awa_range_id": "upwind",
     "aws_range_id": 1,
     "sail_abbreviations": [
@@ -1236,7 +1516,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "M3R SJ Rchng 20261008",
+    "load_case_id": "M3R SJ Upwind 20261008",
     "awa_range_id": "upwind",
     "aws_range_id": 2,
     "sail_abbreviations": [
@@ -1245,7 +1525,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "M3R SJ Rchng 20261008",
+    "load_case_id": "M3R SJ Upwind 20261008",
     "awa_range_id": "upwind",
     "aws_range_id": 3,
     "sail_abbreviations": [
@@ -1254,7 +1534,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "M3R SJ Rchng 20261008",
+    "load_case_id": "M3R SJ Upwind 20261008",
     "awa_range_id": "upwind",
     "aws_range_id": 4,
     "sail_abbreviations": [
@@ -1263,7 +1543,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "M3R SJ Rchng 20261008",
+    "load_case_id": "M3R SJ Upwind 20261008",
     "awa_range_id": "upwind",
     "aws_range_id": 5,
     "sail_abbreviations": [
@@ -1272,7 +1552,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "M3R SJ Rchng 20261008",
+    "load_case_id": "M3R SJ Upwind 20261008",
     "awa_range_id": "upwind",
     "aws_range_id": 6,
     "sail_abbreviations": [
@@ -1281,8 +1561,71 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "M3R SJ Rchng 20261008",
+    "load_case_id": "M3R SJ Upwind 20261008",
     "awa_range_id": "upwind",
+    "aws_range_id": 7,
+    "sail_abbreviations": [
+      "M3R",
+      "SJ"
+    ]
+  },
+  {
+    "load_case_id": "M3R SJ Rchng 20261008",
+    "awa_range_id": "reaching",
+    "aws_range_id": 1,
+    "sail_abbreviations": [
+      "M3R",
+      "SJ"
+    ]
+  },
+  {
+    "load_case_id": "M3R SJ Rchng 20261008",
+    "awa_range_id": "reaching",
+    "aws_range_id": 2,
+    "sail_abbreviations": [
+      "M3R",
+      "SJ"
+    ]
+  },
+  {
+    "load_case_id": "M3R SJ Rchng 20261008",
+    "awa_range_id": "reaching",
+    "aws_range_id": 3,
+    "sail_abbreviations": [
+      "M3R",
+      "SJ"
+    ]
+  },
+  {
+    "load_case_id": "M3R SJ Rchng 20261008",
+    "awa_range_id": "reaching",
+    "aws_range_id": 4,
+    "sail_abbreviations": [
+      "M3R",
+      "SJ"
+    ]
+  },
+  {
+    "load_case_id": "M3R SJ Rchng 20261008",
+    "awa_range_id": "reaching",
+    "aws_range_id": 5,
+    "sail_abbreviations": [
+      "M3R",
+      "SJ"
+    ]
+  },
+  {
+    "load_case_id": "M3R SJ Rchng 20261008",
+    "awa_range_id": "reaching",
+    "aws_range_id": 6,
+    "sail_abbreviations": [
+      "M3R",
+      "SJ"
+    ]
+  },
+  {
+    "load_case_id": "M3R SJ Rchng 20261008",
+    "awa_range_id": "reaching",
     "aws_range_id": 7,
     "sail_abbreviations": [
       "M3R",
@@ -1346,7 +1689,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "awa_range_id": "upwind",
     "aws_range_id": 1,
     "sail_abbreviations": [
@@ -1354,7 +1697,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "awa_range_id": "upwind",
     "aws_range_id": 2,
     "sail_abbreviations": [
@@ -1362,7 +1705,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "awa_range_id": "upwind",
     "aws_range_id": 3,
     "sail_abbreviations": [
@@ -1370,7 +1713,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "awa_range_id": "upwind",
     "aws_range_id": 4,
     "sail_abbreviations": [
@@ -1378,7 +1721,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "awa_range_id": "upwind",
     "aws_range_id": 5,
     "sail_abbreviations": [
@@ -1386,7 +1729,7 @@ WITH mapping_payload AS (
     ]
   },
   {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "awa_range_id": "upwind",
     "aws_range_id": 6,
     "sail_abbreviations": [
@@ -1396,6 +1739,62 @@ WITH mapping_payload AS (
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "awa_range_id": "upwind",
+    "aws_range_id": 7,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "awa_range_id": "reaching",
+    "aws_range_id": 1,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "awa_range_id": "reaching",
+    "aws_range_id": 2,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "awa_range_id": "reaching",
+    "aws_range_id": 3,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "awa_range_id": "reaching",
+    "aws_range_id": 4,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "awa_range_id": "reaching",
+    "aws_range_id": 5,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "awa_range_id": "reaching",
+    "aws_range_id": 6,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "awa_range_id": "reaching",
     "aws_range_id": 7,
     "sail_abbreviations": [
       "TS"
