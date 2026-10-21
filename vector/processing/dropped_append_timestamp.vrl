@@ -1,0 +1,9 @@
+if !exists(.timestamp) || is_null(.timestamp) {
+    .timestamp = now()
+} else if !is_timestamp(.timestamp) {
+    _, err = parse_timestamp(.timestamp, "%+")
+    if err != null {
+        .original_timestamp = to_string(.timestamp) ?? encode_json(.timestamp)
+        .timestamp = now()
+    }
+}
