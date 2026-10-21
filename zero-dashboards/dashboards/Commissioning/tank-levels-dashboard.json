@@ -2314,7 +2314,7 @@
           "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tMAX(time) AS time,\r\n\tMAX(CASE WHEN name = 'grey-level-aft' THEN level END) AS grey_aft,\r\n\tMAX(CASE WHEN name = 'grey-level-fwd' THEN level END) AS grey_fwd,\r\n\tMAX(CASE WHEN name = 'blac-level' THEN level END) AS black\r\nFROM (\r\n\tSELECT DISTINCT ON (technical_name)\r\n\t\ttimestamp      AS time,\r\n\t\ttechnical_name AS name,\r\n\t\tlevel__value   AS level\r\n\tFROM public.marpower__sewage__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tORDER BY technical_name, timestamp DESC\r\n)",
+          "rawSql": "SELECT\r\n\tMAX(time) AS time,\r\n\tMAX(CASE WHEN name = 'grey-level-aft' THEN level END) AS grey_aft,\r\n\tMAX(CASE WHEN name = 'grey-level-fwd' THEN level END) AS grey_fwd,\r\n\tMAX(CASE WHEN name LIKE 'blac%-level' THEN level END) AS black\r\nFROM (\r\n\tSELECT DISTINCT ON (technical_name)\r\n\t\ttimestamp      AS time,\r\n\t\ttechnical_name AS name,\r\n\t\tlevel__value   AS level\r\n\tFROM public.marpower__sewage__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tORDER BY technical_name, timestamp DESC\r\n)",
           "refId": "A",
           "sql": {
             "columns": [
