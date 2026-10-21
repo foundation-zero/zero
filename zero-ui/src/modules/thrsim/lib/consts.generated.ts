@@ -587,113 +587,113 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "45002076",
     componentType: SensorComponentType.Brightloop,
   },
-  dcBrightloopAft1String1: {
+  dcBrightloopAft1Converter1: {
     yardTag: "45002073",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopAft1String2: {
+  dcBrightloopAft1Converter2: {
     yardTag: "45002073",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopAft1String3: {
+  dcBrightloopAft1Converter3: {
     yardTag: "45002073",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopAft1String4: {
+  dcBrightloopAft1Converter4: {
     yardTag: "45002073",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft2: {
     yardTag: "45002075",
     componentType: SensorComponentType.Brightloop,
   },
-  dcBrightloopAft2String1: {
+  dcBrightloopAft2Converter1: {
     yardTag: "45002074",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopAft2String2: {
+  dcBrightloopAft2Converter2: {
     yardTag: "45002074",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopAft2String3: {
+  dcBrightloopAft2Converter3: {
     yardTag: "45002074",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft3: {
     yardTag: "45002074",
     componentType: SensorComponentType.Brightloop,
   },
-  dcBrightloopAft3String1: {
+  dcBrightloopAft3Converter1: {
     yardTag: "45002075",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopAft3String2: {
+  dcBrightloopAft3Converter2: {
     yardTag: "45002075",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopAft3String3: {
+  dcBrightloopAft3Converter3: {
     yardTag: "45002075",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft4: {
     yardTag: "45002073",
     componentType: SensorComponentType.Brightloop,
   },
-  dcBrightloopAft4String1: {
+  dcBrightloopAft4Converter1: {
     yardTag: "45002076",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopAft4String2: {
+  dcBrightloopAft4Converter2: {
     yardTag: "45002076",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopAft4String3: {
+  dcBrightloopAft4Converter3: {
     yardTag: "45002076",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopAft4String4: {
+  dcBrightloopAft4Converter4: {
     yardTag: "45002076",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopFwd1: {
     yardTag: "45002078",
     componentType: SensorComponentType.Brightloop,
   },
-  dcBrightloopFwd1String1: {
+  dcBrightloopFwd1Converter1: {
     yardTag: "45002077",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopFwd1String2: {
+  dcBrightloopFwd1Converter2: {
     yardTag: "45002077",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopFwd1String3: {
+  dcBrightloopFwd1Converter3: {
     yardTag: "45002077",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopFwd1String4: {
+  dcBrightloopFwd1Converter4: {
     yardTag: "45002077",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopFwd2: {
     yardTag: "45002077",
     componentType: SensorComponentType.Brightloop,
   },
-  dcBrightloopFwd2String1: {
+  dcBrightloopFwd2Converter1: {
     yardTag: "45002078",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopFwd2String2: {
+  dcBrightloopFwd2Converter2: {
     yardTag: "45002078",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopFwd2String3: {
+  dcBrightloopFwd2Converter3: {
     yardTag: "45002078",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
-  dcBrightloopFwd2String4: {
+  dcBrightloopFwd2Converter4: {
     yardTag: "45002078",
-    componentType: SensorComponentType.Brightloop,
+    componentType: SensorComponentType.BrightloopConverter,
   },
   dcDhwExchanger: {
     yardTag: "50001008",
@@ -944,85 +944,85 @@ export const DC_SIMULATION_INPUTS = toSimulationDefinition({
   dcBrightloopAft1: {
     componentType: SimulationComponentType.HeatSource,
   },
-  dcBrightloopAft1String1: {
+  dcBrightloopAft1Converter1: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft1String2: {
+  dcBrightloopAft1Converter2: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft1String3: {
+  dcBrightloopAft1Converter3: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft1String4: {
+  dcBrightloopAft1Converter4: {
     componentType: SimulationComponentType.Brightloop,
   },
   dcBrightloopAft2: {
     componentType: SimulationComponentType.HeatSource,
   },
-  dcBrightloopAft2String1: {
+  dcBrightloopAft2Converter1: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft2String2: {
+  dcBrightloopAft2Converter2: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft2String3: {
+  dcBrightloopAft2Converter3: {
     componentType: SimulationComponentType.Brightloop,
   },
   dcBrightloopAft3: {
     componentType: SimulationComponentType.HeatSource,
   },
-  dcBrightloopAft3String1: {
+  dcBrightloopAft3Converter1: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft3String2: {
+  dcBrightloopAft3Converter2: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft3String3: {
+  dcBrightloopAft3Converter3: {
     componentType: SimulationComponentType.Brightloop,
   },
   dcBrightloopAft4: {
     componentType: SimulationComponentType.HeatSource,
   },
-  dcBrightloopAft4String1: {
+  dcBrightloopAft4Converter1: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft4String2: {
+  dcBrightloopAft4Converter2: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft4String3: {
+  dcBrightloopAft4Converter3: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft4String4: {
+  dcBrightloopAft4Converter4: {
     componentType: SimulationComponentType.Brightloop,
   },
   dcBrightloopFwd1: {
     componentType: SimulationComponentType.HeatSource,
   },
-  dcBrightloopFwd1String1: {
+  dcBrightloopFwd1Converter1: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopFwd1String2: {
+  dcBrightloopFwd1Converter2: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopFwd1String3: {
+  dcBrightloopFwd1Converter3: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopFwd1String4: {
+  dcBrightloopFwd1Converter4: {
     componentType: SimulationComponentType.Brightloop,
   },
   dcBrightloopFwd2: {
     componentType: SimulationComponentType.HeatSource,
   },
-  dcBrightloopFwd2String1: {
+  dcBrightloopFwd2Converter1: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopFwd2String2: {
+  dcBrightloopFwd2Converter2: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopFwd2String3: {
+  dcBrightloopFwd2Converter3: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopFwd2String4: {
+  dcBrightloopFwd2Converter4: {
     componentType: SimulationComponentType.Brightloop,
   },
   dcDhwSupply: {
@@ -2943,85 +2943,85 @@ export const THRS_SIMULATION_INPUTS = toSimulationDefinition({
   dcBrightloopAft1: {
     componentType: SimulationComponentType.HeatSource,
   },
-  dcBrightloopAft1String1: {
+  dcBrightloopAft1Converter1: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft1String2: {
+  dcBrightloopAft1Converter2: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft1String3: {
+  dcBrightloopAft1Converter3: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft1String4: {
+  dcBrightloopAft1Converter4: {
     componentType: SimulationComponentType.Brightloop,
   },
   dcBrightloopAft2: {
     componentType: SimulationComponentType.HeatSource,
   },
-  dcBrightloopAft2String1: {
+  dcBrightloopAft2Converter1: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft2String2: {
+  dcBrightloopAft2Converter2: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft2String3: {
+  dcBrightloopAft2Converter3: {
     componentType: SimulationComponentType.Brightloop,
   },
   dcBrightloopAft3: {
     componentType: SimulationComponentType.HeatSource,
   },
-  dcBrightloopAft3String1: {
+  dcBrightloopAft3Converter1: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft3String2: {
+  dcBrightloopAft3Converter2: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft3String3: {
+  dcBrightloopAft3Converter3: {
     componentType: SimulationComponentType.Brightloop,
   },
   dcBrightloopAft4: {
     componentType: SimulationComponentType.HeatSource,
   },
-  dcBrightloopAft4String1: {
+  dcBrightloopAft4Converter1: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft4String2: {
+  dcBrightloopAft4Converter2: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft4String3: {
+  dcBrightloopAft4Converter3: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopAft4String4: {
+  dcBrightloopAft4Converter4: {
     componentType: SimulationComponentType.Brightloop,
   },
   dcBrightloopFwd1: {
     componentType: SimulationComponentType.HeatSource,
   },
-  dcBrightloopFwd1String1: {
+  dcBrightloopFwd1Converter1: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopFwd1String2: {
+  dcBrightloopFwd1Converter2: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopFwd1String3: {
+  dcBrightloopFwd1Converter3: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopFwd1String4: {
+  dcBrightloopFwd1Converter4: {
     componentType: SimulationComponentType.Brightloop,
   },
   dcBrightloopFwd2: {
     componentType: SimulationComponentType.HeatSource,
   },
-  dcBrightloopFwd2String1: {
+  dcBrightloopFwd2Converter1: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopFwd2String2: {
+  dcBrightloopFwd2Converter2: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopFwd2String3: {
+  dcBrightloopFwd2Converter3: {
     componentType: SimulationComponentType.Brightloop,
   },
-  dcBrightloopFwd2String4: {
+  dcBrightloopFwd2Converter4: {
     componentType: SimulationComponentType.Brightloop,
   },
   dcSeawaterSupply: {

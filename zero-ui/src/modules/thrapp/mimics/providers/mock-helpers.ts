@@ -195,11 +195,27 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   },
   [SensorComponentType.Brightloop]: () => {
     const active = useRandomizedBoolean();
+    const maxChannelTemperature = useRandomizedNumber(0, 100);
+    const power = useRandomizedNumber(0, 1000);
+    return computed(() => ({
+      active: stamp(active),
+      maxChannelTemperature: stamp(maxChannelTemperature),
+      power: stamp(power),
+    }));
+  },
+  [SensorComponentType.BrightloopConverter]: () => {
+    const active = useRandomizedBoolean();
     const cell01Temperature1 = useRandomizedNumber(0, 100);
+    const cell01Temperature2 = useRandomizedNumber(0, 100);
+    const cell02Temperature1 = useRandomizedNumber(0, 100);
+    const cell02Temperature2 = useRandomizedNumber(0, 100);
     const power = useRandomizedNumber(0, 1000);
     return computed(() => ({
       active: stamp(active),
       cell01Temperature1: stamp(cell01Temperature1),
+      cell01Temperature2: stamp(cell01Temperature2),
+      cell02Temperature1: stamp(cell02Temperature1),
+      cell02Temperature2: stamp(cell02Temperature2),
       power: stamp(power),
     }));
   },

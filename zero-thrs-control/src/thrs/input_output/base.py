@@ -139,7 +139,7 @@ def _factory[R, **P](
 type BaseComponentType = Literal[
     "adsorption_chiller",
     "brightloop",
-    "brightloop_string",
+    "brightloop_converter",
     "calculated_flow",
     "calculated_temperature",
     "delta_t",

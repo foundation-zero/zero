@@ -141,7 +141,15 @@ const FIELD_MAPPINGS: AllFieldMappings = {
     HeatTransferDevice: ["temperatureSupply", "temperatureReturn", "flow", "heat", "deltaT"],
     CalculatedFlow: ["flow"],
     AdsorptionChiller: ["operating", "noError", "freeCooling"],
-    Brightloop: ["active", "cell01Temperature1", "power"],
+    Brightloop: ["active", "maxChannelTemperature", "power"],
+    BrightloopConverter: [
+      "active",
+      "cell01Temperature1",
+      "cell01Temperature2",
+      "cell02Temperature1",
+      "cell02Temperature2",
+      "power",
+    ],
     Ugrid: ["active", "tempPowerStage", "power"],
     PropulsionDrive: ["active", "tempPowerStage", "power"],
     ShorePowerConverter: [

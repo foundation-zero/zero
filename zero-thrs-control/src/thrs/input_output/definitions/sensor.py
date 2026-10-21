@@ -426,16 +426,26 @@ class ShorePowerConverter(ThrsValues):
 
 class Brightloop(ThrsValues):
     active: Stamped[OnOff]
-    cell01_temperature1: Stamped[Celsius]
-    power: Annotated[Stamped[Watt], Field(alias="PvPower")]
+    max_channel_temperature: Stamped[Celsius]
+    power: Stamped[Watt]
 
 
-class BrightloopString(ThrsValues):
+class BrightloopConverter(ThrsValues):
     active: Annotated[Stamped[OnOff], Field(alias="Running")]
-    cell01_temperature1: Stamped[Celsius] = Stamped(
-        value=-100.0, timestamp=datetime.fromtimestamp(0, UTC)
-    )
+    cell01_temperature1: Stamped[Celsius]
+    cell01_temperature2: Stamped[Celsius]
+    cell02_temperature1: Stamped[Celsius]
+    cell02_temperature2: Stamped[Celsius]
     power: Annotated[Stamped[Watt], Field(alias="PvPower")]
+
+    @property
+    def channel_temperatures(self) -> tuple[Stamped[Celsius], ...]:
+        return (
+            self.cell01_temperature1,
+            self.cell01_temperature2,
+            self.cell02_temperature1,
+            self.cell02_temperature2,
+        )
 
 
 class Ugrid(ThrsValues):
@@ -518,7 +528,7 @@ class Pyranometer(ThrsValues):
 __all__ = [
     "AdsorptionChiller",
     "Brightloop",
-    "BrightloopString",
+    "BrightloopConverter",
     "CalculatedFlow",
     "CalculatedTemperature",
     "FlowOnlySensor",

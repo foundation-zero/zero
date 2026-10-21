@@ -108,73 +108,73 @@ class ThrsSimulationInputs(ThrsValues):
     dc_brightloop_aft2: simulation.HeatSource
     dc_brightloop_aft3: simulation.HeatSource
     dc_brightloop_aft4: simulation.HeatSource
-    dc_brightloop_fwd1_string1: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_fwd1_converter1: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_fwd1_string2: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_fwd1_converter2: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_fwd1_string3: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_fwd1_converter3: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_fwd1_string4: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_fwd1_converter4: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_fwd2_string1: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_fwd2_converter1: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_fwd2_string2: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_fwd2_converter2: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_fwd2_string3: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_fwd2_converter3: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_fwd2_string4: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_fwd2_converter4: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
     dc_ugrid1: simulation.Ugrid
     dc_ugrid2: simulation.Ugrid
-    dc_brightloop_aft1_string1: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft1_converter1: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_aft1_string2: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft1_converter2: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_aft1_string3: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft1_converter3: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_aft1_string4: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft1_converter4: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_aft2_string1: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft2_converter1: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_aft2_string2: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft2_converter2: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_aft2_string3: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft2_converter3: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_aft3_string1: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft3_converter1: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_aft3_string2: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft3_converter2: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_aft3_string3: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft3_converter3: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_aft4_string1: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft4_converter1: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_aft4_string2: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft4_converter2: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_aft4_string3: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft4_converter3: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
-    dc_brightloop_aft4_string4: Annotated[
-        simulation.BrightloopString, component_meta(included_in_fmu=False)
+    dc_brightloop_aft4_converter4: Annotated[
+        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
     ]
     dc_seawater_supply: simulation.Boundary
     # drives

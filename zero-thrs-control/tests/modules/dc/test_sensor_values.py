@@ -1,0 +1,55 @@
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions import sensor
+from thrs.input_output.modules.dc import brightloop_from_converters
+
+
+def _converter(
+    active: bool, channel_temperatures: tuple[float, float, float, float], power: float
+) -> sensor.BrightloopConverter:
+    return sensor.BrightloopConverter(
+        active=Stamped.stamp(active),
+        cell01_temperature1=Stamped.stamp(channel_temperatures[0]),
+        cell01_temperature2=Stamped.stamp(channel_temperatures[1]),
+        cell02_temperature1=Stamped.stamp(channel_temperatures[2]),
+        cell02_temperature2=Stamped.stamp(channel_temperatures[3]),
+        power=Stamped.stamp(power),
+    )
+
+
+def test_brightloop_from_converters():
+    brightloop = brightloop_from_converters(
+        (
+            _converter(False, (30, 30, 31, 31), 0),
+            _converter(True, (38, 38, 41, 40), 15_500),
+            _converter(True, (0, 0, 0, 0), 17_500),
+        )
+    )
+
+    assert brightloop.active.value
+    assert brightloop.max_channel_temperature.value == 41
+    assert brightloop.power.value == 33_000
+
+
+def test_brightloop_converter_parses_mqtt_payload():
+    def stamped(value: object) -> dict:
+        return {"Value": value, "TimeStamp": "2026-10-20T14:16:28.6058779Z"}
+
+    converter = sensor.BrightloopConverter.model_validate(
+        {
+            "Running": stamped(True),
+            "Cell01Temperature1": stamped(32),
+            "Cell01Temperature2": stamped(32),
+            "Cell02Temperature1": stamped(33),
+            "Cell02Temperature2": stamped(33),
+            "PvPower": stamped(3.0285),
+        }
+    )
+
+    assert converter.active.value
+    assert [temperature.value for temperature in converter.channel_temperatures] == [
+        32,
+        32,
+        33,
+        33,
+    ]
+    assert converter.power.value == 3.0285

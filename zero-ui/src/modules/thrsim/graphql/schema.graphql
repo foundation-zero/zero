@@ -147,9 +147,12 @@ input BoundaryInputType {
   flow: Float!
 }
 
-input BrightloopStringInputType {
+input BrightloopConverterInputType {
   active: Boolean!
   cell01Temperature1: Float!
+  cell01Temperature2: Float!
+  cell02Temperature1: Float!
+  cell02Temperature2: Float!
   power: Float!
 }
 
@@ -422,28 +425,28 @@ type DcSensorValuesType {
   dcPressureAft: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-07", componentType: "pressure_sensor", valveType: null)
   dcPressureUgrid: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-08", componentType: "pressure_sensor", valveType: null)
   dcPressureFwd: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-09", componentType: "pressure_sensor", valveType: null)
-  dcBrightloopAft1String1: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop_string", valveType: null)
-  dcBrightloopAft1String2: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop_string", valveType: null)
-  dcBrightloopAft1String3: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop_string", valveType: null)
-  dcBrightloopAft1String4: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop_string", valveType: null)
-  dcBrightloopAft2String1: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002074", componentType: "brightloop_string", valveType: null)
-  dcBrightloopAft2String2: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002074", componentType: "brightloop_string", valveType: null)
-  dcBrightloopAft2String3: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002074", componentType: "brightloop_string", valveType: null)
-  dcBrightloopAft3String1: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002075", componentType: "brightloop_string", valveType: null)
-  dcBrightloopAft3String2: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002075", componentType: "brightloop_string", valveType: null)
-  dcBrightloopAft3String3: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002075", componentType: "brightloop_string", valveType: null)
-  dcBrightloopAft4String1: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop_string", valveType: null)
-  dcBrightloopAft4String2: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop_string", valveType: null)
-  dcBrightloopAft4String3: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop_string", valveType: null)
-  dcBrightloopAft4String4: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop_string", valveType: null)
-  dcBrightloopFwd1String1: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop_string", valveType: null)
-  dcBrightloopFwd1String2: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop_string", valveType: null)
-  dcBrightloopFwd1String3: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop_string", valveType: null)
-  dcBrightloopFwd1String4: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop_string", valveType: null)
-  dcBrightloopFwd2String1: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop_string", valveType: null)
-  dcBrightloopFwd2String2: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop_string", valveType: null)
-  dcBrightloopFwd2String3: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop_string", valveType: null)
-  dcBrightloopFwd2String4: SensorBrightloopStringType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop_string", valveType: null)
+  dcBrightloopAft1Converter1: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft1Converter2: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft1Converter3: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft1Converter4: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft2Converter1: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002074", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft2Converter2: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002074", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft2Converter3: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002074", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft3Converter1: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002075", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft3Converter2: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002075", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft3Converter3: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002075", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft4Converter1: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft4Converter2: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft4Converter3: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft4Converter4: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd1Converter1: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd1Converter2: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd1Converter3: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd1Converter4: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd2Converter1: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd2Converter2: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd2Converter3: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd2Converter4: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop_converter", valveType: null)
   dcUgrid1: SensorUgridType! @jsonSchemaDirective(yardTag: "45002082", componentType: "ugrid", valveType: null)
   dcUgrid2: SensorUgridType! @jsonSchemaDirective(yardTag: "45002081", componentType: "ugrid", valveType: null)
   dcBrightloopAft1: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop", valveType: null)
@@ -477,30 +480,30 @@ type DcSensorValuesTypeDcControlValuesTypeDcParametersTypeDcControlModeTypeDcCon
 }
 
 type DcSimulationInputsType {
-  dcBrightloopFwd1String1: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd1String2: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd1String3: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd1String4: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd2String1: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd2String2: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd2String3: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd2String4: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd1Converter1: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd1Converter2: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd1Converter3: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd1Converter4: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd2Converter1: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd2Converter2: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd2Converter3: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd2Converter4: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dcUgrid1: SimulationUgridType!
   dcUgrid2: SimulationUgridType!
-  dcBrightloopAft1String1: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft1String2: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft1String3: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft1String4: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft2String1: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft2String2: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft2String3: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft3String1: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft3String2: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft3String3: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft4String1: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft4String2: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft4String3: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft4String4: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft1Converter1: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft1Converter2: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft1Converter3: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft1Converter4: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft2Converter1: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft2Converter2: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft2Converter3: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft3Converter1: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft3Converter2: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft3Converter3: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft4Converter1: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft4Converter2: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft4Converter3: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft4Converter4: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dcSeawaterSupply: SimulationBoundaryType!
   dcDhwSupply: SimulationBoundaryType!
   mode: SystemAmcsControlModeType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
@@ -1161,30 +1164,30 @@ type Mutation {
   thrsSimulationSetDcBrightloopAft2(value: HeatSourceInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDcBrightloopAft3(value: HeatSourceInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDcBrightloopAft4(value: HeatSourceInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopFwd1String1(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopFwd1String2(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopFwd1String3(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopFwd1String4(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopFwd2String1(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopFwd2String2(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopFwd2String3(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopFwd2String4(value: BrightloopStringInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd1Converter1(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd1Converter2(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd1Converter3(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd1Converter4(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd2Converter1(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd2Converter2(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd2Converter3(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd2Converter4(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDcUgrid1(value: UgridInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDcUgrid2(value: UgridInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft1String1(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft1String2(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft1String3(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft1String4(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft2String1(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft2String2(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft2String3(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft3String1(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft3String2(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft3String3(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft4String1(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft4String2(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft4String3(value: BrightloopStringInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft4String4(value: BrightloopStringInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft1Converter1(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft1Converter2(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft1Converter3(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft1Converter4(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft2Converter1(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft2Converter2(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft2Converter3(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft3Converter1(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft3Converter2(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft3Converter3(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft4Converter1(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft4Converter2(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft4Converter3(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft4Converter4(value: BrightloopConverterInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDcSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDrivesOilCoolerAft(value: HeatSourceInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDrivesOilCoolerFwd(value: HeatSourceInputType!): ThrsSimulationInputsType!
@@ -1220,30 +1223,30 @@ type Mutation {
   dhwSimulationSetDhwSeawaterSupply(value: TemperatureBoundaryInputType!): DhwSimulationInputsType!
   dhwSimulationSetDhwHotwaterDemand(value: FlowBoundaryInputType!): DhwSimulationInputsType!
   dhwSimulationSetMode(value: AmcsControlModeInputType!): DhwSimulationInputsType!
-  dcSimulationSetDcBrightloopFwd1String1(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopFwd1String2(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopFwd1String3(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopFwd1String4(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopFwd2String1(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopFwd2String2(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopFwd2String3(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopFwd2String4(value: BrightloopStringInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd1Converter1(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd1Converter2(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd1Converter3(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd1Converter4(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd2Converter1(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd2Converter2(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd2Converter3(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd2Converter4(value: BrightloopConverterInputType!): DcSimulationInputsType!
   dcSimulationSetDcUgrid1(value: UgridInputType!): DcSimulationInputsType!
   dcSimulationSetDcUgrid2(value: UgridInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft1String1(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft1String2(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft1String3(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft1String4(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft2String1(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft2String2(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft2String3(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft3String1(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft3String2(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft3String3(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft4String1(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft4String2(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft4String3(value: BrightloopStringInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft4String4(value: BrightloopStringInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft1Converter1(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft1Converter2(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft1Converter3(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft1Converter4(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft2Converter1(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft2Converter2(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft2Converter3(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft3Converter1(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft3Converter2(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft3Converter3(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft4Converter1(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft4Converter2(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft4Converter3(value: BrightloopConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft4Converter4(value: BrightloopConverterInputType!): DcSimulationInputsType!
   dcSimulationSetDcSeawaterSupply(value: BoundaryInputType!): DcSimulationInputsType!
   dcSimulationSetDcDhwSupply(value: BoundaryInputType!): DcSimulationInputsType!
   dcSimulationSetMode(value: AmcsControlModeInputType!): DcSimulationInputsType!
@@ -1731,15 +1734,18 @@ type SensorAdsorptionChillerType {
   pumpSpeedWaste: FloatStampedType!
 }
 
-type SensorBrightloopStringType {
+type SensorBrightloopConverterType {
   active: BoolStampedType!
   cell01Temperature1: FloatStampedType!
+  cell01Temperature2: FloatStampedType!
+  cell02Temperature1: FloatStampedType!
+  cell02Temperature2: FloatStampedType!
   power: FloatStampedType!
 }
 
 type SensorBrightloopType {
   active: BoolStampedType!
-  cell01Temperature1: FloatStampedType!
+  maxChannelTemperature: FloatStampedType!
   power: FloatStampedType!
 }
 
@@ -1864,9 +1870,12 @@ type SimulationBoundaryType {
   flow: FloatStampedType!
 }
 
-type SimulationBrightloopStringType {
+type SimulationBrightloopConverterType {
   active: BoolStampedType!
   cell01Temperature1: FloatStampedType!
+  cell01Temperature2: FloatStampedType!
+  cell02Temperature1: FloatStampedType!
+  cell02Temperature2: FloatStampedType!
   power: FloatStampedType!
 }
 
@@ -2005,30 +2014,30 @@ type ThrsSimulationInputsType {
   dcBrightloopAft2: SimulationHeatSourceType!
   dcBrightloopAft3: SimulationHeatSourceType!
   dcBrightloopAft4: SimulationHeatSourceType!
-  dcBrightloopFwd1String1: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd1String2: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd1String3: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd1String4: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd2String1: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd2String2: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd2String3: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopFwd2String4: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd1Converter1: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd1Converter2: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd1Converter3: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd1Converter4: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd2Converter1: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd2Converter2: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd2Converter3: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd2Converter4: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dcUgrid1: SimulationUgridType!
   dcUgrid2: SimulationUgridType!
-  dcBrightloopAft1String1: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft1String2: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft1String3: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft1String4: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft2String1: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft2String2: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft2String3: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft3String1: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft3String2: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft3String3: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft4String1: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft4String2: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft4String3: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
-  dcBrightloopAft4String4: SimulationBrightloopStringType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft1Converter1: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft1Converter2: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft1Converter3: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft1Converter4: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft2Converter1: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft2Converter2: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft2Converter3: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft3Converter1: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft3Converter2: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft3Converter3: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft4Converter1: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft4Converter2: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft4Converter3: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopAft4Converter4: SimulationBrightloopConverterType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
   dcSeawaterSupply: SimulationBoundaryType!
   drivesOilCoolerAft: SimulationHeatSourceType!
   drivesOilCoolerFwd: SimulationHeatSourceType!

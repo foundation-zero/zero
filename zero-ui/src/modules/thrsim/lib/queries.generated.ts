@@ -595,142 +595,208 @@ export const DC_SENSOR_QUERY = `
   }
   dcBrightloopAft1 {
     active { value timestamp }
-    cell01Temperature1 { value timestamp }
+    maxChannelTemperature { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft1String1 {
+  dcBrightloopAft1Converter1 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft1String2 {
+  dcBrightloopAft1Converter2 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft1String3 {
+  dcBrightloopAft1Converter3 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft1String4 {
+  dcBrightloopAft1Converter4 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
   dcBrightloopAft2 {
     active { value timestamp }
-    cell01Temperature1 { value timestamp }
+    maxChannelTemperature { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft2String1 {
+  dcBrightloopAft2Converter1 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft2String2 {
+  dcBrightloopAft2Converter2 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft2String3 {
+  dcBrightloopAft2Converter3 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
   dcBrightloopAft3 {
     active { value timestamp }
-    cell01Temperature1 { value timestamp }
+    maxChannelTemperature { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft3String1 {
+  dcBrightloopAft3Converter1 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft3String2 {
+  dcBrightloopAft3Converter2 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft3String3 {
+  dcBrightloopAft3Converter3 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
   dcBrightloopAft4 {
     active { value timestamp }
-    cell01Temperature1 { value timestamp }
+    maxChannelTemperature { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft4String1 {
+  dcBrightloopAft4Converter1 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft4String2 {
+  dcBrightloopAft4Converter2 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft4String3 {
+  dcBrightloopAft4Converter3 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft4String4 {
+  dcBrightloopAft4Converter4 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
   dcBrightloopFwd1 {
     active { value timestamp }
-    cell01Temperature1 { value timestamp }
+    maxChannelTemperature { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd1String1 {
+  dcBrightloopFwd1Converter1 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd1String2 {
+  dcBrightloopFwd1Converter2 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd1String3 {
+  dcBrightloopFwd1Converter3 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd1String4 {
+  dcBrightloopFwd1Converter4 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
   dcBrightloopFwd2 {
     active { value timestamp }
-    cell01Temperature1 { value timestamp }
+    maxChannelTemperature { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd2String1 {
+  dcBrightloopFwd2Converter1 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd2String2 {
+  dcBrightloopFwd2Converter2 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd2String3 {
+  dcBrightloopFwd2Converter3 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd2String4 {
+  dcBrightloopFwd2Converter4 {
     active { value timestamp }
     cell01Temperature1 { value timestamp }
+    cell01Temperature2 { value timestamp }
+    cell02Temperature1 { value timestamp }
+    cell02Temperature2 { value timestamp }
     power { value timestamp }
   }
   dcDhwExchanger {
@@ -1052,106 +1118,106 @@ export const DC_SIMULATION_INPUTS_QUERY = `
   dcBrightloopAft1 {
     heatFlow { value timestamp }
   }
-  dcBrightloopAft1String1 {
+  dcBrightloopAft1Converter1 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft1String2 {
+  dcBrightloopAft1Converter2 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft1String3 {
+  dcBrightloopAft1Converter3 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft1String4 {
+  dcBrightloopAft1Converter4 {
     active { value timestamp }
     power { value timestamp }
   }
   dcBrightloopAft2 {
     heatFlow { value timestamp }
   }
-  dcBrightloopAft2String1 {
+  dcBrightloopAft2Converter1 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft2String2 {
+  dcBrightloopAft2Converter2 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft2String3 {
+  dcBrightloopAft2Converter3 {
     active { value timestamp }
     power { value timestamp }
   }
   dcBrightloopAft3 {
     heatFlow { value timestamp }
   }
-  dcBrightloopAft3String1 {
+  dcBrightloopAft3Converter1 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft3String2 {
+  dcBrightloopAft3Converter2 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft3String3 {
+  dcBrightloopAft3Converter3 {
     active { value timestamp }
     power { value timestamp }
   }
   dcBrightloopAft4 {
     heatFlow { value timestamp }
   }
-  dcBrightloopAft4String1 {
+  dcBrightloopAft4Converter1 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft4String2 {
+  dcBrightloopAft4Converter2 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft4String3 {
+  dcBrightloopAft4Converter3 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft4String4 {
+  dcBrightloopAft4Converter4 {
     active { value timestamp }
     power { value timestamp }
   }
   dcBrightloopFwd1 {
     heatFlow { value timestamp }
   }
-  dcBrightloopFwd1String1 {
+  dcBrightloopFwd1Converter1 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd1String2 {
+  dcBrightloopFwd1Converter2 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd1String3 {
+  dcBrightloopFwd1Converter3 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd1String4 {
+  dcBrightloopFwd1Converter4 {
     active { value timestamp }
     power { value timestamp }
   }
   dcBrightloopFwd2 {
     heatFlow { value timestamp }
   }
-  dcBrightloopFwd2String1 {
+  dcBrightloopFwd2Converter1 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd2String2 {
+  dcBrightloopFwd2Converter2 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd2String3 {
+  dcBrightloopFwd2Converter3 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd2String4 {
+  dcBrightloopFwd2Converter4 {
     active { value timestamp }
     power { value timestamp }
   }
@@ -3276,106 +3342,106 @@ export const THRS_SIMULATION_INPUTS_QUERY = `
   dcBrightloopAft1 {
     heatFlow { value timestamp }
   }
-  dcBrightloopAft1String1 {
+  dcBrightloopAft1Converter1 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft1String2 {
+  dcBrightloopAft1Converter2 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft1String3 {
+  dcBrightloopAft1Converter3 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft1String4 {
+  dcBrightloopAft1Converter4 {
     active { value timestamp }
     power { value timestamp }
   }
   dcBrightloopAft2 {
     heatFlow { value timestamp }
   }
-  dcBrightloopAft2String1 {
+  dcBrightloopAft2Converter1 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft2String2 {
+  dcBrightloopAft2Converter2 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft2String3 {
+  dcBrightloopAft2Converter3 {
     active { value timestamp }
     power { value timestamp }
   }
   dcBrightloopAft3 {
     heatFlow { value timestamp }
   }
-  dcBrightloopAft3String1 {
+  dcBrightloopAft3Converter1 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft3String2 {
+  dcBrightloopAft3Converter2 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft3String3 {
+  dcBrightloopAft3Converter3 {
     active { value timestamp }
     power { value timestamp }
   }
   dcBrightloopAft4 {
     heatFlow { value timestamp }
   }
-  dcBrightloopAft4String1 {
+  dcBrightloopAft4Converter1 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft4String2 {
+  dcBrightloopAft4Converter2 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft4String3 {
+  dcBrightloopAft4Converter3 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopAft4String4 {
+  dcBrightloopAft4Converter4 {
     active { value timestamp }
     power { value timestamp }
   }
   dcBrightloopFwd1 {
     heatFlow { value timestamp }
   }
-  dcBrightloopFwd1String1 {
+  dcBrightloopFwd1Converter1 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd1String2 {
+  dcBrightloopFwd1Converter2 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd1String3 {
+  dcBrightloopFwd1Converter3 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd1String4 {
+  dcBrightloopFwd1Converter4 {
     active { value timestamp }
     power { value timestamp }
   }
   dcBrightloopFwd2 {
     heatFlow { value timestamp }
   }
-  dcBrightloopFwd2String1 {
+  dcBrightloopFwd2Converter1 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd2String2 {
+  dcBrightloopFwd2Converter2 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd2String3 {
+  dcBrightloopFwd2Converter3 {
     active { value timestamp }
     power { value timestamp }
   }
-  dcBrightloopFwd2String4 {
+  dcBrightloopFwd2Converter4 {
     active { value timestamp }
     power { value timestamp }
   }

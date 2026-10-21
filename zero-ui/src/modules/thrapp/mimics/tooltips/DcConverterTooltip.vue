@@ -98,7 +98,7 @@ const modeKey = useDcMode(props.custom.group);
       <SensorValue
         v-if="source[0] === SensorComponentType.Brightloop"
         :source="source as ModuleField<SensorComponentType.Brightloop>"
-        field="cell01Temperature1"
+        field="maxChannelTemperature"
       >
         <Partials.ListItem no-source>
           {{ items("internalTemperature") }}

@@ -101,7 +101,7 @@ const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
           v-if="source[0] === SensorComponentType.Brightloop"
           class="text-brand"
           :source="source as ModuleField<SensorComponentType.Brightloop>"
-          field="cell01Temperature1"
+          field="maxChannelTemperature"
           temperature-label="internal"
         />
         <ValueListPowerItem

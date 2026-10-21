@@ -59,9 +59,12 @@ class PropulsionDrive(HeatSource):
     power: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)]
 
 
-class BrightloopString(ThrsValues):
+class BrightloopConverter(ThrsValues):
     active: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
     cell01_temperature1: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
+    cell01_temperature2: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
+    cell02_temperature1: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
+    cell02_temperature2: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
     power: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)]
 
 
@@ -99,7 +102,7 @@ class AdsorptionChiller(ThrsValues):
 __all__ = [
     "AdsorptionChiller",
     "Boundary",
-    "BrightloopString",
+    "BrightloopConverter",
     "ExchangerBoundary",
     "FlowBoundary",
     "HeatSource",

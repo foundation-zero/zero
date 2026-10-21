@@ -243,7 +243,14 @@ export type LevelSwitchSensor = {
 
 export type ThrusterSensor = Toggle;
 export type BrightloopSensor = Toggle & {
+  maxChannelTemperature: Stamped<number>;
+  power: Stamped<number>;
+};
+export type BrightloopConverterSensor = Toggle & {
   cell01Temperature1: Stamped<number>;
+  cell01Temperature2: Stamped<number>;
+  cell02Temperature1: Stamped<number>;
+  cell02Temperature2: Stamped<number>;
   power: Stamped<number>;
 };
 export type UgridSensor = Toggle & {
@@ -289,6 +296,7 @@ export type SensorType =
   | DeltaTSensor
   | AdsorptionChillerSensor
   | BrightloopSensor
+  | BrightloopConverterSensor
   | UgridSensor
   | PropulsionDriveSensor
   | ShorePowerConverterSensor
@@ -440,6 +448,7 @@ export const enum SensorComponentType {
   CalculatedFlow = "sensor:calculatedFlow",
   AdsorptionChiller = "sensor:adsorptionChiller",
   Brightloop = "sensor:brightloop",
+  BrightloopConverter = "sensor:brightloopConverter",
   Ugrid = "sensor:ugrid",
   PropulsionDrive = "sensor:propulsionDrive",
   ShorePowerConverter = "sensor:shorePowerConverter",
@@ -463,6 +472,7 @@ export const SENSOR_COMPONENT_TYPES = [
   SensorComponentType.Pvt,
   SensorComponentType.CalculatedFlow,
   SensorComponentType.Brightloop,
+  SensorComponentType.BrightloopConverter,
   SensorComponentType.Ugrid,
   SensorComponentType.PropulsionDrive,
   SensorComponentType.ShorePowerConverter,
@@ -530,6 +540,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.CalculatedFlow]: CalculatedFlowSensor;
   [SensorComponentType.AdsorptionChiller]: AdsorptionChillerSensor;
   [SensorComponentType.Brightloop]: BrightloopSensor;
+  [SensorComponentType.BrightloopConverter]: BrightloopConverterSensor;
   [SensorComponentType.Ugrid]: UgridSensor;
   [SensorComponentType.PropulsionDrive]: PropulsionDriveSensor;
   [SensorComponentType.ShorePowerConverter]: ShorePowerConverterSensor;

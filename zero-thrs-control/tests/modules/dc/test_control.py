@@ -4,7 +4,7 @@ from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.control.modules.dc import DcControl, DcParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.sensor import FlowSensor
-from thrs.input_output.definitions.simulation import BrightloopString
+from thrs.input_output.definitions.simulation import BrightloopConverter
 from thrs.input_output.modules.dc import DcSensorValues, DcSimulationInputs
 
 
@@ -60,9 +60,12 @@ def test_only_one_brightloop(
 ):
     simulation_inputs_aft1_active = simulation_inputs_inactive.model_copy(
         update={
-            "dc_brightloop_aft1_string1": BrightloopString(
+            "dc_brightloop_aft1_converter1": BrightloopConverter(
                 active=Stamped.stamp(True),
                 cell01_temperature1=Stamped.stamp(100),
+                cell01_temperature2=Stamped.stamp(100),
+                cell02_temperature1=Stamped.stamp(100),
+                cell02_temperature2=Stamped.stamp(100),
                 power=Stamped.stamp(1000),
             )
         }

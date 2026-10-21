@@ -29,7 +29,7 @@ from thrs.input_output.base import CombinedValues, Stamped
 from thrs.input_output.definitions.simulation import (
     AdsorptionChiller,
     Boundary,
-    BrightloopString,
+    BrightloopConverter,
     FlowBoundary,
     HeatSource,
     HvacExchanger,
@@ -116,44 +116,68 @@ def simulation_inputs() -> ThrsSimulationInputs:
         dc_brightloop_aft2=HeatSource(heat_flow=Stamped.stamp(0)),
         dc_brightloop_aft3=HeatSource(heat_flow=Stamped.stamp(0)),
         dc_brightloop_aft4=HeatSource(heat_flow=Stamped.stamp(0)),
-        dc_brightloop_fwd1_string1=BrightloopString(
+        dc_brightloop_fwd1_converter1=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_fwd1_string2=BrightloopString(
+        dc_brightloop_fwd1_converter2=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_fwd1_string3=BrightloopString(
+        dc_brightloop_fwd1_converter3=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_fwd1_string4=BrightloopString(
+        dc_brightloop_fwd1_converter4=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_fwd2_string1=BrightloopString(
+        dc_brightloop_fwd2_converter1=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_fwd2_string2=BrightloopString(
+        dc_brightloop_fwd2_converter2=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_fwd2_string3=BrightloopString(
+        dc_brightloop_fwd2_converter3=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_fwd2_string4=BrightloopString(
+        dc_brightloop_fwd2_converter4=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
         dc_ugrid1=Ugrid(
@@ -168,74 +192,116 @@ def simulation_inputs() -> ThrsSimulationInputs:
             temp_power_stage=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft1_string1=BrightloopString(
+        dc_brightloop_aft1_converter1=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft1_string2=BrightloopString(
+        dc_brightloop_aft1_converter2=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft1_string3=BrightloopString(
+        dc_brightloop_aft1_converter3=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft1_string4=BrightloopString(
+        dc_brightloop_aft1_converter4=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft2_string1=BrightloopString(
+        dc_brightloop_aft2_converter1=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft2_string2=BrightloopString(
+        dc_brightloop_aft2_converter2=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft2_string3=BrightloopString(
+        dc_brightloop_aft2_converter3=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft3_string1=BrightloopString(
+        dc_brightloop_aft3_converter1=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft3_string2=BrightloopString(
+        dc_brightloop_aft3_converter2=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft3_string3=BrightloopString(
+        dc_brightloop_aft3_converter3=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft4_string1=BrightloopString(
+        dc_brightloop_aft4_converter1=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft4_string2=BrightloopString(
+        dc_brightloop_aft4_converter2=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft4_string3=BrightloopString(
+        dc_brightloop_aft4_converter3=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
-        dc_brightloop_aft4_string4=BrightloopString(
+        dc_brightloop_aft4_converter4=BrightloopConverter(
             active=Stamped.stamp(True),
             cell01_temperature1=Stamped.stamp(100),
+            cell01_temperature2=Stamped.stamp(100),
+            cell02_temperature1=Stamped.stamp(100),
+            cell02_temperature2=Stamped.stamp(100),
             power=Stamped.stamp(1000),
         ),
         dc_seawater_supply=Boundary(

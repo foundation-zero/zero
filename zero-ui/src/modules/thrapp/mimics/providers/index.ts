@@ -173,6 +173,7 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.CalculatedFlow]: "flow",
   [SensorComponentType.AdsorptionChiller]: "operating",
   [SensorComponentType.Brightloop]: "active",
+  [SensorComponentType.BrightloopConverter]: "active",
   [SensorComponentType.Ugrid]: "active",
   [SensorComponentType.PropulsionDrive]: "active",
   [SensorComponentType.ShorePowerConverter]: "active",
