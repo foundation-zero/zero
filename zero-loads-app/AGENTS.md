@@ -37,12 +37,11 @@ is not authenticated, so a session cannot edit the sheet.
   are not in the sheet; they are derived from the runner tail thresholds with the Vitters PLC
   factors (`RUNNER_BLOCK_LOAD_PER_TAIL_LOAD` in `src/sailpack/seed_utils.py`).
 - **The Vitters IO list** is the Modbus IO list. The loads app reads MQTT, not Modbus, and uses the
-  IO list only for its labels (display name, abbreviation, units). Its `Topic` column is the PLC
-  tag, e.g. `FE401_MainRunnerCaptiveWinchPs.i_blockLoad`, which matches the MQTT topic
-  (`sail-systems/fe401-main-runner-captive-winch-ps`, the kebab-cased function block) plus the
-  payload path (`i_blockLoad`), ignoring case. `io_list_labels()` in `sheets.py` returns the labels
-  by technical name. IO list rows with a display name that the app does not read are listed in
-  `IO_LIST_TOPICS_NOT_IN_REGISTRY`.
+  IO list only to check that every row with a display name has a registry variable. Its `Topic`
+  column is the PLC tag, e.g. `FE401_MainRunnerCaptiveWinchPs.i_blockLoad`, which matches the MQTT
+  topic (`sail-systems/fe401-main-runner-captive-winch-ps`, the kebab-cased function block) plus the
+  payload path (`i_blockLoad`), ignoring case. IO list rows with a display name that the app does
+  not read are listed in `IO_LIST_TOPICS_NOT_IN_REGISTRY`.
 - **Seeds**: SailPack targets go into `loads.reference_values`, the max loads into
   `loads.thresholds`. Targets outside their thresholds are dropped (the DB CHECK constraints require
   `alarm_low ≤ warning_low ≤ target ≤ warning_high ≤ alarm_high`) and listed in

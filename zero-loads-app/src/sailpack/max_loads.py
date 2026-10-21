@@ -1,5 +1,6 @@
 import csv
 import io
+from itertools import combinations
 from pathlib import Path
 
 import polars as pl
@@ -20,7 +21,7 @@ THRESHOLD_HEADERS = {
 THRESHOLD_COLUMNS = list(THRESHOLD_HEADERS)
 
 
-def _kilogram_to_tonne(cell: str) -> float | None:
+def kilogram_to_tonne(cell: str) -> float | None:
     try:
         return float(cell.replace(",", "").strip()) / KILOGRAM_PER_TONNE
     except ValueError:
@@ -47,10 +48,14 @@ def read_max_loads_cells(max_loads_csv: str) -> list[dict[str, str]]:
             for column, header in THRESHOLD_HEADERS.items()
         },
     }
+    padded_rows = [
+        [*row, *[""] * (len(headers) - len(row))]
+        for row in rows[MAX_LOADS_HEADER_ROWS:]
+    ]
     return [
         {column: row[position].strip() for column, position in column_positions.items()}
-        for row in rows[MAX_LOADS_HEADER_ROWS:]
-        if row and row[column_positions["variable"]].strip()
+        for row in padded_rows
+        if row[column_positions["variable"]].strip()
     ]
 
 
@@ -79,7 +84,7 @@ def read_max_loads(max_loads_csv: str) -> pl.DataFrame:
             {
                 "variable": cells["variable"],
                 **{
-                    column: _kilogram_to_tonne(cells[column])
+                    column: kilogram_to_tonne(cells[column])
                     for column in THRESHOLD_COLUMNS
                 },
             }
@@ -93,13 +98,15 @@ def read_max_loads(max_loads_csv: str) -> pl.DataFrame:
     max_loads = pl.concat([sheet_max_loads, runner_block_thresholds(sheet_max_loads)])
 
     out_of_order = max_loads.filter(
-        (pl.col("alarm_low") > pl.col("warning_low"))
-        | (pl.col("warning_high") > pl.col("alarm_high"))
+        pl.any_horizontal(
+            (pl.col(lower) > pl.col(higher)).fill_null(False)
+            for lower, higher in combinations(THRESHOLD_COLUMNS, 2)
+        )
     )
     if not out_of_order.is_empty():
         raise ValueError(
-            "Lower alarm above lower warning or upper warning above upper alarm in max loads: "
-            f"{out_of_order.to_dicts()}"
+            "Thresholds not in the order alarm_low ≤ warning_low ≤ warning_high ≤ alarm_high "
+            f"in max loads: {out_of_order.to_dicts()}"
         )
 
     duplicates = max_loads.filter(pl.col("variable").is_duplicated())

@@ -5,12 +5,7 @@ import polars as pl
 import pytest
 
 import sailpack
-from loads.registry.sheets import (
-    IoListLabel,
-    LoadsSheet,
-    consistency_problems,
-    io_list_labels,
-)
+from loads.registry.sheets import LoadsSheet, consistency_problems
 from sailpack.parse import parse_directory
 from sailpack.seed_utils import extract_reference_values, read_reference_values_mapping
 
@@ -31,17 +26,6 @@ def loads_sheet() -> LoadsSheet:
 
 def test_loads_sheet_is_consistent_with_the_registry(loads_sheet: LoadsSheet):
     assert consistency_problems(loads_sheet) == []
-
-
-def test_io_list_labels_join_on_topic_regardless_of_case(loads_sheet: LoadsSheet):
-    labels = io_list_labels(loads_sheet.vitters_io_list)
-
-    assert labels["blade-adjuster-load"] == IoListLabel(
-        display_name="Blade RTA Load",
-        abbreviated_display_name="B RTA",
-        display_units="t",
-    )
-    assert labels["mast-lock-main-1"].display_name == "Main Reef 1 lock"
 
 
 @pytest.fixture(scope="module")

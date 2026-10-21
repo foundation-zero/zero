@@ -70,6 +70,14 @@ describe("splitLoad", () => {
     expect(splitLoad(-1.26)).toEqual({ sign: "-", integer: 1, fraction: 3, fractionDigits: 1 });
   });
 
+  test.each([0.995, -0.995, 9.95])("rounds %d like formatLoad", (value) => {
+    const { sign, integer, fraction, fractionDigits } = splitLoad(value);
+
+    expect(`${sign}${integer}.${String(fraction).padStart(fractionDigits, "0")}`).toBe(
+      formatLoad(value, VariableUnit.Tonne),
+    );
+  });
+
   test("drops the sign when a negative load rounds to zero", () => {
     expect(splitLoad(-0.001)).toEqual({ sign: "", integer: 0, fraction: 0, fractionDigits: 2 });
   });

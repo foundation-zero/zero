@@ -2,13 +2,13 @@
 import { cn } from "@/modules/common/lib/utils";
 import { HTMLAttributes } from "vue";
 import { formatLoadFn } from "../../lib/utils";
-import { VariableUnit } from "../../types";
+import { Nullable, VariableUnit } from "../../types";
 import AnimatedNumber from "../animated-number/AnimatedNumber.vue";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
   type: VariableUnit;
-  value: number | undefined;
+  value: Nullable<number> | undefined;
 }>();
 </script>
 

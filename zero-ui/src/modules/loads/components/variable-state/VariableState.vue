@@ -4,9 +4,8 @@ import { reactiveOmit } from "@vueuse/core";
 import { PrimitiveProps } from "reka-ui";
 import { computed, HTMLAttributes, provide, toRef } from "vue";
 import { VariableStateVariants, variableStateVariants } from ".";
-import { formatLoadFn, splitLoad } from "../../lib/utils";
+import { formatLoad, splitLoad } from "../../lib/utils";
 import { VariableState, VariableUnit } from "../../types";
-import AnimatedNumber from "../animated-number/AnimatedNumber.vue";
 
 type VariableStateProps = PrimitiveProps & {
   value?: number | null;
@@ -31,29 +30,16 @@ const splitValue = computed(() => (props.value == undefined ? undefined : splitL
     :class="cn(variableStateVariants({ size, state }), 'items-baseline', props.class)"
     v-bind="delegatedProps"
   >
-    <template v-if="type === VariableUnit.Tonne">
-      <animated-number
-        data-slot="load-value"
-        :to="splitValue?.integer"
-        :format="(val: number) => `${splitValue?.sign}${formatInt(val)}`"
-      />
-
-      <animated-number
-        v-if="splitValue != undefined"
+    <template v-if="type === VariableUnit.Tonne && splitValue != undefined">
+      <span data-slot="load-value">{{ splitValue.sign }}{{ formatInt(splitValue.integer) }}</span>
+      <span
         class="text-r2xs"
         data-slot="load-value"
-        :to="splitValue.fraction"
-        :format="
-          (val: number) => `.${formatInt(val).padStart(splitValue?.fractionDigits ?? 1, '0')}`
-        "
-      />
+        >.{{ formatInt(splitValue.fraction).padStart(splitValue.fractionDigits, "0") }}</span
+      >
     </template>
     <template v-else>
-      <animated-number
-        data-slot="load-value"
-        :to="value"
-        :format="formatLoadFn(type)"
-      />
+      <span data-slot="load-value">{{ formatLoad(value, type) }}</span>
     </template>
     <slot />
   </span>

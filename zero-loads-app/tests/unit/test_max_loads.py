@@ -78,11 +78,21 @@ def test_read_max_loads_rejects_missing_columns():
         read_max_loads(header_without_lower_alarm)
 
 
+def test_read_max_loads_reads_missing_trailing_cells_as_empty():
+    max_loads_csv = HEADER + "main-sheet-load,E2.05,,,,11000\n"
+
+    assert read_max_loads(max_loads_csv).to_dicts() == [
+        _thresholds("main-sheet-load", warning_high=11.0)
+    ]
+
+
 @pytest.mark.parametrize(
     "row",
     [
         'main-sheet-load,,,,,"13,000","12,000",\n',
         'main-vang-load,,,"-24,000","-20,000",,,\n',
+        'main-sheet-load,,,"20,000",500,"11,000","12,000",\n',
+        'main-sheet-load,,,,"13,000",,"12,000",\n',
     ],
 )
 def test_read_max_loads_rejects_thresholds_out_of_order(row: str):

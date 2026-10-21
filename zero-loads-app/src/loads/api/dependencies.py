@@ -26,6 +26,7 @@ from .model import (
     get_loads_reference_values,
     get_reference_values_by_case_ids,
     get_sails_by_case_ids,
+    get_thresholds,
 )
 from .model import (
     get_variables as model_get_variables,
@@ -87,12 +88,14 @@ async def get_reference_values(
     keys: list[tuple[strawberry.ID, CaseInput]], context: LoadsContext
 ) -> list[ReferenceValue | None]:
     async with context.sessionmanager.session() as session:
+        thresholds = await get_thresholds(session, [str(var_id) for var_id, _ in keys])
         by_case = groupby(keys, lambda x: x[1])
         by_id_case = {}
         for case, group in by_case:
             values = await get_loads_reference_values(
                 variable_ids=[str(var_id) for var_id, _ in group],
                 case=case,
+                thresholds=thresholds,
                 session=session,
             )
             for value in values:
@@ -115,6 +118,7 @@ async def get_reference_values_by_case_id(
     keys: Sequence[tuple[strawberry.ID, Tack]], context: LoadsContext
 ) -> list[list[ReferenceValue]]:
     async with context.sessionmanager.session() as session:
+        thresholds = await get_thresholds(session)
         by_tack_case_id = {
             tack: await get_reference_values_by_case_ids(
                 [
@@ -123,6 +127,7 @@ async def get_reference_values_by_case_id(
                     if key_tack == tack
                 ],
                 tack,
+                thresholds,
                 session,
             )
             for tack in {tack for _, tack in keys}

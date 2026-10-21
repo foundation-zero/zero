@@ -1,15 +1,20 @@
-import { formatFixed, formatInt } from "@/modules/common/lib/utils";
+import { formatFixed, formatInt, formatNumber } from "@/modules/common/lib/utils";
 import { NumRangeId, Range, ReferenceThresholds, VariableState, VariableUnit } from "../types";
 
+// Rounds like formatFixed, so a split load and a formatted load show the same digits.
+const roundLoad = (digits: number, value: number): number =>
+  Number(formatNumber(digits, { useGrouping: false })(value));
+
 export const getLoadFractionDigits = (value: number): number =>
-  Math.abs(Number(value.toFixed(2))) < 1 ? 2 : 1;
+  Math.abs(roundLoad(2, value)) < 1 ? 2 : 1;
 
 export const splitLoad = (value: number) => {
   const fractionDigits = getLoadFractionDigits(value);
-  const [integer, fraction] = Math.abs(value).toFixed(fractionDigits).split(".");
+  const roundedValue = roundLoad(fractionDigits, value);
+  const [integer, fraction] = Math.abs(roundedValue).toFixed(fractionDigits).split(".");
 
   return {
-    sign: Number(value.toFixed(fractionDigits)) < 0 ? "-" : "",
+    sign: roundedValue < 0 ? "-" : "",
     integer: Number(integer),
     fraction: Number(fraction),
     fractionDigits,

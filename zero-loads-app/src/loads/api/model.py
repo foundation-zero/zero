@@ -44,6 +44,7 @@ logger = logging.getLogger("api")
 async def get_loads_reference_values(
     variable_ids: list[str],
     case: CaseInput,
+    thresholds: dict[str, Thresholds],
     session: AsyncSession,
 ) -> list[ReferenceValue]:
     """Return all reference values that match the current sails, conditions and tack."""
@@ -62,8 +63,6 @@ async def get_loads_reference_values(
     }
     if not references:
         logger.info(f"No reference values found for case: {case}")
-
-    thresholds = await get_thresholds(session, variable_ids)
 
     return [
         merge_reference_value(
@@ -165,7 +164,10 @@ async def get_load_cases(session: AsyncSession) -> list[LoadCase]:
 
 
 async def get_reference_values_by_case_ids(
-    load_case_ids: Sequence[str], tack: Tack, session: AsyncSession
+    load_case_ids: Sequence[str],
+    tack: Tack,
+    thresholds: dict[str, Thresholds],
+    session: AsyncSession,
 ) -> dict[str, list[ReferenceValue]]:
     """Return all reference values for a tack grouped by load-case id."""
 
@@ -182,8 +184,6 @@ async def get_reference_values_by_case_ids(
     references_by_case: dict[str, dict[str, ReferenceValues]] = defaultdict(dict)
     for load_case_id, reference in result.all():
         references_by_case[str(load_case_id)][str(reference.variable_id)] = reference
-
-    thresholds = await get_thresholds(session)
 
     return {
         str(load_case_id): [

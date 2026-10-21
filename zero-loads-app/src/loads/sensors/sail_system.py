@@ -685,14 +685,28 @@ class MainCheckstay(LoadsModel, ABC):
         Field(validation_alias="i_Load"),
         VariableMeta(name="deflector-load", display_name="Deflector"),
     ]
-    # TODO: Confirm this alarm and add its max load setting once the max loads sheet is finished.
+    deflector_load_failure: Annotated[
+        LoadFailure,
+        VariableMeta(
+            name="deflector-load-failure",
+            display_name="Main Deflector Load Failure",
+            alarm_for="deflector_load",
+        ),
+    ]
     deflector_load_alarm: Annotated[
         LoadAlarm,
-        Field(validation_alias="ox_LoadAlarm"),
         VariableMeta(
             name="deflector-load-alarm",
             display_name="Main Deflector Load Alarm",
             alarm_for="deflector_load",
+        ),
+    ]
+    deflector_max_load: Annotated[
+        MaxLoad,
+        VariableMeta(
+            name="deflector-max-load",
+            display_name="Main Deflector Max Load",
+            threshold_for="deflector_load_alarm",
         ),
     ]
 
@@ -1041,14 +1055,28 @@ class MizzenCheckstay(LoadsModel, ABC):
         Field(validation_alias="i_Load"),
         VariableMeta(name="deflector-load", display_name="Deflector"),
     ]
-    # TODO: Confirm this alarm and add its max load setting once the max loads sheet is finished.
+    deflector_load_failure: Annotated[
+        LoadFailure,
+        VariableMeta(
+            name="deflector-load-failure",
+            display_name="Mizzen Deflector Load Failure",
+            alarm_for="deflector_load",
+        ),
+    ]
     deflector_load_alarm: Annotated[
         LoadAlarm,
-        Field(validation_alias="ox_LoadAlarm"),
         VariableMeta(
             name="deflector-load-alarm",
             display_name="Mizzen Deflector Load Alarm",
             alarm_for="deflector_load",
+        ),
+    ]
+    deflector_max_load: Annotated[
+        MaxLoad,
+        VariableMeta(
+            name="deflector-max-load",
+            display_name="Mizzen Deflector Max Load",
+            threshold_for="deflector_load_alarm",
         ),
     ]
 

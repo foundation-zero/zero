@@ -5,7 +5,7 @@ export type ReferenceThresholds = {
   warningHigh?: number;
   alarmLow?: number;
   alarmHigh?: number;
-  target: number;
+  target?: Nullable<number>;
 };
 
 export const enum VariableUnit {

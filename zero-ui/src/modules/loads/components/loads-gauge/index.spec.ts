@@ -4,6 +4,7 @@ import {
   AMOUNT_OF_POINTS_PER_SIDE,
   ANGLE_STEP,
   Colors,
+  createGaugeContext,
   createPoints,
   getTickColor,
   getTicks,
@@ -175,5 +176,16 @@ describe("getTicks", () => {
 
       expect(getTicks(ticks).map((tick) => tick.value)).toEqual([10, 20, 16]);
     });
+  });
+});
+
+describe("createGaugeContext", () => {
+  test("uses the scale midpoint as the target of a threshold-only reference", () => {
+    const context = createGaugeContext({
+      scale: [0, 10],
+      thresholds: { warningHigh: 8, alarmHigh: 9, target: null },
+    });
+
+    expect(context.target.value).toBe(5);
   });
 });

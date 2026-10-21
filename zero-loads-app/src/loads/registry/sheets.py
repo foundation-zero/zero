@@ -9,6 +9,7 @@ from loads.registry.registry import VARIABLES, VariableDefinition
 from sailpack.max_loads import (
     MAX_LOADS_HEADER_ROWS,
     THRESHOLD_COLUMNS,
+    kilogram_to_tonne,
     read_max_loads,
     read_max_loads_cells,
 )
@@ -137,18 +138,6 @@ def _io_list_labels_by_topic(io_list_csv: str) -> dict[str, IoListLabel]:
     }
 
 
-def io_list_labels(io_list_csv: str) -> dict[str, IoListLabel]:
-    """Return the Vitters IO list labels by technical name, joined on the IO list topic."""
-    variable_ids_by_key = {
-        _variable_io_list_key(variable): variable.id for variable in VARIABLES.values()
-    }
-    return {
-        variable_ids_by_key[_io_list_key(topic)]: label
-        for topic, label in _io_list_labels_by_topic(io_list_csv).items()
-        if _io_list_key(topic) in variable_ids_by_key
-    }
-
-
 def io_list_topics_without_variable(io_list_csv: str) -> list[str]:
     variable_keys = {_variable_io_list_key(variable) for variable in VARIABLES.values()}
     return sorted(
@@ -184,7 +173,7 @@ def max_loads_problems(max_loads_csv: str) -> list[str]:
         for cells in cells_by_row
         for column in THRESHOLD_COLUMNS
         if cells[column] not in MAX_LOADS_PLACEHOLDERS
-        and not cells[column].replace(",", "").replace(".", "", 1).isdigit()
+        and kilogram_to_tonne(cells[column]) is None
     ]
 
     try:
