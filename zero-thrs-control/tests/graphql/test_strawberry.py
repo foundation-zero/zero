@@ -749,7 +749,7 @@ async def test_query_simulation_inputs(app, test_client):
                     inputs {
                         ... on ThrustersSimulationInputsType {
                             thrustersThrusterAft {
-                                active {
+                                heatFlow {
                                     value
                                 }
                             }
@@ -763,7 +763,7 @@ async def test_query_simulation_inputs(app, test_client):
     assert response.json() == {
         "data": {
             "simulation": {
-                "inputs": {"thrustersThrusterAft": {"active": {"value": 0.0}}}
+                "inputs": {"thrustersThrusterAft": {"heatFlow": {"value": 0.0}}}
             }
         }
     }
@@ -843,7 +843,7 @@ async def test_query_simulation_inputs_actual(
                         inputs {
                             ... on ThrustersSimulationInputsType {
                                 thrustersThrusterAft {
-                                    active {
+                                    heatFlow {
                                         value
                                     }
                                 }
@@ -857,7 +857,7 @@ async def test_query_simulation_inputs_actual(
         assert response.json() == {
             "data": {
                 "simulation": {
-                    "inputs": {"thrustersThrusterAft": {"active": {"value": 0.0}}}
+                    "inputs": {"thrustersThrusterAft": {"heatFlow": {"value": 0.0}}}
                 }
             }
         }
@@ -1101,7 +1101,7 @@ async def test_mutation_set_simulation_inputs(
         "/graphql",
         json={
             "query": """mutation {
-                thrustersSimulationSetThrustersThrusterAft(value: { heatFlow: 99.0, active: false }) {
+                thrustersSimulationSetThrustersThrusterAft(value: { heatFlow: 99.0 }) {
                     thrustersThrusterAft {
                         heatFlow {
                             value

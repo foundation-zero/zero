@@ -141,6 +141,9 @@ export type SimulationFields = {
   [SimulationComponentType.Pcs]: (keyof PcsSimulation)[];
   [SimulationComponentType.Boundary]: (keyof BoundarySimulation)[];
   [SimulationComponentType.HeatSource]: (keyof HeatSourceSimulation)[];
+  [SimulationComponentType.ActiveHeatSource]: (keyof HeatSourceSimulation)[];
+  [SimulationComponentType.Ugrid]: (keyof HeatSourceSimulation)[];
+  [SimulationComponentType.PropulsionDrive]: (keyof HeatSourceSimulation)[];
   [SimulationComponentType.Flow]: (keyof FlowSimulation)[];
   [SimulationComponentType.HvacExchanger]: (keyof HvacExchangerSimulation)[];
   [SimulationComponentType.AdsorptionChiller]: (keyof AdsorptionChillerSimulation)[];
@@ -675,7 +678,6 @@ export type ExtractParameterValues<T extends ParameterDefinitions> = ExtractValu
 
 export type ThrusterSimulation = {
   heatFlow: Stamped<number>;
-  active: Stamped<boolean>;
 };
 
 export type BoundarySimulation = {
@@ -727,12 +729,11 @@ export const enum SimulationComponentType {
   Flow = "flow",
   Pcs = "pcs",
   HeatSource = "heatSource",
+  ActiveHeatSource = "activeHeatSource",
   HvacExchanger = "hvacExchanger",
   AmcsControlMode = "amcsControlMode",
   AdsorptionChiller = "adsorptionChiller",
   Ugrid = "ugrid",
-  Brightloop = "brightloop",
-  ShorePowerConverter = "shorePowerConverter",
   PropulsionDrive = "propulsionDrive",
 }
 
@@ -759,6 +760,9 @@ export type SimulationDefinitionMap = {
   [SimulationComponentType.Flow]: FlowSimulation;
   [SimulationComponentType.Pcs]: PcsSimulation;
   [SimulationComponentType.HeatSource]: HeatSourceSimulation;
+  [SimulationComponentType.ActiveHeatSource]: HeatSourceSimulation;
+  [SimulationComponentType.Ugrid]: HeatSourceSimulation;
+  [SimulationComponentType.PropulsionDrive]: HeatSourceSimulation;
   [SimulationComponentType.HvacExchanger]: HvacExchangerSimulation;
   [SimulationComponentType.AmcsControlMode]: AmcsControlModeSimulation;
   [SimulationComponentType.AdsorptionChiller]: AdsorptionChillerSimulation;

@@ -29,12 +29,11 @@ const COMPONENTS: Record<SimulationComponentType, Component | null> = {
   [SimulationComponentType.OverpressureTemperature]: OverpressureTemperatureControl,
   [SimulationComponentType.Pcs]: PcsControl,
   [SimulationComponentType.HeatSource]: HeatSourceControl,
+  [SimulationComponentType.ActiveHeatSource]: HeatSourceControl,
   [SimulationComponentType.HvacExchanger]: HvacControl,
   [SimulationComponentType.AmcsControlMode]: null,
   [SimulationComponentType.AdsorptionChiller]: null,
-  [SimulationComponentType.Brightloop]: null,
   [SimulationComponentType.Ugrid]: HeatSourceControl,
-  [SimulationComponentType.ShorePowerConverter]: null,
   [SimulationComponentType.PropulsionDrive]: HeatSourceControl,
 };
 

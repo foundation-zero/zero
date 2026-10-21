@@ -1,6 +1,10 @@
+from datetime import UTC, datetime
 from typing import Annotated
 
-from thrs.input_output.base import Stamped, ThrsValues, field_meta
+from pydantic import computed_field
+
+from thrs.input_output.base import Stamped, ThrsValues, computed_meta, field_meta
+from thrs.input_output.definitions import sensor
 from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
@@ -10,6 +14,10 @@ from thrs.input_output.definitions.units import (
     PcsMode,
     Watt,
 )
+
+
+def unset[T](value: T) -> Stamped[T]:
+    return Stamped(value=value, timestamp=datetime.fromtimestamp(0, UTC))
 
 
 class HeatSource(ThrsValues):
@@ -49,43 +57,63 @@ class FlowBoundary(ThrsValues):
     flow: Stamped[LMin]
 
 
-class Thruster(HeatSource):
-    active: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
+class ActiveHeatSource(HeatSource):
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def active(self) -> Stamped[OnOff]:
+        return Stamped.combine(self.heat_flow, value=self.heat_flow.value > 0)
 
 
-class PropulsionDrive(HeatSource):
-    active: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
-    temp_power_stage: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
-    power: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)]
+class Thruster(ActiveHeatSource):
+    # TODO: add the pcs mode field
+    pass
 
 
-class BrightloopConverter(ThrsValues):
-    active: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
-    cell01_temperature1: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
-    cell01_temperature2: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
-    cell02_temperature1: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
-    cell02_temperature2: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
-    power: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)]
+class PropulsionDrive(ActiveHeatSource):
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def temp_power_stage(self) -> Stamped[Celsius]:
+        return unset(0.0)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def power(self) -> Stamped[Watt]:
+        return unset(0.0)
 
 
-class Ugrid(HeatSource):
-    active: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
-    temp_power_stage: Annotated[Stamped[Celsius], field_meta(included_in_fmu=False)]
-    power: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)]
+class Ugrid(ActiveHeatSource):
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def temp_power_stage(self) -> Stamped[Celsius]:
+        return unset(0.0)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def power(self) -> Stamped[Watt]:
+        return unset(0.0)
 
 
-class ShorePowerConverter(ThrsValues):
-    active: Annotated[Stamped[OnOff], field_meta(included_in_fmu=False)]
-    esi_transformer_temperature: Annotated[
-        Stamped[Celsius], field_meta(included_in_fmu=False)
-    ]
-    esi_igbt_min_temperature: Annotated[
-        Stamped[Celsius], field_meta(included_in_fmu=False)
-    ]
-    esi_igbt_max_temperature: Annotated[
-        Stamped[Celsius], field_meta(included_in_fmu=False)
-    ]
-    power: Annotated[Stamped[Watt], field_meta(included_in_fmu=False)]
+def brightloop_converter(brightloop: ActiveHeatSource) -> sensor.BrightloopConverter:
+    return sensor.BrightloopConverter(
+        active=brightloop.active,
+        cell01_temperature1=unset(0.0),
+        cell01_temperature2=unset(0.0),
+        cell02_temperature1=unset(0.0),
+        cell02_temperature2=unset(0.0),
+        power=unset(0.0),
+    )
+
+
+def shore_power_converter(
+    shore_power: ActiveHeatSource,
+) -> sensor.ShorePowerConverter:
+    return sensor.ShorePowerConverter(
+        active=shore_power.active,
+        esi_transformer_temperature=unset(0.0),
+        esi_igbt_min_temperature=unset(0.0),
+        esi_igbt_max_temperature=unset(0.0),
+        power=unset(0.0),
+    )
 
 
 class Pcs(ThrsValues):
@@ -100,9 +128,9 @@ class AdsorptionChiller(ThrsValues):
 
 
 __all__ = [
+    "ActiveHeatSource",
     "AdsorptionChiller",
     "Boundary",
-    "BrightloopConverter",
     "ExchangerBoundary",
     "FlowBoundary",
     "HeatSource",
@@ -110,7 +138,6 @@ __all__ = [
     "OverpressureTemperatureBoundary",
     "Pcs",
     "PropulsionDrive",
-    "ShorePowerConverter",
     "TemperatureBoundary",
     "Thruster",
     "Ugrid",

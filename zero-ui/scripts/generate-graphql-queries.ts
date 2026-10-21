@@ -174,20 +174,19 @@ const FIELD_MAPPINGS: AllFieldMappings = {
 
   // Simulation component fields
   SimulationComponentType: {
-    Thruster: ["heatFlow", "active"],
+    Thruster: ["heatFlow"],
     Boundary: ["temperature", "flow"],
     Temperature: ["temperature"],
     OverpressureTemperature: ["temperature", "overpressure"],
     Flow: ["flow"],
     Pcs: ["mode"],
     HeatSource: ["heatFlow"],
+    ActiveHeatSource: ["heatFlow"],
     HvacExchanger: ["heatFlow", "maximumTemperature"],
     AmcsControlMode: ["mode"],
     AdsorptionChiller: ["freeCooling"],
-    Brightloop: ["active", "power"],
-    Ugrid: ["active", "heatFlow", "power"],
-    ShorePowerConverter: ["active", "power"],
-    PropulsionDrive: ["active", "heatFlow", "power"],
+    Ugrid: ["heatFlow"],
+    PropulsionDrive: ["heatFlow"],
   },
 
   // Parameter fields (parameters are flat values, no nested fields)
