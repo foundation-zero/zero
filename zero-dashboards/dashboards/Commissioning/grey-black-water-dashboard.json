@@ -3379,42 +3379,6 @@
                     "id": "unit"
                   }
                 ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "level grey-level-fwd"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Grey water FWD"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "level grey-level-aft"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Grey water AFT"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "level blac-level"
-                },
-                "properties": [
-                  {
-                    "id": "displayName",
-                    "value": "Black water"
-                  }
-                ]
               }
             ]
           },
@@ -3459,7 +3423,7 @@
               "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "\tSELECT\r\n\t\ttimestamp      AS time,\r\n\t\ttechnical_name AS name,\r\n\t\tlevel__value   AS level\r\n\tFROM marpower__sewage__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tAND technical_name <> 'sludge-level'\r\n\tORDER BY name, timestamp DESC\r\n",
+              "rawSql": "\tSELECT\r\n\t\ttimestamp  \t\t\t      AS time,\r\n\t\tUPPER(technical_name) AS name,\r\n\t\tlevel__value          AS level\r\n\tFROM marpower__sewage__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tAND technical_name <> 'sludge-level'\r\n\tORDER BY name, timestamp DESC\r\n",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3489,6 +3453,20 @@
                   "name"
                 ],
                 "keepFields": false
+              }
+            },
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "level GREY-LEVEL-(.*)",
+                "renamePattern": "Grey water $1"
+              }
+            },
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "level BLAC.?-LEVEL",
+                "renamePattern": "Black water"
               }
             }
           ],
