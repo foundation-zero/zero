@@ -9,6 +9,10 @@ export const formatLoad = (value: number | undefined | null, type: VariableUnit)
     return formatInt(value * 100);
   }
 
+  if (type === VariableUnit.Mm) {
+    return formatInt(value);
+  }
+
   return formatFixed(1, value);
 };
 
@@ -48,6 +52,19 @@ export const getLoadState = (
   }
 
   return VariableState.Neutral;
+};
+
+export const getAlarmMessageKey = (
+  actualValue: number | null,
+  thresholdValue: number | null,
+): string => {
+  if (actualValue == undefined || thresholdValue == undefined) {
+    return "loads.dashboard.alarmValue";
+  }
+
+  return actualValue < thresholdValue
+    ? "loads.dashboard.alarmBelowMin"
+    : "loads.dashboard.alarmAboveMax";
 };
 
 export const toNumRangeId =
