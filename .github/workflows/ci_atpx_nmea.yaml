@@ -38,7 +38,7 @@ jobs:
         working-directory: zero-atpx-nmea
       - run: uv run pytest
         working-directory: zero-atpx-nmea
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
       - run: npm install -g @asyncapi/cli@6.0.2
