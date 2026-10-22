@@ -22,7 +22,7 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: "0"
       - uses: actions/setup-python@v7
@@ -61,7 +61,7 @@ jobs:
       id-token: "write"
       packages: "write"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       # Set up in https://github.com/foundation-zero/gcp-common
       - id: auth
         name: Authenticate with Google Cloud
