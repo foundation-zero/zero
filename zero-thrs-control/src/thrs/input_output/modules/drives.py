@@ -578,22 +578,30 @@ class DrivesSimulationInputs(ThrsValues):
     drives_propdrive_aft2: simulation.PropulsionDrive
     drives_propdrive_fwd1: simulation.PropulsionDrive
     drives_propdrive_fwd2: simulation.PropulsionDrive
-    drives_shorepower: simulation.HeatSource
-    drives_shorepower1a: Annotated[
-        simulation.ShorePowerConverter, component_meta(included_in_fmu=False)
-    ]
-    drives_shorepower1b: Annotated[
-        simulation.ShorePowerConverter, component_meta(included_in_fmu=False)
-    ]
-    drives_shorepower2a: Annotated[
-        simulation.ShorePowerConverter, component_meta(included_in_fmu=False)
-    ]
-    drives_shorepower2b: Annotated[
-        simulation.ShorePowerConverter, component_meta(included_in_fmu=False)
-    ]
+    drives_shorepower: simulation.ActiveHeatSource
     drives_seawater_supply: simulation.Boundary
     drives_dhw_supply: simulation.Boundary
     mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def drives_shorepower1a(self) -> sensor.ShorePowerConverter:
+        return simulation.shore_power_converter(self.drives_shorepower)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def drives_shorepower1b(self) -> sensor.ShorePowerConverter:
+        return simulation.shore_power_converter(self.drives_shorepower)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def drives_shorepower2a(self) -> sensor.ShorePowerConverter:
+        return simulation.shore_power_converter(self.drives_shorepower)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def drives_shorepower2b(self) -> sensor.ShorePowerConverter:
+        return simulation.shore_power_converter(self.drives_shorepower)
 
 
 class DrivesSimulationOutputs(ThrsValues):

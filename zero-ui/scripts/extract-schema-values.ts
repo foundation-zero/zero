@@ -109,12 +109,10 @@ const SIMULATION_TYPE_MAP: Record<string, string> = {
   SimulationFlowBoundaryType: "Flow",
   SimulationPcsType: "Pcs",
   SimulationHeatSourceType: "HeatSource",
+  SimulationActiveHeatSourceType: "ActiveHeatSource",
   SimulationHvacExchangerType: "HvacExchanger",
   SimulationAdsorptionChillerType: "AdsorptionChiller",
-  SimulationBrightloopType: "Brightloop",
-  SimulationBrightloopConverterType: "Brightloop",
   SimulationUgridType: "Ugrid",
-  SimulationShorePowerConverterType: "ShorePowerConverter",
   SimulationPropulsionDriveType: "PropulsionDrive",
   SystemAmcsControlModeType: "AmcsControlMode",
 };

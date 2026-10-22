@@ -85,21 +85,18 @@ def extract_non_fmu_values(
         simulation_input: ThrsValues,
         sensor_component_field: FieldInfo | ComputedFieldInfo,
     ):
-        # If the whole component is excluded from FMU, extract all available fields
+        component_type = _field_type(sensor_component_field)
+        # If the whole component is excluded from FMU, extract all sensor fields the input provides
         if not included_in_fmu(sensor_component_field):
             return {
                 name: getattr(simulation_input, name)
-                for name in type(simulation_input).model_fields
+                for name in component_type.model_fields
+                if hasattr(simulation_input, name)
             }
         # Otherwise, only return fields that are excluded
-        component_type = (
-            sensor_component_field.return_type
-            if isinstance(sensor_component_field, ComputedFieldInfo)
-            else sensor_component_field.annotation
-        )
         return {
             name: getattr(simulation_input, name)
-            for name, field in component_type.model_fields.items()  # type: ignore
+            for name, field in component_type.model_fields.items()
             if not included_in_fmu(field) and hasattr(simulation_input, name)
         }
 

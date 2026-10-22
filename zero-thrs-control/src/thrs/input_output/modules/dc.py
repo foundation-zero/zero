@@ -832,83 +832,127 @@ class DcControlValues(AmcsWatchdogControlValues):
 
 
 class DcSimulationInputs(ThrsValues):
-    dc_brightloop_fwd1_converter1: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_fwd1_converter2: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_fwd1_converter3: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_fwd1_converter4: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_fwd2_converter1: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_fwd2_converter2: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_fwd2_converter3: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_fwd2_converter4: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
     dc_ugrid1: simulation.Ugrid
     dc_ugrid2: simulation.Ugrid
-    dc_brightloop_aft1_converter1: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_aft1_converter2: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_aft1_converter3: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_aft1_converter4: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_aft2_converter1: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_aft2_converter2: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_aft2_converter3: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_aft3_converter1: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_aft3_converter2: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_aft3_converter3: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_aft4_converter1: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_aft4_converter2: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_aft4_converter3: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
-    dc_brightloop_aft4_converter4: Annotated[
-        simulation.BrightloopConverter, component_meta(included_in_fmu=False)
-    ]
     dc_seawater_supply: simulation.Boundary
     dc_dhw_supply: simulation.Boundary
     mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
-    dc_brightloop_fwd1: simulation.HeatSource
-    dc_brightloop_fwd2: simulation.HeatSource
-    dc_brightloop_aft1: simulation.HeatSource
-    dc_brightloop_aft2: simulation.HeatSource
-    dc_brightloop_aft3: simulation.HeatSource
-    dc_brightloop_aft4: simulation.HeatSource
+    dc_brightloop_fwd1: simulation.ActiveHeatSource
+    dc_brightloop_fwd2: simulation.ActiveHeatSource
+    dc_brightloop_aft1: simulation.ActiveHeatSource
+    dc_brightloop_aft2: simulation.ActiveHeatSource
+    dc_brightloop_aft3: simulation.ActiveHeatSource
+    dc_brightloop_aft4: simulation.ActiveHeatSource
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_fwd1_converter1(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_fwd1)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_fwd1_converter2(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_fwd1)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_fwd1_converter3(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_fwd1)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_fwd1_converter4(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_fwd1)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_fwd2_converter1(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_fwd2)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_fwd2_converter2(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_fwd2)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_fwd2_converter3(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_fwd2)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_fwd2_converter4(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_fwd2)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft1_converter1(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft1)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft1_converter2(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft1)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft1_converter3(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft1)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft1_converter4(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft1)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft2_converter1(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft2)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft2_converter2(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft2)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft2_converter3(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft2)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft3_converter1(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft3)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft3_converter2(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft3)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft3_converter3(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft3)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft4_converter1(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft4)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft4_converter2(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft4)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft4_converter3(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft4)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def dc_brightloop_aft4_converter4(self) -> sensor.BrightloopConverter:
+        return simulation.brightloop_converter(self.dc_brightloop_aft4)
 
 
 class DcSimulationOutputs(ThrsValues):

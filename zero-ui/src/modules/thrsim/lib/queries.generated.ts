@@ -1133,108 +1133,20 @@ export const DC_SIMULATION_INPUTS_QUERY = `
   dcBrightloopAft1 {
     heatFlow { value timestamp }
   }
-  dcBrightloopAft1Converter1 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft1Converter2 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft1Converter3 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft1Converter4 {
-    active { value timestamp }
-    power { value timestamp }
-  }
   dcBrightloopAft2 {
     heatFlow { value timestamp }
-  }
-  dcBrightloopAft2Converter1 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft2Converter2 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft2Converter3 {
-    active { value timestamp }
-    power { value timestamp }
   }
   dcBrightloopAft3 {
     heatFlow { value timestamp }
   }
-  dcBrightloopAft3Converter1 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft3Converter2 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft3Converter3 {
-    active { value timestamp }
-    power { value timestamp }
-  }
   dcBrightloopAft4 {
     heatFlow { value timestamp }
-  }
-  dcBrightloopAft4Converter1 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft4Converter2 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft4Converter3 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft4Converter4 {
-    active { value timestamp }
-    power { value timestamp }
   }
   dcBrightloopFwd1 {
     heatFlow { value timestamp }
   }
-  dcBrightloopFwd1Converter1 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopFwd1Converter2 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopFwd1Converter3 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopFwd1Converter4 {
-    active { value timestamp }
-    power { value timestamp }
-  }
   dcBrightloopFwd2 {
     heatFlow { value timestamp }
-  }
-  dcBrightloopFwd2Converter1 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopFwd2Converter2 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopFwd2Converter3 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopFwd2Converter4 {
-    active { value timestamp }
-    power { value timestamp }
   }
   dcDhwSupply {
     temperature { value timestamp }
@@ -1245,14 +1157,10 @@ export const DC_SIMULATION_INPUTS_QUERY = `
     flow { value timestamp }
   }
   dcUgrid1 {
-    active { value timestamp }
     heatFlow { value timestamp }
-    power { value timestamp }
   }
   dcUgrid2 {
-    active { value timestamp }
     heatFlow { value timestamp }
-    power { value timestamp }
   }
   mode {
     mode { value timestamp }
@@ -2171,24 +2079,16 @@ export const DRIVES_SIMULATION_INPUTS_QUERY = `
     heatFlow { value timestamp }
   }
   drivesPropdriveAft1 {
-    active { value timestamp }
     heatFlow { value timestamp }
-    power { value timestamp }
   }
   drivesPropdriveAft2 {
-    active { value timestamp }
     heatFlow { value timestamp }
-    power { value timestamp }
   }
   drivesPropdriveFwd1 {
-    active { value timestamp }
     heatFlow { value timestamp }
-    power { value timestamp }
   }
   drivesPropdriveFwd2 {
-    active { value timestamp }
     heatFlow { value timestamp }
-    power { value timestamp }
   }
   drivesSeawaterSupply {
     temperature { value timestamp }
@@ -2196,22 +2096,6 @@ export const DRIVES_SIMULATION_INPUTS_QUERY = `
   }
   drivesShorepower {
     heatFlow { value timestamp }
-  }
-  drivesShorepower1a {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  drivesShorepower1b {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  drivesShorepower2a {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  drivesShorepower2b {
-    active { value timestamp }
-    power { value timestamp }
   }
   mode {
     mode { value timestamp }
@@ -2265,11 +2149,9 @@ export const HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY = `
   }
   thrustersThrusterAft {
     heatFlow { value timestamp }
-    active { value timestamp }
   }
   thrustersThrusterFwd {
     heatFlow { value timestamp }
-    active { value timestamp }
   }
 `;
 
@@ -3364,122 +3246,30 @@ export const THRS_SIMULATION_INPUTS_QUERY = `
   dcBrightloopAft1 {
     heatFlow { value timestamp }
   }
-  dcBrightloopAft1Converter1 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft1Converter2 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft1Converter3 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft1Converter4 {
-    active { value timestamp }
-    power { value timestamp }
-  }
   dcBrightloopAft2 {
     heatFlow { value timestamp }
-  }
-  dcBrightloopAft2Converter1 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft2Converter2 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft2Converter3 {
-    active { value timestamp }
-    power { value timestamp }
   }
   dcBrightloopAft3 {
     heatFlow { value timestamp }
   }
-  dcBrightloopAft3Converter1 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft3Converter2 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft3Converter3 {
-    active { value timestamp }
-    power { value timestamp }
-  }
   dcBrightloopAft4 {
     heatFlow { value timestamp }
-  }
-  dcBrightloopAft4Converter1 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft4Converter2 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft4Converter3 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopAft4Converter4 {
-    active { value timestamp }
-    power { value timestamp }
   }
   dcBrightloopFwd1 {
     heatFlow { value timestamp }
   }
-  dcBrightloopFwd1Converter1 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopFwd1Converter2 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopFwd1Converter3 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopFwd1Converter4 {
-    active { value timestamp }
-    power { value timestamp }
-  }
   dcBrightloopFwd2 {
     heatFlow { value timestamp }
-  }
-  dcBrightloopFwd2Converter1 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopFwd2Converter2 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopFwd2Converter3 {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  dcBrightloopFwd2Converter4 {
-    active { value timestamp }
-    power { value timestamp }
   }
   dcSeawaterSupply {
     temperature { value timestamp }
     flow { value timestamp }
   }
   dcUgrid1 {
-    active { value timestamp }
     heatFlow { value timestamp }
-    power { value timestamp }
   }
   dcUgrid2 {
-    active { value timestamp }
     heatFlow { value timestamp }
-    power { value timestamp }
   }
   dhwFreshwaterSupply {
     temperature { value timestamp }
@@ -3502,24 +3292,16 @@ export const THRS_SIMULATION_INPUTS_QUERY = `
     heatFlow { value timestamp }
   }
   drivesPropdriveAft1 {
-    active { value timestamp }
     heatFlow { value timestamp }
-    power { value timestamp }
   }
   drivesPropdriveAft2 {
-    active { value timestamp }
     heatFlow { value timestamp }
-    power { value timestamp }
   }
   drivesPropdriveFwd1 {
-    active { value timestamp }
     heatFlow { value timestamp }
-    power { value timestamp }
   }
   drivesPropdriveFwd2 {
-    active { value timestamp }
     heatFlow { value timestamp }
-    power { value timestamp }
   }
   drivesSeawaterSupply {
     temperature { value timestamp }
@@ -3527,22 +3309,6 @@ export const THRS_SIMULATION_INPUTS_QUERY = `
   }
   drivesShorepower {
     heatFlow { value timestamp }
-  }
-  drivesShorepower1a {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  drivesShorepower1b {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  drivesShorepower2a {
-    active { value timestamp }
-    power { value timestamp }
-  }
-  drivesShorepower2b {
-    active { value timestamp }
-    power { value timestamp }
   }
   mode {
     mode { value timestamp }
@@ -3573,11 +3339,9 @@ export const THRS_SIMULATION_INPUTS_QUERY = `
   }
   thrustersThrusterAft {
     heatFlow { value timestamp }
-    active { value timestamp }
   }
   thrustersThrusterFwd {
     heatFlow { value timestamp }
-    active { value timestamp }
   }
 `;
 
@@ -3976,11 +3740,9 @@ export const THRUSTERS_SIMULATION_INPUTS_QUERY = `
   }
   thrustersThrusterAft {
     heatFlow { value timestamp }
-    active { value timestamp }
   }
   thrustersThrusterFwd {
     heatFlow { value timestamp }
-    active { value timestamp }
   }
 `;
 

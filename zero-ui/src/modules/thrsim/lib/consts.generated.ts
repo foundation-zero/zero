@@ -951,88 +951,22 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
 
 export const DC_SIMULATION_INPUTS = toSimulationDefinition({
   dcBrightloopAft1: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcBrightloopAft1Converter1: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft1Converter2: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft1Converter3: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft1Converter4: {
-    componentType: SimulationComponentType.Brightloop,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopAft2: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcBrightloopAft2Converter1: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft2Converter2: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft2Converter3: {
-    componentType: SimulationComponentType.Brightloop,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopAft3: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcBrightloopAft3Converter1: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft3Converter2: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft3Converter3: {
-    componentType: SimulationComponentType.Brightloop,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopAft4: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcBrightloopAft4Converter1: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft4Converter2: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft4Converter3: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft4Converter4: {
-    componentType: SimulationComponentType.Brightloop,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopFwd1: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcBrightloopFwd1Converter1: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopFwd1Converter2: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopFwd1Converter3: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopFwd1Converter4: {
-    componentType: SimulationComponentType.Brightloop,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopFwd2: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcBrightloopFwd2Converter1: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopFwd2Converter2: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopFwd2Converter3: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopFwd2Converter4: {
-    componentType: SimulationComponentType.Brightloop,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcDhwSupply: {
     componentType: SimulationComponentType.Boundary,
@@ -1885,19 +1819,7 @@ export const DRIVES_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.Boundary,
   },
   drivesShorepower: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  drivesShorepower1a: {
-    componentType: SimulationComponentType.ShorePowerConverter,
-  },
-  drivesShorepower1b: {
-    componentType: SimulationComponentType.ShorePowerConverter,
-  },
-  drivesShorepower2a: {
-    componentType: SimulationComponentType.ShorePowerConverter,
-  },
-  drivesShorepower2b: {
-    componentType: SimulationComponentType.ShorePowerConverter,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   mode: {
     componentType: SimulationComponentType.AmcsControlMode,
@@ -2954,88 +2876,22 @@ export const THRS_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.Boundary,
   },
   dcBrightloopAft1: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcBrightloopAft1Converter1: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft1Converter2: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft1Converter3: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft1Converter4: {
-    componentType: SimulationComponentType.Brightloop,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopAft2: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcBrightloopAft2Converter1: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft2Converter2: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft2Converter3: {
-    componentType: SimulationComponentType.Brightloop,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopAft3: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcBrightloopAft3Converter1: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft3Converter2: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft3Converter3: {
-    componentType: SimulationComponentType.Brightloop,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopAft4: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcBrightloopAft4Converter1: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft4Converter2: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft4Converter3: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopAft4Converter4: {
-    componentType: SimulationComponentType.Brightloop,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopFwd1: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcBrightloopFwd1Converter1: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopFwd1Converter2: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopFwd1Converter3: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopFwd1Converter4: {
-    componentType: SimulationComponentType.Brightloop,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopFwd2: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  dcBrightloopFwd2Converter1: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopFwd2Converter2: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopFwd2Converter3: {
-    componentType: SimulationComponentType.Brightloop,
-  },
-  dcBrightloopFwd2Converter4: {
-    componentType: SimulationComponentType.Brightloop,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcSeawaterSupply: {
     componentType: SimulationComponentType.Boundary,
@@ -3080,19 +2936,7 @@ export const THRS_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.Boundary,
   },
   drivesShorepower: {
-    componentType: SimulationComponentType.HeatSource,
-  },
-  drivesShorepower1a: {
-    componentType: SimulationComponentType.ShorePowerConverter,
-  },
-  drivesShorepower1b: {
-    componentType: SimulationComponentType.ShorePowerConverter,
-  },
-  drivesShorepower2a: {
-    componentType: SimulationComponentType.ShorePowerConverter,
-  },
-  drivesShorepower2b: {
-    componentType: SimulationComponentType.ShorePowerConverter,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   mode: {
     componentType: SimulationComponentType.AmcsControlMode,
