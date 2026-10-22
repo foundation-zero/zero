@@ -91,19 +91,13 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.ExchangeCircuit]: EmptyObject;
   [MimicComponentType.DcConverter]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
-    power: SensorComponentType.Pvt; // TODO: fix this
-    temperature: SensorComponentType.Temperature;
   };
   [MimicComponentType.PropulsionDrive]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
-    power: SensorComponentType.Pvt;
-    temperature: SensorComponentType.Temperature;
   };
   [MimicComponentType.PropulsionCooler]: EmptyObject;
   [MimicComponentType.ShorePowerConverter]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
-    power: SensorComponentType.Pvt;
-    temperature: SensorComponentType.Temperature;
   };
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.FreshwaterCircuit]: {
@@ -307,7 +301,9 @@ export type CustomFieldDefinitions = CustomFields<{
   };
   [MimicComponentType.PropulsionDrive]: EmptyObject;
   [MimicComponentType.PropulsionCooler]: EmptyObject;
-  [MimicComponentType.ShorePowerConverter]: EmptyObject;
+  [MimicComponentType.ShorePowerConverter]: {
+    converters: ModuleField<SensorComponentType.ShorePowerConverter>[];
+  };
   [MimicComponentType.ConnectingCircuit]: {
     width?: number | string;
     height?: number | string;
@@ -395,10 +391,12 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.FlowControlValve]: SensorComponentType.Valve;
   [MimicComponentType.BoilerTank]: undefined;
   [MimicComponentType.ExchangeCircuit]: SensorComponentType.HeatTransferDevice;
-  [MimicComponentType.DcConverter]: SensorComponentType.HeatTransferDevice;
+  [MimicComponentType.DcConverter]:
+    | SensorComponentType.BrightloopGroup
+    | SensorComponentType.UgridGroup;
   [MimicComponentType.PropulsionDrive]: SensorComponentType.PropulsionDrive;
   [MimicComponentType.PropulsionCooler]: SensorComponentType.HeatTransferDevice;
-  [MimicComponentType.ShorePowerConverter]: SensorComponentType.ShorePowerConverter;
+  [MimicComponentType.ShorePowerConverter]: SensorComponentType.ShorePowerGroup;
   [MimicComponentType.Pvt]: SensorComponentType.Pvt;
   [MimicComponentType.Thruster]: SensorComponentType.Thruster;
   [MimicComponentType.FreshwaterCircuit]: undefined;

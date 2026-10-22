@@ -15,7 +15,6 @@ const propdrive = (
     | "drivesPropdriveAft2Heat"
     | "drivesPropdriveFwd1Heat"
     | "drivesPropdriveFwd2Heat",
-  temperatureField: "placeholder" = "placeholder",
 ) =>
   toInstance<MimicComponentType.PropulsionDrive>({
     controls: {},
@@ -24,8 +23,6 @@ const propdrive = (
     parameters: {},
     sensors: {
       heatTransfer: getField(SensorComponentType.HeatTransferDevice, "drives", heatField),
-      power: getField(SensorComponentType.Pvt, "drives", "placeholder"),
-      temperature: getField(SensorComponentType.Temperature, "drives", temperatureField),
     },
     source: getField(SensorComponentType.PropulsionDrive, "drives", field),
     get tooltip() {
@@ -75,7 +72,12 @@ export const DRIVES_ASSET_DATA = toFieldsMap({
       controls: {},
       controllerState: {},
       custom: {
-        converters: [],
+        converters: [
+          getField(SensorComponentType.ShorePowerConverter, "drives", "drivesShorepower1a"),
+          getField(SensorComponentType.ShorePowerConverter, "drives", "drivesShorepower1b"),
+          getField(SensorComponentType.ShorePowerConverter, "drives", "drivesShorepower2a"),
+          getField(SensorComponentType.ShorePowerConverter, "drives", "drivesShorepower2b"),
+        ],
       },
       parameters: {},
       sensors: {
@@ -84,10 +86,9 @@ export const DRIVES_ASSET_DATA = toFieldsMap({
           "drives",
           "drivesShorepowerHeat",
         ),
-        power: getField(SensorComponentType.Pvt, "drives", "placeholder"),
-        temperature: getField(SensorComponentType.Temperature, "drives", "placeholder"),
       },
-      source: getField(SensorComponentType.ShorePowerConverter, "drives", "drivesShorepower"),
+      // TODO: design how a group tile shows its total (summed power, max temperature)
+      source: getField(SensorComponentType.ShorePowerGroup, "drives", "drivesShorepower"),
       get tooltip() {
         return fieldTooltip(this.source, {
           title: "shorepower",

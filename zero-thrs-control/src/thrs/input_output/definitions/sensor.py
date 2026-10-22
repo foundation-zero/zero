@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from datetime import UTC, datetime
 from typing import Annotated, Self, cast
 
-from pydantic import Field, field_validator
+from pydantic import Field, ValidationInfo, field_validator
 
 from thrs.input_output.base import Stamped, StampedWithSource, ThrsValues, field_meta
 from thrs.input_output.definitions import control
@@ -410,20 +410,180 @@ class Thruster(ThrsValues):
     active: Stamped[OnOff]
 
 
+def _without_disabled_reading(
+    temp_power_stage: Stamped[Celsius | None], info: ValidationInfo
+) -> Stamped[Celsius | None]:
+    # The power stage reports 198 °C while the unit is disabled
+    active = info.data.get("active")
+    if active is None or active.value:
+        return temp_power_stage
+    return Stamped(value=None, timestamp=temp_power_stage.timestamp)
+
+
 class PropulsionDrive(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="VpEnable")]
+    temp_power_stage: Stamped[Celsius | None]
+    power: Stamped[Watt]
+
+    _temp_power_stage = field_validator("temp_power_stage")(_without_disabled_reading)
 
 
 class ShorePowerConverter(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="Online")]
+    esi_transformer_temperature: Stamped[Celsius]
+    esi_igbt_min_temperature: Stamped[Celsius]
+    esi_igbt_max_temperature: Stamped[Celsius]
+    power: Annotated[Stamped[Watt], Field(alias="EsiAcBusActivePower3Phase")]
+
+
+class ShorePowerGroup(ThrsValues):
+    any_active: Stamped[OnOff]
+    max_esi_transformer_temperature: Stamped[Celsius]
+    min_esi_igbt_min_temperature: Stamped[Celsius]
+    max_esi_igbt_max_temperature: Stamped[Celsius]
+    total_power: Stamped[Watt]
+
+    @classmethod
+    def from_converters(cls, converters: Sequence[ShorePowerConverter]) -> Self:
+        return cls(
+            any_active=Stamped.combine(
+                *(converter.active for converter in converters),
+                value=any(converter.active.value for converter in converters),
+            ),
+            max_esi_transformer_temperature=Stamped.combine(
+                *(converter.esi_transformer_temperature for converter in converters),
+                value=max(
+                    converter.esi_transformer_temperature.value
+                    for converter in converters
+                ),
+            ),
+            min_esi_igbt_min_temperature=Stamped.combine(
+                *(converter.esi_igbt_min_temperature for converter in converters),
+                value=min(
+                    converter.esi_igbt_min_temperature.value for converter in converters
+                ),
+            ),
+            max_esi_igbt_max_temperature=Stamped.combine(
+                *(converter.esi_igbt_max_temperature for converter in converters),
+                value=max(
+                    converter.esi_igbt_max_temperature.value for converter in converters
+                ),
+            ),
+            total_power=Stamped.combine(
+                *(converter.power for converter in converters),
+                value=sum(converter.power.value for converter in converters),
+            ),
+        )
+
+
+class BrightloopConverter(ThrsValues):
+    active: Annotated[Stamped[OnOff], Field(alias="Running")]
+    cell01_temperature1: Stamped[Celsius]
+    cell01_temperature2: Stamped[Celsius]
+    cell02_temperature1: Stamped[Celsius]
+    cell02_temperature2: Stamped[Celsius]
+    power: Annotated[Stamped[Watt], Field(alias="PvPower")]
+
+    @property
+    def channel_temperatures(self) -> tuple[Stamped[Celsius], ...]:
+        return (
+            self.cell01_temperature1,
+            self.cell01_temperature2,
+            self.cell02_temperature1,
+            self.cell02_temperature2,
+        )
 
 
 class Brightloop(ThrsValues):
     active: Stamped[OnOff]
+    max_channel_temperature: Stamped[Celsius]
+    power: Stamped[Watt]
+
+    @classmethod
+    def from_converters(cls, converters: Sequence[BrightloopConverter]) -> Self:
+        channel_temperatures = [
+            temperature
+            for converter in converters
+            for temperature in converter.channel_temperatures
+        ]
+        return cls(
+            active=Stamped.combine(
+                *(converter.active for converter in converters),
+                value=any(converter.active.value for converter in converters),
+            ),
+            max_channel_temperature=Stamped.combine(
+                *channel_temperatures,
+                value=max(temperature.value for temperature in channel_temperatures),
+            ),
+            power=Stamped.combine(
+                *(converter.power for converter in converters),
+                value=sum(converter.power.value for converter in converters),
+            ),
+        )
+
+
+class BrightloopGroup(ThrsValues):
+    any_active: Stamped[OnOff]
+    max_channel_temperature: Stamped[Celsius]
+    total_power: Stamped[Watt]
+
+    @classmethod
+    def from_brightloops(cls, brightloops: Sequence[Brightloop]) -> Self:
+        return cls(
+            any_active=Stamped.combine(
+                *(brightloop.active for brightloop in brightloops),
+                value=any(brightloop.active.value for brightloop in brightloops),
+            ),
+            max_channel_temperature=Stamped.combine(
+                *(brightloop.max_channel_temperature for brightloop in brightloops),
+                value=max(
+                    brightloop.max_channel_temperature.value
+                    for brightloop in brightloops
+                ),
+            ),
+            total_power=Stamped.combine(
+                *(brightloop.power for brightloop in brightloops),
+                value=sum(brightloop.power.value for brightloop in brightloops),
+            ),
+        )
 
 
 class Ugrid(ThrsValues):
-    active: Stamped[OnOff]
+    active: Annotated[Stamped[OnOff], Field(alias="Running")]
+    temp_power_stage: Stamped[Celsius | None]
+    power: Annotated[Stamped[Watt], Field(alias="PvPower")]
+
+    _temp_power_stage = field_validator("temp_power_stage")(_without_disabled_reading)
+
+
+class UgridGroup(ThrsValues):
+    any_active: Stamped[OnOff]
+    max_temp_power_stage: Stamped[Celsius | None]
+    total_power: Stamped[Watt]
+
+    @classmethod
+    def from_ugrids(cls, ugrids: Sequence[Ugrid]) -> Self:
+        return cls(
+            any_active=Stamped.combine(
+                *(ugrid.active for ugrid in ugrids),
+                value=any(ugrid.active.value for ugrid in ugrids),
+            ),
+            max_temp_power_stage=Stamped.combine(
+                *(ugrid.temp_power_stage for ugrid in ugrids),
+                value=max(
+                    (
+                        ugrid.temp_power_stage.value
+                        for ugrid in ugrids
+                        if ugrid.temp_power_stage.value is not None
+                    ),
+                    default=None,
+                ),
+            ),
+            total_power=Stamped.combine(
+                *(ugrid.power for ugrid in ugrids),
+                value=sum(ugrid.power.value for ugrid in ugrids),
+            ),
+        )
 
 
 class Heatpump(ThrsValues):
@@ -500,6 +660,8 @@ class Pyranometer(ThrsValues):
 __all__ = [
     "AdsorptionChiller",
     "Brightloop",
+    "BrightloopConverter",
+    "BrightloopGroup",
     "CalculatedFlow",
     "CalculatedTemperature",
     "FlowOnlySensor",
@@ -516,9 +678,11 @@ __all__ = [
     "Pvt",
     "Pyranometer",
     "ShorePowerConverter",
+    "ShorePowerGroup",
     "TemperatureDelta",
     "TemperatureSensor",
     "Thruster",
     "Ugrid",
+    "UgridGroup",
     "Valve",
 ]

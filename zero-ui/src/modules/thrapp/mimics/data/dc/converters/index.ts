@@ -7,10 +7,9 @@ import { toFieldsMap, toInstance } from "../../../modules";
 import { getField } from "../../../providers";
 
 const dcConverter = (
+  source: ModuleField<SensorComponentType.UgridGroup | SensorComponentType.BrightloopGroup, "dc">,
   converters: ModuleField<SensorComponentType.Ugrid | SensorComponentType.Brightloop>[],
   heatTransfer: ModuleField<SensorComponentType.HeatTransferDevice, "dc">,
-  power: ModuleField<SensorComponentType.Pvt, "dc">,
-  temperature: ModuleField<SensorComponentType.Temperature, "dc">,
   group: DcConverterGroup,
   tooltip: TooltipContent,
 ) =>
@@ -21,10 +20,9 @@ const dcConverter = (
     parameters: {},
     sensors: {
       heatTransfer: heatTransfer,
-      power: power,
-      temperature: temperature,
     },
-    source: heatTransfer,
+    // TODO: design how a group tile shows its total (summed power, max temperature)
+    source,
     get tooltip(): TooltipContent {
       return {
         componentType: "DC converter",
@@ -36,6 +34,7 @@ const dcConverter = (
 export const DC_CONVERTER_DATA = toFieldsMap({
   [MimicComponentType.DcConverter]: {
     aft: dcConverter(
+      getField(SensorComponentType.BrightloopGroup, "dc", "dcAftBrightloops"),
       [
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopAft1"),
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopAft2"),
@@ -43,30 +42,26 @@ export const DC_CONVERTER_DATA = toFieldsMap({
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopAft4"),
       ],
       getField(SensorComponentType.HeatTransferDevice, "dc", "dcAftHeat"),
-      getField(SensorComponentType.Pvt, "dc", "placeholder"),
-      getField(SensorComponentType.Temperature, "dc", "placeholder"),
       "brightloopsAft",
       { title: "group1", technicalName: "dc-brightloop-aft", mqttTopic: "dc-brightloop-aft" },
     ),
     ugrid: dcConverter(
+      getField(SensorComponentType.UgridGroup, "dc", "dcUgrids"),
       [
         getField(SensorComponentType.Ugrid, "dc", "dcUgrid1"),
         getField(SensorComponentType.Ugrid, "dc", "dcUgrid2"),
       ],
       getField(SensorComponentType.HeatTransferDevice, "dc", "dcUgridHeat"),
-      getField(SensorComponentType.Pvt, "dc", "placeholder"),
-      getField(SensorComponentType.Temperature, "dc", "placeholder"),
       "ugrids",
       { title: "group2", technicalName: "dc-ugrids", mqttTopic: "dc-ugrids" },
     ),
     fwd: dcConverter(
+      getField(SensorComponentType.BrightloopGroup, "dc", "dcFwdBrightloops"),
       [
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopFwd1"),
         getField(SensorComponentType.Brightloop, "dc", "dcBrightloopFwd2"),
       ],
       getField(SensorComponentType.HeatTransferDevice, "dc", "dcFwdHeat"),
-      getField(SensorComponentType.Pvt, "dc", "placeholder"),
-      getField(SensorComponentType.Temperature, "dc", "placeholder"),
       "brightloopsFwd",
       { title: "group3", technicalName: "dc-brightloop-fwd", mqttTopic: "dc-brightloop-fwd" },
     ),
