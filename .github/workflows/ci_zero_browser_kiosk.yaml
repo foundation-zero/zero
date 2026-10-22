@@ -24,7 +24,7 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       # Set up in https://github.com/foundation-zero/gcp-common
       - name: Generate Version
         id: version
