@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
-import { ACTUATED_VALVE_WIDTH } from "../../../components/actuated-valve/index.ts";
-import { ComponentOrientation } from "../../../components/index.ts";
+import { ComponentOrientation } from "../../../components";
+import { ACTUATED_VALVE_WIDTH } from "../../../components/actuated-valve";
 import { getTooltipContexts } from "../../../data";
+import { FlowControlValveInstance, SwitchValveInstance } from "../../../instances";
 import FlowControlLabelInstance from "../../../instances/FlowControlLabelInstance.vue";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
-import { FlowControlValveInstance, SwitchValveInstance } from "../../../instances/index.ts";
 
 const switchValves = getTooltipContexts(MimicComponentType.SwitchValve, [
   "1067-11",
