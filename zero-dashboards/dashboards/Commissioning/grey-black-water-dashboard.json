@@ -420,10 +420,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                                   AS time,\r\n\ttreat_gen_warning_alarm__value              AS treatment_general_warning_alarm,\r\n\tsewage_treatment_plant_general_alarm__value AS treatment_general_alarm\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                                   AS time,\r\n\ttreat_gen_warning_alarm__value              AS treatment_general_warning_alarm,\r\n\tsewage_treatment_plant_general_alarm__value AS treatment_general_alarm\r\nFROM marpower__340000_sewage__general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1675,10 +1675,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                             AS time,\r\n\t\tpump_fwd_grey_wat_remavail__value   AS fwd_pump_grey_remavail,\r\n\t\tpump_fwd_grey_wat_running__value    AS fwd_pump_grey_running,\r\n\t\ttrans_pump_grey_wat_remavail__value AS trans_pump_grey_remavail,\r\n\t\ttrans_pump_grey_wat_running__value  AS trans_pump_grey_running,\r\n\t\ttrans_pump_blck_wat_remavail__value AS trans_pump_black_remavail,\r\n\t\ttrans_pump_blck_wat_running__value  AS trans_pump_black_running,\r\n\t\tsewage_treatment_plant_on__value    AS treatment_on,\r\n\t\ttreat_release__value                AS treatment_release,\r\n\t\ttreat_dryrunnprot__value            AS treatment_dry_run_protection\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                             AS time,\r\n\t\tpump_fwd_grey_wat_remavail__value   AS fwd_pump_grey_remavail,\r\n\t\tpump_fwd_grey_wat_running__value    AS fwd_pump_grey_running,\r\n\t\ttrans_pump_grey_wat_remavail__value AS trans_pump_grey_remavail,\r\n\t\ttrans_pump_grey_wat_running__value  AS trans_pump_grey_running,\r\n\t\ttrans_pump_blck_wat_remavail__value AS trans_pump_black_remavail,\r\n\t\ttrans_pump_blck_wat_running__value  AS trans_pump_black_running,\r\n\t\tsewage_treatment_plant_on__value    AS treatment_on,\r\n\t\ttreat_release__value                AS treatment_release,\r\n\t\ttreat_dryrunnprot__value            AS treatment_dry_run_protection\r\nFROM marpower__340000_sewage__general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2205,10 +2205,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                            AS time,\r\n\tpump_fwd_grey_wat_startstop__value   AS grey_wat_fwd_pump_startstop,\r\n\ttrans_pump_grey_wat_startstop__value AS grey_wat_transfer_pump_startstop,\r\n\ttrans_pump_blck_wat_startstop__value AS black_wat_transfer_pump_startstop\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
+          "rawSql": "SELECT\r\n\ttimestamp                            AS time,\r\n\tpump_fwd_grey_wat_startstop__value   AS grey_wat_fwd_pump_startstop,\r\n\ttrans_pump_grey_wat_startstop__value AS grey_wat_transfer_pump_startstop,\r\n\ttrans_pump_blck_wat_startstop__value AS black_wat_transfer_pump_startstop\r\nFROM marpower__340000_sewage__general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1;",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2571,156 +2571,6 @@
                 },
                 "size": 20,
                 "text": {
-                  "field": "treatment_holding_tank",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "treatment_holding_tank",
-              "placement": {
-                "height": 30,
-                "left": 870,
-                "top": 10,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Treatment plant holding tank"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "treatment_holding_tank label",
-              "placement": {
-                "height": 30,
-                "left": 532,
-                "top": 10,
-                "width": 230
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
-                  "field": "treatment_sludge_tank",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "treatment_sludge_tank",
-              "placement": {
-                "height": 30,
-                "left": 870,
-                "top": 45,
-                "width": 175
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Treatment plant sludge tank"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "treatment_sludge_tank label",
-              "placement": {
-                "height": 30,
-                "left": 532,
-                "rotation": 0,
-                "top": 45,
-                "width": 230
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 20,
-                "text": {
                   "field": "sludge_tank",
                   "fixed": "",
                   "mode": "field"
@@ -2735,7 +2585,7 @@
               "name": "sludge_tank",
               "placement": {
                 "height": 30,
-                "left": 1310,
+                "left": 786,
                 "top": 10,
                 "width": 175
               },
@@ -2771,7 +2621,7 @@
               "name": "sludge_tank label",
               "placement": {
                 "height": 30,
-                "left": 1102,
+                "left": 578,
                 "top": 10,
                 "width": 104
               },
@@ -2809,87 +2659,8 @@
               "name": "sludge_tank_tag",
               "placement": {
                 "height": 30,
-                "left": 1206,
-                "rotation": 0,
+                "left": 682,
                 "top": 10,
-                "width": 104
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "treatment_holding_tank_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "treatment_holding_tank_tag",
-              "placement": {
-                "height": 30,
-                "left": 766,
-                "rotation": 0,
-                "top": 10,
-                "width": 104
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204, 204, 220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "treatment_sludge_tank_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "treatment_sludge_tank_tag",
-              "placement": {
-                "height": 30,
-                "left": 766,
-                "rotation": 0,
-                "top": 45,
                 "width": 104
               },
               "type": "text"
@@ -3051,10 +2822,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                      AS time,\r\n\tgrey_water_tank_aft_sb_level__value*1000       AS grey_wat_aft_tank,\r\n\tgrey_water_tank_fwd_sb_level__value*1000       AS grey_wat_fwd_tank,\r\n\tblack_grey_water_tank_aft_ps_level__value*1000 AS black_wat_aft_tank,\r\n\ttreat_holding_tank_level__value*1000           AS treatment_holding_tank,\r\n\ttreat_sludge_tank_level__value*1000            AS treatment_sludge_tank,\r\n\tsludge_tank_ps_level__value*1000               AS sludge_tank\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\tMAX(time) AS time,\r\n\tMAX(CASE WHEN name = 'grey-level-aft' THEN level END) AS grey_wat_aft_tank,\r\n\tMAX(CASE WHEN name = 'grey-level-fwd' THEN level END) AS grey_wat_fwd_tank,\r\n\tMAX(CASE WHEN name LIKE 'blac%-level' THEN level END) AS black_wat_aft_tank,\r\n\tMAX(CASE WHEN name = 'sludge-level' THEN level END)   AS sludge_tank\r\nFROM (\r\n\tSELECT DISTINCT ON (technical_name)\r\n\t\ttimestamp                                      AS time,\r\n\t\ttechnical_name AS name,\r\n\t\tlevel__value AS level\r\n\tFROM marpower__sewage__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tORDER BY technical_name, timestamp DESC\r\n)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3095,10 +2866,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\tMAX(CASE WHEN mqtt_json_path = 'grey_water_tank_aft_sb_level' THEN '(' || yard_tag || ')' ELSE NULL END)       AS grey_wat_aft_tank_tag,\r\n\tMAX(CASE WHEN mqtt_json_path = 'grey_water_tank_fwd_sb_level' THEN '(' || yard_tag || ')' ELSE NULL END)       AS grey_wat_fwd_tank_tag,\r\n\tMAX(CASE WHEN mqtt_json_path = 'black_grey_water_tank_aft_ps_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS black_wat_aft_tank_tag,\r\n\tMAX(CASE WHEN mqtt_json_path = 'treat_holding_tank_level' THEN '(' || yard_tag || ')' ELSE NULL END)           AS treatment_holding_tank_tag,\r\n\tMAX(CASE WHEN mqtt_json_path = 'treat_sludge_tank_level' THEN '(' || yard_tag || ')' ELSE NULL END)            AS treatment_sludge_tank_tag,\r\n\tMAX(CASE WHEN mqtt_json_path = 'sludge_tank_ps_level' THEN '(' || yard_tag || ')' ELSE NULL END)               AS sludge_tank_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/340000-sewage'",
+          "rawSql": "SELECT\r\n\tMAX(CASE WHEN mqtt_json_path = 'grey_water_tank_aft_sb_level' THEN '(' || yard_tag || ')' ELSE NULL END)       AS grey_wat_aft_tank_tag,\r\n\tMAX(CASE WHEN mqtt_json_path = 'grey_water_tank_fwd_sb_level' THEN '(' || yard_tag || ')' ELSE NULL END)       AS grey_wat_fwd_tank_tag,\r\n\tMAX(CASE WHEN mqtt_json_path = 'black_grey_water_tank_aft_ps_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS black_wat_aft_tank_tag,\r\n\tMAX(CASE WHEN mqtt_json_path = 'sludge_tank_ps_level' THEN '(' || yard_tag || ')' ELSE NULL END)               AS sludge_tank_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/340000-sewage'",
           "refId": "B",
           "sql": {
             "columns": [
@@ -3223,10 +2994,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)               AS time,\r\n\tMAX(treat_gen_warning_alarm__value)              AS treat_gen_warning_alarm,\r\n\tMAX(sewage_treatment_plant_general_alarm__value) AS treat_gen_alarm\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
+              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)               AS time,\r\n\tMAX(treat_gen_warning_alarm__value)              AS treat_gen_warning_alarm,\r\n\tMAX(sewage_treatment_plant_general_alarm__value) AS treat_gen_alarm\r\nFROM marpower__340000_sewage__general\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3356,10 +3127,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)       AS time,\r\n\tMAX(pump_fwd_grey_wat_remavail__value)   AS fwd_pump_grey_wat_remavail,\r\n\tMAX(pump_fwd_grey_wat_running__value)    AS fwd_pump_grey_wat_running,\r\n\tMAX(trans_pump_grey_wat_remavail__value) AS trans_pump_grey_wat_remavail,\r\n\tMAX(trans_pump_grey_wat_running__value)  AS trans_pump_grey_wat_running,\r\n\tMAX(trans_pump_blck_wat_remavail__value) AS trans_pump_black_wat_remavail,\r\n\tMAX(trans_pump_blck_wat_running__value)  AS trans_pump_black_wat_running,\r\n\tMAX(sewage_treatment_plant_on__value)    AS treatment_on,\r\n\tMAX(treat_release__value)                AS treatment_release,\r\n\tMAX(treat_dryrunnprot__value)            AS treatment_dry_run_protect\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
+              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)       AS time,\r\n\tMAX(pump_fwd_grey_wat_remavail__value)   AS fwd_pump_grey_wat_remavail,\r\n\tMAX(pump_fwd_grey_wat_running__value)    AS fwd_pump_grey_wat_running,\r\n\tMAX(trans_pump_grey_wat_remavail__value) AS trans_pump_grey_wat_remavail,\r\n\tMAX(trans_pump_grey_wat_running__value)  AS trans_pump_grey_wat_running,\r\n\tMAX(trans_pump_blck_wat_remavail__value) AS trans_pump_black_wat_remavail,\r\n\tMAX(trans_pump_blck_wat_running__value)  AS trans_pump_black_wat_running,\r\n\tMAX(sewage_treatment_plant_on__value)    AS treatment_on,\r\n\tMAX(treat_release__value)                AS treatment_release,\r\n\tMAX(treat_dryrunnprot__value)            AS treatment_dry_run_protect\r\nFROM marpower__340000_sewage__general\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3497,10 +3268,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)        AS time,\r\n\tMAX(pump_fwd_grey_wat_startstop__value)   AS fwr_pump_grey_wat_start,\r\n\tMAX(trans_pump_grey_wat_startstop__value) AS trans_pump_grey_wat_start,\r\n\tMAX(trans_pump_blck_wat_startstop__value) AS trans_pump_black_wat_start\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
+              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)        AS time,\r\n\tMAX(pump_fwd_grey_wat_startstop__value)   AS fwr_pump_grey_wat_start,\r\n\tMAX(trans_pump_grey_wat_startstop__value) AS trans_pump_grey_wat_start,\r\n\tMAX(trans_pump_blck_wat_startstop__value) AS trans_pump_black_wat_start\r\nFROM marpower__340000_sewage__general\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3649,10 +3420,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\ttimestamp                                      AS time,\r\n\tgrey_water_tank_aft_sb_level__value*1000       AS grey_wat_aft_tank,\r\n\tgrey_water_tank_fwd_sb_level__value*1000       AS grey_wat_fwd_tank,\r\n\tblack_grey_water_tank_aft_ps_level__value*1000 AS black_wat_aft_tank\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
+              "rawSql": "\tSELECT\r\n\t\ttimestamp  \t\t\t      AS time,\r\n\t\tUPPER(technical_name) AS name,\r\n\t\tlevel__value          AS level\r\n\tFROM marpower__sewage__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tAND technical_name <> 'sludge-level'\r\n\tORDER BY name, timestamp DESC\r\n",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3676,168 +3447,26 @@
           "title": "Grey/Black water tank level",
           "transformations": [
             {
-              "id": "organize",
+              "id": "partitionByValues",
               "options": {
-                "excludeByName": {},
-                "includeByName": {},
-                "indexByName": {},
-                "renameByName": {
-                  "black_wat_aft_tank": "Black water AFT",
-                  "grey_wat_aft_tank": "Grey water AFT",
-                  "grey_wat_fwd_tank": "Grey water FWD"
-                }
-              }
-            }
-          ],
-          "transparent": true,
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "fixedColor": "text",
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": 300000,
-                "lineInterpolation": "linear",
-                "lineWidth": 2,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "showValues": false,
-                "spanNulls": 60000,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": 0
-                  }
-                ]
-              },
-              "unit": "L"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "time"
-                },
-                "properties": [
-                  {
-                    "id": "unit"
-                  }
-                ]
-              }
-            ]
-          },
-          "gridPos": {
-            "h": 7,
-            "w": 24,
-            "x": 0,
-            "y": 42
-          },
-          "id": 14,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "right",
-              "showLegend": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "12.3.0",
-          "targets": [
-            {
-              "dataset": "dev",
-              "editorMode": "code",
-              "editorType": "sql",
-              "format": 1,
-              "meta": {
-                "builderOptions": {
-                  "columns": [],
-                  "database": "",
-                  "limit": 1000,
-                  "meta": {},
-                  "mode": "list",
-                  "queryType": "table",
-                  "table": ""
-                }
-              },
-              "pluginVersion": "2.1.4",
-              "queryType": "table",
-              "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp \t                         AS time,\r\n\ttreat_holding_tank_level__value*1000 AS treatment_holding_tank,\r\n\ttreat_sludge_tank_level__value*1000  AS treatment_sludge_tank\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
-              "refId": "A",
-              "sql": {
-                "columns": [
-                  {
-                    "parameters": [],
-                    "type": "function"
-                  }
+                "fields": [
+                  "name"
                 ],
-                "groupBy": [
-                  {
-                    "property": {
-                      "type": "string"
-                    },
-                    "type": "groupBy"
-                  }
-                ],
-                "limit": 50
+                "keepFields": false
               }
-            }
-          ],
-          "title": "Treatment plant tank level",
-          "transformations": [
+            },
             {
-              "id": "organize",
+              "id": "renameByRegex",
               "options": {
-                "excludeByName": {},
-                "includeByName": {},
-                "indexByName": {},
-                "renameByName": {
-                  "black_wat_aft_tank": "",
-                  "treatment_holding_tank": "Holding tank",
-                  "treatment_sludge_tank": "Sludge tank"
-                }
+                "regex": "level GREY-LEVEL-(.*)",
+                "renamePattern": "Grey water $1"
+              }
+            },
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "level BLAC.?-LEVEL",
+                "renamePattern": "Black water"
               }
             }
           ],
@@ -3919,7 +3548,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 49
+            "y": 42
           },
           "id": 13,
           "options": {
@@ -3953,10 +3582,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp                        AS time,\r\n\tsludge_tank_ps_level__value*1000 AS sludge_tank\r\nFROM marpower__340000_sewage\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC",
+              "rawSql": "\tSELECT\r\n\t\ttimestamp      AS time,\r\n\t\ttechnical_name AS name,\r\n\t\tlevel__value   AS level\r\n\tFROM marpower__sewage__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tAND technical_name = 'sludge-level'\r\n\tORDER BY timestamp DESC\r\n",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3986,8 +3615,19 @@
                 "includeByName": {},
                 "indexByName": {},
                 "renameByName": {
+                  "level": " ",
+                  "name": "",
                   "sludge_tank": "Sludge tank"
                 }
+              }
+            },
+            {
+              "id": "partitionByValues",
+              "options": {
+                "fields": [
+                  "name"
+                ],
+                "keepFields": false
               }
             }
           ],
