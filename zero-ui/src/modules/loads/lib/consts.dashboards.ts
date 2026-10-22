@@ -67,8 +67,8 @@ const dashboard = (
 export const MAIN_MAST_GROUP = group(
   "Main mast",
   PositionId.Main,
-  "main-runner-tail-ps-load",
-  "main-runner-tail-sb-load",
+  "main-runner-block-ps-load",
+  "main-runner-block-sb-load",
   "main-checkstay-ps-load",
   "main-checkstay-sb-load",
   "main-checkstay-deflector-load",
@@ -76,6 +76,7 @@ export const MAIN_MAST_GROUP = group(
   "fiber-optic-main-v1-ps",
   "fiber-optic-main-v1-sb",
   "main-headstay-combined-load",
+  "main-mast-compression-load",
   ["fiber-optic-main-d1-ps", false],
   ["fiber-optic-main-d1-sb", false],
 );
@@ -109,8 +110,8 @@ export const MAIN_LOCKS_GROUP = group(
 export const MIZZEN_MAST_GROUP = group(
   "Mizzen mast",
   PositionId.Mizzen,
-  "mizzen-runner-tail-ps-load",
-  "mizzen-runner-tail-sb-load",
+  "mizzen-runner-block-ps-load",
+  "mizzen-runner-block-sb-load",
   "mizzen-checkstay-ps-load",
   "mizzen-checkstay-sb-load",
   "mizzen-checkstay-deflector-load",
@@ -118,6 +119,7 @@ export const MIZZEN_MAST_GROUP = group(
   "fiber-optic-mizzen-v1-ps",
   "fiber-optic-mizzen-v1-sb",
   "fiber-optic-mizzen-forestay",
+  "mizzen-mast-compression-load",
   ["fiber-optic-mizzen-d1-ps", false],
   ["fiber-optic-mizzen-d1-sb", false],
 );
