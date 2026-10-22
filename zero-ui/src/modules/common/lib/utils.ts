@@ -537,12 +537,17 @@ export const extractProperty =
   <V>(item: { [key in K]: V }): V =>
     item[property];
 
-export const useFixed = (value: Ref<number | undefined | null>, digits: number) =>
-  computed(() => {
-    if (value.value == undefined) {
+export const useFixed = (value: MaybeRef<number | undefined | null>, digits: MaybeRef<number>) =>
+  computed<[number | undefined, number[] | undefined]>(() => {
+    const unrefValue = unref(value);
+    if (unrefValue == undefined) {
       return [undefined, undefined];
     } else {
-      return value.value.toFixed(digits).split(".").map(Number);
+      const [integer, fraction] = unrefValue.toFixed(unref(digits)).split(".");
+      return [
+        Number(integer),
+        fraction != undefined ? Array.from(fraction).map(Number) : undefined,
+      ];
     }
   });
 
