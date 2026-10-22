@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, toRefs } from "vue";
 import { getContext } from ".";
+import { useAlarmsStore } from "../../stores/alarms";
 import { useVariablesStore } from "../../stores/variables";
 import { Variable, VariableUnit } from "../../types";
 import { LoadsCard, LoadsCardFooter, LoadsCardStateLabel, LoadsCardTitle } from "../loads-card";
@@ -28,6 +29,8 @@ const props = defineProps<{ id: string; variable: Variable }>();
 
 const { type } = getContext();
 const { getVariableById } = useVariablesStore();
+const { alarmedVariableIds } = toRefs(useAlarmsStore());
+const hasActiveAlarm = computed(() => alarmedVariableIds.value.has(props.id));
 
 const isNumerical = computed(
   () =>
@@ -67,6 +70,7 @@ const overhoist = computed(() => {
   <VariableCard
     v-else-if="isNumerical"
     :thresholds="variable?.reference"
+    :alarm="hasActiveAlarm"
     :value="<number>variable.actual?.value"
     :type="variable?.variable?.unit"
     class="col-span-1 w-full max-w-full"
@@ -89,6 +93,7 @@ const overhoist = computed(() => {
   <LoadsCard
     v-else-if="isLoad"
     :thresholds="variable?.reference"
+    :alarm="hasActiveAlarm"
     :value="<number>variable.actual?.value"
     :scale="[variable.variable.scaleMin, variable.variable.scaleMax]"
     class="col-span-1 w-full max-w-full"
@@ -107,6 +112,7 @@ const overhoist = computed(() => {
     v-else
     class="col-span-1 w-full"
     :thresholds="variable?.reference"
+    :alarm="hasActiveAlarm"
     :value="<number>variable.actual?.value"
   >
     <PositionCardReferenceTarget />

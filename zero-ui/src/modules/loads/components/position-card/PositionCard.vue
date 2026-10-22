@@ -7,6 +7,7 @@ import { VariableCard } from "../variable-card";
 const props = defineProps<{
   value?: number;
   thresholds?: Partial<ReferenceThresholds>;
+  alarm?: boolean;
   class?: HTMLAttributes["class"];
 }>();
 </script>
@@ -16,6 +17,7 @@ const props = defineProps<{
     :type="VariableUnit.Ratio"
     :value="value"
     :thresholds="thresholds"
+    :alarm="alarm"
     :class="cn('px-4', props.class)"
   >
     <slot />

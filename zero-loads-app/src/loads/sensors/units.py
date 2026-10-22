@@ -19,6 +19,7 @@ class VariableMeta:
     type: Literal["actual", "alarm", "alarm_threshold"] | None = None
     alarm_for: str | None = None
     threshold_for: str | None = None
+    value_from: str | None = None
     technical_name: str | None = None
 
     @property
@@ -37,6 +38,7 @@ class VariableMeta:
             type=other.type or self.type,
             alarm_for=other.alarm_for or self.alarm_for,
             threshold_for=other.threshold_for or self.threshold_for,
+            value_from=other.value_from or self.value_from,
             scale_min=other.scale_min
             if other.scale_min is not None
             else self.scale_min,
@@ -83,10 +85,7 @@ RelativePosition: TypeAlias = Annotated[
     float,
     VariableMeta(unit="ratio", scale_min=0, scale_max=1, type="actual"),
 ]
-Position: TypeAlias = Annotated[
-    int,
-    VariableMeta(unit="mm", scale_min=0, type="actual"),
-]
+Position: TypeAlias = Annotated[int, VariableMeta(unit="mm", scale_min=0)]
 
 Load: TypeAlias = Annotated[
     float,
@@ -97,12 +96,12 @@ MaxLoad: TypeAlias = Annotated[
     VariableMeta(unit="tonne", type="alarm_threshold"),
 ]
 MaxPosition: TypeAlias = Annotated[
-    float,
-    VariableMeta(unit="ratio", scale_min=0, scale_max=1, type="alarm_threshold"),
+    int,
+    VariableMeta(unit="mm", type="alarm_threshold"),
 ]
 MinPosition: TypeAlias = Annotated[
-    float,
-    VariableMeta(unit="ratio", scale_min=0, scale_max=1, type="alarm_threshold"),
+    int,
+    VariableMeta(unit="mm", type="alarm_threshold"),
 ]
 Alarm: TypeAlias = Annotated[bool, VariableMeta(type="alarm")]
 Lock: TypeAlias = Annotated[bool, VariableMeta(unit="bool", type="actual")]
