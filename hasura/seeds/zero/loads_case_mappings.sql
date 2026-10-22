@@ -1344,6 +1344,62 @@ WITH mapping_payload AS (
     "sail_abbreviations": [
       "SJ"
     ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "awa_range_id": "upwind",
+    "aws_range_id": 1,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "awa_range_id": "upwind",
+    "aws_range_id": 2,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "awa_range_id": "upwind",
+    "aws_range_id": 3,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "awa_range_id": "upwind",
+    "aws_range_id": 4,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "awa_range_id": "upwind",
+    "aws_range_id": 5,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
+    "awa_range_id": "upwind",
+    "aws_range_id": 6,
+    "sail_abbreviations": [
+      "TS"
+    ]
+  },
+  {
+    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
+    "awa_range_id": "upwind",
+    "aws_range_id": 7,
+    "sail_abbreviations": [
+      "TS"
+    ]
   }
 ]$$::jsonb) AS t(
         load_case_id TEXT,
