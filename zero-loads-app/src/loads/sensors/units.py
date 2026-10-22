@@ -19,8 +19,7 @@ class VariableMeta:
     type: Literal["actual", "alarm", "alarm_threshold"] | None = None
     alarm_for: str | None = None
     threshold_for: str | None = None
-    variable_key: str | None = None
-    applies_to_tack: Literal["port", "starboard"] | None = None
+    technical_name: str | None = None
 
     @property
     def is_actual(self) -> bool:
@@ -46,8 +45,7 @@ class VariableMeta:
             else self.scale_max,
             scale_min_label=other.scale_min_label or self.scale_min_label,
             scale_max_label=other.scale_max_label or self.scale_max_label,
-            variable_key=other.variable_key or self.variable_key,
-            applies_to_tack=other.applies_to_tack or self.applies_to_tack,
+            technical_name=other.technical_name or self.technical_name,
         )
 
     @property

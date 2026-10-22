@@ -244,11 +244,7 @@ export const createGaugeContext = (props: GaugeRootProps): GaugeRootContext => {
   const thresholds = toRef(props, "thresholds");
   const scale = toRef(props, "scale");
 
-  const target = computed(() =>
-    thresholds.value?.target === undefined
-      ? (scale.value[0] + scale.value[1]) / 2
-      : thresholds.value?.target,
-  );
+  const target = computed(() => thresholds.value?.target ?? (scale.value[0] + scale.value[1]) / 2);
 
   const currentValue = computed(() => props.currentValue ?? target.value);
 

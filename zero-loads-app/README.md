@@ -90,13 +90,24 @@ uv run loads generate-jwt --roles captain
 
 The Hasura seed files `hasura/seeds/zero/loads_reference_values.sql` and
 `hasura/seeds/zero/loads_case_mappings.sql` are generated from the Sailpack
-load cases in `src/sailpack/load_cases`:
+load cases in `src/sailpack/load_cases` and the loads Google Sheet, which is the source of truth
+for the SailPack mapping and the max loads. The SailPack targets go into `loads.reference_values`
+and the lower and upper warning and alarm thresholds from the max loads tab into
+`loads.thresholds`, one row per variable. The API takes each threshold from the reference
+value of the matching load case, or from `loads.thresholds` where that is empty or no load
+case matches, so a threshold set on a reference value overrides the variable threshold for those
+conditions. Targets outside their thresholds are dropped and listed in
+`src/sailpack/target_threshold_conflicts.csv`.
+
+Regenerate the seeds, which downloads the sheet and first checks its technical names against the
+registry, that every Vitters IO list row with a display name matches a registry variable on its
+topic, and that the max loads are numeric and ordered:
 
 ```bash
 just export_seed
 ```
 
-To verify the committed seed files are still consistent with the Sailpack
+To verify the committed seed files are still consistent with the sheet and the Sailpack
 export (also enforced in CI):
 ```bash
 just check_seed
