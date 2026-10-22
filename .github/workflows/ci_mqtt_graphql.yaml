@@ -132,7 +132,7 @@ jobs:
           tags: |
             type=raw,value=${{ needs.test.outputs.version }}
       - name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: zero-mqtt-graphql
           push: true
