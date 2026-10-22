@@ -29,17 +29,5 @@ import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
       y="592.3"
       tag-id="9002-01"
     />
-
-    <!-- Pyranometers -->
-    <TagLabelInstance
-      x="1"
-      y="242.5"
-      tag-id="9045-1"
-    />
-    <TagLabelInstance
-      x="18"
-      y="446"
-      tag-id="9045-1"
-    />
   </g>
 </template>
