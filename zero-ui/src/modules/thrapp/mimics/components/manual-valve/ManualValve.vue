@@ -77,6 +77,12 @@ withDefaults(defineProps<ManualValveProps & MimicComponentBaseProps>(), {
           :fill="MANUAL_VALVE_MARK_COLOR"
         />
       </g>
+
+      <path
+        v-else-if="valveType === ManualValveType.Balancing"
+        d="M18 18V7"
+        :stroke="MANUAL_VALVE_BORDER_COLOR"
+      />
     </slot>
   </MimicComponent>
 </template>

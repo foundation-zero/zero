@@ -11,6 +11,7 @@ import { PVT_MIX_VALVE_DATA } from "./mix-valves";
 import { PVT_PRESSURE_GAUGE_DATA } from "./pressure-gauges";
 import { PVT_PRESSURE_SENSOR_DATA } from "./pressure-sensors";
 import { PVT_PUMP_DATA } from "./pumps";
+import { PVT_STRING_DATA } from "./pvt-strings";
 import { PVT_PYRANOMETER_DATA } from "./pyranometers";
 import { PVT_SWITCH_VALVE_DATA } from "./switch-valves";
 import { PVT_TEMPERATURE_SENSOR_DATA } from "./temperature-sensors";
@@ -27,6 +28,7 @@ export { PVT_MIX_VALVE_DATA } from "./mix-valves";
 export { PVT_PRESSURE_GAUGE_DATA } from "./pressure-gauges";
 export { PVT_PRESSURE_SENSOR_DATA } from "./pressure-sensors";
 export { PVT_PUMP_DATA } from "./pumps";
+export { PVT_STRING_DATA } from "./pvt-strings";
 export { PVT_PYRANOMETER_DATA } from "./pyranometers";
 export { PVT_SWITCH_VALVE_DATA } from "./switch-valves";
 export { PVT_TEMPERATURE_SENSOR_DATA } from "./temperature-sensors";
@@ -47,4 +49,5 @@ export const PVT_MIMIC_DATA = toFieldsMap({
   ...PVT_EXCHANGE_CIRCUIT_DATA,
   ...PVT_ASSET_DATA,
   ...PVT_HEAT_EXCHANGER_DATA,
+  ...PVT_STRING_DATA,
 });

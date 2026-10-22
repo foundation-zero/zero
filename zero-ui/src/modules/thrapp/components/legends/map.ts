@@ -1,5 +1,5 @@
-import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import { ManualValveType } from "../../mimics/components/manual-valve";
+import { MimicKey } from "../../router/mimics";
 import { MimicComponentType } from "../../types";
 
 /** Legend entries that are not tied to a mimic component type. */
@@ -41,7 +41,7 @@ export const isInLegend = <Key extends LegendKey>(
   return (entry as string[]).includes(subType);
 };
 
-export const MIMIC_LEGEND_MAP: Partial<Record<keyof ThrsModules, LegendMap>> = {
+export const MIMIC_LEGEND_MAP: Partial<Record<MimicKey, LegendMap>> = {
   dhw: {
     [MimicComponentType.ExchangeCircuit]: true,
     [MimicComponentType.FreshwaterCircuit]: true,

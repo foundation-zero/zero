@@ -24,5 +24,15 @@ export const PVT_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
       },
       { componentType: "PCM loop" },
     ),
+    aft: toConnectingCircuit(
+      {
+        custom: {
+          circuitName: "PVT",
+          modeModule: "pvt",
+        },
+        source: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtPvtMainAftHeat"),
+      },
+      { componentType: "PVT AFT loop" },
+    ),
   },
 });
