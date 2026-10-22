@@ -1,5 +1,6 @@
 import json
 from collections import defaultdict
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -42,10 +43,56 @@ def _awa_contains(awa: float, range_id: str) -> bool:
     return lower <= awa < upper
 
 
-def build_records(input_source: Path) -> list[dict[str, Any]]:
-    sailpack_data = parse_directory(input_source)
-    load_case_records = build_load_case_records(sailpack_data)
+@dataclass(frozen=True)
+class AmbiguousLoadCases:
+    """Load cases in the same sail set, AWA range and AWS range; the first ID is mapped."""
 
+    sail_abbreviations: tuple[str, ...]
+    awa_range_id: str
+    aws_range: tuple[float, float | None]
+    load_case_ids: list[str]
+
+
+def _aws_range_index(aws: float) -> int:
+    return next(
+        index
+        for index, (lower, upper) in enumerate(AWS_RANGES)
+        if lower <= aws and (upper is None or aws < upper)
+    )
+
+
+def find_ambiguous_load_cases(
+    load_case_records: list[dict[str, Any]],
+) -> list[AmbiguousLoadCases]:
+    by_range: dict[tuple[tuple[str, ...], str, int], list[str]] = defaultdict(list)
+    for lc in load_case_records:
+        awa_range_id = next(
+            range_id for range_id in AWA_RANGES if _awa_contains(lc["awa"], range_id)
+        )
+        key = (
+            tuple(sorted(lc["sail_abbreviations"])),
+            awa_range_id,
+            _aws_range_index(lc["aws"]),
+        )
+        by_range[key].append(lc["id"])
+
+    return [
+        AmbiguousLoadCases(
+            sail_abbreviations=sail_abbreviations,
+            awa_range_id=awa_range_id,
+            aws_range=AWS_RANGES[aws_range_index],
+            load_case_ids=sorted(load_case_ids),
+        )
+        for (
+            sail_abbreviations,
+            awa_range_id,
+            aws_range_index,
+        ), load_case_ids in sorted(by_range.items())
+        if len(load_case_ids) > 1
+    ]
+
+
+def build_records(load_case_records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     by_sails: dict[tuple[str, ...], list[dict[str, Any]]] = defaultdict(list)
     for lc in load_case_records:
         key = tuple(sorted(lc["sail_abbreviations"]))
@@ -131,8 +178,9 @@ COMMIT;
 
 def export_load_case_mapping_seed_sql(
     input_source: Path, output_sql: Path
-) -> tuple[int, int]:
-    records = build_records(input_source)
+) -> tuple[int, list[AmbiguousLoadCases]]:
+    load_case_records = build_load_case_records(parse_directory(input_source))
+    records = build_records(load_case_records)
     sql = render_sql(records)
     output_sql.write_text(sql, encoding="utf-8")
-    return len(records), len(records)
+    return len(records), find_ambiguous_load_cases(load_case_records)

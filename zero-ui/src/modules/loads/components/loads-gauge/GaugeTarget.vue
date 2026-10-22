@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VariableUnit } from "../../types";
+import { Nullable, VariableUnit } from "../../types";
 import ReferenceBox from "../reference-box/ReferenceBox.vue";
 import ReferenceBoxValue from "../reference-box/ReferenceBoxValue.vue";
 
@@ -8,7 +8,7 @@ import { HTMLAttributes } from "vue";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
-  target?: number;
+  target?: Nullable<number>;
 }>();
 </script>
 
