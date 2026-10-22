@@ -1,22 +1,26 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
+import { getTooltipContexts } from "../../../data";
 import { ExchangeCircuitInstance, SeawaterCircuitInstance } from "../../../instances";
-import { DRIVES_EXCHANGE_CIRCUIT_DATA } from "../data";
 
-const seawaterCircuits = DRIVES_EXCHANGE_CIRCUIT_DATA[MimicComponentType.SeawaterCircuit];
-const exchangeCircuits = DRIVES_EXCHANGE_CIRCUIT_DATA[MimicComponentType.ExchangeCircuit];
+const seawaterCircuits = getTooltipContexts(MimicComponentType.SeawaterCircuit, [
+  "drives:seawater",
+]);
+const exchangeCircuits = getTooltipContexts(MimicComponentType.ExchangeCircuit, [
+  "drives:domesticHotWater",
+]);
 </script>
 
 <template>
   <SeawaterCircuitInstance
     x="1039.2832"
     y="782.916"
-    v-bind="seawaterCircuits.seawater"
+    v-bind="seawaterCircuits['drives:seawater']"
   />
   <ExchangeCircuitInstance
     x="1314"
     y="19.916"
     :height="183"
-    v-bind="exchangeCircuits.domesticHotWater"
+    v-bind="exchangeCircuits['drives:domesticHotWater']"
   />
 </template>

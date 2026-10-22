@@ -22,10 +22,7 @@ const props = withDefaults(
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.ExchangeCircuit"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <HTMLWrapper v-bind="{ width, height, x, y }">
       <ExchangeCircuit
         class="w-full"

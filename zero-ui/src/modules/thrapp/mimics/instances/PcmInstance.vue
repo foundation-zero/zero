@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ZiHeatBatteryFull } from "@/modules/common/components/icons";
+import { reactiveOmit } from "@vueuse/core";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
@@ -26,15 +27,13 @@ const props = withDefaults(
     layout: PcmLayout.LeftTopBottom,
   },
 );
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.Pcm"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <Pcm
-      v-bind="props"
+      v-bind="forwardedProps"
       :layout="layout"
     >
       <div class="my-0 shrink grow-0">

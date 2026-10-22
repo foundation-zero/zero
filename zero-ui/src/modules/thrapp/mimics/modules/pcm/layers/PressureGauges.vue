@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
+import { getTooltipContexts } from "../../../data";
 import { PressureGaugeInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
-import { PCM_MIMIC_DATA } from "../data";
 
-const pressureGauges = PCM_MIMIC_DATA[MimicComponentType.PressureGauge];
+const pressureGauges = getTooltipContexts(MimicComponentType.PressureGauge, ["1095-06", "1096-09"]);
 </script>
 
 <template>

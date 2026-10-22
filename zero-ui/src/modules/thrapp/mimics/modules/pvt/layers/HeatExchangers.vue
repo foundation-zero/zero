@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
+import { getTooltipContexts } from "../../../data";
 import { HeatExchangerInstance } from "../../../instances";
 import HeatExchangerLabelInstance from "../../../instances/HeatExchangerLabelInstance.vue";
-import { PVT_MIMIC_DATA } from "../data";
 
-const heatExchangers = PVT_MIMIC_DATA[MimicComponentType.HeatExchanger];
+const heatExchangers = getTooltipContexts(MimicComponentType.HeatExchanger, ["1002"]);
 </script>
 
 <template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { reactiveOmit } from "@vueuse/core";
 import { computed } from "vue";
 import { MimicComponentInstanceProps } from ".";
 import { HeatingState } from "../components";
@@ -44,15 +45,13 @@ const exchangerState = computed(() => {
   if (portA === HeatingState.Idle) return HeatingState.Inactive;
   else return HeatingState.Active;
 });
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.HeatExchanger"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <HeatExchanger
-      v-bind="props"
+      v-bind="forwardedProps"
       :heating-state="exchangerState"
     >
       <HeatExchangerPort

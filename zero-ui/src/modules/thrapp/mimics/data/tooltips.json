@@ -1,0 +1,5404 @@
+{
+  "register": {
+    "1001": "HeatExchanger/1001",
+    "1002": "HeatExchanger/1002",
+    "1003": "HeatExchanger/1003",
+    "1004": "HeatExchanger/1004",
+    "1006": "HeatExchanger/1006",
+    "1007": "HeatExchanger/1007",
+    "1008": "HeatExchanger/1008",
+    "1009": "HeatExchanger/1009",
+    "1011": "HeatExchanger/1011",
+    "1012": "PropulsionCooler/1012",
+    "1013": "PropulsionCooler/1013",
+    "1017": "Pump/1017",
+    "1018": "Pump/1018",
+    "1019": "Pump/1019",
+    "1020": "Pump/1020",
+    "1021": "Pump/1021",
+    "1022": "Pump/1022",
+    "1023": "Pump/1023",
+    "1025": "Pump/1025",
+    "1028": "Pump/1028",
+    "1029": "Pump/1029",
+    "1035": "HeatPump/1035",
+    "1049": "Pcm/1049",
+    "1050": "Pcm/1050",
+    "1051": "Pcm/1051",
+    "1052": "Pcm/1052",
+    "1061": "FlowControlValve/1061",
+    "1074": "MixValve/1074",
+    "1192": "FlowSensor/1192",
+    "1194": "Pump/1194",
+    "1195": "Pump/1195",
+    "1215": "FlowControlValve/1215",
+    "9043": "Pyranometer/9043",
+    "9044": "Pyranometer/9044",
+    "41001001": "HVAC/41001001",
+    "1038-01": "TemperatureSensor/1038-01",
+    "1038-02": "TemperatureSensor/1038-02",
+    "1038-03": "TemperatureSensor/1038-03",
+    "1038-04": "TemperatureSensor/1038-04",
+    "1038-11": "TemperatureSensor/1038-11",
+    "1038-14": "TemperatureSensor/1038-14",
+    "1038-15": "TemperatureSensor/1038-15",
+    "1038-16": "TemperatureSensor/1038-16",
+    "1038-17": "TemperatureSensor/1038-17",
+    "1038-18": "TemperatureSensor/1038-18",
+    "1038-19": "TemperatureSensor/1038-19",
+    "1038-20": "TemperatureSensor/1038-20",
+    "1038-21": "TemperatureSensor/1038-21",
+    "1038-22": "TemperatureSensor/1038-22",
+    "1038-23": "TemperatureSensor/1038-23",
+    "1038-24": "TemperatureSensor/1038-24",
+    "1038-25": "TemperatureSensor/1038-25",
+    "1038-26": "TemperatureSensor/1038-26",
+    "1038-27": "TemperatureSensor/1038-27",
+    "1038-28": "TemperatureSensor/1038-28",
+    "1038-30": "TemperatureSensor/1038-30",
+    "1038-31": "TemperatureSensor/1038-31",
+    "1038-32": "TemperatureSensor/1038-32",
+    "1038-33": "TemperatureSensor/1038-33",
+    "1038-34": "TemperatureSensor/1038-34",
+    "1038-35": "TemperatureSensor/1038-35",
+    "1038-44": "TemperatureSensor/1038-44",
+    "1038-45": "TemperatureSensor/1038-45",
+    "1038-46": "TemperatureSensor/1038-46",
+    "1038-47": "TemperatureSensor/1038-47",
+    "1038-48": "TemperatureSensor/1038-48",
+    "1038-49": "TemperatureSensor/1038-49",
+    "1038-51": "TemperatureSensor/1038-51",
+    "1038-52": "TemperatureSensor/1038-52",
+    "1038-53": "TemperatureSensor/1038-53",
+    "1038-54": "TemperatureSensor/1038-54",
+    "1038-55": "TemperatureSensor/1038-55",
+    "1038-57": "TemperatureSensor/1038-57",
+    "1038-58": "TemperatureSensor/1038-58",
+    "1038-59": "TemperatureSensor/1038-59",
+    "1038-60": "TemperatureSensor/1038-60",
+    "1038-61": "TemperatureSensor/1038-61",
+    "1038-62": "TemperatureSensor/1038-62",
+    "1038-63": "TemperatureSensor/1038-63",
+    "1038-64": "TemperatureSensor/1038-64",
+    "1038-65": "TemperatureSensor/1038-65",
+    "1038-66": "TemperatureSensor/1038-66",
+    "1038-69": "TemperatureSensor/1038-69",
+    "1038-70": "TemperatureSensor/1038-70",
+    "1038-71": "TemperatureSensor/1038-71",
+    "1038-72": "TemperatureSensor/1038-72",
+    "1038-73": "TemperatureSensor/1038-73",
+    "1042-03": "MixValve/1042-03",
+    "1043-01": "MixValve/1043-01",
+    "1043-02": "MixValve/1043-02",
+    "1044-01": "MixValve/1044-01",
+    "1044-02": "MixValve/1044-02",
+    "1045-01": "MixValve/1045-01",
+    "1046-01": "MixValve/1046-01",
+    "1046-03": "MixValve/1046-03",
+    "1046-04": "MixValve/1046-04",
+    "1046-05": "MixValve/1046-05",
+    "1047-02": "MixValve/1047-02",
+    "1056-01": "LevelSensor/1056-01",
+    "1056-02": "LevelSensor/1056-02",
+    "1056-03": "LevelSensor/1056-03",
+    "1057-03": "FlowSensor/1057-03",
+    "1057-10": "FlowSensor/1057-10",
+    "1057-13": "FlowSensor/1057-13",
+    "1057-14": "FlowSensor/1057-14",
+    "1057-15": "FlowSensor/1057-15",
+    "1057-16": "FlowSensor/1057-16",
+    "1057-17": "FlowSensor/1057-17",
+    "1057-18": "FlowSensor/1057-18",
+    "1057-19": "FlowSensor/1057-19",
+    "1057-20": "FlowSensor/1057-20",
+    "1057-21": "FlowSensor/1057-21",
+    "1057-22": "FlowSensor/1057-22",
+    "1057-24": "FlowSensor/1057-24",
+    "1057-25": "FlowSensor/1057-25",
+    "1057-26": "FlowSensor/1057-26",
+    "1058-03": "FlowSensor/1058-03",
+    "1058-04": "FlowSensor/1058-04",
+    "1058-06": "FlowSensor/1058-06",
+    "1058-07": "FlowSensor/1058-07",
+    "1058-08": "FlowSensor/1058-08",
+    "1058-11": "FlowSensor/1058-11",
+    "1058-12": "FlowSensor/1058-12",
+    "1058-13": "FlowSensor/1058-13",
+    "1062-01": "FlowControlValve/1062-01",
+    "1062-02": "SwitchValve/1062-02",
+    "1064-02": "FlowControlValve/1064-02",
+    "1064-03": "FlowControlValve/1064-03",
+    "1064-04": "FlowControlValve/1064-04",
+    "1064-05": "FlowControlValve/1064-05",
+    "1064-06": "FlowControlValve/1064-06",
+    "1064-07": "FlowControlValve/1064-07",
+    "1064-08": "FlowControlValve/1064-08",
+    "1065-01": "FlowControlValve/1065-01",
+    "1065-02": "FlowControlValve/1065-02",
+    "1065-03": "FlowControlValve/1065-03",
+    "1066-01": "SwitchValve/1066-01",
+    "1066-02": "SwitchValve/1066-02",
+    "1066-03": "SwitchValve/1066-03",
+    "1067-01": "SwitchValve/1067-01",
+    "1067-02": "SwitchValve/1067-02",
+    "1067-03": "SwitchValve/1067-03",
+    "1067-04": "SwitchValve/1067-04",
+    "1067-05": "SwitchValve/1067-05",
+    "1067-06": "SwitchValve/1067-06",
+    "1067-07": "SwitchValve/1067-07",
+    "1067-08": "SwitchValve/1067-08",
+    "1067-09": "SwitchValve/1067-09",
+    "1067-10": "SwitchValve/1067-10",
+    "1067-11": "SwitchValve/1067-11",
+    "1067-12": "SwitchValve/1067-12",
+    "1067-13": "SwitchValve/1067-13",
+    "1067-14": "SwitchValve/1067-14",
+    "1067-15": "SwitchValve/1067-15",
+    "1067-16": "SwitchValve/1067-16",
+    "1067-17": "SwitchValve/1067-17",
+    "1067-18": "SwitchValve/1067-18",
+    "1069-01": "SwitchValve/1069-01",
+    "1069-04": "SwitchValve/1069-04",
+    "1069-05": "SwitchValve/1069-05",
+    "1069-06": "SwitchValve/1069-06",
+    "1069-07": "SwitchValve/1069-07",
+    "1069-08": "SwitchValve/1069-08",
+    "1069-09": "SwitchValve/1069-09",
+    "1071-02": "SwitchValve/1071-02",
+    "1091-01": "ThreeWaySwitchValve/1091-01",
+    "1091-02": "ThreeWaySwitchValve/1091-02",
+    "1097-01": "PressureSensor/1097-01",
+    "1097-02": "PressureSensor/1097-02",
+    "1097-03": "PressureSensor/1097-03",
+    "1097-04": "PressureSensor/1097-04",
+    "1097-05": "PressureSensor/1097-05",
+    "1097-06": "PressureSensor/1097-06",
+    "1097-07": "PressureSensor/1097-07",
+    "1097-08": "PressureSensor/1097-08",
+    "1097-09": "PressureSensor/1097-09",
+    "1097-10": "PressureSensor/1097-10",
+    "1097-11": "PressureSensor/1097-11",
+    "1098-01": "LevelSwitch/1098-01",
+    "1098-02": "LevelSwitch/1098-02",
+    "1098-03": "LevelSwitch/1098-03",
+    "1190-01": "SwitchValve/1190-01",
+    "1214-01": "MixValve/1214-01",
+    "1218-01": "FlowSensor/1218-01",
+    "1218-02": "FlowSensor/1218-02",
+    "9001-01": "Pvt/9001-01",
+    "9001-03": "Pvt/9001-03",
+    "9002-01": "Pvt/9002-01",
+    "adsorption": "ExchangeCircuit/dhw:adsorption",
+    "dc:aft": "DcConverter/dc:aft",
+    "dc:dcDhwExchanger": "HeatExchanger/1008",
+    "dc:dcFlowAftReturn": "FlowSensor/1057-25",
+    "dc:dcFlowFwdReturn": "FlowSensor/1057-26",
+    "dc:dcFlowRecovery": "FlowSensor/1058-04",
+    "dc:dcFlowUgridReturn": "FlowSensor/1058-06",
+    "dc:dcMixAft": "MixValve/1043-02",
+    "dc:dcMixExchanger": "MixValve/1046-05",
+    "dc:dcMixFwd": "MixValve/1042-03",
+    "dc:dcMixRecovery": "MixValve/1046-04",
+    "dc:dcMixUgrid": "MixValve/1045-01",
+    "dc:dcPressureAft": "PressureSensor/1097-07",
+    "dc:dcPressureFwd": "PressureSensor/1097-09",
+    "dc:dcPressureUgrid": "PressureSensor/1097-08",
+    "dc:dcPumpAft": "Pump/1020",
+    "dc:dcPumpFwd": "Pump/1025",
+    "dc:dcPumpUgrid": "Pump/1023",
+    "dc:dcSeawaterExchanger": "HeatExchanger/1006",
+    "dc:dcTemperatureAftReturn": "TemperatureSensor/1038-20",
+    "dc:dcTemperatureAftSupply": "TemperatureSensor/1038-15",
+    "dc:dcTemperatureFwdReturn": "TemperatureSensor/1038-19",
+    "dc:dcTemperatureFwdSupply": "TemperatureSensor/1038-69",
+    "dc:dcTemperatureRecovery": "TemperatureSensor/1038-52",
+    "dc:dcTemperatureRecoveryMix": "TemperatureSensor/1038-17",
+    "dc:dcTemperatureRecoveryReturn": "TemperatureSensor/1038-58",
+    "dc:dcTemperatureSupply": "TemperatureSensor/1038-18",
+    "dc:dcTemperatureUgridReturn": "TemperatureSensor/1038-71",
+    "dc:dcTemperatureUgridSupply": "TemperatureSensor/1038-70",
+    "dc:dhwDcExchanger": "ExchangeCircuit/dc:domesticHotWater",
+    "dc:fwd": "DcConverter/dc:fwd",
+    "dc:seawater": "SeawaterCircuit/dc:seawater",
+    "dc:ugrid": "DcConverter/dc:ugrid",
+    "dcConverters": "ExchangeCircuit/dhw:dcConverters",
+    "dhw": "ExchangeCircuit/pcm:dhw",
+    "dhw:adsorptionDhwExchanger": "ExchangeCircuit/dhw:adsorption",
+    "dhw:consumersDhwExchanger": "ExchangeCircuit/dhw:highTempLoop",
+    "dhw:dcDhwExchanger": "ExchangeCircuit/dhw:dcConverters",
+    "dhw:dhwAdsorptionExchanger": "HeatExchanger/1004",
+    "dhw:dhwConsumersExchanger": "HeatExchanger/1007",
+    "dhw:dhwDcExchanger": "HeatExchanger/1008",
+    "dhw:dhwDrivesExchanger": "HeatExchanger/1009",
+    "dhw:dhwFlowBoosting": "FlowSensor/1058-11",
+    "dhw:dhwFlowcontrolDc": "FlowControlValve/1064-03",
+    "dhw:dhwFlowcontrolDrives": "FlowControlValve/1064-08",
+    "dhw:dhwFlowDc": "FlowSensor/1057-17",
+    "dhw:dhwFlowDrives": "FlowSensor/1057-24",
+    "dhw:dhwHeatpump": "HeatPump/1035",
+    "dhw:dhwHvacExchanger": "HVAC/41001001",
+    "dhw:dhwLevelSwitchTank1": "LevelSwitch/1098-01",
+    "dhw:dhwLevelSwitchTank2": "LevelSwitch/1098-02",
+    "dhw:dhwLevelSwitchTank3": "LevelSwitch/1098-03",
+    "dhw:dhwLevelTank1": "LevelSensor/1056-01",
+    "dhw:dhwLevelTank2": "LevelSensor/1056-02",
+    "dhw:dhwLevelTank3": "LevelSensor/1056-03",
+    "dhw:dhwPressure": "PressureSensor/1097-11",
+    "dhw:dhwPump": "Pump/1022",
+    "dhw:dhwSwitchHeatpump": "SwitchValve/1067-17",
+    "dhw:dhwSwitchHighTemperature": "SwitchValve/1067-18",
+    "dhw:dhwSwitchLowTemperature": "SwitchValve/1067-16",
+    "dhw:dhwSwitchTank1BoostingReturn": "SwitchValve/1067-12",
+    "dhw:dhwSwitchTank1BoostingSupply": "SwitchValve/1067-14",
+    "dhw:dhwSwitchTank1Inlet": "SwitchValve/1067-11",
+    "dhw:dhwSwitchTank1Outlet": "SwitchValve/1067-13",
+    "dhw:dhwSwitchTank2BoostingReturn": "SwitchValve/1067-08",
+    "dhw:dhwSwitchTank2BoostingSupply": "SwitchValve/1067-10",
+    "dhw:dhwSwitchTank2Inlet": "SwitchValve/1067-07",
+    "dhw:dhwSwitchTank2Outlet": "SwitchValve/1067-09",
+    "dhw:dhwSwitchTank3BoostingReturn": "SwitchValve/1067-04",
+    "dhw:dhwSwitchTank3BoostingSupply": "SwitchValve/1067-06",
+    "dhw:dhwSwitchTank3Inlet": "SwitchValve/1067-03",
+    "dhw:dhwSwitchTank3Outlet": "SwitchValve/1067-05",
+    "dhw:dhwTemperatureAdsorptionReturn": "TemperatureSensor/1038-51",
+    "dhw:dhwTemperatureBoostingReturn": "TemperatureSensor/1038-65",
+    "dhw:dhwTemperatureBoostingSupply": "TemperatureSensor/1038-66",
+    "dhw:dhwTemperatureDcReturn": "TemperatureSensor/1038-26",
+    "dhw:dhwTemperatureDrivesReturn": "TemperatureSensor/1038-46",
+    "dhw:dhwTemperatureFreshwaterSupply": "TemperatureSensor/1038-47",
+    "dhw:dhwTemperatureHvacExchangerReturn": "TemperatureSensor/1038-25",
+    "dhw:dhwTemperatureTank1": "TemperatureSensor/1038-45",
+    "dhw:dhwTemperatureTank2": "TemperatureSensor/1038-44",
+    "dhw:dhwTemperatureTank3": "TemperatureSensor/1038-27",
+    "dhw:drivesDhwExchanger": "ExchangeCircuit/dhw:drives",
+    "domesticHotWater": "ExchangeCircuit/dc:domesticHotWater",
+    "drives": "ExchangeCircuit/dhw:drives",
+    "drives:dhwDrivesExchanger": "ExchangeCircuit/drives:domesticHotWater",
+    "drives:drivesAftOilCoolerHeat": "PropulsionCooler/1012",
+    "drives:drivesDhwExchanger": "HeatExchanger/1009",
+    "drives:drivesFlowcontrolPropdriveAft": "FlowControlValve/1065-02",
+    "drives:drivesFlowcontrolPropdriveFwd": "FlowControlValve/1065-03",
+    "drives:drivesFlowPropdriveAft1": "FlowSensor/1057-13",
+    "drives:drivesFlowPropdriveAft2": "FlowSensor/1057-16",
+    "drives:drivesFlowPropdriveFwd1": "FlowSensor/1057-15",
+    "drives:drivesFlowPropdriveFwd2": "FlowSensor/1057-14",
+    "drives:drivesFlowRecovery": "FlowSensor/1058-03",
+    "drives:drivesFlowShorepower": "FlowSensor/1057-10",
+    "drives:drivesFwdOilCoolerHeat": "PropulsionCooler/1013",
+    "drives:drivesMixExchanger": "MixValve/1046-01",
+    "drives:drivesMixRecovery": "MixValve/1046-03",
+    "drives:drivesPressure": "PressureSensor/1097-10",
+    "drives:drivesPropdriveAft1": "PropulsionDrive/drives:propdriveAft1",
+    "drives:drivesPropdriveAft2": "PropulsionDrive/drives:propdriveAft2",
+    "drives:drivesPropdriveFwd1": "PropulsionDrive/drives:propdriveFwd1",
+    "drives:drivesPropdriveFwd2": "PropulsionDrive/drives:propdriveFwd2",
+    "drives:drivesPump1": "Pump/1028",
+    "drives:drivesPump2": "Pump/1029",
+    "drives:drivesSeawaterExchanger": "HeatExchanger/1011",
+    "drives:drivesShorepower": "ShorePowerConverter/drives:shorepower",
+    "drives:drivesSwitchPropdriveAft1": "SwitchValve/1069-06",
+    "drives:drivesSwitchPropdriveAft2": "SwitchValve/1069-09",
+    "drives:drivesSwitchPropdriveFwd1": "SwitchValve/1069-07",
+    "drives:drivesSwitchPropdriveFwd2": "SwitchValve/1069-08",
+    "drives:drivesSwitchShorepowerReturn": "SwitchValve/1069-05",
+    "drives:drivesSwitchShorepowerSupply": "SwitchValve/1069-04",
+    "drives:drivesTemperaturePropdriveAft1Return": "TemperatureSensor/1038-32",
+    "drives:drivesTemperaturePropdriveAft2Return": "TemperatureSensor/1038-64",
+    "drives:drivesTemperaturePropdriveFwd1Return": "TemperatureSensor/1038-61",
+    "drives:drivesTemperaturePropdriveFwd2Return": "TemperatureSensor/1038-72",
+    "drives:drivesTemperaturePropdrivesAftSupply": "TemperatureSensor/1038-63",
+    "drives:drivesTemperaturePropdrivesFwdSupply": "TemperatureSensor/1038-62",
+    "drives:drivesTemperatureRecovery": "TemperatureSensor/1038-16",
+    "drives:drivesTemperatureRecoveryMix": "TemperatureSensor/1038-57",
+    "drives:drivesTemperatureRecoveryReturn": "TemperatureSensor/1038-59",
+    "drives:drivesTemperatureShorepowerReturn": "TemperatureSensor/1038-11",
+    "drives:drivesTemperatureSupply": "TemperatureSensor/1038-14",
+    "drives:seawater": "SeawaterCircuit/drives:seawater",
+    "highTempLoop": "ExchangeCircuit/dhw:highTempLoop",
+    "pcm:adsorptionHtExchanger": "ExchangeCircuit/pcm:adsorption",
+    "pcm:consumersAdsorptionExchanger": "HeatExchanger/1003",
+    "pcm:consumersDhwExchanger": "HeatExchanger/1007",
+    "pcm:consumersFlowAdsorption": "FlowSensor/1058-08",
+    "pcm:consumersFlowBypass": "FlowSensor/1192",
+    "pcm:consumersFlowcontrolAdsorption": "FlowControlValve/1061",
+    "pcm:consumersFlowcontrolBypass": "FlowControlValve/1062-01",
+    "pcm:consumersFlowcontrolDhw": "FlowControlValve/1065-01",
+    "pcm:consumersFlowDhw": "FlowSensor/1058-07",
+    "pcm:consumersSwitchAdsorption": "SwitchValve/1066-02",
+    "pcm:consumersSwitchDhw": "SwitchValve/1067-15",
+    "pcm:consumersTemperatureAdsorptionReturn": "TemperatureSensor/1038-49",
+    "pcm:consumersTemperatureAdsorptionSupply": "TemperatureSensor/1038-54",
+    "pcm:consumersTemperatureDhwReturn": "TemperatureSensor/1038-48",
+    "pcm:consumersTemperatureDhwSupply": "TemperatureSensor/1038-53",
+    "pcm:dhwConsumersExchanger": "ExchangeCircuit/pcm:dhw",
+    "pcm:freshwater": "ConnectingCircuit/pcm:freshwater",
+    "pcm:pcmFlowcontrolModule1": "FlowControlValve/1064-04",
+    "pcm:pcmFlowcontrolModule2": "FlowControlValve/1064-05",
+    "pcm:pcmFlowcontrolModule3": "FlowControlValve/1064-06",
+    "pcm:pcmFlowcontrolModule4": "FlowControlValve/1064-07",
+    "pcm:pcmFlowModule1": "FlowSensor/1057-18",
+    "pcm:pcmFlowModule2": "FlowSensor/1057-19",
+    "pcm:pcmFlowModule3": "FlowSensor/1057-20",
+    "pcm:pcmFlowModule4": "FlowSensor/1057-21",
+    "pcm:pcmHeatModule1": "Pcm/1049",
+    "pcm:pcmHeatModule2": "Pcm/1050",
+    "pcm:pcmHeatModule3": "Pcm/1051",
+    "pcm:pcmHeatModule4": "Pcm/1052",
+    "pcm:pcmPump": "Pump/1017",
+    "pcm:pcmSwitchChargingReturn": "SwitchValve/1062-02",
+    "pcm:pcmSwitchChargingSupply": "SwitchValve/1190-01",
+    "pcm:pcmSwitchConsumers": "SwitchValve/1071-02",
+    "pcm:pcmSwitchDischarging": "SwitchValve/1066-01",
+    "pcm:pcmTemperatureModule1": "TemperatureSensor/1038-60",
+    "pcm:pcmTemperatureModule2": "TemperatureSensor/1038-33",
+    "pcm:pcmTemperatureModule3": "TemperatureSensor/1038-34",
+    "pcm:pcmTemperatureModule4": "TemperatureSensor/1038-35",
+    "pcm:pcmTemperatureProducersReturn": "TemperatureSensor/1038-31",
+    "pcm:pcmTemperatureProducersSupply": "TemperatureSensor/1038-55",
+    "pcm:pvt": "ConnectingCircuit/pcm:pvt",
+    "pcm:thrusters": "ConnectingCircuit/pcm:thrusters",
+    "propdriveAft1": "PropulsionDrive/drives:propdriveAft1",
+    "propdriveAft2": "PropulsionDrive/drives:propdriveAft2",
+    "propdriveFwd1": "PropulsionDrive/drives:propdriveFwd1",
+    "propdriveFwd2": "PropulsionDrive/drives:propdriveFwd2",
+    "pvt:pcm": "ConnectingCircuit/pvt:pcm",
+    "pvt:pvtFlowMainAftRecovery": "FlowSensor/1058-13",
+    "pvt:pvtFlowMainFwdRecovery": "FlowSensor/1058-12",
+    "pvt:pvtFlowOwnersRecovery": "FlowSensor/1057-03",
+    "pvt:pvtMixExchanger": "MixValve/1047-02",
+    "pvt:pvtMixMainAft": "MixValve/1044-02",
+    "pvt:pvtMixMainFwd": "MixValve/1044-01",
+    "pvt:pvtMixOwners": "MixValve/1043-01",
+    "pvt:pvtPressureMainAft": "PressureSensor/1097-04",
+    "pvt:pvtPressureMainFwd": "PressureSensor/1097-03",
+    "pvt:pvtPressureOwners": "PressureSensor/1097-05",
+    "pvt:pvtPressureSystem": "PressureSensor/1097-06",
+    "pvt:pvtPumpMainAft": "Pump/1019",
+    "pvt:pvtPumpMainFwd": "Pump/1018",
+    "pvt:pvtPumpOwners": "Pump/1021",
+    "pvt:pvtPvtMainAft": "Pvt/9002-01",
+    "pvt:pvtPvtMainFwd": "Pvt/9001-01",
+    "pvt:pvtPvtOwners": "Pvt/9001-03",
+    "pvt:pvtPyranometerPs": "Pyranometer/9043",
+    "pvt:pvtPyranometerSb": "Pyranometer/9044",
+    "pvt:pvtSeawaterExchanger": "HeatExchanger/1002",
+    "pvt:pvtSwitchMainAft": "SwitchValve/1067-02",
+    "pvt:pvtSwitchMainFwd": "SwitchValve/1067-01",
+    "pvt:pvtSwitchOwners": "SwitchValve/1069-01",
+    "pvt:pvtTemperatureMainAftReturn": "TemperatureSensor/1038-73",
+    "pvt:pvtTemperatureMainAftSupply": "TemperatureSensor/1038-22",
+    "pvt:pvtTemperatureMainFwdReturn": "TemperatureSensor/1038-03",
+    "pvt:pvtTemperatureMainFwdSupply": "TemperatureSensor/1038-23",
+    "pvt:pvtTemperatureOwnersReturn": "TemperatureSensor/1038-04",
+    "pvt:pvtTemperatureOwnersSupply": "TemperatureSensor/1038-21",
+    "pvt:pvtTemperatureSupply": "TemperatureSensor/1038-24",
+    "pvt:seawater": "SeawaterCircuit/pvt:seawater",
+    "shorepower": "ShorePowerConverter/drives:shorepower",
+    "thrusters:pcm": "ConnectingCircuit/thrusters:pcm",
+    "thrusters:seawater": "SeawaterCircuit/thrusters:seawater",
+    "thrusters:thrustersFlowAft": "FlowSensor/1218-02",
+    "thrusters:thrustersFlowcontrolAft": "FlowControlValve/1215",
+    "thrusters:thrustersFlowcontrolFwd": "FlowControlValve/1064-02",
+    "thrusters:thrustersFlowFwd": "FlowSensor/1057-22",
+    "thrusters:thrustersFlowRecovery": "FlowSensor/1218-01",
+    "thrusters:thrustersMixExchanger": "MixValve/1214-01",
+    "thrusters:thrustersMixRecovery": "MixValve/1074",
+    "thrusters:thrustersPressureDischarge": "PressureSensor/1097-01",
+    "thrusters:thrustersPressureSystem": "PressureSensor/1097-02",
+    "thrusters:thrustersPump1": "Pump/1194",
+    "thrusters:thrustersPump2": "Pump/1195",
+    "thrusters:thrustersSeawaterExchanger": "HeatExchanger/1001",
+    "thrusters:thrustersSwitchAft": "ThreeWaySwitchValve/1091-01",
+    "thrusters:thrustersSwitchFwd": "ThreeWaySwitchValve/1091-02",
+    "thrusters:thrustersSwitchRecovery": "SwitchValve/1066-03",
+    "thrusters:thrustersTemperatureAft": "TemperatureSensor/1038-01",
+    "thrusters:thrustersTemperatureFwd": "TemperatureSensor/1038-02",
+    "thrusters:thrustersTemperatureRecoveryMix": "TemperatureSensor/1038-30",
+    "thrusters:thrustersTemperatureSupply": "TemperatureSensor/1038-28",
+    "thrusters:thrustersThrusterAft": "Thruster/15001001",
+    "thrusters:thrustersThrusterFwd": "Thruster/15001002"
+  },
+  "contexts": {
+    "AirTrapVessel": {
+      "1084": {
+        "tooltip": {
+          "yardTag": "1084",
+          "title": "Air trap vessel",
+          "componentType": "Air trap vessel"
+        }
+      }
+    },
+    "BoilerTank": {
+      "1053": {
+        "custom": {
+          "tankStateField": "tank1State"
+        },
+        "controllerState": {
+          "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+        },
+        "parameters": {
+          "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+          "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+          "minimumTemperature": ["parameter:temperature", "dhw", "minimumTankTemperature", null],
+          "maximumTemperature": ["parameter:temperature", "dhw", "maximumTankTemperature", null],
+          "enabled": ["parameter:enabled", "dhw", "tank1Enabled", null]
+        },
+        "source": [
+          "custom",
+          "dhw",
+          "hot-water-tank-1",
+          {
+            "title": "Tank 1",
+            "yardTag": "1053",
+            "technicalName": "hot-water-tank-1"
+          }
+        ],
+        "sensors": {
+          "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+          "level": ["sensor:level", "dhw", "dhwLevelTank1", null],
+          "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank1", null],
+          "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank1BoostingSupply", null],
+          "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank1BoostingReturn", null],
+          "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank1Inlet", null],
+          "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank1Outlet", null]
+        },
+        "tooltip": {
+          "yardTag": "1053",
+          "technicalName": "hot-water-tank-1",
+          "componentType": "Hot water tank",
+          "title": "Tank 1"
+        }
+      },
+      "1054": {
+        "custom": {
+          "tankStateField": "tank2State"
+        },
+        "controllerState": {
+          "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+        },
+        "parameters": {
+          "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+          "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+          "minimumTemperature": ["parameter:temperature", "dhw", "minimumTankTemperature", null],
+          "maximumTemperature": ["parameter:temperature", "dhw", "maximumTankTemperature", null],
+          "enabled": ["parameter:enabled", "dhw", "tank2Enabled", null]
+        },
+        "source": [
+          "custom",
+          "dhw",
+          "hot-water-tank-2",
+          {
+            "title": "Tank 2",
+            "yardTag": "1054",
+            "technicalName": "hot-water-tank-2"
+          }
+        ],
+        "sensors": {
+          "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+          "level": ["sensor:level", "dhw", "dhwLevelTank2", null],
+          "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank2", null],
+          "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank2BoostingSupply", null],
+          "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank2BoostingReturn", null],
+          "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank2Inlet", null],
+          "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank2Outlet", null]
+        },
+        "tooltip": {
+          "yardTag": "1054",
+          "technicalName": "hot-water-tank-2",
+          "componentType": "Hot water tank",
+          "title": "Tank 2"
+        }
+      },
+      "1055": {
+        "custom": {
+          "tankStateField": "tank3State"
+        },
+        "controllerState": {
+          "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+        },
+        "parameters": {
+          "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+          "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+          "minimumTemperature": ["parameter:temperature", "dhw", "minimumTankTemperature", null],
+          "maximumTemperature": ["parameter:temperature", "dhw", "maximumTankTemperature", null],
+          "enabled": ["parameter:enabled", "dhw", "tank3Enabled", null]
+        },
+        "source": [
+          "custom",
+          "dhw",
+          "hot-water-tank-3",
+          {
+            "title": "Tank 3",
+            "yardTag": "1055",
+            "technicalName": "hot-water-tank-3"
+          }
+        ],
+        "sensors": {
+          "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+          "level": ["sensor:level", "dhw", "dhwLevelTank3", null],
+          "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank3", null],
+          "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank3BoostingSupply", null],
+          "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank3BoostingReturn", null],
+          "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank3Inlet", null],
+          "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank3Outlet", null]
+        },
+        "tooltip": {
+          "yardTag": "1055",
+          "technicalName": "hot-water-tank-3",
+          "componentType": "Hot water tank",
+          "title": "Tank 3"
+        }
+      }
+    },
+    "CheckValve": {
+      "1075-01": {
+        "tooltip": {
+          "yardTag": "1075-01",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      },
+      "1075-06": {
+        "tooltip": {
+          "yardTag": "1075-06",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      },
+      "1076-01": {
+        "tooltip": {
+          "yardTag": "1076-01",
+          "title": "Check valve",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1076-02": {
+        "tooltip": {
+          "yardTag": "1076-02",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      },
+      "1076-03": {
+        "tooltip": {
+          "yardTag": "1076-03",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      },
+      "1077-01": {
+        "tooltip": {
+          "yardTag": "1077-01",
+          "title": "Check valve",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1077-02": {
+        "tooltip": {
+          "yardTag": "1077-02",
+          "title": "Check valve",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1077-03": {
+        "tooltip": {
+          "yardTag": "1077-03",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      },
+      "1077-04": {
+        "tooltip": {
+          "yardTag": "1077-04",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      },
+      "1078-01": {
+        "tooltip": {
+          "yardTag": "1078-01",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      },
+      "1085-01": {
+        "tooltip": {
+          "yardTag": "1085-01",
+          "title": "Check valve",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1085-02": {
+        "tooltip": {
+          "yardTag": "1085-02",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      },
+      "1090-01": {
+        "tooltip": {
+          "yardTag": "1090-01",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      },
+      "1090-02": {
+        "tooltip": {
+          "yardTag": "1090-02",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      },
+      "1188-01": {
+        "tooltip": {
+          "yardTag": "1188-01",
+          "title": "Check valve",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1188-02": {
+        "tooltip": {
+          "yardTag": "1188-02",
+          "title": "Check valve",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1188-03": {
+        "tooltip": {
+          "yardTag": "1188-03",
+          "title": "Check valve",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1213-01": {
+        "tooltip": {
+          "yardTag": "1213-01",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      },
+      "1213-02": {
+        "tooltip": {
+          "yardTag": "1213-02",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      },
+      "1217-01": {
+        "tooltip": {
+          "yardTag": "1217-01",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      },
+      "1217-02": {
+        "tooltip": {
+          "yardTag": "1217-02",
+          "title": "Check valve",
+          "componentType": "Check valve"
+        }
+      }
+    },
+    "ConnectingCircuit": {
+      "pcm:freshwater": {
+        "custom": {
+          "circuitName": "Fresh water"
+        },
+        "source": ["sensor:heatTransferDevice", "pcm", "pcmFreshwaterHeat", null],
+        "tooltip": {
+          "title": "Connecting circuit",
+          "technicalName": "pcm-freshwater-heat",
+          "mqttTopic": ".../pcm-freshwater-heat",
+          "componentType": "Fresh water loop",
+          "yardTag": "pcm:freshwater"
+        }
+      },
+      "pcm:pvt": {
+        "custom": {
+          "circuitName": "PVT",
+          "modeModule": "pvt"
+        },
+        "source": ["sensor:heatTransferDevice", "pvt", "pvtPcmHeat", null],
+        "tooltip": {
+          "title": "Connecting circuit",
+          "technicalName": "pvt-pcm-heat",
+          "mqttTopic": ".../pvt-pcm-heat",
+          "componentType": "PVT loop",
+          "yardTag": "pcm:pvt"
+        }
+      },
+      "pcm:thrusters": {
+        "custom": {
+          "circuitName": "Thrusters",
+          "modeModule": "thrusters"
+        },
+        "source": ["sensor:heatTransferDevice", "thrusters", "thrustersPcmHeat", null],
+        "tooltip": {
+          "title": "Connecting circuit",
+          "technicalName": "thrusters-pcm-heat",
+          "mqttTopic": ".../thrusters-pcm-heat",
+          "componentType": "Thrusters loop",
+          "yardTag": "pcm:thrusters"
+        }
+      },
+      "pvt:pcm": {
+        "custom": {
+          "circuitName": "PCM",
+          "modeModule": "pcm"
+        },
+        "source": ["sensor:heatTransferDevice", "pvt", "pvtPcmHeat", null],
+        "tooltip": {
+          "title": "Connecting circuit",
+          "technicalName": "pvt-pcm-heat",
+          "mqttTopic": ".../pvt-pcm-heat",
+          "componentType": "PCM loop",
+          "yardTag": "pvt:pcm"
+        }
+      },
+      "thrusters:pcm": {
+        "custom": {
+          "circuitName": "PCM",
+          "modeModule": "pcm"
+        },
+        "source": ["sensor:heatTransferDevice", "thrusters", "thrustersPcmHeat", null],
+        "tooltip": {
+          "title": "Connecting circuit",
+          "technicalName": "thrusters-pcm-heat",
+          "mqttTopic": ".../thrusters-pcm-heat",
+          "componentType": "PCM loop",
+          "yardTag": "thrusters:pcm"
+        }
+      }
+    },
+    "DcConverter": {
+      "dc:aft": {
+        "custom": {
+          "converters": [
+            ["sensor:brightloop", "dc", "dcBrightloopAft1", null],
+            ["sensor:brightloop", "dc", "dcBrightloopAft2", null],
+            ["sensor:brightloop", "dc", "dcBrightloopAft3", null],
+            ["sensor:brightloop", "dc", "dcBrightloopAft4", null]
+          ],
+          "group": "brightloopsAft"
+        },
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "dc", "dcAftHeat", null],
+          "power": ["sensor:pvt", "dc", "placeholder", null],
+          "temperature": ["sensor:temperature", "dc", "placeholder", null]
+        },
+        "source": ["sensor:heatTransferDevice", "dc", "dcAftHeat", null],
+        "tooltip": {
+          "componentType": "DC converter",
+          "title": "group1",
+          "technicalName": "dc-brightloop-aft",
+          "mqttTopic": "dc-brightloop-aft",
+          "yardTag": "dc:aft"
+        }
+      },
+      "dc:fwd": {
+        "custom": {
+          "converters": [
+            ["sensor:brightloop", "dc", "dcBrightloopFwd1", null],
+            ["sensor:brightloop", "dc", "dcBrightloopFwd2", null]
+          ],
+          "group": "brightloopsFwd"
+        },
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "dc", "dcFwdHeat", null],
+          "power": ["sensor:pvt", "dc", "placeholder", null],
+          "temperature": ["sensor:temperature", "dc", "placeholder", null]
+        },
+        "source": ["sensor:heatTransferDevice", "dc", "dcFwdHeat", null],
+        "tooltip": {
+          "componentType": "DC converter",
+          "title": "group3",
+          "technicalName": "dc-brightloop-fwd",
+          "mqttTopic": "dc-brightloop-fwd",
+          "yardTag": "dc:fwd"
+        }
+      },
+      "dc:ugrid": {
+        "custom": {
+          "converters": [
+            ["sensor:ugrid", "dc", "dcUgrid1", null],
+            ["sensor:ugrid", "dc", "dcUgrid2", null]
+          ],
+          "group": "ugrids"
+        },
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "dc", "dcUgridHeat", null],
+          "power": ["sensor:pvt", "dc", "placeholder", null],
+          "temperature": ["sensor:temperature", "dc", "placeholder", null]
+        },
+        "source": ["sensor:heatTransferDevice", "dc", "dcUgridHeat", null],
+        "tooltip": {
+          "componentType": "DC converter",
+          "title": "group2",
+          "technicalName": "dc-ugrids",
+          "mqttTopic": "dc-ugrids",
+          "yardTag": "dc:ugrid"
+        }
+      }
+    },
+    "ExchangeCircuit": {
+      "dc:domesticHotWater": {
+        "custom": {
+          "circuitName": "Domestic Hot Water",
+          "modeModule": "dhw"
+        },
+        "source": ["sensor:heatTransferDevice", "dhw", "dhwDcExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1008",
+          "technicalName": "dhw-dc-exchanger",
+          "mqttTopic": ".../dhw-dc-exchanger",
+          "componentType": "Domestic Hot Water loop"
+        }
+      },
+      "dhw:adsorption": {
+        "custom": {
+          "circuitName": "Adsorption",
+          "modeModule": "adsorption"
+        },
+        "source": ["sensor:heatTransferDevice", "adsorption", "adsorptionDhwExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1004",
+          "technicalName": "adsorption-dhw-exchanger",
+          "mqttTopic": ".../adsorption-dhw-exchanger",
+          "componentType": "Exchange circuit"
+        }
+      },
+      "dhw:dcConverters": {
+        "custom": {
+          "circuitName": "DC Converters",
+          "modeModule": "dc"
+        },
+        "source": ["sensor:heatTransferDevice", "dc", "dcDhwExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1008",
+          "technicalName": "dc-dhw-exchanger",
+          "mqttTopic": ".../dc-dhw-exchanger",
+          "componentType": "Exchange circuit"
+        }
+      },
+      "dhw:drives": {
+        "custom": {
+          "circuitName": "Drives & shore",
+          "modeModule": "drives"
+        },
+        "source": ["sensor:heatTransferDevice", "drives", "drivesDhwExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1009",
+          "technicalName": "drives-dhw-exchanger",
+          "mqttTopic": ".../drives-dhw-exchanger",
+          "componentType": "Exchange circuit"
+        }
+      },
+      "dhw:highTempLoop": {
+        "custom": {
+          "circuitName": "High temperature",
+          "modeModule": "pcm"
+        },
+        "source": ["sensor:heatTransferDevice", "consumers", "consumersDhwExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1007",
+          "technicalName": "consumers-dhw-exchanger",
+          "mqttTopic": ".../consumers-dhw-exchanger",
+          "componentType": "Exchange circuit"
+        }
+      },
+      "drives:domesticHotWater": {
+        "custom": {
+          "circuitName": "Domestic Hot Water",
+          "modeModule": "dhw"
+        },
+        "source": ["sensor:heatTransferDevice", "dhw", "dhwDrivesExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1009",
+          "technicalName": "dhw-drives-exchanger",
+          "mqttTopic": ".../dhw-drives-exchanger",
+          "componentType": "Domestic Hot Water loop"
+        }
+      },
+      "pcm:adsorption": {
+        "custom": {
+          "circuitName": "Adsorption circuit",
+          "modeModule": "adsorption"
+        },
+        "source": ["sensor:heatTransferDevice", "adsorption", "adsorptionHtExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1003",
+          "technicalName": "adsorption-ht-exchanger",
+          "mqttTopic": ".../adsorption-ht-exchanger",
+          "componentType": "Exchange circuit"
+        }
+      },
+      "pcm:dhw": {
+        "custom": {
+          "circuitName": "Domestic hot water",
+          "modeModule": "dhw"
+        },
+        "source": ["sensor:heatTransferDevice", "dhw", "dhwConsumersExchanger", null],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1007",
+          "technicalName": "dhw-consumers-exchanger",
+          "mqttTopic": ".../dhw-consumers-exchanger",
+          "componentType": "Exchange circuit"
+        }
+      }
+    },
+    "ExpansionTank": {
+      "1092": {
+        "tooltip": {
+          "yardTag": "1092",
+          "title": "Expansion tank",
+          "componentType": "Expansion tank"
+        }
+      },
+      "1040-01": {
+        "tooltip": {
+          "yardTag": "1040-01",
+          "title": "Expansion tank",
+          "componentType": "Expansion tank"
+        }
+      },
+      "1040-04": {
+        "tooltip": {
+          "yardTag": "1040-04",
+          "title": "Expansion tank",
+          "componentType": "Expansion tank"
+        }
+      },
+      "1040-05": {
+        "tooltip": {
+          "yardTag": "1040-05",
+          "title": "Expansion tank",
+          "componentType": "Expansion tank"
+        }
+      }
+    },
+    "ExpansionValve": {
+      "1041-01": {
+        "tooltip": {
+          "yardTag": "1041-01",
+          "title": "Pressure valve",
+          "componentType": "Pressure valve"
+        }
+      },
+      "1041-04": {
+        "tooltip": {
+          "yardTag": "1041-04",
+          "title": "Pressure valve",
+          "componentType": "Pressure valve"
+        }
+      },
+      "1041-05": {
+        "tooltip": {
+          "yardTag": "1041-05",
+          "title": "Pressure valve",
+          "componentType": "Pressure valve"
+        }
+      },
+      "1041-06": {
+        "tooltip": {
+          "yardTag": "1041-06",
+          "title": "Pressure valve",
+          "componentType": "Pressure valve"
+        }
+      }
+    },
+    "FlowControlValve": {
+      "1061": {
+        "controls": {
+          "valve": ["control:valve", "consumers", "consumersFlowcontrolAdsorption", null]
+        },
+        "source": ["sensor:valve", "consumers", "consumersFlowcontrolAdsorption", null],
+        "tooltip": {
+          "title": "Flow control valve",
+          "yardTag": "1061",
+          "technicalName": "consumers-flowcontrol-adsorption",
+          "mqttTopic": ".../consumers-flowcontrol-adsorption",
+          "componentType": "Flow control valve"
+        }
+      },
+      "1215": {
+        "controls": {
+          "valve": ["control:valve", "thrusters", "thrustersFlowcontrolAft", null]
+        },
+        "controllerState": {
+          "controller": [
+            "controller:pidController",
+            "thrusters",
+            "thrustersAftFlowController",
+            null
+          ]
+        },
+        "parameters": {
+          "flow": ["parameter:tuning", "thrusters", "aftFlowBalanceTuning", null]
+        },
+        "sensors": {
+          "measurement": ["sensor:flow", "thrusters", "thrustersFlowAft", null]
+        },
+        "source": ["sensor:valve", "thrusters", "thrustersFlowcontrolAft", null],
+        "tooltip": {
+          "title": "Flow Control valve",
+          "yardTag": "1215",
+          "technicalName": "thrusters-flowcontrol-aft",
+          "mqttTopic": ".../thrusters-flowcontrol-aft",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1062-01": {
+        "controls": {
+          "valve": ["control:valve", "consumers", "consumersFlowcontrolBypass", null]
+        },
+        "source": ["sensor:valve", "consumers", "consumersFlowcontrolBypass", null],
+        "tooltip": {
+          "title": "Flow control valve",
+          "yardTag": "1062-01",
+          "technicalName": "consumers-flowcontrol-bypass",
+          "mqttTopic": ".../consumers-flowcontrol-bypass",
+          "componentType": "Flow control valve"
+        }
+      },
+      "1064-02": {
+        "controls": {
+          "valve": ["control:valve", "thrusters", "thrustersFlowcontrolFwd", null]
+        },
+        "controllerState": {
+          "controller": [
+            "controller:pidController",
+            "thrusters",
+            "thrustersFwdFlowController",
+            null
+          ]
+        },
+        "parameters": {
+          "flow": ["parameter:tuning", "thrusters", "fwdFlowBalanceTuning", null]
+        },
+        "sensors": {
+          "measurement": ["sensor:flow", "thrusters", "thrustersFlowFwd", null]
+        },
+        "source": ["sensor:valve", "thrusters", "thrustersFlowcontrolFwd", null],
+        "tooltip": {
+          "title": "Flow Control valve",
+          "yardTag": "1064-02",
+          "technicalName": "thrusters-flowcontrol-fwd",
+          "mqttTopic": ".../thrusters-flowcontrol-fwd",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1064-03": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwFlowcontrolDc", null]
+        },
+        "custom": {
+          "controller": {
+            "type": "sensor:temperature",
+            "controller": ["controller:pidController", "dhw", "dhwDcFlowController", null],
+            "setpoint": ["parameter:temperature", "dhw", "fillingTemperatureSetpoint", null],
+            "outputMinimum": ["parameter:flowcontrol", "dhw", "dcFlowcontrolMinimumSetpoint", null]
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwFlowcontrolDc", null],
+        "tooltip": {
+          "title": "Flow control valve",
+          "yardTag": "1064-03",
+          "technicalName": "dhw-flowcontrol-dc",
+          "mqttTopic": ".../dhw-flowcontrol-dc",
+          "componentType": "Flow control valve DN 20"
+        }
+      },
+      "1064-04": {
+        "controls": {
+          "valve": ["control:valve", "pcm", "pcmFlowcontrolModule1", null]
+        },
+        "source": ["sensor:valve", "pcm", "pcmFlowcontrolModule1", null],
+        "tooltip": {
+          "title": "Flow control valve",
+          "yardTag": "1064-04",
+          "technicalName": "pcm-flowcontrol-module-1",
+          "mqttTopic": ".../pcm-flowcontrol-module-1",
+          "componentType": "Flow control valve"
+        }
+      },
+      "1064-05": {
+        "controls": {
+          "valve": ["control:valve", "pcm", "pcmFlowcontrolModule2", null]
+        },
+        "source": ["sensor:valve", "pcm", "pcmFlowcontrolModule2", null],
+        "tooltip": {
+          "title": "Flow control valve",
+          "yardTag": "1064-05",
+          "technicalName": "pcm-flowcontrol-module-2",
+          "mqttTopic": ".../pcm-flowcontrol-module-2",
+          "componentType": "Flow control valve"
+        }
+      },
+      "1064-06": {
+        "controls": {
+          "valve": ["control:valve", "pcm", "pcmFlowcontrolModule3", null]
+        },
+        "source": ["sensor:valve", "pcm", "pcmFlowcontrolModule3", null],
+        "tooltip": {
+          "title": "Flow control valve",
+          "yardTag": "1064-06",
+          "technicalName": "pcm-flowcontrol-module-3",
+          "mqttTopic": ".../pcm-flowcontrol-module-3",
+          "componentType": "Flow control valve"
+        }
+      },
+      "1064-07": {
+        "controls": {
+          "valve": ["control:valve", "pcm", "pcmFlowcontrolModule4", null]
+        },
+        "source": ["sensor:valve", "pcm", "pcmFlowcontrolModule4", null],
+        "tooltip": {
+          "title": "Flow control valve",
+          "yardTag": "1064-07",
+          "technicalName": "pcm-flowcontrol-module-4",
+          "mqttTopic": ".../pcm-flowcontrol-module-4",
+          "componentType": "Flow control valve"
+        }
+      },
+      "1064-08": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwFlowcontrolDrives", null]
+        },
+        "custom": {
+          "controller": {
+            "type": "sensor:temperature",
+            "controller": ["controller:pidController", "dhw", "dhwDrivesFlowController", null],
+            "setpoint": ["parameter:temperature", "dhw", "fillingTemperatureSetpoint", null],
+            "outputMinimum": [
+              "parameter:flowcontrol",
+              "dhw",
+              "drivesFlowcontrolMinimumSetpoint",
+              null
+            ]
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwFlowcontrolDrives", null],
+        "tooltip": {
+          "title": "Flow control valve",
+          "yardTag": "1064-08",
+          "technicalName": "dhw-flowcontrol-drives",
+          "mqttTopic": ".../dhw-flowcontrol-drives",
+          "componentType": "Flow control valve DN 20"
+        }
+      },
+      "1065-01": {
+        "controls": {
+          "valve": ["control:valve", "consumers", "consumersFlowcontrolDhw", null]
+        },
+        "source": ["sensor:valve", "consumers", "consumersFlowcontrolDhw", null],
+        "tooltip": {
+          "title": "Flow control valve",
+          "yardTag": "1065-01",
+          "technicalName": "consumers-flowcontrol-dhw",
+          "mqttTopic": ".../consumers-flowcontrol-dhw",
+          "componentType": "Flow control valve"
+        }
+      },
+      "1065-02": {
+        "controls": {
+          "valve": ["control:valve", "drives", "drivesFlowcontrolPropdriveAft", null]
+        },
+        "source": ["sensor:valve", "drives", "drivesFlowcontrolPropdriveAft", null],
+        "tooltip": {
+          "title": "Flow control valve",
+          "yardTag": "1065-02",
+          "technicalName": "drives-flowcontrol-propdrive-aft",
+          "mqttTopic": ".../drives-flowcontrol-propdrive-aft",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1065-03": {
+        "controls": {
+          "valve": ["control:valve", "drives", "drivesFlowcontrolPropdriveFwd", null]
+        },
+        "source": ["sensor:valve", "drives", "drivesFlowcontrolPropdriveFwd", null],
+        "tooltip": {
+          "title": "Flow control valve",
+          "yardTag": "1065-03",
+          "technicalName": "drives-flowcontrol-propdrive-fwd",
+          "mqttTopic": ".../drives-flowcontrol-propdrive-fwd",
+          "componentType": "2 way valve DN 25"
+        }
+      }
+    },
+    "FlowSensor": {
+      "1192": {
+        "source": ["sensor:flow", "consumers", "consumersFlowBypass", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1192",
+          "technicalName": "consumers-flow-bypass",
+          "mqttTopic": ".../consumers-flow-bypass",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-03": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpOwners", null]
+        },
+        "parameters": {
+          "flow": ["parameter:dutypoint", "pvt", "ownersMinimumPumpDutypoint", null]
+        },
+        "sensors": {
+          "temperature": ["sensor:temperature", "pvt", "pvtTemperatureOwnersReturn", null]
+        },
+        "source": ["sensor:flow", "pvt", "pvtFlowOwnersRecovery", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-03",
+          "technicalName": "pvt-flow-owners-recovery",
+          "mqttTopic": ".../pvt-flow-owners-recovery",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-10": {
+        "source": ["sensor:flow", "drives", "drivesFlowShorepower", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-10",
+          "technicalName": "drives-flow-shorepower",
+          "mqttTopic": ".../drives-flow-shorepower",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-13": {
+        "source": ["sensor:flow", "drives", "drivesFlowPropdriveAft1", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-13",
+          "technicalName": "drives-flow-propdrive-aft-1",
+          "mqttTopic": ".../drives-flow-propdrive-aft-1",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-14": {
+        "source": ["sensor:flow", "drives", "drivesFlowPropdriveFwd2", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-14",
+          "technicalName": "drives-flow-propdrive-fwd-2",
+          "mqttTopic": ".../drives-flow-propdrive-fwd-2",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-15": {
+        "source": ["sensor:flow", "drives", "drivesFlowPropdriveFwd1", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-15",
+          "technicalName": "drives-flow-propdrive-fwd-1",
+          "mqttTopic": ".../drives-flow-propdrive-fwd-1",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-16": {
+        "source": ["sensor:flow", "drives", "drivesFlowPropdriveAft2", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-16",
+          "technicalName": "drives-flow-propdrive-aft-2",
+          "mqttTopic": ".../drives-flow-propdrive-aft-2",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-17": {
+        "controls": {
+          "pump": ["control:pump", "dhw", "dhwPump", null]
+        },
+        "parameters": {
+          "flow": ["parameter:flowcontrol", "dhw", "dcFlowcontrolMinimumSetpoint", null]
+        },
+        "sensors": {
+          "temperature": ["sensor:temperature", "dhw", "dhwTemperatureFreshwaterSupply", null]
+        },
+        "source": ["sensor:flow", "dhw", "dhwFlowDc", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-17",
+          "technicalName": "dhw-flow-dc",
+          "mqttTopic": ".../dhw-flow-dc",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-18": {
+        "source": ["sensor:flow", "pcm", "pcmFlowModule1", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-18",
+          "technicalName": "pcm-flow-module-1",
+          "mqttTopic": ".../pcm-flow-module-1",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-19": {
+        "source": ["sensor:flow", "pcm", "pcmFlowModule2", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-19",
+          "technicalName": "pcm-flow-module-2",
+          "mqttTopic": ".../pcm-flow-module-2",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-20": {
+        "source": ["sensor:flow", "pcm", "pcmFlowModule3", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-20",
+          "technicalName": "pcm-flow-module-3",
+          "mqttTopic": ".../pcm-flow-module-3",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-21": {
+        "source": ["sensor:flow", "pcm", "pcmFlowModule4", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-21",
+          "technicalName": "pcm-flow-module-4",
+          "mqttTopic": ".../pcm-flow-module-4",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-22": {
+        "controls": {
+          "pump": ["control:pump", "thrusters", "thrustersPump2", null]
+        },
+        "parameters": {
+          "flow": ["parameter:flow", "thrusters", "thrustersMaximumFlow", null]
+        },
+        "sensors": {
+          "temperature": ["sensor:temperature", "thrusters", "thrustersTemperatureFwd", null]
+        },
+        "source": ["sensor:flow", "thrusters", "thrustersFlowFwd", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-22",
+          "technicalName": "thrusters-flow-fwd",
+          "mqttTopic": ".../thrusters-flow-fwd",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-24": {
+        "controls": {
+          "pump": ["control:pump", "dhw", "dhwPump", null]
+        },
+        "parameters": {
+          "flow": ["parameter:flowcontrol", "dhw", "drivesFlowcontrolMinimumSetpoint", null]
+        },
+        "sensors": {
+          "temperature": ["sensor:temperature", "dhw", "dhwTemperatureFreshwaterSupply", null]
+        },
+        "source": ["sensor:flow", "dhw", "dhwFlowDrives", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-24",
+          "technicalName": "dhw-flow-drives",
+          "mqttTopic": ".../dhw-flow-drives",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-25": {
+        "source": ["sensor:flow", "dc", "dcFlowAftReturn", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-25",
+          "technicalName": "dc-flow-aft-return",
+          "mqttTopic": ".../dc-flow-aft-return",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-26": {
+        "source": ["sensor:flow", "dc", "dcFlowFwdReturn", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-26",
+          "technicalName": "dc-flow-fwd-return",
+          "mqttTopic": ".../dc-flow-fwd-return",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1058-03": {
+        "source": ["sensor:flow", "drives", "drivesFlowRecovery", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1058-03",
+          "technicalName": "drives-flow-recovery",
+          "mqttTopic": ".../drives-flow-recovery",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1058-04": {
+        "source": ["sensor:flow", "dc", "dcFlowRecovery", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1058-04",
+          "technicalName": "dc-flow-recovery",
+          "mqttTopic": ".../dc-flow-recovery",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1058-06": {
+        "source": ["sensor:flow", "dc", "dcFlowUgridReturn", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1058-06",
+          "technicalName": "dc-flow-ugrid-return",
+          "mqttTopic": ".../dc-flow-ugrid-return",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1058-07": {
+        "source": ["sensor:flow", "consumers", "consumersFlowDhw", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1058-07",
+          "technicalName": "consumers-flow-dhw",
+          "mqttTopic": ".../consumers-flow-dhw",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1058-08": {
+        "source": ["sensor:flow", "consumers", "consumersFlowAdsorption", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1058-08",
+          "technicalName": "consumers-flow-adsorption",
+          "mqttTopic": ".../consumers-flow-adsorption",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1058-11": {
+        "controls": {
+          "pump": ["control:pump", "dhw", "dhwPump", null]
+        },
+        "custom": {
+          "controller": {
+            "type": "sensor:flow",
+            "controller": ["controller:pidController", "dhw", "dhwPumpFlowController", null],
+            "measurement": ["sensor:flow", "dhw", "dhwFlowBoosting", null]
+          }
+        },
+        "parameters": {
+          "flow": ["parameter:flow", "dhw", "heatpumpFlowSetpoint", null]
+        },
+        "sensors": {
+          "temperature": ["sensor:temperature", "dhw", "dhwTemperatureBoostingReturn", null]
+        },
+        "source": ["sensor:flow", "dhw", "dhwFlowBoosting", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1058-11",
+          "technicalName": "dhw-flow-boosting",
+          "mqttTopic": ".../dhw-flow-boosting",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1058-12": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainFwd", null]
+        },
+        "parameters": {
+          "flow": ["parameter:dutypoint", "pvt", "mainFwdMinimumPumpDutypoint", null]
+        },
+        "sensors": {
+          "temperature": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdReturn", null]
+        },
+        "source": ["sensor:flow", "pvt", "pvtFlowMainFwdRecovery", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1058-12",
+          "technicalName": "pvt-flow-main-fwd-recovery",
+          "mqttTopic": ".../pvt-flow-main-fwd-recovery",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1058-13": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainAft", null]
+        },
+        "parameters": {
+          "flow": ["parameter:dutypoint", "pvt", "mainAftMinimumPumpDutypoint", null]
+        },
+        "sensors": {
+          "temperature": ["sensor:temperature", "pvt", "pvtTemperatureMainAftReturn", null]
+        },
+        "source": ["sensor:flow", "pvt", "pvtFlowMainAftRecovery", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1058-13",
+          "technicalName": "pvt-flow-main-aft-recovery",
+          "mqttTopic": ".../pvt-flow-main-aft-recovery",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1218-01": {
+        "controls": {
+          "pump": ["control:pump", "thrusters", "thrustersPump1", null]
+        },
+        "parameters": {
+          "flow": ["parameter:flow", "thrusters", "thrustersMinimumFlow", null]
+        },
+        "sensors": {
+          "temperature": [
+            "sensor:temperature",
+            "thrusters",
+            "thrustersTemperatureRecoveryMix",
+            null
+          ]
+        },
+        "source": ["sensor:flow", "thrusters", "thrustersFlowRecovery", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1218-01",
+          "technicalName": "thrusters-flow-recovery",
+          "mqttTopic": ".../thrusters-flow-recovery",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1218-02": {
+        "controls": {
+          "pump": ["control:pump", "thrusters", "thrustersPump1", null]
+        },
+        "parameters": {
+          "flow": ["parameter:flow", "thrusters", "thrustersMinimumFlow", null]
+        },
+        "sensors": {
+          "temperature": ["sensor:temperature", "thrusters", "thrustersTemperatureAft", null]
+        },
+        "source": ["sensor:flow", "thrusters", "thrustersFlowAft", null],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1218-02",
+          "technicalName": "thrusters-flow-aft",
+          "mqttTopic": ".../thrusters-flow-aft",
+          "componentType": "Flow sensor"
+        }
+      }
+    },
+    "FreshwaterCircuit": {
+      "dhw:freshwater": {
+        "custom": {
+          "circuitName": "Fresh water"
+        },
+        "source": ["custom", "dhw", "unknown", {}],
+        "sensors": {
+          "flowIn": ["sensor:flowOnly", "dhw", "freshwaterHotwaterFlow", null],
+          "tIn": ["sensor:temperature", "dhw", "freshwaterHotwaterTemperature", null],
+          "flowOut": ["sensor:calculatedFlow", "dhw", "dhwFreshwaterFlowSupply", null],
+          "tOut": ["sensor:temperature", "dhw", "dhwTemperatureFreshwaterSupply", null]
+        },
+        "tooltip": {
+          "title": "Connecting Circuit",
+          "yardTag": "dhw:freshwater"
+        }
+      }
+    },
+    "HeatExchanger": {
+      "1001": {
+        "custom": {
+          "sideA": "side",
+          "sideB": "top"
+        },
+        "source": ["sensor:heatTransferDevice", "thrusters", "thrustersSeawaterExchanger", null],
+        "tooltip": {
+          "title": "Heat Exchanger",
+          "yardTag": "1001",
+          "technicalName": "thrusters-seawater-exchanger",
+          "mqttTopic": ".../thrusters-seawater-exchanger",
+          "componentType": "Heat Exchanger"
+        }
+      },
+      "1002": {
+        "custom": {
+          "sideA": "side",
+          "sideB": "top"
+        },
+        "source": ["sensor:heatTransferDevice", "pvt", "pvtSeawaterExchanger", null],
+        "tooltip": {
+          "title": "Heat exchanger",
+          "yardTag": "1002",
+          "technicalName": "pvt-seawater-exchanger",
+          "mqttTopic": ".../pvt-seawater-exchanger",
+          "componentType": "Heat exchanger"
+        }
+      },
+      "1003": {
+        "custom": {
+          "sideA": "side",
+          "sideB": "top",
+          "exchangeCircuit": [
+            "sensor:heatTransferDevice",
+            "adsorption",
+            "adsorptionHtExchanger",
+            null
+          ]
+        },
+        "source": ["sensor:heatTransferDevice", "consumers", "consumersAdsorptionExchanger", null],
+        "tooltip": {
+          "title": "Heat Exchanger",
+          "yardTag": "1003",
+          "technicalName": "consumers-adsorption-exchanger",
+          "mqttTopic": ".../consumers-adsorption-exchanger",
+          "componentType": "Heat Exchanger"
+        }
+      },
+      "1004": {
+        "custom": {
+          "sideA": "side",
+          "sideB": "top",
+          "exchangeCircuit": [
+            "sensor:heatTransferDevice",
+            "adsorption",
+            "adsorptionDhwExchanger",
+            null
+          ]
+        },
+        "source": ["sensor:heatTransferDevice", "dhw", "dhwAdsorptionExchanger", null],
+        "tooltip": {
+          "title": "Heat Exchanger",
+          "yardTag": "1004",
+          "technicalName": "dhw-adsorption-exchanger",
+          "mqttTopic": ".../dhw-adsorption-exchanger",
+          "componentType": "Heat Exchanger"
+        }
+      },
+      "1006": {
+        "custom": {
+          "sideA": "side",
+          "sideB": "top"
+        },
+        "source": ["sensor:heatTransferDevice", "dc", "dcSeawaterExchanger", null],
+        "tooltip": {
+          "title": "Heat exchanger",
+          "yardTag": "1006",
+          "technicalName": "dc-seawater-exchanger",
+          "mqttTopic": ".../dc-seawater-exchanger",
+          "componentType": "Heat exchanger"
+        }
+      },
+      "1007": [
+        {
+          "custom": {
+            "sideA": "side",
+            "sideB": "top",
+            "exchangeCircuit": [
+              "sensor:heatTransferDevice",
+              "consumers",
+              "consumersDhwExchanger",
+              null
+            ]
+          },
+          "source": ["sensor:heatTransferDevice", "dhw", "dhwConsumersExchanger", null],
+          "tooltip": {
+            "title": "Heat Exchanger",
+            "yardTag": "1007",
+            "technicalName": "dhw-consumers-exchanger",
+            "mqttTopic": ".../dhw-consumers-exchanger",
+            "componentType": "Heat Exchanger"
+          }
+        },
+        {
+          "custom": {
+            "sideA": "side",
+            "sideB": "top",
+            "exchangeCircuit": ["sensor:heatTransferDevice", "dhw", "dhwConsumersExchanger", null]
+          },
+          "source": ["sensor:heatTransferDevice", "consumers", "consumersDhwExchanger", null],
+          "tooltip": {
+            "title": "Heat Exchanger",
+            "yardTag": "1007",
+            "technicalName": "consumers-dhw-exchanger",
+            "mqttTopic": ".../consumers-dhw-exchanger",
+            "componentType": "Heat Exchanger"
+          }
+        }
+      ],
+      "1008": [
+        {
+          "custom": {
+            "sideA": "side",
+            "sideB": "side",
+            "exchangeCircuit": ["sensor:heatTransferDevice", "dhw", "dhwDcExchanger", null]
+          },
+          "source": ["sensor:heatTransferDevice", "dc", "dcDhwExchanger", null],
+          "tooltip": {
+            "title": "Heat exchanger",
+            "yardTag": "1008",
+            "technicalName": "dc-dhw-exchanger",
+            "mqttTopic": ".../dc-dhw-exchanger",
+            "componentType": "Heat exchanger"
+          }
+        },
+        {
+          "custom": {
+            "sideA": "side",
+            "sideB": "top",
+            "exchangeCircuit": ["sensor:heatTransferDevice", "dc", "dcDhwExchanger", null]
+          },
+          "source": ["sensor:heatTransferDevice", "dhw", "dhwDcExchanger", null],
+          "tooltip": {
+            "title": "Heat Exchanger",
+            "yardTag": "1008",
+            "technicalName": "dhw-dc-exchanger",
+            "mqttTopic": ".../dhw-dc-exchanger",
+            "componentType": "Heat Exchanger"
+          }
+        }
+      ],
+      "1009": [
+        {
+          "custom": {
+            "sideA": "side",
+            "sideB": "top",
+            "exchangeCircuit": ["sensor:heatTransferDevice", "drives", "drivesDhwExchanger", null]
+          },
+          "source": ["sensor:heatTransferDevice", "dhw", "dhwDrivesExchanger", null],
+          "tooltip": {
+            "title": "Heat Exchanger",
+            "yardTag": "1009",
+            "technicalName": "dhw-drives-exchanger",
+            "mqttTopic": ".../dhw-drives-exchanger",
+            "componentType": "Heat Exchanger"
+          }
+        },
+        {
+          "custom": {
+            "sideA": "top",
+            "sideB": "top",
+            "exchangeCircuit": ["sensor:heatTransferDevice", "dhw", "dhwDrivesExchanger", null]
+          },
+          "source": ["sensor:heatTransferDevice", "drives", "drivesDhwExchanger", null],
+          "tooltip": {
+            "title": "Heat exchanger",
+            "yardTag": "1009",
+            "technicalName": "drives-dhw-exchanger",
+            "mqttTopic": ".../drives-dhw-exchanger",
+            "componentType": "Heat exchanger"
+          }
+        }
+      ],
+      "1011": {
+        "custom": {
+          "sideA": "side",
+          "sideB": "top"
+        },
+        "source": ["sensor:heatTransferDevice", "drives", "drivesSeawaterExchanger", null],
+        "tooltip": {
+          "title": "Heat exchanger",
+          "yardTag": "1011",
+          "technicalName": "drives-seawater-exchanger",
+          "mqttTopic": ".../drives-seawater-exchanger",
+          "componentType": "Heat exchanger"
+        }
+      }
+    },
+    "HeatPump": {
+      "1035": {
+        "controls": {
+          "heatpump": ["control:heatpump", "dhw", "dhwHeatpump", null]
+        },
+        "controllerState": {
+          "controller": {
+            "type": "sensor:flow",
+            "controller": ["controller:pidController", "dhw", "dhwPumpFlowController", null],
+            "measurement": ["sensor:flow", "dhw", "dhwFlowBoosting", null]
+          }
+        },
+        "source": ["sensor:heatPump", "dhw", "dhwHeatpump", null],
+        "custom": {
+          "controller": {
+            "type": "sensor:flow",
+            "controller": ["controller:pidController", "dhw", "dhwPumpFlowController", null],
+            "measurement": ["sensor:flow", "dhw", "dhwFlowBoosting", null]
+          }
+        },
+        "parameters": {
+          "temperatureSetpoint": [
+            "parameter:temperature",
+            "dhw",
+            "heatpumpTemperatureSetpoint",
+            null
+          ]
+        },
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "dhw", "dhwHeatpumpHeat", null]
+        },
+        "tooltip": {
+          "title": "Heat pump",
+          "yardTag": "1035",
+          "technicalName": "dhw-heatpump",
+          "mqttTopic": ".../dhw-heatpump",
+          "componentType": "Heat pump"
+        }
+      }
+    },
+    "HVAC": {
+      "41001001": {
+        "source": ["sensor:heatTransferDevice", "dhw", "dhwHvacExchanger", null],
+        "tooltip": {
+          "title": "HVAC",
+          "yardTag": "41001001",
+          "technicalName": "dhw-hvac-exchanger",
+          "mqttTopic": ".../dhw-hvac-exchanger",
+          "componentType": "HVAC Exchanger"
+        }
+      }
+    },
+    "LevelSensor": {
+      "1056-01": {
+        "source": ["sensor:level", "dhw", "dhwLevelTank1", null],
+        "tooltip": {
+          "title": "Tank level sensor",
+          "yardTag": "1056-01",
+          "technicalName": "dhw-level-tank-1",
+          "mqttTopic": ".../dhw-level-tank-1",
+          "componentType": "Tank level sensor"
+        }
+      },
+      "1056-02": {
+        "source": ["sensor:level", "dhw", "dhwLevelTank2", null],
+        "tooltip": {
+          "title": "Tank level sensor",
+          "yardTag": "1056-02",
+          "technicalName": "dhw-level-tank-2",
+          "mqttTopic": ".../dhw-level-tank-2",
+          "componentType": "Tank level sensor"
+        }
+      },
+      "1056-03": {
+        "source": ["sensor:level", "dhw", "dhwLevelTank3", null],
+        "tooltip": {
+          "title": "Tank level sensor",
+          "yardTag": "1056-03",
+          "technicalName": "dhw-level-tank-3",
+          "mqttTopic": ".../dhw-level-tank-3",
+          "componentType": "Tank level sensor"
+        }
+      }
+    },
+    "LevelSwitch": {
+      "1098-01": {
+        "source": ["sensor:levelSwitch", "dhw", "dhwLevelSwitchTank1", null],
+        "tooltip": {
+          "title": "Level switch",
+          "yardTag": "1098-01",
+          "technicalName": "dhw-level-switch-tank-1",
+          "mqttTopic": ".../dhw-level-switch-tank-1",
+          "componentType": "Level switch"
+        }
+      },
+      "1098-02": {
+        "source": ["sensor:levelSwitch", "dhw", "dhwLevelSwitchTank2", null],
+        "tooltip": {
+          "title": "Level switch",
+          "yardTag": "1098-02",
+          "technicalName": "dhw-level-switch-tank-2",
+          "mqttTopic": ".../dhw-level-switch-tank-2",
+          "componentType": "Level switch"
+        }
+      },
+      "1098-03": {
+        "source": ["sensor:levelSwitch", "dhw", "dhwLevelSwitchTank3", null],
+        "tooltip": {
+          "title": "Level switch",
+          "yardTag": "1098-03",
+          "technicalName": "dhw-level-switch-tank-3",
+          "mqttTopic": ".../dhw-level-switch-tank-3",
+          "componentType": "Level switch"
+        }
+      }
+    },
+    "ManualPump": {
+      "1182": {
+        "tooltip": {
+          "yardTag": "1182",
+          "title": "Pump",
+          "componentType": "Circulation pump"
+        }
+      }
+    },
+    "ManualValve": {
+      "1067-07": {
+        "tooltip": {
+          "yardTag": "1067-07",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1067-08": {
+        "tooltip": {
+          "yardTag": "1067-08",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1067-09": {
+        "tooltip": {
+          "yardTag": "1067-09",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1067-10": {
+        "tooltip": {
+          "yardTag": "1067-10",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1068-22": {
+        "tooltip": {
+          "yardTag": "1068-22",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1069-06": {
+        "tooltip": {
+          "yardTag": "1069-06",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1069-10": {
+        "tooltip": {
+          "yardTag": "1069-10",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1069-17": {
+        "tooltip": {
+          "yardTag": "1069-17",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1069-18": {
+        "tooltip": {
+          "yardTag": "1069-18",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1073-01": {
+        "tooltip": {
+          "yardTag": "1073-01",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1073-02": {
+        "tooltip": {
+          "yardTag": "1073-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1084-01": {
+        "tooltip": {
+          "yardTag": "1084-01",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1084-02": {
+        "tooltip": {
+          "yardTag": "1084-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1085-02": {
+        "tooltip": {
+          "yardTag": "1085-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1085-03": {
+        "tooltip": {
+          "yardTag": "1085-03",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1085-04": {
+        "tooltip": {
+          "yardTag": "1085-04",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1085-05": {
+        "tooltip": {
+          "yardTag": "1085-05",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1086-01": {
+        "tooltip": {
+          "yardTag": "1086-01",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1086-02": {
+        "tooltip": {
+          "yardTag": "1086-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1086-05": {
+        "tooltip": {
+          "yardTag": "1086-05",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1086-06": {
+        "tooltip": {
+          "yardTag": "1086-06",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1086-07": {
+        "tooltip": {
+          "yardTag": "1086-07",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1086-08": {
+        "tooltip": {
+          "yardTag": "1086-08",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1086-09": {
+        "tooltip": {
+          "yardTag": "1086-09",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1086-10": {
+        "tooltip": {
+          "yardTag": "1086-10",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1087-01": {
+        "tooltip": {
+          "yardTag": "1087-01",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1087-03": {
+        "tooltip": {
+          "yardTag": "1087-03",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1087-04": {
+        "tooltip": {
+          "yardTag": "1087-04",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1087-05": {
+        "tooltip": {
+          "yardTag": "1087-05",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1087-06": {
+        "tooltip": {
+          "yardTag": "1087-06",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1087-07": {
+        "tooltip": {
+          "yardTag": "1087-07",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1087-08": {
+        "tooltip": {
+          "yardTag": "1087-08",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1167-11": {
+        "tooltip": {
+          "yardTag": "1167-11",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1167-13": {
+        "tooltip": {
+          "yardTag": "1167-13",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-04": {
+        "tooltip": {
+          "yardTag": "1168-04",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-05": {
+        "tooltip": {
+          "yardTag": "1168-05",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-06": {
+        "tooltip": {
+          "yardTag": "1168-06",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-12": {
+        "tooltip": {
+          "yardTag": "1168-12",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-15": {
+        "tooltip": {
+          "yardTag": "1168-15",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-16": {
+        "tooltip": {
+          "yardTag": "1168-16",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-19": {
+        "tooltip": {
+          "yardTag": "1168-19",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-23": {
+        "tooltip": {
+          "yardTag": "1168-23",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-24": {
+        "tooltip": {
+          "yardTag": "1168-24",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-25": {
+        "tooltip": {
+          "yardTag": "1168-25",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-26": {
+        "tooltip": {
+          "yardTag": "1168-26",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-27": {
+        "tooltip": {
+          "yardTag": "1168-27",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-28": {
+        "tooltip": {
+          "yardTag": "1168-28",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-29": {
+        "tooltip": {
+          "yardTag": "1168-29",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-30": {
+        "tooltip": {
+          "yardTag": "1168-30",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-31": {
+        "tooltip": {
+          "yardTag": "1168-31",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-32": {
+        "tooltip": {
+          "yardTag": "1168-32",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1169-01": {
+        "tooltip": {
+          "yardTag": "1169-01",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1169-02": {
+        "tooltip": {
+          "yardTag": "1169-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1169-03": {
+        "tooltip": {
+          "yardTag": "1169-03",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1169-04": {
+        "tooltip": {
+          "yardTag": "1169-04",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1169-05": {
+        "tooltip": {
+          "yardTag": "1169-05",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1169-07": {
+        "tooltip": {
+          "yardTag": "1169-07",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1169-08": {
+        "tooltip": {
+          "yardTag": "1169-08",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1169-09": {
+        "tooltip": {
+          "yardTag": "1169-09",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1169-17": {
+        "tooltip": {
+          "yardTag": "1169-17",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1170-03": {
+        "tooltip": {
+          "yardTag": "1170-03",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1170-04": {
+        "tooltip": {
+          "yardTag": "1170-04",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1170-05": {
+        "tooltip": {
+          "yardTag": "1170-05",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1170-06": {
+        "tooltip": {
+          "yardTag": "1170-06",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1172-05": {
+        "tooltip": {
+          "yardTag": "1172-05",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1172-06": {
+        "tooltip": {
+          "yardTag": "1172-06",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1174-01": {
+        "tooltip": {
+          "yardTag": "1174-01",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1174-02": {
+        "tooltip": {
+          "yardTag": "1174-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1177-01": {
+        "tooltip": {
+          "yardTag": "1177-01",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1177-02": {
+        "tooltip": {
+          "yardTag": "1177-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1191-01": {
+        "tooltip": {
+          "yardTag": "1191-01",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1191-02": {
+        "tooltip": {
+          "yardTag": "1191-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1212-01": {
+        "tooltip": {
+          "yardTag": "1212-01",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1212-02": {
+        "tooltip": {
+          "yardTag": "1212-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1212-03": {
+        "tooltip": {
+          "yardTag": "1212-03",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1212-04": {
+        "tooltip": {
+          "yardTag": "1212-04",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1212-05": {
+        "tooltip": {
+          "yardTag": "1212-05",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1212-06": {
+        "tooltip": {
+          "yardTag": "1212-06",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1212-07": {
+        "tooltip": {
+          "yardTag": "1212-07",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "pcm:??????": {
+        "tooltip": {
+          "yardTag": "??????",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      }
+    },
+    "MixValve": {
+      "1074": {
+        "controls": {
+          "valve": ["control:valve", "thrusters", "thrustersMixRecovery", null]
+        },
+        "controllerState": {
+          "controller": [
+            "controller:pidController",
+            "thrusters",
+            "thrustersWarmupMixController",
+            null
+          ]
+        },
+        "source": ["sensor:valve", "thrusters", "thrustersMixRecovery", null],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1074",
+          "technicalName": "thrusters-mix-recovery",
+          "mqttTopic": ".../thrusters-mix-recovery",
+          "componentType": "Mix valve"
+        }
+      },
+      "1042-03": {
+        "controls": {
+          "valve": ["control:valve", "dc", "dcMixFwd", null]
+        },
+        "source": ["sensor:valve", "dc", "dcMixFwd", null],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1042-03",
+          "technicalName": "dc-mix-fwd",
+          "mqttTopic": ".../dc-mix-fwd",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1043-01": {
+        "controls": {
+          "valve": ["control:valve", "pvt", "pvtMixOwners", null]
+        },
+        "custom": {
+          "controller": {
+            "type": "sensor:temperature",
+            "controller": ["controller:pidController", "pvt", "pvtOwnersWarmupMixController", null],
+            "measurement": ["sensor:temperature", "pvt", "pvtTemperatureOwnersReturn", null],
+            "setpoint": ["parameter:temperature", "pvt", "warmupTemperature", null]
+          }
+        },
+        "source": ["sensor:valve", "pvt", "pvtMixOwners", null],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1043-01",
+          "technicalName": "pvt-mix-owners",
+          "mqttTopic": ".../pvt-mix-owners",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1043-02": {
+        "controls": {
+          "valve": ["control:valve", "dc", "dcMixAft", null]
+        },
+        "source": ["sensor:valve", "dc", "dcMixAft", null],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1043-02",
+          "technicalName": "dc-mix-aft",
+          "mqttTopic": ".../dc-mix-aft",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1044-01": {
+        "controls": {
+          "valve": ["control:valve", "pvt", "pvtMixMainFwd", null]
+        },
+        "custom": {
+          "controller": {
+            "type": "sensor:temperature",
+            "controller": [
+              "controller:pidController",
+              "pvt",
+              "pvtMainFwdWarmupMixController",
+              null
+            ],
+            "measurement": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdReturn", null],
+            "setpoint": ["parameter:temperature", "pvt", "warmupTemperature", null]
+          }
+        },
+        "source": ["sensor:valve", "pvt", "pvtMixMainFwd", null],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1044-01",
+          "technicalName": "pvt-mix-main-fwd",
+          "mqttTopic": ".../pvt-mix-main-fwd",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1044-02": {
+        "controls": {
+          "valve": ["control:valve", "pvt", "pvtMixMainAft", null]
+        },
+        "custom": {
+          "controller": {
+            "type": "sensor:temperature",
+            "controller": [
+              "controller:pidController",
+              "pvt",
+              "pvtMainAftWarmupMixController",
+              null
+            ],
+            "measurement": ["sensor:temperature", "pvt", "pvtTemperatureMainAftReturn", null],
+            "setpoint": ["parameter:temperature", "pvt", "warmupTemperature", null]
+          }
+        },
+        "source": ["sensor:valve", "pvt", "pvtMixMainAft", null],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1044-02",
+          "technicalName": "pvt-mix-main-aft",
+          "mqttTopic": ".../pvt-mix-main-aft",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1045-01": {
+        "controls": {
+          "valve": ["control:valve", "dc", "dcMixUgrid", null]
+        },
+        "source": ["sensor:valve", "dc", "dcMixUgrid", null],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1045-01",
+          "technicalName": "dc-mix-ugrid",
+          "mqttTopic": ".../dc-mix-ugrid",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1046-01": {
+        "controls": {
+          "valve": ["control:valve", "drives", "drivesMixExchanger", null]
+        },
+        "source": ["sensor:valve", "drives", "drivesMixExchanger", null],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1046-01",
+          "technicalName": "drives-mix-exchanger",
+          "mqttTopic": ".../drives-mix-exchanger",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1046-03": {
+        "controls": {
+          "valve": ["control:valve", "drives", "drivesMixRecovery", null]
+        },
+        "source": ["sensor:valve", "drives", "drivesMixRecovery", null],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1046-03",
+          "technicalName": "drives-mix-recovery",
+          "mqttTopic": ".../drives-mix-recovery",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1046-04": {
+        "controls": {
+          "valve": ["control:valve", "dc", "dcMixRecovery", null]
+        },
+        "source": ["sensor:valve", "dc", "dcMixRecovery", null],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1046-04",
+          "technicalName": "dc-mix-recovery",
+          "mqttTopic": ".../dc-mix-recovery",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1046-05": {
+        "controls": {
+          "valve": ["control:valve", "dc", "dcMixExchanger", null]
+        },
+        "source": ["sensor:valve", "dc", "dcMixExchanger", null],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1046-05",
+          "technicalName": "dc-mix-exchanger",
+          "mqttTopic": ".../dc-mix-exchanger",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1047-02": {
+        "controls": {
+          "valve": ["control:valve", "pvt", "pvtMixExchanger", null]
+        },
+        "custom": {
+          "controller": {
+            "type": "sensor:temperature",
+            "controller": ["controller:pidController", "pvt", "pvtHeatDumpController", null],
+            "measurement": ["sensor:temperature", "pvt", "pvtTemperatureSupply", null],
+            "setpoint": ["parameter:temperature", "pvt", "maximumSupplyTemperature", null]
+          }
+        },
+        "source": ["sensor:valve", "pvt", "pvtMixExchanger", null],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1047-02",
+          "technicalName": "pvt-mix-exchanger",
+          "mqttTopic": ".../pvt-mix-exchanger",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1214-01": {
+        "controls": {
+          "valve": ["control:valve", "thrusters", "thrustersMixExchanger", null]
+        },
+        "controllerState": {
+          "controller": [
+            "controller:pidController",
+            "thrusters",
+            "thrustersHeatDumpController",
+            null
+          ]
+        },
+        "source": ["sensor:valve", "thrusters", "thrustersMixExchanger", null],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1214-01",
+          "technicalName": "thrusters-mix-exchanger",
+          "mqttTopic": ".../thrusters-mix-exchanger",
+          "componentType": "Mix valve"
+        }
+      }
+    },
+    "Pcm": {
+      "1049": {
+        "source": ["sensor:heatTransferDevice", "pcm", "pcmHeatModule1", null],
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "pcm", "pcmHeatModule1", null]
+        },
+        "controllerState": {
+          "chargeController": [
+            "controller:pcmChargeController",
+            "pcm",
+            "pcmModule1ChargeController",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "Heat battery 1",
+          "yardTag": "1049",
+          "technicalName": "pcm-heat-module-1",
+          "mqttTopic": ".../pcm-heat-module-1",
+          "componentType": "PCM"
+        }
+      },
+      "1050": {
+        "source": ["sensor:heatTransferDevice", "pcm", "pcmHeatModule2", null],
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "pcm", "pcmHeatModule2", null]
+        },
+        "controllerState": {
+          "chargeController": [
+            "controller:pcmChargeController",
+            "pcm",
+            "pcmModule2ChargeController",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "Heat battery 2",
+          "yardTag": "1050",
+          "technicalName": "pcm-heat-module-2",
+          "mqttTopic": ".../pcm-heat-module-2",
+          "componentType": "PCM"
+        }
+      },
+      "1051": {
+        "source": ["sensor:heatTransferDevice", "pcm", "pcmHeatModule3", null],
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "pcm", "pcmHeatModule3", null]
+        },
+        "controllerState": {
+          "chargeController": [
+            "controller:pcmChargeController",
+            "pcm",
+            "pcmModule3ChargeController",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "Heat battery 3",
+          "yardTag": "1051",
+          "technicalName": "pcm-heat-module-3",
+          "mqttTopic": ".../pcm-heat-module-3",
+          "componentType": "PCM"
+        }
+      },
+      "1052": {
+        "source": ["sensor:heatTransferDevice", "pcm", "pcmHeatModule4", null],
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "pcm", "pcmHeatModule4", null]
+        },
+        "controllerState": {
+          "chargeController": [
+            "controller:pcmChargeController",
+            "pcm",
+            "pcmModule4ChargeController",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "Heat battery 4",
+          "yardTag": "1052",
+          "technicalName": "pcm-heat-module-4",
+          "mqttTopic": ".../pcm-heat-module-4",
+          "componentType": "PCM"
+        }
+      }
+    },
+    "PressureGauge": {
+      "1095-01": {
+        "tooltip": {
+          "yardTag": "1095-01",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1095-03": {
+        "tooltip": {
+          "yardTag": "1095-03",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1095-04": {
+        "tooltip": {
+          "yardTag": "1095-04",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1095-05": {
+        "tooltip": {
+          "yardTag": "1095-05",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1095-06": {
+        "tooltip": {
+          "yardTag": "1095-06",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1095-10": {
+        "tooltip": {
+          "yardTag": "1095-10",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1095-11": {
+        "tooltip": {
+          "yardTag": "1095-11",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1095-12": {
+        "tooltip": {
+          "yardTag": "1095-12",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1095-13": {
+        "tooltip": {
+          "yardTag": "1095-13",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1095-14": {
+        "tooltip": {
+          "yardTag": "1095-14",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1096-05": {
+        "tooltip": {
+          "yardTag": "1096-05",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1096-06": {
+        "tooltip": {
+          "yardTag": "1096-06",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1096-09": {
+        "tooltip": {
+          "yardTag": "1096-09",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      }
+    },
+    "PressureSensor": {
+      "1097-01": {
+        "controls": {
+          "pump": ["control:pump", "thrusters", "thrustersPump1", null]
+        },
+        "parameters": {
+          "flow": ["parameter:flow", "thrusters", "thrustersMinimumFlow", null]
+        },
+        "sensors": {
+          "flow": ["sensor:flow", "thrusters", "thrustersFlowAft", null]
+        },
+        "source": ["sensor:pressure", "thrusters", "thrustersPressureDischarge", null],
+        "tooltip": {
+          "title": "Pressure sensor",
+          "yardTag": "1097-01",
+          "technicalName": "thrusters-pressure-discharge",
+          "mqttTopic": ".../thrusters-pressure-discharge",
+          "componentType": "Pressure sensor"
+        }
+      },
+      "1097-02": {
+        "controls": {
+          "pump": ["control:pump", "thrusters", "thrustersPump2", null]
+        },
+        "parameters": {
+          "flow": ["parameter:flow", "thrusters", "thrustersMaximumFlow", null]
+        },
+        "sensors": {
+          "flow": ["sensor:flow", "thrusters", "thrustersFlowFwd", null]
+        },
+        "source": ["sensor:pressure", "thrusters", "thrustersPressureSystem", null],
+        "tooltip": {
+          "title": "Pressure sensor",
+          "yardTag": "1097-02",
+          "technicalName": "thrusters-pressure-system",
+          "mqttTopic": ".../thrusters-pressure-system",
+          "componentType": "Pressure sensor"
+        }
+      },
+      "1097-03": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainFwd", null]
+        },
+        "parameters": {
+          "flow": ["parameter:dutypoint", "pvt", "mainFwdMinimumPumpDutypoint", null]
+        },
+        "sensors": {
+          "flow": ["sensor:flow", "pvt", "pvtFlowMainFwdRecovery", null]
+        },
+        "source": ["sensor:pressure", "pvt", "pvtPressureMainFwd", null],
+        "tooltip": {
+          "title": "Pressure sensor",
+          "yardTag": "1097-03",
+          "technicalName": "pvt-pressure-main-fwd",
+          "mqttTopic": ".../pvt-pressure-main-fwd",
+          "componentType": "Pressure sensor"
+        }
+      },
+      "1097-04": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainAft", null]
+        },
+        "parameters": {
+          "flow": ["parameter:dutypoint", "pvt", "mainAftMinimumPumpDutypoint", null]
+        },
+        "sensors": {
+          "flow": ["sensor:flow", "pvt", "pvtFlowMainAftRecovery", null]
+        },
+        "source": ["sensor:pressure", "pvt", "pvtPressureMainAft", null],
+        "tooltip": {
+          "title": "Pressure sensor",
+          "yardTag": "1097-04",
+          "technicalName": "pvt-pressure-main-aft",
+          "mqttTopic": ".../pvt-pressure-main-aft",
+          "componentType": "Pressure sensor"
+        }
+      },
+      "1097-05": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpOwners", null]
+        },
+        "parameters": {
+          "flow": ["parameter:dutypoint", "pvt", "ownersMinimumPumpDutypoint", null]
+        },
+        "sensors": {
+          "flow": ["sensor:flow", "pvt", "pvtFlowOwnersRecovery", null]
+        },
+        "source": ["sensor:pressure", "pvt", "pvtPressureOwners", null],
+        "tooltip": {
+          "title": "Pressure sensor",
+          "yardTag": "1097-05",
+          "technicalName": "pvt-pressure-owners",
+          "mqttTopic": ".../pvt-pressure-owners",
+          "componentType": "Pressure sensor"
+        }
+      },
+      "1097-06": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainFwd", null]
+        },
+        "parameters": {
+          "flow": ["parameter:dutypoint", "pvt", "mainFwdMinimumPumpDutypoint", null]
+        },
+        "sensors": {
+          "flow": ["sensor:flow", "pvt", "pvtFlowMainFwdRecovery", null]
+        },
+        "source": ["sensor:pressure", "pvt", "pvtPressureSystem", null],
+        "tooltip": {
+          "title": "Pressure sensor",
+          "yardTag": "1097-06",
+          "technicalName": "pvt-pressure-system",
+          "mqttTopic": ".../pvt-pressure-system",
+          "componentType": "Pressure sensor"
+        }
+      },
+      "1097-07": {
+        "source": ["sensor:pressure", "dc", "dcPressureAft", null],
+        "tooltip": {
+          "title": "Pressure sensor",
+          "yardTag": "1097-07",
+          "technicalName": "dc-pressure-aft",
+          "mqttTopic": ".../dc-pressure-aft",
+          "componentType": "Pressure sensor"
+        }
+      },
+      "1097-08": {
+        "source": ["sensor:pressure", "dc", "dcPressureUgrid", null],
+        "tooltip": {
+          "title": "Pressure sensor",
+          "yardTag": "1097-08",
+          "technicalName": "dc-pressure-ugrid",
+          "mqttTopic": ".../dc-pressure-ugrid",
+          "componentType": "Pressure sensor"
+        }
+      },
+      "1097-09": {
+        "source": ["sensor:pressure", "dc", "dcPressureFwd", null],
+        "tooltip": {
+          "title": "Pressure sensor",
+          "yardTag": "1097-09",
+          "technicalName": "dc-pressure-fwd",
+          "mqttTopic": ".../dc-pressure-fwd",
+          "componentType": "Pressure sensor"
+        }
+      },
+      "1097-10": {
+        "source": ["sensor:pressure", "drives", "drivesPressure", null],
+        "tooltip": {
+          "title": "Pressure sensor",
+          "yardTag": "1097-10",
+          "technicalName": "drives-pressure",
+          "mqttTopic": ".../drives-pressure",
+          "componentType": "Pressure sensor"
+        }
+      },
+      "1097-11": {
+        "source": ["sensor:pressure", "dhw", "dhwPressure", null],
+        "tooltip": {
+          "title": "Pressure sensor",
+          "yardTag": "1097-11",
+          "technicalName": "dhw-pressure",
+          "mqttTopic": ".../dhw-pressure",
+          "componentType": "Pressure sensor"
+        }
+      }
+    },
+    "PropulsionCooler": {
+      "1012": {
+        "source": ["sensor:heatTransferDevice", "drives", "drivesAftOilCoolerHeat", null],
+        "tooltip": {
+          "title": "aft",
+          "yardTag": "1012",
+          "technicalName": "drives-aft-oil-cooler-heat",
+          "mqttTopic": ".../drives-aft-oil-cooler-heat"
+        }
+      },
+      "1013": {
+        "source": ["sensor:heatTransferDevice", "drives", "drivesFwdOilCoolerHeat", null],
+        "tooltip": {
+          "title": "fwd",
+          "yardTag": "1013",
+          "technicalName": "drives-fwd-oil-cooler-heat",
+          "mqttTopic": ".../drives-fwd-oil-cooler-heat"
+        }
+      }
+    },
+    "PropulsionDrive": {
+      "drives:propdriveAft1": {
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "drives", "drivesPropdriveAft1Heat", null],
+          "power": ["sensor:pvt", "drives", "placeholder", null],
+          "temperature": ["sensor:temperature", "drives", "placeholder", null]
+        },
+        "source": ["sensor:propulsionDrive", "drives", "drivesPropdriveAft1", null],
+        "tooltip": {
+          "title": "propdrive",
+          "yardTag": "45002079",
+          "technicalName": "drives-propdrive-aft-1",
+          "mqttTopic": ".../drives-propdrive-aft-1"
+        }
+      },
+      "drives:propdriveAft2": {
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "drives", "drivesPropdriveAft2Heat", null],
+          "power": ["sensor:pvt", "drives", "placeholder", null],
+          "temperature": ["sensor:temperature", "drives", "placeholder", null]
+        },
+        "source": ["sensor:propulsionDrive", "drives", "drivesPropdriveAft2", null],
+        "tooltip": {
+          "title": "propdrive",
+          "yardTag": "45002079",
+          "technicalName": "drives-propdrive-aft-2",
+          "mqttTopic": ".../drives-propdrive-aft-2"
+        }
+      },
+      "drives:propdriveFwd1": {
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "drives", "drivesPropdriveFwd1Heat", null],
+          "power": ["sensor:pvt", "drives", "placeholder", null],
+          "temperature": ["sensor:temperature", "drives", "placeholder", null]
+        },
+        "source": ["sensor:propulsionDrive", "drives", "drivesPropdriveFwd1", null],
+        "tooltip": {
+          "title": "propdrive",
+          "yardTag": "45002080",
+          "technicalName": "drives-propdrive-fwd-1",
+          "mqttTopic": ".../drives-propdrive-fwd-1"
+        }
+      },
+      "drives:propdriveFwd2": {
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "drives", "drivesPropdriveFwd2Heat", null],
+          "power": ["sensor:pvt", "drives", "placeholder", null],
+          "temperature": ["sensor:temperature", "drives", "placeholder", null]
+        },
+        "source": ["sensor:propulsionDrive", "drives", "drivesPropdriveFwd2", null],
+        "tooltip": {
+          "title": "propdrive",
+          "yardTag": "45002080",
+          "technicalName": "drives-propdrive-fwd-2",
+          "mqttTopic": ".../drives-propdrive-fwd-2"
+        }
+      }
+    },
+    "Pump": {
+      "1017": {
+        "controls": {
+          "pump": ["control:pump", "pcm", "pcmPump", null]
+        },
+        "source": ["sensor:pump", "pcm", "pcmPump", null],
+        "tooltip": {
+          "title": "Pump",
+          "yardTag": "1017",
+          "technicalName": "pcm-pump",
+          "mqttTopic": ".../pcm-pump",
+          "componentType": "Circulation pump"
+        }
+      },
+      "1018": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainFwd", null]
+        },
+        "custom": {
+          "temperatureController": {
+            "type": "sensor:temperature",
+            "controller": ["controller:pidController", "pvt", "pvtMainFwdPumpController", null],
+            "measurement": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdReturn", null],
+            "setpoint": ["parameter:temperature", "pvt", "recoveryTemperature", null]
+          }
+        },
+        "parameters": {
+          "flow": ["parameter:dutypoint", "pvt", "mainFwdMinimumPumpDutypoint", null],
+          "temperature": ["parameter:temperature", "pvt", "recoveryTemperature", null]
+        },
+        "source": ["sensor:pump", "pvt", "pvtPumpMainFwd", null],
+        "tooltip": {
+          "title": "Pump",
+          "yardTag": "1018",
+          "technicalName": "pvt-pump-main-fwd",
+          "mqttTopic": ".../pvt-pump-main-fwd",
+          "componentType": "Circulation pump"
+        }
+      },
+      "1019": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainAft", null]
+        },
+        "custom": {
+          "temperatureController": {
+            "type": "sensor:temperature",
+            "controller": ["controller:pidController", "pvt", "pvtMainAftPumpController", null],
+            "measurement": ["sensor:temperature", "pvt", "pvtTemperatureMainAftReturn", null],
+            "setpoint": ["parameter:temperature", "pvt", "recoveryTemperature", null]
+          }
+        },
+        "parameters": {
+          "flow": ["parameter:dutypoint", "pvt", "mainAftMinimumPumpDutypoint", null],
+          "temperature": ["parameter:temperature", "pvt", "recoveryTemperature", null]
+        },
+        "source": ["sensor:pump", "pvt", "pvtPumpMainAft", null],
+        "tooltip": {
+          "title": "Pump",
+          "yardTag": "1019",
+          "technicalName": "pvt-pump-main-aft",
+          "mqttTopic": ".../pvt-pump-main-aft",
+          "componentType": "Circulation pump"
+        }
+      },
+      "1020": {
+        "controls": {
+          "pump": ["control:pump", "dc", "dcPumpAft", null]
+        },
+        "source": ["sensor:pump", "dc", "dcPumpAft", null],
+        "tooltip": {
+          "title": "Pump",
+          "yardTag": "1020",
+          "technicalName": "dc-pump-aft",
+          "mqttTopic": ".../dc-pump-aft",
+          "componentType": "Pump"
+        }
+      },
+      "1021": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpOwners", null]
+        },
+        "custom": {
+          "temperatureController": {
+            "type": "sensor:temperature",
+            "controller": ["controller:pidController", "pvt", "pvtOwnersPumpController", null],
+            "measurement": ["sensor:temperature", "pvt", "pvtTemperatureOwnersReturn", null],
+            "setpoint": ["parameter:temperature", "pvt", "recoveryTemperature", null]
+          }
+        },
+        "parameters": {
+          "flow": ["parameter:dutypoint", "pvt", "ownersMinimumPumpDutypoint", null],
+          "temperature": ["parameter:temperature", "pvt", "recoveryTemperature", null]
+        },
+        "source": ["sensor:pump", "pvt", "pvtPumpOwners", null],
+        "tooltip": {
+          "title": "Pump",
+          "yardTag": "1021",
+          "technicalName": "pvt-pump-owners",
+          "mqttTopic": ".../pvt-pump-owners",
+          "componentType": "Circulation pump"
+        }
+      },
+      "1022": {
+        "controls": {
+          "pump": ["control:pump", "dhw", "dhwPump", null]
+        },
+        "custom": {
+          "flowController": {
+            "type": "sensor:flow",
+            "controller": ["controller:pidController", "dhw", "dhwPumpFlowController", null],
+            "measurement": ["sensor:flow", "dhw", "dhwFlowBoosting", null]
+          }
+        },
+        "parameters": {
+          "flow": ["parameter:flow", "dhw", "heatpumpFlowSetpoint", null],
+          "temperature": ["parameter:temperature", "dhw", "heatpumpTemperatureSetpoint", null]
+        },
+        "source": ["sensor:pump", "dhw", "dhwPump", null],
+        "tooltip": {
+          "title": "Pump",
+          "yardTag": "1022",
+          "technicalName": "dhw-pump",
+          "mqttTopic": ".../dhw-pump",
+          "componentType": "Circulation pump boosting"
+        }
+      },
+      "1023": {
+        "controls": {
+          "pump": ["control:pump", "dc", "dcPumpUgrid", null]
+        },
+        "source": ["sensor:pump", "dc", "dcPumpUgrid", null],
+        "tooltip": {
+          "title": "Pump",
+          "yardTag": "1023",
+          "technicalName": "dc-pump-ugrid",
+          "mqttTopic": ".../dc-pump-ugrid",
+          "componentType": "Pump"
+        }
+      },
+      "1025": {
+        "controls": {
+          "pump": ["control:pump", "dc", "dcPumpFwd", null]
+        },
+        "source": ["sensor:pump", "dc", "dcPumpFwd", null],
+        "tooltip": {
+          "title": "Pump",
+          "yardTag": "1025",
+          "technicalName": "dc-pump-fwd",
+          "mqttTopic": ".../dc-pump-fwd",
+          "componentType": "Pump"
+        }
+      },
+      "1028": {
+        "controls": {
+          "pump": ["control:pump", "drives", "drivesPump1", null]
+        },
+        "source": ["sensor:pump", "drives", "drivesPump1", null],
+        "tooltip": {
+          "title": "Pump",
+          "yardTag": "1028",
+          "technicalName": "drives-pump-1",
+          "mqttTopic": ".../drives-pump-1",
+          "componentType": "Pump"
+        }
+      },
+      "1029": {
+        "controls": {
+          "pump": ["control:pump", "drives", "drivesPump2", null]
+        },
+        "source": ["sensor:pump", "drives", "drivesPump2", null],
+        "tooltip": {
+          "title": "Pump",
+          "yardTag": "1029",
+          "technicalName": "drives-pump-2",
+          "mqttTopic": ".../drives-pump-2",
+          "componentType": "Pump"
+        }
+      },
+      "1194": {
+        "controls": {
+          "pump": ["control:pump", "thrusters", "thrustersPump1", null]
+        },
+        "custom": {
+          "flowController": {
+            "type": "sensor:flow",
+            "controller": ["controller:pidController", "thrusters", "thrustersPumpController", null]
+          }
+        },
+        "parameters": {
+          "flow": ["parameter:flow", "thrusters", "thrustersMinimumFlow", null],
+          "temperature": ["parameter:temperature", "thrusters", "recoveryTemperature", null]
+        },
+        "source": ["sensor:pump", "thrusters", "thrustersPump1", null],
+        "tooltip": {
+          "title": "Pump",
+          "yardTag": "1194",
+          "technicalName": "thrusters-pump-1",
+          "mqttTopic": ".../thrusters-pump-1",
+          "componentType": "Thrusters circulation pump AFT"
+        }
+      },
+      "1195": {
+        "controls": {
+          "pump": ["control:pump", "thrusters", "thrustersPump2", null]
+        },
+        "custom": {
+          "flowController": {
+            "type": "sensor:flow",
+            "controller": ["controller:pidController", "thrusters", "thrustersPumpController", null]
+          }
+        },
+        "parameters": {
+          "flow": ["parameter:flow", "thrusters", "thrustersMaximumFlow", null],
+          "temperature": ["parameter:temperature", "thrusters", "maximumSupplyTemperature", null]
+        },
+        "source": ["sensor:pump", "thrusters", "thrustersPump2", null],
+        "tooltip": {
+          "title": "Pump",
+          "yardTag": "1195",
+          "technicalName": "thrusters-pump-2",
+          "mqttTopic": ".../thrusters-pump-2",
+          "componentType": "Thrusters circulation pump FWD"
+        }
+      }
+    },
+    "Pvt": {
+      "9001-01": {
+        "custom": {
+          "group": "fwd"
+        },
+        "source": ["sensor:pvt", "pvt", "pvtPvtMainFwd", null],
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "pvt", "pvtPvtMainFwdHeat", null]
+        },
+        "tooltip": {
+          "title": "PVT FWD",
+          "yardTag": "9001-01",
+          "technicalName": "pvt-pvt-main-fwd",
+          "mqttTopic": ".../pvt-pvt-main-fwd",
+          "componentType": "PVT"
+        }
+      },
+      "9001-03": {
+        "custom": {
+          "group": "owners"
+        },
+        "source": ["sensor:pvt", "pvt", "pvtPvtOwners", null],
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "pvt", "pvtPvtOwnersHeat", null]
+        },
+        "tooltip": {
+          "title": "PVT OWNERS",
+          "yardTag": "9001-03",
+          "technicalName": "pvt-pvt-owners",
+          "mqttTopic": ".../pvt-pvt-owners",
+          "componentType": "PVT"
+        }
+      },
+      "9002-01": {
+        "custom": {
+          "group": "aft"
+        },
+        "source": ["sensor:pvt", "pvt", "pvtPvtMainAft", null],
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "pvt", "pvtPvtMainAftHeat", null]
+        },
+        "tooltip": {
+          "title": "PVT AFT",
+          "yardTag": "9002-01",
+          "technicalName": "pvt-pvt-main-aft",
+          "mqttTopic": ".../pvt-pvt-main-aft",
+          "componentType": "PVT"
+        }
+      }
+    },
+    "Pyranometer": {
+      "9043": {
+        "source": ["sensor:pyranometer", "pvt", "pvtPyranometerPs", null],
+        "tooltip": {
+          "title": "Pyranometer",
+          "yardTag": "9043",
+          "technicalName": "pvt-pyranometer-ps",
+          "mqttTopic": ".../pvt-pyranometer-ps",
+          "componentType": "Pyranometer"
+        }
+      },
+      "9044": {
+        "source": ["sensor:pyranometer", "pvt", "pvtPyranometerSb", null],
+        "tooltip": {
+          "title": "Pyranometer",
+          "yardTag": "9044",
+          "technicalName": "pvt-pyranometer-sb",
+          "mqttTopic": ".../pvt-pyranometer-sb",
+          "componentType": "Pyranometer"
+        }
+      }
+    },
+    "SeawaterCircuit": {
+      "dc:seawater": {
+        "custom": {
+          "circuitName": "Seawater"
+        },
+        "source": ["sensor:temperature", "dc", "placeholder", null],
+        "tooltip": {
+          "title": "Seawater circuit",
+          "componentType": "Seawater loop",
+          "yardTag": "dc:seawater"
+        }
+      },
+      "drives:seawater": {
+        "custom": {
+          "circuitName": "Seawater"
+        },
+        "source": ["sensor:temperature", "dc", "placeholder", null],
+        "tooltip": {
+          "title": "Seawater circuit",
+          "componentType": "Seawater loop",
+          "yardTag": "drives:seawater"
+        }
+      },
+      "pvt:seawater": {
+        "custom": {
+          "circuitName": "Seawater"
+        },
+        "source": ["sensor:temperature", "pvt", "placeholder", null],
+        "tooltip": {
+          "title": "Seawater circuit",
+          "componentType": "Seawater loop",
+          "yardTag": "pvt:seawater"
+        }
+      },
+      "thrusters:seawater": {
+        "custom": {
+          "circuitName": "Seawater"
+        },
+        "source": ["sensor:temperature", "thrusters", "placeholder", null],
+        "tooltip": {
+          "title": "Seawater circuit",
+          "componentType": "Seawater",
+          "yardTag": "thrusters:seawater"
+        }
+      }
+    },
+    "ShorePowerConverter": {
+      "drives:shorepower": {
+        "custom": {
+          "converters": []
+        },
+        "sensors": {
+          "heatTransfer": ["sensor:heatTransferDevice", "drives", "drivesShorepowerHeat", null],
+          "power": ["sensor:pvt", "drives", "placeholder", null],
+          "temperature": ["sensor:temperature", "drives", "placeholder", null]
+        },
+        "source": ["sensor:shorePowerConverter", "drives", "drivesShorepower", null],
+        "tooltip": {
+          "title": "shorepower",
+          "yardTag": "45002001",
+          "technicalName": "drives-shorepower",
+          "mqttTopic": ".../drives-shorepower",
+          "componentType": "Shorepower converter"
+        }
+      }
+    },
+    "SwitchValve": {
+      "1062-02": {
+        "controls": {
+          "valve": ["control:valve", "pcm", "pcmSwitchChargingReturn", null]
+        },
+        "source": ["sensor:valve", "pcm", "pcmSwitchChargingReturn", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1062-02",
+          "technicalName": "pcm-switch-charging-return",
+          "mqttTopic": ".../pcm-switch-charging-return",
+          "componentType": "Switch valve"
+        }
+      },
+      "1066-01": {
+        "controls": {
+          "valve": ["control:valve", "pcm", "pcmSwitchDischarging", null]
+        },
+        "source": ["sensor:valve", "pcm", "pcmSwitchDischarging", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1066-01",
+          "technicalName": "pcm-switch-discharging",
+          "mqttTopic": ".../pcm-switch-discharging",
+          "componentType": "Switch valve"
+        }
+      },
+      "1066-02": {
+        "controls": {
+          "valve": ["control:valve", "consumers", "consumersSwitchAdsorption", null]
+        },
+        "source": ["sensor:valve", "consumers", "consumersSwitchAdsorption", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1066-02",
+          "technicalName": "consumers-switch-adsorption",
+          "mqttTopic": ".../consumers-switch-adsorption",
+          "componentType": "Switch valve"
+        }
+      },
+      "1066-03": {
+        "controls": {
+          "valve": ["control:valve", "thrusters", "thrustersSwitchRecovery", null]
+        },
+        "source": ["sensor:valve", "thrusters", "thrustersSwitchRecovery", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1066-03",
+          "technicalName": "thrusters-switch-recovery",
+          "mqttTopic": ".../thrusters-switch-recovery",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-01": {
+        "controls": {
+          "valve": ["control:valve", "pvt", "pvtSwitchMainFwd", null]
+        },
+        "source": ["sensor:valve", "pvt", "pvtSwitchMainFwd", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-01",
+          "technicalName": "pvt-switch-main-fwd",
+          "mqttTopic": ".../pvt-switch-main-fwd",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-02": {
+        "controls": {
+          "valve": ["control:valve", "pvt", "pvtSwitchMainAft", null]
+        },
+        "source": ["sensor:valve", "pvt", "pvtSwitchMainAft", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-02",
+          "technicalName": "pvt-switch-main-aft",
+          "mqttTopic": ".../pvt-switch-main-aft",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-03": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchTank3Inlet", null]
+        },
+        "custom": {
+          "tankController": {
+            "custom": {
+              "tankStateField": "tank3State"
+            },
+            "controls": {},
+            "controllerState": {
+              "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+            },
+            "parameters": {
+              "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+              "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+              "minimumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "minimumTankTemperature",
+                null
+              ],
+              "maximumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "maximumTankTemperature",
+                null
+              ],
+              "enabled": ["parameter:enabled", "dhw", "tank3Enabled", null]
+            },
+            "source": [
+              "custom",
+              "dhw",
+              "hot-water-tank-3",
+              {
+                "title": "Tank 3",
+                "yardTag": "1055",
+                "technicalName": "hot-water-tank-3"
+              }
+            ],
+            "sensors": {
+              "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+              "level": ["sensor:level", "dhw", "dhwLevelTank3", null],
+              "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank3", null],
+              "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank3BoostingSupply", null],
+              "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank3BoostingReturn", null],
+              "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank3Inlet", null],
+              "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank3Outlet", null]
+            },
+            "tooltip": {
+              "yardTag": "1055",
+              "technicalName": "hot-water-tank-3",
+              "componentType": "Hot water tank",
+              "title": "Tank 3"
+            }
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchTank3Inlet", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-03",
+          "technicalName": "dhw-switch-tank-3-inlet",
+          "mqttTopic": ".../dhw-switch-tank-3-inlet",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-04": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchTank3BoostingReturn", null]
+        },
+        "custom": {
+          "tankController": {
+            "custom": {
+              "tankStateField": "tank3State"
+            },
+            "controls": {},
+            "controllerState": {
+              "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+            },
+            "parameters": {
+              "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+              "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+              "minimumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "minimumTankTemperature",
+                null
+              ],
+              "maximumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "maximumTankTemperature",
+                null
+              ],
+              "enabled": ["parameter:enabled", "dhw", "tank3Enabled", null]
+            },
+            "source": [
+              "custom",
+              "dhw",
+              "hot-water-tank-3",
+              {
+                "title": "Tank 3",
+                "yardTag": "1055",
+                "technicalName": "hot-water-tank-3"
+              }
+            ],
+            "sensors": {
+              "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+              "level": ["sensor:level", "dhw", "dhwLevelTank3", null],
+              "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank3", null],
+              "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank3BoostingSupply", null],
+              "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank3BoostingReturn", null],
+              "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank3Inlet", null],
+              "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank3Outlet", null]
+            },
+            "tooltip": {
+              "yardTag": "1055",
+              "technicalName": "hot-water-tank-3",
+              "componentType": "Hot water tank",
+              "title": "Tank 3"
+            }
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchTank3BoostingReturn", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-04",
+          "technicalName": "dhw-switch-tank-3-boosting-return",
+          "mqttTopic": ".../dhw-switch-tank-3-boosting-return",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-05": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchTank3Outlet", null]
+        },
+        "custom": {
+          "tankController": {
+            "custom": {
+              "tankStateField": "tank3State"
+            },
+            "controls": {},
+            "controllerState": {
+              "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+            },
+            "parameters": {
+              "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+              "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+              "minimumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "minimumTankTemperature",
+                null
+              ],
+              "maximumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "maximumTankTemperature",
+                null
+              ],
+              "enabled": ["parameter:enabled", "dhw", "tank3Enabled", null]
+            },
+            "source": [
+              "custom",
+              "dhw",
+              "hot-water-tank-3",
+              {
+                "title": "Tank 3",
+                "yardTag": "1055",
+                "technicalName": "hot-water-tank-3"
+              }
+            ],
+            "sensors": {
+              "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+              "level": ["sensor:level", "dhw", "dhwLevelTank3", null],
+              "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank3", null],
+              "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank3BoostingSupply", null],
+              "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank3BoostingReturn", null],
+              "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank3Inlet", null],
+              "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank3Outlet", null]
+            },
+            "tooltip": {
+              "yardTag": "1055",
+              "technicalName": "hot-water-tank-3",
+              "componentType": "Hot water tank",
+              "title": "Tank 3"
+            }
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchTank3Outlet", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-05",
+          "technicalName": "dhw-switch-tank-3-outlet",
+          "mqttTopic": ".../dhw-switch-tank-3-outlet",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-06": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchTank3BoostingSupply", null]
+        },
+        "custom": {
+          "tankController": {
+            "custom": {
+              "tankStateField": "tank3State"
+            },
+            "controls": {},
+            "controllerState": {
+              "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+            },
+            "parameters": {
+              "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+              "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+              "minimumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "minimumTankTemperature",
+                null
+              ],
+              "maximumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "maximumTankTemperature",
+                null
+              ],
+              "enabled": ["parameter:enabled", "dhw", "tank3Enabled", null]
+            },
+            "source": [
+              "custom",
+              "dhw",
+              "hot-water-tank-3",
+              {
+                "title": "Tank 3",
+                "yardTag": "1055",
+                "technicalName": "hot-water-tank-3"
+              }
+            ],
+            "sensors": {
+              "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+              "level": ["sensor:level", "dhw", "dhwLevelTank3", null],
+              "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank3", null],
+              "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank3BoostingSupply", null],
+              "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank3BoostingReturn", null],
+              "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank3Inlet", null],
+              "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank3Outlet", null]
+            },
+            "tooltip": {
+              "yardTag": "1055",
+              "technicalName": "hot-water-tank-3",
+              "componentType": "Hot water tank",
+              "title": "Tank 3"
+            }
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchTank3BoostingSupply", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-06",
+          "technicalName": "dhw-switch-tank-3-boosting-supply",
+          "mqttTopic": ".../dhw-switch-tank-3-boosting-supply",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-07": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchTank2Inlet", null]
+        },
+        "custom": {
+          "tankController": {
+            "custom": {
+              "tankStateField": "tank2State"
+            },
+            "controls": {},
+            "controllerState": {
+              "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+            },
+            "parameters": {
+              "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+              "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+              "minimumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "minimumTankTemperature",
+                null
+              ],
+              "maximumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "maximumTankTemperature",
+                null
+              ],
+              "enabled": ["parameter:enabled", "dhw", "tank2Enabled", null]
+            },
+            "source": [
+              "custom",
+              "dhw",
+              "hot-water-tank-2",
+              {
+                "title": "Tank 2",
+                "yardTag": "1054",
+                "technicalName": "hot-water-tank-2"
+              }
+            ],
+            "sensors": {
+              "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+              "level": ["sensor:level", "dhw", "dhwLevelTank2", null],
+              "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank2", null],
+              "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank2BoostingSupply", null],
+              "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank2BoostingReturn", null],
+              "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank2Inlet", null],
+              "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank2Outlet", null]
+            },
+            "tooltip": {
+              "yardTag": "1054",
+              "technicalName": "hot-water-tank-2",
+              "componentType": "Hot water tank",
+              "title": "Tank 2"
+            }
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchTank2Inlet", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-07",
+          "technicalName": "dhw-switch-tank-2-inlet",
+          "mqttTopic": ".../dhw-switch-tank-2-inlet",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-08": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchTank2BoostingReturn", null]
+        },
+        "custom": {
+          "tankController": {
+            "custom": {
+              "tankStateField": "tank2State"
+            },
+            "controls": {},
+            "controllerState": {
+              "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+            },
+            "parameters": {
+              "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+              "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+              "minimumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "minimumTankTemperature",
+                null
+              ],
+              "maximumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "maximumTankTemperature",
+                null
+              ],
+              "enabled": ["parameter:enabled", "dhw", "tank2Enabled", null]
+            },
+            "source": [
+              "custom",
+              "dhw",
+              "hot-water-tank-2",
+              {
+                "title": "Tank 2",
+                "yardTag": "1054",
+                "technicalName": "hot-water-tank-2"
+              }
+            ],
+            "sensors": {
+              "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+              "level": ["sensor:level", "dhw", "dhwLevelTank2", null],
+              "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank2", null],
+              "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank2BoostingSupply", null],
+              "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank2BoostingReturn", null],
+              "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank2Inlet", null],
+              "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank2Outlet", null]
+            },
+            "tooltip": {
+              "yardTag": "1054",
+              "technicalName": "hot-water-tank-2",
+              "componentType": "Hot water tank",
+              "title": "Tank 2"
+            }
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchTank2BoostingReturn", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-08",
+          "technicalName": "dhw-switch-tank-2-boosting-return",
+          "mqttTopic": ".../dhw-switch-tank-2-boosting-return",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-09": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchTank2Outlet", null]
+        },
+        "custom": {
+          "tankController": {
+            "custom": {
+              "tankStateField": "tank2State"
+            },
+            "controls": {},
+            "controllerState": {
+              "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+            },
+            "parameters": {
+              "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+              "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+              "minimumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "minimumTankTemperature",
+                null
+              ],
+              "maximumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "maximumTankTemperature",
+                null
+              ],
+              "enabled": ["parameter:enabled", "dhw", "tank2Enabled", null]
+            },
+            "source": [
+              "custom",
+              "dhw",
+              "hot-water-tank-2",
+              {
+                "title": "Tank 2",
+                "yardTag": "1054",
+                "technicalName": "hot-water-tank-2"
+              }
+            ],
+            "sensors": {
+              "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+              "level": ["sensor:level", "dhw", "dhwLevelTank2", null],
+              "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank2", null],
+              "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank2BoostingSupply", null],
+              "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank2BoostingReturn", null],
+              "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank2Inlet", null],
+              "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank2Outlet", null]
+            },
+            "tooltip": {
+              "yardTag": "1054",
+              "technicalName": "hot-water-tank-2",
+              "componentType": "Hot water tank",
+              "title": "Tank 2"
+            }
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchTank2Outlet", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-09",
+          "technicalName": "dhw-switch-tank-2-outlet",
+          "mqttTopic": ".../dhw-switch-tank-2-outlet",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-10": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchTank2BoostingSupply", null]
+        },
+        "custom": {
+          "tankController": {
+            "custom": {
+              "tankStateField": "tank2State"
+            },
+            "controls": {},
+            "controllerState": {
+              "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+            },
+            "parameters": {
+              "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+              "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+              "minimumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "minimumTankTemperature",
+                null
+              ],
+              "maximumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "maximumTankTemperature",
+                null
+              ],
+              "enabled": ["parameter:enabled", "dhw", "tank2Enabled", null]
+            },
+            "source": [
+              "custom",
+              "dhw",
+              "hot-water-tank-2",
+              {
+                "title": "Tank 2",
+                "yardTag": "1054",
+                "technicalName": "hot-water-tank-2"
+              }
+            ],
+            "sensors": {
+              "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+              "level": ["sensor:level", "dhw", "dhwLevelTank2", null],
+              "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank2", null],
+              "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank2BoostingSupply", null],
+              "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank2BoostingReturn", null],
+              "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank2Inlet", null],
+              "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank2Outlet", null]
+            },
+            "tooltip": {
+              "yardTag": "1054",
+              "technicalName": "hot-water-tank-2",
+              "componentType": "Hot water tank",
+              "title": "Tank 2"
+            }
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchTank2BoostingSupply", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-10",
+          "technicalName": "dhw-switch-tank-2-boosting-supply",
+          "mqttTopic": ".../dhw-switch-tank-2-boosting-supply",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-11": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchTank1Inlet", null]
+        },
+        "custom": {
+          "tankController": {
+            "custom": {
+              "tankStateField": "tank1State"
+            },
+            "controls": {},
+            "controllerState": {
+              "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+            },
+            "parameters": {
+              "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+              "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+              "minimumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "minimumTankTemperature",
+                null
+              ],
+              "maximumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "maximumTankTemperature",
+                null
+              ],
+              "enabled": ["parameter:enabled", "dhw", "tank1Enabled", null]
+            },
+            "source": [
+              "custom",
+              "dhw",
+              "hot-water-tank-1",
+              {
+                "title": "Tank 1",
+                "yardTag": "1053",
+                "technicalName": "hot-water-tank-1"
+              }
+            ],
+            "sensors": {
+              "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+              "level": ["sensor:level", "dhw", "dhwLevelTank1", null],
+              "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank1", null],
+              "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank1BoostingSupply", null],
+              "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank1BoostingReturn", null],
+              "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank1Inlet", null],
+              "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank1Outlet", null]
+            },
+            "tooltip": {
+              "yardTag": "1053",
+              "technicalName": "hot-water-tank-1",
+              "componentType": "Hot water tank",
+              "title": "Tank 1"
+            }
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchTank1Inlet", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-11",
+          "technicalName": "dhw-switch-tank-1-inlet",
+          "mqttTopic": ".../dhw-switch-tank-1-inlet",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-12": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchTank1BoostingReturn", null]
+        },
+        "custom": {
+          "tankController": {
+            "custom": {
+              "tankStateField": "tank1State"
+            },
+            "controls": {},
+            "controllerState": {
+              "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+            },
+            "parameters": {
+              "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+              "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+              "minimumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "minimumTankTemperature",
+                null
+              ],
+              "maximumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "maximumTankTemperature",
+                null
+              ],
+              "enabled": ["parameter:enabled", "dhw", "tank1Enabled", null]
+            },
+            "source": [
+              "custom",
+              "dhw",
+              "hot-water-tank-1",
+              {
+                "title": "Tank 1",
+                "yardTag": "1053",
+                "technicalName": "hot-water-tank-1"
+              }
+            ],
+            "sensors": {
+              "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+              "level": ["sensor:level", "dhw", "dhwLevelTank1", null],
+              "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank1", null],
+              "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank1BoostingSupply", null],
+              "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank1BoostingReturn", null],
+              "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank1Inlet", null],
+              "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank1Outlet", null]
+            },
+            "tooltip": {
+              "yardTag": "1053",
+              "technicalName": "hot-water-tank-1",
+              "componentType": "Hot water tank",
+              "title": "Tank 1"
+            }
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchTank1BoostingReturn", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-12",
+          "technicalName": "dhw-switch-tank-1-boosting-return",
+          "mqttTopic": ".../dhw-switch-tank-1-boosting-return",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-13": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchTank1Outlet", null]
+        },
+        "custom": {
+          "tankController": {
+            "custom": {
+              "tankStateField": "tank1State"
+            },
+            "controls": {},
+            "controllerState": {
+              "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+            },
+            "parameters": {
+              "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+              "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+              "minimumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "minimumTankTemperature",
+                null
+              ],
+              "maximumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "maximumTankTemperature",
+                null
+              ],
+              "enabled": ["parameter:enabled", "dhw", "tank1Enabled", null]
+            },
+            "source": [
+              "custom",
+              "dhw",
+              "hot-water-tank-1",
+              {
+                "title": "Tank 1",
+                "yardTag": "1053",
+                "technicalName": "hot-water-tank-1"
+              }
+            ],
+            "sensors": {
+              "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+              "level": ["sensor:level", "dhw", "dhwLevelTank1", null],
+              "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank1", null],
+              "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank1BoostingSupply", null],
+              "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank1BoostingReturn", null],
+              "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank1Inlet", null],
+              "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank1Outlet", null]
+            },
+            "tooltip": {
+              "yardTag": "1053",
+              "technicalName": "hot-water-tank-1",
+              "componentType": "Hot water tank",
+              "title": "Tank 1"
+            }
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchTank1Outlet", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-13",
+          "technicalName": "dhw-switch-tank-1-outlet",
+          "mqttTopic": ".../dhw-switch-tank-1-outlet",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-14": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchTank1BoostingSupply", null]
+        },
+        "custom": {
+          "tankController": {
+            "custom": {
+              "tankStateField": "tank1State"
+            },
+            "controls": {},
+            "controllerState": {
+              "controller": ["controller:dhwTanksController", "dhw", "dhwTanksController", null]
+            },
+            "parameters": {
+              "minimumLevel": ["parameter:level", "dhw", "minimumTankLevel", null],
+              "maximumLevel": ["parameter:level", "dhw", "maximumTankLevel", null],
+              "minimumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "minimumTankTemperature",
+                null
+              ],
+              "maximumTemperature": [
+                "parameter:temperature",
+                "dhw",
+                "maximumTankTemperature",
+                null
+              ],
+              "enabled": ["parameter:enabled", "dhw", "tank1Enabled", null]
+            },
+            "source": [
+              "custom",
+              "dhw",
+              "hot-water-tank-1",
+              {
+                "title": "Tank 1",
+                "yardTag": "1053",
+                "technicalName": "hot-water-tank-1"
+              }
+            ],
+            "sensors": {
+              "boostingSupply": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+              "level": ["sensor:level", "dhw", "dhwLevelTank1", null],
+              "temperature": ["sensor:temperature", "dhw", "dhwTemperatureTank1", null],
+              "boostSupplyValve": ["sensor:valve", "dhw", "dhwSwitchTank1BoostingSupply", null],
+              "boostReturnValve": ["sensor:valve", "dhw", "dhwSwitchTank1BoostingReturn", null],
+              "supplyValve": ["sensor:valve", "dhw", "dhwSwitchTank1Inlet", null],
+              "dischargeValve": ["sensor:valve", "dhw", "dhwSwitchTank1Outlet", null]
+            },
+            "tooltip": {
+              "yardTag": "1053",
+              "technicalName": "hot-water-tank-1",
+              "componentType": "Hot water tank",
+              "title": "Tank 1"
+            }
+          }
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchTank1BoostingSupply", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-14",
+          "technicalName": "dhw-switch-tank-1-boosting-supply",
+          "mqttTopic": ".../dhw-switch-tank-1-boosting-supply",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-15": {
+        "controls": {
+          "valve": ["control:valve", "consumers", "consumersSwitchDhw", null]
+        },
+        "source": ["sensor:valve", "consumers", "consumersSwitchDhw", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-15",
+          "technicalName": "consumers-switch-dhw",
+          "mqttTopic": ".../consumers-switch-dhw",
+          "componentType": "Switch valve"
+        }
+      },
+      "1067-16": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchLowTemperature", null]
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchLowTemperature", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-16",
+          "technicalName": "dhw-switch-low-temperature",
+          "mqttTopic": ".../dhw-switch-low-temperature",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-17": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchHeatpump", null]
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchHeatpump", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-17",
+          "technicalName": "dhw-switch-heatpump",
+          "mqttTopic": ".../dhw-switch-heatpump",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1067-18": {
+        "controls": {
+          "valve": ["control:valve", "dhw", "dhwSwitchHighTemperature", null]
+        },
+        "source": ["sensor:valve", "dhw", "dhwSwitchHighTemperature", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1067-18",
+          "technicalName": "dhw-switch-high-temperature",
+          "mqttTopic": ".../dhw-switch-high-temperature",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1069-01": {
+        "controls": {
+          "valve": ["control:valve", "pvt", "pvtSwitchOwners", null]
+        },
+        "source": ["sensor:valve", "pvt", "pvtSwitchOwners", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1069-01",
+          "technicalName": "pvt-switch-owners",
+          "mqttTopic": ".../pvt-switch-owners",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1069-04": {
+        "controls": {
+          "valve": ["control:valve", "drives", "drivesSwitchShorepowerSupply", null]
+        },
+        "source": ["sensor:valve", "drives", "drivesSwitchShorepowerSupply", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1069-04",
+          "technicalName": "drives-switch-shorepower-supply",
+          "mqttTopic": ".../drives-switch-shorepower-supply",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1069-05": {
+        "controls": {
+          "valve": ["control:valve", "drives", "drivesSwitchShorepowerReturn", null]
+        },
+        "source": ["sensor:valve", "drives", "drivesSwitchShorepowerReturn", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1069-05",
+          "technicalName": "drives-switch-shorepower-return",
+          "mqttTopic": ".../drives-switch-shorepower-return",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1069-06": {
+        "controls": {
+          "valve": ["control:valve", "drives", "drivesSwitchPropdriveAft1", null]
+        },
+        "source": ["sensor:valve", "drives", "drivesSwitchPropdriveAft1", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1069-06",
+          "technicalName": "drives-switch-propdrive-aft-1",
+          "mqttTopic": ".../drives-switch-propdrive-aft-1",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1069-07": {
+        "controls": {
+          "valve": ["control:valve", "drives", "drivesSwitchPropdriveFwd1", null]
+        },
+        "source": ["sensor:valve", "drives", "drivesSwitchPropdriveFwd1", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1069-07",
+          "technicalName": "drives-switch-propdrive-fwd-1",
+          "mqttTopic": ".../drives-switch-propdrive-fwd-1",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1069-08": {
+        "controls": {
+          "valve": ["control:valve", "drives", "drivesSwitchPropdriveFwd2", null]
+        },
+        "source": ["sensor:valve", "drives", "drivesSwitchPropdriveFwd2", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1069-08",
+          "technicalName": "drives-switch-propdrive-fwd-2",
+          "mqttTopic": ".../drives-switch-propdrive-fwd-2",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1069-09": {
+        "controls": {
+          "valve": ["control:valve", "drives", "drivesSwitchPropdriveAft2", null]
+        },
+        "source": ["sensor:valve", "drives", "drivesSwitchPropdriveAft2", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1069-09",
+          "technicalName": "drives-switch-propdrive-aft-2",
+          "mqttTopic": ".../drives-switch-propdrive-aft-2",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1071-02": {
+        "controls": {
+          "valve": ["control:valve", "pcm", "pcmSwitchConsumers", null]
+        },
+        "source": ["sensor:valve", "pcm", "pcmSwitchConsumers", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1071-02",
+          "technicalName": "pcm-switch-consumers",
+          "mqttTopic": ".../pcm-switch-consumers",
+          "componentType": "Switch valve"
+        }
+      },
+      "1190-01": {
+        "controls": {
+          "valve": ["control:valve", "pcm", "pcmSwitchChargingSupply", null]
+        },
+        "source": ["sensor:valve", "pcm", "pcmSwitchChargingSupply", null],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1190-01",
+          "technicalName": "pcm-switch-charging-supply",
+          "mqttTopic": ".../pcm-switch-charging-supply",
+          "componentType": "Switch valve"
+        }
+      }
+    },
+    "TemperatureSensor": {
+      "1038-01": {
+        "controls": {
+          "pump": ["control:pump", "thrusters", "thrustersPump1", null]
+        },
+        "parameters": {
+          "temperature": ["parameter:temperature", "thrusters", "warmupTemperature", null]
+        },
+        "sensors": {
+          "measurement": ["sensor:temperature", "thrusters", "thrustersTemperatureAft", null]
+        },
+        "source": ["sensor:temperature", "thrusters", "thrustersTemperatureAft", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-01",
+          "technicalName": "thrusters-temperature-aft",
+          "mqttTopic": ".../thrusters-temperature-aft",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-02": {
+        "controls": {
+          "pump": ["control:pump", "thrusters", "thrustersPump2", null]
+        },
+        "controllerState": {
+          "controller": {
+            "type": "sensor:temperature",
+            "controller": [
+              "controller:pidController",
+              "thrusters",
+              "thrustersFwdRecoveryTemperatureController",
+              null
+            ],
+            "setpoint": ["parameter:temperature", "thrusters", "recoveryTemperature", null]
+          }
+        },
+        "parameters": {
+          "temperature": ["parameter:temperature", "thrusters", "coolingTemperature", null]
+        },
+        "sensors": {
+          "measurement": ["sensor:temperature", "thrusters", "thrustersTemperatureFwd", null]
+        },
+        "source": ["sensor:temperature", "thrusters", "thrustersTemperatureFwd", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-02",
+          "technicalName": "thrusters-temperature-fwd",
+          "mqttTopic": ".../thrusters-temperature-fwd",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-03": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainFwd", null]
+        },
+        "parameters": {
+          "temperature": ["parameter:temperature", "pvt", "warmupTemperature", null]
+        },
+        "sensors": {
+          "measurement": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdReturn", null]
+        },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-03",
+          "technicalName": "pvt-temperature-main-fwd-return",
+          "mqttTopic": ".../pvt-temperature-main-fwd-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-04": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpOwners", null]
+        },
+        "parameters": {
+          "temperature": ["parameter:temperature", "pvt", "minimumReturnTemperature", null]
+        },
+        "sensors": {
+          "measurement": ["sensor:temperature", "pvt", "pvtTemperatureOwnersReturn", null]
+        },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureOwnersReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-04",
+          "technicalName": "pvt-temperature-owners-return",
+          "mqttTopic": ".../pvt-temperature-owners-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-11": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "drives", "drivesTemperatureShorepowerReturn", null]
+        },
+        "source": ["sensor:temperature", "drives", "drivesTemperatureShorepowerReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-11",
+          "technicalName": "drives-temperature-shorepower-return",
+          "mqttTopic": ".../drives-temperature-shorepower-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-14": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "drives", "drivesTemperatureSupply", null]
+        },
+        "source": ["sensor:temperature", "drives", "drivesTemperatureSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-14",
+          "technicalName": "drives-temperature-supply",
+          "mqttTopic": ".../drives-temperature-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-15": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "dc", "dcTemperatureAftSupply", null]
+        },
+        "source": ["sensor:temperature", "dc", "dcTemperatureAftSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-15",
+          "technicalName": "dc-temperature-aft-supply",
+          "mqttTopic": ".../dc-temperature-aft-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-16": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "drives", "drivesTemperatureRecovery", null]
+        },
+        "source": ["sensor:temperature", "drives", "drivesTemperatureRecovery", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-16",
+          "technicalName": "drives-temperature-recovery",
+          "mqttTopic": ".../drives-temperature-recovery",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-17": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "dc", "dcTemperatureRecoveryMix", null]
+        },
+        "source": ["sensor:temperature", "dc", "dcTemperatureRecoveryMix", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-17",
+          "technicalName": "dc-temperature-recovery-mix",
+          "mqttTopic": ".../dc-temperature-recovery-mix",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-18": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "dc", "dcTemperatureSupply", null]
+        },
+        "source": ["sensor:temperature", "dc", "dcTemperatureSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-18",
+          "technicalName": "dc-temperature-supply",
+          "mqttTopic": ".../dc-temperature-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-19": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "dc", "dcTemperatureFwdReturn", null]
+        },
+        "source": ["sensor:temperature", "dc", "dcTemperatureFwdReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-19",
+          "technicalName": "dc-temperature-fwd-return",
+          "mqttTopic": ".../dc-temperature-fwd-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-20": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "dc", "dcTemperatureAftReturn", null]
+        },
+        "source": ["sensor:temperature", "dc", "dcTemperatureAftReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-20",
+          "technicalName": "dc-temperature-aft-return",
+          "mqttTopic": ".../dc-temperature-aft-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-21": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpOwners", null]
+        },
+        "parameters": {
+          "temperature": ["parameter:temperature", "pvt", "recoveryTemperature", null]
+        },
+        "sensors": {
+          "measurement": ["sensor:temperature", "pvt", "pvtTemperatureOwnersSupply", null]
+        },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureOwnersSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-21",
+          "technicalName": "pvt-temperature-owners-supply",
+          "mqttTopic": ".../pvt-temperature-owners-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-22": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainAft", null]
+        },
+        "parameters": {
+          "temperature": ["parameter:temperature", "pvt", "recoveryTemperature", null]
+        },
+        "sensors": {
+          "measurement": ["sensor:temperature", "pvt", "pvtTemperatureMainAftSupply", null]
+        },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureMainAftSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-22",
+          "technicalName": "pvt-temperature-main-aft-supply",
+          "mqttTopic": ".../pvt-temperature-main-aft-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-23": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainFwd", null]
+        },
+        "parameters": {
+          "temperature": ["parameter:temperature", "pvt", "recoveryTemperature", null]
+        },
+        "sensors": {
+          "measurement": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdSupply", null]
+        },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureMainFwdSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-23",
+          "technicalName": "pvt-temperature-main-fwd-supply",
+          "mqttTopic": ".../pvt-temperature-main-fwd-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-24": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainFwd", null]
+        },
+        "parameters": {
+          "temperature": ["parameter:temperature", "pvt", "maximumSupplyTemperature", null]
+        },
+        "sensors": {
+          "measurement": ["sensor:temperature", "pvt", "pvtTemperatureSupply", null]
+        },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-24",
+          "technicalName": "pvt-temperature-supply",
+          "mqttTopic": ".../pvt-temperature-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-25": {
+        "custom": {
+          "controller": {
+            "type": "sensor:temperature",
+            "controller": ["controller:pidController", "dhw", "dhwDcFlowController", null],
+            "setpoint": ["parameter:temperature", "dhw", "fillingTemperatureSetpoint", null],
+            "outputMinimum": ["parameter:flowcontrol", "dhw", "dcFlowcontrolMinimumSetpoint", null]
+          }
+        },
+        "source": ["sensor:temperature", "dhw", "dhwTemperatureHvacExchangerReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-25",
+          "technicalName": "dhw-temperature-hvac-exchanger-return",
+          "mqttTopic": ".../dhw-temperature-hvac-exchanger-return",
+          "componentType": "Temperature sensor Pt100 RTD"
+        }
+      },
+      "1038-26": {
+        "custom": {
+          "controller": {
+            "type": "sensor:temperature",
+            "controller": ["controller:pidController", "dhw", "dhwDcFlowController", null],
+            "setpoint": ["parameter:temperature", "dhw", "fillingTemperatureSetpoint", null],
+            "outputMinimum": ["parameter:flowcontrol", "dhw", "dcFlowcontrolMinimumSetpoint", null]
+          }
+        },
+        "source": ["sensor:temperature", "dhw", "dhwTemperatureDcReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-26",
+          "technicalName": "dhw-temperature-dc-return",
+          "mqttTopic": ".../dhw-temperature-dc-return",
+          "componentType": "Temperature sensor Pt100 RTD"
+        }
+      },
+      "1038-27": {
+        "source": ["sensor:temperature", "dhw", "dhwTemperatureTank3", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-27",
+          "technicalName": "dhw-temperature-tank-3",
+          "mqttTopic": ".../dhw-temperature-tank-3",
+          "componentType": "Temperature sensor Pt100 RTD"
+        }
+      },
+      "1038-28": {
+        "controls": {
+          "pump": ["control:pump", "thrusters", "thrustersPump2", null]
+        },
+        "parameters": {
+          "temperature": ["parameter:temperature", "thrusters", "maximumSupplyTemperature", null]
+        },
+        "sensors": {
+          "measurement": ["sensor:temperature", "thrusters", "thrustersTemperatureSupply", null]
+        },
+        "source": ["sensor:temperature", "thrusters", "thrustersTemperatureSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-28",
+          "technicalName": "thrusters-temperature-supply",
+          "mqttTopic": ".../thrusters-temperature-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-30": {
+        "controls": {
+          "pump": ["control:pump", "thrusters", "thrustersPump1", null]
+        },
+        "parameters": {
+          "temperature": ["parameter:temperature", "thrusters", "recoveryTemperature", null]
+        },
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "thrusters",
+            "thrustersTemperatureRecoveryMix",
+            null
+          ]
+        },
+        "source": ["sensor:temperature", "thrusters", "thrustersTemperatureRecoveryMix", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-30",
+          "technicalName": "thrusters-temperature-recovery-mix",
+          "mqttTopic": ".../thrusters-temperature-recovery-mix",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-31": {
+        "source": ["sensor:temperature", "pcm", "pcmTemperatureProducersReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-31",
+          "technicalName": "pcm-temperature-producers-return",
+          "mqttTopic": ".../pcm-temperature-producers-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-32": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "drives",
+            "drivesTemperaturePropdriveAft1Return",
+            null
+          ]
+        },
+        "source": ["sensor:temperature", "drives", "drivesTemperaturePropdriveAft1Return", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-32",
+          "technicalName": "drives-temperature-propdrive-aft-1-return",
+          "mqttTopic": ".../drives-temperature-propdrive-aft-1-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-33": {
+        "source": ["sensor:temperature", "pcm", "pcmTemperatureModule2", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-33",
+          "technicalName": "pcm-temperature-module-2",
+          "mqttTopic": ".../pcm-temperature-module-2",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-34": {
+        "source": ["sensor:temperature", "pcm", "pcmTemperatureModule3", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-34",
+          "technicalName": "pcm-temperature-module-3",
+          "mqttTopic": ".../pcm-temperature-module-3",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-35": {
+        "source": ["sensor:temperature", "pcm", "pcmTemperatureModule4", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-35",
+          "technicalName": "pcm-temperature-module-4",
+          "mqttTopic": ".../pcm-temperature-module-4",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-44": {
+        "source": ["sensor:temperature", "dhw", "dhwTemperatureTank2", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-44",
+          "technicalName": "dhw-temperature-tank-2",
+          "mqttTopic": ".../dhw-temperature-tank-2",
+          "componentType": "Temperature sensor Pt100 RTD"
+        }
+      },
+      "1038-45": {
+        "source": ["sensor:temperature", "dhw", "dhwTemperatureTank1", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-45",
+          "technicalName": "dhw-temperature-tank-1",
+          "mqttTopic": ".../dhw-temperature-tank-1",
+          "componentType": "Temperature sensor Pt100 RTD"
+        }
+      },
+      "1038-46": {
+        "custom": {
+          "controller": {
+            "type": "sensor:temperature",
+            "controller": ["controller:pidController", "dhw", "dhwDrivesFlowController", null],
+            "setpoint": ["parameter:temperature", "dhw", "fillingTemperatureSetpoint", null],
+            "outputMinimum": [
+              "parameter:flowcontrol",
+              "dhw",
+              "drivesFlowcontrolMinimumSetpoint",
+              null
+            ]
+          }
+        },
+        "sensors": {
+          "actuator": ["sensor:valve", "dhw", "dhwFlowcontrolDrives", null]
+        },
+        "source": ["sensor:temperature", "dhw", "dhwTemperatureDrivesReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-46",
+          "technicalName": "dhw-temperature-drives-return",
+          "mqttTopic": ".../dhw-temperature-drives-return",
+          "componentType": "Temperature sensor Pt100 RTD"
+        }
+      },
+      "1038-47": {
+        "source": ["sensor:temperature", "dhw", "dhwTemperatureFreshwaterSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-47",
+          "technicalName": "dhw-temperature-freshwater-supply",
+          "mqttTopic": ".../dhw-temperature-freshwater-supply",
+          "componentType": "Temperature sensor Pt100 RTD"
+        }
+      },
+      "1038-48": {
+        "source": ["sensor:temperature", "consumers", "consumersTemperatureDhwReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-48",
+          "technicalName": "consumers-temperature-dhw-return",
+          "mqttTopic": ".../consumers-temperature-dhw-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-49": {
+        "source": ["sensor:temperature", "consumers", "consumersTemperatureAdsorptionReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-49",
+          "technicalName": "consumers-temperature-adsorption-return",
+          "mqttTopic": ".../consumers-temperature-adsorption-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-51": {
+        "custom": {
+          "controller": {
+            "type": "sensor:temperature",
+            "controller": ["controller:pidController", "dhw", "dhwDcFlowController", null],
+            "setpoint": ["parameter:temperature", "dhw", "fillingTemperatureSetpoint", null],
+            "outputMinimum": ["parameter:flowcontrol", "dhw", "dcFlowcontrolMinimumSetpoint", null]
+          }
+        },
+        "sensors": {
+          "actuator": ["sensor:valve", "dhw", "dhwFlowcontrolDc", null]
+        },
+        "source": ["sensor:temperature", "dhw", "dhwTemperatureAdsorptionReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-51",
+          "technicalName": "dhw-temperature-adsorption-return",
+          "mqttTopic": ".../dhw-temperature-adsorption-return",
+          "componentType": "Temperature sensor Pt100 RTD"
+        }
+      },
+      "1038-52": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "dc", "dcTemperatureRecovery", null]
+        },
+        "source": ["sensor:temperature", "dc", "dcTemperatureRecovery", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-52",
+          "technicalName": "dc-temperature-recovery",
+          "mqttTopic": ".../dc-temperature-recovery",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-53": {
+        "source": ["sensor:temperature", "consumers", "consumersTemperatureDhwSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-53",
+          "technicalName": "consumers-temperature-dhw-supply",
+          "mqttTopic": ".../consumers-temperature-dhw-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-54": {
+        "source": ["sensor:temperature", "consumers", "consumersTemperatureAdsorptionSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-54",
+          "technicalName": "consumers-temperature-adsorption-supply",
+          "mqttTopic": ".../consumers-temperature-adsorption-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-55": {
+        "source": ["sensor:temperature", "pcm", "pcmTemperatureProducersSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-55",
+          "technicalName": "pcm-temperature-producers-supply",
+          "mqttTopic": ".../pcm-temperature-producers-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-57": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "drives", "drivesTemperatureRecoveryMix", null]
+        },
+        "source": ["sensor:temperature", "drives", "drivesTemperatureRecoveryMix", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-57",
+          "technicalName": "drives-temperature-recovery-mix",
+          "mqttTopic": ".../drives-temperature-recovery-mix",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-58": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "dc", "dcTemperatureRecoveryReturn", null]
+        },
+        "source": ["sensor:temperature", "dc", "dcTemperatureRecoveryReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-58",
+          "technicalName": "dc-temperature-recovery-return",
+          "mqttTopic": ".../dc-temperature-recovery-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-59": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "drives", "drivesTemperatureRecoveryReturn", null]
+        },
+        "source": ["sensor:temperature", "drives", "drivesTemperatureRecoveryReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-59",
+          "technicalName": "drives-temperature-recovery-return",
+          "mqttTopic": ".../drives-temperature-recovery-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-60": {
+        "source": ["sensor:temperature", "pcm", "pcmTemperatureModule1", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-60",
+          "technicalName": "pcm-temperature-module-1",
+          "mqttTopic": ".../pcm-temperature-module-1",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-61": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "drives",
+            "drivesTemperaturePropdriveFwd1Return",
+            null
+          ]
+        },
+        "source": ["sensor:temperature", "drives", "drivesTemperaturePropdriveFwd1Return", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-61",
+          "technicalName": "drives-temperature-propdrive-fwd-1-return",
+          "mqttTopic": ".../drives-temperature-propdrive-fwd-1-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-62": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "drives",
+            "drivesTemperaturePropdrivesFwdSupply",
+            null
+          ]
+        },
+        "source": ["sensor:temperature", "drives", "drivesTemperaturePropdrivesFwdSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-62",
+          "technicalName": "drives-temperature-propdrives-fwd-supply",
+          "mqttTopic": ".../drives-temperature-propdrives-fwd-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-63": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "drives",
+            "drivesTemperaturePropdrivesAftSupply",
+            null
+          ]
+        },
+        "source": ["sensor:temperature", "drives", "drivesTemperaturePropdrivesAftSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-63",
+          "technicalName": "drives-temperature-propdrives-aft-supply",
+          "mqttTopic": ".../drives-temperature-propdrives-aft-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-64": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "drives",
+            "drivesTemperaturePropdriveAft2Return",
+            null
+          ]
+        },
+        "source": ["sensor:temperature", "drives", "drivesTemperaturePropdriveAft2Return", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-64",
+          "technicalName": "drives-temperature-propdrive-aft-2-return",
+          "mqttTopic": ".../drives-temperature-propdrive-aft-2-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-65": {
+        "sensors": {
+          "actuator": ["sensor:valve", "dhw", "dhwSwitchHighTemperature", null]
+        },
+        "source": ["sensor:temperature", "dhw", "dhwTemperatureBoostingReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-65",
+          "technicalName": "dhw-temperature-boosting-return",
+          "mqttTopic": ".../dhw-temperature-boosting-return",
+          "componentType": "Temperature sensor Pt100 RTD"
+        }
+      },
+      "1038-66": {
+        "source": ["sensor:temperature", "dhw", "dhwTemperatureBoostingSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-66",
+          "technicalName": "dhw-temperature-boosting-supply",
+          "mqttTopic": ".../dhw-temperature-boosting-supply",
+          "componentType": "Temperature sensor Pt100 RTD"
+        }
+      },
+      "1038-69": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "dc", "dcTemperatureFwdSupply", null]
+        },
+        "source": ["sensor:temperature", "dc", "dcTemperatureFwdSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-69",
+          "technicalName": "dc-temperature-fwd-supply",
+          "mqttTopic": ".../dc-temperature-fwd-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-70": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "dc", "dcTemperatureUgridSupply", null]
+        },
+        "source": ["sensor:temperature", "dc", "dcTemperatureUgridSupply", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-70",
+          "technicalName": "dc-temperature-ugrid-supply",
+          "mqttTopic": ".../dc-temperature-ugrid-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-71": {
+        "sensors": {
+          "measurement": ["sensor:temperature", "dc", "dcTemperatureUgridReturn", null]
+        },
+        "source": ["sensor:temperature", "dc", "dcTemperatureUgridReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-71",
+          "technicalName": "dc-temperature-ugrid-return",
+          "mqttTopic": ".../dc-temperature-ugrid-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-72": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "drives",
+            "drivesTemperaturePropdriveFwd2Return",
+            null
+          ]
+        },
+        "source": ["sensor:temperature", "drives", "drivesTemperaturePropdriveFwd2Return", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-72",
+          "technicalName": "drives-temperature-propdrive-fwd-2-return",
+          "mqttTopic": ".../drives-temperature-propdrive-fwd-2-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-73": {
+        "controls": {
+          "pump": ["control:pump", "pvt", "pvtPumpMainAft", null]
+        },
+        "parameters": {
+          "temperature": ["parameter:temperature", "pvt", "warmupTemperature", null]
+        },
+        "sensors": {
+          "measurement": ["sensor:temperature", "pvt", "pvtTemperatureMainAftReturn", null]
+        },
+        "source": ["sensor:temperature", "pvt", "pvtTemperatureMainAftReturn", null],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-73",
+          "technicalName": "pvt-temperature-main-aft-return",
+          "mqttTopic": ".../pvt-temperature-main-aft-return",
+          "componentType": "Temperature sensor"
+        }
+      }
+    },
+    "ThreeWaySwitchValve": {
+      "1091-01": {
+        "controls": {
+          "valve": ["control:valve", "thrusters", "thrustersSwitchAft", null]
+        },
+        "source": ["sensor:valve", "thrusters", "thrustersSwitchAft", null],
+        "tooltip": {
+          "title": "3-Way Switch Valve",
+          "yardTag": "1091-01",
+          "technicalName": "thrusters-switch-aft",
+          "mqttTopic": ".../thrusters-switch-aft",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1091-02": {
+        "controls": {
+          "valve": ["control:valve", "thrusters", "thrustersSwitchFwd", null]
+        },
+        "source": ["sensor:valve", "thrusters", "thrustersSwitchFwd", null],
+        "tooltip": {
+          "title": "3-Way Switch Valve",
+          "yardTag": "1091-02",
+          "technicalName": "thrusters-switch-fwd",
+          "mqttTopic": ".../thrusters-switch-fwd",
+          "componentType": "3 way valve DN 25"
+        }
+      }
+    },
+    "Thruster": {
+      "15001001": {
+        "custom": {
+          "titleKey": "aftTitle"
+        },
+        "source": ["sensor:thruster", "thrusters", "thrustersThrusterAft", null],
+        "sensors": {
+          "pcs": ["sensor:pcs", "thrusters", "thrustersPcs", null],
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "thrusters",
+            "thrustersThrusterAftHeat",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "Thruster AFT",
+          "yardTag": "15001001",
+          "technicalName": "thrusters-thruster-aft",
+          "mqttTopic": ".../thrusters-thruster-aft",
+          "componentType": "thrusters"
+        }
+      },
+      "15001002": {
+        "custom": {
+          "titleKey": "fwdTitle"
+        },
+        "source": ["sensor:thruster", "thrusters", "thrustersThrusterFwd", null],
+        "sensors": {
+          "pcs": ["sensor:pcs", "thrusters", "thrustersPcs", null],
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "thrusters",
+            "thrustersThrusterFwdHeat",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "Thruster FWD",
+          "yardTag": "15001002",
+          "technicalName": "thrusters-thruster-fwd",
+          "mqttTopic": ".../thrusters-thruster-fwd",
+          "componentType": "thrusters"
+        }
+      }
+    }
+  }
+}

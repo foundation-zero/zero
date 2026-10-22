@@ -2,11 +2,16 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { PRESSURE_SENSOR_WIDTH } from "../../../components/pressure-sensor";
+import { getTooltipContexts } from "../../../data";
 import { PressureSensorInstance } from "../../../instances";
 import PressureLabelInstance from "../../../instances/PressureLabelInstance.vue";
-import { PVT_MIMIC_DATA } from "../data";
 
-const pressureSensors = PVT_MIMIC_DATA[MimicComponentType.PressureSensor];
+const pressureSensors = getTooltipContexts(MimicComponentType.PressureSensor, [
+  "1097-03",
+  "1097-04",
+  "1097-05",
+  "1097-06",
+]);
 </script>
 
 <template>

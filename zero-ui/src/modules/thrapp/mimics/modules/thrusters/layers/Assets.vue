@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
+import { getTooltipContexts } from "../../../data";
 import ThrusterInstance from "../../../instances/ThrusterInstance.vue";
-import { THRUSTERS_MIMIC_DATA } from "../data";
 
-const thrusters = THRUSTERS_MIMIC_DATA[MimicComponentType.Thruster];
+const thrusters = getTooltipContexts(MimicComponentType.Thruster, ["15001001", "15001002"]);
 </script>
 
 <template>
@@ -11,13 +11,13 @@ const thrusters = THRUSTERS_MIMIC_DATA[MimicComponentType.Thruster];
     <ThrusterInstance
       x="23"
       y="143"
-      v-bind="thrusters['9002-01']"
+      v-bind="thrusters['15001001']"
     />
 
     <ThrusterInstance
       x="23"
       y="401"
-      v-bind="thrusters['9001-01']"
+      v-bind="thrusters['15001002']"
     />
   </g>
 </template>

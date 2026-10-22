@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { SensorComponentType } from "@/modules/thrsim/types";
+import { reactiveOmit } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
@@ -38,15 +39,13 @@ const { t } = useI18n();
 const { getComponentState } = getMimicDataProvider();
 
 const state = getComponentState();
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.Thruster"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <AssetBox
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="state"
     >
       <YardTag>{{ tooltip?.yardTag }}</YardTag>

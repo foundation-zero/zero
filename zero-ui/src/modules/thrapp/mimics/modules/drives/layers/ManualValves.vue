@@ -1,18 +1,40 @@
 <script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { MANUAL_VALVE_WIDTH, ManualValveType } from "../../../components/manual-valve";
+import { getTooltipContexts } from "../../../data";
 import { ManualValveInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
-import { DRIVES_MANUAL_VALVE_DATA } from "../data";
 
-const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
+const manualValves = getTooltipContexts(MimicComponentType.ManualValve, [
+  "1087-04",
+  "1087-05",
+  "1087-06",
+  "1087-07",
+  "1085-04",
+  "1085-05",
+  "1085-02",
+  "1085-03",
+  "1086-01",
+  "1086-02",
+  "1086-09",
+  "1086-10",
+  "1086-06",
+  "1086-05",
+  "1086-07",
+  "1086-08",
+  "1084-02",
+  "1087-01",
+  "1073-02",
+  "1073-01",
+]);
 </script>
 
 <template>
   <ManualValveInstance
     x="255.1582"
     y="67.916"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1087-04']"
   >
@@ -26,7 +48,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="255.1582"
     y="258.916"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1087-05']"
   >
@@ -40,7 +62,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="256"
     y="502.8291"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1087-06']"
   >
@@ -54,7 +76,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="256"
     y="714.916"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1087-07']"
   >
@@ -68,7 +90,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="566.1582"
     y="382.916"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1085-04']"
   >
@@ -82,7 +104,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="796.1582"
     y="383.916"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1085-05']"
   >
@@ -96,7 +118,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="566.1582"
     y="824.916"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1085-02']"
   >
@@ -110,7 +132,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="795.1582"
     y="825.916"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1085-03']"
   >
@@ -124,7 +146,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="1061.1582"
     y="680.916"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1086-01']"
   >
@@ -138,7 +160,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="1175"
     y="678.916"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1086-02']"
   >
@@ -152,7 +174,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="1320.1582"
     y="344.916"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1086-09']"
   >
@@ -166,7 +188,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="1467.1582"
     y="346.916"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1086-10']"
   >
@@ -180,7 +202,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="1368.2832"
     y="593.916"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1086-06']"
   >
@@ -194,7 +216,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="1474.1582"
     y="593.916"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1086-05']"
   >
@@ -208,7 +230,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="1368.2832"
     y="726.6006"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1086-07']"
   >
@@ -222,7 +244,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="1477.2832"
     y="726.6006"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1086-08']"
   >
@@ -236,7 +258,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="1653"
     y="192"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1084-02']"
   >
@@ -249,7 +271,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="1653"
     y="111.5"
-    :type="ManualValveType.Switch"
+    :valve-type="ManualValveType.Switch"
     :orientation="ComponentOrientation.Up"
     v-bind="manualValves['1087-01']"
   >
@@ -263,7 +285,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="537.1582"
     y="663.916"
-    :type="ManualValveType.Flow"
+    :valve-type="ManualValveType.Flow"
     :orientation="ComponentOrientation.Right"
     v-bind="manualValves['1073-02']"
   >
@@ -276,7 +298,7 @@ const manualValves = DRIVES_MANUAL_VALVE_DATA.ManualValve;
   <ManualValveInstance
     x="537.1582"
     y="214.916"
-    :type="ManualValveType.Flow"
+    :valve-type="ManualValveType.Flow"
     :orientation="ComponentOrientation.Right"
     v-bind="manualValves['1073-01']"
   >

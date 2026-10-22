@@ -20,7 +20,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.ManualValve
       <NoopTooltipProvider>
         <ManualValveInstance
           v-bind="props"
-          :type="ManualValveType.Switch"
+          :valve-type="ManualValveType.Switch"
         />
       </NoopTooltipProvider>
       <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>

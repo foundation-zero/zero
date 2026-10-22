@@ -25,14 +25,11 @@ const stateWithAlarms = computed(() => componentStateFromAlarms(state.value, val
 
 // A switch valve is either fully on A or fully on B, and only mixed during transient state.
 const flow = computed(() => Math.round(valve.value?.positionRel.value ?? 0));
-const forwardedProps = reactiveOmit(props, ["legs"]);
+const forwardedProps = reactiveOmit(props, ["legs", "registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.ThreeWaySwitchValve"
-    :data="forwardedProps"
-  >
+  <MimicTooltipTrigger :data="props">
     <ActuatedValve
       v-bind="forwardedProps"
       :state="stateWithAlarms"

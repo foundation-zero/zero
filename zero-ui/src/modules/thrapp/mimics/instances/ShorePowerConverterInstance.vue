@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ZiPlug3 } from "@/modules/common/components/icons";
+import { reactiveOmit } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
@@ -37,15 +38,13 @@ const props = withDefaults(
 const { t } = useI18n();
 const { getComponentState } = getMimicDataProvider();
 const state = getComponentState();
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.ShorePowerConverter"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <AssetBox
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="state"
     >
       <YardTag>{{ tooltip?.yardTag }}</YardTag>

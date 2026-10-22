@@ -2,11 +2,22 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { MANUAL_VALVE_WIDTH, ManualValveType } from "../../../components/manual-valve";
+import { getTooltipContexts } from "../../../data";
 import { ManualValveInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
-import { THRUSTERS_MIMIC_DATA } from "../data";
 
-const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
+const manualValves = getTooltipContexts(MimicComponentType.ManualValve, [
+  "1212-01",
+  "1212-02",
+  "1212-03",
+  "1212-04",
+  "1212-05",
+  "1212-06",
+  "1212-07",
+  "1084-01",
+  "1087-03",
+  "1087-08",
+]);
 </script>
 
 <template>
@@ -14,7 +25,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="610"
       y="152"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-01']"
     >
@@ -28,7 +39,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="732"
       y="152"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-02']"
     >
@@ -42,7 +53,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="630"
       y="522"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-03']"
     >
@@ -56,7 +67,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="755"
       y="522"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-04']"
     >
@@ -70,7 +81,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="630"
       y="613"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-05']"
     >
@@ -84,7 +95,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="755"
       y="613"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-06']"
     >
@@ -98,7 +109,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="214"
       y="299"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1212-07']"
     >
@@ -112,7 +123,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="1045"
       y="190.5"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1084-01']"
     >
@@ -126,7 +137,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="214"
       y="567"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1087-03']"
     >
@@ -140,7 +151,7 @@ const manualValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="1045"
       y="140.5"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1087-08']"
     >

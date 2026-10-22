@@ -2,18 +2,24 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { ACTUATED_VALVE_WIDTH, ValveLeg, ValvePortName } from "../../../components/actuated-valve";
+import { getTooltipContexts } from "../../../data";
 import { MixValveInstance, SwitchValveInstance } from "../../../instances";
 import FlowControlLabelInstance from "../../../instances/FlowControlLabelInstance.vue";
 import FlowControlValveInstance from "../../../instances/FlowControlValveInstance.vue";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
 import ThreeWaySwitchValveInstance from "../../../instances/ThreeWaySwitchValveInstance.vue";
 import ThreeWayValveLabelInstance from "../../../instances/ThreeWayValveLabelInstance.vue";
-import { THRUSTERS_MIMIC_DATA } from "../data";
 
-const switchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.SwitchValve];
-const flowControlValves = THRUSTERS_MIMIC_DATA[MimicComponentType.FlowControlValve];
-const mixValves = THRUSTERS_MIMIC_DATA[MimicComponentType.MixValve];
-const threeWaySwitchValves = THRUSTERS_MIMIC_DATA[MimicComponentType.ThreeWaySwitchValve];
+const switchValves = getTooltipContexts(MimicComponentType.SwitchValve, ["1066-03"]);
+const flowControlValves = getTooltipContexts(MimicComponentType.FlowControlValve, [
+  "1215",
+  "1064-02",
+]);
+const mixValves = getTooltipContexts(MimicComponentType.MixValve, ["1214-01", "1074"]);
+const threeWaySwitchValves = getTooltipContexts(MimicComponentType.ThreeWaySwitchValve, [
+  "1091-01",
+  "1091-02",
+]);
 </script>
 
 <template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ZiDcConverter } from "@/modules/common/components/icons";
+import { reactiveOmit } from "@vueuse/core";
 import { first, last } from "lodash";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
@@ -44,15 +45,13 @@ const { getComponentState } = getMimicDataProvider();
 const state = getComponentState();
 
 const modeKey = useDcMode(props.custom.group);
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.DcConverter"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <AssetBox
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="state"
     >
       <div class="flex items-center justify-between">

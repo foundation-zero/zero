@@ -25,10 +25,7 @@ const state = getComponentState();
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.ConnectingCircuit"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <HTMLWrapper v-bind="{ width, height, x, y }">
       <ConnectingCircuit
         v-bind="{

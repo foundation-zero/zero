@@ -8,7 +8,7 @@ import GridPattern from "@/modules/thrapp/mimics/modules/GridPattern.vue";
 import { GraphQLProvider, MockProvider } from "@/modules/thrapp/mimics/providers";
 import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import { ENV } from "@/settings";
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { MIMICS } from "../router/mimics";
@@ -20,13 +20,6 @@ const { currentRoute } = useRouter();
 const { t } = useI18n();
 
 const currentMimic = computed(() => MIMICS[currentRoute.value.params.module as keyof ThrsModules]);
-const data = ref(currentMimic.value?.data);
-
-watch(currentMimic, (mimic) => {
-  data.value = undefined;
-  nextTick(() => (data.value = mimic?.data));
-});
-
 const showDemoMode = computed(() => ENV.VITE_SHOW_DEMO_MODE === "1");
 </script>
 <template>
@@ -57,10 +50,7 @@ const showDemoMode = computed(() => ENV.VITE_SHOW_DEMO_MODE === "1");
         </LegendTrigger>
       </aside>
 
-      <MimicTooltipProvider
-        v-if="currentMimic && data"
-        :source="data"
-      >
+      <MimicTooltipProvider v-if="currentMimic">
         <component
           :is="currentMimic.component"
           class="z-1 mx-auto max-h-[calc(100svh-14em)] xl:my-auto portrait:my-auto"

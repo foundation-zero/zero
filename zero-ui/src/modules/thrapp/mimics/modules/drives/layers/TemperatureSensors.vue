@@ -1,11 +1,24 @@
 <script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { TEMPERATURE_SENSOR_WIDTH } from "../../../components/temperature-sensor";
+import { getTooltipContexts } from "../../../data";
 import { TemperatureSensorInstance } from "../../../instances";
 import TemperatureLabelInstance from "../../../instances/TemperatureLabelInstance.vue";
-import { DRIVES_TEMPERATURE_SENSOR_DATA } from "../data";
 
-const temperatureSensors = DRIVES_TEMPERATURE_SENSOR_DATA.TemperatureSensor;
+const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSensor, [
+  "1038-64",
+  "1038-32",
+  "1038-72",
+  "1038-61",
+  "1038-63",
+  "1038-62",
+  "1038-11",
+  "1038-16",
+  "1038-14",
+  "1038-59",
+  "1038-57",
+]);
 </script>
 
 <template>

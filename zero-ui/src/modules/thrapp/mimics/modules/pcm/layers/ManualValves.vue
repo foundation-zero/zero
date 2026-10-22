@@ -2,11 +2,19 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { MANUAL_VALVE_WIDTH, ManualValveType } from "../../../components/manual-valve";
+import { getTooltipContexts } from "../../../data";
 import { ManualValveInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
-import { PCM_MIMIC_DATA } from "../data";
 
-const manualValves = PCM_MIMIC_DATA[MimicComponentType.ManualValve];
+const manualValves = getTooltipContexts(MimicComponentType.ManualValve, [
+  "1168-23",
+  "1168-24",
+  "1168-25",
+  "1168-26",
+  "1067-09",
+  "1067-10",
+  "pcm:??????",
+]);
 </script>
 
 <template>
@@ -14,7 +22,7 @@ const manualValves = PCM_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="552"
       y="156"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1168-23']"
     >
@@ -27,7 +35,7 @@ const manualValves = PCM_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="552"
       y="366"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1168-24']"
     >
@@ -40,7 +48,7 @@ const manualValves = PCM_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="552"
       y="564"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1168-25']"
     >
@@ -53,7 +61,7 @@ const manualValves = PCM_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="552"
       y="760"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1168-26']"
     >
@@ -66,7 +74,7 @@ const manualValves = PCM_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="949"
       y="110"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1067-09']"
     >
@@ -79,7 +87,7 @@ const manualValves = PCM_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="949"
       y="169"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1067-10']"
     >
@@ -92,15 +100,15 @@ const manualValves = PCM_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="311"
       y="563"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Right"
-      v-bind="manualValves['??????']"
+      v-bind="manualValves['pcm:??????']"
     >
       <TagLabelInstance
         x="285"
         :target-width="MANUAL_VALVE_WIDTH"
         y="565"
-        :tag-id="manualValves['??????'].tooltip?.yardTag"
+        :tag-id="manualValves['pcm:??????'].tooltip?.yardTag"
       />
     </ManualValveInstance>
   </g>

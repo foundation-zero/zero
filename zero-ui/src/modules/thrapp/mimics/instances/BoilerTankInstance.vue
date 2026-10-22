@@ -38,10 +38,7 @@ const hotTime = computed(() => controller.value?.timeToHot.value);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.BoilerTank"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <BoilerTank
       :force-height="forceHeight"
       :width="width"
