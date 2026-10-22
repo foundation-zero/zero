@@ -276,5 +276,83 @@ export const PVT_STRING_DATA = toFieldsMap({
         "pvtTemperatureMainString13Return",
       ),
     }),
+    "owners-string-1": toPvtString("1", {
+      flow: getField(SensorComponentType.Flow, "pvt", "pvtFlowOwnersString1"),
+      supplyTemperature: getField(
+        SensorComponentType.Temperature,
+        "pvt",
+        "pvtTemperatureOwnersString1Supply",
+      ),
+      returnTemperature: getField(
+        SensorComponentType.Temperature,
+        "pvt",
+        "pvtTemperatureOwnersString1Return",
+      ),
+    }),
+    "owners-string-2": toPvtString("2", {
+      flow: getField(SensorComponentType.Flow, "pvt", "pvtFlowOwnersString2"),
+      supplyTemperature: getField(
+        SensorComponentType.Temperature,
+        "pvt",
+        "pvtTemperatureOwnersString2Supply",
+      ),
+      returnTemperature: getField(
+        SensorComponentType.Temperature,
+        "pvt",
+        "pvtTemperatureOwnersString2Return",
+      ),
+    }),
+    "owners-string-3": toPvtString("3", {
+      flow: getField(SensorComponentType.Flow, "pvt", "pvtFlowOwnersString3"),
+      supplyTemperature: getField(
+        SensorComponentType.Temperature,
+        "pvt",
+        "pvtTemperatureOwnersString3Supply",
+      ),
+      returnTemperature: getField(
+        SensorComponentType.Temperature,
+        "pvt",
+        "pvtTemperatureOwnersString3Return",
+      ),
+    }),
+    "owners-string-4": toPvtString("4", {
+      flow: getField(SensorComponentType.Flow, "pvt", "pvtFlowOwnersString4"),
+      supplyTemperature: getField(
+        SensorComponentType.Temperature,
+        "pvt",
+        "pvtTemperatureOwnersString4Supply",
+      ),
+      returnTemperature: getField(
+        SensorComponentType.Temperature,
+        "pvt",
+        "pvtTemperatureOwnersString4Return",
+      ),
+    }),
+    "owners-string-5": toPvtString("5", {
+      flow: getField(SensorComponentType.Flow, "pvt", "pvtFlowOwnersString5"),
+      supplyTemperature: getField(
+        SensorComponentType.Temperature,
+        "pvt",
+        "pvtTemperatureOwnersString5Supply",
+      ),
+      returnTemperature: getField(
+        SensorComponentType.Temperature,
+        "pvt",
+        "pvtTemperatureOwnersString5Return",
+      ),
+    }),
+    "owners-string-6": toPvtString("6", {
+      flow: getField(SensorComponentType.Flow, "pvt", "pvtFlowOwnersString6"),
+      supplyTemperature: getField(
+        SensorComponentType.Temperature,
+        "pvt",
+        "pvtTemperatureOwnersString6Supply",
+      ),
+      returnTemperature: getField(
+        SensorComponentType.Temperature,
+        "pvt",
+        "pvtTemperatureOwnersString6Return",
+      ),
+    }),
   },
 });

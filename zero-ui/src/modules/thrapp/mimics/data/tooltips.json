@@ -220,6 +220,18 @@
     "9005-31": "TemperatureSensor/9005-31",
     "9005-32": "TemperatureSensor/9005-32",
     "9005-33": "TemperatureSensor/9005-33",
+    "9005-34": "TemperatureSensor/9005-34",
+    "9005-35": "TemperatureSensor/9005-35",
+    "9005-36": "TemperatureSensor/9005-36",
+    "9005-37": "TemperatureSensor/9005-37",
+    "9005-38": "TemperatureSensor/9005-38",
+    "9005-39": "TemperatureSensor/9005-39",
+    "9005-40": "TemperatureSensor/9005-40",
+    "9005-41": "TemperatureSensor/9005-41",
+    "9005-42": "TemperatureSensor/9005-42",
+    "9005-43": "TemperatureSensor/9005-43",
+    "9005-44": "TemperatureSensor/9005-44",
+    "9005-45": "TemperatureSensor/9005-45",
     "9006-01": "FlowSensor/9006-01",
     "9006-03": "FlowSensor/9006-03",
     "9006-04": "FlowSensor/9006-04",
@@ -239,6 +251,12 @@
     "9009-04": "FlowSensor/9009-04",
     "9009-05": "FlowSensor/9009-05",
     "9009-06": "FlowSensor/9009-06",
+    "9009-07": "FlowSensor/9009-07",
+    "9009-08": "FlowSensor/9009-08",
+    "9009-09": "FlowSensor/9009-09",
+    "9009-10": "FlowSensor/9009-10",
+    "9009-11": "FlowSensor/9009-11",
+    "9009-12": "FlowSensor/9009-12",
     "adsorption": "ExchangeCircuit/dhw:adsorption",
     "dc:aft": "DcConverter/dc:aft",
     "dc:dcDhwExchanger": "HeatExchanger/1008",
@@ -364,6 +382,7 @@
     "drives:drivesTemperatureShorepowerReturn": "TemperatureSensor/1038-11",
     "drives:drivesTemperatureSupply": "TemperatureSensor/1038-14",
     "highTempLoop": "ExchangeCircuit/dhw:highTempLoop",
+    "owners": "ConnectingCircuit/pvt:owners",
     "pcm:adsorptionHtExchanger": "ExchangeCircuit/pcm:adsorption",
     "pcm:consumersAdsorptionExchanger": "HeatExchanger/1003",
     "pcm:consumersDhwExchanger": "HeatExchanger/1007",
@@ -434,6 +453,12 @@
     "pvt:pvtFlowMainString82": "FlowSensor/9006-12",
     "pvt:pvtFlowMainString9": "FlowSensor/9009-03",
     "pvt:pvtFlowOwnersRecovery": "FlowSensor/1057-03",
+    "pvt:pvtFlowOwnersString1": "FlowSensor/9009-07",
+    "pvt:pvtFlowOwnersString2": "FlowSensor/9009-08",
+    "pvt:pvtFlowOwnersString3": "FlowSensor/9009-09",
+    "pvt:pvtFlowOwnersString4": "FlowSensor/9009-10",
+    "pvt:pvtFlowOwnersString5": "FlowSensor/9009-11",
+    "pvt:pvtFlowOwnersString6": "FlowSensor/9009-12",
     "pvt:pvtMixExchanger": "MixValve/1047-02",
     "pvt:pvtMixMainAft": "MixValve/1044-02",
     "pvt:pvtMixMainFwd": "MixValve/1044-01",
@@ -448,6 +473,7 @@
     "pvt:pvtPvtMainAft": "Pvt/9002-01",
     "pvt:pvtPvtMainFwd": "Pvt/9001-01",
     "pvt:pvtPvtOwners": "Pvt/9001-03",
+    "pvt:pvtPvtOwnersHeat": "ConnectingCircuit/pvt:owners",
     "pvt:pvtPyranometerPs": "Pyranometer/9043",
     "pvt:pvtPyranometerSb": "Pyranometer/9044",
     "pvt:pvtSeawaterExchanger": "HeatExchanger/1002",
@@ -491,6 +517,18 @@
     "pvt:pvtTemperatureMainString9Return": "TemperatureSensor/9005-15",
     "pvt:pvtTemperatureMainString9Supply": "TemperatureSensor/9005-29",
     "pvt:pvtTemperatureOwnersReturn": "TemperatureSensor/1038-04",
+    "pvt:pvtTemperatureOwnersString1Return": "TemperatureSensor/9005-34",
+    "pvt:pvtTemperatureOwnersString1Supply": "TemperatureSensor/9005-40",
+    "pvt:pvtTemperatureOwnersString2Return": "TemperatureSensor/9005-35",
+    "pvt:pvtTemperatureOwnersString2Supply": "TemperatureSensor/9005-41",
+    "pvt:pvtTemperatureOwnersString3Return": "TemperatureSensor/9005-36",
+    "pvt:pvtTemperatureOwnersString3Supply": "TemperatureSensor/9005-42",
+    "pvt:pvtTemperatureOwnersString4Return": "TemperatureSensor/9005-37",
+    "pvt:pvtTemperatureOwnersString4Supply": "TemperatureSensor/9005-43",
+    "pvt:pvtTemperatureOwnersString5Return": "TemperatureSensor/9005-38",
+    "pvt:pvtTemperatureOwnersString5Supply": "TemperatureSensor/9005-44",
+    "pvt:pvtTemperatureOwnersString6Return": "TemperatureSensor/9005-39",
+    "pvt:pvtTemperatureOwnersString6Supply": "TemperatureSensor/9005-45",
     "pvt:pvtTemperatureOwnersSupply": "TemperatureSensor/1038-21",
     "pvt:pvtTemperatureSupply": "TemperatureSensor/1038-24",
     "shorepower": "ShorePowerConverter/drives:shorepower",
@@ -1067,6 +1105,25 @@
           "mqttTopic": ".../pvt-pvt-main-heat",
           "componentType": "PVT main loop",
           "yardTag": "pvt:main"
+        }
+      },
+      "pvt:owners": {
+        "custom": {
+          "circuitName": "PVT",
+          "modeModule": "pvt"
+        },
+        "source": [
+          "sensor:heatTransferDevice",
+          "pvt",
+          "pvtPvtOwnersHeat",
+          null
+        ],
+        "tooltip": {
+          "title": "Connecting circuit",
+          "yardTag": "9001-03",
+          "technicalName": "pvt-pvt-owners-heat",
+          "mqttTopic": ".../pvt-pvt-owners-heat",
+          "componentType": "PVT owners loop"
         }
       },
       "pvt:pcm": {
@@ -2772,6 +2829,96 @@
           "mqttTopic": ".../pvt-flow-main-string-13",
           "componentType": "Flow sensor"
         }
+      },
+      "9009-07": {
+        "source": [
+          "sensor:flow",
+          "pvt",
+          "pvtFlowOwnersString1",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "9009-07",
+          "technicalName": "pvt-flow-owners-string-1",
+          "mqttTopic": ".../pvt-flow-owners-string-1",
+          "componentType": "Flow sensor"
+        }
+      },
+      "9009-08": {
+        "source": [
+          "sensor:flow",
+          "pvt",
+          "pvtFlowOwnersString2",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "9009-08",
+          "technicalName": "pvt-flow-owners-string-2",
+          "mqttTopic": ".../pvt-flow-owners-string-2",
+          "componentType": "Flow sensor"
+        }
+      },
+      "9009-09": {
+        "source": [
+          "sensor:flow",
+          "pvt",
+          "pvtFlowOwnersString3",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "9009-09",
+          "technicalName": "pvt-flow-owners-string-3",
+          "mqttTopic": ".../pvt-flow-owners-string-3",
+          "componentType": "Flow sensor"
+        }
+      },
+      "9009-10": {
+        "source": [
+          "sensor:flow",
+          "pvt",
+          "pvtFlowOwnersString4",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "9009-10",
+          "technicalName": "pvt-flow-owners-string-4",
+          "mqttTopic": ".../pvt-flow-owners-string-4",
+          "componentType": "Flow sensor"
+        }
+      },
+      "9009-11": {
+        "source": [
+          "sensor:flow",
+          "pvt",
+          "pvtFlowOwnersString5",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "9009-11",
+          "technicalName": "pvt-flow-owners-string-5",
+          "mqttTopic": ".../pvt-flow-owners-string-5",
+          "componentType": "Flow sensor"
+        }
+      },
+      "9009-12": {
+        "source": [
+          "sensor:flow",
+          "pvt",
+          "pvtFlowOwnersString6",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "9009-12",
+          "technicalName": "pvt-flow-owners-string-6",
+          "mqttTopic": ".../pvt-flow-owners-string-6",
+          "componentType": "Flow sensor"
+        }
       }
     },
     "FreshwaterCircuit": {
@@ -4081,6 +4228,90 @@
           "componentType": "2 way valve DN 15"
         }
       },
+      "9007-13": {
+        "tooltip": {
+          "yardTag": "9007-13",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9007-14": {
+        "tooltip": {
+          "yardTag": "9007-14",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9007-15": {
+        "tooltip": {
+          "yardTag": "9007-15",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9007-16": {
+        "tooltip": {
+          "yardTag": "9007-16",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9007-17": {
+        "tooltip": {
+          "yardTag": "9007-17",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9007-18": {
+        "tooltip": {
+          "yardTag": "9007-18",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9007-19": {
+        "tooltip": {
+          "yardTag": "9007-19",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9007-20": {
+        "tooltip": {
+          "yardTag": "9007-20",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9007-21": {
+        "tooltip": {
+          "yardTag": "9007-21",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9007-22": {
+        "tooltip": {
+          "yardTag": "9007-22",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9007-23": {
+        "tooltip": {
+          "yardTag": "9007-23",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9007-24": {
+        "tooltip": {
+          "yardTag": "9007-24",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
       "9008-01": {
         "tooltip": {
           "yardTag": "9008-01",
@@ -4123,6 +4354,48 @@
           "componentType": "2 way valve DN 15"
         }
       },
+      "9008-07": {
+        "tooltip": {
+          "yardTag": "9008-07",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9008-08": {
+        "tooltip": {
+          "yardTag": "9008-08",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9008-09": {
+        "tooltip": {
+          "yardTag": "9008-09",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9008-10": {
+        "tooltip": {
+          "yardTag": "9008-10",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9008-11": {
+        "tooltip": {
+          "yardTag": "9008-11",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9008-12": {
+        "tooltip": {
+          "yardTag": "9008-12",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
       "9010-01": {
         "tooltip": {
           "yardTag": "9010-01",
@@ -4147,6 +4420,20 @@
       "9010-04": {
         "tooltip": {
           "yardTag": "9010-04",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9010-05": {
+        "tooltip": {
+          "yardTag": "9010-05",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "9010-06": {
+        "tooltip": {
+          "yardTag": "9010-06",
           "title": "Manual valve",
           "componentType": "2 way valve DN 15"
         }
@@ -6369,6 +6656,186 @@
           "title": "PVT string 9",
           "componentType": "PVT string",
           "yardTag": "pvt:aft-string-9"
+        }
+      },
+      "pvt:owners-string-1": {
+        "custom": {
+          "label": "1"
+        },
+        "sensors": {
+          "flow": [
+            "sensor:flow",
+            "pvt",
+            "pvtFlowOwnersString1",
+            null
+          ],
+          "supplyTemperature": [
+            "sensor:temperature",
+            "pvt",
+            "pvtTemperatureOwnersString1Supply",
+            null
+          ],
+          "returnTemperature": [
+            "sensor:temperature",
+            "pvt",
+            "pvtTemperatureOwnersString1Return",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "PVT string 1",
+          "componentType": "PVT string",
+          "yardTag": "pvt:owners-string-1"
+        }
+      },
+      "pvt:owners-string-2": {
+        "custom": {
+          "label": "2"
+        },
+        "sensors": {
+          "flow": [
+            "sensor:flow",
+            "pvt",
+            "pvtFlowOwnersString2",
+            null
+          ],
+          "supplyTemperature": [
+            "sensor:temperature",
+            "pvt",
+            "pvtTemperatureOwnersString2Supply",
+            null
+          ],
+          "returnTemperature": [
+            "sensor:temperature",
+            "pvt",
+            "pvtTemperatureOwnersString2Return",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "PVT string 2",
+          "componentType": "PVT string",
+          "yardTag": "pvt:owners-string-2"
+        }
+      },
+      "pvt:owners-string-3": {
+        "custom": {
+          "label": "3"
+        },
+        "sensors": {
+          "flow": [
+            "sensor:flow",
+            "pvt",
+            "pvtFlowOwnersString3",
+            null
+          ],
+          "supplyTemperature": [
+            "sensor:temperature",
+            "pvt",
+            "pvtTemperatureOwnersString3Supply",
+            null
+          ],
+          "returnTemperature": [
+            "sensor:temperature",
+            "pvt",
+            "pvtTemperatureOwnersString3Return",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "PVT string 3",
+          "componentType": "PVT string",
+          "yardTag": "pvt:owners-string-3"
+        }
+      },
+      "pvt:owners-string-4": {
+        "custom": {
+          "label": "4"
+        },
+        "sensors": {
+          "flow": [
+            "sensor:flow",
+            "pvt",
+            "pvtFlowOwnersString4",
+            null
+          ],
+          "supplyTemperature": [
+            "sensor:temperature",
+            "pvt",
+            "pvtTemperatureOwnersString4Supply",
+            null
+          ],
+          "returnTemperature": [
+            "sensor:temperature",
+            "pvt",
+            "pvtTemperatureOwnersString4Return",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "PVT string 4",
+          "componentType": "PVT string",
+          "yardTag": "pvt:owners-string-4"
+        }
+      },
+      "pvt:owners-string-5": {
+        "custom": {
+          "label": "5"
+        },
+        "sensors": {
+          "flow": [
+            "sensor:flow",
+            "pvt",
+            "pvtFlowOwnersString5",
+            null
+          ],
+          "supplyTemperature": [
+            "sensor:temperature",
+            "pvt",
+            "pvtTemperatureOwnersString5Supply",
+            null
+          ],
+          "returnTemperature": [
+            "sensor:temperature",
+            "pvt",
+            "pvtTemperatureOwnersString5Return",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "PVT string 5",
+          "componentType": "PVT string",
+          "yardTag": "pvt:owners-string-5"
+        }
+      },
+      "pvt:owners-string-6": {
+        "custom": {
+          "label": "6"
+        },
+        "sensors": {
+          "flow": [
+            "sensor:flow",
+            "pvt",
+            "pvtFlowOwnersString6",
+            null
+          ],
+          "supplyTemperature": [
+            "sensor:temperature",
+            "pvt",
+            "pvtTemperatureOwnersString6Supply",
+            null
+          ],
+          "returnTemperature": [
+            "sensor:temperature",
+            "pvt",
+            "pvtTemperatureOwnersString6Return",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "PVT string 6",
+          "componentType": "PVT string",
+          "yardTag": "pvt:owners-string-6"
         }
       }
     },
@@ -10370,6 +10837,186 @@
           "yardTag": "9005-33",
           "technicalName": "pvt-temperature-main-string-13-supply",
           "mqttTopic": ".../pvt-temperature-main-string-13-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "9005-34": {
+        "source": [
+          "sensor:temperature",
+          "pvt",
+          "pvtTemperatureOwnersString1Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "9005-34",
+          "technicalName": "pvt-temperature-owners-string-1-return",
+          "mqttTopic": ".../pvt-temperature-owners-string-1-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "9005-35": {
+        "source": [
+          "sensor:temperature",
+          "pvt",
+          "pvtTemperatureOwnersString2Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "9005-35",
+          "technicalName": "pvt-temperature-owners-string-2-return",
+          "mqttTopic": ".../pvt-temperature-owners-string-2-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "9005-36": {
+        "source": [
+          "sensor:temperature",
+          "pvt",
+          "pvtTemperatureOwnersString3Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "9005-36",
+          "technicalName": "pvt-temperature-owners-string-3-return",
+          "mqttTopic": ".../pvt-temperature-owners-string-3-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "9005-37": {
+        "source": [
+          "sensor:temperature",
+          "pvt",
+          "pvtTemperatureOwnersString4Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "9005-37",
+          "technicalName": "pvt-temperature-owners-string-4-return",
+          "mqttTopic": ".../pvt-temperature-owners-string-4-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "9005-38": {
+        "source": [
+          "sensor:temperature",
+          "pvt",
+          "pvtTemperatureOwnersString5Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "9005-38",
+          "technicalName": "pvt-temperature-owners-string-5-return",
+          "mqttTopic": ".../pvt-temperature-owners-string-5-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "9005-39": {
+        "source": [
+          "sensor:temperature",
+          "pvt",
+          "pvtTemperatureOwnersString6Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "9005-39",
+          "technicalName": "pvt-temperature-owners-string-6-return",
+          "mqttTopic": ".../pvt-temperature-owners-string-6-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "9005-40": {
+        "source": [
+          "sensor:temperature",
+          "pvt",
+          "pvtTemperatureOwnersString1Supply",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "9005-40",
+          "technicalName": "pvt-temperature-owners-string-1-supply",
+          "mqttTopic": ".../pvt-temperature-owners-string-1-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "9005-41": {
+        "source": [
+          "sensor:temperature",
+          "pvt",
+          "pvtTemperatureOwnersString2Supply",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "9005-41",
+          "technicalName": "pvt-temperature-owners-string-2-supply",
+          "mqttTopic": ".../pvt-temperature-owners-string-2-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "9005-42": {
+        "source": [
+          "sensor:temperature",
+          "pvt",
+          "pvtTemperatureOwnersString3Supply",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "9005-42",
+          "technicalName": "pvt-temperature-owners-string-3-supply",
+          "mqttTopic": ".../pvt-temperature-owners-string-3-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "9005-43": {
+        "source": [
+          "sensor:temperature",
+          "pvt",
+          "pvtTemperatureOwnersString4Supply",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "9005-43",
+          "technicalName": "pvt-temperature-owners-string-4-supply",
+          "mqttTopic": ".../pvt-temperature-owners-string-4-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "9005-44": {
+        "source": [
+          "sensor:temperature",
+          "pvt",
+          "pvtTemperatureOwnersString5Supply",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "9005-44",
+          "technicalName": "pvt-temperature-owners-string-5-supply",
+          "mqttTopic": ".../pvt-temperature-owners-string-5-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "9005-45": {
+        "source": [
+          "sensor:temperature",
+          "pvt",
+          "pvtTemperatureOwnersString6Supply",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "9005-45",
+          "technicalName": "pvt-temperature-owners-string-6-supply",
+          "mqttTopic": ".../pvt-temperature-owners-string-6-supply",
           "componentType": "Temperature sensor"
         }
       }

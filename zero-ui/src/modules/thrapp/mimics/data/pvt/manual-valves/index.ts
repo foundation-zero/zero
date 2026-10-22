@@ -2,6 +2,7 @@ import { MimicComponentType } from "@/modules/thrapp/types";
 import { toFieldsMap } from "../../../modules";
 import { toManualValve } from "../../helpers";
 import { PVT_AFT_MANUAL_VALVE_TAGS } from "./_aft";
+import { PVT_OWNERS_MANUAL_VALVE_TAGS } from "./_owners";
 
 const manualValveTags = [
   "1169-05",
@@ -26,6 +27,8 @@ const manualValveTags = [
 
 export const PVT_MANUAL_VALVE_DATA = toFieldsMap({
   [MimicComponentType.ManualValve]: Object.fromEntries(
-    [...manualValveTags, ...PVT_AFT_MANUAL_VALVE_TAGS].map((tag) => [tag, toManualValve(tag)]),
+    [...manualValveTags, ...PVT_AFT_MANUAL_VALVE_TAGS, ...PVT_OWNERS_MANUAL_VALVE_TAGS].map(
+      (tag) => [tag, toManualValve(tag)],
+    ),
   ),
 });

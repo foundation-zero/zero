@@ -22,6 +22,7 @@ const modules: Array<MimicKey> = [
   "thrusters",
   "pvt",
   "pvt-main",
+  "pvt-owners",
   "pcm",
   "dc",
   "drives",
