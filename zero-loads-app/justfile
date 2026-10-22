@@ -4,8 +4,11 @@ export_seed:
 check_seed:
     uv run loads check-seed
 
-test *args:
-    uv run pytest {{ args }}
+export_cheat_sheet:
+    uv run loads export-cheat-sheet
+
+test:
+    uv run pytest
 
 test_integration *args:
     uv run pytest --run=integration {{ args }}
