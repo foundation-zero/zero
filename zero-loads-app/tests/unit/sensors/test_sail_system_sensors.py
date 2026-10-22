@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Annotated
 
 from pydantic import Field
-from pytest import fixture
+from pytest import fixture, raises
 
 from loads.registry.registry import (
     _build_loads_model_variable_definitions,
@@ -13,6 +13,9 @@ from loads.sensors.sail_system import (
     Load,
     LoadAlarm,
     MaxLoad,
+    MaxPosition,
+    MaxPositionAlarm,
+    Position,
     RelativePosition,
 )
 from loads.sensors.units import VariableMeta
@@ -126,6 +129,7 @@ def test_build_alarm_defintitions(message):
     assert alarm.get_active(sensor) is True
     assert alarm.get_actual(sensor) == 15.0
     assert alarm.get_threshold(sensor) == 100.0
+    assert alarm.unit == "tonne"
 
 
 def test_technical_name_overrides_derived_variable_id(message):
@@ -151,3 +155,47 @@ def test_technical_name_overrides_derived_variable_id(message):
     assert alarm_definitions[0].id == "technical-name-sensor-max-load-alarm"
     assert alarm_definitions[0].actual_definition.id == "renamed-load"
     assert alarm_definitions[0].get_actual(sensor) == 15.0
+
+
+class PositionSensor(LoadsModel, ABC):
+    TOPIC = "test-topic"
+
+    relative_position: RelativePosition
+    position: Position
+    max_position_alarm: MaxPositionAlarm
+    max_position: MaxPosition
+
+
+def test_position_alarm_reports_the_position_in_mm():
+    sensor = PositionSensor.model_validate(
+        {
+            "st_position/i_Position_permille": 1000,
+            "st_position/i_Position_mm": 335,
+            "st_position/x_MaxLimitReached": True,
+            "st_position/i_MaxPosition": 330,
+        }
+    )
+    variable_definitions = _build_loads_model_variable_definitions(PositionSensor)
+    [alarm] = _build_sail_system_alarm_definitions(PositionSensor, variable_definitions)
+
+    assert alarm.actual_definition.id == "position-sensor-relative-position"
+    assert alarm.unit == "mm"
+    assert alarm.get_actual(sensor) == 335
+    assert alarm.get_threshold(sensor) == 330
+
+
+def test_alarm_value_from_requires_a_field_with_a_unit():
+    class MissingPositionSensor(LoadsModel, ABC):
+        TOPIC = "test-topic"
+
+        relative_position: RelativePosition
+        max_position_alarm: MaxPositionAlarm
+
+    variable_definitions = _build_loads_model_variable_definitions(
+        MissingPositionSensor
+    )
+
+    with raises(ValueError, match="takes its value from 'position'"):
+        _build_sail_system_alarm_definitions(
+            MissingPositionSensor, variable_definitions
+        )

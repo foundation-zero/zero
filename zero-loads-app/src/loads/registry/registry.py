@@ -31,6 +31,7 @@ class AlarmDefinition:
     get_active: Callable[[LoadsModel], bool | None]
     get_actual: Callable[[LoadsModel], float | None]
     get_threshold: Callable[[LoadsModel], float | None]
+    unit: str
     actual_definition: VariableDefinition
 
 
@@ -137,18 +138,47 @@ def _build_sail_system_alarm_definitions(
             threshold_field,
         )
 
-    return [
-        AlarmDefinition(
+    def _lookup_value_meta(alarm_field: str, value_field: str) -> VariableMeta:
+        value_field_info = model.model_fields.get(value_field)
+        value_meta = value_field_info and model.extract_variable_meta(
+            value_field, value_field_info.metadata
+        )
+        if not value_meta or not value_meta.unit:
+            raise ValueError(
+                f"Alarm field '{alarm_field}' in {model.__name__} takes its value from "
+                f"'{value_field}', which is not a field with a unit"
+            )
+        return value_meta
+
+    def _alarm_definition(
+        field: str,
+        field_info: FieldInfo,
+        variable_meta: VariableMeta,
+        actual_definition: VariableDefinition,
+    ) -> AlarmDefinition:
+        value_field = variable_meta.value_from
+        return AlarmDefinition(
             id=f"{function_id}-{hyphenize(f'{variable_meta.name}')}",
             name=model.field_display_name(field, field_info.metadata),
             topic=model.TOPIC,
             get_active=partial(
                 lambda field, model_instance: getattr(model_instance, field), field
             ),
-            get_actual=actual_definition.get_actual,
+            get_actual=partial(
+                lambda field, model_instance: getattr(model_instance, field),
+                value_field,
+            )
+            if value_field
+            else actual_definition.get_actual,
             get_threshold=_lookup_threshold_getter(field),
+            unit=cast(str, _lookup_value_meta(field, value_field).unit)
+            if value_field
+            else actual_definition.unit,
             actual_definition=actual_definition,
         )
+
+    return [
+        _alarm_definition(field, field_info, variable_meta, actual_definition)
         for field, field_info in model.model_fields.items()
         if (variable_meta := model.extract_variable_meta(field, field_info.metadata))
         and variable_meta.alarm_for
