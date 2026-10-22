@@ -30,6 +30,7 @@ export const enum MimicComponentType {
   LevelSensor = "LevelSensor",
   LevelSwitch = "LevelSwitch",
   Pvt = "Pvt",
+  PvtString = "PvtString",
   Thruster = "Thruster",
   PropulsionCooler = "PropulsionCooler",
   PropulsionDrive = "PropulsionDrive",

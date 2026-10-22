@@ -57,6 +57,7 @@ export const TOOLTIPS: Partial<Record<MimicComponentType, Component>> = {
     () => import("./ExchangeCircuitTooltip.vue"),
   ),
   [MimicComponentType.Pvt]: defineAsyncComponent(() => import("./PvtTooltip.vue")),
+  [MimicComponentType.PvtString]: defineAsyncComponent(() => import("./PvtStringTooltip.vue")),
   [MimicComponentType.DcConverter]: defineAsyncComponent(() => import("./DcConverterTooltip.vue")),
   [MimicComponentType.Pcm]: defineAsyncComponent(() => import("./PcmTooltip.vue")),
   [MimicComponentType.Thruster]: defineAsyncComponent(() => import("./ThrustersTooltip.vue")),

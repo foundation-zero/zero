@@ -128,6 +128,11 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.Pvt]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
   };
+  [MimicComponentType.PvtString]: {
+    flow: SensorComponentType.Flow;
+    supplyTemperature: SensorComponentType.Temperature;
+    returnTemperature: SensorComponentType.Temperature;
+  };
   [MimicComponentType.Thruster]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
     pcs: SensorComponentType.Pcs;
@@ -179,6 +184,7 @@ export type ControlFieldDefinitions = ControlFields<{
     valve: ControlComponentType.Valve;
   };
   [MimicComponentType.Pvt]: EmptyObject;
+  [MimicComponentType.PvtString]: EmptyObject;
   [MimicComponentType.Thruster]: EmptyObject;
 }>;
 
@@ -221,6 +227,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
   [MimicComponentType.Pvt]: EmptyObject;
+  [MimicComponentType.PvtString]: EmptyObject;
   [MimicComponentType.Thruster]: EmptyObject;
 }>;
 
@@ -265,6 +272,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
   [MimicComponentType.Pvt]: EmptyObject;
+  [MimicComponentType.PvtString]: EmptyObject;
   [MimicComponentType.Thruster]: EmptyObject;
 }>;
 
@@ -365,6 +373,9 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.Pvt]: {
     group: PvtGroup;
   };
+  [MimicComponentType.PvtString]: {
+    label: string;
+  };
   [MimicComponentType.Thruster]: {
     titleKey: "fwdTitle" | "aftTitle";
   };
@@ -400,6 +411,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.PropulsionCooler]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.ShorePowerConverter]: SensorComponentType.ShorePowerConverter;
   [MimicComponentType.Pvt]: SensorComponentType.Pvt;
+  [MimicComponentType.PvtString]: undefined;
   [MimicComponentType.Thruster]: SensorComponentType.Thruster;
   [MimicComponentType.FreshwaterCircuit]: undefined;
   [MimicComponentType.SeawaterCircuit]: SensorComponentType.Temperature;

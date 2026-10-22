@@ -29,6 +29,7 @@ export { default as PropulsionCoolerInstance } from "./PropulsionCoolerInstance.
 export { default as PropulsionDriveInstance } from "./PropulsionDriveInstance.vue";
 export { default as PumpInstance } from "./PumpInstance.vue";
 export { default as PvtInstance } from "./PvtInstance.vue";
+export { default as PvtStringInstance } from "./PvtStringInstance.vue";
 export { default as PyranometerInstance } from "./PyranometerInstance.vue";
 export { default as SeawaterCircuitInstance } from "./SeawaterCircuitInstance.vue";
 export { default as ShorePowerConverterInstance } from "./ShorePowerConverterInstance.vue";

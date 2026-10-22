@@ -3,6 +3,7 @@ import { MimicComponentType } from "../../../../types";
 import { toFieldsMap } from "../../../modules";
 import { getField } from "../../../providers";
 import { toFlowSensor } from "../../helpers";
+import { PVT_AFT_FLOW_SENSORS } from "./_aft";
 
 export const PVT_FLOW_SENSOR_DATA = toFieldsMap({
   [MimicComponentType.FlowSensor]: {
@@ -50,5 +51,6 @@ export const PVT_FLOW_SENSOR_DATA = toFieldsMap({
         temperature: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureOwnersReturn"),
       },
     }),
+    ...PVT_AFT_FLOW_SENSORS,
   },
 });

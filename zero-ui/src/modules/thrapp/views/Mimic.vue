@@ -6,12 +6,11 @@ import { MimicTooltipProvider } from "@/modules/thrapp/components/tooltip";
 import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltipProvider.vue";
 import GridPattern from "@/modules/thrapp/mimics/modules/GridPattern.vue";
 import { GraphQLProvider, MockProvider } from "@/modules/thrapp/mimics/providers";
-import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import { ENV } from "@/settings";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
-import { MIMICS } from "../router/mimics";
+import { MIMICS, MimicKey } from "../router/mimics";
 
 const demoMode = ref(false);
 const provider = computed(() => (demoMode.value ? MockProvider : GraphQLProvider));
@@ -19,7 +18,7 @@ const provider = computed(() => (demoMode.value ? MockProvider : GraphQLProvider
 const { currentRoute } = useRouter();
 const { t } = useI18n();
 
-const currentMimic = computed(() => MIMICS[currentRoute.value.params.module as keyof ThrsModules]);
+const currentMimic = computed(() => MIMICS[currentRoute.value.params.module as MimicKey]);
 const showDemoMode = computed(() => ENV.VITE_SHOW_DEMO_MODE === "1");
 </script>
 <template>

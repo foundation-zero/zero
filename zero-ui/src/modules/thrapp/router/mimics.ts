@@ -1,12 +1,16 @@
 import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import { Component, defineAsyncComponent } from "vue";
 
+export type MimicKey = keyof ThrsModules | "pvt-aft";
+
 export type MimicDefinition = {
   component: Component;
   legend?: Component;
+  /** The thrsim module backing this mimic, if it differs from the mimic key. */
+  module?: keyof ThrsModules;
 };
 
-export const MIMICS: Partial<Record<keyof ThrsModules, MimicDefinition>> = {
+export const MIMICS: Partial<Record<MimicKey, MimicDefinition>> = {
   dhw: {
     component: defineAsyncComponent(
       () => import("@/modules/thrapp/mimics/modules/dhw/DhwModule.vue"),
@@ -24,6 +28,13 @@ export const MIMICS: Partial<Record<keyof ThrsModules, MimicDefinition>> = {
       () => import("@/modules/thrapp/mimics/modules/pvt/PvtModule.vue"),
     ),
     legend: defineAsyncComponent(() => import("@/modules/thrapp/components/legends/DhwLegend.vue")),
+  },
+  "pvt-aft": {
+    component: defineAsyncComponent(
+      () => import("@/modules/thrapp/mimics/modules/pvt-aft/PvtAftModule.vue"),
+    ),
+    legend: defineAsyncComponent(() => import("@/modules/thrapp/components/legends/DhwLegend.vue")),
+    module: "pvt",
   },
   pcm: {
     component: defineAsyncComponent(
@@ -44,3 +55,6 @@ export const MIMICS: Partial<Record<keyof ThrsModules, MimicDefinition>> = {
     legend: defineAsyncComponent(() => import("@/modules/thrapp/components/legends/DhwLegend.vue")),
   },
 };
+
+export const toThrsModule = (key: string): keyof ThrsModules =>
+  MIMICS[key as MimicKey]?.module ?? (key as keyof ThrsModules);
