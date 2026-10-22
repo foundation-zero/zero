@@ -1,3 +1,4 @@
 .storage
 .cloud
 tools/sail-system-mqtt/comparison/
+src/cheat_sheet/out/

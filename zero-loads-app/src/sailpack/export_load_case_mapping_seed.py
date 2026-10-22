@@ -37,6 +37,10 @@ def _awa_contains(awa: float, range_id: str) -> bool:
     return lower <= awa < upper
 
 
+def awa_range_id(awa: float) -> str:
+    return next(range_id for range_id in AWA_RANGES if _awa_contains(awa, range_id))
+
+
 @dataclass(frozen=True)
 class AmbiguousLoadCases:
     """Load cases in the same sail set, AWA range and AWS range; the first ID is mapped."""
@@ -60,12 +64,9 @@ def find_ambiguous_load_cases(
 ) -> list[AmbiguousLoadCases]:
     by_range: dict[tuple[tuple[str, ...], str, int], list[str]] = defaultdict(list)
     for lc in load_case_records:
-        awa_range_id = next(
-            range_id for range_id in AWA_RANGES if _awa_contains(lc["awa"], range_id)
-        )
         key = (
             tuple(sorted(lc["sail_abbreviations"])),
-            awa_range_id,
+            awa_range_id(lc["awa"]),
             _aws_range_index(lc["aws"]),
         )
         by_range[key].append(lc["id"])

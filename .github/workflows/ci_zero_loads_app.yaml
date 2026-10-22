@@ -6,6 +6,7 @@ on:
       - data/**
       - zero-generator/**
       - hasura/seeds/zero/loads.sql
+      - zero-ui/src/modules/loads/lib/consts.dashboards.ts
       - .github/workflows/ci_zero_loads_app.yaml
   release:
     types: [released]
@@ -17,6 +18,7 @@ on:
       - data/**
       - zero-generator/**
       - hasura/seeds/zero/loads.sql
+      - zero-ui/src/modules/loads/lib/consts.dashboards.ts
       - .github/workflows/ci_zero_loads_app.yaml
 
 env:

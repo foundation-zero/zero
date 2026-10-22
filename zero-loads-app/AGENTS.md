@@ -24,6 +24,7 @@ directly; there are no CSV copies in the repo.
 ```bash
 just export_seed                          # download, check and regenerate the seeds and the conflicts CSV
 just check_seed                           # download, check and compare with the committed seeds; also in CI
+just export_cheat_sheet                   # download and write the crew cheat sheet to the git-ignored src/cheat_sheet/out/
 ```
 
 Both first check the sheet: technical names against the registry, numeric and ordered thresholds,
