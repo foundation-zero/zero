@@ -118,6 +118,11 @@
           "description": "Attempts to deliver a notification before giving up on it.",
           "minimum": 1
         },
+        "reminderDelaysSeconds": {
+          "type": "array",
+          "description": "Delays between reminders of an unacknowledged alarm; the last one repeats. Empty disables reminders.",
+          "items": { "type": "number", "exclusiveMinimum": 0 }
+        },
         "dryRun": {
           "type": "boolean",
           "description": "Log notifications instead of sending them."

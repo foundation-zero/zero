@@ -14,6 +14,15 @@ seconds and sends each new alert that passes the filters to ntfy.
 - On startup the existing alerts of the day are skipped, only alerts raised afterwards are forwarded.
 - A failed poll is retried at the next interval, a failed notification `--attempts` times.
 
+### Reminders
+
+An alarm that nobody acknowledges is notified again, with growing urgency: 20 seconds after
+the alert, then after 10, 5 and 3 more seconds, and every second from then on. Only an `Acknowledged`
+update of the same alarm (matched on system, tag and location) stops the reminders; an alarm
+that went `Idle` unacknowledged keeps pinging, and a new `Activated` restarts the progression. Reminders reuse the alert's sequence ID, so they update the notification
+instead of stacking. They are kept in memory, so a restart forgets them. Set
+`--reminder-delays-seconds '[]'` to turn them off.
+
 ### Mirrored databases
 
 With several `--mysql-hosts` the service treats them as mirrors of one database, which
@@ -79,6 +88,7 @@ Settings are read from CLI flags, environment variables or a `.env` file.
 | `--min-priority` | `MIN_PRIORITY` | `Warning` |
 | `--updates` | `UPDATES` | `["Activated"]` |
 | `--attempts` | `ATTEMPTS` | `3` |
+| `--reminder-delays-seconds` | `REMINDER_DELAYS_SECONDS` | `[20, 10, 5, 3, 1]`, last repeats |
 | `--dry-run` | `DRY_RUN` | `false` |
 | `--poll-timeout-seconds` | `POLL_TIMEOUT_SECONDS` | `10` |
 | `--liveness-path` | `LIVENESS_PATH` | none |

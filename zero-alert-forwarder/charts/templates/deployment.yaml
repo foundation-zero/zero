@@ -81,6 +81,8 @@ spec:
               value: {{ .Values.forwarding.updates | toJson | quote }}
             - name: ATTEMPTS
               value: {{ .Values.forwarding.attempts | quote }}
+            - name: REMINDER_DELAYS_SECONDS
+              value: {{ .Values.forwarding.reminderDelaysSeconds | toJson | quote }}
             - name: DRY_RUN
               value: {{ .Values.forwarding.dryRun | quote }}
             - name: POLL_TIMEOUT_SECONDS

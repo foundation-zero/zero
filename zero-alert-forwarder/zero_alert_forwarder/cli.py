@@ -46,6 +46,7 @@ class ZeroAlertForwarder(BaseSettings, cli_kebab_case=True):
     min_priority: AlertPriority = AlertPriority.WARNING
     updates: set[AlertUpdate] = {AlertUpdate.ACTIVATED}
     attempts: Annotated[int, Field(ge=1)] = 3
+    reminder_delays_seconds: list[Annotated[float, Field(gt=0)]] = [20, 10, 5, 3, 1]
     dry_run: bool = False
     poll_timeout_seconds: Annotated[float, Field(gt=0)] = 10
     liveness_path: Path | None = None
@@ -89,5 +90,6 @@ class ZeroAlertForwarder(BaseSettings, cli_kebab_case=True):
                 self.updates,
                 self.attempts,
                 interval,
+                [timedelta(seconds=delay) for delay in self.reminder_delays_seconds],
             )
             await forwarder.run()

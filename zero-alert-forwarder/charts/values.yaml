@@ -28,6 +28,8 @@ forwarding:
   updates:
     - Activated
   attempts: 3
+  # Re-notify while an alarm is not acknowledged: after 20s, then 10s, 5s, 3s, and every 1s after.
+  reminderDelaysSeconds: [20, 10, 5, 3, 1]
   # Bounds one poll of one mirror, so a stalled database does not block the other.
   pollTimeoutSeconds: 10
   dryRun: false
