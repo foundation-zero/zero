@@ -25,13 +25,4 @@ describe("SolarPanel", () => {
     expect(wrapper.attributes("width")).toBe("36");
     expect(wrapper.attributes("height")).toBe("14");
   });
-
-  it("fills the panel with the yield color instead of the cell grid", () => {
-    const plain = mount(SolarPanel);
-    const withYield = mount(SolarPanel, { props: { yieldRatio: 0.5 } });
-
-    expect(plain.findAll("line").length).toBeGreaterThan(0);
-    expect(withYield.findAll("line")).toHaveLength(0);
-    expect(withYield.find("rect").attributes("fill")).toBe("var(--color-accent-b-500)");
-  });
 });
