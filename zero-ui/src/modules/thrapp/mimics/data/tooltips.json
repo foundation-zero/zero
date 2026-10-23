@@ -1145,24 +1145,12 @@
             "dc",
             "dcAftHeat",
             null
-          ],
-          "power": [
-            "sensor:pvt",
-            "dc",
-            "placeholder",
-            null
-          ],
-          "temperature": [
-            "sensor:temperature",
-            "dc",
-            "placeholder",
-            null
           ]
         },
         "source": [
-          "sensor:heatTransferDevice",
+          "sensor:brightloopGroup",
           "dc",
-          "dcAftHeat",
+          "dcAftBrightloops",
           null
         ],
         "tooltip": {
@@ -1197,24 +1185,12 @@
             "dc",
             "dcFwdHeat",
             null
-          ],
-          "power": [
-            "sensor:pvt",
-            "dc",
-            "placeholder",
-            null
-          ],
-          "temperature": [
-            "sensor:temperature",
-            "dc",
-            "placeholder",
-            null
           ]
         },
         "source": [
-          "sensor:heatTransferDevice",
+          "sensor:brightloopGroup",
           "dc",
-          "dcFwdHeat",
+          "dcFwdBrightloops",
           null
         ],
         "tooltip": {
@@ -1249,24 +1225,12 @@
             "dc",
             "dcUgridHeat",
             null
-          ],
-          "power": [
-            "sensor:pvt",
-            "dc",
-            "placeholder",
-            null
-          ],
-          "temperature": [
-            "sensor:temperature",
-            "dc",
-            "placeholder",
-            null
           ]
         },
         "source": [
-          "sensor:heatTransferDevice",
+          "sensor:ugridGroup",
           "dc",
-          "dcUgridHeat",
+          "dcUgrids",
           null
         ],
         "tooltip": {
@@ -5172,18 +5136,6 @@
             "drives",
             "drivesPropdriveAft1Heat",
             null
-          ],
-          "power": [
-            "sensor:pvt",
-            "drives",
-            "placeholder",
-            null
-          ],
-          "temperature": [
-            "sensor:temperature",
-            "drives",
-            "placeholder",
-            null
           ]
         },
         "source": [
@@ -5205,18 +5157,6 @@
             "sensor:heatTransferDevice",
             "drives",
             "drivesPropdriveAft2Heat",
-            null
-          ],
-          "power": [
-            "sensor:pvt",
-            "drives",
-            "placeholder",
-            null
-          ],
-          "temperature": [
-            "sensor:temperature",
-            "drives",
-            "placeholder",
             null
           ]
         },
@@ -5240,18 +5180,6 @@
             "drives",
             "drivesPropdriveFwd1Heat",
             null
-          ],
-          "power": [
-            "sensor:pvt",
-            "drives",
-            "placeholder",
-            null
-          ],
-          "temperature": [
-            "sensor:temperature",
-            "drives",
-            "placeholder",
-            null
           ]
         },
         "source": [
@@ -5273,18 +5201,6 @@
             "sensor:heatTransferDevice",
             "drives",
             "drivesPropdriveFwd2Heat",
-            null
-          ],
-          "power": [
-            "sensor:pvt",
-            "drives",
-            "placeholder",
-            null
-          ],
-          "temperature": [
-            "sensor:temperature",
-            "drives",
-            "placeholder",
             null
           ]
         },
@@ -6557,7 +6473,32 @@
     "ShorePowerConverter": {
       "drives:shorepower": {
         "custom": {
-          "converters": []
+          "converters": [
+            [
+              "sensor:shorePowerConverter",
+              "drives",
+              "drivesShorepower1a",
+              null
+            ],
+            [
+              "sensor:shorePowerConverter",
+              "drives",
+              "drivesShorepower1b",
+              null
+            ],
+            [
+              "sensor:shorePowerConverter",
+              "drives",
+              "drivesShorepower2a",
+              null
+            ],
+            [
+              "sensor:shorePowerConverter",
+              "drives",
+              "drivesShorepower2b",
+              null
+            ]
+          ]
         },
         "sensors": {
           "heatTransfer": [
@@ -6565,22 +6506,10 @@
             "drives",
             "drivesShorepowerHeat",
             null
-          ],
-          "power": [
-            "sensor:pvt",
-            "drives",
-            "placeholder",
-            null
-          ],
-          "temperature": [
-            "sensor:temperature",
-            "drives",
-            "placeholder",
-            null
           ]
         },
         "source": [
-          "sensor:shorePowerConverter",
+          "sensor:shorePowerGroup",
           "drives",
           "drivesShorepower",
           null
