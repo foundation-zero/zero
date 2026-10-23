@@ -398,7 +398,14 @@
       "showLegend": "Show legend",
       "legend": "Legend",
       "on": "On",
-      "off": "Off"
+      "off": "Off",
+      "zoom": {
+        "controls": "Zoom controls",
+        "in": "Zoom in",
+        "actualSize": "Actual size (1:1)",
+        "fit": "Fit to screen",
+        "out": "Zoom out"
+      }
     },
     "tooltips": {
       "titles": {

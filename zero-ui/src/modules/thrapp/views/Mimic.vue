@@ -6,6 +6,7 @@ import {
   LegendTrigger,
   MIMIC_LEGEND_MAP,
 } from "@/modules/thrapp/components/legends";
+import { MimicViewport } from "@/modules/thrapp/components/mimic-viewport";
 import { MimicTooltipProvider } from "@/modules/thrapp/components/tooltip";
 import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltipProvider.vue";
 import GridPattern from "@/modules/thrapp/mimics/modules/GridPattern.vue";
@@ -25,7 +26,6 @@ const { t } = useI18n();
 const currentModule = computed(() => currentRoute.value.params.module as MimicKey);
 const currentMimic = computed(() => MIMICS[currentModule.value]);
 const currentLegend = computed(() => MIMIC_LEGEND_MAP[currentModule.value]);
-
 const showDemoMode = computed(() => ENV.VITE_SHOW_DEMO_MODE === "1");
 </script>
 <template>
@@ -54,10 +54,13 @@ const showDemoMode = computed(() => ENV.VITE_SHOW_DEMO_MODE === "1");
       </aside>
 
       <MimicTooltipProvider v-if="currentMimic">
-        <component
-          :is="currentMimic.component"
-          class="z-1 mx-auto max-h-[calc(100svh-14em)] xl:my-auto portrait:my-auto"
-        />
+        <!-- Keyed by module, so switching mimics starts again at fit-to-screen. -->
+        <MimicViewport
+          :key="currentModule"
+          class="z-1 min-h-0 min-w-0 flex-1"
+        >
+          <component :is="currentMimic.component" />
+        </MimicViewport>
       </MimicTooltipProvider>
     </section>
   </component>
