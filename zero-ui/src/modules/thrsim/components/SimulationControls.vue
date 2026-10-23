@@ -8,7 +8,7 @@ import {
   ExtractAllValues,
   SimulationComponentType,
   SimulationDefinitions,
-} from "@/modules/thrsim/types/index.ts";
+} from "@/modules/thrsim/types";
 import { type Component, computed, toRefs } from "vue";
 import { useThrsHistory } from "../stores/history.ts";
 import BoundaryControl from "./controls/BoundaryControl.vue";

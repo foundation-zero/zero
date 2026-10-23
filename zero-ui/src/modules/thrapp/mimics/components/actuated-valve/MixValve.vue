@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { getMimicComponentContext, MimicComponentState } from "../index.ts";
-import { ACTUATED_VALVE_MARKER_COLOR, ACTUATED_VALVE_MARKER_TEXT_COLOR } from "./index.ts";
+import { ACTUATED_VALVE_MARKER_COLOR, ACTUATED_VALVE_MARKER_TEXT_COLOR } from ".";
+import { getMimicComponentContext, MimicComponentState } from "..";
 
 const { stateColor, state } = getMimicComponentContext();
 </script>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MimicComponentType } from "@/modules/thrapp/types/index.ts";
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { getTooltipContexts } from "../../../data";
 import BoilerTankInstance from "../../../instances/BoilerTankInstance.vue";
 

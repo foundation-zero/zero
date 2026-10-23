@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/number-field";
 import NumberFieldPrefix from "@/components/ui/number-field/NumberFieldPrefix.vue";
 import { cn } from "@/modules/common/lib/utils.ts";
+import { FieldEditor, injectMultiLineEditor, NumberEditorProps } from ".";
 import { injectValueForm } from "../providers/forms.ts";
 import EditableField from "./EditableField.vue";
-import { FieldEditor, injectMultiLineEditor, NumberEditorProps } from "./index.ts";
 
 const props = withDefaults(defineProps<NumberEditorProps>(), {});
 

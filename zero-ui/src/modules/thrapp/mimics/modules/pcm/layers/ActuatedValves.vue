@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
-import { ComponentOrientation } from "../../../components/index.ts";
+import { ComponentOrientation } from "../../../components";
 import { getTooltipContexts } from "../../../data";
+import { FlowControlValveInstance } from "../../../instances";
 import FlowControlLabelInstance from "../../../instances/FlowControlLabelInstance.vue";
-import { FlowControlValveInstance } from "../../../instances/index.ts";
 
 const valves = getTooltipContexts(MimicComponentType.FlowControlValve, [
   "1064-04",

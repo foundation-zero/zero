@@ -1,7 +1,7 @@
 import { tScoped } from "@/modules/common/lib/utils.ts";
 import { Component, defineAsyncComponent } from "vue";
 import { useI18n } from "vue-i18n";
-import { MimicComponentType } from "../../types/index.ts";
+import { MimicComponentType } from "../../types";
 
 export const TOOLTIPS: Partial<Record<MimicComponentType, Component>> = {
   [MimicComponentType.ExpansionValve]: defineAsyncComponent(

@@ -2,10 +2,10 @@
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/modules/common/lib/utils.ts";
 import { computed, toRef } from "vue";
+import { FieldEditorProps } from ".";
 import { VALVE_OPEN_THRESHOLD } from "../../utils/consts.ts";
-import { getFieldValue } from "../providers/index.ts";
+import { getFieldValue } from "../providers";
 import EditableField from "./EditableField.vue";
-import { FieldEditorProps } from "./index.ts";
 
 const props = defineProps<FieldEditorProps<number>>();
 

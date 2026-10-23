@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ratio } from "@/modules/thrsim/types/index.ts";
+import { Ratio } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import {
   createThreeWayValveFlows,
@@ -8,7 +8,7 @@ import {
   ThreeWayValveLegs,
   VALVE_LEGS,
   ValveLeg,
-} from "./index.ts";
+} from ".";
 import ValveLegLabel from "./ValveLegLabel.vue";
 import ValvePortBottom from "./ValvePortBottom.vue";
 import ValvePortLeft from "./ValvePortLeft.vue";

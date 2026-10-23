@@ -5,7 +5,7 @@ import { MimicComponentInstanceProps } from ".";
 import { HeatingState } from "../components";
 import { HeatExchangerPortOrientation } from "../components/heat-exchanger";
 
-import { SensorComponentType } from "@/modules/thrsim/types/index.ts";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import HeatExchanger from "../components/heat-exchanger/HeatExchanger.vue";
