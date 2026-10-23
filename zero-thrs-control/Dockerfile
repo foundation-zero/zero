@@ -21,7 +21,7 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-editable
 
-FROM python:3.13-slim-trixie AS prod-base
+FROM python:3.15-slim-trixie AS prod-base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
   PYTHONUNBUFFERED=1

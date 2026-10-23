@@ -14,7 +14,7 @@ WORKDIR /app/zero-hull-temperature
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev --no-editable
 
-FROM python:3.13-slim-trixie AS runtime
+FROM python:3.15-slim-trixie AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
   PYTHONUNBUFFERED=1
