@@ -19,11 +19,11 @@ const t = tScoped("thrapp.legends.threeWaySwitchValve");
     <LegendItemPreview>
       <ActuatedValve>
         <SwitchValve />
-        <ThreeWayValve :flow="0" />
+        <ThreeWayValve :flow="1" />
       </ActuatedValve>
       <ActuatedValve>
         <SwitchValve />
-        <ThreeWayValve :flow="1" />
+        <ThreeWayValve :flow="0" />
       </ActuatedValve>
       <ActuatedValve>
         <SwitchValve />
