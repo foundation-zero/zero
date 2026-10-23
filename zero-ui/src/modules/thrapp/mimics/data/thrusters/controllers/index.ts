@@ -21,7 +21,7 @@ export const warmupMixController: PIDController<SensorComponentType.Temperature>
     "thrusters",
     "thrustersWarmupMixController",
   ),
-  setpoint: getField(ParametersType.Temperature, "thrusters", "warmupTemperature"),
+  target: getField(ParametersType.Temperature, "thrusters", "warmupTemperature"),
 };
 
 export const aftRecoveryTemperatureController: PIDController<SensorComponentType.Temperature> = {
@@ -31,7 +31,7 @@ export const aftRecoveryTemperatureController: PIDController<SensorComponentType
     "thrusters",
     "thrustersAftRecoveryTemperatureController",
   ),
-  setpoint: getField(ParametersType.Temperature, "thrusters", "recoveryTemperature"),
+  target: getField(ParametersType.Temperature, "thrusters", "recoveryTemperature"),
 };
 
 export const fwdRecoveryTemperatureController: PIDController<SensorComponentType.Temperature> = {
@@ -41,7 +41,7 @@ export const fwdRecoveryTemperatureController: PIDController<SensorComponentType
     "thrusters",
     "thrustersFwdRecoveryTemperatureController",
   ),
-  setpoint: getField(ParametersType.Temperature, "thrusters", "recoveryTemperature"),
+  target: getField(ParametersType.Temperature, "thrusters", "recoveryTemperature"),
 };
 
 export const pumpController: PIDController<SensorComponentType.Flow> = {

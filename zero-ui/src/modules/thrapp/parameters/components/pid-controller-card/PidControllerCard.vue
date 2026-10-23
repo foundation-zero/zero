@@ -6,8 +6,10 @@ import {
   TooltipListItemTitle,
 } from "@/modules/thrapp/components/tooltip-list";
 import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltipProvider.vue";
+import { SensorGraph } from "@/modules/thrapp/mimics/components/sensor-graph";
 import ControllerStateValue from "@/modules/thrapp/mimics/providers/ControllerStateValue.vue";
 import { FieldRenderer } from "@/modules/thrapp/mimics/renderers";
+import { kebabCase } from "lodash";
 import { PidControllerTuning } from "../..";
 import * as Partials from "../../../mimics/tooltips/partials";
 import * as Parameters from "../../components/module-parameters";
@@ -43,6 +45,12 @@ const props = defineProps<PidControllerTuning>();
 
       <TooltipListItemTitle>{{ t("configuration") }}</TooltipListItemTitle>
       <PidTuningTable v-bind="props" />
+      <TooltipListItemTitle>{{ t("graph") }}</TooltipListItemTitle>
+      <SensorGraph
+        :device="kebabCase(props.controller[2])"
+        type="pid_controllers"
+        :field="['measurement', 'target', 'error', 'output']"
+      />
     </Parameters.Card>
   </NoopTooltipProvider>
 </template>

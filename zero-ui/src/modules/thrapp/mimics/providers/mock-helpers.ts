@@ -355,7 +355,7 @@ export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefini
     }));
   },
   [ControllerStateComponentType.PIDController]: () => {
-    const setpoint = useRandomizedNumber(0, 100);
+    const target = useRandomizedNumber(0, 100);
     const measurement = useRandomizedNumber(0, 100);
     const output = useRandomizedNumber(0, 100);
     const error = useRandomizedNumber(-50, 50);
@@ -364,7 +364,7 @@ export const CONTROLLER_VALUE_VALUES_FACTORY: ValueFactory<ControllerStateDefini
     const components = computed<PID>(() => [1, 2, 3]);
 
     return computed(() => ({
-      setpoint: stamp(setpoint),
+      target: stamp(target),
       measurement: stamp(measurement),
       output: stamp(output),
       error: stamp(error),
