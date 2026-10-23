@@ -13,6 +13,7 @@ const circuits = getTooltipContexts(MimicComponentType.ConnectingCircuit, ["pvt:
       y="232.5"
       width="196"
       height="240"
+      inverted
       v-bind="circuits['pvt:main']"
     />
   </g>
