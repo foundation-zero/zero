@@ -44,48 +44,36 @@ const yieldColor = computed(() =>
   >
     <g :transform="transform">
       <rect
-        v-if="yieldColor"
         x="0.25"
         y="0.25"
         :width="dimensions.width - 0.5"
         :height="dimensions.height - 0.5"
         :fill="yieldColor"
-        class="stroke-black/25"
+        class="stroke-black/25 transition-colors duration-5000"
         stroke-width="0.5"
       />
+
       <g
-        v-else
-        opacity="0.5"
+        class="stroke-border-subtle"
+        stroke-width="0.5"
+        opacity="0.3"
       >
-        <rect
-          x="0.25"
-          y="0.25"
-          :width="dimensions.width - 0.5"
-          :height="dimensions.height - 0.5"
-          class="fill-muted stroke-attention"
-          stroke-width="0.5"
+        <line
+          v-for="column in grid.columns"
+          :key="`c${column}`"
+          :x1="column"
+          :x2="column"
+          y1="0.5"
+          :y2="dimensions.height - 0.5"
         />
-        <g
-          class="stroke-border-subtle"
-          stroke-width="0.5"
-        >
-          <line
-            v-for="column in grid.columns"
-            :key="`c${column}`"
-            :x1="column"
-            :x2="column"
-            y1="0.5"
-            :y2="dimensions.height - 0.5"
-          />
-          <line
-            v-for="row in grid.rows"
-            :key="`r${row}`"
-            x1="0.5"
-            :x2="dimensions.width - 0.5"
-            :y1="row"
-            :y2="row"
-          />
-        </g>
+        <line
+          v-for="row in grid.rows"
+          :key="`r${row}`"
+          x1="0.5"
+          :x2="dimensions.width - 0.5"
+          :y1="row"
+          :y2="row"
+        />
       </g>
     </g>
   </svg>

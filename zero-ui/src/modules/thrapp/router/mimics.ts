@@ -37,8 +37,6 @@ export const MIMICS: Partial<Record<MimicKey, MimicDefinition>> = {
     component: defineAsyncComponent(
       () => import("@/modules/thrapp/mimics/modules/pvt-main-heat/PvtMainHeatModule.vue"),
     ),
-    module: "pvt",
-    legend: defineAsyncComponent(() => import("@/modules/thrapp/components/legends/DhwLegend.vue")),
   },
   pcm: {
     component: defineAsyncComponent(
