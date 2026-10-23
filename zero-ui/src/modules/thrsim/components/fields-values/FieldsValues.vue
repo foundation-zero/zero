@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useLocalStorage } from "@vueuse/core";
 import { computed } from "vue";
+import { FieldSeries, provideContext } from ".";
 import { ComponentRecord, ThrsModules } from "../../lib/consts";
 import { useThrsHistory } from "../../stores/history.ts";
 import FieldValues from "./FieldValues.vue";
-import { FieldSeries, provideContext } from "./index.ts";
 
 const props = defineProps<{
   module: keyof ThrsModules | "simulation";

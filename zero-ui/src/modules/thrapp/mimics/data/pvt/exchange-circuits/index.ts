@@ -24,5 +24,16 @@ export const PVT_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
       },
       { componentType: "PCM loop" },
     ),
+    // Both main bimini sections (AFT strings 1-6, FWD strings 7-13) feed this circuit.
+    main: toConnectingCircuit(
+      {
+        custom: {
+          circuitName: "PVT",
+          modeModule: "pvt",
+        },
+        source: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtPvtMainHeat"),
+      },
+      { componentType: "PVT main loop" },
+    ),
   },
 });

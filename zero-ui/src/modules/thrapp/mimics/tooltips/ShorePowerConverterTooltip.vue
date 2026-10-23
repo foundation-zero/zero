@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { TooltipList, TooltipListHeader } from "../../components/tooltip-list/index.ts";
+import { useTranslations } from ".";
 import {
   MimicTooltip,
   NoopTooltipProvider,
   TooltipComponentContext,
-} from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { SensorGraph } from "../components/sensor-graph/index.ts";
-import { ShorePowerConverterInstance } from "../instances/index.ts";
-import { SensorValue } from "../providers/index.ts";
-import { FieldRenderer } from "../renderers/index.ts";
-import { useTranslations } from "./index.ts";
+} from "../../components/tooltip";
+import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
+import { MimicComponentType } from "../../types";
+import { SensorGraph } from "../components/sensor-graph";
+import { ShorePowerConverterInstance } from "../instances";
+import { SensorValue } from "../providers";
+import { FieldRenderer } from "../renderers";
+import * as Partials from "./partials";
 import Circuit from "./partials/ExchangeCircuitPartial.vue";
-import * as Partials from "./partials/index.ts";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.ShorePowerConverter>>();
 

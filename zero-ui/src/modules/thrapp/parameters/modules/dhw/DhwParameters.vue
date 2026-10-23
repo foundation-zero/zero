@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils";
 import { provideHideEditorIfNotEditable } from "@/modules/thrapp/mimics/providers/forms.ts";
-import * as Parameters from "../../components/module-parameters/index.ts";
+import * as Parameters from "../../components/module-parameters";
 import DhwBoostingHeatpump from "./sections/DhwBoostingHeatpump.vue";
 import DhwBoostingHighTemperature from "./sections/DhwBoostingHighTemperature.vue";
 import DhwBoostingModeSelection from "./sections/DhwBoostingModeSelection.vue";

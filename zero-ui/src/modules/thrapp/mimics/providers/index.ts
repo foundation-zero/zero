@@ -15,10 +15,10 @@ import {
   SensorComponentType,
   SensorDefinitionMap,
   SensorDefinitions,
-} from "@/modules/thrsim/types/index.ts";
+} from "@/modules/thrsim/types";
 import { createContext } from "reka-ui";
 import { inject, MaybeRef, provide, ref, Ref } from "vue";
-import { MimicComponentState } from "../components/index.ts";
+import { MimicComponentState } from "../components";
 
 export { default as ControllerStateValue } from "./ControllerStateValue.vue";
 export { default as ControlValue } from "./ControlValue.vue";

@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils.ts";
 import LevelSwitch from "../../../mimics/components/level-switch/LevelSwitch.vue";
-import {
-  LegendItem,
-  LegendItemInfo,
-  LegendItemPreview,
-  LegendItemTitle,
-} from "../../legend/index.ts";
+import { LegendItem, LegendItemInfo, LegendItemPreview, LegendItemTitle } from "../../legend";
 
 const t = tScoped("thrapp.legends.levelSwitches");
 </script>

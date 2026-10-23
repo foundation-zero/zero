@@ -2,8 +2,8 @@
 import { cn, isDefined } from "@/modules/common/lib/utils";
 import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
 import { computed } from "vue";
-import { getFieldValue } from "../providers/index.ts";
-import { FieldRendererProps } from "./index.ts";
+import { FieldRendererProps } from ".";
+import { getFieldValue } from "../providers";
 
 const props = defineProps<
   FieldRendererProps<number> & {

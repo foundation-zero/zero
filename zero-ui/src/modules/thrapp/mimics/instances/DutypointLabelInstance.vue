@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ControlComponentType } from "@/modules/thrsim/types";
-import { Label } from "../components/label/index.ts";
+import { MimicComponentInstanceProps } from ".";
+import { Label } from "../components/label";
+import { ModuleField } from "../providers";
 import ControlValue from "../providers/ControlValue.vue";
-import { ModuleField } from "../providers/index.ts";
-import { FieldRenderer } from "../renderers/index.ts";
-import { MimicComponentInstanceProps } from "./index.ts";
+import { FieldRenderer } from "../renderers";
 
 defineProps<MimicComponentInstanceProps & { pump: ModuleField<ControlComponentType.Pump> }>();
 </script>

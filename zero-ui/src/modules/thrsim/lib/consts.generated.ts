@@ -2440,6 +2440,9 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50009009-03",
     componentType: SensorComponentType.Flow,
   },
+  pvtFlowMainStrings: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
   pvtFlowOwnersRecovery: {
     yardTag: "50001057-03",
     componentType: SensorComponentType.Flow,
@@ -2553,6 +2556,9 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   },
   pvtPvtMainFwdHeat: {
     yardTag: "50009001-01",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtPvtMainHeat: {
     componentType: SensorComponentType.HeatTransferDevice,
   },
   pvtPvtOwners: {
@@ -2751,6 +2757,12 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   pvtTemperatureMainString9Supply: {
     yardTag: "50009005-29",
     componentType: SensorComponentType.Temperature,
+  },
+  pvtTemperatureMainStringsReturn: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureMainStringsSupply: {
+    componentType: SensorComponentType.CalculatedTemperature,
   },
   pvtTemperatureOwnersReturn: {
     yardTag: "50001038-04",

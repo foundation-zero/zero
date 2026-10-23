@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { TooltipList, TooltipListHeader } from "../../components/tooltip-list/index.ts";
+import { useTranslations } from ".";
 import {
   MimicTooltip,
   NoopTooltipProvider,
   TooltipComponentContext,
-} from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { SensorGraph } from "../components/sensor-graph/index.ts";
+} from "../../components/tooltip";
+import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
+import { MimicComponentType } from "../../types";
+import { SensorGraph } from "../components/sensor-graph";
 import { PropulsionCoolerInstance } from "../instances";
-import { useTranslations } from "./index.ts";
+import * as Partials from "./partials";
 import Circuit from "./partials/ExchangeCircuitPartial.vue";
-import * as Partials from "./partials/index.ts";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.PropulsionCooler>>();
 

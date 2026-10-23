@@ -15,7 +15,7 @@
       | SensorComponentType.ShorePowerGroup
   "
 >
-import { SensorComponentType, SensorDefinitionMap } from "@/modules/thrsim/types/index.ts";
+import { SensorComponentType, SensorDefinitionMap } from "@/modules/thrsim/types";
 import { RiTempColdLine } from "@remixicon/vue";
 import { HTMLAttributes } from "vue";
 import { useI18n } from "vue-i18n";

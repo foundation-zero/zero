@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { TooltipListItem, TooltipListItemTitle } from "@/modules/thrapp/components/tooltip-list";
 import { BoilerTankStateField } from "@/modules/thrapp/types";
-import { ControllerStateComponentType, ParametersType } from "@/modules/thrsim/types/index.ts";
+import { ControllerStateComponentType, ParametersType } from "@/modules/thrsim/types";
 import * as Partials from ".";
+import { useTranslations } from "..";
 import { ControllerStateValue, ModuleField } from "../../providers";
-import { FieldRenderer } from "../../renderers/index.ts";
-import { useTranslations } from "../index.ts";
+import { FieldRenderer } from "../../renderers";
 const { items } = useTranslations();
 
 defineProps<{

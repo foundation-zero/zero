@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ratioToPercentage } from "@/modules/common/lib/numbers";
-import { SensorComponentType } from "@/modules/thrsim/types/index.ts";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { RiWaterPercentLine } from "@remixicon/vue";
 import { HTMLAttributes } from "vue";
 import { useI18n } from "vue-i18n";

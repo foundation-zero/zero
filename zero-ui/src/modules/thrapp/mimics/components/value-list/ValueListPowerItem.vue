@@ -3,7 +3,7 @@ import { HTMLAttributes } from "vue";
 import { FieldRenderer } from "../../renderers";
 import ValueListItem from "./ValueListItem.vue";
 
-import { SensorComponentType } from "@/modules/thrsim/types/index.ts";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { RiFlashlightLine } from "@remixicon/vue";
 import { ModuleField } from "../../providers";
 import SensorValue from "../../providers/SensorValue.vue";

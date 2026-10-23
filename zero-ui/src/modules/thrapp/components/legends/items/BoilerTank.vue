@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils.ts";
-import { MimicComponentType } from "@/modules/thrapp/types/index.ts";
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { getTooltipContext } from "../../../mimics/data";
 import BoilerTankInstance from "../../../mimics/instances/BoilerTankInstance.vue";
 import {

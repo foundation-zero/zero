@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils.ts";
-import { ManualValveType } from "@/modules/thrapp/mimics/components/manual-valve/index.ts";
+import { ManualValveType } from "@/modules/thrapp/mimics/components/manual-valve";
 import ManualValve from "@/modules/thrapp/mimics/components/manual-valve/ManualValve.vue";
 import { LegendItem, LegendItemInfo, LegendItemPreview, LegendItemTitle } from "../../legend";
 

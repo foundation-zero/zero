@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { reactiveOmit } from "@vueuse/core";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
-import { MimicComponentType } from "../../types/index.ts";
+import { MimicComponentType } from "../../types";
 
 import { computed } from "vue";
+import { MimicComponentInstanceProps } from ".";
+import { ThreeWayValveLegs } from "../components/actuated-valve";
 import ActuatedValve from "../components/actuated-valve/ActuatedValve.vue";
-import { ThreeWayValveLegs } from "../components/actuated-valve/index.ts";
 import MixValve from "../components/actuated-valve/MixValve.vue";
 import ThreeWayValve from "../components/actuated-valve/ThreeWayValve.vue";
+import { getMimicDataProvider } from "../providers";
 import { componentStateFromAlarms } from "../providers/helpers";
-import { getMimicDataProvider } from "../providers/index.ts";
-import { MimicComponentInstanceProps } from "./index.ts";
 
 const props = defineProps<
   MimicComponentInstanceProps &

@@ -110,7 +110,7 @@ try {
         entries.push({
           key,
           registerKeys:
-            !source || source[0] === "custom"
+            !source || source[0] === "custom" || source[2] === "placeholder"
               ? []
               : hasYardTag
                 ? [instance, `${module}:${source?.[2]}`]

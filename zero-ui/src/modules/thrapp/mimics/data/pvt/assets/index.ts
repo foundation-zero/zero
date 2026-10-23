@@ -9,7 +9,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
     "9001-01": toInstance<MimicComponentType.Pvt>({
       controls: {},
       controllerState: {},
-      custom: { group: "fwd" },
+      custom: { group: "fwd", mimic: "pvt-main" },
       parameters: {},
       source: getField(SensorComponentType.Pvt, "pvt", "pvtPvtMainFwd"),
       sensors: {
@@ -25,7 +25,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
     "9002-01": toInstance<MimicComponentType.Pvt>({
       controls: {},
       controllerState: {},
-      custom: { group: "aft" },
+      custom: { group: "aft", mimic: "pvt-main" },
       parameters: {},
       source: getField(SensorComponentType.Pvt, "pvt", "pvtPvtMainAft"),
 

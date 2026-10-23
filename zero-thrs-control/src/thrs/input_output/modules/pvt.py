@@ -857,6 +857,171 @@ class PvtSensorValues(AmcsModeSensorValues):
 
     @computed_field(
         json_schema_extra=computed_meta(
+            component_type="calculated_temperature", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_temperature_main_strings_supply(self) -> sensor.CalculatedTemperature:
+        return sensor.CalculatedTemperature.from_weighted_sensors(
+            [
+                self.pvt_flow_main_string1_1.flow,
+                self.pvt_flow_main_string1_2.flow,
+                self.pvt_flow_main_string2_1.flow,
+                self.pvt_flow_main_string2_2.flow,
+                self.pvt_flow_main_string3.flow,
+                self.pvt_flow_main_string4.flow,
+                self.pvt_flow_main_string5_1.flow,
+                self.pvt_flow_main_string5_2.flow,
+                self.pvt_flow_main_string6_1.flow,
+                self.pvt_flow_main_string6_2.flow,
+                self.pvt_flow_main_string7_1.flow,
+                self.pvt_flow_main_string7_2.flow,
+                self.pvt_flow_main_string8_1.flow,
+                self.pvt_flow_main_string8_2.flow,
+                self.pvt_flow_main_string9.flow,
+                self.pvt_flow_main_string10.flow,
+                self.pvt_flow_main_string11_1.flow,
+                self.pvt_flow_main_string11_2.flow,
+                self.pvt_flow_main_string12.flow,
+                self.pvt_flow_main_string13.flow,
+            ],
+            [
+                self.pvt_temperature_main_string1_supply,
+                self.pvt_temperature_main_string1_supply,
+                self.pvt_temperature_main_string2_supply,
+                self.pvt_temperature_main_string2_supply,
+                self.pvt_temperature_main_string3_supply,
+                self.pvt_temperature_main_string4_supply,
+                self.pvt_temperature_main_string5_supply,
+                self.pvt_temperature_main_string5_supply,
+                self.pvt_temperature_main_string6_supply,
+                self.pvt_temperature_main_string6_supply,
+                self.pvt_temperature_main_string7_supply,
+                self.pvt_temperature_main_string7_supply,
+                self.pvt_temperature_main_string8_supply,
+                self.pvt_temperature_main_string8_supply,
+                self.pvt_temperature_main_string9_supply,
+                self.pvt_temperature_main_string10_supply,
+                self.pvt_temperature_main_string11_supply,
+                self.pvt_temperature_main_string11_supply,
+                self.pvt_temperature_main_string12_supply,
+                self.pvt_temperature_main_string13_supply,
+            ],
+            None,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_temperature", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_temperature_main_strings_return(self) -> sensor.CalculatedTemperature:
+        return sensor.CalculatedTemperature.from_weighted_sensors(
+            [
+                self.pvt_flow_main_string1_1.flow,
+                self.pvt_flow_main_string1_2.flow,
+                self.pvt_flow_main_string2_1.flow,
+                self.pvt_flow_main_string2_2.flow,
+                self.pvt_flow_main_string3.flow,
+                self.pvt_flow_main_string4.flow,
+                self.pvt_flow_main_string5_1.flow,
+                self.pvt_flow_main_string5_2.flow,
+                self.pvt_flow_main_string6_1.flow,
+                self.pvt_flow_main_string6_2.flow,
+                self.pvt_flow_main_string7_1.flow,
+                self.pvt_flow_main_string7_2.flow,
+                self.pvt_flow_main_string8_1.flow,
+                self.pvt_flow_main_string8_2.flow,
+                self.pvt_flow_main_string9.flow,
+                self.pvt_flow_main_string10.flow,
+                self.pvt_flow_main_string11_1.flow,
+                self.pvt_flow_main_string11_2.flow,
+                self.pvt_flow_main_string12.flow,
+                self.pvt_flow_main_string13.flow,
+            ],
+            [
+                self.pvt_temperature_main_string1_1_return,
+                self.pvt_temperature_main_string1_2_return,
+                self.pvt_temperature_main_string2_1_return,
+                self.pvt_temperature_main_string2_2_return,
+                self.pvt_temperature_main_string3_return,
+                self.pvt_temperature_main_string4_return,
+                self.pvt_temperature_main_string5_1_return,
+                self.pvt_temperature_main_string5_2_return,
+                self.pvt_temperature_main_string6_1_return,
+                self.pvt_temperature_main_string6_2_return,
+                self.pvt_temperature_main_string7_1_return,
+                self.pvt_temperature_main_string7_2_return,
+                self.pvt_temperature_main_string8_1_return,
+                self.pvt_temperature_main_string8_2_return,
+                self.pvt_temperature_main_string9_return,
+                self.pvt_temperature_main_string10_return,
+                self.pvt_temperature_main_string11_1_return,
+                self.pvt_temperature_main_string11_2_return,
+                self.pvt_temperature_main_string12_return,
+                self.pvt_temperature_main_string13_return,
+            ],
+            None,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="calculated_flow", included_in_fmu=False
+        )
+    )
+    @property
+    def pvt_flow_main_strings(self) -> sensor.CalculatedFlow:
+        return sensor.CalculatedFlow.from_sensors(
+            [
+                self.pvt_flow_main_string1_1,
+                self.pvt_flow_main_string1_2,
+                self.pvt_flow_main_string2_1,
+                self.pvt_flow_main_string2_2,
+                self.pvt_flow_main_string3,
+                self.pvt_flow_main_string4,
+                self.pvt_flow_main_string5_1,
+                self.pvt_flow_main_string5_2,
+                self.pvt_flow_main_string6_1,
+                self.pvt_flow_main_string6_2,
+                self.pvt_flow_main_string7_1,
+                self.pvt_flow_main_string7_2,
+                self.pvt_flow_main_string8_1,
+                self.pvt_flow_main_string8_2,
+                self.pvt_flow_main_string9,
+                self.pvt_flow_main_string10,
+                self.pvt_flow_main_string11_1,
+                self.pvt_flow_main_string11_2,
+                self.pvt_flow_main_string12,
+                self.pvt_flow_main_string13,
+            ],
+        )
+
+    # Combines the AFT and FWD sections of the main bimini, which share the supply/demand circuit.
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer",
+            included_in_fmu=False,
+        )
+    )
+    @property
+    def pvt_pvt_main_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_strings_supply.temperature,
+            temperature_return=self.pvt_temperature_main_strings_return.temperature,
+            flow=self.pvt_flow_main_strings.flow,
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_strings_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_strings_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_strings"),
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
             yard_tag="50009001-03",
             component_type="heat_transfer",
             included_in_fmu=False,

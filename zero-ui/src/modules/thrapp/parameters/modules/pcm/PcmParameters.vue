@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils";
 import { provideHideEditorIfNotEditable } from "@/modules/thrapp/mimics/providers/forms.ts";
-import * as Parameters from "../../components/module-parameters/index.ts";
+import * as Parameters from "../../components/module-parameters";
 import PcmChargingSettings from "./sections/PcmChargingSettings.vue";
 import PcmConsumersBoosting from "./sections/PcmConsumersBoosting.vue";
 import PcmFlowSettings from "./sections/PcmFlowSettings.vue";

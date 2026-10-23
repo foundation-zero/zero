@@ -2799,6 +2799,9 @@ export const PVT_SENSOR_QUERY = `
     temperature { value timestamp }
     quantity { value timestamp }
   }
+  pvtFlowMainStrings {
+    flow { value timestamp }
+  }
   pvtFlowOwnersRecovery {
     flow { value timestamp }
     temperature { value timestamp }
@@ -2953,6 +2956,13 @@ export const PVT_SENSOR_QUERY = `
     power { value timestamp }
   }
   pvtPvtMainFwdHeat {
+    temperatureSupply { value timestamp source }
+    temperatureReturn { value timestamp source }
+    flow { value timestamp source }
+    heat { value timestamp }
+    deltaT { value timestamp }
+  }
+  pvtPvtMainHeat {
     temperatureSupply { value timestamp source }
     temperatureReturn { value timestamp source }
     flow { value timestamp source }
@@ -3130,6 +3140,12 @@ export const PVT_SENSOR_QUERY = `
     temperature { value timestamp }
   }
   pvtTemperatureMainString9Supply {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainStringsReturn {
+    temperature { value timestamp }
+  }
+  pvtTemperatureMainStringsSupply {
     temperature { value timestamp }
   }
   pvtTemperatureOwnersReturn {

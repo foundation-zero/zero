@@ -14,6 +14,7 @@ export const enum ManualValveType {
   FlowControl = "flow-control",
   Flow = "flow",
   ThreeWay = "three-way",
+  Balancing = "balancing",
 }
 
 export interface ManualValveProps {
