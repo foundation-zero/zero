@@ -1,0 +1,6 @@
+apiVersion: v2
+name: zero-alert-forwarder-chart
+description: Forwards AMCS alerts to ntfy.
+type: application
+version: 0.0.0
+appVersion: 0.0.0
