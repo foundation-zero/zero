@@ -44,7 +44,6 @@ def module_factory(mock_channels, mock_description):
         return Module(
             name,
             description=mock_description,
-            parameters=mock.Mock(),
             channels=mock_channels,
             time_fn=datetime.now,
             state_logger=MachineStateLoggingServiceNoop(),

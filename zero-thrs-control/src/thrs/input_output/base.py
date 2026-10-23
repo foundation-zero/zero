@@ -171,6 +171,7 @@ type BaseComponentType = Literal[
     "pyranometer",
 ]
 type SpecialComponentType = Literal["valve"]
+type ComponentType = BaseComponentType | SpecialComponentType | None
 
 
 class BaseMeta(BaseModel):
@@ -186,7 +187,7 @@ class ValveMeta(BaseMeta):
 
 
 class ComponentMeta(ValveMeta):
-    component_type: BaseComponentType | SpecialComponentType | None = None  # type: ignore
+    component_type: ComponentType = None  # type: ignore
 
 
 @_factory(BaseMeta)
@@ -209,6 +210,15 @@ def get_topic(field: FieldInfo | ComputedFieldInfo) -> str | None:
         return None
 
     return field.json_schema_extra.get("topic_override")  # type: ignore
+
+
+def get_component_type(
+    field: FieldInfo | ComputedFieldInfo,
+) -> ComponentType:
+    if not field.json_schema_extra or not isinstance(field.json_schema_extra, dict):
+        return None
+
+    return field.json_schema_extra.get("component_type")  # type: ignore
 
 
 @dataclass

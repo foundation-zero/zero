@@ -123,6 +123,19 @@ wheels = [
 ]
 
 [[package]]
+name = "asyncapi3"
+version = "0.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyaml" },
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/56/01/23e1fd7a52db028a08cfb9a4d711754768909fbafd93d943e47558cb5c9b/asyncapi3-0.0.2.tar.gz", hash = "sha256:879ea8494a6ff9c0aa3b1ec9f9532f96392a9a826e664fcd9f385215d5246738", size = 45244, upload-time = "2026-01-14T14:30:51.76Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b4/97/0602d13cc5a94cd9211317f885345144370f80315aa3d6668ab42c3313ac/asyncapi3-0.0.2-py3-none-any.whl", hash = "sha256:eacd449e38524db41d263fcb7b88407e2efb384e2610ad89d7d3591c618f7db4", size = 63618, upload-time = "2026-01-14T14:30:50.606Z" },
+]
+
+[[package]]
 name = "asyncpg"
 version = "0.31.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1411,6 +1424,15 @@ wheels = [
 ]
 
 [[package]]
+name = "more-itertools"
+version = "11.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/52/b8/c63995bebbb9ac9c059350e0fb8c82c2420c85aeca7d34e40aecf3df9281/more_itertools-11.2.1.tar.gz", hash = "sha256:cbf08fd0af284dc69718b9b76a8e6203df624d70209ea511e4219d350c856f63", size = 154133, upload-time = "2026-10-14T18:50:30.407Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5d/57/3c4b1c6f2e0cc29ba023802458ea3d2a996f87085559e4a5f2192d549532/more_itertools-11.2.1-py3-none-any.whl", hash = "sha256:35a7377edd1dd6608dcb2cdf534ded55ea32d49448875ad042cd3f879fb1ded0", size = 74405, upload-time = "2026-10-14T18:50:29.116Z" },
+]
+
+[[package]]
 name = "msgpack"
 version = "1.2.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1801,6 +1823,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/cd/05/0a34433a064256a578f1783a10da6df098ceaa4a57bbeaa96a6c0352786b/pure_eval-0.2.3.tar.gz", hash = "sha256:5f4e983f40564c576c7c8635ae88db5956bb2229d7e9237d03b3c0b0190eaf42", size = 19752, upload-time = "2024-07-21T12:58:21.801Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8e/37/efad0257dc6e593a18957422533ff0f87ede7c9c6ea010a2177d738fb82f/pure_eval-0.2.3-py3-none-any.whl", hash = "sha256:1db8e35b67b3d218d818ae653e27f06c3aa420901fa7b081ca98cbedc874e0d0", size = 11842, upload-time = "2024-07-21T12:58:20.04Z" },
+]
+
+[[package]]
+name = "pyaml"
+version = "26.7.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyyaml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/15/6a/acfdf17de0d6947b419da8696e02b781b18de2cf49e0472298b50e1f0711/pyaml-26.7.0.tar.gz", hash = "sha256:11cda3a796efc6dbce0d56836be56cfd26289dad07bcd78e9904086729929c93", size = 30669, upload-time = "2026-07-04T00:34:38.532Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a6/26/3f05f9e3692853dff663913d5d62fb8df3f5640c8d70b06588c0b51ed953/pyaml-26.7.0-py3-none-any.whl", hash = "sha256:cfa382780c43ae660669b87d394d550a41856ef175f5749f51f753e12d7077ac", size = 27226, upload-time = "2026-07-04T00:34:37.198Z" },
 ]
 
 [[package]]
@@ -2658,11 +2692,13 @@ source = { editable = "." }
 default-groups = ["dev", "test"]
 dependencies = [
     { name = "aiomqtt" },
+    { name = "asyncapi3" },
     { name = "asyncpg" },
     { name = "fastapi", extra = ["standard"] },
     { name = "fmpy" },
     { name = "jupyter" },
     { name = "matplotlib" },
+    { name = "more-itertools" },
     { name = "pandas" },
     { name = "plotly" },
     { name = "polars" },
@@ -2698,11 +2734,13 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "aiomqtt", specifier = ">=2.3.0,<3.0.0" },
+    { name = "asyncapi3", specifier = "==0.0.2" },
     { name = "asyncpg", specifier = ">=0.30.0,<1.0.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.117.1,<0.118.0" },
     { name = "fmpy", specifier = ">=0.3.22,<0.4.0" },
     { name = "jupyter", specifier = ">=1.1.1,<2.0.0" },
     { name = "matplotlib", specifier = ">=3.10.0,<4.0.0" },
+    { name = "more-itertools", specifier = "==11.2.1" },
     { name = "pandas", specifier = ">=2.2.3,<3.0.0" },
     { name = "plotly", specifier = ">=5.24.1,<6.0.0" },
     { name = "polars", specifier = ">=1.24.0,<2.0.0" },
