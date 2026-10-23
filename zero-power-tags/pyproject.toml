@@ -22,7 +22,7 @@ dev = [
     "polars>=1.42.0,<2",
     "zero-modbus-bridge[tui]",
 ]
-test = ["pytest-asyncio>=1.1.0,<2", "pytest>=8.4.1,<9"]
+test = ["pytest-asyncio>=1.1.0,<2", "pytest>=9.1.1,<10"]
 
 [tool.uv]
 default-groups = ["dev", "test"]
