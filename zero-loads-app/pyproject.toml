@@ -30,7 +30,7 @@ loads = "loads.__main__:run_app"
 
 [dependency-groups]
 dev = [
-    "ruff>=0.9.5,<0.10",
+    "ruff>=0.17.2,<0.18",
     "python-dotenv>=1.1.0,<2",
     "jupyter>=1.1.1,<2",
     "polars>=1.39.3,<2",
