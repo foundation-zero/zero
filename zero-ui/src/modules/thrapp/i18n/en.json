@@ -692,18 +692,16 @@
       }
     },
     "legends": {
-      "dhwLegend": {
-        "groups": {
-          "connectingCircuits": "Connecting circuits",
-          "assets": "Assets",
-          "actuatedValveComponents": "Actuated valve components",
-          "heatExchangers": "Heat exchangers",
-          "pumps": "Pumps",
-          "sensors": "Sensors",
-          "manualComponents": "Manual components",
-          "pipes": "Pipes",
-          "labels": "Labels"
-        }
+      "groups": {
+        "connectingCircuits": "Connecting circuits",
+        "assets": "Assets",
+        "actuatedValveComponents": "Actuated valve components",
+        "heatExchangers": "Heat exchangers",
+        "pumps": "Pumps",
+        "sensors": "Sensors",
+        "manualComponents": "Manual components",
+        "pipes": "Pipes",
+        "labels": "Labels"
       },
       "pipes": {
         "pipe": "Pipe",
@@ -713,6 +711,9 @@
         "heatingFlow": "Heating flow",
         "directionArrow": "Direction arrow"
       },
+      "airTrapVessel": {
+        "title": "Air trap vessel"
+      },
       "boilerTank": {
         "title": "Asset - Boiler tank",
         "description": "The Tank can have status in use, boosting, filling, standby and disabled. The properties are rendered based upon relevant sensor values of the asset.",
@@ -721,6 +722,20 @@
       "checkValves": {
         "title": "Check valve (physical)"
       },
+      "connectingCircuit": {
+        "title": "Connecting circuit",
+        "description": "The properties are rendered based upon relevant circuit sensor values."
+      },
+      "dcConverter": {
+        "title": "Asset - DC converters",
+        "description": "The properties are rendered based upon relevant sensor values of the asset."
+      },
+      "expansionTank": {
+        "title": "Expansion tank"
+      },
+      "expansionValve": {
+        "title": "Expansion valve"
+      },
       "flowSensors": {
         "title": "Flow sensor (L/min)"
       },
@@ -728,15 +743,19 @@
         "title": "Flow control valve",
         "description": "(Open / Partial / Closed)"
       },
-      "hvac": {
-        "title": "Asset - HVAC",
-        "description": "The HVAC can have status active and inactive. The properties are rendered based upon relevant sensor values of the asset.",
-        "assetTitle": "HVAC"
+      "freshwaterCircuit": {
+        "title": "Fresh water circuit",
+        "description": "The properties are rendered based upon relevant circuit sensor values."
       },
       "heatPump": {
         "title": "Asset - Heat pump",
         "description": "The heat pump can have status active and inactive. The properties are rendered based upon relevant sensor values of the asset.",
         "assetTitle": "Heat pump"
+      },
+      "hvac": {
+        "title": "Asset - HVAC",
+        "description": "The HVAC can have status active and inactive. The properties are rendered based upon relevant sensor values of the asset.",
+        "assetTitle": "HVAC"
       },
       "labelTag": {
         "title": "Label",
@@ -754,6 +773,12 @@
       "manualFlowControlValve": {
         "title": "Manual flow control valve"
       },
+      "manualFlowValve": {
+        "title": "Manual flow valve"
+      },
+      "manualPump": {
+        "title": "Manual pump"
+      },
       "manualSwitchValve": {
         "title": "Manual switch valve"
       },
@@ -764,6 +789,10 @@
         "title": "Other mimic",
         "description": "The properties are rendered based upon relevant circuit sensor values from the connecting circuit.",
         "assetTitle": "Other mimic"
+      },
+      "pcm": {
+        "title": "Asset - PCM heat battery",
+        "description": "The properties are rendered based upon relevant sensor values of the asset."
       },
       "pipeHeatExchanger": {
         "title": "Pipe heat exchanger",
@@ -779,13 +808,36 @@
       "pressureSensors": {
         "title": "Pressure sensor (bar)"
       },
+      "propulsionCooler": {
+        "title": "Asset - Propulsion cooler",
+        "description": "The properties are rendered based upon relevant sensor values of the asset."
+      },
+      "propulsionDrive": {
+        "title": "Asset - Propulsion drive",
+        "description": "The properties are rendered based upon relevant sensor values of the asset."
+      },
       "pumps": {
         "title": "Pumps",
         "description": "(Active / Inactive / Alarm)"
       },
+      "pvt": {
+        "title": "Asset - PVT",
+        "description": "The properties are rendered based upon relevant sensor values of the asset."
+      },
+      "pyranometer": {
+        "title": "Pyranometer (W/m²)"
+      },
+      "seawaterCircuit": {
+        "title": "Seawater circuit",
+        "description": "The properties are rendered based upon relevant circuit sensor values."
+      },
       "sectionArea": {
         "title": "Section area",
         "assetTitle": "Section area"
+      },
+      "shorePowerConverter": {
+        "title": "Asset - Shore power converter",
+        "description": "The properties are rendered based upon relevant sensor values of the asset."
       },
       "switchValve": {
         "title": "Switch valve",
@@ -797,6 +849,14 @@
       "threeWayMixValve": {
         "title": "3-way mix valve",
         "description": "(A-AB / B-AB / A&B-AB)"
+      },
+      "threeWaySwitchValve": {
+        "title": "3-way switch valve",
+        "description": "(A-AB / B-AB / Transient)"
+      },
+      "thruster": {
+        "title": "Asset - Thruster",
+        "description": "The properties are rendered based upon relevant sensor values of the asset."
       }
     }
   }
