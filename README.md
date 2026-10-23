@@ -26,6 +26,7 @@ docker compose --profile <profile_name> up
 | `domestic` | The Domestic Control application for home automation logic. | Core Infra, Domestic Control API, Control and Stub |
 | `loads` | The Loads subsystem for capturing and exposing rigging loads (and other relevated values). | Core Infra, Loads API, Control and Stubs |
 | `thrs` | The THRS (Thermal Harvesting & Recovery System) Application stack. | MQTT, THRS Control, THRS Simulation |
+| `battery-cells` | Battery cell telemetry: receives the PLCs' CODESYS NetVar UDP stream and republishes it per battery module over MQTT. | MQTT, Battery Cells |
 
 
 *Note: domestic-control-api is a remote schema in Hasura. If Hasura boots before domestic-control-api, it'll not load the remote schema, because it can't verify it through introspection. Use `hasura metadata reload --admin-secret myadminsecretkey` to fix this.*
@@ -58,6 +59,9 @@ docker compose --profile <profile_name> up
 *   **loads-pcan-stub**: Simulates PCAN (CAN bus) interfaces.
 *   **loads-conditions-stub**: Simulates environmental conditions.
 *   **loads-sensor-stub**: Simulates sensor data inputs.
+
+### Battery Cells
+*   **battery-cells**: Listens on UDP port 50000 for the PLCs' NetVar cell voltage and temperature lists and publishes one MQTT message per battery module on `battery/{pack}/{string}/{module}`. See [zero-battery-cells/SPEC.md](zero-battery-cells/SPEC.md) for the wire format and configuration.
 
 ### THRS
 *   **thrs-control**: Control logic worker for THRS.
