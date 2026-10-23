@@ -1,6 +1,17 @@
 <script setup lang="ts">
+import {
+  COLUMN_GROUP_ATTRIBUTE,
+  COLUMN_ITEM_ATTRIBUTE,
+  useColumnSegments,
+} from "@/modules/common/lib/columns";
 import { cn, tScoped } from "@/modules/common/lib/utils";
-import { type Component, computed, defineAsyncComponent, type HTMLAttributes } from "vue";
+import {
+  type Component,
+  computed,
+  defineAsyncComponent,
+  type HTMLAttributes,
+  useTemplateRef,
+} from "vue";
 import { ManualValveType } from "../../mimics/components/manual-valve";
 import { MimicComponentType } from "../../types";
 import { Legend, LegendGroup, LegendGroupHeader } from "../legend";
@@ -81,14 +92,6 @@ const GROUPS: { title: string; entries: LegendEntry[] }[] = [
         key: MimicComponentType.ShorePowerConverter,
         item: defineAsyncComponent(() => import("./items/ShorePowerConverter.vue")),
       },
-      {
-        key: MimicComponentType.ExpansionTank,
-        item: defineAsyncComponent(() => import("./items/ExpansionTank.vue")),
-      },
-      {
-        key: MimicComponentType.AirTrapVessel,
-        item: defineAsyncComponent(() => import("./items/AirTrapVessel.vue")),
-      },
     ],
   },
   {
@@ -127,10 +130,6 @@ const GROUPS: { title: string; entries: LegendEntry[] }[] = [
       {
         key: MimicComponentType.Pump,
         item: defineAsyncComponent(() => import("./items/Pumps.vue")),
-      },
-      {
-        key: MimicComponentType.ManualPump,
-        item: defineAsyncComponent(() => import("./items/ManualPump.vue")),
       },
     ],
   },
@@ -198,6 +197,18 @@ const GROUPS: { title: string; entries: LegendEntry[] }[] = [
         key: MimicComponentType.ExpansionValve,
         item: defineAsyncComponent(() => import("./items/ExpansionValve.vue")),
       },
+      {
+        key: MimicComponentType.ManualPump,
+        item: defineAsyncComponent(() => import("./items/ManualPump.vue")),
+      },
+      {
+        key: MimicComponentType.ExpansionTank,
+        item: defineAsyncComponent(() => import("./items/ExpansionTank.vue")),
+      },
+      {
+        key: MimicComponentType.AirTrapVessel,
+        item: defineAsyncComponent(() => import("./items/AirTrapVessel.vue")),
+      },
     ],
   },
 ];
@@ -210,24 +221,66 @@ const groups = computed(() =>
     ),
   })).filter((group) => group.entries.length > 0),
 );
+
+// Groups may continue in the next column; each column a group spans becomes a segment that starts
+// with a (repeated) header.
+const container = useTemplateRef<HTMLElement>("container");
+const segments = useColumnSegments(
+  container,
+  computed(() => groups.value.map(({ title, entries }) => ({ key: title, items: entries }))),
+);
 </script>
 
 <template>
-  <div :class="cn('gap-x-4 md:columns-2 xl:columns-3', props.class)">
+  <!--
+    Groups may continue in the next column so the columns stay balanced. Items never split, and each
+    segment of a group starts with the header in one block with its first item, so a header never
+    ends up alone at a column bottom and is repeated at the top of a continued column.
+  -->
+  <div
+    ref="container"
+    :class="cn('gap-x-4 md:columns-2 xl:columns-3 [&_li]:break-inside-avoid', props.class)"
+  >
     <Legend
-      v-for="group in groups"
-      :key="group.title"
-      class="break-inside-avoid"
+      v-for="group in segments"
+      :key="group.key"
+      v-bind="{ [COLUMN_GROUP_ATTRIBUTE]: group.key }"
     >
-      <LegendGroupHeader>{{ t(`groups.${group.title}`) }}</LegendGroupHeader>
-      <LegendGroup class="gap-2">
-        <component
-          :is="entry.item"
-          v-for="entry in group.entries"
-          :key="`${entry.key}-${entry.subType ?? ''}`"
-          :class="{ 'w-full': group.title === 'connectingCircuits' }"
-        />
-      </LegendGroup>
+      <template
+        v-for="(segment, index) in group.segments"
+        :key="index"
+      >
+        <div class="break-inside-avoid">
+          <LegendGroupHeader class="flex items-baseline justify-between gap-2">
+            {{ t(`groups.${group.key}`) }}
+            <span
+              v-if="group.segments.length > 1"
+              class="text-muted-foreground text-sm font-normal"
+            >
+              {{ index + 1 }}/{{ group.segments.length }}
+            </span>
+          </LegendGroupHeader>
+          <LegendGroup :class="['gap-2', { 'border-b-0 pb-0': segment.length > 1 }]">
+            <component
+              :is="segment[0].item"
+              v-bind="{ [COLUMN_ITEM_ATTRIBUTE]: true }"
+              :class="{ 'w-full': group.key === 'connectingCircuits' }"
+            />
+          </LegendGroup>
+        </div>
+        <LegendGroup
+          v-if="segment.length > 1"
+          class="gap-2 border-t-0 pt-2"
+        >
+          <component
+            :is="entry.item"
+            v-for="entry in segment.slice(1)"
+            :key="`${entry.key}-${entry.subType ?? ''}`"
+            v-bind="{ [COLUMN_ITEM_ATTRIBUTE]: true }"
+            :class="{ 'w-full': group.key === 'connectingCircuits' }"
+          />
+        </LegendGroup>
+      </template>
     </Legend>
 
     <Legend class="break-inside-avoid">
