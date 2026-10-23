@@ -8,7 +8,7 @@ sudo curl -fsSL http://build.openmodelica.org/apt/openmodelica.asc | \
 
 echo "deb [arch=arm64 signed-by=/usr/share/keyrings/openmodelica-keyring.gpg] \
   https://build.openmodelica.org/apt \
-  bookworm \
+  trixie \
   stable" | sudo tee /etc/apt/sources.list.d/openmodelica.list
 
 sudo apt update

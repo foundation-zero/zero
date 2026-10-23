@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM rust:1.99-bookworm AS builder
+FROM --platform=$BUILDPLATFORM rust:1.99-trixie AS builder
 
 WORKDIR /app
 
@@ -32,7 +32,7 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
   cp target/x86_64-unknown-linux-gnu/release/zero-fiber-optics /app/zero-fiber-optics; \
   fi
 
-FROM debian:bookworm-slim AS runtime
+FROM debian:trixie-slim AS runtime
 
 RUN apt-get update && \
   apt-get install -y --no-install-recommends ca-certificates && \
