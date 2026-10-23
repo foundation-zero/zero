@@ -13,6 +13,7 @@ services:
       - loads
       - thrs
       - data-collection
+      - battery-cells
     environment:
       DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
       DOCKER_VERNEMQ_ALLOW_ANONYMOUS: "on"
@@ -160,6 +161,28 @@ services:
         condition: service_healthy
     volumes:
       - ./specs:/app/specs:ro
+
+  battery-cells:
+    build:
+      context: ./zero-battery-cells
+    restart: unless-stopped
+    ports:
+      - 50000:50000/udp
+    profiles:
+      - battery-cells
+    environment:
+      MQTT_HOST: vernemq
+      MQTT_PORT: 1883
+      UDP_PORT: 50000
+      NVL_FILE: spec/KEB6_FOX_05_41_1_NVL_Declaration.txt
+      # Optional: restrict this instance to some of the 22 known list ids (all
+      # when unset); a redundant replica runs with the other ids.
+      # OWN_LIST_IDS: "[411, 413, 421, 423]"
+    depends_on:
+      vernemq:
+        condition: service_healthy
+    volumes:
+      - ./zero-battery-cells/spec:/app/spec:ro
 
   # ---- data collection ----
   vector:

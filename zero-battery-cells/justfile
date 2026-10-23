@@ -1,0 +1,22 @@
+set dotenv-load := true
+
+default: check
+
+check: format lint test
+
+lint:
+    cargo clippy --all-targets --locked -- -D warnings
+
+test *args:
+    cargo test --locked {{ args }}
+
+format:
+    cargo fmt --check
+
+# Run the UDP to MQTT pipeline (configured through .env / the environment).
+run:
+    cargo run --locked -- run
+
+# Print the topics a recording (repeated u32 LE length + datagram) would publish, without MQTT.
+dissect file:
+    cargo run --locked -- dissect --file {{ file }}
