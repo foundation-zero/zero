@@ -153,4 +153,10 @@ export const MIMIC_LEGEND_MAP: Partial<Record<MimicKey, LegendMap>> = {
     [MimicComponentType.CheckValve]: true,
     [MimicComponentType.ExpansionValve]: true,
   },
+  "pvt-owners": {
+    [MimicComponentType.ConnectingCircuit]: true,
+    [MimicComponentType.TemperatureSensor]: true,
+    [MimicComponentType.FlowSensor]: true,
+    [MimicComponentType.ManualValve]: [ManualValveType.Switch],
+  },
 };

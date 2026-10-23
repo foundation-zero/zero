@@ -32,8 +32,6 @@ export const MIMICS: Partial<Record<MimicKey, MimicDefinition>> = {
     component: defineAsyncComponent(
       () => import("@/modules/thrapp/mimics/modules/pvt-owners/PvtOwnersModule.vue"),
     ),
-    legend: defineAsyncComponent(() => import("@/modules/thrapp/components/legends/DhwLegend.vue")),
-    module: "pvt",
   },
   pcm: {
     component: defineAsyncComponent(
