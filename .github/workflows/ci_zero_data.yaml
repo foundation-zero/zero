@@ -43,7 +43,7 @@ jobs:
         run: docker compose --profile data-collection up -d --wait greptimedb
       # Seed the raw tables and the `views` database from the committed snapshot.
       - name: Seed local Greptime from the committed snapshot
-        run: uv run zero-data greptime load
+        run: just seed_greptime
         working-directory: zero-data
       - name: Unit Test
         run: just test
