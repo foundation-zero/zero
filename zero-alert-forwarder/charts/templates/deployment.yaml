@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zero-alert-forwarder.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "zero-alert-forwarder.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate # Both pods may see an alert raised during the overlap; the shared ntfy sequence ID collapses that into one notification. Recreate would skip alerts instead
+  selector:
+    matchLabels:
+      {{- include "zero-alert-forwarder.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "zero-alert-forwarder.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: alert-forwarder
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seccompProfile:
+              type: RuntimeDefault
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: MYSQL_HOSTS
+              value: {{ .Values.mysql.hosts | toJson | quote }}
+            - name: MYSQL_PORT
+              value: {{ .Values.mysql.port | quote }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.mysql.database | quote }}
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mysql.existingSecret }}
+                  key: {{ .Values.mysql.existingSecretUsernameKey }}
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mysql.existingSecret }}
+                  key: {{ .Values.mysql.existingSecretPasswordKey }}
+            - name: NTFY_URL
+              value: {{ .Values.ntfy.url | quote }}
+            - name: NTFY_TOPIC
+              value: {{ .Values.ntfy.topic | quote }}
+            {{- if .Values.ntfy.existingSecret }}
+            - name: NTFY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.ntfy.existingSecret }}
+                  key: {{ .Values.ntfy.existingSecretTokenKey }}
+            {{- end }}
+            - name: POLL_INTERVAL_SECONDS
+              value: {{ .Values.forwarding.pollIntervalSeconds | quote }}
+            - name: MIN_PRIORITY
+              value: {{ .Values.forwarding.minPriority | quote }}
+            - name: UPDATES
+              value: {{ .Values.forwarding.updates | toJson | quote }}
+            - name: ATTEMPTS
+              value: {{ .Values.forwarding.attempts | quote }}
+            - name: REMINDER_DELAYS_SECONDS
+              value: {{ .Values.forwarding.reminderDelaysSeconds | toJson | quote }}
+            - name: DRY_RUN
+              value: {{ .Values.forwarding.dryRun | quote }}
+            - name: POLL_TIMEOUT_SECONDS
+              value: {{ .Values.forwarding.pollTimeoutSeconds | quote }}
+            - name: LIVENESS_PATH
+              value: {{ .Values.livenessPath | quote }}
+            - name: READINESS_PATH
+              value: {{ .Values.readinessPath | quote }}
+          livenessProbe:
+            {{- include "zero-alert-forwarder.livenessProbe" . | nindent 12 }}
+          readinessProbe:
+            {{- include "zero-alert-forwarder.readinessProbe" . | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp
+      volumes:
+        - emptyDir: {}
+          name: tmp
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
