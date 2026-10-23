@@ -48,7 +48,7 @@ const props = withDefaults(
           </header>
           <p
             v-if="$slots['value']"
-            class="text-foreground text-sm font-medium"
+            class="text-foreground text-xs font-medium"
           >
             <slot name="value" />
           </p>

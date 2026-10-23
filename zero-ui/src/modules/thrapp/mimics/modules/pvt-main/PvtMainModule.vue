@@ -12,7 +12,7 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
 
 <template>
   <svg
-    viewBox="0 0 1580 652"
+    viewBox="0 0 1600 652"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"

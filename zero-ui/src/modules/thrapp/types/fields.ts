@@ -9,6 +9,7 @@ import { BoilerTankStateField, MimicComponentType } from ".";
 import { TooltipComponentContext } from "../components/tooltip";
 import { HeatExchangerPortOrientation } from "../mimics/components/heat-exchanger";
 import { ModuleField } from "../mimics/providers";
+import { MimicKey } from "../router/mimics";
 import type { DcConverterGroup, PvtGroup } from "../state";
 
 export type ComponentFields<
@@ -368,6 +369,7 @@ export type CustomFieldDefinitions = CustomFields<{
   };
   [MimicComponentType.Pvt]: {
     group: PvtGroup;
+    mimic?: MimicKey;
   };
   [MimicComponentType.PvtString]: {
     label: string;
