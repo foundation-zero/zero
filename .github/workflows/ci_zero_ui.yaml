@@ -200,7 +200,7 @@ jobs:
           gitHubToken: ${{ github.token }}
           packageManager: pnpm
           workingDirectory: zero-ui
-          wranglerVersion: "3"
+          wranglerVersion: "4"
 
   helm-push:
     if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
