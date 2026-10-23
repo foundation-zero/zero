@@ -35,24 +35,25 @@ jobs:
         with:
           python-version: 3.13
       - uses: astral-sh/setup-uv@v10.3.2
+      - uses: extractions/setup-just@v4
       - run: uv sync --locked
         working-directory: zero-domestic-control
-      - run: uv run ruff check --no-fix src tests
+      - run: just lint_no_fix
         working-directory: zero-domestic-control
-      - run: uv run ruff format --check src tests
+      - run: just format
         working-directory: zero-domestic-control
 
-      - run: uv run pyright src
+      - run: just type_check
         env:
           PYRIGHT_PYTHON_FORCE_VERSION: latest
         working-directory: zero-domestic-control
       - name: Unit Test
-        run: uv run pytest --run=unit
+        run: just test_unit
         working-directory: zero-domestic-control
       - name: Run services
         run: docker compose --profile domestic up -d --quiet-pull --wait hass vernemq postgres
       - name: Integration Test
-        run: uv run pytest --run=integration -vv
+        run: just test_integration -vv
         working-directory: zero-domestic-control
 
   docker-push:

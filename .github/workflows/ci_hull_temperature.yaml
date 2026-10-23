@@ -30,11 +30,12 @@ jobs:
         with:
           python-version: 3.13
       - uses: astral-sh/setup-uv@v10.3.2
+      - uses: extractions/setup-just@v4
       - run: uv sync --locked
         working-directory: zero-hull-temperature
-      - run: uv run ruff check --no-fix zero_hull_temperature tests
+      - run: just lint_no_fix
         working-directory: zero-hull-temperature
-      - run: uv run pyright
+      - run: just type_check
         working-directory: zero-hull-temperature
       - name: Create .env file from secret in root for services
         run: |
@@ -42,7 +43,7 @@ jobs:
       - name: Run services
         run: docker compose --profile zero up -d --quiet-pull --wait
       - name: Unit Test
-        run: uv run pytest
+        run: just test
         working-directory: zero-hull-temperature
       - name: Run stub
         run: |

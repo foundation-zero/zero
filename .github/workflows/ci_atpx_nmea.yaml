@@ -28,15 +28,16 @@ jobs:
         with:
           python-version: 3.13
       - uses: astral-sh/setup-uv@v10.3.2
+      - uses: extractions/setup-just@v4
       - run: uv sync --locked
         working-directory: zero-atpx-nmea
-      - run: uv run ruff check --no-fix
+      - run: just lint_no_fix
         working-directory: zero-atpx-nmea
-      - run: uv run ruff format --check src tests
+      - run: just format
         working-directory: zero-atpx-nmea
-      - run: uv run pyright
+      - run: just type_check
         working-directory: zero-atpx-nmea
-      - run: uv run pytest
+      - run: just test
         working-directory: zero-atpx-nmea
       - uses: actions/setup-node@v7
         with:
