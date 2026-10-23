@@ -240,7 +240,6 @@
     "9009-05": "FlowSensor/9009-05",
     "9009-06": "FlowSensor/9009-06",
     "adsorption": "ExchangeCircuit/dhw:adsorption",
-    "aft": "ConnectingCircuit/pvt:aft",
     "dc:aft": "DcConverter/dc:aft",
     "dc:dcDhwExchanger": "HeatExchanger/1008",
     "dc:dcFlowAftReturn": "FlowSensor/1057-25",
@@ -411,6 +410,7 @@
     "propdriveAft2": "PropulsionDrive/drives:propdriveAft2",
     "propdriveFwd1": "PropulsionDrive/drives:propdriveFwd1",
     "propdriveFwd2": "PropulsionDrive/drives:propdriveFwd2",
+    "pvt:main": "ConnectingCircuit/pvt:main",
     "pvt:pcm": "ConnectingCircuit/pvt:pcm",
     "pvt:pvtFlowMainAftRecovery": "FlowSensor/1058-13",
     "pvt:pvtFlowMainFwdRecovery": "FlowSensor/1058-12",
@@ -446,7 +446,6 @@
     "pvt:pvtPumpMainFwd": "Pump/1018",
     "pvt:pvtPumpOwners": "Pump/1021",
     "pvt:pvtPvtMainAft": "Pvt/9002-01",
-    "pvt:pvtPvtMainAftHeat": "ConnectingCircuit/pvt:aft",
     "pvt:pvtPvtMainFwd": "Pvt/9001-01",
     "pvt:pvtPvtOwners": "Pvt/9001-03",
     "pvt:pvtPyranometerPs": "Pyranometer/9043",
@@ -841,18 +840,18 @@
           "yardTag": "pcm:thrusters"
         }
       },
-      "pvt:aft": {
+      "pvt:main": {
         "custom": {
           "circuitName": "PVT",
           "modeModule": "pvt"
         },
-        "source": ["sensor:heatTransferDevice", "pvt", "pvtPvtMainAftHeat", null],
+        "source": ["sensor:heatTransferDevice", "pvt", "pvtPvtMainHeat", null],
         "tooltip": {
           "title": "Connecting circuit",
-          "yardTag": "9002-01",
-          "technicalName": "pvt-pvt-main-aft-heat",
-          "mqttTopic": ".../pvt-pvt-main-aft-heat",
-          "componentType": "PVT AFT loop"
+          "technicalName": "pvt-pvt-main-heat",
+          "mqttTopic": ".../pvt-pvt-main-heat",
+          "componentType": "PVT main loop",
+          "yardTag": "pvt:main"
         }
       },
       "pvt:pcm": {

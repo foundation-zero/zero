@@ -1,7 +1,7 @@
 import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import { Component, defineAsyncComponent } from "vue";
 
-export type MimicKey = keyof ThrsModules | "pvt-aft";
+export type MimicKey = keyof ThrsModules | "pvt-main";
 
 export type MimicDefinition = {
   component: Component;
@@ -23,9 +23,9 @@ export const MIMICS: Partial<Record<MimicKey, MimicDefinition>> = {
       () => import("@/modules/thrapp/mimics/modules/pvt/PvtModule.vue"),
     ),
   },
-  "pvt-aft": {
+  "pvt-main": {
     component: defineAsyncComponent(
-      () => import("@/modules/thrapp/mimics/modules/pvt-aft/PvtAftModule.vue"),
+      () => import("@/modules/thrapp/mimics/modules/pvt-main/PvtMainModule.vue"),
     ),
   },
   pcm: {

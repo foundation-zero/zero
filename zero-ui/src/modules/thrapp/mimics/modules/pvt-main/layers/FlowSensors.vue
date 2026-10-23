@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
-import { ComponentOrientation } from "../../../components";
-import { getTooltipContexts } from "../../../data";
-import { FlowSensorInstance } from "../../../instances";
+import { ComponentOrientation } from "../../../components/index.ts";
+import { getTooltipContexts } from "../../../data/index.ts";
 import FlowLabelInstance from "../../../instances/FlowLabelInstance.vue";
+import { FlowSensorInstance } from "../../../instances/index.ts";
 
 const flowSensors = getTooltipContexts(MimicComponentType.FlowSensor, [
   "9006-01",

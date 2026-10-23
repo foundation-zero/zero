@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
-import { ComponentOrientation } from "../../../components";
-import { MANUAL_VALVE_WIDTH, ManualValveType } from "../../../components/manual-valve";
-import { getTooltipContexts } from "../../../data";
-import { ManualValveInstance } from "../../../instances";
+import { ComponentOrientation } from "../../../components/index.ts";
+import { MANUAL_VALVE_WIDTH, ManualValveType } from "../../../components/manual-valve/index.ts";
+import { getTooltipContexts } from "../../../data/index.ts";
+import { ManualValveInstance } from "../../../instances/index.ts";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
 
 const manualValves = getTooltipContexts(MimicComponentType.ManualValve, [
