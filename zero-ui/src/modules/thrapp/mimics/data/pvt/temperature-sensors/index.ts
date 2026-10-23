@@ -4,6 +4,7 @@ import { toFieldsMap } from "../../../modules";
 import { getField } from "../../../providers";
 import { toTemperatureSensor } from "../../helpers";
 import { PVT_AFT_TEMPERATURE_SENSORS } from "./_aft";
+import { PVT_OWNERS_TEMPERATURE_SENSORS } from "./_owners";
 
 export const PVT_TEMPERATURE_SENSOR_DATA = toFieldsMap({
   [MimicComponentType.TemperatureSensor]: {
@@ -108,5 +109,6 @@ export const PVT_TEMPERATURE_SENSOR_DATA = toFieldsMap({
       },
     }),
     ...PVT_AFT_TEMPERATURE_SENSORS,
+    ...PVT_OWNERS_TEMPERATURE_SENSORS,
   },
 });
