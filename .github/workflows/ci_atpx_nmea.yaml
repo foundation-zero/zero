@@ -40,7 +40,7 @@ jobs:
         working-directory: zero-atpx-nmea
       - uses: actions/setup-node@v7
         with:
-          node-version: "22"
+          node-version: "24"
       - run: npm install -g @asyncapi/cli@6.0.2
         working-directory: zero-atpx-nmea
       - name: AsyncAPI CLI validation
