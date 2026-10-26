@@ -39,7 +39,7 @@ def _dbt_events(output: str) -> dict[str, list[str]]:
     for line in output.splitlines():
         try:
             info = json.loads(line)["info"]
-        except (json.JSONDecodeError, KeyError):
+        except json.JSONDecodeError, KeyError:
             continue
         events.setdefault(info.get("name", ""), []).append(info.get("msg", ""))
     return events
