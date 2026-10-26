@@ -23,3 +23,6 @@ format:
 
 refresh_io:
     uv run python ./scripts/excel_to_json.py --patches patches.json
+
+generate-asyncapi file="../specs/power-tags.json":
+    uv run python -m zero_power_tags generate-asyncapi {{ file }}

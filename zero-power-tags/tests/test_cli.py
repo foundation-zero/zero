@@ -12,6 +12,7 @@ from zero_power_tags.cli import (
     RunCmd,
     configured_modbus_ports,
     deployed_specs,
+    local_topic_groups,
     resolve_bridge_endpoints,
     stub_ports,
 )
@@ -164,3 +165,7 @@ def test_run_cmd_client_id_from_env(monkeypatch):
     monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
     cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
     assert cmd.mqtt_client_id == "custom-id"
+
+
+def test_local_topic_groups():
+    assert local_topic_groups(_settings(), [_spec("10P1")], 1000) == [([], 1000)]

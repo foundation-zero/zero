@@ -29,13 +29,8 @@ if ! (cd "$REPO_ROOT/zero-termodinamica" && uv run python -m zero_termodinamica 
 fi
 
 echo "  -> power-tags"
-if ! (cd "$REPO_ROOT/zero-power-tags" && uv run python -m zero_power_tags print-asyncapi) > "$SPECS_DIR/power-tags.json"; then
+if ! (cd "$REPO_ROOT/zero-power-tags" && uv run python -m zero_power_tags generate-asyncapi "$SPECS_DIR/power-tags.json"); then
   fail_or_warn "power-tags" || exit 1
-fi
-
-echo "  -> power-tags metadata"
-if ! (cd "$REPO_ROOT/zero-power-tags" && uv run python -m zero_power_tags print-metadata) > "$SPECS_DIR/power-tags-metadata.json"; then
-  fail_or_warn "power-tags metadata" || exit 1
 fi
 
 echo "  -> hull-temperature"
