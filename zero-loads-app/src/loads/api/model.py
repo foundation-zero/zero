@@ -1,7 +1,7 @@
 import logging
 from collections import defaultdict
 from itertools import combinations
-from typing import Sequence
+from typing import Literal, Sequence
 
 from sqlalchemy import Column, Subquery, cast, literal, or_, select, text
 from sqlalchemy.dialects.postgresql import ARRAY, TEXT, insert
@@ -40,6 +40,8 @@ from .types import (
 )
 
 logger = logging.getLogger("api")
+
+ThresholdColumn = Literal["alarm_low", "warning_low", "warning_high", "alarm_high"]
 
 REFERENCE_VALUE_ORDER = [
     "alarm_low",
@@ -105,7 +107,7 @@ def merge_reference_value(
 ) -> ReferenceValue:
     """Take each threshold from the reference value, or from the variable thresholds where it is empty."""
 
-    def threshold(column: str) -> float | None:
+    def threshold(column: ThresholdColumn) -> float | None:
         override = getattr(reference, column, None)
         return (
             override
