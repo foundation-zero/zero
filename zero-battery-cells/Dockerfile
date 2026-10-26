@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM rust:1.99.1-bookworm@sha256:48b7f435b8fc6378ce43b44f15e3a47fd8919b2825f835c39bd4bd3da50af5b8 AS builder
+FROM --platform=$BUILDPLATFORM rust:1.99.1-trixie AS builder
 
 WORKDIR /app
 
@@ -32,7 +32,7 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
   cp target/x86_64-unknown-linux-gnu/release/zero-battery-cells /app/zero-battery-cells; \
   fi
 
-FROM debian:bookworm-slim@sha256:7ff6ba31527b9e336162fa061746c366c4b2032f4d2cff2078bea43f78efe3f8 AS runtime
+FROM debian:trixie-slim AS runtime
 
 RUN apt-get update && \
   apt-get install -y --no-install-recommends ca-certificates && \
