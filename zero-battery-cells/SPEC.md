@@ -25,17 +25,24 @@ One UDP datagram = 20-byte header + payload, all little-endian:
 |-------:|-----:|----------------------------------------------------|
 | 0      | 8    | Preamble `00 2D 53 33 00 00 00 00` (`\0-S3`)       |
 | 8      | 2    | List id (`411` = pack 41-1)                        |
-| 10     | 2    | Packet index within the cycle (0-based)            |
+| 10     | 2    | Packet index within the transmission (0-based)     |
 | 12     | 2    | Variables (INTs) in this datagram                  |
 | 14     | 2    | Total datagram length incl. header (must match)    |
-| 16     | 4    | Cycle counter, +1 per transmission cycle           |
+| 16     | 4    | Datagram counter, +1 per transmission              |
 
-- A pack is larger than one datagram: the PLC sends several per cycle, up to
-  128 INTs (256 bytes) each, sharing a cycle number. Fragments are buffered per
-  list and concatenated in packet-index order once the declared size is reached.
-  A new cycle discards any incomplete set; fragments up to 4 cycles behind the
-  current one are ignored as late, anything further behind is taken as a
-  counter reset (PLC restart) and starts afresh. Cycle distances wrap at `u32`.
+- A pack is larger than one datagram: the PLC sends a burst of 9 per
+  transmission, up to 128 INTs (256 bytes) each. The counter is kept **per
+  packet index**, so the fragments of one burst carry different counters (live
+  traffic: list 462 sends 5666, 5657, 5652, … in one burst) and cannot be
+  grouped by it. Fragments are buffered per list and concatenated in
+  packet-index order once the declared size is reached. Packet 0, or a fragment
+  whose packet index is already buffered (packet 0 was lost), starts the next
+  transmission and discards the incomplete set, so a lost datagram never
+  pairs fragments of different transmissions beyond the next packet 0. The
+  counter only filters repeats: a fragment up to 4 counts
+  behind its packet index's last one is ignored as late or duplicate, anything
+  further behind is taken as a counter reset (PLC restart). Counter distances
+  wrap at `u32`.
 - Variables are packed in declaration order, no padding, every value an
   `INT` (i16).
 - Sender settings (from the PLC project exports, identical for all 22 lists):
