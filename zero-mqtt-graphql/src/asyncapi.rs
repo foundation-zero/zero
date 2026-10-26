@@ -1,7 +1,6 @@
 use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::path::{Path, PathBuf};
-use std::vec;
 
 use crate::metadata::MetadataByTopic;
 use crate::roas_asyncapi::{

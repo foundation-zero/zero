@@ -178,22 +178,29 @@ def build_asyncapi(io_result: IOResult) -> dict[str, Any]:
     topics = sorted(managed_topics, key=lambda topic: topic.topic.topic)
 
     channels = {
-        **{
-            f"subscribe{system}": {
-                "address": f"marpower/{system}/#",
-                "messages": {},
-            }
-            for system in SYSTEMS
-        },
-        **{key(topic): channel(topic) for topic in topics},
+        f"subscribe{system}": {
+            "address": f"marpower/{system}/#",
+            "messages": {},
+        }
+        for system in SYSTEMS
     }
+    channels |= {key(topic): channel(topic) for topic in topics}
+
     operations = {
+        f"subscribe{system}": {
+            "action": "send",
+            "channel": {"$ref": f"#/channels/subscribe{system}"},
+        }
+        for system in SYSTEMS
+    }
+    operations |= {
         key(topic): {
             "action": "send",
             "channel": {"$ref": f"#/channels/{key(topic)}"},
         }
         for topic in topics
     }
+
     schemas = extract_schemas(topics)
 
     return {

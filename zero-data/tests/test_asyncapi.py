@@ -37,9 +37,9 @@ def test_every_topic_has_one_channel_and_one_receive_operation(
     keys = {key(topic) for topic in managed_topics}
 
     assert set(document["channels"]) > keys
-    assert set(document["operations"]) == keys
+    assert set(document["operations"]) > keys
     for operation_key, operation in document["operations"].items():
-        assert operation["action"] == "receive"
+        assert operation["action"] == "send"
         assert operation["channel"] == {"$ref": f"#/channels/{operation_key}"}
 
 

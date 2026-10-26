@@ -72,6 +72,16 @@ def _build_asyncapi(
     )
 
     operations: Mapping[str, Operation | Reference] = {}
+    operations.update(
+        {
+            f"subscribe_{module}": Operation(
+                action="send",
+                channel=Reference(**{"$ref": f"#/channels/thrs_controller_{module}"}),
+            )
+            for module in mode.control_modules
+        }
+    )
+
     messages: Mapping[str, Message | Reference] = {}
     for topic_data in sorted(topics, key=lambda topic: topic.topic):
         message_key = _message_key(topic_data.payload_type)
