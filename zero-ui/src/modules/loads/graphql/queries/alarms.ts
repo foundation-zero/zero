@@ -5,12 +5,13 @@ export const ALARMS = gql`
     alarms(active: $active) {
       id
       name
+      unit
       active
       actualValue
       thresholdValue
       actual {
         variable {
-          unit
+          id
         }
       }
     }

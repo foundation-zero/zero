@@ -132,6 +132,10 @@ class SailType:
 class AlarmType:
     id: str
     name: str
+    unit: Unit = strawberry.field(
+        description="Unit of the actual and threshold value, which can differ from "
+        "the unit of the actual variable"
+    )
     actual_variable_id: strawberry.Private[strawberry.ID]
 
     @strawberry.field

@@ -376,6 +376,7 @@ def get_alarms(ids: Sequence[str]) -> list[AlarmType]:
             AlarmType(
                 id=alarm.id,
                 name=alarm.name,
+                unit=Unit(alarm.unit),
                 actual_variable_id=ID(alarm.actual_definition.id),
             )
             for alarm in alarms

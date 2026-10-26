@@ -3,19 +3,22 @@ import { cn } from "@/modules/common/lib/utils";
 import { computed, HTMLAttributes, toRefs } from "vue";
 import { provideContext } from ".";
 import { getLoadState } from "../../lib/utils";
-import { ReferenceThresholds, VariableUnit } from "../../types";
+import { ReferenceThresholds, VariableState, VariableUnit } from "../../types";
 import { Card } from "../card";
 
 const props = defineProps<{
   value?: number | null;
   thresholds?: Partial<ReferenceThresholds>;
   type: VariableUnit;
+  alarm?: boolean;
   class?: HTMLAttributes["class"];
 }>();
 
 const { value, thresholds, type } = toRefs(props);
 
-const state = computed(() => getLoadState(props.value, props.thresholds));
+const state = computed(() =>
+  props.alarm ? VariableState.Alarm : getLoadState(props.value, props.thresholds),
+);
 
 provideContext({
   state,
