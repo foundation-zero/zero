@@ -89,7 +89,7 @@ impl Decoder {
         let Some(assembled) = self.reassembler.push(
             header.list_id,
             header.packet_index,
-            header.cycle,
+            header.counter,
             parsed.payload,
             spec.declared_bytes as usize,
         ) else {

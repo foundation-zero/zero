@@ -28,8 +28,12 @@ pub struct NetvarHeader {
     pub variables: u16,
     /// Total datagram length, header included, as declared by the sender.
     pub total_len: u16,
-    /// Sender-provided counter, incrementing with every transmission cycle.
-    pub cycle: u32,
+    /// Sender-provided counter of this datagram, +1 per transmission.
+    ///
+    /// Each packet index of a list counts on its own, so the fragments of one
+    /// transmission carry different values; it orders repeats of the same
+    /// fragment, never fragments against each other.
+    pub counter: u32,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -86,17 +90,17 @@ pub struct ParsedDatagram<'a> {
 ///                     0000   packet index within the list
 ///                         0000   variables in packet
 ///                             0000   total datagram length
-///                                 00000000   cycle counter
+///                                 00000000   datagram counter
 /// ```
 pub fn parse_header(input: &[u8]) -> IResult<&[u8], NetvarHeader> {
     map(
         tuple((take(PREAMBLE_LEN), le_u16, le_u16, le_u16, le_u16, le_u32)),
-        |(_preamble, list_id, packet_index, variables, total_len, cycle)| NetvarHeader {
+        |(_preamble, list_id, packet_index, variables, total_len, counter)| NetvarHeader {
             list_id,
             packet_index,
             variables,
             total_len,
-            cycle,
+            counter,
         },
     )(input)
 }
@@ -137,7 +141,7 @@ mod tests {
     use super::*;
 
     /// Build a full datagram from a payload, matching the wire format the parser expects.
-    fn build_datagram(list_id: u16, cycle: u32, payload: &[u8]) -> Vec<u8> {
+    fn build_datagram(list_id: u16, counter: u32, payload: &[u8]) -> Vec<u8> {
         let mut datagram = Vec::with_capacity(HEADER_LEN + payload.len());
         datagram.extend_from_slice(KNOWN_PREAMBLE_PREFIX);
         datagram.extend_from_slice(&[0u8; PREAMBLE_LEN - KNOWN_PREAMBLE_PREFIX.len()]);
@@ -145,7 +149,7 @@ mod tests {
         datagram.extend_from_slice(&0u16.to_le_bytes());
         datagram.extend_from_slice(&(payload.len() as u16).to_le_bytes());
         datagram.extend_from_slice(&((HEADER_LEN + payload.len()) as u16).to_le_bytes());
-        datagram.extend_from_slice(&cycle.to_le_bytes());
+        datagram.extend_from_slice(&counter.to_le_bytes());
         datagram.extend_from_slice(payload);
         datagram
     }
@@ -158,7 +162,7 @@ mod tests {
         assert_eq!(header.packet_index, 0);
         assert_eq!(header.variables, 12);
         assert_eq!(header.total_len, 32);
-        assert_eq!(header.cycle, 0x0403_0201);
+        assert_eq!(header.counter, 0x0403_0201);
         assert_eq!(rest.len(), 12);
         assert!(has_known_preamble(&datagram[..PREAMBLE_LEN]));
     }
@@ -169,7 +173,7 @@ mod tests {
         let datagram = build_datagram(2, 7, &payload);
         let parsed = parse_datagram(&datagram).expect("datagram should parse");
         assert_eq!(parsed.header.list_id, 2);
-        assert_eq!(parsed.header.cycle, 7);
+        assert_eq!(parsed.header.counter, 7);
         assert_eq!(parsed.payload, &[1, 2, 3, 4]);
         assert!(parsed.preamble.starts_with(KNOWN_PREAMBLE_PREFIX));
     }
@@ -177,7 +181,7 @@ mod tests {
     #[test]
     fn parse_datagram_reads_the_bench_capture_header() {
         // First datagram of the bench capture, minus its (all zero) payload:
-        // list 411, packet 0 of 4, 128 variables, 276 bytes, cycle 63.
+        // list 411, packet 0 of 4, 128 variables, 276 bytes, counter 63.
         let mut datagram = vec![
             0x00, 0x2d, 0x53, 0x33, 0x00, 0x00, 0x00, 0x00, 0x9b, 0x01, 0x00, 0x00, 0x80, 0x00,
             0x14, 0x01, 0x3f, 0x00, 0x00, 0x00,
@@ -192,7 +196,7 @@ mod tests {
                 packet_index: 0,
                 variables: 128,
                 total_len: 276,
-                cycle: 63,
+                counter: 63,
             }
         );
         assert_eq!(parsed.payload.len(), 256);
