@@ -206,6 +206,7 @@ class BladeAdjuster(LoadsModel, ABC):
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    # The PLC adds the blade cunningham load to the adjuster load.
     headstay_combined_load: Annotated[
         Load,
         Field(validation_alias="i_CombinedLoad"),
@@ -215,7 +216,6 @@ class BladeAdjuster(LoadsModel, ABC):
             technical_name="main-headstay-combined-load",
         ),
     ]
-    # TODO: Confirm this alarm and add its max load setting once the max loads sheet is finished.
     headstay_combined_load_alarm: Annotated[
         LoadAlarm,
         Field(validation_alias="x_CombinedLoadAlarm"),
@@ -223,6 +223,11 @@ class BladeAdjuster(LoadsModel, ABC):
             name="headstay_combined_max_load_alarm",
             alarm_for="headstay_combined_load",
         ),
+    ]
+    headstay_combined_max_load: Annotated[
+        MaxLoad,
+        Field(validation_alias="i_MaxCombinedLoadSetting"),
+        VariableMeta(threshold_for="headstay_combined_load_alarm"),
     ]
     relative_position: Annotated[
         RelativePosition,
