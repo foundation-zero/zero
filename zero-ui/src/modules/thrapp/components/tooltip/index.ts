@@ -3,13 +3,16 @@ export { default as MimicTooltipProvider } from "./MimicTooltipProvider.vue";
 export { default as MimicTooltipTrigger } from "./MimicTooltipTrigger.vue";
 export { default as NoopTooltipProvider } from "./NoopTooltipProvider.vue";
 
-import { isEqual } from "lodash";
 import { createContext } from "reka-ui";
 import { type Component, markRaw, ref, type Ref, toRefs, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
-import { MimicComponentFieldsMap } from "../../mimics/modules/index.ts";
-import { deserializeField, ModuleField, serializeField } from "../../mimics/providers/index.ts";
+import {
+  getTooltipContext as _getTooltipContext,
+  findTooltipContext,
+  RegisterField,
+} from "../../mimics/data";
+import { ModuleField } from "../../mimics/providers";
 import { TOOLTIPS } from "../../mimics/tooltips";
 import { MimicComponentType } from "../../types";
 import { ExtractComponentFields } from "../../types/fields";
@@ -24,6 +27,9 @@ export type TooltipContent = {
 
 export type TooltipComponentContext<Type extends MimicComponentType = MimicComponentType> = {
   tooltip?: TooltipContent;
+  registerField?: RegisterField<Type>;
+  type?: Type;
+  index?: number;
 } & ExtractComponentFields<Type>;
 
 export type TooltipContext = {
@@ -38,9 +44,7 @@ export type TooltipContext = {
   ) => void;
   setDialog(component: Component): void;
   closeDialog(): void;
-  findTooltipContext: (
-    source: ModuleField,
-  ) => [MimicComponentType, TooltipComponentContext] | undefined;
+  findTooltipContext: (source: ModuleField | string) => TooltipComponentContext[];
   getData: <Type extends MimicComponentType>() => TooltipComponentContext<Type> | null;
   clear(): void;
 };
@@ -48,9 +52,7 @@ export type TooltipContext = {
 export const [getTooltipContext, provideTooltipContext] =
   createContext<TooltipContext>("TooltipContext");
 
-export const createTooltipContext = (
-  sourceData: Partial<MimicComponentFieldsMap>,
-): TooltipContext => {
+export const createTooltipContext = (): TooltipContext => {
   const { te, t } = useI18n();
   const component = ref<Component | null>(null);
   const dialog = ref<Component | null>(null);
@@ -65,27 +67,6 @@ export const createTooltipContext = (
 
     data.value = context as TooltipComponentContext;
     component.value = markRaw(comp);
-  };
-
-  const findTooltipContext = (
-    source: ModuleField,
-  ): [MimicComponentType, TooltipComponentContext] | undefined => {
-    const typesData = Object.entries(sourceData) as [
-      MimicComponentType,
-      Record<string, TooltipComponentContext>,
-    ][];
-
-    for (const [type, data] of typesData) {
-      const values = Object.values(data) as TooltipComponentContext[];
-
-      const sourceValue = values.find(
-        (val) => val.source && isEqual(serializeField(val.source), serializeField(source)),
-      );
-
-      if (sourceValue) {
-        return [type, sourceValue];
-      }
-    }
   };
 
   const getData = <Type extends MimicComponentType>() => {
@@ -115,19 +96,19 @@ export const createTooltipContext = (
       if (!next.tooltip) {
         clear();
       } else if (next.tooltip !== prev?.tooltip) {
-        const field = deserializeField(String(next.tooltip));
+        const field = String(next.tooltip);
+        const type = String(next.type) as MimicComponentType;
+        const index = Number(next.index) || 0;
 
         if (!field) return;
 
-        const tooltipContext = findTooltipContext(field);
+        const tooltipContext = _getTooltipContext(type)(field as never, index);
 
         if (!tooltipContext) return;
 
-        const [type, tooltip] = tooltipContext;
-
-        setTooltip(tooltip, TOOLTIPS[type]);
+        setTooltip(tooltipContext, TOOLTIPS[type]);
         const titleKey = `thrapp.tooltips.titles.${type}`;
-        title.value = te(titleKey) ? t(titleKey) : (tooltip?.tooltip?.title ?? null);
+        title.value = te(titleKey) ? t(titleKey) : (tooltipContext?.tooltip?.title ?? null);
       }
     },
     { immediate: true },

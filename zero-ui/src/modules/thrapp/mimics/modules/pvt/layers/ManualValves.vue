@@ -2,11 +2,30 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { MANUAL_VALVE_WIDTH, ManualValveType } from "../../../components/manual-valve";
+import { getTooltipContexts } from "../../../data";
 import { ManualValveInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
-import { PVT_MIMIC_DATA } from "../data";
 
-const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
+const manualValves = getTooltipContexts(MimicComponentType.ManualValve, [
+  "1169-05",
+  "1169-04",
+  "1168-12",
+  "1168-30",
+  "1168-31",
+  "1168-32",
+  "1069-06",
+  "1169-07",
+  "1169-08",
+  "1169-09",
+  "1191-01",
+  "1191-02",
+  "1168-19",
+  "1167-11",
+  "1170-05",
+  "1170-06",
+  "1177-01",
+  "1177-02",
+]);
 </script>
 
 <template>
@@ -14,7 +33,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="249"
       y="99"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1169-05']"
     >
@@ -28,7 +47,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="249"
       y="307"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1169-04']"
     >
@@ -42,7 +61,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="249"
       y="516"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1168-12']"
     >
@@ -56,7 +75,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="345"
       y="250"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Left"
       v-bind="manualValves['1168-30']"
     >
@@ -69,7 +88,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="361"
       y="445"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Left"
       v-bind="manualValves['1168-31']"
     >
@@ -82,7 +101,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="345"
       y="560"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Left"
       v-bind="manualValves['1168-32']"
     >
@@ -95,7 +114,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="500"
       y="203"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1069-06']"
     >
@@ -109,7 +128,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="577"
       y="203"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1169-07']"
     >
@@ -124,7 +143,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="500"
       y="398"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1169-08']"
     >
@@ -138,7 +157,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="577"
       y="398"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1169-09']"
     >
@@ -153,7 +172,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="500"
       y="622"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1191-01']"
     >
@@ -167,7 +186,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="577"
       y="622"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1191-02']"
     >
@@ -181,7 +200,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="1171"
       y="182"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1168-19']"
     >
@@ -194,7 +213,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="1171"
       y="229"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
       v-bind="manualValves['1167-11']"
     >
@@ -207,7 +226,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="1042"
       y="338"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Right"
       v-bind="manualValves['1170-05']"
     >
@@ -220,7 +239,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="1042"
       y="450"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Right"
       v-bind="manualValves['1170-06']"
     >
@@ -233,7 +252,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="839"
       y="569"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Right"
       v-bind="manualValves['1177-01']"
     >
@@ -247,7 +266,7 @@ const manualValves = PVT_MIMIC_DATA[MimicComponentType.ManualValve];
     <ManualValveInstance
       x="920"
       y="569"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Right"
       v-bind="manualValves['1177-02']"
     >

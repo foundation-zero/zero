@@ -1,9 +1,9 @@
 # TODO: generate this from asyncapi spec
-from zero_data.io_list.managed_topics import ManagedTopic
+from zero_data.io_list.managed_topics import ComponentType, ManagedTopic
 from zero_data.io_list.types import IOTopic
 
-THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
-    "calculated_flows": {
+THRS_CALCULATED_DEVICES: dict[ComponentType, dict[str, tuple[str, ...]]] = {
+    ComponentType.CALCULATED_FLOW: {
         "dc": (
             "dc-total-flow",
             "dc-aft-flow",
@@ -25,7 +25,7 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
         ),
         "thrusters": ("thrusters-flow",),
     },
-    "calculated_temperatures": {
+    ComponentType.CALCULATED_TEMPERATURE: {
         "adsorption": ("adsorption-temperature-waste-supply-before-seawater",),
         "pcm": ("pcm-temperature-consumers-return",),
         "pvt": (
@@ -45,7 +45,7 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
             "thrusters-temperature-pre-cooler",
         ),
     },
-    "heat_transfers": {
+    ComponentType.HEAT_TRANSFER: {
         "adsorption": (
             "adsorption-hot-heat",
             "adsorption-waste-heat",
@@ -106,7 +106,7 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
             "thrusters-pcm-heat",
         ),
     },
-    "pid_controllers": {
+    ComponentType.PID_CONTROLLER: {
         "adsorption": (
             "adsorption-hot-mix-controller",
             "adsorption-recovery-controller",
@@ -166,10 +166,10 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
             "thrusters-fwd-flow-controller",
         ),
     },
-    "tank_controllers": {
+    ComponentType.TANK_CONTROLLER: {
         "dhw": ("dhw-tanks-controller",),
     },
-    "pcm_charge_controllers": {
+    ComponentType.PCM_CHARGE_CONTROLLER: {
         "pcm": (
             "pcm-module1-charge-controller",
             "pcm-module2-charge-controller",
@@ -183,9 +183,10 @@ THRS_CALCULATED_DEVICES: dict[str, dict[str, tuple[str, ...]]] = {
 def generate_controller_managed_topics():
     return [
         ManagedTopic(
-            component,
-            technical_name,
             "thrs",
+            module,
+            technical_name,
+            component,
             IOTopic(f"thrs/controller/{module}/{technical_name}", [], ""),
         )
         for component, data in THRS_CALCULATED_DEVICES.items()

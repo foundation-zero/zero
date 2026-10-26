@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { ExtractSensorFields } from "@/modules/thrapp/types/fields.ts";
-import { MimicComponentType } from "@/modules/thrapp/types/index.ts";
 import { useTranslations } from "..";
 import { SensorValue } from "../../providers";
 

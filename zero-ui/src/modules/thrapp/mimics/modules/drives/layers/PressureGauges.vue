@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { PRESSURE_GAUGE_WIDTH } from "../../../components/pressure-gauge";
+import { getTooltipContexts } from "../../../data";
 import { PressureGaugeInstance, TagLabelInstance } from "../../../instances";
-import { DRIVES_PRESSURE_GAUGE_DATA } from "../data";
 
-const pressureGauges = DRIVES_PRESSURE_GAUGE_DATA.PressureGauge;
+const pressureGauges = getTooltipContexts(MimicComponentType.PressureGauge, ["1096-05", "1095-13"]);
 </script>
 
 <template>

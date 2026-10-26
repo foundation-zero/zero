@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { reactiveOmit } from "@vueuse/core";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
@@ -11,15 +12,13 @@ const props = defineProps<
 
 const { getComponentState } = getMimicDataProvider();
 const state = getComponentState();
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.FlowSensor"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <FlowSensor
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="state"
     />
     <slot />

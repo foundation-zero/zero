@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
+import { getTooltipContexts } from "../../../data";
 import { AirTrapVesselInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
-import { PCM_AIR_TRAP_VESSEL_DATA } from "../data";
+
+const airTrapVessels = getTooltipContexts(MimicComponentType.AirTrapVessel, ["1084"]);
 </script>
 
 <template>
@@ -11,7 +14,7 @@ import { PCM_AIR_TRAP_VESSEL_DATA } from "../data";
       x="200"
       y="-30"
       :orientation="ComponentOrientation.Up"
-      v-bind="PCM_AIR_TRAP_VESSEL_DATA.AirTrapVessel['1084']"
+      v-bind="airTrapVessels['1084']"
     />
     <TagLabelInstance
       x="230"

@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { PUMP_WIDTH } from "../../../components/pump";
+import { getTooltipContexts } from "../../../data";
 import { DutypointLabelInstance, PumpInstance } from "../../../instances";
-import { DRIVES_PUMP_DATA } from "../data";
 
-const pumps = DRIVES_PUMP_DATA.Pump;
+const pumps = getTooltipContexts(MimicComponentType.Pump, ["1028", "1029"]);
 </script>
 
 <template>

@@ -538,10 +538,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tmak_1_alarm__value AS fresh_water_mak1_alarm,\r\n\t\t\tmak_2_alarm__value AS fresh_water_mak2_alarm,\r\n\t\t\tchlorine_unit_alarm__value AS fresh_water_chlorine_unit_alarm\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tmak_1_alarm__value AS fresh_water_mak1_alarm,\r\n\t\t\tmak_2_alarm__value AS fresh_water_mak2_alarm,\r\n\t\t\tchlorine_unit_alarm__value AS fresh_water_chlorine_unit_alarm\r\nFROM public.marpower__250000_fresh_water__general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -811,10 +811,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tcirc_pump_running__value AS fresh_water_circ_pump_running\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tcirc_pump_running__value AS fresh_water_circ_pump_running\r\nFROM public.marpower__250000_fresh_water__general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1103,10 +1103,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tcirc_pump_onoff__value AS fresh_water_circ_pump_onoff\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT timestamp AS time,\r\n\t\t\tcirc_pump_onoff__value AS fresh_water_circ_pump_onoff\r\nFROM public.marpower__250000_fresh_water__general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1303,10 +1303,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  date_bin('$__interval', timestamp) AS time,\r\n  MAX(mak_1_alarm__value)            AS fresh_water_mak1_alarm,\r\n  MAX(mak_2_alarm__value)            AS fresh_water_mak2_alarm,\r\n  MAX(chlorine_unit_alarm__value)    AS fresh_water_chlorine_unit_alarm,\r\n  MAX(circ_pump_running__value)      AS fresh_water_circ_pump_running,\r\n  MAX(circ_pump_onoff__value)        AS fresh_water_circ_pump_onoff\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
+              "rawSql": "SELECT\r\n  date_bin('$__interval', timestamp) AS time,\r\n  MAX(mak_1_alarm__value)            AS fresh_water_mak1_alarm,\r\n  MAX(mak_2_alarm__value)            AS fresh_water_mak2_alarm,\r\n  MAX(chlorine_unit_alarm__value)    AS fresh_water_chlorine_unit_alarm,\r\n  MAX(circ_pump_running__value)      AS fresh_water_circ_pump_running,\r\n  MAX(circ_pump_onoff__value)        AS fresh_water_circ_pump_onoff\r\nFROM public.marpower__250000_fresh_water__general\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3663,10 +3663,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                                                                                                      AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END                                                                                                AS unit,\r\n  CASE WHEN $use_volume THEN coldwater_guest_cabin_sb_flow__value * $volume_time / 60.0 ELSE coldwater_guest_cabin_sb_flow__value END            AS guest_cabin_sb_flow,\r\n  CASE WHEN $use_volume THEN coldwater_guest_cabin_ps_fwd_flow__value * $volume_time / 60.0 ELSE coldwater_guest_cabin_ps_fwd_flow__value END    AS guest_cabin_ps_fwd_flow,\r\n  CASE WHEN $use_volume THEN coldwater_guest_cabin_ps_aft_flow__value * $volume_time / 60.0 ELSE coldwater_guest_cabin_ps_aft_flow__value END    AS guest_cabin_ps_aft_flow,\r\n  CASE WHEN $use_volume THEN coldwater_master_cabin_sb_flow__value * $volume_time / 60.0 ELSE coldwater_master_cabin_sb_flow__value END          AS master_cabin_sb_flow,\r\n  CASE WHEN $use_volume THEN coldwater_master_cabin_ps_flow__value * $volume_time / 60.0 ELSE coldwater_master_cabin_ps_flow__value END          AS master_cabin_ps_flow,\r\n  CASE WHEN $use_volume THEN coldwater_guest_bathr_ps_fwd_flow__value * $volume_time / 60.0 ELSE coldwater_guest_bathr_ps_fwd_flow__value END    AS guest_bathroom_flow,\r\n  CASE WHEN $use_volume THEN coldwater_captains_cabin_flow__value * $volume_time / 60.0 ELSE coldwater_captains_cabin_flow__value END            AS captains_cabin_flow,\r\n  CASE WHEN $use_volume THEN coldwater_crew_cabin_sb_aft_flow__value * $volume_time / 60.0 ELSE coldwater_crew_cabin_sb_aft_flow__value END      AS crew_cabin_sb_aft_flow,\r\n  CASE WHEN $use_volume THEN coldwater_crew_cabin_sb_mid_flow__value * $volume_time / 60.0 ELSE coldwater_crew_cabin_sb_mid_flow__value END      AS crew_cabin_sb_mid_flow,\r\n  CASE WHEN $use_volume THEN coldwater_crew_cabin_ps_mid_flow__value * $volume_time / 60.0 ELSE coldwater_crew_cabin_ps_mid_flow__value END      AS crew_cabin_ps_mid_flow,\r\n  CASE WHEN $use_volume THEN coldwater_crew_cabin_sb_fwd_flow__value * $volume_time / 60.0 ELSE coldwater_crew_cabin_sb_fwd_flow__value END      AS crew_cabin_sb_fwd_flow,\r\n  CASE WHEN $use_volume THEN coldwater_crew_cabin_ps_fwd_flow__value * $volume_time / 60.0 ELSE coldwater_crew_cabin_ps_fwd_flow__value END      AS crew_cabin_ps_fwd_flow\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  MAX(time)                                                                   AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END                             AS unit,\r\n  MAX(CASE WHEN name = 'cold-flow-guest-cabin-sb' THEN flow END)              AS guest_cabin_sb_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-guest-cabin-ps-fwd' THEN flow END)          AS guest_cabin_ps_fwd_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-guest-cabin-ps-aft' THEN flow END)          AS guest_cabin_ps_aft_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-master-cabin-sb' THEN flow END)             AS master_cabin_sb_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-master-cabin-ps' THEN flow END)             AS master_cabin_ps_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-guest-cabin-bathroom-ps-fwd' THEN flow END) AS guest_bathroom_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-captains-cabin' THEN flow END)              AS captains_cabin_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-crew-cabin-sb-aft' THEN flow END)           AS crew_cabin_sb_aft_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-crew-cabin-sb-mid' THEN flow END)           AS crew_cabin_sb_mid_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-crew-cabin-ps-mid' THEN flow END)           AS crew_cabin_ps_mid_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-crew-cabin-sb-fwd' THEN flow END)           AS crew_cabin_sb_fwd_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-crew-cabin-ps-fwd' THEN flow END)           AS crew_cabin_ps_fwd_flow\r\n\r\n  FROM (\r\n  SELECT DISTINCT ON (technical_name)\r\n    timestamp                                                                                    AS time,\r\n    technical_name                                                                               AS name,\r\n    CASE WHEN $use_volume THEN flow__value * $volume_time / 60.0 ELSE flow__value END            AS flow,\r\n  FROM public.marpower__fresh_water__flows\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY technical_name, timestamp DESC\r\n)\r\nGROUP BY unit",
           "refId": "A",
           "sql": {
             "columns": [
@@ -4088,7 +4088,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "galley_2_flow",
+                  "field": "galley_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -4125,7 +4125,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Galley 2"
+                  "fixed": "Galley"
                 },
                 "valign": "middle"
               },
@@ -4161,7 +4161,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "laundry_ps_flow",
+                  "field": "laundry_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -4174,6 +4174,7 @@
               "placement": {
                 "height": 30,
                 "left": 700,
+                "rotation": 0,
                 "top": 9,
                 "width": 107
               },
@@ -4197,7 +4198,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Laundry PS"
+                  "fixed": "Laundry"
                 },
                 "valign": "middle"
               },
@@ -4209,6 +4210,7 @@
               "placement": {
                 "height": 30,
                 "left": 464,
+                "rotation": 0,
                 "top": 9,
                 "width": 122.94999694824219
               },
@@ -4232,7 +4234,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "deck_fr_48_sb_tech_cor_flow",
+                  "field": "deck_douche_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -4269,7 +4271,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Deck FR48 SB tech corr."
+                  "fixed": "Deck douche"
                 },
                 "valign": "middle"
               },
@@ -4378,7 +4380,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "main_tech_space_flow",
+                  "field": "main_tech_space_sink_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -4415,7 +4417,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Main tech space"
+                  "fixed": "Tech space sink"
                 },
                 "valign": "middle"
               },
@@ -4451,7 +4453,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "main_tech_space_fr_45_flow",
+                  "field": "from_tank_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -4488,7 +4490,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Main tech space FR45"
+                  "fixed": "From tank"
                 },
                 "valign": "middle"
               },
@@ -4790,8 +4792,8 @@
                 "size": 12,
                 "text": {
                   "field": "main_tech_space_flow_tag",
-                  "fixed": " ",
-                  "mode": "field"
+                  "fixed": "(25001037_C1)",
+                  "mode": "fixed"
                 },
                 "valign": "middle"
               },
@@ -5699,8 +5701,8 @@
                 "size": 12,
                 "text": {
                   "field": "owner_deckhouse_flow_tag",
-                  "fixed": " ",
-                  "mode": "field"
+                  "fixed": "(25001037_C3)",
+                  "mode": "fixed"
                 },
                 "valign": "middle"
               },
@@ -5845,7 +5847,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Main deckh."
+                  "fixed": "Deckhouse"
                 },
                 "valign": "middle"
               },
@@ -6012,10 +6014,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                                                                                                              AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END                                                                                                        AS unit,\r\n  CASE WHEN $use_volume THEN coldwater_lower_saloon_flow__value * $volume_time / 60.0 ELSE coldwater_lower_saloon_flow__value END                        AS lower_saloon_flow,\r\n  CASE WHEN $use_volume THEN coldwater_crew_mess_flow__value * $volume_time / 60.0 ELSE coldwater_crew_mess_flow__value END                              AS crew_mess_flow,\r\n  CASE WHEN $use_volume THEN coldwater_galley_2_flow__value * $volume_time / 60.0 ELSE coldwater_galley_2_flow__value END                                AS galley_2_flow,\r\n  CASE WHEN $use_volume THEN coldwater_dayhead_flow__value * $volume_time / 60.0 ELSE coldwater_dayhead_flow__value END                                  AS dayhead_flow,\r\n  CASE WHEN $use_volume THEN coldwater_lazaret_flow__value * $volume_time / 60.0 ELSE coldwater_lazaret_flow__value END                                  AS lazaret_flow,\r\n  CASE WHEN $use_volume THEN coldwater_laundry_ps_flow__value * $volume_time / 60.0 ELSE coldwater_laundry_ps_flow__value END                            AS laundry_ps_flow,\r\n  CASE WHEN $use_volume THEN coldwater_deckhouse_flow__value * $volume_time / 60.0 ELSE coldwater_deckhouse_flow__value END                              AS main_deckhouse_flow,\r\n  CASE WHEN $use_volume THEN coldwater_owners_deckhouse_flow__value * $volume_time / 60.0 ELSE coldwater_owners_deckhouse_flow__value END                AS owner_deckhouse_flow,\r\n  CASE WHEN $use_volume THEN coldwater_deck_fr_48_sb_tech_cor_flow__value * $volume_time / 60.0 ELSE coldwater_deck_fr_48_sb_tech_cor_flow__value END    AS deck_fr_48_sb_tech_cor_flow,\r\n  CASE WHEN $use_volume THEN coldwater_water_softner_flow__value * $volume_time / 60.0 ELSE coldwater_water_softner_flow__value END                      AS water_softner_flow,\r\n  CASE WHEN $use_volume THEN coldwater_main_tech_space_flow__value * $volume_time / 60.0 ELSE coldwater_main_tech_space_flow__value END                  AS main_tech_space_flow,\r\n  CASE WHEN $use_volume THEN coldwater_main_tech_space_fr_45_flow__value * $volume_time / 60.0 ELSE coldwater_main_tech_space_fr_45_flow__value END      AS main_tech_space_fr_45_flow\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  MAX(time)                                                            AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END                      AS unit,\r\n  MAX(CASE WHEN name = 'cold-flow-lower-saloon' THEN flow END)         AS lower_saloon_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-crew-mess' THEN flow END)            AS crew_mess_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-galley' THEN flow END)               AS galley_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-dayhead' THEN flow END)              AS dayhead_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-lazaret' THEN flow END)              AS lazaret_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-laundry' THEN flow END)              AS laundry_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-deckhouse' THEN flow END)            AS main_deckhouse_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-owners-deckhouse' THEN flow END)     AS owner_deckhouse_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-deck-douche' THEN flow END)          AS deck_douche_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-water-softner' THEN flow END)        AS water_softner_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-technical-space-sink' THEN flow END) AS main_tech_space_sink_flow,\r\n  MAX(CASE WHEN name = 'cold-flow-from-tank' THEN flow END)            AS from_tank_flow\r\n\r\n  FROM (\r\n  SELECT DISTINCT ON (technical_name)\r\n    timestamp                                                                                    AS time,\r\n    technical_name                                                                               AS name,\r\n    CASE WHEN $use_volume THEN flow__value * $volume_time / 60.0 ELSE flow__value END            AS flow,\r\n  FROM public.marpower__fresh_water__flows\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY technical_name, timestamp DESC\r\n)\r\nGROUP BY unit",
           "refId": "A",
           "sql": {
             "columns": [
@@ -6054,9 +6056,9 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_lower_saloon_flow' THEN '(' || yard_tag || ')' ELSE NULL END)            AS lower_saloon_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_crew_mess_flow' THEN '(' || yard_tag || ')' ELSE NULL END)               AS crew_mess_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_galley_2_flow' THEN '(' || yard_tag || ')' ELSE NULL END)                AS galley_2_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_dayhead_flow' THEN '(' || yard_tag || ')' ELSE NULL END)                 AS dayhead_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_lazaret_flow' THEN '(' || yard_tag || ')' ELSE NULL END)                 AS lazaret_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_laundry_ps_flow' THEN '(' || yard_tag || ')' ELSE NULL END)              AS laundry_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_deckhouse_flow' THEN '(' || yard_tag || ')' ELSE NULL END)               AS main_deckhouse_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_owners_deckhouse_flow' THEN '(' || yard_tag || ')' ELSE NULL END)        AS owner_deckhouse_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_deck_fr48_sb_tech_cor_flow' THEN '(' || yard_tag || ')' ELSE NULL END)   AS deck_fr48_sb_tech_cor_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_water_softner_flow' THEN '(' || yard_tag || ')' ELSE NULL END)           AS water_softner_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_main_tech_space_flow' THEN '(' || yard_tag || ')' ELSE NULL END)         AS main_tech_space_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_main_tech_space_fr45_flow' THEN '(' || yard_tag || ')' ELSE NULL END)    AS main_tech_space_fr45_flow_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_lower_saloon_flow' THEN '(' || yard_tag || ')' ELSE NULL END)            AS lower_saloon_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_crew_mess_flow' THEN '(' || yard_tag || ')' ELSE NULL END)               AS crew_mess_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_galley_2_flow' THEN '(' || yard_tag || ')' ELSE NULL END)                AS galley_2_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_dayhead_flow' THEN '(' || yard_tag || ')' ELSE NULL END)                 AS dayhead_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_lazaret_flow' THEN '(' || yard_tag || ')' ELSE NULL END)                 AS lazaret_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_laundry_ps_flow' THEN '(' || yard_tag || ')' ELSE NULL END)              AS laundry_ps_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_deckhouse_flow' THEN '(' || yard_tag || ')' ELSE NULL END)               AS main_deckhouse_flow_tag,\r\n  -- MAX(CASE WHEN mqtt_json_path = 'coldwater_owners_deckhouse_flow' THEN '(' || yard_tag || ')' ELSE NULL END)        AS owner_deckhouse_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_deck_fr48_sb_tech_cor_flow' THEN '(' || yard_tag || ')' ELSE NULL END)   AS deck_fr48_sb_tech_cor_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_water_softner_flow' THEN '(' || yard_tag || ')' ELSE NULL END)           AS water_softner_flow_tag,\r\n  -- MAX(CASE WHEN mqtt_json_path = 'flow_sensor_25001037_c1' THEN '(' || yard_tag || ')' ELSE NULL END)         AS main_tech_space_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'coldwater_main_tech_space_fr45_flow' THEN '(' || yard_tag || ')' ELSE NULL END)    AS main_tech_space_fr45_flow_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
           "refId": "B"
         }
       ],
@@ -8373,10 +8375,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                                                                                                      AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END                                                                                                AS unit,\r\n  CASE WHEN $use_volume THEN hotwater_guest_cabin_sb_flow__value * $volume_time / 60.0 ELSE hotwater_guest_cabin_sb_flow__value END            AS guest_cabin_sb_flow,\r\n  CASE WHEN $use_volume THEN hotwater_guest_cabin_ps_fwd_flow__value * $volume_time / 60.0 ELSE hotwater_guest_cabin_ps_fwd_flow__value END    AS guest_cabin_ps_fwd_flow,\r\n  CASE WHEN $use_volume THEN hotwater_guest_cabin_ps_aft_flow__value * $volume_time / 60.0 ELSE hotwater_guest_cabin_ps_aft_flow__value END    AS guest_cabin_ps_aft_flow,\r\n  CASE WHEN $use_volume THEN hotwater_master_cabin_sb_flow__value * $volume_time / 60.0 ELSE hotwater_master_cabin_sb_flow__value END          AS master_cabin_sb_flow,\r\n  CASE WHEN $use_volume THEN hotwater_master_cabin_ps_flow__value * $volume_time / 60.0 ELSE hotwater_master_cabin_ps_flow__value END          AS master_cabin_ps_flow,\r\n  CASE WHEN $use_volume THEN hotwater_guest_bathr_ps_fwd_flow__value * $volume_time / 60.0 ELSE hotwater_guest_bathr_ps_fwd_flow__value END    AS guest_bathroom_flow,\r\n  CASE WHEN $use_volume THEN hotwater_captains_cabin_flow__value * $volume_time / 60.0 ELSE hotwater_captains_cabin_flow__value END            AS captains_cabin_flow,\r\n  CASE WHEN $use_volume THEN hotwater_crew_cabin_sb_aft_flow__value * $volume_time / 60.0 ELSE hotwater_crew_cabin_sb_aft_flow__value END      AS crew_cabin_sb_aft_flow,\r\n  CASE WHEN $use_volume THEN hotwater_crew_cabin_sb_mid_flow__value * $volume_time / 60.0 ELSE hotwater_crew_cabin_sb_mid_flow__value END      AS crew_cabin_sb_mid_flow,\r\n  CASE WHEN $use_volume THEN hotwater_crew_cabin_ps_mid_flow__value * $volume_time / 60.0 ELSE hotwater_crew_cabin_ps_mid_flow__value END      AS crew_cabin_ps_mid_flow,\r\n  CASE WHEN $use_volume THEN hotwater_crew_cabin_sb_fwd_flow__value * $volume_time / 60.0 ELSE hotwater_crew_cabin_sb_fwd_flow__value END      AS crew_cabin_sb_fwd_flow,\r\n  CASE WHEN $use_volume THEN hotwater_crew_cabin_ps_fwd_flow__value * $volume_time / 60.0 ELSE hotwater_crew_cabin_ps_fwd_flow__value END      AS crew_cabin_ps_fwd_flow\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  MAX(time)                                                                   AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END                             AS unit,\r\n  MAX(CASE WHEN name = 'hot-flow-guest-cabin-sb' THEN flow END)              AS guest_cabin_sb_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-guest-cabin-ps-fwd' THEN flow END)          AS guest_cabin_ps_fwd_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-guest-cabin-ps-aft' THEN flow END)          AS guest_cabin_ps_aft_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-master-cabin-sb' THEN flow END)             AS master_cabin_sb_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-master-cabin-ps' THEN flow END)             AS master_cabin_ps_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-guest-cabin-bathroom-ps-fwd' THEN flow END) AS guest_bathroom_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-captains-cabin' THEN flow END)              AS captains_cabin_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-crew-cabin-sb-aft' THEN flow END)           AS crew_cabin_sb_aft_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-crew-cabin-sb-mid' THEN flow END)           AS crew_cabin_sb_mid_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-crew-cabin-ps-mid' THEN flow END)           AS crew_cabin_ps_mid_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-crew-cabin-sb-fwd' THEN flow END)           AS crew_cabin_sb_fwd_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-crew-cabin-ps-fwd' THEN flow END)           AS crew_cabin_ps_fwd_flow\r\n\r\n  FROM (\r\n  SELECT DISTINCT ON (technical_name)\r\n    timestamp                                                                                    AS time,\r\n    technical_name                                                                               AS name,\r\n    CASE WHEN $use_volume THEN flow__value * $volume_time / 60.0 ELSE flow__value END            AS flow,\r\n  FROM public.marpower__fresh_water__flows\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY technical_name, timestamp DESC\r\n)\r\nGROUP BY unit",
           "refId": "A",
           "sql": {
             "columns": [
@@ -8723,7 +8725,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "galley_2_flow",
+                  "field": "galley_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -8760,7 +8762,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Galley 2"
+                  "fixed": "Galley"
                 },
                 "valign": "middle"
               },
@@ -8796,7 +8798,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "laundry_ps_flow",
+                  "field": "laundry_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -8833,7 +8835,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Laundry PS"
+                  "fixed": "Laundry"
                 },
                 "valign": "middle"
               },
@@ -8906,7 +8908,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Main deckh."
+                  "fixed": "Deckhouse"
                 },
                 "valign": "middle"
               },
@@ -8942,7 +8944,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "deck_fr_48_sb_tech_cor_flow",
+                  "field": "deck_douche_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -8979,7 +8981,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Deck FR48 SB tech corr."
+                  "fixed": "Deck douche"
                 },
                 "valign": "middle"
               },
@@ -9015,7 +9017,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "main_tech_space_flow",
+                  "field": "main_tech_space_sink_flow",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -9052,7 +9054,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Main tech space"
+                  "fixed": "Tech space sink"
                 },
                 "valign": "middle"
               },
@@ -9354,8 +9356,8 @@
                 "size": 12,
                 "text": {
                   "field": "main_tech_space_flow_tag",
-                  "fixed": " ",
-                  "mode": "field"
+                  "fixed": "(25001037_1)",
+                  "mode": "fixed"
                 },
                 "valign": "middle"
               },
@@ -10043,8 +10045,8 @@
                 "size": 12,
                 "text": {
                   "field": "owner_deckhouse_flow_tag",
-                  "fixed": " ",
-                  "mode": "field"
+                  "fixed": "(25001037_C4)",
+                  "mode": "fixed"
                 },
                 "valign": "middle"
               },
@@ -10133,6 +10135,372 @@
                 "width": 58
               },
               "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "from_tank_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 56",
+              "placement": {
+                "height": 30,
+                "left": 1259,
+                "rotation": 0,
+                "top": 80,
+                "width": 107
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "From tank"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 57",
+              "placement": {
+                "height": 30,
+                "left": 940,
+                "rotation": 0,
+                "top": 80,
+                "width": 206
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "main_tech_space_flow_tag",
+                  "fixed": "(25001123_1)",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 58",
+              "placement": {
+                "height": 30,
+                "left": 1146,
+                "rotation": 0,
+                "top": 80,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 59",
+              "placement": {
+                "height": 30,
+                "left": 1366,
+                "top": 80,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 60",
+              "placement": {
+                "height": 30,
+                "left": 1381,
+                "top": 80,
+                "width": 58
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "to_pcm_flow",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 61",
+              "placement": {
+                "height": 30,
+                "left": 1259,
+                "rotation": 0,
+                "top": 115,
+                "width": 107
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "To PCM"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 62",
+              "placement": {
+                "height": 30,
+                "left": 940,
+                "rotation": 0,
+                "top": 115,
+                "width": 206
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "main_tech_space_flow_tag",
+                  "fixed": "(25001139)",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 63",
+              "placement": {
+                "height": 30,
+                "left": 1146,
+                "rotation": 0,
+                "top": 115,
+                "width": 113
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "right",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "fixed": " ",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 64",
+              "placement": {
+                "height": 30,
+                "left": 1366,
+                "top": 115,
+                "width": 15
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "unit",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 65",
+              "placement": {
+                "height": 30,
+                "left": 1381,
+                "top": 115,
+                "width": 58
+              },
+              "type": "metric-value"
             }
           ],
           "name": "Element 1768816105883",
@@ -10174,10 +10542,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                                                                                                              AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END                                                                                                        AS unit,\r\n  CASE WHEN $use_volume THEN hotwater_crew_mess_flow__value * $volume_time / 60.0 ELSE hotwater_crew_mess_flow__value END                                AS crew_mess_flow,\r\n  CASE WHEN $use_volume THEN hotwater_galley_2_flow__value * $volume_time / 60.0 ELSE hotwater_galley_2_flow__value END                                  AS galley_2_flow,\r\n  CASE WHEN $use_volume THEN hotwater_dayhead_flow__value * $volume_time / 60.0 ELSE hotwater_dayhead_flow__value END                                    AS dayhead_flow,\r\n  CASE WHEN $use_volume THEN hotwater_lazaret_flow__value * $volume_time / 60.0 ELSE hotwater_lazaret_flow__value END                                    AS lazaret_flow,\r\n  CASE WHEN $use_volume THEN hotwater_laundry_ps_1_flow__value * $volume_time / 60.0 ELSE hotwater_laundry_ps_1_flow__value END                          AS laundry_ps_flow,\r\n  CASE WHEN $use_volume THEN hotwater_deckhouse_flow__value * $volume_time / 60.0 ELSE hotwater_deckhouse_flow__value END                                AS main_deckhouse_flow,\r\n  CASE WHEN $use_volume THEN hotwater_owners_deckhouse_flow__value * $volume_time / 60.0 ELSE hotwater_owners_deckhouse_flow__value END                  AS owner_deckhouse_flow,\r\n  CASE WHEN $use_volume THEN hotwater_deck_fr_48_sb_tech_cor_flow__value * $volume_time / 60.0 ELSE hotwater_deck_fr_48_sb_tech_cor_flow__value END      AS deck_fr_48_sb_tech_cor_flow,\r\n  CASE WHEN $use_volume THEN hotwater_main_tech_space_fr_45_flow__value * $volume_time / 60.0 ELSE hotwater_main_tech_space_fr_45_flow__value END        AS main_tech_space_flow\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n  MAX(time)                                                                   AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END                             AS unit,\r\n  MAX(CASE WHEN name = 'hot-flow-crew-mess' THEN flow END)  AS crew_mess_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-galley' THEN flow END)  AS galley_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-dayhead' THEN flow END)  AS dayhead_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-lazaret' THEN flow END)  AS lazaret_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-laundry' THEN flow END)  AS laundry_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-deckhouse' THEN flow END)  AS main_deckhouse_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-owners-deckhouse' THEN flow END)  AS owner_deckhouse_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-deck-douche' THEN flow END)  AS deck_douche_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-technical-space-sink' THEN flow END)  AS main_tech_space_sink_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-from-tank' THEN flow END)  AS from_tank_flow,\r\n  MAX(CASE WHEN name = 'hot-flow-to-pcm' THEN flow END)  AS to_pcm_flow\r\n\r\n  FROM (\r\n  SELECT DISTINCT ON (technical_name)\r\n    timestamp                                                                                    AS time,\r\n    technical_name                                                                               AS name,\r\n    CASE WHEN $use_volume THEN flow__value * $volume_time / 60.0 ELSE flow__value END            AS flow,\r\n  FROM public.marpower__fresh_water__flows\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY technical_name, timestamp DESC\r\n)\r\nGROUP BY unit",
           "refId": "A",
           "sql": {
             "columns": [
@@ -10240,527 +10608,6 @@
     },
     {
       "datasource": {
-        "type": "info8fcc-greptimedb-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 2,
-          "mappings": [],
-          "noValue": "-",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "unit"
-            },
-            "properties": [
-              {
-                "id": "noValue",
-                "value": " "
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 9,
-        "x": 0,
-        "y": 35
-      },
-      "id": 8,
-      "options": {
-        "inlineEditing": false,
-        "panZoom": false,
-        "root": {
-          "background": {
-            "color": {
-              "fixed": "transparent"
-            }
-          },
-          "border": {
-            "color": {
-              "fixed": "dark-green"
-            }
-          },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
-          "elements": [
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "right",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "technical_room_energ_rec_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Tech room energy recovery",
-              "placement": {
-                "height": 30,
-                "left": 364,
-                "rotation": 0,
-                "top": 10,
-                "width": 107
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Techical room energy recovery"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Tech room energy recovery label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "top": 10,
-                "width": 251
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "right",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "flow_sensor_25001137c1",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Flow Sensor 25001037c1",
-              "placement": {
-                "height": 30,
-                "left": 364,
-                "rotation": 0,
-                "top": 45,
-                "width": 107
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Flow Sensor 25001037c1"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Flow Sensor 25001037c1 label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "top": 45,
-                "width": 251
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "technical_room_energ_rec_flow_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "technical_room_energ_rec_flow_tag",
-              "placement": {
-                "height": 30,
-                "left": 266,
-                "rotation": 0,
-                "top": 10,
-                "width": 98
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "flow_sensor_25001137c1_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "flow_sensor_25001137c1_tag",
-              "placement": {
-                "height": 30,
-                "left": 266,
-                "rotation": 0,
-                "top": 45,
-                "width": 98
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "right",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "fixed": " ",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 13",
-              "placement": {
-                "height": 30,
-                "left": 471,
-                "rotation": 0,
-                "top": 10,
-                "width": 15
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "unit",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 14",
-              "placement": {
-                "height": 30,
-                "left": 486,
-                "rotation": 0,
-                "top": 10,
-                "width": 58
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "right",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "fixed": " ",
-                  "mode": "fixed"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 15",
-              "placement": {
-                "height": 30,
-                "left": 471,
-                "top": 45,
-                "width": 15
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "unit",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Element 16",
-              "placement": {
-                "height": 30,
-                "left": 486,
-                "top": 45,
-                "width": 58
-              },
-              "type": "metric-value"
-            }
-          ],
-          "name": "Element 1768816105883",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "rotation": 0,
-            "top": 0,
-            "width": 100
-          },
-          "type": "frame"
-        },
-        "showAdvancedTypes": false,
-        "tooltip": {
-          "disableForOneClick": false,
-          "mode": "none"
-        },
-        "zoomToContent": false
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                                                                                                                             AS time,\r\n  CASE WHEN $use_volume THEN 'L' ELSE 'L/min' END                                                                                       AS unit,\r\n  CASE WHEN $use_volume THEN technical_room_energ_rec_flow__value * $volume_time / 60.0 ELSE technical_room_energ_rec_flow__value END   AS technical_room_energ_rec_flow,\r\n  CASE WHEN $use_volume THEN flow_sensor_25001137_c_1__value * $volume_time / 60.0 ELSE flow_sensor_25001137_c_1__value END             AS flow_sensor_25001137c1\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'technical_room_energ_rec_flow' THEN '(' || yard_tag || ')' ELSE NULL END) AS technical_room_energ_rec_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'flow_sensor_25001137c1' THEN '(' || yard_tag || ')' ELSE NULL END)        AS flow_sensor_25001137c1_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
-          "refId": "B"
-        }
-      ],
-      "title": "Other flow",
-      "type": "canvas"
-    },
-    {
-      "datasource": {
         "type": "grafana-postgresql-datasource",
         "uid": "${datasource}"
       },
@@ -10786,9 +10633,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
+        "h": 7,
         "w": 9,
-        "x": 9,
+        "x": 0,
         "y": 35
       },
       "id": 10,
@@ -10829,7 +10676,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "energy_rec_temp4",
+                  "field": "to_cabins",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -10842,6 +10689,7 @@
               "placement": {
                 "height": 30,
                 "left": 355,
+                "rotation": 0,
                 "top": 10,
                 "width": 180
               },
@@ -10865,7 +10713,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Energy recovery sensor S04"
+                  "fixed": "To cabins"
                 },
                 "valign": "middle"
               },
@@ -10879,7 +10727,7 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 10,
-                "width": 234.99999999999997
+                "width": 235
               },
               "type": "text"
             },
@@ -10901,7 +10749,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "energy_rec_temp5",
+                  "field": "to_pcm",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -10914,6 +10762,7 @@
               "placement": {
                 "height": 30,
                 "left": 355,
+                "rotation": 0,
                 "top": 45,
                 "width": 180
               },
@@ -10937,7 +10786,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Energy recovery sensor S05"
+                  "fixed": "To PCM"
                 },
                 "valign": "middle"
               },
@@ -10973,7 +10822,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "energy_rec_temp6",
+                  "field": "to_tanks",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -10986,6 +10835,7 @@
               "placement": {
                 "height": 30,
                 "left": 355,
+                "rotation": 0,
                 "top": 80,
                 "width": 180
               },
@@ -11009,7 +10859,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Energy recovery sensor S06"
+                  "fixed": "To tanks"
                 },
                 "valign": "middle"
               },
@@ -11045,7 +10895,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "energy_rec_temp7",
+                  "field": "from_tank",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -11058,6 +10908,7 @@
               "placement": {
                 "height": 30,
                 "left": 355,
+                "rotation": 0,
                 "top": 115,
                 "width": 180
               },
@@ -11081,7 +10932,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Energy recovery sensor S07"
+                  "fixed": "From tank"
                 },
                 "valign": "middle"
               },
@@ -11095,7 +10946,7 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 115,
-                "width": 234.99999999999997
+                "width": 235
               },
               "type": "text"
             },
@@ -11117,7 +10968,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "energy_rec_temp8",
+                  "field": "from_pcm",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -11130,6 +10981,7 @@
               "placement": {
                 "height": 30,
                 "left": 355,
+                "rotation": 0,
                 "top": 150,
                 "width": 180
               },
@@ -11153,7 +11005,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Energy recovery sensor S08"
+                  "fixed": "From PCM"
                 },
                 "valign": "middle"
               },
@@ -11167,7 +11019,7 @@
                 "left": 15,
                 "rotation": 0,
                 "top": 150,
-                "width": 234.99999999999997
+                "width": 235
               },
               "type": "text"
             },
@@ -11396,10 +11248,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                       AS time,\r\n\tenergy_rec_system_temp_4__value AS energy_rec_temp4,\r\n\tenergy_rec_system_temp_5__value AS energy_rec_temp5,\r\n\tenergy_rec_system_temp_6__value AS energy_rec_temp6,\r\n\tenergy_rec_system_temp_7__value AS energy_rec_temp7,\r\n\tenergy_rec_system_temp_8__value AS energy_rec_temp8\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\tMAX(time)                                                              AS time,\r\n\tMAX(CASE WHEN name = 'hot-temperature-to-cabins' THEN temperature END) AS to_cabins,\r\n\tMAX(CASE WHEN name = 'hot-temperature-to-pcm' THEN temperature END)    AS to_pcm,\r\n\tMAX(CASE WHEN name = 'cold-temperature-to-tanks' THEN temperature END) AS to_tanks,\r\n\tMAX(CASE WHEN name = 'hot-temperature-from-tank' THEN temperature END) AS from_tank,\r\n\tMAX(CASE WHEN name = 'hot-temperature-from-pcm' THEN temperature END)  AS from_pcm\r\nFROM (\r\n\tSELECT DISTINCT ON (technical_name)\r\n\t\ttimestamp          AS time,\r\n\t\ttechnical_name     AS name,\r\n\t\ttemperature__value AS temperature\r\n\tFROM public.marpower__fresh_water__temperatures\r\n\tWHERE $__timeFilter(timestamp)\r\n\tORDER BY technical_name, timestamp DESC\r\n)\r\n",
           "refId": "A",
           "sql": {
             "columns": [
@@ -11440,7 +11292,7 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
           "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'energy_rec_system_temp4' THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp4_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'energy_rec_system_temp5' THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp5_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'energy_rec_system_temp6' THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp6_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'energy_rec_system_temp7' THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp7_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'energy_rec_system_temp8' THEN '(' || yard_tag || ')' ELSE NULL END) AS energy_rec_temp8_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
@@ -11477,383 +11329,6 @@
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [],
-          "noValue": "-",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              }
-            ]
-          },
-          "unit": "L"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 9,
-        "x": 0,
-        "y": 39
-      },
-      "id": 9,
-      "options": {
-        "inlineEditing": false,
-        "panZoom": false,
-        "root": {
-          "background": {
-            "color": {
-              "fixed": "transparent"
-            }
-          },
-          "border": {
-            "color": {
-              "fixed": "dark-green"
-            }
-          },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
-          "elements": [
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "fresh_water_tank_1_level",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Fresh water tank 1",
-              "placement": {
-                "height": 30,
-                "left": 275,
-                "top": 8,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Fresh water tank 1"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Fresh water tank 1 label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 160
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
-                  "field": "fresh_water_tank_2_level",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Fresh water tank 2",
-              "placement": {
-                "height": 30,
-                "left": 275,
-                "top": 43,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Fresh water tank 2"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "Fresh water tank 2 label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 45,
-                "width": 160
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "fresh_water_tank_1_level_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "fresh_water_tank_1_level_tag",
-              "placement": {
-                "height": 30,
-                "left": 175,
-                "rotation": 0,
-                "top": 10,
-                "width": 100
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "fresh_water_tank_2_level_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "fresh_water_tank_2_level_tag",
-              "placement": {
-                "height": 30,
-                "left": 175,
-                "rotation": 0,
-                "top": 43,
-                "width": 100
-              },
-              "type": "text"
-            }
-          ],
-          "name": "Element 1768816105883",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "rotation": 0,
-            "top": 0,
-            "width": 100
-          },
-          "type": "frame"
-        },
-        "showAdvancedTypes": false,
-        "tooltip": {
-          "disableForOneClick": false,
-          "mode": "none"
-        },
-        "zoomToContent": false
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                         AS time,\r\n\ttank_1_fr_45_ps_level__value*1000 AS fresh_water_tank_1_level,\r\n\ttank_2_fr_45_sb_level__value*1000 AS fresh_water_tank_2_level\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "grafana-postgresql-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'tank_1_fr_45_ps_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank_2_fr_45_sb_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_2_level_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
-          "refId": "B",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
-      ],
-      "title": "Fresh water tank level",
-      "type": "canvas"
-    },
-    {
-      "datasource": {
-        "type": "grafana-postgresql-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
           "decimals": 2,
           "mappings": [],
           "noValue": "-",
@@ -11874,7 +11349,7 @@
         "h": 3,
         "w": 9,
         "x": 9,
-        "y": 41
+        "y": 35
       },
       "id": 11,
       "options": {
@@ -12042,10 +11517,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                                AS time,\r\n\tfr_46_system_beh_pres_pumps_press__value AS fr46_system_pressure\r\nFROM public.marpower__250000_fresh_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                                AS time,\r\n\tfr_46_system_beh_pres_pumps_press__value AS fr46_system_pressure\r\nFROM public.marpower__250000_fresh_water__general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -12111,6 +11586,385 @@
         }
       ],
       "title": "Pressure",
+      "type": "canvas"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "noValue": "-",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "L"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 9,
+        "x": 9,
+        "y": 38
+      },
+      "id": 9,
+      "options": {
+        "inlineEditing": true,
+        "panZoom": false,
+        "root": {
+          "background": {
+            "color": {
+              "fixed": "transparent"
+            }
+          },
+          "border": {
+            "color": {
+              "fixed": "dark-green"
+            }
+          },
+          "constraint": {
+            "horizontal": "left",
+            "vertical": "top"
+          },
+          "elements": [
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "tank1",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Fresh water tank 1",
+              "placement": {
+                "height": 30,
+                "left": 275,
+                "rotation": 0,
+                "top": 8,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Fresh water tank 1"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Fresh water tank 1 label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 10,
+                "width": 160
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "tank2",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Fresh water tank 2",
+              "placement": {
+                "height": 30,
+                "left": 275,
+                "rotation": 0,
+                "top": 43,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Fresh water tank 2"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Fresh water tank 2 label",
+              "placement": {
+                "height": 30,
+                "left": 15,
+                "rotation": 0,
+                "top": 45,
+                "width": 160
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fresh_water_tank_1_level_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "fresh_water_tank_1_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 175,
+                "rotation": 0,
+                "top": 10,
+                "width": 100
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "fresh_water_tank_2_level_tag",
+                  "fixed": " ",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "fresh_water_tank_2_level_tag",
+              "placement": {
+                "height": 30,
+                "left": 175,
+                "rotation": 0,
+                "top": 43,
+                "width": 100
+              },
+              "type": "text"
+            }
+          ],
+          "name": "Element 1768816105883",
+          "placement": {
+            "height": 100,
+            "left": 0,
+            "rotation": 0,
+            "top": 0,
+            "width": 100
+          },
+          "type": "frame"
+        },
+        "showAdvancedTypes": false,
+        "tooltip": {
+          "disableForOneClick": false,
+          "mode": "none"
+        },
+        "zoomToContent": false
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "3.0.2",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n\tMAX(time) AS time,\r\n\tMAX(CASE WHEN name = 'cold-level-tank1' THEN level END) AS tank1,\r\n\tMAX(CASE WHEN name = 'cold-level-tank2' THEN level END) AS tank2\r\nFROM (\r\n\tSELECT DISTINCT ON (technical_name)\r\n\t\ttimestamp      AS time,\r\n\t\ttechnical_name AS name,\r\n\t\tlevel__value   AS level\r\n\tFROM public.marpower__fresh_water__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tORDER BY technical_name, timestamp DESC\r\n)",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "dataset": "dev",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "editorType": "sql",
+          "format": 1,
+          "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'tank_1_fr_45_ps_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank_2_fr_45_sb_level' THEN '(' || yard_tag || ')' ELSE NULL END) AS fresh_water_tank_2_level_tag\r\nFROM public.marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-fresh-water'",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Fresh water tank level",
       "type": "canvas"
     }
   ],

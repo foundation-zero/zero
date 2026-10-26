@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { HTMLWrapper } from "../components/html-wrapper/index.ts";
+import { MimicComponentInstanceProps } from ".";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
+import { HTMLWrapper } from "../components/html-wrapper";
 import ExchangeCircuit from "./content/ExchangeCircuitContent.vue";
-import { MimicComponentInstanceProps } from "./index.ts";
 
 const props = withDefaults(
   defineProps<
@@ -22,10 +22,7 @@ const props = withDefaults(
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.ExchangeCircuit"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <HTMLWrapper v-bind="{ width, height, x, y }">
       <ExchangeCircuit
         class="w-full"

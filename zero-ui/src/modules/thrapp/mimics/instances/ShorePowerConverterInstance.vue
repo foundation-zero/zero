@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ZiPlug3 } from "@/modules/common/components/icons";
+import { reactiveOmit } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import { AssetBox, AssetBoxTitle } from "../components/asset-box";
-import { DC_CONVERTER_WIDTH } from "../components/dc-converter";
+import { DC_CONVERTER_WIDTH, DcConverterStatus } from "../components/dc-converter";
 import {
   ValueList,
   ValueListDeltaTItem,
@@ -37,19 +38,19 @@ const props = withDefaults(
 const { t } = useI18n();
 const { getComponentState } = getMimicDataProvider();
 const state = getComponentState();
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.ShorePowerConverter"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <AssetBox
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="state"
     >
-      <YardTag>{{ tooltip?.yardTag }}</YardTag>
-
+      <div class="flex items-center justify-between">
+        <YardTag class="flex flex-row-reverse items-center gap-0">{{ tooltip?.yardTag }}</YardTag>
+        <DcConverterStatus :sources="custom.converters" />
+      </div>
       <AssetBoxTitle class="gap-2 py-1">
         <ZiPlug3 class="size-6" />
         {{ t("thrapp.mimics.drives.assets.shorepower") }}
@@ -58,7 +59,7 @@ const state = getComponentState();
       <SensorValue
         v-if="source"
         :source="source"
-        field="active"
+        field="anyActive"
       >
         <FieldRenderer.HeatPumpMode />
       </SensorValue>
@@ -72,10 +73,14 @@ const state = getComponentState();
         <ValueListDeltaTItem :source="sensors.heatTransfer" />
         <ValueListTemperatureItem
           class="text-brand"
-          :source="sensors.temperature"
+          :source="source"
+          field="maxEsiIgbtMaxTemperature"
           temperature-label="internal"
         />
-        <ValueListPowerItem :source="sensors.power" />
+        <ValueListPowerItem
+          :source="source"
+          field="totalPower"
+        />
         <ValueListSeparator />
       </ValueList>
     </AssetBox>

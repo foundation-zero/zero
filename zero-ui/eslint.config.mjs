@@ -55,6 +55,18 @@ export default [
       "vue/multi-word-component-names": "off",
       "vue/require-default-prop": "off",
       "@typescript-eslint/no-require-imports": "off",
+      // Folders resolve to their index file, so import the folder itself.
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              regex: "/index\\.(ts|js)$",
+              message: "Import the folder instead of its index file.",
+            },
+          ],
+        },
+      ],
     },
   },
   {

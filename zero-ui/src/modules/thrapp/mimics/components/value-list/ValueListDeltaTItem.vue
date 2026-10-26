@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrsim/types/index.ts";
+import { SensorComponentType } from "@/modules/thrsim/types";
 import { HTMLAttributes } from "vue";
 import { useI18n } from "vue-i18n";
 import { ModuleField, SensorValue } from "../../providers";

@@ -4,14 +4,14 @@ export_seed:
 check_seed:
     uv run loads check-seed
 
-test:
-    uv run pytest
+test *args:
+    uv run pytest {{ args }}
 
-test_integration:
-    uv run pytest --run=integration
+test_integration *args:
+    uv run pytest --run=integration {{ args }}
 
-test_unit:
-    uv run pytest --run=unit
+test_unit *args:
+    uv run pytest --run=unit {{ args }}
 
 run_demo:
     uv run loads api &
@@ -23,15 +23,16 @@ run_demo:
 run:
     uv run loads api 
 
-typecheck:
+lint:
+    uv run ruff check --fix
+
+lint_no_fix:
+    uv run ruff check --no-fix
+
+type_check:
     uv run pyright
 
 format:
-    uv run ruff check --fix
-    uv run ruff format
-
-check:
-    uv run pyright
-    uv run pytest
-    uv run ruff check --no-fix
     uv run ruff format --check
+
+check: lint type_check test

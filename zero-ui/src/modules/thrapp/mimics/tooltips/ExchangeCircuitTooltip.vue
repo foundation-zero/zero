@@ -8,7 +8,6 @@ import TooltipListItemActionButton from "../../components/tooltip-list/TooltipLi
 import { MimicComponentType } from "../../types";
 import { ModeBadges, ModeBadgeSize } from "../components/mode-badge";
 import { SensorGraph } from "../components/sensor-graph";
-import { YardTag } from "../components/yard-tag";
 import ExchangeCircuit from "../instances/content/ExchangeCircuitContent.vue";
 import * as Partials from "./partials";
 const props = defineProps<TooltipComponentContext<MimicComponentType.ExchangeCircuit>>();
@@ -23,7 +22,6 @@ const { labels, actions } = useTranslations();
         class="w-49"
         v-bind="props"
       />
-      <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 
     <SensorGraph

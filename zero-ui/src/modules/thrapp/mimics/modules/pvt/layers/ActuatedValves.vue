@@ -2,16 +2,25 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { ACTUATED_VALVE_WIDTH, ValveLeg, ValvePortName } from "../../../components/actuated-valve";
+import { getTooltipContexts } from "../../../data";
 import {
   MixValveInstance,
   SwitchValveInstance,
   ThreeWayValveLabelInstance,
 } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
-import { PVT_MIMIC_DATA } from "../data";
 
-const switchValves = PVT_MIMIC_DATA[MimicComponentType.SwitchValve];
-const mixValves = PVT_MIMIC_DATA[MimicComponentType.MixValve];
+const switchValves = getTooltipContexts(MimicComponentType.SwitchValve, [
+  "1067-01",
+  "1067-02",
+  "1069-01",
+]);
+const mixValves = getTooltipContexts(MimicComponentType.MixValve, [
+  "1044-01",
+  "1044-02",
+  "1043-01",
+  "1047-02",
+]);
 </script>
 
 <template>

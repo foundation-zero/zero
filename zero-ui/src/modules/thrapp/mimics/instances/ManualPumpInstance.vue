@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { reactiveOmit } from "@vueuse/core";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
@@ -9,15 +10,13 @@ import Pump from "../components/pump/Pump.vue";
 const props = defineProps<
   MimicComponentInstanceProps & TooltipComponentContext<MimicComponentType.ManualPump> & PumpProps
 >();
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.ManualPump"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <Pump
-      v-bind="props"
+      v-bind="forwardedProps"
       :pump-state="PumpState.Inactive"
       :state="MimicComponentState.Manual"
       :manual="true"

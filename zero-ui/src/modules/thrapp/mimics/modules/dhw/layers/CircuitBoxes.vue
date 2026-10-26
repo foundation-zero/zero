@@ -10,11 +10,18 @@
 
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { RiArrowDownLine, RiArrowLeftLine } from "@remixicon/vue";
+import { getTooltipContexts } from "../../../data";
 import { ExchangeCircuitInstance, FreshwaterCircuitInstance } from "../../../instances";
-import { DHW_MIMIC_DATA } from "../data";
 
-const circuits = DHW_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
-const FreshwaterCircuits = DHW_MIMIC_DATA[MimicComponentType.FreshwaterCircuit];
+const circuits = getTooltipContexts(MimicComponentType.ExchangeCircuit, [
+  "dhw:highTempLoop",
+  "dhw:dcConverters",
+  "dhw:drives",
+  "dhw:adsorption",
+]);
+const freshwaterCircuits = getTooltipContexts(MimicComponentType.FreshwaterCircuit, [
+  "dhw:freshwater",
+]);
 </script>
 
 <template>
@@ -23,31 +30,31 @@ const FreshwaterCircuits = DHW_MIMIC_DATA[MimicComponentType.FreshwaterCircuit];
       x="0"
       y="25"
       height="165"
-      v-bind="circuits['highTempLoop']"
+      v-bind="circuits['dhw:highTempLoop']"
     />
     <ExchangeCircuitInstance
       x="397"
       y="708"
       height="165"
-      v-bind="circuits['dcConverters']"
+      v-bind="circuits['dhw:dcConverters']"
     />
     <ExchangeCircuitInstance
       x="650"
       y="708"
       height="165"
-      v-bind="circuits['drives']"
+      v-bind="circuits['dhw:drives']"
     />
     <ExchangeCircuitInstance
       x="903"
       y="708"
       height="165"
-      v-bind="circuits['adsorption']"
+      v-bind="circuits['dhw:adsorption']"
     />
     <FreshwaterCircuitInstance
       x="1215"
       y="455"
       height="196"
-      v-bind="FreshwaterCircuits['freshwater']"
+      v-bind="freshwaterCircuits['dhw:freshwater']"
     >
       <template #fromIcon>
         <RiArrowDownLine class="text-muted-foreground size-3" />

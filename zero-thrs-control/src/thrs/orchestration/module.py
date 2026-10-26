@@ -10,7 +10,6 @@ from thrs.control.manual import ManualControl
 from thrs.control.switching import (
     AutomationMode,
     Switching,
-    SwitchingControlMode,
 )
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.definitions.system import AmcsExternalAvailable
@@ -65,12 +64,12 @@ class Module[
         self,
         name: str,
         description: ModuleDescription[S, C, P, M, CS],
-        parameters: P,
-        channels: "ControlChannels[S, C, P, SwitchingControlMode[M], CS]",
+        channels: "ControlChannels[S, C, P, M, CS]",
         time_fn: "Callable[[], datetime]",
         state_logger: StateLogger,
     ):
         self._name = name
+        parameters = description.parameters_cls()
         control = description.control(parameters, time_fn, state_logger)
         self._control = Switching(
             ManualControl(control.initial()[0]),

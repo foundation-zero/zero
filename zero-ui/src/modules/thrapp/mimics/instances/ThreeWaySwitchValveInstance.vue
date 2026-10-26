@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { reactiveOmit } from "@vueuse/core";
 import { computed } from "vue";
+import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
+import { ThreeWayValveLegs } from "../components/actuated-valve";
 import ActuatedValve from "../components/actuated-valve/ActuatedValve.vue";
-import { ThreeWayValveLegs } from "../components/actuated-valve/index.ts";
 import SwitchValve from "../components/actuated-valve/SwitchValve.vue";
 import ThreeWayValve from "../components/actuated-valve/ThreeWayValve.vue";
+import { getMimicDataProvider } from "../providers";
 import { componentStateFromAlarms } from "../providers/helpers";
-import { getMimicDataProvider } from "../providers/index.ts";
-import { MimicComponentInstanceProps } from "./index.ts";
 
 const props = defineProps<
   MimicComponentInstanceProps &
@@ -25,14 +25,11 @@ const stateWithAlarms = computed(() => componentStateFromAlarms(state.value, val
 
 // A switch valve is either fully on A or fully on B, and only mixed during transient state.
 const flow = computed(() => Math.round(valve.value?.positionRel.value ?? 0));
-const forwardedProps = reactiveOmit(props, ["legs"]);
+const forwardedProps = reactiveOmit(props, ["legs", "registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.ThreeWaySwitchValve"
-    :data="forwardedProps"
-  >
+  <MimicTooltipTrigger :data="props">
     <ActuatedValve
       v-bind="forwardedProps"
       :state="stateWithAlarms"

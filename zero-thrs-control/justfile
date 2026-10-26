@@ -57,7 +57,6 @@ format:
 format_fix:
     uv run ruff format src tests
 
-
 build_fmu_compile_container:
     docker build . --platform linux/amd64 --tag fmu_compile_image --target fmu_compile
 
@@ -95,6 +94,12 @@ compile_fmus:
     done
 
 compile_fmus_all: compile_fmus compile_fmus_for_linux
+
+generate_asyncapi output="../specs/thrs-control.json":
+    uv run python -m thrs.cli generate-asyncapi {{ output }}
+
+test_spec *args:
+    uv run pytest tests/spec {{ args }}
 
 export_schema:
     uv run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrsim/graphql/schema.graphql

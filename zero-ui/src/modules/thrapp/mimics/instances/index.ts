@@ -29,9 +29,12 @@ export { default as PropulsionCoolerInstance } from "./PropulsionCoolerInstance.
 export { default as PropulsionDriveInstance } from "./PropulsionDriveInstance.vue";
 export { default as PumpInstance } from "./PumpInstance.vue";
 export { default as PvtInstance } from "./PvtInstance.vue";
+export { default as PvtStringInstance } from "./PvtStringInstance.vue";
+export { default as PyranometerDotInstance } from "./PyranometerDotInstance.vue";
 export { default as PyranometerInstance } from "./PyranometerInstance.vue";
 export { default as SeawaterCircuitInstance } from "./SeawaterCircuitInstance.vue";
 export { default as ShorePowerConverterInstance } from "./ShorePowerConverterInstance.vue";
+export { default as SolarPanelStringInstance } from "./SolarPanelStringInstance.vue";
 export { default as SwitchValveInstance } from "./SwitchValveInstance.vue";
 export { default as TagLabelInstance } from "./TagLabelInstance.vue";
 export { default as TemperatureSensorInstance } from "./TemperatureSensorInstance.vue";

@@ -12,5 +12,10 @@
     "source.fixAll.eslint": "explicit"
   },
   "js/ts.tsdk.path": "node_modules/typescript/lib",
-  "js/ts.preferences.importModuleSpecifierEnding": "minimal"
+  "js/ts.preferences.importModuleSpecifierEnding": "minimal",
+  // Classic keys for editors and the Vue extension that do not read the unified js/ts.* settings yet.
+  "typescript.preferences.importModuleSpecifierEnding": "minimal",
+  "javascript.preferences.importModuleSpecifierEnding": "minimal",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "javascript.updateImportsOnFileMove.enabled": "always"
 }

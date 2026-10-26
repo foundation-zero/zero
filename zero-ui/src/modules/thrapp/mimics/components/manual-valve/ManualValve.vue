@@ -15,7 +15,7 @@ import {
 } from "./index";
 
 withDefaults(defineProps<ManualValveProps & MimicComponentBaseProps>(), {
-  type: ManualValveType.Switch,
+  valveType: ManualValveType.Switch,
   orientation: MANUAL_VALVE_BASE_ORIENTATION,
 });
 </script>
@@ -40,15 +40,15 @@ withDefaults(defineProps<ManualValveProps & MimicComponentBaseProps>(), {
         :stroke="MANUAL_VALVE_BORDER_COLOR"
       />
       <path
-        v-if="type === ManualValveType.ThreeWay"
+        v-if="valveType === ManualValveType.ThreeWay"
         d="M18 18L26 30L10 30L18 18Z"
         :fill="MANUAL_VALVE_PORT_FILL"
         :stroke="MANUAL_VALVE_BORDER_COLOR"
       />
     </slot>
     <slot name="marker">
-      <ManualFlowMarker v-if="type === ManualValveType.Flow" />
-      <g v-else-if="type === ManualValveType.Switch || type === ManualValveType.ThreeWay">
+      <ManualFlowMarker v-if="valveType === ManualValveType.Flow" />
+      <g v-else-if="valveType === ManualValveType.Switch || valveType === ManualValveType.ThreeWay">
         <circle
           cx="18"
           cy="18"
@@ -64,7 +64,7 @@ withDefaults(defineProps<ManualValveProps & MimicComponentBaseProps>(), {
         />
       </g>
 
-      <g v-else-if="type === ManualValveType.FlowControl">
+      <g v-else-if="valveType === ManualValveType.FlowControl">
         <circle
           cx="18"
           cy="18"
@@ -77,6 +77,12 @@ withDefaults(defineProps<ManualValveProps & MimicComponentBaseProps>(), {
           :fill="MANUAL_VALVE_MARK_COLOR"
         />
       </g>
+
+      <path
+        v-else-if="valveType === ManualValveType.Balancing"
+        d="M18 18V7"
+        :stroke="MANUAL_VALVE_BORDER_COLOR"
+      />
     </slot>
   </MimicComponent>
 </template>

@@ -195,19 +195,97 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
   },
   [SensorComponentType.Brightloop]: () => {
     const active = useRandomizedBoolean();
-    return computed(() => ({ active: stamp(active) }));
+    const maxChannelTemperature = useRandomizedNumber(0, 100);
+    const power = useRandomizedNumber(0, 1000);
+    return computed(() => ({
+      active: stamp(active),
+      maxChannelTemperature: stamp(maxChannelTemperature),
+      power: stamp(power),
+    }));
+  },
+  [SensorComponentType.BrightloopConverter]: () => {
+    const active = useRandomizedBoolean();
+    const cell01Temperature1 = useRandomizedNumber(0, 100);
+    const cell01Temperature2 = useRandomizedNumber(0, 100);
+    const cell02Temperature1 = useRandomizedNumber(0, 100);
+    const cell02Temperature2 = useRandomizedNumber(0, 100);
+    const power = useRandomizedNumber(0, 1000);
+    return computed(() => ({
+      active: stamp(active),
+      cell01Temperature1: stamp(cell01Temperature1),
+      cell01Temperature2: stamp(cell01Temperature2),
+      cell02Temperature1: stamp(cell02Temperature1),
+      cell02Temperature2: stamp(cell02Temperature2),
+      power: stamp(power),
+    }));
   },
   [SensorComponentType.Ugrid]: () => {
     const active = useRandomizedBoolean();
-    return computed(() => ({ active: stamp(active) }));
+    const tempPowerStage = useRandomizedNumber(0, 100);
+    const power = useRandomizedNumber(0, 1000);
+    return computed(() => ({
+      active: stamp(active),
+      tempPowerStage: stamp(tempPowerStage),
+      power: stamp(power),
+    }));
   },
   [SensorComponentType.PropulsionDrive]: () => {
     const active = useRandomizedBoolean();
-    return computed(() => ({ active: stamp(active) }));
+    const tempPowerStage = useRandomizedNumber(0, 100);
+    const power = useRandomizedNumber(0, 1000);
+    return computed(() => ({
+      active: stamp(active),
+      tempPowerStage: stamp(tempPowerStage),
+      power: stamp(power),
+    }));
   },
   [SensorComponentType.ShorePowerConverter]: () => {
     const active = useRandomizedBoolean();
-    return computed(() => ({ active: stamp(active) }));
+    const esiIgbtMaxTemperature = useRandomizedNumber(0, 100);
+    const esiIgbtMinTemperature = useRandomizedNumber(0, 100);
+    const esiTransformerTemperature = useRandomizedNumber(0, 100);
+    const power = useRandomizedNumber(0, 1000);
+    return computed(() => ({
+      active: stamp(active),
+      esiIgbtMaxTemperature: stamp(esiIgbtMaxTemperature),
+      esiIgbtMinTemperature: stamp(esiIgbtMinTemperature),
+      esiTransformerTemperature: stamp(esiTransformerTemperature),
+      power: stamp(power),
+    }));
+  },
+  [SensorComponentType.BrightloopGroup]: () => {
+    const anyActive = useRandomizedBoolean();
+    const maxChannelTemperature = useRandomizedNumber(0, 100);
+    const totalPower = useRandomizedNumber(0, 4000);
+    return computed(() => ({
+      anyActive: stamp(anyActive),
+      maxChannelTemperature: stamp(maxChannelTemperature),
+      totalPower: stamp(totalPower),
+    }));
+  },
+  [SensorComponentType.UgridGroup]: () => {
+    const anyActive = useRandomizedBoolean();
+    const maxTempPowerStage = useRandomizedNumber(0, 100);
+    const totalPower = useRandomizedNumber(0, 2000);
+    return computed(() => ({
+      anyActive: stamp(anyActive),
+      maxTempPowerStage: stamp(maxTempPowerStage),
+      totalPower: stamp(totalPower),
+    }));
+  },
+  [SensorComponentType.ShorePowerGroup]: () => {
+    const anyActive = useRandomizedBoolean();
+    const maxEsiTransformerTemperature = useRandomizedNumber(0, 100);
+    const minEsiIgbtMinTemperature = useRandomizedNumber(0, 100);
+    const maxEsiIgbtMaxTemperature = useRandomizedNumber(0, 100);
+    const totalPower = useRandomizedNumber(0, 4000);
+    return computed(() => ({
+      anyActive: stamp(anyActive),
+      maxEsiTransformerTemperature: stamp(maxEsiTransformerTemperature),
+      minEsiIgbtMinTemperature: stamp(minEsiIgbtMinTemperature),
+      maxEsiIgbtMaxTemperature: stamp(maxEsiIgbtMaxTemperature),
+      totalPower: stamp(totalPower),
+    }));
   },
   [SensorComponentType.Pyranometer]: () => {
     const irradiance = useRandomizedNumber(0, 1000);

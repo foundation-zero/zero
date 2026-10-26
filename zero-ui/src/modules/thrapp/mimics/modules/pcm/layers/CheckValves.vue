@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
+import { getTooltipContexts } from "../../../data";
 import { CheckValveInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
-import { PCM_MIMIC_DATA } from "../data";
 
-const checkValves = PCM_MIMIC_DATA[MimicComponentType.CheckValve];
+const checkValves = getTooltipContexts(MimicComponentType.CheckValve, ["1078-01", "1085-02"]);
 </script>
 
 <template>

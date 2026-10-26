@@ -5,8 +5,8 @@ import { useI18n } from "vue-i18n";
 import TopNav from "@/modules/common/components/navigation/TopNav.vue";
 import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.vue";
 import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
+import { MimicKey } from "@/modules/thrapp/router/mimics";
 import { client } from "@/modules/thrsim/graphql/client";
-import { ThrsModules } from "@/modules/thrsim/lib/consts.types";
 import { provideClient } from "@urql/vue";
 import { computed, provide } from "vue";
 import { useRoute } from "vue-router";
@@ -17,18 +17,21 @@ provideClient(client);
 const { t } = useI18n();
 
 const currentRoute = useRoute();
-const modules: Array<keyof ThrsModules> = [
+const modules: Array<MimicKey> = [
   "dhw",
   "thrusters",
   "pvt",
+  "pvt-main",
+  "pvt-owners",
+  "pvt-main-heat",
   "pcm",
   "dc",
   "drives",
   "adsorption",
 ];
-const currentModuleKey = computed(() => currentRoute.params.module as string);
+const currentTabKey = computed(() => currentRoute.params.module as MimicKey);
 
-provide("currentModule", currentModuleKey);
+provide("currentModule", currentTabKey);
 </script>
 
 <template>
@@ -56,7 +59,7 @@ provide("currentModule", currentModuleKey);
         <component
           :is="currentRoute.meta.toolbarLeft"
           :modules="modules"
-          :active-module="currentModuleKey"
+          :active-module="currentTabKey"
         />
       </template>
       <template
@@ -66,7 +69,7 @@ provide("currentModule", currentModuleKey);
         <component
           :is="currentRoute.meta.toolbarRight"
           :modules="modules"
-          :active-module="currentModuleKey"
+          :active-module="currentTabKey"
         />
       </template>
     </TopNavToolbar>

@@ -139,6 +139,8 @@ def _factory[R, **P](
 type BaseComponentType = Literal[
     "adsorption_chiller",
     "brightloop",
+    "brightloop_converter",
+    "brightloop_group",
     "calculated_flow",
     "calculated_temperature",
     "delta_t",
@@ -156,9 +158,11 @@ type BaseComponentType = Literal[
     "propulsion_drive",
     "pump",
     "shore_power_converter",
+    "shore_power_group",
     "temperature_sensor",
     "thruster",
     "ugrid",
+    "ugrid_group",
     "tank_controller",
     "pid_controller",
     "pcm_charge_controller",
@@ -167,6 +171,7 @@ type BaseComponentType = Literal[
     "pyranometer",
 ]
 type SpecialComponentType = Literal["valve"]
+type ComponentType = BaseComponentType | SpecialComponentType | None
 
 
 class BaseMeta(BaseModel):
@@ -182,7 +187,7 @@ class ValveMeta(BaseMeta):
 
 
 class ComponentMeta(ValveMeta):
-    component_type: BaseComponentType | SpecialComponentType | None = None  # type: ignore
+    component_type: ComponentType = None  # type: ignore
 
 
 @_factory(BaseMeta)
@@ -205,6 +210,15 @@ def get_topic(field: FieldInfo | ComputedFieldInfo) -> str | None:
         return None
 
     return field.json_schema_extra.get("topic_override")  # type: ignore
+
+
+def get_component_type(
+    field: FieldInfo | ComputedFieldInfo,
+) -> ComponentType:
+    if not field.json_schema_extra or not isinstance(field.json_schema_extra, dict):
+        return None
+
+    return field.json_schema_extra.get("component_type")  # type: ignore
 
 
 @dataclass

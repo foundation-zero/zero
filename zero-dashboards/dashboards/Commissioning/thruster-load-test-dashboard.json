@@ -73,7 +73,7 @@
       "transparent": false,
       "options": {
         "mode": "markdown",
-        "content": "<center><h2>Thruster load test</h2></center>\n\nThe items to be monitored of the thruster load test of 13 Oct 2026, per test step. Only the FWD pod was run that day; the **Pod** selector switches the propulsion, drive, cooling and hydraulics panels between FWD and AFT. Batteries and DC switches serve both pods.\n**Times are UTC.** The test log was kept in local time (UTC+2); the annotations are the logged steps converted to UTC, labelled with the step, the planned rpm and the load as logged. The AMCS trend screenshots are in UTC.\n**DC power** = raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** = raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **THRS** temperatures in °C and flows in l/min. **DC switch** board temperature raw × 0.1 °C.\nThe info icon of each panel states its source, scaling and corrections."
+        "content": "<center><h2>Thruster load test</h2></center>\n\nThe items to be monitored of the thruster load test of 13 Oct 2026, per test step. Only the FWD pod was run that day; the **Pod** selector switches the propulsion, drive, cooling and hydraulics panels between FWD and AFT. Batteries and DC switches serve both pods.\n**Times are UTC.** The test log was kept in local time (UTC+2); the annotations are the logged steps converted to UTC, labelled with the step, the planned rpm and the load as logged. The AMCS trend screenshots are in UTC.\n**DC power** = raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** = raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature raw × 0.1 °C.\nThe info icon of each panel states its source, scaling and corrections."
       }
     },
     {
@@ -4077,8 +4077,8 @@
       "panels": []
     },
     {
-      "id": 33,
-      "title": "Board temperature",
+      "id": 34,
+      "title": "Heat sink temperature",
       "type": "timeseries",
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
@@ -4087,10 +4087,10 @@
       "gridPos": {
         "x": 0,
         "y": 136,
-        "w": 12,
+        "w": 24,
         "h": 8
       },
-      "description": "DC switch board temperature, raw × 0.1 °C. This is not the heat sink temperature of the test plan. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+      "description": "DC switch heat sink temperatures Hs-0 and Hs-1, raw × 0.1 °C, as on the AMCS heat sink trends of the 13 Oct load test (raw 243–339). Published since 16 Oct 2026. One series per heat sink per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -4104,7 +4104,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0571' THEN board_temp__value * 0.1 END) AS \"05.71\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0572' THEN board_temp__value * 0.1 END) AS \"05.72\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0573' THEN board_temp__value * 0.1 END) AS \"05.73\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0574' THEN board_temp__value * 0.1 END) AS \"05.74\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0575' THEN board_temp__value * 0.1 END) AS \"05.75\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb8-0576' THEN board_temp__value * 0.1 END) AS \"05.76\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb8-0577' THEN board_temp__value * 0.1 END) AS \"05.77\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb9-0578' THEN board_temp__value * 0.1 END) AS \"05.78\"\nFROM public.marpower__450000_dc_distribution__dc_switch\nWHERE $__timeFilter(timestamp) AND topic IN ('marpower/450000-dc-distribution/dc-switch/keb6-0571', 'marpower/450000-dc-distribution/dc-switch/keb6-0572', 'marpower/450000-dc-distribution/dc-switch/keb6-0573', 'marpower/450000-dc-distribution/dc-switch/keb7-0574', 'marpower/450000-dc-distribution/dc-switch/keb7-0575', 'marpower/450000-dc-distribution/dc-switch/keb8-0576', 'marpower/450000-dc-distribution/dc-switch/keb8-0577', 'marpower/450000-dc-distribution/dc-switch/keb9-0578')\nGROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0571' THEN \"hs-0__value\" * 0.1 END) AS \"05.71 Hs-0\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0571' THEN \"hs-1__value\" * 0.1 END) AS \"05.71 Hs-1\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0572' THEN \"hs-0__value\" * 0.1 END) AS \"05.72 Hs-0\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0572' THEN \"hs-1__value\" * 0.1 END) AS \"05.72 Hs-1\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0573' THEN \"hs-0__value\" * 0.1 END) AS \"05.73 Hs-0\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb6-0573' THEN \"hs-1__value\" * 0.1 END) AS \"05.73 Hs-1\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0574' THEN \"hs-0__value\" * 0.1 END) AS \"05.74 Hs-0\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0574' THEN \"hs-1__value\" * 0.1 END) AS \"05.74 Hs-1\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0575' THEN \"hs-0__value\" * 0.1 END) AS \"05.75 Hs-0\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb7-0575' THEN \"hs-1__value\" * 0.1 END) AS \"05.75 Hs-1\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb8-0576' THEN \"hs-0__value\" * 0.1 END) AS \"05.76 Hs-0\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb8-0576' THEN \"hs-1__value\" * 0.1 END) AS \"05.76 Hs-1\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb8-0577' THEN \"hs-0__value\" * 0.1 END) AS \"05.77 Hs-0\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb8-0577' THEN \"hs-1__value\" * 0.1 END) AS \"05.77 Hs-1\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb9-0578' THEN \"hs-0__value\" * 0.1 END) AS \"05.78 Hs-0\",\n  avg(CASE WHEN topic = 'marpower/450000-dc-distribution/dc-switch/keb9-0578' THEN \"hs-1__value\" * 0.1 END) AS \"05.78 Hs-1\"\nFROM public.marpower__450000_dc_distribution__dc_switch\nWHERE $__timeFilter(timestamp) AND topic IN ('marpower/450000-dc-distribution/dc-switch/keb6-0571', 'marpower/450000-dc-distribution/dc-switch/keb6-0572', 'marpower/450000-dc-distribution/dc-switch/keb6-0573', 'marpower/450000-dc-distribution/dc-switch/keb7-0574', 'marpower/450000-dc-distribution/dc-switch/keb7-0575', 'marpower/450000-dc-distribution/dc-switch/keb8-0576', 'marpower/450000-dc-distribution/dc-switch/keb8-0577', 'marpower/450000-dc-distribution/dc-switch/keb9-0578')\nGROUP BY 1 ORDER BY 1",
           "refId": "A"
         }
       ],
@@ -4173,23 +4173,6 @@
           }
         }
       ]
-    },
-    {
-      "id": 34,
-      "type": "text",
-      "title": "Heat sink temperature",
-      "gridPos": {
-        "x": 12,
-        "y": 136,
-        "w": 12,
-        "h": 8
-      },
-      "description": "",
-      "transparent": false,
-      "options": {
-        "mode": "markdown",
-        "content": "**Not published.** The DC switches' heat sink temperatures have no MQTT topic yet."
-      }
     },
     {
       "id": 35,
@@ -4721,7 +4704,7 @@
               "pluginVersion": "2.1.4",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT CASE right(topic, 2) WHEN '71' THEN 'SB.01.P01' WHEN '72' THEN 'SB.01.P01' WHEN '73' THEN 'SB.01.P02' WHEN '74' THEN 'SB.01.P03' WHEN '75' THEN 'SB.01.P04' ELSE 'SB.02' END AS \"Switchboard\",\n  '05.' || right(topic, 2) AS \"DC switch\",\n  round(last_value(board_temp__value ORDER BY timestamp) * 0.1, 1) AS \"Board temperature [°C]\",\n  last_value(dcv_s_0__value ORDER BY timestamp) AS \"Voltage left [V]\",\n  last_value(dcv_s_1__value ORDER BY timestamp) AS \"Voltage right [V]\",\n  last_value(dcv_ext__value ORDER BY timestamp) AS \"Voltage external [V]\",\n  last_value(dcc_s_0__value ORDER BY timestamp) AS \"Current left (raw)\",\n  last_value(dcc_s_1__value ORDER BY timestamp) AS \"Current right (raw)\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__dc_switch\nWHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-dc-distribution/dc-switch/keb6-0571', 'marpower/450000-dc-distribution/dc-switch/keb6-0572', 'marpower/450000-dc-distribution/dc-switch/keb6-0573', 'marpower/450000-dc-distribution/dc-switch/keb7-0574', 'marpower/450000-dc-distribution/dc-switch/keb7-0575', 'marpower/450000-dc-distribution/dc-switch/keb8-0576', 'marpower/450000-dc-distribution/dc-switch/keb8-0577', 'marpower/450000-dc-distribution/dc-switch/keb9-0578')\nGROUP BY topic ORDER BY 2",
+              "rawSql": "SELECT CASE right(topic, 2) WHEN '71' THEN 'SB.01.P01' WHEN '72' THEN 'SB.01.P01' WHEN '73' THEN 'SB.01.P02' WHEN '74' THEN 'SB.01.P03' WHEN '75' THEN 'SB.01.P04' ELSE 'SB.02' END AS \"Switchboard\",\n  '05.' || right(topic, 2) AS \"DC switch\",\n  round(last_value(\"hs-0__value\" ORDER BY timestamp) * 0.1, 1) AS \"Heat sink Hs-0 [°C]\",\n  round(last_value(\"hs-1__value\" ORDER BY timestamp) * 0.1, 1) AS \"Heat sink Hs-1 [°C]\",\n  last_value(dcv_s_0__value ORDER BY timestamp) AS \"Voltage left [V]\",\n  last_value(dcv_s_1__value ORDER BY timestamp) AS \"Voltage right [V]\",\n  last_value(dcv_ext__value ORDER BY timestamp) AS \"Voltage external [V]\",\n  last_value(dcc_s_0__value ORDER BY timestamp) AS \"Current left (raw)\",\n  last_value(dcc_s_1__value ORDER BY timestamp) AS \"Current right (raw)\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__dc_switch\nWHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-dc-distribution/dc-switch/keb6-0571', 'marpower/450000-dc-distribution/dc-switch/keb6-0572', 'marpower/450000-dc-distribution/dc-switch/keb6-0573', 'marpower/450000-dc-distribution/dc-switch/keb7-0574', 'marpower/450000-dc-distribution/dc-switch/keb7-0575', 'marpower/450000-dc-distribution/dc-switch/keb8-0576', 'marpower/450000-dc-distribution/dc-switch/keb8-0577', 'marpower/450000-dc-distribution/dc-switch/keb9-0578')\nGROUP BY topic ORDER BY 2",
               "refId": "A"
             }
           ],

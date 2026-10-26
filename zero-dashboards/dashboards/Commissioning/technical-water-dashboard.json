@@ -300,10 +300,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                  AS timestamp,\r\n\tchlorine_unit_alarm__value AS chlorine_unit_alarm\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                  AS timestamp,\r\n\tchlorine_unit_alarm__value AS chlorine_unit_alarm\r\nFROM marpower__250000_tech_water__general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -715,10 +715,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                           AS timestamp,\r\n\tdrain_vlv_y_01_pos_overboard__value AS drain_valve1_pos_overboard,\r\n\tdrain_vlv_y_02_pos_overboard__value AS drain_valve2_pos_overboard\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                           AS timestamp,\r\n\tdrain_vlv_y_01_pos_overboard__value AS drain_valve1_pos_overboard,\r\n\tdrain_vlv_y_02_pos_overboard__value AS drain_valve2_pos_overboard\r\nFROM marpower__250000_tech_water__general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1248,10 +1248,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                                  AS timestamp,\r\n\tvalve_cold_air_fr_68_y_03_openclose__value AS valve_cold_air_cool_water_y03,\r\n\tvalve_cold_air_fr_32_y_04_openclose__value AS valve_cold_air_cool_water_y04,\r\n\tvalve_cold_air_fr_32_y_05_openclose__value AS valve_cold_air_cool_water_y05\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
+          "rawSql": "SELECT\r\n\ttimestamp                                  AS timestamp,\r\n\tvalve_cold_air_fr_68_y_03_openclose__value AS valve_cold_air_cool_water_y03,\r\n\tvalve_cold_air_fr_32_y_04_openclose__value AS valve_cold_air_cool_water_y04,\r\n\tvalve_cold_air_fr_32_y_05_openclose__value AS valve_cold_air_cool_water_y05\r\nFROM marpower__250000_tech_water__general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1448,10 +1448,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)              AS time,\r\n\tMAX(chlorine_unit_alarm__value)                 AS fresh_water_chlorine_unit_alarm,\r\n\tMAX(drain_vlv_y_01_pos_overboard__value)        AS drain_valve1_pos_overboard,\r\n\tMAX(drain_vlv_y_02_pos_overboard__value)        AS drain_valve2_pos_overboard,\r\n\tMAX(valve_cold_air_fr_68_y_03_openclose__value) AS valve_cold_air_cool_water_y03_openclose,\r\n\tMAX(valve_cold_air_fr_32_y_04_openclose__value) AS valve_cold_air_cool_water_y04_openclose,\r\n\tMAX(valve_cold_air_fr_32_y_05_openclose__value) AS valve_cold_air_cool_water_y05_openclose\r\nFROM public.marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
+              "rawSql": "SELECT\r\n\tdate_bin('$__interval', timestamp)              AS time,\r\n\tMAX(chlorine_unit_alarm__value)                 AS fresh_water_chlorine_unit_alarm,\r\n\tMAX(drain_vlv_y_01_pos_overboard__value)        AS drain_valve1_pos_overboard,\r\n\tMAX(drain_vlv_y_02_pos_overboard__value)        AS drain_valve2_pos_overboard,\r\n\tMAX(valve_cold_air_fr_68_y_03_openclose__value) AS valve_cold_air_cool_water_y03_openclose,\r\n\tMAX(valve_cold_air_fr_32_y_04_openclose__value) AS valve_cold_air_cool_water_y04_openclose,\r\n\tMAX(valve_cold_air_fr_32_y_05_openclose__value) AS valve_cold_air_cool_water_y05_openclose\r\nFROM public.marpower__250000_tech_water__general\r\nWHERE $__timeFilter(timestamp)\r\nGROUP BY 1\r\nORDER BY 1",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -1540,7 +1540,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 16,
         "x": 0,
         "y": 9
@@ -1869,7 +1869,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "deckwash_reel_b04",
+                  "field": "deckwash_reel_fwd",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1882,6 +1882,7 @@
               "placement": {
                 "height": 30,
                 "left": 840,
+                "rotation": 0,
                 "top": 10,
                 "width": 180
               },
@@ -1905,10 +1906,11 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Deckwash reel B04"
+                  "fixed": "Deckwash reel FWD"
                 },
                 "valign": "middle"
               },
+              "connections": [],
               "constraint": {
                 "horizontal": "left",
                 "vertical": "top"
@@ -1917,6 +1919,7 @@
               "placement": {
                 "height": 30,
                 "left": 564,
+                "rotation": 0,
                 "top": 10,
                 "width": 167
               },
@@ -1940,7 +1943,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "deckwash_reel_b05",
+                  "field": "deckwash_reel_mid",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -1953,6 +1956,7 @@
               "placement": {
                 "height": 30,
                 "left": 840,
+                "rotation": 0,
                 "top": 45,
                 "width": 180
               },
@@ -1976,7 +1980,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Deckwash reel B05"
+                  "fixed": "Deckwash reel MID"
                 },
                 "valign": "middle"
               },
@@ -1988,6 +1992,7 @@
               "placement": {
                 "height": 30,
                 "left": 564,
+                "rotation": 0,
                 "top": 45,
                 "width": 167
               },
@@ -2011,7 +2016,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "deckwash_reel_b06",
+                  "field": "deckwash_reel_aft",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2024,6 +2029,7 @@
               "placement": {
                 "height": 30,
                 "left": 840,
+                "rotation": 0,
                 "top": 80,
                 "width": 180
               },
@@ -2059,6 +2065,7 @@
               "placement": {
                 "height": 30,
                 "left": 564,
+                "rotation": 0,
                 "top": 80,
                 "width": 167
               },
@@ -2326,6 +2333,117 @@
                 "width": 109
               },
               "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "#D9D9D9"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "center",
+                "color": {
+                  "fixed": "#000000"
+                },
+                "size": 18,
+                "text": {
+                  "field": "charcoal_filter",
+                  "mode": "field"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 22",
+              "placement": {
+                "height": 30,
+                "left": 840,
+                "rotation": 0,
+                "top": 115,
+                "width": 180
+              },
+              "type": "metric-value"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 16,
+                "text": {
+                  "fixed": "Charcoal filter"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 23",
+              "placement": {
+                "height": 30,
+                "left": 564,
+                "rotation": 0,
+                "top": 115,
+                "width": 167
+              },
+              "type": "text"
+            },
+            {
+              "background": {
+                "color": {
+                  "fixed": "transparent"
+                }
+              },
+              "border": {
+                "color": {
+                  "fixed": "dark-green"
+                }
+              },
+              "config": {
+                "align": "left",
+                "color": {
+                  "fixed": "rgb(204,204,220)"
+                },
+                "size": 12,
+                "text": {
+                  "field": "deckwash_reel_b06_tag",
+                  "fixed": "(25004037_4)",
+                  "mode": "fixed"
+                },
+                "valign": "middle"
+              },
+              "constraint": {
+                "horizontal": "left",
+                "vertical": "top"
+              },
+              "name": "Element 24",
+              "placement": {
+                "height": 30,
+                "left": 731,
+                "rotation": 0,
+                "top": 115,
+                "width": 109
+              },
+              "type": "text"
             }
           ],
           "name": "Element 1768816105883",
@@ -2362,10 +2480,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  timestamp                          AS timestamp,\r\n  adiabatic_cool_b_03_flow__value    AS adiabatic_cool_b03,\r\n  adiabatic_cool_b_07_flow__value    AS adiabatic_cool_b07,\r\n  adiabatic_cool_b_08_flow__value    AS adiabatic_cool_b08,\r\n  adiabatic_cool_b_09_flow__value    AS adiabatic_cool_b09,\r\n  reel_for_deckwash_b_04_flow__value AS deckwash_reel_B04,\r\n  reel_for_deckwash_b_05_flow__value AS deckwash_reel_B05,\r\n  reel_for_deckwash_b_06_flow__value AS deckwash_reel_B06\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp",
+          "rawSql": "SELECT \r\n  MAX(time),\r\n  MAX(CASE WHEN name = 'cold-flow-adiabatic-cooling-line-b03' THEN flow END) AS adiabatic_cool_b03,\r\n  MAX(CASE WHEN name = 'cold-flow-adiabatic-cooling-line-b07' THEN flow END) AS adiabatic_cool_b07,\r\n  MAX(CASE WHEN name = 'cold-flow-adiabatic-cooling-line-b08' THEN flow END) AS adiabatic_cool_b08,\r\n  MAX(CASE WHEN name = 'cold-flow-adiabatic-cooling-line-b09' THEN flow END) AS adiabatic_cool_b09,\r\n  MAX(CASE WHEN name = 'cold-flow-reel-deckwash-aft' THEN flow END) AS deckwash_reel_aft,\r\n  MAX(CASE WHEN name = 'cold-flow-reel-deckwash-mid' THEN flow END) AS deckwash_reel_mid,\r\n  MAX(CASE WHEN name = 'cold-flow-reel-deckwash-fwd' THEN flow END) AS deckwash_reel_fwd,\r\n  MAX(CASE WHEN name = 'cold-flow-charcoal-filter' THEN flow END)   AS charcoal_filter\r\nFROM (\r\n  SELECT DISTINCT ON (technical_name)\r\n    timestamp      AS time,\r\n    technical_name AS name,\r\n    flow__value    AS flow\r\n  FROM marpower__tech_water__flows\r\n  WHERE $__timeFilter(timestamp)\r\n  ORDER BY technical_name, timestamp DESC\r\n)",
           "refId": "A",
           "sql": {
             "columns": [
@@ -2455,7 +2573,7 @@
               }
             ]
           },
-          "unit": "mamp"
+          "unit": "L"
         },
         "overrides": [
           {
@@ -2509,7 +2627,7 @@
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 8,
         "x": 16,
         "y": 9
@@ -2552,79 +2670,6 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "charcoal_filter_flow",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "charcoal_filter_flow",
-              "placement": {
-                "height": 30,
-                "left": 311,
-                "rotation": 0,
-                "top": 10,
-                "width": 180
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 16,
-                "text": {
-                  "fixed": "Charcoal filter - Flow"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "charcoal_filter_flow label",
-              "placement": {
-                "height": 30,
-                "left": 15,
-                "rotation": 0,
-                "top": 10,
-                "width": 190
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#D9D9D9"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 18,
-                "text": {
                   "field": "charcoal_filter_temp",
                   "mode": "field"
                 },
@@ -2637,8 +2682,8 @@
               "name": "charcoal_filter_temp",
               "placement": {
                 "height": 30,
-                "left": 311,
-                "top": 45,
+                "left": 321,
+                "top": 10,
                 "width": 180
               },
               "type": "metric-value"
@@ -2674,8 +2719,8 @@
                 "height": 30,
                 "left": 15,
                 "rotation": 0,
-                "top": 45,
-                "width": 190
+                "top": 10,
+                "width": 235
               },
               "type": "text"
             },
@@ -2709,8 +2754,8 @@
               "name": "salinity1",
               "placement": {
                 "height": 30,
-                "left": 311,
-                "top": 90,
+                "left": 321,
+                "top": 55,
                 "width": 180
               },
               "type": "metric-value"
@@ -2745,8 +2790,8 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "top": 90,
-                "width": 190
+                "top": 55,
+                "width": 235
               },
               "type": "text"
             },
@@ -2780,8 +2825,8 @@
               "name": "salinity2",
               "placement": {
                 "height": 30,
-                "left": 311,
-                "top": 125,
+                "left": 321,
+                "top": 90,
                 "width": 180
               },
               "type": "metric-value"
@@ -2817,8 +2862,8 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "top": 125,
-                "width": 190
+                "top": 90,
+                "width": 235
               },
               "type": "text"
             },
@@ -2840,7 +2885,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "tank1_level",
+                  "field": "clean",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2852,8 +2897,8 @@
               "name": "tank1_level",
               "placement": {
                 "height": 30,
-                "left": 311,
-                "top": 170,
+                "left": 321,
+                "top": 135,
                 "width": 180
               },
               "type": "metric-value"
@@ -2876,7 +2921,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Tank 1 level"
+                  "fixed": "Clean water tank"
                 },
                 "valign": "middle"
               },
@@ -2888,8 +2933,9 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "top": 170,
-                "width": 190
+                "rotation": 0,
+                "top": 135,
+                "width": 235
               },
               "type": "text"
             },
@@ -2911,7 +2957,7 @@
                 },
                 "size": 18,
                 "text": {
-                  "field": "tank2_level",
+                  "field": "dirty",
                   "mode": "field"
                 },
                 "valign": "middle"
@@ -2924,8 +2970,8 @@
               "name": "tank2_level",
               "placement": {
                 "height": 30,
-                "left": 311,
-                "top": 205,
+                "left": 321,
+                "top": 170,
                 "width": 180
               },
               "type": "metric-value"
@@ -2948,7 +2994,7 @@
                 },
                 "size": 16,
                 "text": {
-                  "fixed": "Tank 2 level"
+                  "fixed": "Dirty water tank"
                 },
                 "valign": "middle"
               },
@@ -2960,46 +3006,9 @@
               "placement": {
                 "height": 30,
                 "left": 15,
-                "top": 205,
-                "width": 190
-              },
-              "type": "text"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "left",
-                "color": {
-                  "fixed": "rgb(204,204,220)"
-                },
-                "size": 12,
-                "text": {
-                  "field": "charcoal_filter_flow_tag",
-                  "fixed": " ",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "name": "charcoal_filter_flow_tag",
-              "placement": {
-                "height": 30,
-                "left": 205,
                 "rotation": 0,
-                "top": 10,
-                "width": 106
+                "top": 170,
+                "width": 235
               },
               "type": "text"
             },
@@ -3034,9 +3043,8 @@
               "name": "charcoal_filter_temp_tag",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
-                "top": 45,
+                "left": 215,
+                "top": 10,
                 "width": 106
               },
               "type": "text"
@@ -3072,9 +3080,8 @@
               "name": "salinity1_tag",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
-                "top": 90,
+                "left": 215,
+                "top": 55,
                 "width": 106
               },
               "type": "text"
@@ -3110,9 +3117,8 @@
               "name": "salinity2_tag",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
-                "top": 125,
+                "left": 215,
+                "top": 90,
                 "width": 106
               },
               "type": "text"
@@ -3148,9 +3154,8 @@
               "name": "tank1_level_tag",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
-                "top": 170,
+                "left": 215,
+                "top": 135,
                 "width": 106
               },
               "type": "text"
@@ -3186,9 +3191,8 @@
               "name": "tank2_level_tag",
               "placement": {
                 "height": 30,
-                "left": 205,
-                "rotation": 0,
-                "top": 205,
+                "left": 215,
+                "top": 170,
                 "width": 106
               },
               "type": "text"
@@ -3228,10 +3232,10 @@
               "table": ""
             }
           },
-          "pluginVersion": "2.1.4",
+          "pluginVersion": "3.0.2",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n\ttimestamp                        AS timestamp,\r\n\tcharcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\tcharcoal_filter_b_02_temp__value AS charcoal_filter_temp,\r\n\tsalinity_1__value                AS salinity1,\r\n\tsalinity_2__value                AS salinity2,\r\n\ttank_1_level__value              AS tank1_level,\r\n\ttank_2_level__value              AS tank2_level\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+          "rawSql": "SELECT\r\n\ttimestamp                        AS timestamp,\r\n\tcharcoal_filter_b_02_temp__value AS charcoal_filter_temp,\r\n\tsalinity_1__value                AS salinity1,\r\n\tsalinity_2__value                AS salinity2\r\nFROM marpower__250000_tech_water__general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp DESC\r\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -3250,6 +3254,30 @@
             ],
             "limit": 50
           }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "hide": false,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "3.0.2",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n\tMAX(time) AS time,\r\n\tMAX(CASE WHEN name = 'clean-level' THEN level END) AS clean,\r\n\tMAX(CASE WHEN name = 'dirty-level' THEN level END) AS dirty\r\nFROM (\r\n\tSELECT DISTINCT ON (technical_name)\r\n\t\ttimestamp      AS time,\r\n\t\ttechnical_name AS name,\r\n\t\tlevel__value   AS level\r\n\tFROM public.marpower__tech_water__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tORDER BY technical_name, timestamp DESC\r\n)",
+          "refId": "B"
         },
         {
           "dataset": "dev",
@@ -3276,7 +3304,7 @@
           "queryType": "table",
           "rawQuery": true,
           "rawSql": "SELECT\r\n  MAX(CASE WHEN mqtt_json_path = 'charcoal_filter_b01_flow' THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_flow_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'charcoal_filter_b02_temp' THEN '(' || yard_tag || ')' ELSE NULL END) AS charcoal_filter_temp_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'salinity1' THEN '(' || yard_tag || ')' ELSE NULL END)                AS salinity1_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'salinity2' THEN '(' || yard_tag || ')' ELSE NULL END)                AS salinity2_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank1_level' THEN '(' || yard_tag || ')' ELSE NULL END)              AS tank1_level_tag,\r\n  MAX(CASE WHEN mqtt_json_path = 'tank2_level' THEN '(' || yard_tag || ')' ELSE NULL END)              AS tank2_level_tag\r\nFROM marpower__io_metadata\r\nWHERE mqtt_topic = 'marpower/250000-techwater'\r\nLIMIT 1",
-          "refId": "B",
+          "refId": "C",
           "sql": {
             "columns": [
               {
@@ -3305,7 +3333,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 16
       },
       "id": 13,
       "panels": [
@@ -3339,7 +3367,7 @@
                 "insertNulls": 300000,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
-                "pointSize": 5,
+                "pointSize": 1,
                 "scaleDistribution": {
                   "type": "linear"
                 },
@@ -3384,7 +3412,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 26
+            "y": 17
           },
           "id": 15,
           "options": {
@@ -3418,10 +3446,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n\ttimestamp                       AS time,\r\n\tadiabatic_cool_b_03_flow__value AS adiab_cool_b03_flow,\r\n\tadiabatic_cool_b_07_flow__value AS adiab_cool_b07_flow,\r\n\tadiabatic_cool_b_08_flow__value AS adiab_cool_b08_flow,\r\n\tadiabatic_cool_b_09_flow__value AS adiab_cool_b09_flow\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  UPPER(technical_name) AS name,\r\n  flow__value           AS flow\r\nFROM marpower__tech_water__flows\r\nWHERE $__timeFilter(timestamp)\r\nAND technical_name like 'cold-flow-adiabatic-cooling-line-%'\r\nORDER BY technical_name, timestamp",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3445,17 +3473,19 @@
           "title": "Adiabatic cooling flow",
           "transformations": [
             {
-              "id": "organize",
+              "id": "partitionByValues",
               "options": {
-                "excludeByName": {},
-                "includeByName": {},
-                "indexByName": {},
-                "renameByName": {
-                  "adiab_cool_b03_flow": "B03",
-                  "adiab_cool_b07_flow": "B07",
-                  "adiab_cool_b08_flow": "B08",
-                  "adiab_cool_b09_flow": "B09"
-                }
+                "fields": [
+                  "name"
+                ],
+                "keepFields": false
+              }
+            },
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "flow COLD-FLOW-ADIABATIC-COOLING-LINE-(.*)",
+                "renamePattern": "$1"
               }
             }
           ],
@@ -3492,7 +3522,7 @@
                 "insertNulls": 300000,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
-                "pointSize": 5,
+                "pointSize": 1,
                 "scaleDistribution": {
                   "type": "linear"
                 },
@@ -3537,7 +3567,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 34
+            "y": 25
           },
           "id": 17,
           "options": {
@@ -3571,10 +3601,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp                          AS time,\r\n\treel_for_deckwash_b_04_flow__value AS deckwash_reel_b04_flow,\r\n\treel_for_deckwash_b_05_flow__value AS deckwash_reel_b05_flow,\r\n\treel_for_deckwash_b_06_flow__value AS deckwash_reel_b06_flow\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp             AS time,\r\n  UPPER(technical_name) AS name,\r\n  flow__value           AS flow\r\nFROM marpower__tech_water__flows\r\nWHERE $__timeFilter(timestamp)\r\nAND technical_name like 'cold-flow-reel-deckwash-%'\r\nORDER BY yard_tag, timestamp",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3598,16 +3628,19 @@
           "title": "Deckwash reel flow",
           "transformations": [
             {
-              "id": "organize",
+              "id": "partitionByValues",
               "options": {
-                "excludeByName": {},
-                "includeByName": {},
-                "indexByName": {},
-                "renameByName": {
-                  "deckwash_reel_b04_flow": "B04",
-                  "deckwash_reel_b05_flow": "B05",
-                  "deckwash_reel_b06_flow": "B06"
-                }
+                "fields": [
+                  "name"
+                ],
+                "keepFields": false
+              }
+            },
+            {
+              "id": "renameByRegex",
+              "options": {
+                "regex": "flow COLD-FLOW-REEL-DECKWASH-(.*)",
+                "renamePattern": "$1"
               }
             }
           ],
@@ -3623,7 +3656,7 @@
             "defaults": {
               "color": {
                 "fixedColor": "text",
-                "mode": "palette-classic"
+                "mode": "fixed"
               },
               "custom": {
                 "axisBorderShow": false,
@@ -3644,7 +3677,7 @@
                 "insertNulls": 300000,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
-                "pointSize": 5,
+                "pointSize": 1,
                 "scaleDistribution": {
                   "type": "linear"
                 },
@@ -3682,18 +3715,6 @@
                     "id": "unit"
                   }
                 ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "charcoal_filter_temp"
-                },
-                "properties": [
-                  {
-                    "id": "unit",
-                    "value": "celsius"
-                  }
-                ]
               }
             ]
           },
@@ -3701,7 +3722,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 42
+            "y": 33
           },
           "id": 16,
           "options": {
@@ -3709,7 +3730,7 @@
               "calcs": [],
               "displayMode": "list",
               "placement": "right",
-              "showLegend": true
+              "showLegend": false
             },
             "tooltip": {
               "hideZeros": false,
@@ -3735,10 +3756,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp                        AS time,\r\n\tcharcoal_filter_b_01_flow__value AS charcoal_filter_flow,\r\n\tcharcoal_filter_b_02_temp__value AS charcoal_filter_temp\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp      AS time,\r\n  technical_name AS name,\r\n  flow__value    AS flow\r\nFROM marpower__tech_water__flows\r\nWHERE $__timeFilter(timestamp)\r\nAND technical_name = 'cold-flow-charcoal-filter'\r\nORDER BY timestamp",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3759,7 +3780,155 @@
               }
             }
           ],
-          "title": "Charcoal filter",
+          "title": "Charcoal filter - Flow",
+          "transformations": [
+            {
+              "id": "partitionByValues",
+              "options": {
+                "fields": [
+                  "name"
+                ],
+                "keepFields": false
+              }
+            }
+          ],
+          "transparent": true,
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "text",
+                "mode": "fixed"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": 300000,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 1,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": 60000,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              },
+              "unit": "celsius"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": [
+                  {
+                    "id": "unit"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 41
+          },
+          "id": 22,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "right",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.3.0",
+          "targets": [
+            {
+              "dataset": "dev",
+              "editorMode": "code",
+              "editorType": "sql",
+              "format": 1,
+              "meta": {
+                "builderOptions": {
+                  "columns": [],
+                  "database": "",
+                  "limit": 1000,
+                  "meta": {},
+                  "mode": "list",
+                  "queryType": "table",
+                  "table": ""
+                }
+              },
+              "pluginVersion": "3.0.2",
+              "queryType": "table",
+              "rawQuery": true,
+              "rawSql": "SELECT\r\n  timestamp                        AS time,\r\n\tcharcoal_filter_b_02_temp__value AS charcoal_filter_temp\r\nFROM marpower__250000_tech_water__general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "refId": "A",
+              "sql": {
+                "columns": [
+                  {
+                    "parameters": [],
+                    "type": "function"
+                  }
+                ],
+                "groupBy": [
+                  {
+                    "property": {
+                      "type": "string"
+                    },
+                    "type": "groupBy"
+                  }
+                ],
+                "limit": 50
+              }
+            }
+          ],
+          "title": "Charcoal filter - Temperature",
           "transformations": [
             {
               "id": "organize",
@@ -3807,7 +3976,7 @@
                 "insertNulls": 300000,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
-                "pointSize": 5,
+                "pointSize": 1,
                 "scaleDistribution": {
                   "type": "linear"
                 },
@@ -3852,7 +4021,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 50
+            "y": 49
           },
           "id": 19,
           "options": {
@@ -3886,10 +4055,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp         AS time,\r\n\tsalinity_1__value AS salinity1,\r\n\tsalinity_2__value AS salinity2\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "SELECT\r\n  timestamp         AS time,\r\n\tsalinity_1__value AS salinity1,\r\n\tsalinity_2__value AS salinity2\r\nFROM marpower__250000_tech_water__general\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -3958,7 +4127,7 @@
                 "insertNulls": 300000,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
-                "pointSize": 5,
+                "pointSize": 1,
                 "scaleDistribution": {
                   "type": "linear"
                 },
@@ -3983,7 +4152,7 @@
                   }
                 ]
               },
-              "unit": "mamp"
+              "unit": "L"
             },
             "overrides": [
               {
@@ -3996,6 +4165,30 @@
                     "id": "unit"
                   }
                 ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "level clean-level"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Clean"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "level dirty-level"
+                },
+                "properties": [
+                  {
+                    "id": "displayName",
+                    "value": "Dirty"
+                  }
+                ]
               }
             ]
           },
@@ -4003,7 +4196,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 58
+            "y": 57
           },
           "id": 18,
           "options": {
@@ -4037,10 +4230,10 @@
                   "table": ""
                 }
               },
-              "pluginVersion": "2.1.4",
+              "pluginVersion": "3.0.2",
               "queryType": "table",
               "rawQuery": true,
-              "rawSql": "SELECT\r\n  timestamp           AS time,\r\n\ttank_1_level__value AS tank1_level,\r\n\ttank_2_level__value AS tank2_level\r\nFROM marpower__250000_tech_water\r\nWHERE $__timeFilter(timestamp)\r\nORDER BY timestamp;",
+              "rawSql": "\tSELECT\r\n\t\ttimestamp      AS time,\r\n\t\ttechnical_name AS name,\r\n\t\tlevel__value   AS level\r\n\tFROM public.marpower__tech_water__level_sensors\r\n\tWHERE $__timeFilter(timestamp)\r\n\tORDER BY technical_name, timestamp DESC",
               "refId": "A",
               "sql": {
                 "columns": [
@@ -4064,15 +4257,12 @@
           "title": "Tank level",
           "transformations": [
             {
-              "id": "organize",
+              "id": "partitionByValues",
               "options": {
-                "excludeByName": {},
-                "includeByName": {},
-                "indexByName": {},
-                "renameByName": {
-                  "tank1_level": "Tank 1",
-                  "tank2_level": "Tank 2"
-                }
+                "fields": [
+                  "name"
+                ],
+                "keepFields": false
               }
             }
           ],

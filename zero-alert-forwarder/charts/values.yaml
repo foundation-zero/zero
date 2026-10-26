@@ -1,0 +1,58 @@
+replicaCount: 1
+
+image:
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-alert-forwarder
+  pullPolicy: IfNotPresent
+  tag: ""
+
+mysql:
+  # Mirrors of the AMCS database; they take turns being polled.
+  hosts: []
+  port: 3306
+  database: alerts
+  # Secret holding the read-only AMCS credentials.
+  existingSecret: ""
+  existingSecretUsernameKey: username
+  existingSecretPasswordKey: password
+
+ntfy:
+  url: https://ntfy.sh
+  topic: ""
+  # Optional Secret with an access token, for a self-hosted ntfy with auth.
+  existingSecret: ""
+  existingSecretTokenKey: token
+
+forwarding:
+  pollIntervalSeconds: 10
+  minPriority: Warning
+  updates:
+    - Activated
+  attempts: 3
+  # Re-notify while an alarm is not acknowledged: after 20s, then 10s, 5s, 3s, and every 1s after.
+  reminderDelaysSeconds: [20, 10, 5, 3, 1]
+  # Bounds one poll of one mirror, so a stalled database does not block the other.
+  pollTimeoutSeconds: 10
+  dryRun: false
+
+livenessPath: /tmp/liveness
+# Liveness is refreshed per notification, so this must exceed one notification's retries:
+# attempts * 10s + (attempts - 1) * pollIntervalSeconds, and also pollTimeoutSeconds.
+livenessMaxAgeSeconds: 120
+# Created once polling is set up; gates a rolling update on the new pod being ready.
+readinessPath: /tmp/ready
+
+resources: {}
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

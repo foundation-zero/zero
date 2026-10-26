@@ -58,6 +58,9 @@ export type InputType = {
     "TemperatureBoundaryInputType!",
     "OverpressureTemperatureBoundaryInputType!",
     "HeatSourceInputType!",
+    "ActiveHeatSourceInputType!",
+    "UgridInputType!",
+    "PropulsionDriveInputType!",
     "HvacExchangerInputType!",
   ];
 };

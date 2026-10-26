@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ZiDcConverter } from "@/modules/common/components/icons";
+import { SensorComponentType } from "@/modules/thrsim/types";
+import { reactiveOmit } from "@vueuse/core";
 import { first, last } from "lodash";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
@@ -18,7 +20,7 @@ import {
   ValueListTemperatureItem,
 } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
-import { getMimicDataProvider } from "../providers";
+import { getMimicDataProvider, ModuleField } from "../providers";
 import { FieldRenderer } from "../renderers";
 
 const props = withDefaults(
@@ -44,15 +46,13 @@ const { getComponentState } = getMimicDataProvider();
 const state = getComponentState();
 
 const modeKey = useDcMode(props.custom.group);
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.DcConverter"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <AssetBox
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="state"
     >
       <div class="flex items-center justify-between">
@@ -91,11 +91,23 @@ const modeKey = useDcMode(props.custom.group);
         <ValueListHeatPowerItem :source="sensors.heatTransfer" />
         <ValueListDeltaTItem :source="sensors.heatTransfer" />
         <ValueListTemperatureItem
+          v-if="source[0] === SensorComponentType.UgridGroup"
           class="text-brand"
-          :source="sensors.temperature"
+          :source="source as ModuleField<SensorComponentType.UgridGroup>"
+          field="maxTempPowerStage"
           temperature-label="internal"
         />
-        <ValueListPowerItem :source="sensors.power" />
+        <ValueListTemperatureItem
+          v-if="source[0] === SensorComponentType.BrightloopGroup"
+          class="text-brand"
+          :source="source as ModuleField<SensorComponentType.BrightloopGroup>"
+          field="maxChannelTemperature"
+          temperature-label="internal"
+        />
+        <ValueListPowerItem
+          :source="source"
+          field="totalPower"
+        />
 
         <ValueListSeparator />
       </ValueList>

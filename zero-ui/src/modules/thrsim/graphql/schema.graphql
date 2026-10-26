@@ -1,5 +1,9 @@
 directive @jsonSchemaDirective(yardTag: String = null, componentType: String = null, valveType: String = null) on FIELD_DEFINITION
 
+input ActiveHeatSourceInputType {
+  heatFlow: Float!
+}
+
 input AdsorptionChillerInputType {
   enable: Boolean!
   mode: AdsorptionChillerMode!
@@ -304,11 +308,6 @@ type ControllerTanksControllerValuesType {
   timeToHot: FloatOptionalStampedType!
 }
 
-input ConverterInputType {
-  heatFlow: Float!
-  active: Boolean!
-}
-
 type ConvertersControlModeType {
   mode: String!
 }
@@ -421,14 +420,39 @@ type DcSensorValuesType {
   dcPressureAft: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-07", componentType: "pressure_sensor", valveType: null)
   dcPressureUgrid: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-08", componentType: "pressure_sensor", valveType: null)
   dcPressureFwd: SensorPressureSensorType! @jsonSchemaDirective(yardTag: "50001097-09", componentType: "pressure_sensor", valveType: null)
+  dcBrightloopAft1Converter1: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft1Converter2: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft1Converter3: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft1Converter4: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft2Converter1: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002075", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft2Converter2: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002075", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft2Converter3: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002075", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft3Converter1: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002074", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft3Converter2: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002074", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft3Converter3: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002074", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft4Converter1: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft4Converter2: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft4Converter3: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopAft4Converter4: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd1Converter1: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd1Converter2: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd1Converter3: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd1Converter4: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd2Converter1: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd2Converter2: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd2Converter3: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop_converter", valveType: null)
+  dcBrightloopFwd2Converter4: SensorBrightloopConverterType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop_converter", valveType: null)
+  dcUgrid1: SensorUgridType! @jsonSchemaDirective(yardTag: "45002082", componentType: "ugrid", valveType: null)
+  dcUgrid2: SensorUgridType! @jsonSchemaDirective(yardTag: "45002081", componentType: "ugrid", valveType: null)
   dcBrightloopAft1: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002076", componentType: "brightloop", valveType: null)
   dcBrightloopAft2: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002075", componentType: "brightloop", valveType: null)
   dcBrightloopAft3: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002074", componentType: "brightloop", valveType: null)
   dcBrightloopAft4: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002073", componentType: "brightloop", valveType: null)
   dcBrightloopFwd1: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002078", componentType: "brightloop", valveType: null)
   dcBrightloopFwd2: SensorBrightloopType! @jsonSchemaDirective(yardTag: "45002077", componentType: "brightloop", valveType: null)
-  dcUgrid1: SensorUgridType! @jsonSchemaDirective(yardTag: "45002082", componentType: "ugrid", valveType: null)
-  dcUgrid2: SensorUgridType! @jsonSchemaDirective(yardTag: "45002081", componentType: "ugrid", valveType: null)
+  dcAftBrightloops: SensorBrightloopGroupType! @jsonSchemaDirective(yardTag: "", componentType: "brightloop_group", valveType: null)
+  dcFwdBrightloops: SensorBrightloopGroupType! @jsonSchemaDirective(yardTag: "", componentType: "brightloop_group", valveType: null)
+  dcUgrids: SensorUgridGroupType! @jsonSchemaDirective(yardTag: "", componentType: "ugrid_group", valveType: null)
   dcDhwExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001008", componentType: "heat_transfer", valveType: null)
   dcTotalFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   dcSeawaterExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001006", componentType: "heat_transfer", valveType: null)
@@ -454,17 +478,17 @@ type DcSensorValuesTypeDcControlValuesTypeDcParametersTypeDcControlModeTypeDcCon
 }
 
 type DcSimulationInputsType {
-  dcBrightloopFwd1: SimulationHeatSourceType!
-  dcBrightloopFwd2: SimulationHeatSourceType!
-  dcUgrid1: SimulationHeatSourceType!
-  dcUgrid2: SimulationHeatSourceType!
-  dcBrightloopAft1: SimulationHeatSourceType!
-  dcBrightloopAft2: SimulationHeatSourceType!
-  dcBrightloopAft3: SimulationHeatSourceType!
-  dcBrightloopAft4: SimulationHeatSourceType!
+  dcUgrid1: SimulationUgridType!
+  dcUgrid2: SimulationUgridType!
   dcSeawaterSupply: SimulationBoundaryType!
   dcDhwSupply: SimulationBoundaryType!
   mode: SystemAmcsControlModeType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
+  dcBrightloopFwd1: SimulationActiveHeatSourceType!
+  dcBrightloopFwd2: SimulationActiveHeatSourceType!
+  dcBrightloopAft1: SimulationActiveHeatSourceType!
+  dcBrightloopAft2: SimulationActiveHeatSourceType!
+  dcBrightloopAft3: SimulationActiveHeatSourceType!
+  dcBrightloopAft4: SimulationActiveHeatSourceType!
 }
 
 type DcSimulationOutputsType {
@@ -743,13 +767,17 @@ type DrivesSensorValuesType {
   drivesPropdriveAft2: SensorPropulsionDriveType! @jsonSchemaDirective(yardTag: "45002079", componentType: "propulsion_drive", valveType: null)
   drivesPropdriveFwd1: SensorPropulsionDriveType! @jsonSchemaDirective(yardTag: "45002080", componentType: "propulsion_drive", valveType: null)
   drivesPropdriveFwd2: SensorPropulsionDriveType! @jsonSchemaDirective(yardTag: "45002080", componentType: "propulsion_drive", valveType: null)
-  drivesShorepower: SensorShorePowerConverterType! @jsonSchemaDirective(yardTag: "45002001", componentType: "shore_power_converter", valveType: null)
+  drivesShorepower1a: SensorShorePowerConverterType! @jsonSchemaDirective(yardTag: "45002001", componentType: "shore_power_converter", valveType: null)
+  drivesShorepower1b: SensorShorePowerConverterType! @jsonSchemaDirective(yardTag: "45002001", componentType: "shore_power_converter", valveType: null)
+  drivesShorepower2a: SensorShorePowerConverterType! @jsonSchemaDirective(yardTag: "45002001", componentType: "shore_power_converter", valveType: null)
+  drivesShorepower2b: SensorShorePowerConverterType! @jsonSchemaDirective(yardTag: "45002001", componentType: "shore_power_converter", valveType: null)
   drivesPropdriveAft1Heat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
   drivesPropdriveAft2Heat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
   drivesAftOilCoolerHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001012", componentType: "heat_transfer", valveType: null)
   drivesPropdriveFwd1Heat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
   drivesPropdriveFwd2Heat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
   drivesFwdOilCoolerHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001013", componentType: "heat_transfer", valveType: null)
+  drivesShorepower: SensorShorePowerGroupType! @jsonSchemaDirective(yardTag: "45002001", componentType: "shore_power_group", valveType: null)
   drivesShorepowerHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
   drivesDhwExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001009", componentType: "heat_transfer", valveType: null)
   drivesSeawaterExchanger: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50001011", componentType: "heat_transfer", valveType: null)
@@ -771,11 +799,11 @@ type DrivesSensorValuesTypeDrivesControlValuesTypeDrivesParametersTypeDrivesCont
 type DrivesSimulationInputsType {
   drivesOilCoolerAft: SimulationHeatSourceType!
   drivesOilCoolerFwd: SimulationHeatSourceType!
-  drivesPropdriveAft1: SimulationHeatSourceType!
-  drivesPropdriveAft2: SimulationHeatSourceType!
-  drivesPropdriveFwd1: SimulationHeatSourceType!
-  drivesPropdriveFwd2: SimulationHeatSourceType!
-  drivesShorepower: SimulationHeatSourceType!
+  drivesPropdriveAft1: SimulationPropulsionDriveType!
+  drivesPropdriveAft2: SimulationPropulsionDriveType!
+  drivesPropdriveFwd1: SimulationPropulsionDriveType!
+  drivesPropdriveFwd2: SimulationPropulsionDriveType!
+  drivesShorepower: SimulationActiveHeatSourceType!
   drivesSeawaterSupply: SimulationBoundaryType!
   drivesDhwSupply: SimulationBoundaryType!
   mode: SystemAmcsControlModeType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
@@ -1103,14 +1131,14 @@ type Mutation {
   thrsSimulationSetDhwHvacExchanger(value: HvacExchangerInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDhwSeawaterSupply(value: TemperatureBoundaryInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDhwHotwaterDemand(value: FlowBoundaryInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopFwd1(value: ConverterInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopFwd2(value: ConverterInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcUgrid1(value: ConverterInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcUgrid2(value: ConverterInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft1(value: ConverterInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft2(value: ConverterInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft3(value: ConverterInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDcBrightloopAft4(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd1(value: ActiveHeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopFwd2(value: ActiveHeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft1(value: ActiveHeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft2(value: ActiveHeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft3(value: ActiveHeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcBrightloopAft4(value: ActiveHeatSourceInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcUgrid1(value: UgridInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDcUgrid2(value: UgridInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDcSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDrivesOilCoolerAft(value: HeatSourceInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDrivesOilCoolerFwd(value: HeatSourceInputType!): ThrsSimulationInputsType!
@@ -1118,7 +1146,7 @@ type Mutation {
   thrsSimulationSetDrivesPropdriveAft2(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDrivesPropdriveFwd1(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDrivesPropdriveFwd2(value: PropulsionDriveInputType!): ThrsSimulationInputsType!
-  thrsSimulationSetDrivesShorepower(value: ConverterInputType!): ThrsSimulationInputsType!
+  thrsSimulationSetDrivesShorepower(value: ActiveHeatSourceInputType!): ThrsSimulationInputsType!
   thrsSimulationSetDrivesSeawaterSupply(value: BoundaryInputType!): ThrsSimulationInputsType!
   thrsSimulationSetMode(value: AmcsControlModeInputType!): ThrsSimulationInputsType!
   highTemperatureSimulationSetThrustersThrusterAft(value: ThrusterInputType!): HighTemperatureSimulationInputsType!
@@ -1142,24 +1170,24 @@ type Mutation {
   dhwSimulationSetDhwSeawaterSupply(value: TemperatureBoundaryInputType!): DhwSimulationInputsType!
   dhwSimulationSetDhwHotwaterDemand(value: FlowBoundaryInputType!): DhwSimulationInputsType!
   dhwSimulationSetMode(value: AmcsControlModeInputType!): DhwSimulationInputsType!
-  dcSimulationSetDcBrightloopFwd1(value: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopFwd2(value: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcUgrid1(value: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcUgrid2(value: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft1(value: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft2(value: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft3(value: ConverterInputType!): DcSimulationInputsType!
-  dcSimulationSetDcBrightloopAft4(value: ConverterInputType!): DcSimulationInputsType!
+  dcSimulationSetDcUgrid1(value: UgridInputType!): DcSimulationInputsType!
+  dcSimulationSetDcUgrid2(value: UgridInputType!): DcSimulationInputsType!
   dcSimulationSetDcSeawaterSupply(value: BoundaryInputType!): DcSimulationInputsType!
   dcSimulationSetDcDhwSupply(value: BoundaryInputType!): DcSimulationInputsType!
   dcSimulationSetMode(value: AmcsControlModeInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd1(value: ActiveHeatSourceInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopFwd2(value: ActiveHeatSourceInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft1(value: ActiveHeatSourceInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft2(value: ActiveHeatSourceInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft3(value: ActiveHeatSourceInputType!): DcSimulationInputsType!
+  dcSimulationSetDcBrightloopAft4(value: ActiveHeatSourceInputType!): DcSimulationInputsType!
   drivesSimulationSetDrivesOilCoolerAft(value: HeatSourceInputType!): DrivesSimulationInputsType!
   drivesSimulationSetDrivesOilCoolerFwd(value: HeatSourceInputType!): DrivesSimulationInputsType!
   drivesSimulationSetDrivesPropdriveAft1(value: PropulsionDriveInputType!): DrivesSimulationInputsType!
   drivesSimulationSetDrivesPropdriveAft2(value: PropulsionDriveInputType!): DrivesSimulationInputsType!
   drivesSimulationSetDrivesPropdriveFwd1(value: PropulsionDriveInputType!): DrivesSimulationInputsType!
   drivesSimulationSetDrivesPropdriveFwd2(value: PropulsionDriveInputType!): DrivesSimulationInputsType!
-  drivesSimulationSetDrivesShorepower(value: ConverterInputType!): DrivesSimulationInputsType!
+  drivesSimulationSetDrivesShorepower(value: ActiveHeatSourceInputType!): DrivesSimulationInputsType!
   drivesSimulationSetDrivesSeawaterSupply(value: BoundaryInputType!): DrivesSimulationInputsType!
   drivesSimulationSetDrivesDhwSupply(value: BoundaryInputType!): DrivesSimulationInputsType!
   drivesSimulationSetMode(value: AmcsControlModeInputType!): DrivesSimulationInputsType!
@@ -1380,7 +1408,6 @@ type PcsModeStampedType {
 
 input PropulsionDriveInputType {
   heatFlow: Float!
-  active: Boolean!
 }
 
 enum PumpControlMode {
@@ -1569,6 +1596,10 @@ type PvtSensorValuesType {
   pvtFlowOwnersStrings: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
   pvtPvtMainFwdHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50009001-01", componentType: "heat_transfer", valveType: null)
   pvtPvtMainAftHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50009002-01", componentType: "heat_transfer", valveType: null)
+  pvtTemperatureMainStringsSupply: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtTemperatureMainStringsReturn: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
+  pvtFlowMainStrings: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
+  pvtPvtMainHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "", componentType: "heat_transfer", valveType: null)
   pvtPvtOwnersHeat: SensorHeatTransferDeviceType! @jsonSchemaDirective(yardTag: "50009001-03", componentType: "heat_transfer", valveType: null)
   pvtReturnTemperature: SensorCalculatedTemperatureType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_temperature", valveType: null)
   pvtTotalFlow: SensorCalculatedFlowType! @jsonSchemaDirective(yardTag: "", componentType: "calculated_flow", valveType: null)
@@ -1625,8 +1656,25 @@ type SensorAdsorptionChillerType {
   pumpSpeedWaste: FloatStampedType!
 }
 
+type SensorBrightloopConverterType {
+  active: BoolStampedType!
+  cell01Temperature1: FloatStampedType!
+  cell01Temperature2: FloatStampedType!
+  cell02Temperature1: FloatStampedType!
+  cell02Temperature2: FloatStampedType!
+  power: FloatStampedType!
+}
+
+type SensorBrightloopGroupType {
+  anyActive: BoolStampedType!
+  maxChannelTemperature: FloatStampedType!
+  totalPower: FloatStampedType!
+}
+
 type SensorBrightloopType {
   active: BoolStampedType!
+  maxChannelTemperature: FloatStampedType!
+  power: FloatStampedType!
 }
 
 type SensorCalculatedFlowType {
@@ -1677,6 +1725,8 @@ type SensorPressureSensorType {
 
 type SensorPropulsionDriveType {
   active: BoolStampedType!
+  tempPowerStage: FloatOptionalStampedType!
+  power: FloatStampedType!
 }
 
 type SensorPumpType {
@@ -1702,6 +1752,18 @@ type SensorPyranometerType {
 
 type SensorShorePowerConverterType {
   active: BoolStampedType!
+  esiTransformerTemperature: FloatStampedType!
+  esiIgbtMinTemperature: FloatStampedType!
+  esiIgbtMaxTemperature: FloatStampedType!
+  power: FloatStampedType!
+}
+
+type SensorShorePowerGroupType {
+  anyActive: BoolStampedType!
+  maxEsiTransformerTemperature: FloatStampedType!
+  minEsiIgbtMinTemperature: FloatStampedType!
+  maxEsiIgbtMaxTemperature: FloatStampedType!
+  totalPower: FloatStampedType!
 }
 
 type SensorTemperatureSensorType {
@@ -1712,8 +1774,16 @@ type SensorThrusterType {
   active: BoolStampedType!
 }
 
+type SensorUgridGroupType {
+  anyActive: BoolStampedType!
+  maxTempPowerStage: FloatOptionalStampedType!
+  totalPower: FloatStampedType!
+}
+
 type SensorUgridType {
   active: BoolStampedType!
+  tempPowerStage: FloatOptionalStampedType!
+  power: FloatStampedType!
 }
 
 type SensorValveType {
@@ -1723,6 +1793,10 @@ type SensorValveType {
   externalOutOfRange: BoolStampedType!
   positionRel: FloatStampedType!
   positionAbs: FloatStampedType!
+}
+
+type SimulationActiveHeatSourceType {
+  heatFlow: FloatStampedType!
 }
 
 type SimulationAdsorptionChillerType {
@@ -1766,6 +1840,10 @@ type SimulationPcsType {
   mode: PcsModeStampedType!
 }
 
+type SimulationPropulsionDriveType {
+  heatFlow: FloatStampedType!
+}
+
 type SimulationState {
   time: DateTime!
   status: String!
@@ -1779,7 +1857,10 @@ type SimulationTemperatureBoundaryType {
 
 type SimulationThrusterType {
   heatFlow: FloatStampedType!
-  active: BoolStampedType!
+}
+
+type SimulationUgridType {
+  heatFlow: FloatStampedType!
 }
 
 type SystemAmcsControlModeType {
@@ -1841,22 +1922,22 @@ type ThrsSimulationInputsType {
   dhwHvacExchanger: SimulationHvacExchangerType!
   dhwSeawaterSupply: SimulationTemperatureBoundaryType!
   dhwHotwaterDemand: SimulationFlowBoundaryType!
-  dcBrightloopFwd1: SimulationHeatSourceType!
-  dcBrightloopFwd2: SimulationHeatSourceType!
-  dcUgrid1: SimulationHeatSourceType!
-  dcUgrid2: SimulationHeatSourceType!
-  dcBrightloopAft1: SimulationHeatSourceType!
-  dcBrightloopAft2: SimulationHeatSourceType!
-  dcBrightloopAft3: SimulationHeatSourceType!
-  dcBrightloopAft4: SimulationHeatSourceType!
+  dcBrightloopFwd1: SimulationActiveHeatSourceType!
+  dcBrightloopFwd2: SimulationActiveHeatSourceType!
+  dcBrightloopAft1: SimulationActiveHeatSourceType!
+  dcBrightloopAft2: SimulationActiveHeatSourceType!
+  dcBrightloopAft3: SimulationActiveHeatSourceType!
+  dcBrightloopAft4: SimulationActiveHeatSourceType!
+  dcUgrid1: SimulationUgridType!
+  dcUgrid2: SimulationUgridType!
   dcSeawaterSupply: SimulationBoundaryType!
   drivesOilCoolerAft: SimulationHeatSourceType!
   drivesOilCoolerFwd: SimulationHeatSourceType!
-  drivesPropdriveAft1: SimulationHeatSourceType!
-  drivesPropdriveAft2: SimulationHeatSourceType!
-  drivesPropdriveFwd1: SimulationHeatSourceType!
-  drivesPropdriveFwd2: SimulationHeatSourceType!
-  drivesShorepower: SimulationHeatSourceType!
+  drivesPropdriveAft1: SimulationPropulsionDriveType!
+  drivesPropdriveAft2: SimulationPropulsionDriveType!
+  drivesPropdriveFwd1: SimulationPropulsionDriveType!
+  drivesPropdriveFwd2: SimulationPropulsionDriveType!
+  drivesShorepower: SimulationActiveHeatSourceType!
   drivesSeawaterSupply: SimulationBoundaryType!
   mode: SystemAmcsControlModeType! @jsonSchemaDirective(yardTag: "", componentType: null, valveType: null)
 }
@@ -1904,7 +1985,6 @@ type ThrsSimulationOutputsType {
 
 input ThrusterInputType {
   heatFlow: Float!
-  active: Boolean!
 }
 
 type ThrustersControlModeType {
@@ -2018,6 +2098,10 @@ type ThrustersSimulationOutputsType {
   thrustersSeawaterReturn: SimulationTemperatureBoundaryType!
   thrustersPcmSupply: SimulationFlowBoundaryType!
   thrustersPcmReturn: SimulationBoundaryType!
+}
+
+input UgridInputType {
+  heatFlow: Float!
 }
 
 input ValveInputType {

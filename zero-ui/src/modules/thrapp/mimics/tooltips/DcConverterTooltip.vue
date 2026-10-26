@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ControllerStateComponentType } from "@/modules/thrsim/types";
+import { ControllerStateComponentType, SensorComponentType } from "@/modules/thrsim/types";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
@@ -11,9 +11,8 @@ import { useDcMode } from "../../state";
 import { MimicComponentType } from "../../types";
 import { DcMode } from "../components/dc-converter";
 import { SensorGraph } from "../components/sensor-graph";
-import { YardTag } from "../components/yard-tag";
 import { DcConverterInstance } from "../instances";
-import { getField, getMimicDataProvider, SensorValue } from "../providers";
+import { getField, getMimicDataProvider, ModuleField, SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
 const { items, labels } = useTranslations();
@@ -36,7 +35,6 @@ const modeKey = useDcMode(props.custom.group);
           force-height
         />
       </NoopTooltipProvider>
-      <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 
     <TooltipList class="border-b-0">
@@ -74,14 +72,39 @@ const modeKey = useDcMode(props.custom.group);
 
     <TooltipList>
       <TooltipListHeader>{{ labels("output") }}</TooltipListHeader>
-      <SensorValue :source="sensors.power">
+      <SensorValue
+        :source="source"
+        field="totalPower"
+      >
         <Partials.ListItem no-source>
           {{ items("power") }}
+          <template #value>
+            <FieldRenderer.Power />
+          </template>
         </Partials.ListItem>
       </SensorValue>
-      <SensorValue :source="sensors.temperature">
+      <SensorValue
+        v-if="source[0] === SensorComponentType.UgridGroup"
+        :source="source as ModuleField<SensorComponentType.UgridGroup>"
+        field="maxTempPowerStage"
+      >
         <Partials.ListItem no-source>
           {{ items("internalTemperature") }}
+          <template #value>
+            <FieldRenderer.Temperature />
+          </template>
+        </Partials.ListItem>
+      </SensorValue>
+      <SensorValue
+        v-if="source[0] === SensorComponentType.BrightloopGroup"
+        :source="source as ModuleField<SensorComponentType.BrightloopGroup>"
+        field="maxChannelTemperature"
+      >
+        <Partials.ListItem no-source>
+          {{ items("internalTemperature") }}
+          <template #value>
+            <FieldRenderer.Temperature />
+          </template>
         </Partials.ListItem>
       </SensorValue>
     </TooltipList>

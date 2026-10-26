@@ -6,7 +6,11 @@ from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.dc import DcAlarms, DcControl, DcParameters
 from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.simulation import Boundary, Converter
+from thrs.input_output.definitions.simulation import (
+    ActiveHeatSource,
+    Boundary,
+    Ugrid,
+)
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.modules.dc import (
     DcSensorValues,
@@ -23,26 +27,14 @@ SEAWATER_TEMPERATURE = 20
 @fixture
 def simulation_inputs_inactive():
     return DcSimulationInputs(
-        dc_brightloop_fwd1=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        dc_brightloop_fwd2=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        dc_ugrid1=Converter(heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)),
-        dc_ugrid2=Converter(heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)),
-        dc_brightloop_aft1=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        dc_brightloop_aft2=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        dc_brightloop_aft3=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        dc_brightloop_aft4=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
+        dc_brightloop_fwd1=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_fwd2=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft1=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft2=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft3=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft4=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_ugrid1=Ugrid(heat_flow=Stamped.stamp(0)),
+        dc_ugrid2=Ugrid(heat_flow=Stamped.stamp(0)),
         dc_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
@@ -54,26 +46,14 @@ def simulation_inputs_inactive():
 @fixture
 def simulation_inputs_brightloops_aft_active():
     return DcSimulationInputs(
-        dc_brightloop_fwd1=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        dc_brightloop_fwd2=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        dc_ugrid1=Converter(heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)),
-        dc_ugrid2=Converter(heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)),
-        dc_brightloop_aft1=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_aft2=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_aft3=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_aft4=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
+        dc_brightloop_fwd1=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_fwd2=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft1=ActiveHeatSource(heat_flow=Stamped.stamp(500)),
+        dc_brightloop_aft2=ActiveHeatSource(heat_flow=Stamped.stamp(500)),
+        dc_brightloop_aft3=ActiveHeatSource(heat_flow=Stamped.stamp(500)),
+        dc_brightloop_aft4=ActiveHeatSource(heat_flow=Stamped.stamp(500)),
+        dc_ugrid1=Ugrid(heat_flow=Stamped.stamp(0)),
+        dc_ugrid2=Ugrid(heat_flow=Stamped.stamp(0)),
         dc_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
@@ -85,26 +65,14 @@ def simulation_inputs_brightloops_aft_active():
 @fixture
 def simulation_inputs():
     return DcSimulationInputs(
-        dc_brightloop_fwd1=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_fwd2=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_ugrid1=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
-        dc_ugrid2=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
-        dc_brightloop_aft1=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_aft2=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_aft3=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_aft4=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
+        dc_brightloop_fwd1=ActiveHeatSource(heat_flow=Stamped.stamp(500)),
+        dc_brightloop_fwd2=ActiveHeatSource(heat_flow=Stamped.stamp(500)),
+        dc_brightloop_aft1=ActiveHeatSource(heat_flow=Stamped.stamp(500)),
+        dc_brightloop_aft2=ActiveHeatSource(heat_flow=Stamped.stamp(500)),
+        dc_brightloop_aft3=ActiveHeatSource(heat_flow=Stamped.stamp(500)),
+        dc_brightloop_aft4=ActiveHeatSource(heat_flow=Stamped.stamp(500)),
+        dc_ugrid1=Ugrid(heat_flow=Stamped.stamp(2000)),
+        dc_ugrid2=Ugrid(heat_flow=Stamped.stamp(2000)),
         dc_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),

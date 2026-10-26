@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 from abc import abstractmethod
+from typing import Any
 
 from aiomqtt import Client
 
@@ -24,7 +25,7 @@ class BaseGenerator:
         self.interval: int | float = interval
         self.mqtt_config: MQTTConfig = mqtt_config
 
-    async def run(self):
+    async def run(self) -> None:
         """Run the generator, sending messages at regular intervals."""
         async with Client(self.mqtt_config.host, port=self.mqtt_config.port) as client:
             while True:
@@ -34,7 +35,7 @@ class BaseGenerator:
                 await asyncio.gather(send_task, sleep_task)
 
     @abstractmethod
-    async def send_messages(self, client: Client): ...
+    async def send_messages(self, client: Client) -> None: ...
 
 
 class Generator(BaseGenerator):
@@ -47,13 +48,13 @@ class Generator(BaseGenerator):
         super().__init__(interval, mqtt_config)
         self.topics: list[IOTopic] = topics
 
-    def get_topic(self, topic: IOTopic):
+    def get_topic(self, topic: IOTopic) -> str:
         return topic.topic
 
-    def serialize_message(self, message):
+    def serialize_message(self, message) -> str | bytes:
         return json.dumps(message)
 
-    async def send_messages(self, client: Client):
+    async def send_messages(self, client: Client) -> None:
         """Send values to the MQTT broker at regular intervals."""
         logger.info(
             f"Sending values to {len(self.topics)} topics with an interval of {self.interval}"
@@ -63,7 +64,7 @@ class Generator(BaseGenerator):
             payload = self.serialize_message(next_value)
             await client.publish(self.get_topic(topic), payload)
 
-    def generate_message(self, topic: IOTopic):
+    def generate_message(self, topic: IOTopic) -> dict[str, Any]:
         """Generate the next message for a given topic."""
         content = {
             field.name: self.generate_random_value(field) for field in topic.fields
@@ -71,4 +72,4 @@ class Generator(BaseGenerator):
         return content
 
     @abstractmethod
-    def generate_random_value(self, field: IOValue): ...
+    def generate_random_value(self, field: IOValue) -> Any: ...

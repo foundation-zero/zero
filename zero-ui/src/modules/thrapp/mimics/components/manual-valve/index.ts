@@ -14,10 +14,11 @@ export const enum ManualValveType {
   FlowControl = "flow-control",
   Flow = "flow",
   ThreeWay = "three-way",
+  Balancing = "balancing",
 }
 
 export interface ManualValveProps {
-  type?: ManualValveType;
+  valveType?: ManualValveType;
 }
 
 export const MANUAL_VALVE_WIDTH = 36;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BoilerTankState } from "@/modules/thrsim/types/index.ts";
+import { BoilerTankState } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import { useTranslations } from ".";
 import {
@@ -22,7 +22,7 @@ import { YardTag } from "../components/yard-tag";
 import BoilerTankInstance from "../instances/BoilerTankInstance.vue";
 import { ControllerStateValue, getMimicDataProvider, ParameterValue } from "../providers";
 import SensorValue from "../providers/SensorValue.vue";
-import { FieldRenderer } from "../renderers/index.ts";
+import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
 import BoilerTankController from "./partials/BoilerTankController.vue";
 import BoilerTankOperator from "./partials/BoilerTankOperator.vue";

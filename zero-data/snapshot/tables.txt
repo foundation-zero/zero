@@ -3,5 +3,9 @@
 # Refresh the committed DDL with: `zero-data greptime snapshot --host <tier>`.
 
 power_tags
+marpower__150000_propulsion__pcs_aft_ara1
+marpower__150000_propulsion__pcs_aft_ara2
+marpower__150000_propulsion__pcs_fwd_ara1
+marpower__150000_propulsion__pcs_fwd_ara2
 marpower__450000_24vdc_system
 marpower__450000_main_power_storage_errors

@@ -59,6 +59,23 @@
       "console": "integratedTerminal",
       "justMyCode": false,
       "cwd": "${workspaceFolder}",
-    }
+    },
+    {
+      "name": "THRS: Debug generate asyncapi",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "thrs.cli",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "LOG_LEVEL": "DEBUG"
+      },
+      "args": [
+        "generate-asyncapi",
+        "../specs/thrs-control.json"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}",
+    },
   ],
 }

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils.ts";
-import { MimicComponentState } from "@/modules/thrapp/mimics/components/index.ts";
+import { MimicComponentState } from "@/modules/thrapp/mimics/components";
+import { PumpState } from "../../../mimics/components/pump";
 import Pump from "../../../mimics/components/pump/Pump.vue";
-import { PumpState } from "../../../mimics/components/pump/index.ts";
 import {
   LegendItem,
   LegendItemDescription,

@@ -354,7 +354,14 @@ class DrivesControl(
         return (self._current_values, controller_state)
 
     def _shorepower_on(self, sensor_values: DrivesSensorValues) -> bool:
-        return sensor_values.drives_shorepower.active.value
+        return any(
+            (
+                sensor_values.drives_shorepower1a.active.value,
+                sensor_values.drives_shorepower1b.active.value,
+                sensor_values.drives_shorepower2a.active.value,
+                sensor_values.drives_shorepower2b.active.value,
+            )
+        )
 
     def _propdrive_active(self, sensor_values: DrivesSensorValues) -> bool:
         return (

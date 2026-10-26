@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from typing import Any, Self
 
+from pydantic import computed_field
+
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.dhw import DhwControl, DhwParameters
 from thrs.control.modules.drives import DrivesControl, DrivesParameters
@@ -8,8 +10,9 @@ from thrs.input_output.base import (
     CombinedValues,
     Stamped,
     ThrsValues,
+    computed_meta,
 )
-from thrs.input_output.definitions import simulation
+from thrs.input_output.definitions import sensor, simulation
 from thrs.input_output.modules.dhw import (
     DhwControlValues,
     DhwSensorValues,
@@ -59,7 +62,7 @@ class DrivesDhwSimulationInputs(ThrsValues):
     drives_propdrive_aft2: simulation.PropulsionDrive
     drives_propdrive_fwd1: simulation.PropulsionDrive
     drives_propdrive_fwd2: simulation.PropulsionDrive
-    drives_shorepower: simulation.Converter
+    drives_shorepower: simulation.ActiveHeatSource
     drives_seawater_supply: simulation.Boundary
     dhw_dc_supply: simulation.Boundary
     dhw_adsorption_supply: simulation.Boundary
@@ -68,6 +71,26 @@ class DrivesDhwSimulationInputs(ThrsValues):
     dhw_hvac_exchanger: simulation.HvacExchanger
     dhw_seawater_supply: simulation.TemperatureBoundary
     dhw_hotwater_demand: simulation.FlowBoundary
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def drives_shorepower1a(self) -> sensor.ShorePowerConverter:
+        return simulation.shore_power_converter(self.drives_shorepower)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def drives_shorepower1b(self) -> sensor.ShorePowerConverter:
+        return simulation.shore_power_converter(self.drives_shorepower)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def drives_shorepower2a(self) -> sensor.ShorePowerConverter:
+        return simulation.shore_power_converter(self.drives_shorepower)
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def drives_shorepower2b(self) -> sensor.ShorePowerConverter:
+        return simulation.shore_power_converter(self.drives_shorepower)
 
 
 class DrivesDhwSimulationOutputs(ThrsValues):
@@ -184,21 +207,11 @@ def test_cosimulation_input_routing():
         ),
         drives_oil_cooler_aft=simulation.HeatSource(heat_flow=Stamped.stamp(0)),
         drives_oil_cooler_fwd=simulation.HeatSource(heat_flow=Stamped.stamp(0)),
-        drives_propdrive_aft1=simulation.PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        drives_propdrive_aft2=simulation.PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        drives_propdrive_fwd1=simulation.PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        drives_propdrive_fwd2=simulation.PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        drives_shorepower=simulation.Converter(
-            heat_flow=Stamped.stamp(15000), active=Stamped.stamp(True)
-        ),
+        drives_propdrive_aft1=simulation.PropulsionDrive(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_aft2=simulation.PropulsionDrive(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_fwd1=simulation.PropulsionDrive(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_fwd2=simulation.PropulsionDrive(heat_flow=Stamped.stamp(0)),
+        drives_shorepower=simulation.ActiveHeatSource(heat_flow=Stamped.stamp(15000)),
         drives_seawater_supply=simulation.Boundary(
             temperature=Stamped.stamp(20.0), flow=Stamped.stamp(64)
         ),

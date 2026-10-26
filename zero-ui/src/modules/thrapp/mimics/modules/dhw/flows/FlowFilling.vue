@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrsim/types/index.ts";
-import { getField } from "../../../providers/index.ts";
+import { SensorComponentType } from "@/modules/thrsim/types";
+import { getField } from "../../../providers";
 import AnimatedCircuit from "./AnimatedCircuit.vue";
 import AnimatedPipe from "./AnimatedPipe.vue";
 import BaseFilling from "./BaseFilling.vue";

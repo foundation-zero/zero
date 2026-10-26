@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils";
 import { provideHideEditorIfNotEditable } from "@/modules/thrapp/mimics/providers/forms.ts";
-import * as Parameters from "../../components/module-parameters/index.ts";
+import * as Parameters from "../../components/module-parameters";
 import PvtPidTuning from "./sections/PvtPidTuning.vue";
 import PvtPumpControl from "./sections/PvtPumpControl.vue";
 import PvtTemperatureSettings from "./sections/PvtTemperatureSettings.vue";
