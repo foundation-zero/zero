@@ -208,7 +208,7 @@ class BladeAdjuster(LoadsModel, ABC):
     max_load: MaxLoad
     headstay_combined_load: Annotated[
         Load,
-        Field(validation_alias="i_ActualLoad2"),
+        Field(validation_alias="i_CombinedLoad"),
         VariableMeta(
             name="headstay_combined_load",
             display_name="Headstay Comb",
@@ -218,7 +218,7 @@ class BladeAdjuster(LoadsModel, ABC):
     # TODO: Confirm this alarm and add its max load setting once the max loads sheet is finished.
     headstay_combined_load_alarm: Annotated[
         LoadAlarm,
-        Field(validation_alias="ox_LoadAlarm"),
+        Field(validation_alias="x_CombinedLoadAlarm"),
         VariableMeta(
             name="headstay_combined_max_load_alarm",
             alarm_for="headstay_combined_load",
