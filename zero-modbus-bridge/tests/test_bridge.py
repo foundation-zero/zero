@@ -306,6 +306,24 @@ async def test_oldest_dropped_when_buffer_is_full():
 
 
 @pytest.mark.asyncio
+async def test_recovery_probe_does_not_push_out_a_full_backlog():
+    publisher = RecordingPublisher()
+    bridge, reader = _bridge(publisher, buffer_size=3)
+
+    publisher.error = MQTTDisconnectedError("broker gone")
+    for value in range(1, 4):
+        _probe_yields(reader, value)
+        await bridge.run_once()
+
+    publisher.error = None
+    _probe_yields(reader, 4)
+    await bridge.run_once()
+
+    assert [payload.value for _, payload, _ in publisher.accepted] == [1, 2, 3, 4]  # type: ignore[attr-defined]
+    assert bridge.dropped_count == 0
+
+
+@pytest.mark.asyncio
 async def test_bridge_keeps_running_through_a_long_outage():
     publisher = RecordingPublisher()
     bridge, reader = _bridge(publisher, buffer_size=2)

@@ -128,11 +128,15 @@ class ModbusBridge:
         # One worker-thread call per probe: keeps the loop responsive to MQTT
         # keepalives, and the client on one thread (pyModbusTCP isn't thread-safe).
         readings = await asyncio.to_thread(self._probe)
+        # Replay the backlog before queueing this probe, so a full buffer only
+        # drops readings while the broker is still refusing.
+        drained = await self._flush()
         if readings is None:
             logger.warning("Modbus connection not available - skipping probe")
         else:
             self._enqueue(readings)
-        await self._flush()
+        if drained:
+            await self._flush()
 
     def _enqueue(self, readings: list[_Reading]) -> None:
         dropped = 0
@@ -150,8 +154,10 @@ class ModbusBridge:
                 self._dropped,
             )
 
-    async def _flush(self) -> None:
-        """Publish buffered readings oldest first; stop at the first failure."""
+    async def _flush(self) -> bool:
+        """Publish buffered readings oldest first; stop at the first failure.
+
+        Returns whether the buffer was drained."""
         replayed = 0
         while self._buffer:
             topic_name, payload, read_at = self._buffer[0]
@@ -166,12 +172,13 @@ class ModbusBridge:
                     exc,
                 )
                 self._failing = True
-                return
+                return False
             self._buffer.popleft()
             replayed += 1
         if self._failing:
             logger.info("Broker accepting again: replayed %d reading(s)", replayed)
             self._failing = False
+        return True
 
     def _probe(self) -> list[_Reading] | None:
         """Run the blocking Modbus probe; ``None`` means the gateway is down.
