@@ -335,7 +335,7 @@ mod tests {
         }]
     }
 
-    #[test]
+    #[test_log::test]
     fn test_export_sdl_to_file() {
         let dir = std::env::temp_dir().join("mqtt-graphql-print-schema-test");
         let _ = std::fs::remove_dir_all(&dir);
@@ -351,13 +351,13 @@ mod tests {
         let _ = std::fs::remove_dir_all(&dir);
     }
 
-    #[test]
+    #[test_log::test]
     fn test_export_sdl_empty_specs_error() {
         let err = export_sdl(&[], &[], &[], None).unwrap_err();
         assert!(err.to_string().contains("no topics found"), "{err}");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_export_sdl_stdout_does_not_fail() {
         export_sdl(&sample_topics(), &[], &[], None).unwrap();
     }

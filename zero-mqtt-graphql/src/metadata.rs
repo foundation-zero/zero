@@ -92,7 +92,7 @@ mod tests {
         file.write_all(content.as_bytes()).unwrap();
     }
 
-    #[test]
+    #[test_log::test]
     fn test_is_metadata_file() {
         assert!(is_metadata_file(Path::new(
             "/specs/power-tags-metadata.json"
@@ -101,7 +101,7 @@ mod tests {
         assert!(!is_metadata_file(Path::new("/specs/data.json")));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_metadata_multiple_files() {
         let dir = std::env::temp_dir().join("mqtt-graphql-metadata-test-ok");
         let _ = std::fs::remove_dir_all(&dir);
@@ -143,12 +143,12 @@ mod tests {
         let _ = std::fs::remove_dir_all(&dir);
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_metadata_missing_dir_errors() {
         assert!(load_metadata("/nonexistent-specs").is_err());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_metadata_malformed_errors() {
         let dir = std::env::temp_dir().join("mqtt-graphql-metadata-test-bad");
         let _ = std::fs::remove_dir_all(&dir);

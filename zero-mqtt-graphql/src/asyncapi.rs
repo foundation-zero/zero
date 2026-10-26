@@ -604,7 +604,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_log::test]
     fn test_extract_scalar_fields() {
         let props = BTreeMap::from([
             ("celsius".to_string(), json!({"type": "number"})),
@@ -629,7 +629,7 @@ mod tests {
         assert_eq!(get("label").graphql_type, "String");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_specs_from_json() {
         let spec = json!({
             "asyncapi": "3.0.0",
@@ -688,7 +688,7 @@ mod tests {
         assert_eq!(topics[0].fields[0].graphql_type, "Float");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_no_mqtt_binding_skipped() {
         let spec = json!({
             "asyncapi": "3.0.0",
@@ -739,7 +739,7 @@ mod tests {
         assert_eq!(topics[0].topic, "some/channel:Publisher");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_empty_properties_returns_empty_fields() {
         let schema = Schema::default();
         let doc = Document::default();
@@ -747,7 +747,7 @@ mod tests {
         assert_eq!(fields.len(), 0);
     }
 
-    #[test]
+    #[test_log::test]
     fn test_inline_payload_without_ref() {
         let spec = json!({
             "asyncapi": "3.0.0",
@@ -792,7 +792,7 @@ mod tests {
         assert_eq!(topics[0].fields[0].graphql_type, "Float");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_specs_skips_non_json_files() {
         let dir = std::env::temp_dir().join("mqtt-graphql-test-nonjson");
         let _ = std::fs::remove_dir_all(&dir);
@@ -805,7 +805,7 @@ mod tests {
         assert!(topics.is_empty());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_specs_rejects_invalid_json() {
         let dir = std::env::temp_dir().join("mqtt-graphql-test-invalidjson");
         let _ = std::fs::remove_dir_all(&dir);
@@ -818,7 +818,7 @@ mod tests {
         assert!(err.to_string().contains("parsing JSON"), "{err}");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_specs_rejects_missing_asyncapi_field() {
         let spec = json!({
             "info": { "title": "no version" },
@@ -840,7 +840,7 @@ mod tests {
         assert!(err.to_string().contains("no 'asyncapi' field"), "{err}");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_specs_rejects_non_v3_spec() {
         let spec = json!({
             "asyncapi": "2.6.0",
@@ -868,7 +868,7 @@ mod tests {
         assert!(err.to_string().contains("only 3.x is supported"), "{err}");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_specs_multiple_channels() {
         let spec = json!({
             "asyncapi": "3.0.0",
@@ -919,7 +919,7 @@ mod tests {
         assert!(topics.iter().any(|t| t.topic == "two/channel"));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_channel_ref_is_resolved() {
         let spec = json!({
             "asyncapi": "3.0.0",
@@ -965,7 +965,7 @@ mod tests {
         assert_eq!(topics[0].fields[0].graphql_type, "Int");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_no_resolvable_payload_yields_empty_fields() {
         let spec = json!({
             "asyncapi": "3.0.0",
@@ -998,7 +998,7 @@ mod tests {
         assert!(topics[0].fields.is_empty());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_extensions_from_payload_schema() {
         let schema = json!({
             "type": "object",
@@ -1033,7 +1033,7 @@ mod tests {
         assert!(!extensions.contains_key("ignored"));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_nullable_anyof_field() {
         let props = BTreeMap::from([(
             "current_a".to_string(),
@@ -1047,7 +1047,7 @@ mod tests {
         assert_eq!(fields[0].graphql_type, "Float");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_parse_ttl_str() {
         assert_eq!(parse_ttl_str("300"), Some(300));
         assert_eq!(parse_ttl_str("30s"), Some(30));
@@ -1059,7 +1059,7 @@ mod tests {
         assert_eq!(parse_ttl_str("5x"), None);
     }
 
-    #[test]
+    #[test_log::test]
     fn test_ttl_from_value() {
         assert_eq!(ttl_from_value(Some(&json!(45))), Some(45));
         assert_eq!(ttl_from_value(Some(&json!("2m"))), Some(120));

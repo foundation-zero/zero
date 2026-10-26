@@ -152,7 +152,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_log::test]
     fn test_from_definitions_collects_overrides() {
         let topics = vec![topic("default/ttl", 300), topic("custom/ttl", 0)];
         let groups = vec![group("power-tags", "power-tags/+/+", 0)];
@@ -168,7 +168,7 @@ mod tests {
         assert!(cache.get("power-tags/a/b").is_none());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_insert_and_get() {
         let cache = TopicCache::new();
         let payload = json!({"celsius": 23.5, "ok": true});
@@ -178,13 +178,13 @@ mod tests {
         assert_eq!(got, payload);
     }
 
-    #[test]
+    #[test_log::test]
     fn test_get_missing() {
         let cache = TopicCache::new();
         assert!(cache.get("nonexistent").is_none());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_get_field() {
         let cache = TopicCache::new();
         let payload = json!({"celsius": 23.5, "ok": true});
@@ -198,7 +198,7 @@ mod tests {
         assert!(cache.get_field("test/topic", "missing").is_none());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_overwrite() {
         let cache = TopicCache::new();
         cache.insert("test/topic", json!({"v": 1}));
@@ -207,7 +207,7 @@ mod tests {
         assert_eq!(cache.get("test/topic").unwrap(), json!({"v": 2}));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_get_field_returns_raw_nested_payload() {
         let cache = TopicCache::new();
         cache.insert("test/topic", json!({"nested": {"v": 1.0}, "flat": 2}));
@@ -221,7 +221,7 @@ mod tests {
         assert!(cache.get_field("test/topic", "v").is_none());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_insert_null_payload_is_stored() {
         let cache = TopicCache::new();
         cache.insert("test/topic", serde_json::Value::Null);
@@ -230,7 +230,7 @@ mod tests {
         assert!(cache.get_field("test/topic", "anything").is_none());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_expires_returns_none() {
         let cache = TopicCache::with_ttl(0, HashMap::new());
         cache.insert("test/topic", json!({"v": 1}));
@@ -239,7 +239,7 @@ mod tests {
         assert!(cache.get_field("test/topic", "v").is_none());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_per_topic_ttl_overrides_default() {
         let mut per_topic = HashMap::new();
         per_topic.insert("fast".to_string(), 0);
@@ -251,7 +251,7 @@ mod tests {
         assert!(cache.get("slow").is_some());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_group_pattern_ttl_overrides_default_insert_and_evicted() {
         let mut per_topic = HashMap::new();
         per_topic.insert("power-tags/+/+".to_string(), 0);
@@ -267,7 +267,7 @@ mod tests {
         assert!(cache.get("other/topic").is_some());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_evict_expired() {
         let cache = TopicCache::with_ttl(0, HashMap::new());
         cache.insert("a", json!(1));

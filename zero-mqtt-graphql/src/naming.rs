@@ -92,27 +92,27 @@ pub fn is_reserved_name(name: &str) -> bool {
 mod tests {
     use super::*;
 
-    #[test]
+    #[test_log::test]
     fn test_sanitize_slashes() {
         assert_eq!(sanitize_to_graphql_name("a/b/c"), "aBC");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_sanitize_dashes() {
         assert_eq!(sanitize_to_graphql_name("my-topic"), "myTopic");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_sanitize_digit_prefix() {
         assert_eq!(sanitize_to_graphql_name("123abc"), "_123abc");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_sanitize_underscore_collapse() {
         assert_eq!(sanitize_to_graphql_name("a/-b"), "aB");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_sanitize_camel_case_topic() {
         assert_eq!(
             sanitize_to_graphql_name("termodinamica/compressor/temperature"),
@@ -130,7 +130,7 @@ mod tests {
         assert_eq!(sanitize_to_graphql_name("94455001-26"), "_94455001_26");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_sanitize_empty_and_single_word() {
         assert_eq!(sanitize_to_graphql_name(""), "");
         assert_eq!(sanitize_to_graphql_name("---"), "");
@@ -138,7 +138,7 @@ mod tests {
         assert_eq!(sanitize_to_graphql_name("Hello"), "hello");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_pascal_case() {
         assert_eq!(pascal_case("power-tags"), "PowerTags");
         assert_eq!(pascal_case(""), "");

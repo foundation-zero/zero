@@ -1080,7 +1080,7 @@ mod tests {
     use serde_json::json;
     use tower::ServiceExt;
 
-    #[test]
+    #[test_log::test]
     fn test_build_schema_for_one_topic() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
@@ -1103,7 +1103,7 @@ mod tests {
         // Schema builds without panicking
     }
 
-    #[test]
+    #[test_log::test]
     fn test_colliding_sanitized_topics_error() {
         // "a/b" and "a-b" both sanitize to "a_b" — should error rather than suffix
         let topics = vec![
@@ -1134,7 +1134,7 @@ mod tests {
         );
     }
 
-    #[test]
+    #[test_log::test]
     fn test_reserved_topic_name_errors() {
         let topics = vec![TopicDef {
             topic: "Query".to_string(),
@@ -1150,7 +1150,7 @@ mod tests {
         assert!(err.to_string().contains("reserved"), "{err}");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_digit_prefixed_topic_is_valid() {
         let topics = vec![TopicDef {
             topic: "123/topic".to_string(),
@@ -1167,7 +1167,7 @@ mod tests {
         assert!(sdl.contains("_123Topic"), "{sdl}");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_empty_topic_is_listed_but_not_queryable() {
         // A topic without scalar fields must not crash schema building;
         // it stays visible via `topics` but has no query type.
@@ -1183,7 +1183,7 @@ mod tests {
         assert!(!sdl.contains("emptyTopic"), "{sdl}");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_field_types_in_schema() {
         let topics = vec![TopicDef {
             topic: "t".to_string(),

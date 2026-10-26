@@ -65,7 +65,7 @@ fn mqtt_pattern_matches(pattern: &str, topic: &str) -> bool {
 mod tests {
     use super::*;
 
-    #[test]
+    #[test_log::test]
     fn test_pattern_matches_exact() {
         assert!(mqtt_pattern_matches(
             "power-tags/10P1/slug",
@@ -77,7 +77,7 @@ mod tests {
         ));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_pattern_matches_plus_single_level() {
         assert!(mqtt_pattern_matches(
             "power-tags/+/+",
@@ -95,7 +95,7 @@ mod tests {
         ));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_pattern_matches_hash_matches_remaining_levels() {
         assert!(mqtt_pattern_matches("logs/#", "logs/a"));
         assert!(mqtt_pattern_matches("logs/#", "logs/a/b/c"));
@@ -103,7 +103,7 @@ mod tests {
         assert!(mqtt_pattern_matches("logs/#", "logs"));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_pattern_matches_rejects_different_prefix() {
         assert!(!mqtt_pattern_matches("logs/#", "metrics/a"));
         assert!(!mqtt_pattern_matches(
@@ -112,12 +112,12 @@ mod tests {
         ));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_pattern_matches_rejects_pattern_longer_than_topic() {
         assert!(!mqtt_pattern_matches("power-tags/+/+", "power-tags/10P1"));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_topics_return_value_in_correct_order() {
         let topic_map: TopicMap<_> = [
             ("power-tags/#".to_string(), 1),
@@ -139,7 +139,7 @@ mod tests {
         assert!(topic_map.get("other/topic").is_none());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_covers_topic() {
         let topic_map: TopicMap<_> = [
             ("power-tags/#".to_string(), ()),

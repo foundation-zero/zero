@@ -29,3 +29,4 @@ result_large_err = "deny"
 
 [dev-dependencies]
 tower = { version = "=0.5.3", features = ["util"] }
+test-log = "0.2.21"

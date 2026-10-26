@@ -334,7 +334,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_log::test]
     fn test_build_validators_compiles_group_schema() {
         let groups = vec![group_with_schema(
             "power-tags/+/+",
@@ -345,7 +345,7 @@ mod tests {
         assert!(validators.get("power-tags/+/+").is_some());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_build_validators_skips_group_without_schema() {
         let mut group = group_with_schema("power-tags/+/+", json!({}));
         group.payload_schema = None;
@@ -358,7 +358,7 @@ mod tests {
     /// validator was ever compiled from `TopicGroupDef`, and the exact-key
     /// lookup wouldn't have matched a concrete topic against a pattern key
     /// anyway.
-    #[test]
+    #[test_log::test]
     fn test_validate_payload_matches_concrete_topic_against_group_pattern() {
         let group = group_with_schema(
             "power-tags/+/+",
@@ -386,7 +386,7 @@ mod tests {
     /// One group validator must cover every concrete topic under its
     /// pattern, not just whichever one happens to be tested — two unrelated
     /// panels here both validate against the same `power-tags/+/+` schema.
-    #[test]
+    #[test_log::test]
     fn test_validate_payload_group_validator_covers_multiple_distinct_topics() {
         let group = group_with_schema(
             "power-tags/+/+",
@@ -417,7 +417,7 @@ mod tests {
     /// A topic-specific validator must win over an overlapping group
     /// pattern for the same concrete topic, per the exact-key-first lookup
     /// in `validate_payload`.
-    #[test]
+    #[test_log::test]
     fn test_validate_payload_exact_topic_wins_over_overlapping_group() {
         let topic = TopicDef {
             topic: "power-tags/10P1/breaker3".to_string(),
@@ -442,7 +442,7 @@ mod tests {
 
     /// The `#` multi-level wildcard, used e.g. for a catch-all logs group,
     /// must also drive validation — not just the `+` groups exercised above.
-    #[test]
+    #[test_log::test]
     fn test_validate_payload_matches_hash_wildcard_pattern() {
         let group = group_with_schema("logs/#", json!({"type": "object", "required": ["level"]}));
         let sub = test_subscriber(&[], &[group]);
@@ -476,7 +476,7 @@ mod tests {
         .unwrap()
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_nested_payload() {
         let payload = json!({"temperatures": {"sensor_a": 20.0, "sensor_b": 21.5}});
         let flattened = flatten_payload(payload);
@@ -485,27 +485,27 @@ mod tests {
         assert!(flattened.get("temperatures").is_some());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_keeps_existing_keys() {
         let payload = json!({"watts": 4.2, "nested": {"watts": 99.0}});
         let flattened = flatten_payload(payload);
         assert_eq!(flattened["watts"], json!(4.2));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_flat_payload_is_unchanged() {
         let payload = json!({"watts": 4.2, "ok": true});
         let flattened = flatten_payload(payload);
         assert_eq!(flattened, json!({"watts": 4.2, "ok": true}));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_non_object_passthrough() {
         let payload = json!(42.0);
         assert_eq!(flatten_payload(payload), json!(42.0));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_merges_multiple_nested_objects() {
         let payload = json!({"a": {"x": 1.0}, "b": {"y": 2.0}});
         let flattened = flatten_payload(payload);
@@ -514,7 +514,7 @@ mod tests {
         assert_eq!(flattened["a"]["x"], json!(1.0));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_ignores_non_object_values() {
         let payload = json!({"a": 1, "b": "str", "c": [1, 2], "d": {"z": 3}});
         let flattened = flatten_payload(payload);
@@ -524,7 +524,7 @@ mod tests {
         assert_eq!(flattened["z"], json!(3));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_only_hoists_one_level() {
         let payload = json!({"a": {"b": {"c": 1}}});
         let flattened = flatten_payload(payload);
@@ -533,7 +533,7 @@ mod tests {
         assert!(flattened.get("c").is_none());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_empty_payload_is_unchanged() {
         let payload = json!({});
         assert_eq!(flatten_payload(payload), json!({}));
