@@ -814,7 +814,12 @@ class MainCunningham(LoadsModel, ABC):
 
 class MainHalyard(LoadsModel, ABC):
     TOPIC = "sail-systems/fe207-main-halyard-captive-winch"
-    load: Annotated[Load, VariableMeta(display_name="Halyard")]
+    # TODO: Check with Vitters what the PLC calculates for i_Load; it has equalled st_Load/i_Load so far.
+    load: Annotated[
+        Load,
+        Field(validation_alias="i_Load"),
+        VariableMeta(display_name="Halyard"),
+    ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
@@ -1182,7 +1187,12 @@ class MizzenCunningham(LoadsModel, ABC):
 
 class MizzenHalyard(LoadsModel, ABC):
     TOPIC = "sail-systems/fe404-mizzen-halyard-captive-winch"
-    load: Annotated[Load, VariableMeta(display_name="Halyard")]
+    # TODO: Check with Vitters what the PLC calculates for i_Load; it has equalled st_Load/i_Load so far.
+    load: Annotated[
+        Load,
+        Field(validation_alias="i_Load"),
+        VariableMeta(display_name="Halyard"),
+    ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
