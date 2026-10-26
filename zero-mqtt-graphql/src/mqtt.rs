@@ -6,11 +6,7 @@ use log::{debug, error, info, warn};
 use rumqttc::{AsyncClient, Event, EventLoop, Incoming, MqttOptions, QoS};
 use serde_json::Value;
 
-use crate::{
-    asyncapi::{TopicDef, TopicGroupDef},
-    cache::TopicCache,
-    topic_map::TopicMap,
-};
+use crate::{cache::TopicCache, topic_map::TopicMap};
 
 pub struct MqttConnection<'a> {
     pub host: &'a str,
@@ -36,8 +32,7 @@ impl MqttSubscriber {
         connection: &MqttConnection,
         cache: Arc<TopicCache>,
         listen_only: bool,
-        topics: &[TopicDef],
-        groups: &[TopicGroupDef],
+        validators: TopicMap<Validator>,
     ) -> anyhow::Result<Self> {
         let client_id = format!("zero-mqtt-graphql-{:012x}", rand_u64());
 
@@ -52,7 +47,6 @@ impl MqttSubscriber {
 
         // Validators are built in both modes: listen-only rejects mismatches
         // outright, serve mode logs them and still caches the payload.
-        let validators = build_validators(topics, groups);
 
         Ok(Self {
             client,
@@ -215,62 +209,6 @@ impl MqttSubscriber {
     }
 }
 
-/// Compile one validator per topic and one per topic group, into a single
-/// map keyed by exact topic (`TopicDef`) or wildcard pattern (`TopicGroupDef`,
-/// e.g. `power-tags/+/+`)
-fn build_validators(topics: &[TopicDef], groups: &[TopicGroupDef]) -> TopicMap<Validator> {
-    let topic_validators: Vec<(String, Validator)> = topics
-        .iter()
-        .filter_map(|td| {
-            let schema_value = td.payload_schema.as_ref()?;
-            match Validator::new(schema_value) {
-                Ok(validator) => Some((td.topic.clone(), validator)),
-                Err(e) => {
-                    warn!(
-                        "Failed to compile JSON Schema for topic '{}': {} — skipping validation for this topic",
-                        td.topic, e
-                    );
-                    None
-                }
-            }
-        })
-        .collect();
-    if !topic_validators.is_empty() {
-        info!(
-            "Compiled JSON Schema validators for {} topic(s)",
-            topic_validators.len()
-        );
-    }
-
-    let group_validators: Vec<(String, Validator)> = groups
-        .iter()
-        .filter_map(|group| {
-            let schema_value = group.payload_schema.as_ref()?;
-            match Validator::new(schema_value) {
-                Ok(validator) => Some((group.pattern.clone(), validator)),
-                Err(e) => {
-                    warn!(
-                        "Failed to compile JSON Schema for topic group '{}': {} — skipping validation for this group",
-                        group.pattern, e
-                    );
-                    None
-                }
-            }
-        })
-        .collect();
-    if !group_validators.is_empty() {
-        info!(
-            "Compiled JSON Schema validators for {} topic group(s)",
-            group_validators.len()
-        );
-    }
-
-    topic_validators
-        .into_iter()
-        .chain(group_validators)
-        .collect()
-}
-
 /// Generate a unique suffix for the MQTT client ID from full-precision
 /// wall-clock nanoseconds, so concurrent instances and rapid restarts do not
 /// collide (brokers disconnect clients sharing an ID).
@@ -315,42 +253,40 @@ fn flatten_payload(value: Value) -> Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::asyncapi::FieldDef;
+    use crate::api_model::{Api, ApiModel, FieldDef, TopicDef, TopicGroupDef};
+    use crate::roas_asyncapi::OperationAction;
     use serde_json::json;
     use std::collections::BTreeMap;
 
-    fn group_with_schema(pattern: &str, schema: Value) -> TopicGroupDef {
-        TopicGroupDef {
+    fn groups_with_schema(pattern: &str, schema_ref: &str) -> Vec<TopicGroupDef> {
+        vec![TopicGroupDef {
             group: "power-tags".to_string(),
             pattern: pattern.to_string(),
-            params: vec!["panel".to_string(), "slug".to_string()],
             fields: vec![FieldDef {
                 name: "active_power_total".to_string(),
                 graphql_type: "Float".to_string(),
             }],
-            payload_schema: Some(schema),
+            payload_schema_ref: Some(schema_ref.to_string()),
             value_extensions: BTreeMap::new(),
             ttl_secs: 300,
-        }
+            action: OperationAction::Send,
+            group_by: "".to_string(),
+            topic_metadata: BTreeMap::new(),
+        }]
     }
 
-    #[test_log::test]
-    fn test_build_validators_compiles_group_schema() {
-        let groups = vec![group_with_schema(
-            "power-tags/+/+",
-            json!({"type": "object", "required": ["active_power_total"]}),
-        )];
-        let validators = build_validators(&[], &groups);
-        assert_eq!(validators.len(), 1);
-        assert!(validators.get("power-tags/+/+").is_some());
-    }
-
-    #[test_log::test]
-    fn test_build_validators_skips_group_without_schema() {
-        let mut group = group_with_schema("power-tags/+/+", json!({}));
-        group.payload_schema = None;
-        let validators = build_validators(&[], &[group]);
-        assert!(validators.is_empty());
+    fn api(
+        topics: Vec<TopicDef>,
+        groups: Vec<TopicGroupDef>,
+        validators: TopicMap<Validator>,
+    ) -> Api {
+        Api::new(vec![ApiModel::new(
+            "".to_string(),
+            TopicMap::new(),
+            topics,
+            groups,
+            validators,
+        )])
     }
 
     /// Regression test for the gap where payloads on parametrized topic
@@ -360,11 +296,18 @@ mod tests {
     /// anyway.
     #[test_log::test]
     fn test_validate_payload_matches_concrete_topic_against_group_pattern() {
-        let group = group_with_schema(
-            "power-tags/+/+",
-            json!({"type": "object", "required": ["active_power_total"]}),
+        let validator = jsonschema::validator_for(
+            &json!({"type": "object", "required": ["active_power_total"]}),
+        )
+        .unwrap();
+        let mut validators = TopicMap::new();
+        validators.insert("power-tags/+/+".to_string(), validator);
+        let api = api(
+            vec![],
+            groups_with_schema("power-tags/+/+", "/"),
+            validators,
         );
-        let sub = test_subscriber(&[], &[group]);
+        let sub = test_subscriber(&api);
 
         // Matches: concrete topic under the group's wildcard pattern.
         assert_eq!(
@@ -388,11 +331,19 @@ mod tests {
     /// panels here both validate against the same `power-tags/+/+` schema.
     #[test_log::test]
     fn test_validate_payload_group_validator_covers_multiple_distinct_topics() {
-        let group = group_with_schema(
-            "power-tags/+/+",
-            json!({"type": "object", "required": ["active_power_total"]}),
+        let validator = jsonschema::validator_for(
+            &json!({"type": "object", "required": ["active_power_total"]}),
+        )
+        .unwrap();
+        let mut validators = TopicMap::new();
+        validators.insert("power-tags/+/+".to_string(), validator);
+
+        let api = api(
+            vec![],
+            groups_with_schema("power-tags/+/+", "/"),
+            validators,
         );
-        let sub = test_subscriber(&[], &[group]);
+        let sub = test_subscriber(&api);
 
         assert_eq!(
             sub.validate_payload(
@@ -419,19 +370,31 @@ mod tests {
     /// in `validate_payload`.
     #[test_log::test]
     fn test_validate_payload_exact_topic_wins_over_overlapping_group() {
+        let validator = jsonschema::validator_for(
+            &json!({"type": "object", "required": ["active_power_total"]}),
+        )
+        .unwrap();
+        let mut validators = TopicMap::new();
+        validators.insert("power-tags/+/+".to_string(), validator);
+
         let topic = TopicDef {
             topic: "power-tags/10P1/breaker3".to_string(),
             fields: vec![FieldDef {
                 name: "active_power_total".to_string(),
                 graphql_type: "Float".to_string(),
             }],
-            payload_schema: Some(json!({"type": "object", "required": ["active_power_total"]})),
+            payload_schema_ref: None,
+            action: OperationAction::Send,
             ttl_secs: 300,
         };
-        let group = group_with_schema("power-tags/+/+", json!({"type": "object"}));
-        let sub = test_subscriber(&[topic], &[group]);
+        let api = api(
+            vec![topic],
+            groups_with_schema("power-tags/+/+", "/"),
+            validators,
+        );
+        let sub = test_subscriber(&api);
 
-        // Fails the exact-topic schema (missing required field) even though
+        // Fails the exact-topic schema (missing req)uired field) even though
         // it would pass the group's permissive schema — proves the exact
         // match, not the group, was used.
         assert_eq!(
@@ -444,8 +407,13 @@ mod tests {
     /// must also drive validation — not just the `+` groups exercised above.
     #[test_log::test]
     fn test_validate_payload_matches_hash_wildcard_pattern() {
-        let group = group_with_schema("logs/#", json!({"type": "object", "required": ["level"]}));
-        let sub = test_subscriber(&[], &[group]);
+        let validator =
+            jsonschema::validator_for(&json!({"type": "object", "required": ["level"]})).unwrap();
+        let mut validators = TopicMap::new();
+        validators.insert("logs/#".to_string(), validator);
+
+        let api = api(vec![], groups_with_schema("logs/#", "/"), validators);
+        let sub = test_subscriber(&api);
 
         assert_eq!(
             sub.validate_payload("logs/a", &json!({"level": "info"})),
@@ -459,7 +427,7 @@ mod tests {
         assert_eq!(sub.validate_payload("metrics/a", &json!({})), None);
     }
 
-    fn test_subscriber(topics: &[TopicDef], groups: &[TopicGroupDef]) -> MqttSubscriber {
+    fn test_subscriber(api: &Api) -> MqttSubscriber {
         let connection = MqttConnection {
             host: "localhost",
             port: 1883,
@@ -470,8 +438,7 @@ mod tests {
             &connection,
             Arc::new(TopicCache::new()),
             true,
-            topics,
-            groups,
+            api.validators(),
         )
         .unwrap()
     }

@@ -1,8 +1,10 @@
+pub mod api_model;
 pub mod asyncapi;
 pub mod cache;
 pub mod config;
 pub mod graphql;
 pub mod http;
+pub mod message_validation;
 pub mod metadata;
 pub mod mqtt;
 pub mod naming;

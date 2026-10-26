@@ -1,10 +1,8 @@
-use std::collections::HashMap;
 use std::time::Instant;
 
 use dashmap::DashMap;
 use serde_json::Value;
 
-use crate::asyncapi::{TopicDef, TopicGroupDef};
 use crate::topic_map::TopicMap;
 
 struct Entry {
@@ -28,40 +26,16 @@ impl Default for TopicCache {
 impl TopicCache {
     #[must_use]
     pub fn new() -> Self {
-        Self::with_ttl(crate::config::DEFAULT_TTL_SECS, HashMap::new())
+        Self::with_ttl(crate::config::DEFAULT_TTL_SECS, TopicMap::new())
     }
 
     #[must_use]
-    pub fn with_ttl(default_ttl_secs: u64, per_topic_ttl: HashMap<String, u64>) -> Self {
+    pub fn with_ttl(default_ttl_secs: u64, per_topic_ttl: TopicMap<u64>) -> Self {
         Self {
             data: DashMap::new(),
             default_ttl_secs,
-            per_topic_ttl: per_topic_ttl.into_iter().collect(),
+            per_topic_ttl,
         }
-    }
-
-    /// Build a cache whose TTL table is derived from the AsyncAPI
-    /// definitions: topics whose `ttl_secs` differs from `default_ttl` are
-    /// keyed by topic, groups by their wildcard pattern so every concrete
-    /// topic under them inherits the group's `x-ttl`.
-    #[must_use]
-    pub fn from_definitions(
-        topics: &[TopicDef],
-        groups: &[TopicGroupDef],
-        default_ttl: u64,
-    ) -> Self {
-        let topic_overrides = topics
-            .iter()
-            .filter(|t| t.ttl_secs != default_ttl)
-            .map(|t| (t.topic.clone(), t.ttl_secs));
-        let group_overrides = groups
-            .iter()
-            .filter(|g| g.ttl_secs != default_ttl)
-            .map(|g| (g.pattern.clone(), g.ttl_secs));
-        Self::with_ttl(
-            default_ttl,
-            topic_overrides.chain(group_overrides).collect(),
-        )
     }
 
     /// Insert or overwrite the cached payload for a topic.
@@ -124,39 +98,16 @@ impl TopicCache {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::asyncapi::{FieldDef, TopicDef, TopicGroupDef};
     use serde_json::json;
-    use std::collections::BTreeMap;
-
-    fn topic(topic_name: &str, ttl_secs: u64) -> TopicDef {
-        TopicDef {
-            topic: topic_name.to_string(),
-            fields: vec![FieldDef {
-                name: "v".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
-            payload_schema: None,
-            ttl_secs,
-        }
-    }
-
-    fn group(group_id: &str, pattern: &str, ttl_secs: u64) -> TopicGroupDef {
-        TopicGroupDef {
-            group: group_id.to_string(),
-            pattern: pattern.to_string(),
-            params: Vec::new(),
-            fields: Vec::new(),
-            payload_schema: None,
-            value_extensions: BTreeMap::new(),
-            ttl_secs,
-        }
-    }
 
     #[test_log::test]
     fn test_from_definitions_collects_overrides() {
-        let topics = vec![topic("default/ttl", 300), topic("custom/ttl", 0)];
-        let groups = vec![group("power-tags", "power-tags/+/+", 0)];
-        let cache = TopicCache::from_definitions(&topics, &groups, 300);
+        let mut topic_map = TopicMap::new();
+        topic_map.insert_with_replace("default/ttl".to_string(), 300);
+        topic_map.insert_with_replace("custom/ttl".to_string(), 0);
+        topic_map.insert_with_replace("power-tags/+/+".to_string(), 0);
+
+        let cache = TopicCache::with_ttl(300, topic_map);
 
         cache.insert("default/ttl", json!(1));
         cache.insert("custom/ttl", json!(1));
@@ -232,7 +183,7 @@ mod tests {
 
     #[test_log::test]
     fn test_expires_returns_none() {
-        let cache = TopicCache::with_ttl(0, HashMap::new());
+        let cache = TopicCache::with_ttl(0, TopicMap::new());
         cache.insert("test/topic", json!({"v": 1}));
         std::thread::sleep(std::time::Duration::from_millis(10));
         assert!(cache.get("test/topic").is_none());
@@ -241,8 +192,8 @@ mod tests {
 
     #[test_log::test]
     fn test_per_topic_ttl_overrides_default() {
-        let mut per_topic = HashMap::new();
-        per_topic.insert("fast".to_string(), 0);
+        let mut per_topic = TopicMap::new();
+        per_topic.insert_with_replace("fast".to_string(), 0);
         let cache = TopicCache::with_ttl(60, per_topic);
         cache.insert("fast", json!(1));
         cache.insert("slow", json!(2));
@@ -253,9 +204,9 @@ mod tests {
 
     #[test_log::test]
     fn test_group_pattern_ttl_overrides_default_insert_and_evicted() {
-        let mut per_topic = HashMap::new();
-        per_topic.insert("power-tags/+/+".to_string(), 0);
-        per_topic.insert("logs/#".to_string(), 0);
+        let mut per_topic = TopicMap::new();
+        per_topic.insert_with_replace("power-tags/+/+".to_string(), 0);
+        per_topic.insert_with_replace("logs/#".to_string(), 0);
         let cache = TopicCache::with_ttl(60, per_topic);
         cache.insert("power-tags/10P1/slug", json!(1));
         cache.insert("logs/a/b", json!(1));
@@ -269,7 +220,7 @@ mod tests {
 
     #[test_log::test]
     fn test_evict_expired() {
-        let cache = TopicCache::with_ttl(0, HashMap::new());
+        let cache = TopicCache::with_ttl(0, TopicMap::new());
         cache.insert("a", json!(1));
         cache.insert("b", json!(2));
         std::thread::sleep(std::time::Duration::from_millis(10));

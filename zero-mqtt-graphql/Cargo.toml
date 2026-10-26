@@ -4,13 +4,14 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-tokio = { version = "1.53.2", features = ["full", "sync"] }
+jsonschema = { version = "0.60.2", default-features = false }
+tokio = { version = "1.54.1", features = ["full", "sync"] }
 axum = "0.8"
 async-graphql = { version = "8.0.0-rc.5", features = ["dynamic-schema"] }
 rumqttc = "0.25.1"
 dashmap = "6.2"
 serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+serde_json = "1.0.154"
 tower-http = { version = "0.7.1", features = ["cors"] }
 clap = { version = "4.6.7", features = ["derive"] }
 config = "0.15.27"
@@ -19,13 +20,13 @@ anyhow = "1.0"
 env_logger = "0.11.11"
 log = "0.4.34"
 roas-asyncapi = { version = "0.4.0", features = ["v3_0"] }
-jsonschema = { version = "0.58.6", default-features = false }
 
 [lints.rust]
 warnings = "deny"
 
 [lints.clippy]
 result_large_err = "deny"
+dbg_macro = "warn"
 
 [dev-dependencies]
 tower = { version = "=0.5.3", features = ["util"] }
