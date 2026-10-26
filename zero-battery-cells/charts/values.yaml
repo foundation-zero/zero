@@ -1,0 +1,42 @@
+replicaCount: 1
+
+image:
+  repository: europe-west1-docker.pkg.dev/common-449414/common/zero-battery-cells
+  pullPolicy: IfNotPresent
+  tag: ""
+
+nvlFile: /app/spec/KEB6_FOX_05_41_1_NVL_Declaration.txt
+# Restrict this release to some of the 22 known list ids (all when empty);
+# a redundant release runs with the other ids.
+ownListIds: []
+logLevel: info
+
+mqtt:
+  host: ""
+  port: 1883
+  prefix: battery
+  existingSecret: ""
+  existingSecretPasswordKey: password
+
+udp:
+  annotations: {}
+  labels: {}
+  externalIPs: []
+  port: 50000
+
+resources: {}
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+podLabels: {}
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
