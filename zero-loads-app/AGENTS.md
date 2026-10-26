@@ -51,10 +51,23 @@ is not authenticated, so a session cannot edit the sheet.
   `sail-systems/sail-system-mqtt-adapter/alive` comes through. Not every topic is published within
   a few minutes (on 2026-10-08, 31 of the data map's 74 came through in 4 minutes), so use the data map below for
   the full structure.
-- The adapter's data map, port-forwarded from the cluster to `http://localhost:8080`, shows every
-  topic with its fields, current values and the PLC descriptions. Port 8080 is also Hasura's local
-  port, so only one of the two can run at a time.
-- `tools/sail-system-mqtt/mqtt_schema_compare.py` records the topics and payload schema
-  (`sail-system-mqtt-schema.json`) and compares them with an earlier recording.
-- Before changing a payload path, check that the field is on live MQTT: a missing field fails the
-  whole topic's validation, so every variable on that topic goes missing.
+- The adapter's data map is the source of truth for the MQTT schema: it shows every topic with its
+  fields, current values and the PLC descriptions, also for topics that are not publishing. The repo
+  keeps no snapshot of it; read it live.
+
+### Reading the data map
+
+- Port-forward the adapter's HTTP port (8080) to a free local port; local 8080 is Hasura's:
+  `kubectl -n zero port-forward deploy/sail-systems-mqtt-adapter 18081:8080`. The adapter pod
+  restarts often, and an existing port-forward (e.g. one from k9s) then accepts connections but
+  never answers, so start a fresh one when requests hang.
+- `curl http://localhost:18081/` returns the whole data map server-rendered (about 1.3 MB). Each
+  topic is a top-level `<details>` whose `<summary>` holds the topic name without the
+  `sail-systems/` prefix. Nested `<details>` are structs and fields; a field's `<summary>` is its
+  name, followed by `Value: …` and `Description: …` divs. Joining the summaries below the topic with
+  `/` gives the payload key that `validation_alias` matches, e.g. `st_Load/i_Load`.
+- After a PLC update, check both directions: every `validation_alias` in the registry is still on
+  its topic (a missing field fails the whole topic's validation, so every variable on that topic
+  goes missing), and new load, alarm or max-load-setting fields on the registry's topics. The
+  `TODO`s in `src/loads/sensors/` that wait for the PLC to publish a field name the fields to look
+  for.
