@@ -7,9 +7,9 @@ not obvious from the code: where the data comes from and how to look at live dat
 ## Sources of truth
 
 - **The loads Google Sheet** (`11sE_LaWqBz4rfQrQgS-j8XIEl9pCgsJEX_HSi0XDoxw`) holds the technical
-  names, the max loads (lower and upper warning and alarm thresholds), the SailPack mapping and the
-  Vitters IO list. It is edited in meetings with the rigging and naval team, so code follows the
-  sheet, not the other way round.
+  names, the max loads (lower and upper warning and alarm thresholds) and the SailPack mapping. It
+  is edited in meetings with the rigging and naval team, so code follows the sheet, not the other
+  way round.
 - **The registry** (`src/loads/registry/registry.py`, built from the models in
   `src/loads/sensors/`) is the source of truth for which variables the app reads and from which MQTT
   topic and payload path.
@@ -26,22 +26,15 @@ just export_seed                          # download, check and regenerate the s
 just check_seed                           # download, check and compare with the committed seeds; also in CI
 ```
 
-Both first check the sheet: technical names against the registry, numeric and ordered thresholds,
-and every Vitters IO list row with a display name against a registry variable. A sheet edit can
-therefore turn CI red until the seeds are regenerated. The live sheet is also checked by
-`tests/integration/test_loads_sheet.py`. To change the sheet, produce a CSV and let the user import
-it into the tab with "replace current sheet" (keeps the gid). The claude.ai Google Drive connector
+Both first check the sheet: technical names against the registry and numeric and ordered
+thresholds. A sheet edit can therefore turn CI red until the seeds are regenerated. The live sheet
+is also checked by `tests/integration/test_loads_sheet.py`. To change the sheet, produce a CSV and
+let the user import it into the tab with "replace current sheet" (keeps the gid). The claude.ai Google Drive connector
 is not authenticated, so a session cannot edit the sheet.
 
 - **Max loads** are read by header name (`src/sailpack/max_loads.py`). The runner block thresholds
   are not in the sheet; they are derived from the runner tail thresholds with the Vitters PLC
   factors (`RUNNER_BLOCK_LOAD_PER_TAIL_LOAD` in `src/sailpack/seed_utils.py`).
-- **The Vitters IO list** is the Modbus IO list. The loads app reads MQTT, not Modbus, and uses the
-  IO list only to check that every row with a display name has a registry variable. Its `Topic`
-  column is the PLC tag, e.g. `FE401_MainRunnerCaptiveWinchPs.i_blockLoad`, which matches the MQTT
-  topic (`sail-systems/fe401-main-runner-captive-winch-ps`, the kebab-cased function block) plus the
-  payload path (`i_blockLoad`), ignoring case. IO list rows with a display name that the app does
-  not read are listed in `IO_LIST_TOPICS_NOT_IN_REGISTRY`.
 - **Seeds**: SailPack targets go into `loads.reference_values`, the max loads into
   `loads.thresholds`. Targets outside their thresholds are clamped to the warning, or to the alarm
   where that side has no warning (the DB CHECK constraints require

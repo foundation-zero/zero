@@ -2,14 +2,8 @@ import pytest
 
 from loads.registry.sheets import (
     first_column_values,
-    io_list_topics_without_variable,
     max_loads_problems,
     max_loads_technical_names,
-)
-
-IO_LIST_HEADER = (
-    "Issued,14/07/2026,,,\n"
-    'Type,Topic,Display name,"Abbreviated\n display name",Display units\n'
 )
 
 MAX_LOADS_HEADER = (
@@ -42,17 +36,6 @@ def test_max_loads_technical_names_finds_the_column_by_header():
     max_loads_csv = reordered_header + '"12,000","11,000",,,main-sheet-load\n'
 
     assert max_loads_technical_names(max_loads_csv) == {"main-sheet-load"}
-
-
-def test_io_list_topics_without_variable_lists_labelled_topics_outside_the_registry():
-    io_list_csv = (
-        IO_LIST_HEADER
-        + "InputReg,F0103_BladeAdjuster.st_load.i_Load,Blade RTA Load,B RTA,t\n"
-        + "InputReg,F9999_Unknown.i_Load,Unknown Load,UNK,t\n"
-        + "InputReg,F9998_Unlabelled.i_Load,,,\n"
-    )
-
-    assert io_list_topics_without_variable(io_list_csv) == ["F9999_Unknown.i_Load"]
 
 
 @pytest.mark.parametrize(
