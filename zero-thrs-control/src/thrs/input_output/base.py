@@ -91,11 +91,11 @@ class Stamped[T](ThrsValues):
     timestamp: Annotated[datetime, Field(alias="TimeStamp")]
 
     @staticmethod
-    def stamp[V](value: V) -> "Stamped[V]":
+    def stamp[V](value: V) -> Stamped[V]:
         return Stamped(value=value, timestamp=datetime.now(UTC))
 
     @staticmethod
-    def combine[V](*stamped: "Stamped[Any]", value: V) -> "Stamped[V]":
+    def combine[V](*stamped: Stamped[Any], value: V) -> Stamped[V]:
         return Stamped(value=value, timestamp=min(s.timestamp for s in stamped))
 
 
@@ -103,13 +103,13 @@ class StampedWithSource[T](Stamped[T]):
     source: str
 
     @staticmethod
-    def stamp[V](value: V, source: str) -> "StampedWithSource[V]":  # type: ignore
+    def stamp[V](value: V, source: str) -> StampedWithSource[V]:  # type: ignore
         return StampedWithSource(
             value=value, timestamp=datetime.now(UTC), source=source
         )
 
     @staticmethod
-    def from_stamped[V](original: Stamped[V], source: str) -> "StampedWithSource[V]":
+    def from_stamped[V](original: Stamped[V], source: str) -> StampedWithSource[V]:
         if isinstance(original, StampedWithSource):
             return original
 
@@ -119,8 +119,8 @@ class StampedWithSource[T](Stamped[T]):
 
     @staticmethod
     def combine[V](  # type: ignore
-        *stamped: "Stamped[Any]", value: V, source: str
-    ) -> "StampedWithSource[V]":
+        *stamped: Stamped[Any], value: V, source: str
+    ) -> StampedWithSource[V]:
         return StampedWithSource(
             value=value, timestamp=min(s.timestamp for s in stamped), source=source
         )

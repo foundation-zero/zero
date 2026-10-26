@@ -47,6 +47,7 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
         self._fields: dict[str, TypeAdapter] = {
             field_name: TypeAdapter(field.annotation)
             for field_name, field in cls.model_fields.items()
+            if field.annotation is not None
         }
         self._complete_model = Future()
 

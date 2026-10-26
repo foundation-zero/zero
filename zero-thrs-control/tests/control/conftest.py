@@ -32,7 +32,7 @@ def simulation_inputs():
 @fixture
 def simulation(
     simulation_inputs: ThrustersSimulationInputs,
-) -> Generator[ThrustersSimulation, None, None]:
+) -> Generator[ThrustersSimulation]:
     with Fmu(thrusters_path) as fmu:
         yield Simulation(
             ThrustersSensorValues,

@@ -39,7 +39,7 @@ class LoopHooks:
     stepping: Hook
 
 
-async def empty_hook(_: "Loop"):
+async def empty_hook(_: Loop):
     pass
 
 

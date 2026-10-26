@@ -417,13 +417,13 @@ class TanksController:
                 self._tank_in_use = chosen
                 self._tank_in_use.use(self._time)
 
-    def _next_good_tank_in_use(self, parameters: DhwParameters) -> "Tank | None":
+    def _next_good_tank_in_use(self, parameters: DhwParameters) -> Tank | None:
         return next(
             (tank for tank in self.available_tanks if tank.standby(parameters)),
             None,
         )
 
-    def _fallback_tank_in_use(self, parameters: DhwParameters) -> "Tank | None":
+    def _fallback_tank_in_use(self, parameters: DhwParameters) -> Tank | None:
         # Last resort when no tank qualifies as standby: keep hot water available
         # by serving the warmest tank that still holds water
         return max(
@@ -626,7 +626,7 @@ class TanksController:
         self,
         sensor_values: DhwSensorValues,
         parameters: DhwParameters,
-        control_mode: "DhwControlMode",
+        control_mode: DhwControlMode,
     ) -> TanksControllerValues:
         time = self._time()
         return TanksControllerValues(

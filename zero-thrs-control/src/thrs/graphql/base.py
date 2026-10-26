@@ -230,17 +230,17 @@ def generate_mutation_for_field[T](
     field_name: str,
     field: FieldInfo,
     make_fn_key: str,
-    messaging: "Callable[[ThrsContext], ControlMessaging | SimulationMessaging]",
+    messaging: Callable[[ThrsContext], ControlMessaging | SimulationMessaging],
     *args,
     unstamp: bool,
-) -> "FieldMutation[T]":
+) -> FieldMutation[T]:
     input_type = ensure_input_type(field.annotation, unstamp=unstamp)
 
     def _make_mutation(name: str, component_type: type):
         async def _mutation(
             self,
             value: component_type,  # type: ignore
-            info: "strawberry.Info[ThrsContext]",
+            info: strawberry.Info[ThrsContext],
         ) -> cls:  # type: ignore
             mod = messaging(info.context)
             value = value.to_pydantic().to_stamped() if unstamp else value
@@ -258,7 +258,7 @@ def add_control_mutations(
     module: str,
     control_values_cls: type[ThrsValues],
     strawberry_cls: type,
-    messaging: "Callable[[ThrsContext], ControlMessaging]",
+    messaging: Callable[[ThrsContext], ControlMessaging],
 ):
     def _do(cls):
         for name, field in control_values_cls.model_fields.items():
@@ -283,7 +283,7 @@ def add_parameter_mutations(
     module: str,
     parameters_cls: type[ThrsValues],
     strawberry_cls: type,
-    messaging: "Callable[[ThrsContext], ControlMessaging]",
+    messaging: Callable[[ThrsContext], ControlMessaging],
 ):
     def _do(cls):
         for name, field in parameters_cls.model_fields.items():
@@ -308,7 +308,7 @@ def add_simulation_input_mutations(
     mode: str,
     io_mapping: dict[str, tuple[type[ThrsValues], type[ThrsValues]]],
     inputs_strawberry_type_mapping: dict[str, type],
-    messaging: "Callable[[ThrsContext], SimulationMessaging]",
+    messaging: Callable[[ThrsContext], SimulationMessaging],
 ):
     strawberry_cls = inputs_strawberry_type_mapping[mode]
     inputs_cls = io_mapping[mode][0]
@@ -334,13 +334,13 @@ def add_simulation_input_mutations(
 
 def add_automation_mode_mutation(
     module: str,
-    messaging: "Callable[[ThrsContext], ControlMessaging]",
+    messaging: Callable[[ThrsContext], ControlMessaging],
 ):
     def _do(cls):
         async def set_automation_mode(
             self,
             automatic: bool,
-            info: "strawberry.Info[ThrsContext]",
+            info: strawberry.Info[ThrsContext],
         ) -> bool:
             mod = messaging(info.context)
             return await mod.set_automation_mode(automatic)
