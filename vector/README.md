@@ -44,6 +44,18 @@ The main pipeline. It subscribes to the everyday topics (`marpower/#`,
 
 The result lands in a per-domain table via the `greptimedb` sink.
 
+The `greptimedb` sink keeps Vector's default unlimited retries on purpose. A
+Greptime outage (connection refused, 5xx) is retried too, and the 4 GiB disk
+buffer only helps if those retries outlast the outage. The one input Greptime
+answers with a retried 500 is an unparseable `timestamp`. The general pipeline
+never sends one: `timestamp` starts as the MQTT ingest time and step 4 only
+replaces it with a `*TimeStamp` it can parse. A JSON-decoded NMEA payload
+can carry its own `timestamp`, though, and reaches the dead letter queue
+unchanged if routing fails. There the bad value moves to `original_timestamp`
+and `timestamp` is set to ingestion time (`dropped_append_timestamp.vrl`).
+Type mismatches, bad table names and timestamps outside Greptime's range
+(roughly 1677–2262) answer 400, which Vector drops without retrying.
+
 #### A+T NMEA 0183 → `atpx__nmea_*`
 
 A+T also emits NMEA 0183 sentences. The standalone `zero-atpx-nmea` service
