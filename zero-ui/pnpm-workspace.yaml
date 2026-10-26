@@ -5,3 +5,5 @@ allowBuilds:
   esbuild: true
   msw: true
   vue-demi: true
+  # wrangler-action installs wrangler in CI; pages deploy doesn't need workerd's postinstall
+  workerd: false
