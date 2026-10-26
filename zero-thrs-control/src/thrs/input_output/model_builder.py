@@ -1,8 +1,8 @@
 import logging
 from abc import ABC, abstractmethod
-from asyncio import Future
+from asyncio import Event
 from contextlib import suppress
-from typing import Any
+from typing import Any, cast
 
 from pydantic import TypeAdapter, ValidationError
 
@@ -49,7 +49,10 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
             for field_name, field in cls.model_fields.items()
             if field.annotation is not None
         }
-        self._complete_model = Future()
+        # An Event rather than a Future: since Python 3.14 a Future needs a running loop,
+        # and builders are fed outside one.
+        self._first_value: T | None = None
+        self._complete = Event()
 
     def input(self, field: str, json: str | bytes):
         value = self._fields[field].validate_json(
@@ -62,8 +65,9 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
         with suppress(ValidationError):
             self._value = self._cls(**self._values)
 
-            if not self._complete_model.done():
-                self._complete_model.set_result(self._value)
+            if not self._complete.is_set():
+                self._first_value = self._value
+                self._complete.set()
 
     def result(self) -> T | None:
         if logger.isEnabledFor(logging.DEBUG):
@@ -78,4 +82,5 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
         return self._value
 
     async def wait_for_result(self) -> T:
-        return await self._complete_model
+        await self._complete.wait()
+        return cast(T, self._first_value)

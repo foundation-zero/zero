@@ -1,6 +1,6 @@
 import json
 import logging
-from asyncio import Event, Future, TaskGroup, gather, timeout
+from asyncio import Event, TaskGroup, gather, timeout
 from collections import defaultdict
 from collections.abc import Awaitable, Callable, Coroutine, Iterable, Mapping
 from functools import partial
@@ -201,7 +201,10 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         self._adapter: TypeAdapter[M] = TypeAdapter(validate_type)
         self._topic = f"{topic}{f'/{topic_suffix}' if topic_suffix else ''}"
         self._value = None
-        self._future = Future()
+        # An Event rather than a Future: since Python 3.14 a Future needs a running loop,
+        # and mappings are fed outside one.
+        self._first_value: M | None = None
+        self._first_received = Event()
         self._update_event = Event()
         self._hooks: list[Callable[[M], object]] = []
         self._autoclear = autoclear
@@ -236,8 +239,9 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         awaitables: list[Awaitable] = []
         if topic == self._topic:
             self._value = cast(M, self._adapter.validate_json(json))
-            if not self._future.done():
-                self._future.set_result(self._value)
+            if not self._first_received.is_set():
+                self._first_value = self._value
+                self._first_received.set()
             self._update_event.set()
             for hook in self._hooks:
                 result = hook(self._value)
@@ -252,7 +256,8 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         return value
 
     async def wait_for_result(self) -> M:
-        result = await self._future
+        await self._first_received.wait()
+        result = cast(M, self._first_value)
         if self._autoclear:
             self._value = None
         return result
