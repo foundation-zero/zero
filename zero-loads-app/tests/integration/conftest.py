@@ -35,6 +35,7 @@ def clear_mutating_tables(
     user: str,
     dbname: str,
     password: str | None,
+    autocommit: bool,
 ):
     with connect(
         host=host,
@@ -42,7 +43,7 @@ def clear_mutating_tables(
         user=user,
         dbname=dbname,
         password=password,
-        autocommit=True,
+        autocommit=autocommit,
     ) as conn:
         with conn.cursor() as cursor:
             cursor.execute("DELETE FROM loads.thresholds")
