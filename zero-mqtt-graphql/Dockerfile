@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM rust:1.99-trixie AS builder
+FROM --platform=$BUILDPLATFORM rust:1.99-trixie@sha256:931c2c0531a8b143e044f0f3914dfe802f15bb3d1955f0b657e9359327ac2ffc AS builder
 
 WORKDIR /app
 
@@ -32,7 +32,7 @@ RUN if [ "$TARGETARCH" = "arm64" ]; then \
   cp target/x86_64-unknown-linux-gnu/release/zero-mqtt-graphql /app/zero-mqtt-graphql; \
   fi
 
-FROM debian:trixie-slim AS runtime
+FROM debian:trixie-slim@sha256:62bd423aeee912639ca8ee681c2b762cb3e25137e0a92b20be455898a9f034ad AS runtime
 
 RUN apt-get update && \
   apt-get install -y --no-install-recommends ca-certificates && \
