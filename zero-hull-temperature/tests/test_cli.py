@@ -48,6 +48,19 @@ def test_read_mqtt_skip():
         mock_run_command.assert_called_once()
 
 
+def test_asyncapi_payload_declares_timestamp():
+    from zero_hull_temperature.cli import build_asyncapi
+
+    schemas = build_asyncapi()["components"]["schemas"]
+    assert "TimeStamp" in schemas["HullTemperature"]["properties"]
+
+
+def test_buffer_size_covers_five_minutes():
+    from zero_hull_temperature.bridge_relay import buffer_size_for
+
+    assert buffer_size_for(probe_interval=10, topic_count=1) == 30
+
+
 @pytest.fixture
 def required_env(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("MODBUS_HOST", "localhost")

@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from datetime import datetime
 from typing import Annotated
 from unittest.mock import AsyncMock, MagicMock
 
@@ -19,8 +20,16 @@ def _make_bridge(mock_modbus: MagicMock, topics: Sequence[ModbusTopic]):
         ModbusReader(mock_modbus, list(topics)),
         MqttPublisher(mock_broker, list(topics)),
         list(topics),
+        buffer_size=10,
     )
     return bridge, mock_pub
+
+
+def _body(mock_pub: MagicMock) -> dict:
+    mock_pub.publish.assert_called_once()
+    body = dict(mock_pub.publish.call_args.args[0])
+    assert datetime.fromisoformat(body.pop("TimeStamp")).tzinfo is not None
+    return body
 
 
 class _PwrModel(BaseModel):
@@ -49,7 +58,7 @@ async def test_run_once_success():
     topics = [AnnotationModbusTopic(topic="test/pwr", model=_PwrModel)]
     bridge, mock_pub = _make_bridge(mock_modbus, topics)
     await bridge.run_once()
-    mock_pub.publish.assert_called_once_with(_PwrModel(power=1.0))
+    assert _body(mock_pub) == {"power": 1.0}
 
 
 @pytest.mark.asyncio
@@ -61,9 +70,7 @@ async def test_run_once_multiple_addresses_scaling():
     bridge, mock_pub = _make_bridge(mock_modbus, topics)
     await bridge.run_once()
     mock_pub.publish.assert_called_once()
-    payload = mock_pub.publish.call_args.args[0]
-    assert payload.power == 1.0
-    assert payload.temperature == 1.0
+    assert _body(mock_pub) == {"power": 1.0, "temperature": 1.0}
 
 
 @pytest.mark.asyncio
@@ -86,10 +93,11 @@ async def test_run_once_multiple_topics():
         ModbusReader(mock_modbus, list(topics)),
         MqttPublisher(mock_broker, list(topics)),
         list(topics),
+        buffer_size=10,
     )
     await bridge.run_once()
-    mock_pub1.publish.assert_called_once_with(_ValueModel(value=10))
-    mock_pub2.publish.assert_called_once_with(_Value2Model(value2=10))
+    assert _body(mock_pub1) == {"value": 10}
+    assert _body(mock_pub2) == {"value2": 10}
 
 
 @pytest.mark.asyncio
@@ -107,9 +115,7 @@ async def test_run_once_with_extra_fields():
     bridge, mock_pub = _make_bridge(mock_modbus, topics)
     await bridge.run_once()
     mock_pub.publish.assert_called_once()
-    payload = mock_pub.publish.call_args.args[0]
-    assert payload.value == 5
-    assert payload.location == "deck1"
+    assert _body(mock_pub) == {"value": 5, "location": "deck1"}
 
 
 @pytest.mark.asyncio
@@ -132,6 +138,7 @@ async def test_run_multiple_cycles():
         MqttPublisher(mock_broker, list(topics)),
         list(topics),
         probe_interval=0.01,
+        buffer_size=10,
     )
     task = asyncio.ensure_future(bridge.run())
     await asyncio.sleep(0.05)
