@@ -5,7 +5,7 @@ readme = "README.md"
 authors = [
     { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org" }
 ]
-requires-python = ">= 3.13.1,<4.0"
+requires-python = ">=3.15.1,<4.0"
 dependencies = [
     "zero-modbus-bridge",
     "pydantic>=2.11.7,<3.0.0",
@@ -19,7 +19,7 @@ dev = [
     "ruff>=0.17.2,<0.18",
     "pyright>=1.1.403,<2",
     "fastexcel>=0.20.2,<0.21",
-    "polars>=1.42.0,<2",
+    "polars>=2.0.0,<3",
     "zero-modbus-bridge[tui]",
 ]
 test = ["pytest-asyncio>=1.1.0,<2", "pytest>=9.1.1,<10"]
