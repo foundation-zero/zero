@@ -20,6 +20,7 @@ use futures_util::{StreamExt, TryStreamExt};
 use log::{debug, error, info, warn};
 use nom::multi::{length_data, many0};
 use nom::number::complete::le_u32;
+use nom::Parser as _;
 use std::net::SocketAddr;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -185,7 +186,8 @@ async fn dissect(recording: Option<&str>) -> Result<()> {
 /// Replay a recording of `u32 LE length + datagram` records through the decoder.
 fn dissect_file(decoder: &mut Decoder, prefix: &str, path: &str) -> Result<()> {
     let recording = std::fs::read(path).with_context(|| format!("Failed to read {}", path))?;
-    let parsed: nom::IResult<&[u8], Vec<&[u8]>> = many0(length_data(le_u32))(recording.as_slice());
+    let parsed: nom::IResult<&[u8], Vec<&[u8]>> =
+        many0(length_data(le_u32)).parse(recording.as_slice());
     let (rest, records) = parsed.map_err(|error| anyhow::anyhow!("{} in {}", error, path))?;
     if !rest.is_empty() {
         bail!(
