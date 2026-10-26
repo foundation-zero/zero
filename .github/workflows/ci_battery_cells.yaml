@@ -87,3 +87,14 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  helm-push:
+    if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
+    needs: docker-push
+    uses: "./.github/workflows/job_helm_push.yaml"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    secrets: inherit
+    with:
+      helm_chart: "zero-battery-cells/charts"
