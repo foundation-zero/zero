@@ -11,6 +11,9 @@ mqtt:
   host: ""
   port: ""
 
+# Seconds between published values; raise to reduce load on the cluster
+publishIntervalSeconds: 10
+
 # resources left to user
 resources: {}
 

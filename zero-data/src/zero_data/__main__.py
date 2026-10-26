@@ -9,7 +9,7 @@ from pydantic_settings import BaseSettings, CliApp, CliPositionalArg, CliSubComm
 
 from zero_data.asyncapi import build_asyncapi
 from zero_data.config import io_lists
-from zero_data.data_gen import generate_data
+from zero_data.data_gen import DEFAULT_PUBLISH_INTERVAL_SECONDS, generate_data
 from zero_data.greptime.cli import GreptimeCmd
 from zero_data.io_list import read_io_list
 from zero_data.vector_gen import generate_vector
@@ -38,10 +38,15 @@ class GenerateDataCmd(BaseModel):
         ),
     ]
 
+    interval: Annotated[
+        float, Field(gt=0, description="Seconds between published values")
+    ] = DEFAULT_PUBLISH_INTERVAL_SECONDS
+
     def cli_cmd(self):
         generate_data(
             excluded_io_list_names=self.exclude_io_lists,
             cache_dir=Path(self.cache_dir) if self.cache_dir else None,
+            interval=self.interval,
         )
 
 
