@@ -10,6 +10,7 @@ on:
       - zero-atpx-nmea/**
       - zero-data/**
       - zero-fiber-optics/**
+      - zero-thrs-control/**
       - .github/workflows/ci_mqtt_graphql.yaml
   push:
     branches:
@@ -23,6 +24,7 @@ on:
       - zero-atpx-nmea/**
       - zero-data/**
       - zero-fiber-optics/**
+      - zero-thrs-control/**
       - .github/workflows/ci_mqtt_graphql.yaml
   release:
     types: [released]
@@ -37,14 +39,14 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: "0"
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: 3.13
-      - uses: astral-sh/setup-uv@v8.1.0
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: astral-sh/setup-uv@v10.3.2
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           components: clippy, rustfmt
       - name: Sync termodinamica
@@ -56,6 +58,9 @@ jobs:
       - name: Sync hull-temperature
         run: uv sync --locked
         working-directory: zero-hull-temperature
+      - name: Sync thrs-control
+        run: uv sync --locked
+        working-directory: zero-thrs-control
       - name: Sync atpx-nmea
         run: uv sync --locked
         working-directory: zero-atpx-nmea
@@ -84,7 +89,7 @@ jobs:
       - name: Copy specs into image build context
         run: cp -r specs zero-mqtt-graphql/specs
       - name: Upload specs artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: specs
           path: zero-mqtt-graphql/specs/
@@ -100,10 +105,10 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: auth
         name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v3
         with:
           token_format: access_token
           project_id: ${{ secrets.GCP_COMMON_PROJECT_ID }}
@@ -111,15 +116,15 @@ jobs:
           service_account: ${{ secrets.GCP_COMMON_SERVICE_ACCOUNT }}
           access_token_lifetime: 600s
       - name: Login to Artifact Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: europe-west1-docker.pkg.dev
           username: oauth2accesstoken
           password: ${{ steps.auth.outputs.access_token }}
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       - name: Download specs artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: specs
           path: zero-mqtt-graphql/specs
@@ -132,7 +137,7 @@ jobs:
           tags: |
             type=raw,value=${{ needs.test.outputs.version }}
       - name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: zero-mqtt-graphql
           push: true

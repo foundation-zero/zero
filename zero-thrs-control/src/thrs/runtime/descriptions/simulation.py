@@ -11,9 +11,9 @@ from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
 from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
+    ActiveHeatSource,
     AdsorptionChiller,
     Boundary,
-    Converter,
     FlowBoundary,
     HeatSource,
     HvacExchanger,
@@ -22,6 +22,7 @@ from thrs.input_output.definitions.simulation import (
     PropulsionDrive,
     TemperatureBoundary,
     Thruster,
+    Ugrid,
 )
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.definitions.units import PcsMode
@@ -73,12 +74,8 @@ SEAWATER_TEMPERATURE = 20.0
 
 SIMULATION_INPUTS = {
     "thrusters": ThrustersSimulationInputs(
-        thrusters_thruster_aft=Thruster(
-            heat_flow=Stamped.stamp(9000.0), active=Stamped.stamp(True)
-        ),
-        thrusters_thruster_fwd=Thruster(
-            heat_flow=Stamped.stamp(4300.0), active=Stamped.stamp(True)
-        ),
+        thrusters_thruster_aft=Thruster(heat_flow=Stamped.stamp(9000.0)),
+        thrusters_thruster_fwd=Thruster(heat_flow=Stamped.stamp(4300.0)),
         thrusters_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64.0)
         ),
@@ -145,12 +142,8 @@ SIMULATION_INPUTS = {
         mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
     "high_temperature": HighTemperatureSimulationInputs(
-        thrusters_thruster_aft=Thruster(
-            heat_flow=Stamped.stamp(9000.0), active=Stamped.stamp(True)
-        ),
-        thrusters_thruster_fwd=Thruster(
-            heat_flow=Stamped.stamp(0.0), active=Stamped.stamp(True)
-        ),
+        thrusters_thruster_aft=Thruster(heat_flow=Stamped.stamp(9000.0)),
+        thrusters_thruster_fwd=Thruster(heat_flow=Stamped.stamp(0.0)),
         thrusters_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE),
             flow=Stamped.stamp(64.0),
@@ -209,21 +202,11 @@ SIMULATION_INPUTS = {
     "drives": DrivesSimulationInputs(
         drives_oil_cooler_aft=HeatSource(heat_flow=Stamped.stamp(0)),
         drives_oil_cooler_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
-        drives_propdrive_aft1=PropulsionDrive(
-            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
-        ),
-        drives_propdrive_aft2=PropulsionDrive(
-            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
-        ),
-        drives_propdrive_fwd1=PropulsionDrive(
-            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
-        ),
-        drives_propdrive_fwd2=PropulsionDrive(
-            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
-        ),
-        drives_shorepower=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
+        drives_propdrive_aft1=PropulsionDrive(heat_flow=Stamped.stamp(2800)),
+        drives_propdrive_aft2=PropulsionDrive(heat_flow=Stamped.stamp(2800)),
+        drives_propdrive_fwd1=PropulsionDrive(heat_flow=Stamped.stamp(1250)),
+        drives_propdrive_fwd2=PropulsionDrive(heat_flow=Stamped.stamp(1250)),
+        drives_shorepower=ActiveHeatSource(heat_flow=Stamped.stamp(15000)),
         drives_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
@@ -234,26 +217,14 @@ SIMULATION_INPUTS = {
         mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
     "dc": DcSimulationInputs(
-        dc_brightloop_fwd1=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_fwd2=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_ugrid1=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
-        dc_ugrid2=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
-        dc_brightloop_aft1=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_aft2=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_aft3=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_aft4=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
+        dc_brightloop_fwd1=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_fwd2=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft1=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft2=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft3=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft4=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_ugrid1=Ugrid(heat_flow=Stamped.stamp(2000)),
+        dc_ugrid2=Ugrid(heat_flow=Stamped.stamp(2000)),
         dc_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
@@ -264,12 +235,8 @@ SIMULATION_INPUTS = {
         mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
     ),
     "thrs": ThrsSimulationInputs(
-        thrusters_thruster_aft=Thruster(
-            heat_flow=Stamped.stamp(9000), active=Stamped.stamp(True)
-        ),
-        thrusters_thruster_fwd=Thruster(
-            heat_flow=Stamped.stamp(4300), active=Stamped.stamp(True)
-        ),
+        thrusters_thruster_aft=Thruster(heat_flow=Stamped.stamp(9000)),
+        thrusters_thruster_fwd=Thruster(heat_flow=Stamped.stamp(4300)),
         thrusters_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
@@ -307,46 +274,24 @@ SIMULATION_INPUTS = {
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE)
         ),
         dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(20)),
-        dc_brightloop_fwd1=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_fwd2=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_ugrid1=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
-        dc_ugrid2=Converter(heat_flow=Stamped.stamp(2000), active=Stamped.stamp(True)),
-        dc_brightloop_aft1=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_aft2=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_aft3=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
-        dc_brightloop_aft4=Converter(
-            heat_flow=Stamped.stamp(500), active=Stamped.stamp(True)
-        ),
+        dc_brightloop_fwd1=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_fwd2=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft1=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft2=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft3=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_brightloop_aft4=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
+        dc_ugrid1=Ugrid(heat_flow=Stamped.stamp(2000)),
+        dc_ugrid2=Ugrid(heat_flow=Stamped.stamp(2000)),
         dc_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
         drives_oil_cooler_aft=HeatSource(heat_flow=Stamped.stamp(0)),
         drives_oil_cooler_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
-        drives_propdrive_aft1=PropulsionDrive(
-            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
-        ),
-        drives_propdrive_aft2=PropulsionDrive(
-            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
-        ),
-        drives_propdrive_fwd1=PropulsionDrive(
-            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
-        ),
-        drives_propdrive_fwd2=PropulsionDrive(
-            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
-        ),
-        drives_shorepower=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
+        drives_propdrive_aft1=PropulsionDrive(heat_flow=Stamped.stamp(2800)),
+        drives_propdrive_aft2=PropulsionDrive(heat_flow=Stamped.stamp(2800)),
+        drives_propdrive_fwd1=PropulsionDrive(heat_flow=Stamped.stamp(1250)),
+        drives_propdrive_fwd2=PropulsionDrive(heat_flow=Stamped.stamp(1250)),
+        drives_shorepower=ActiveHeatSource(heat_flow=Stamped.stamp(15000)),
         drives_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),

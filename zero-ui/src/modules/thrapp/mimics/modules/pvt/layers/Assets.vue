@@ -2,10 +2,11 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { BypassArea } from "../../../components/bypass-area";
 import { PYRANO_METER_WIDTH } from "../../../components/pyrano-meter";
+import { getTooltipContexts } from "../../../data";
 import { IrradianceLabelInstance, PvtInstance, PyranometerInstance } from "../../../instances";
-import { PVT_MIMIC_DATA, PVT_PYRANOMETER_DATA } from "../data";
 
-const pvt = PVT_MIMIC_DATA[MimicComponentType.Pvt];
+const pvt = getTooltipContexts(MimicComponentType.Pvt, ["9001-01", "9002-01", "9001-03"]);
+const pyranometers = getTooltipContexts(MimicComponentType.Pyranometer, ["9044", "9043"]);
 </script>
 
 <template>
@@ -31,18 +32,18 @@ const pvt = PVT_MIMIC_DATA[MimicComponentType.Pvt];
     <IrradianceLabelInstance
       :target-x="-52"
       :target-width="PYRANO_METER_WIDTH"
-      :source="PVT_PYRANOMETER_DATA.Pyranometer['9044'].source"
+      :source="pyranometers['9044'].source"
       y="290"
       tag-id="9044"
     />
     <PyranometerInstance
       x="-52"
       y="260"
-      v-bind="PVT_PYRANOMETER_DATA.Pyranometer['9044']"
+      v-bind="pyranometers['9044']"
     />
     <IrradianceLabelInstance
       :target-x="-52"
-      :source="PVT_PYRANOMETER_DATA.Pyranometer['9043'].source"
+      :source="pyranometers['9043'].source"
       :target-width="PYRANO_METER_WIDTH"
       y="390"
       tag-id="9043"
@@ -50,7 +51,7 @@ const pvt = PVT_MIMIC_DATA[MimicComponentType.Pvt];
     <PyranometerInstance
       x="-52"
       y="360"
-      v-bind="PVT_PYRANOMETER_DATA.Pyranometer['9043']"
+      v-bind="pyranometers['9043']"
     />
 
     <PvtInstance

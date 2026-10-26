@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
+import { getTooltipContexts } from "../../../data";
 import {
   PropulsionCoolerInstance,
   PropulsionDriveInstance,
   ShorePowerConverterInstance,
 } from "../../../instances";
-import { DRIVES_ASSET_DATA } from "../data";
 
-const shorepower = DRIVES_ASSET_DATA[MimicComponentType.ShorePowerConverter].shorepower;
-const propulsionDrives = DRIVES_ASSET_DATA[MimicComponentType.PropulsionDrive];
-const propulsionCoolers = DRIVES_ASSET_DATA[MimicComponentType.PropulsionCooler];
+const shorePowerConverters = getTooltipContexts(MimicComponentType.ShorePowerConverter, [
+  "drives:shorepower",
+]);
+const propulsionDrives = getTooltipContexts(MimicComponentType.PropulsionDrive, [
+  "drives:propdriveAft1",
+  "drives:propdriveAft2",
+  "drives:propdriveFwd1",
+  "drives:propdriveFwd2",
+]);
+const propulsionCoolers = getTooltipContexts(MimicComponentType.PropulsionCooler, ["1012", "1013"]);
 </script>
 
 <template>
@@ -17,25 +24,25 @@ const propulsionCoolers = DRIVES_ASSET_DATA[MimicComponentType.PropulsionCooler]
     x="22"
     y="36"
     :height="196"
-    v-bind="propulsionDrives.propdriveAft2"
+    v-bind="propulsionDrives['drives:propdriveAft2']"
   />
   <PropulsionDriveInstance
     x="22"
     y="242"
     :height="196"
-    v-bind="propulsionDrives.propdriveAft1"
+    v-bind="propulsionDrives['drives:propdriveAft1']"
   />
   <PropulsionDriveInstance
     x="22"
     y="476"
     :height="196"
-    v-bind="propulsionDrives.propdriveFwd2"
+    v-bind="propulsionDrives['drives:propdriveFwd2']"
   />
   <PropulsionDriveInstance
     x="22"
     y="682"
     :height="196"
-    v-bind="propulsionDrives.propdriveFwd1"
+    v-bind="propulsionDrives['drives:propdriveFwd1']"
   />
   <PropulsionCoolerInstance
     x="614"
@@ -55,6 +62,6 @@ const propulsionCoolers = DRIVES_ASSET_DATA[MimicComponentType.PropulsionCooler]
     x="881.1582"
     y="20.916"
     :height="222"
-    v-bind="shorepower"
+    v-bind="shorePowerConverters['drives:shorepower']"
   />
 </template>

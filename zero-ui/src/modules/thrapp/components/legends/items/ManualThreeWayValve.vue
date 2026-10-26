@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils.ts";
-import { ManualValveType } from "@/modules/thrapp/mimics/components/manual-valve/index.ts";
+import { ManualValveType } from "@/modules/thrapp/mimics/components/manual-valve";
 import ManualValve from "@/modules/thrapp/mimics/components/manual-valve/ManualValve.vue";
 import { LegendItem, LegendItemInfo, LegendItemPreview, LegendItemTitle } from "../../legend";
 
@@ -10,7 +10,7 @@ const t = tScoped("thrapp.legends.manualThreeWayValve");
 <template>
   <LegendItem>
     <LegendItemPreview size="sm">
-      <ManualValve :type="ManualValveType.ThreeWay" />
+      <ManualValve :valve-type="ManualValveType.ThreeWay" />
     </LegendItemPreview>
     <LegendItemInfo>
       <LegendItemTitle>{{ t("title") }}</LegendItemTitle>

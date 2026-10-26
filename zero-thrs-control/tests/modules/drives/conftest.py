@@ -7,8 +7,8 @@ from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.drives import DrivesAlarms, DrivesControl, DrivesParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
+    ActiveHeatSource,
     Boundary,
-    Converter,
     HeatSource,
     PropulsionDrive,
 )
@@ -30,21 +30,11 @@ def simulation_inputs_inactive():
     return DrivesSimulationInputs(
         drives_oil_cooler_aft=HeatSource(heat_flow=Stamped.stamp(0)),
         drives_oil_cooler_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
-        drives_propdrive_aft1=PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        drives_propdrive_aft2=PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        drives_propdrive_fwd1=PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        drives_propdrive_fwd2=PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        drives_shorepower=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
+        drives_propdrive_aft1=PropulsionDrive(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_aft2=PropulsionDrive(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_fwd1=PropulsionDrive(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_fwd2=PropulsionDrive(heat_flow=Stamped.stamp(0)),
+        drives_shorepower=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
         drives_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
@@ -60,21 +50,11 @@ def simulation_inputs_all_drives_active():
     return DrivesSimulationInputs(
         drives_oil_cooler_aft=HeatSource(heat_flow=Stamped.stamp(0)),
         drives_oil_cooler_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
-        drives_propdrive_aft1=PropulsionDrive(
-            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
-        ),
-        drives_propdrive_aft2=PropulsionDrive(
-            heat_flow=Stamped.stamp(2800), active=Stamped.stamp(True)
-        ),
-        drives_propdrive_fwd1=PropulsionDrive(
-            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
-        ),
-        drives_propdrive_fwd2=PropulsionDrive(
-            heat_flow=Stamped.stamp(1250), active=Stamped.stamp(True)
-        ),
-        drives_shorepower=Converter(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
+        drives_propdrive_aft1=PropulsionDrive(heat_flow=Stamped.stamp(2800)),
+        drives_propdrive_aft2=PropulsionDrive(heat_flow=Stamped.stamp(2800)),
+        drives_propdrive_fwd1=PropulsionDrive(heat_flow=Stamped.stamp(1250)),
+        drives_propdrive_fwd2=PropulsionDrive(heat_flow=Stamped.stamp(1250)),
+        drives_shorepower=ActiveHeatSource(heat_flow=Stamped.stamp(0)),
         drives_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),
@@ -90,21 +70,11 @@ def simulation_inputs_shorepower():
     return DrivesSimulationInputs(
         drives_oil_cooler_aft=HeatSource(heat_flow=Stamped.stamp(0)),
         drives_oil_cooler_fwd=HeatSource(heat_flow=Stamped.stamp(0)),
-        drives_propdrive_aft1=PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        drives_propdrive_aft2=PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        drives_propdrive_fwd1=PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        drives_propdrive_fwd2=PropulsionDrive(
-            heat_flow=Stamped.stamp(0), active=Stamped.stamp(False)
-        ),
-        drives_shorepower=Converter(
-            heat_flow=Stamped.stamp(15000), active=Stamped.stamp(True)
-        ),
+        drives_propdrive_aft1=PropulsionDrive(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_aft2=PropulsionDrive(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_fwd1=PropulsionDrive(heat_flow=Stamped.stamp(0)),
+        drives_propdrive_fwd2=PropulsionDrive(heat_flow=Stamped.stamp(0)),
+        drives_shorepower=ActiveHeatSource(heat_flow=Stamped.stamp(15000)),
         drives_seawater_supply=Boundary(
             temperature=Stamped.stamp(SEAWATER_TEMPERATURE), flow=Stamped.stamp(64)
         ),

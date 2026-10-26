@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
+import { getTooltipContexts } from "../../../data";
 import { ConnectingCircuitInstance, SeawaterCircuitInstance } from "../../../instances";
-import { THRUSTERS_MIMIC_DATA } from "../data";
 
-const seaWaterCircuits = THRUSTERS_MIMIC_DATA[MimicComponentType.SeawaterCircuit];
-const connectingCircuits = THRUSTERS_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
+const seaWaterCircuits = getTooltipContexts(MimicComponentType.SeawaterCircuit, [
+  "thrusters:seawater",
+]);
+const connectingCircuits = getTooltipContexts(MimicComponentType.ConnectingCircuit, [
+  "thrusters:pcm",
+]);
 </script>
 
 <template>
@@ -14,7 +18,7 @@ const connectingCircuits = THRUSTERS_MIMIC_DATA[MimicComponentType.ConnectingCir
       y="316"
       force-height
       height="195"
-      v-bind="connectingCircuits?.['pcm']"
+      v-bind="connectingCircuits['thrusters:pcm']"
     />
 
     <SeawaterCircuitInstance
@@ -23,7 +27,7 @@ const connectingCircuits = THRUSTERS_MIMIC_DATA[MimicComponentType.ConnectingCir
       width="194"
       height="85"
       force-height
-      v-bind="seaWaterCircuits?.['seawater']"
+      v-bind="seaWaterCircuits['thrusters:seawater']"
     />
   </g>
 </template>

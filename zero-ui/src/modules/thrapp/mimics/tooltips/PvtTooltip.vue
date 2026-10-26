@@ -48,12 +48,12 @@ const { currentRoute } = useRouter();
     </TooltipList>
 
     <TooltipList>
-      <TooltipListItem>
+      <TooltipListItem v-if="props.custom.mimic">
         &nbsp;
         <RouterLink
           v-slot="{ navigate }"
           custom
-          :to="currentRoute"
+          :to="{ name: currentRoute.name, params: { module: props.custom.mimic } }"
         >
           <TooltipListItemActionButton @click="navigate">
             <RiRepeatLine />

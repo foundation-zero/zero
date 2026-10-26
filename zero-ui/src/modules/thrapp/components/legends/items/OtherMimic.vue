@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils.ts";
 import { MimicComponentType } from "@/modules/thrapp/types";
+import { getTooltipContext } from "../../../mimics/data";
 import { ExchangeCircuitInstance } from "../../../mimics/instances";
-import { DHW_MIMIC_DATA } from "../../../mimics/modules/dhw/data";
 import {
   LegendItem,
   LegendItemDescription,
@@ -12,13 +12,13 @@ import {
 } from "../../legend";
 
 const t = tScoped("thrapp.legends.otherMimic");
-const circuits = DHW_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
+const circuit = getTooltipContext(MimicComponentType.ExchangeCircuit)("dhw:highTempLoop");
 </script>
 
 <template>
   <LegendItem>
     <LegendItemPreview>
-      <ExchangeCircuitInstance v-bind="circuits['highTempLoop']" />
+      <ExchangeCircuitInstance v-bind="circuit" />
     </LegendItemPreview>
     <LegendItemInfo class="gap-2">
       <LegendItemTitle>{{ t("title") }}</LegendItemTitle>

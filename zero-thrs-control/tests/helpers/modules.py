@@ -128,7 +128,6 @@ def make_module(
     return Module(
         name,
         description=CONFIGURABLE_MODULE_DESCRIPTION,
-        parameters=ConfigurableParameters(),
         channels=channels or make_channels(),
         time_fn=datetime.now,
         state_logger=MachineStateLoggingServiceNoop(),

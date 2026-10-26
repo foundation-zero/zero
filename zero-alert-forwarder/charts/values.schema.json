@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Values",
+  "type": "object",
+  "required": ["mysql", "ntfy", "forwarding"],
+  "properties": {
+    "replicaCount": {
+      "type": "integer",
+      "description": "Number of replicas; more than one sends every alert multiple times, which ntfy only collapses into one notification through the sequence ID.",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "mysql": {
+      "type": "object",
+      "required": ["hosts", "port", "database", "existingSecret"],
+      "properties": {
+        "hosts": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Hostnames of mirrored AMCS MySQL databases. They take turns being polled, so each is polled once per interval, offset by an equal share of it.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "port": {
+          "type": "integer",
+          "description": "MySQL port.",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "database": {
+          "type": "string",
+          "description": "Database holding the alert tables."
+        },
+        "existingSecret": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Name of an existing Kubernetes Secret with the read-only MySQL username and password."
+        },
+        "existingSecretUsernameKey": {
+          "type": "string",
+          "description": "Key in the existing Secret that holds the MySQL username."
+        },
+        "existingSecretPasswordKey": {
+          "type": "string",
+          "description": "Key in the existing Secret that holds the MySQL password."
+        }
+      }
+    },
+    "ntfy": {
+      "type": "object",
+      "required": ["url", "topic"],
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "Base URL of the ntfy server."
+        },
+        "topic": {
+          "type": "string",
+          "minLength": 1,
+          "description": "ntfy topic to publish to. Public servers expose it to anyone who knows the name, so make it hard to guess."
+        },
+        "existingSecret": {
+          "type": "string",
+          "description": "Name of an existing Kubernetes Secret containing a ntfy access token."
+        },
+        "existingSecretTokenKey": {
+          "type": "string",
+          "description": "Key in the existing Secret that holds the ntfy access token."
+        }
+      }
+    },
+    "forwarding": {
+      "type": "object",
+      "required": [
+        "pollIntervalSeconds",
+        "pollTimeoutSeconds",
+        "minPriority",
+        "updates",
+        "attempts"
+      ],
+      "properties": {
+        "pollIntervalSeconds": {
+          "type": "number",
+          "description": "Seconds between polls of the alert tables.",
+          "minimum": 1,
+          "maximum": 60
+        },
+        "pollTimeoutSeconds": {
+          "type": "number",
+          "description": "Seconds one poll of one mirror may take before it is abandoned. Keep well below livenessMaxAgeSeconds.",
+          "exclusiveMinimum": 0
+        },
+        "minPriority": {
+          "type": "string",
+          "description": "Lowest AMCS priority that is forwarded.",
+          "enum": ["GEA", "Emergency", "Alarm", "Warning", "Caution", "Event"]
+        },
+        "updates": {
+          "type": "array",
+          "description": "Alert updates that are forwarded.",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Activated",
+              "Acknowledged",
+              "Idle",
+              "Inhibited",
+              "Invalid",
+              "Unbound",
+              "Event"
+            ]
+          }
+        },
+        "attempts": {
+          "type": "integer",
+          "description": "Attempts to deliver a notification before giving up on it.",
+          "minimum": 1
+        },
+        "reminderDelaysSeconds": {
+          "type": "array",
+          "description": "Delays between reminders of an unacknowledged alarm; the last one repeats. Empty disables reminders.",
+          "items": { "type": "number", "exclusiveMinimum": 0 }
+        },
+        "dryRun": {
+          "type": "boolean",
+          "description": "Log notifications instead of sending them."
+        }
+      }
+    },
+    "livenessPath": {
+      "type": "string",
+      "description": "File touched after every poll; its age is what the liveness probe checks. Must be on a writable volume."
+    },
+    "livenessMaxAgeSeconds": {
+      "type": "integer",
+      "description": "Age of the liveness file in seconds after which the container is restarted. Must exceed the retries of a single notification and pollTimeoutSeconds.",
+      "minimum": 1
+    },
+    "readinessPath": {
+      "type": "string",
+      "description": "File created once polling is set up; its existence is what the readiness probe checks. Must be on a writable volume."
+    },
+    "image": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string",
+          "description": "Container image repository."
+        },
+        "pullPolicy": {
+          "type": "string",
+          "description": "Image pull policy.",
+          "enum": ["Always", "IfNotPresent", "Never"]
+        },
+        "tag": {
+          "type": "string",
+          "description": "Overrides the image tag whose default is the chart appVersion."
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "description": "Container resource requests and limits."
+    },
+    "imagePullSecrets": {
+      "type": "array",
+      "description": "Secrets for pulling images from a private registry.",
+      "items": {
+        "type": "object"
+      }
+    },
+    "nameOverride": {
+      "type": "string",
+      "description": "Override the chart name."
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "description": "Override the full name."
+    }
+  }
+}

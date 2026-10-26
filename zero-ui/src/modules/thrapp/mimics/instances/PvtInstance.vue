@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ZiSolarPanel } from "@/modules/common/components/icons";
 import { usePvtMode } from "@/modules/thrapp/state";
+import { reactiveOmit } from "@vueuse/core";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
@@ -38,15 +39,13 @@ const { getComponentState } = getMimicDataProvider();
 const state = getComponentState();
 
 const modeKey = usePvtMode(props.custom.group);
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.Pvt"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <AssetBox
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="state"
     >
       <YardTag>{{ tooltip?.yardTag }}</YardTag>

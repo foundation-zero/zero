@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RouterLinkWithFallback from "@/modules/common/components/RouterLinkWithFallback.vue";
-import { ThrsModules } from "@/modules/thrsim/lib/consts";
+import { MimicKey } from "@/modules/thrapp/router/mimics";
 import { Component, computed } from "vue";
 import { useRoute } from "vue-router";
 
-defineProps<{ modules: Array<keyof ThrsModules>; activeModule?: keyof ThrsModules }>();
+defineProps<{ modules: Array<MimicKey>; activeModule?: MimicKey }>();
 
 const currentRoute = useRoute();
 const supportedViews = computed(
-  () => (currentRoute.meta.views as Partial<Record<keyof ThrsModules, Component>>) ?? {},
+  () => (currentRoute.meta.views as Partial<Record<MimicKey, Component>>) ?? {},
 );
 </script>
 

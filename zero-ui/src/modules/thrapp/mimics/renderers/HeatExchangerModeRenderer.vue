@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, toRef } from "vue";
 import { FieldRendererProps } from ".";
+import { HeatingState } from "../components";
 import HeatExchangerMode from "../components/heat-exchanger/HeatExchangerMode.vue";
-import { HeatingState } from "../components/index.ts";
 import { getFieldValue } from "../providers";
 
 const props = defineProps<FieldRendererProps<number>>();

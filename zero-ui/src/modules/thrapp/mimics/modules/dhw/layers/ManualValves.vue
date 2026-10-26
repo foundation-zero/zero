@@ -2,11 +2,23 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { MANUAL_VALVE_WIDTH, ManualValveType } from "../../../components/manual-valve";
+import { getTooltipContexts } from "../../../data";
 import { ManualValveInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
-import { DHW_MIMIC_DATA } from "../data";
 
-const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
+const manualValves = getTooltipContexts(MimicComponentType.ManualValve, [
+  "1174-02",
+  "1069-17",
+  "1169-01",
+  "1169-02",
+  "1169-03",
+  "1174-01",
+  "1069-18",
+  "1069-10",
+  "1168-06",
+  "1168-05",
+  "1168-04",
+]);
 </script>
 
 <template>
@@ -15,7 +27,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       x="178.550048828125"
       y="279.2099609375"
       v-bind="manualValves['1174-02']"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Right"
     >
       <TagLabelInstance
@@ -28,7 +40,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       x="58"
       y="495"
       v-bind="manualValves['1069-17']"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Left"
     >
       <TagLabelInstance
@@ -41,7 +53,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       x="360.5"
       y="358.2099609375"
       v-bind="manualValves['1169-01']"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Right"
     >
       <TagLabelInstance
@@ -54,7 +66,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       x="805"
       y="636.5"
       v-bind="manualValves['1169-02']"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
     >
       <TagLabelInstance
@@ -68,7 +80,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       x="323"
       y="358.2099609375"
       v-bind="manualValves['1169-03']"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Right"
     >
       <TagLabelInstance
@@ -81,7 +93,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       x="180"
       y="378.2099609375"
       v-bind="manualValves['1174-01']"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Right"
     >
       <TagLabelInstance
@@ -94,7 +106,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       x="27.5"
       y="537.2099609375"
       v-bind="manualValves['1069-18']"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Right"
     >
       <TagLabelInstance
@@ -107,7 +119,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       x="117.5"
       y="588"
       v-bind="manualValves['1069-10']"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Right"
     >
       <TagLabelInstance
@@ -120,7 +132,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       x="734"
       y="350.7099609375"
       v-bind="manualValves['1168-06']"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
     >
       <TagLabelInstance
@@ -134,7 +146,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       x="844"
       y="474.7099609375"
       v-bind="manualValves['1168-05']"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
     >
       <TagLabelInstance
@@ -148,7 +160,7 @@ const manualValves = DHW_MIMIC_DATA[MimicComponentType.ManualValve];
       x="614"
       y="473.2099609375"
       v-bind="manualValves['1168-04']"
-      :type="ManualValveType.Switch"
+      :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
     >
       <TagLabelInstance

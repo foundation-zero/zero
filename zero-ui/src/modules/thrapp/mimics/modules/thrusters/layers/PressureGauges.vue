@@ -2,11 +2,11 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { PRESSURE_GAUGE_WIDTH } from "../../../components/pressure-gauge";
+import { getTooltipContexts } from "../../../data";
 import { PressureGaugeInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
-import { THRUSTERS_MIMIC_DATA } from "../data";
 
-const manualPressureSensors = THRUSTERS_MIMIC_DATA[MimicComponentType.PressureGauge];
+const manualPressureSensors = getTooltipContexts(MimicComponentType.PressureGauge, ["1095-01"]);
 </script>
 
 <template>

@@ -88,11 +88,15 @@ const SENSOR_TYPE_MAP: Record<string, string> = {
   SensorHeatTransferDeviceType: "HeatTransferDevice",
   SensorAdsorptionChillerType: "AdsorptionChiller",
   SensorBrightloopType: "Brightloop",
+  SensorBrightloopConverterType: "BrightloopConverter",
   SensorUgridType: "Ugrid",
   SensorPropulsionDriveType: "PropulsionDrive",
   SensorPvtType: "Pvt",
   SensorHeatpumpType: "HeatPump",
   SensorShorePowerConverterType: "ShorePowerConverter",
+  SensorBrightloopGroupType: "BrightloopGroup",
+  SensorUgridGroupType: "UgridGroup",
+  SensorShorePowerGroupType: "ShorePowerGroup",
   SensorPyranometerType: "Pyranometer",
   SystemAmcsControlModeType: "AmcsControlMode",
 };
@@ -105,8 +109,11 @@ const SIMULATION_TYPE_MAP: Record<string, string> = {
   SimulationFlowBoundaryType: "Flow",
   SimulationPcsType: "Pcs",
   SimulationHeatSourceType: "HeatSource",
+  SimulationActiveHeatSourceType: "ActiveHeatSource",
   SimulationHvacExchangerType: "HvacExchanger",
   SimulationAdsorptionChillerType: "AdsorptionChiller",
+  SimulationUgridType: "Ugrid",
+  SimulationPropulsionDriveType: "PropulsionDrive",
   SystemAmcsControlModeType: "AmcsControlMode",
 };
 

@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { PRESSURE_SENSOR_WIDTH } from "../../../components/pressure-sensor";
+import { getTooltipContexts } from "../../../data";
 import { PressureLabelInstance, PressureSensorInstance } from "../../../instances";
-import { DRIVES_PRESSURE_SENSOR_DATA } from "../data";
 
-const pressureSensors = DRIVES_PRESSURE_SENSOR_DATA.PressureSensor;
+const pressureSensors = getTooltipContexts(MimicComponentType.PressureSensor, ["1097-10"]);
 </script>
 
 <template>

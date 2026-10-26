@@ -1,0 +1,99 @@
+<script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
+import { ComponentOrientation } from "../../../components";
+import { getTooltipContexts } from "../../../data";
+import { FlowSensorInstance } from "../../../instances";
+import FlowLabelInstance from "../../../instances/FlowLabelInstance.vue";
+
+const flowSensors = getTooltipContexts(MimicComponentType.FlowSensor, [
+  "9009-07",
+  "9009-08",
+  "9009-09",
+  "9009-10",
+  "9009-11",
+  "9009-12",
+]);
+</script>
+
+<template>
+  <g>
+    <FlowSensorInstance
+      x="39.01"
+      y="365.82"
+      :orientation="ComponentOrientation.Left"
+      v-bind="flowSensors['9009-07']"
+    >
+      <FlowLabelInstance
+        x="87"
+        y="360.8"
+        :tag-id="flowSensors['9009-07'].tooltip?.yardTag"
+        :flow="flowSensors['9009-07'].source"
+      />
+    </FlowSensorInstance>
+    <FlowSensorInstance
+      x="165.01"
+      y="365.82"
+      :orientation="ComponentOrientation.Left"
+      v-bind="flowSensors['9009-08']"
+    >
+      <FlowLabelInstance
+        x="213"
+        y="360.8"
+        :tag-id="flowSensors['9009-08'].tooltip?.yardTag"
+        :flow="flowSensors['9009-08'].source"
+      />
+    </FlowSensorInstance>
+    <FlowSensorInstance
+      x="291.01"
+      y="365.82"
+      :orientation="ComponentOrientation.Left"
+      v-bind="flowSensors['9009-09']"
+    >
+      <FlowLabelInstance
+        x="339"
+        y="360.8"
+        :tag-id="flowSensors['9009-09'].tooltip?.yardTag"
+        :flow="flowSensors['9009-09'].source"
+      />
+    </FlowSensorInstance>
+    <FlowSensorInstance
+      x="417.01"
+      y="365.82"
+      :orientation="ComponentOrientation.Left"
+      v-bind="flowSensors['9009-10']"
+    >
+      <FlowLabelInstance
+        x="465"
+        y="360.8"
+        :tag-id="flowSensors['9009-10'].tooltip?.yardTag"
+        :flow="flowSensors['9009-10'].source"
+      />
+    </FlowSensorInstance>
+    <FlowSensorInstance
+      x="543.01"
+      y="365.82"
+      :orientation="ComponentOrientation.Left"
+      v-bind="flowSensors['9009-11']"
+    >
+      <FlowLabelInstance
+        x="591"
+        y="360.8"
+        :tag-id="flowSensors['9009-11'].tooltip?.yardTag"
+        :flow="flowSensors['9009-11'].source"
+      />
+    </FlowSensorInstance>
+    <FlowSensorInstance
+      x="669.01"
+      y="365.82"
+      :orientation="ComponentOrientation.Left"
+      v-bind="flowSensors['9009-12']"
+    >
+      <FlowLabelInstance
+        x="717"
+        y="360.8"
+        :tag-id="flowSensors['9009-12'].tooltip?.yardTag"
+        :flow="flowSensors['9009-12'].source"
+      />
+    </FlowSensorInstance>
+  </g>
+</template>

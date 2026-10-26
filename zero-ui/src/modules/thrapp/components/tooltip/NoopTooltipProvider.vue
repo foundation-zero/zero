@@ -5,7 +5,7 @@ import { provideTooltipContext } from ".";
 provideTooltipContext({
   setTooltip() {},
   findTooltipContext() {
-    return undefined;
+    return [];
   },
   title: ref(null),
   getData() {

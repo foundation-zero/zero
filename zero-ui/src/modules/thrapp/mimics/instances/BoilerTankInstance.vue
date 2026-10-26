@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BoilerTankState, ControllerStateComponentType } from "@/modules/thrsim/types/index.ts";
+import { BoilerTankState, ControllerStateComponentType } from "@/modules/thrsim/types";
 import { computed } from "vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
@@ -38,10 +38,7 @@ const hotTime = computed(() => controller.value?.timeToHot.value);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.BoilerTank"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <BoilerTank
       :force-height="forceHeight"
       :width="width"

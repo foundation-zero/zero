@@ -15,7 +15,7 @@ from thrs.input_output.definitions.simulation import Pcs, Thruster
 from thrs.input_output.definitions.units import PcsMode
 from thrs.input_output.modules.thrusters import ThrustersSimulationInputs
 
-OFF = Thruster(heat_flow=Stamped.stamp(0), active=Stamped.stamp(False))
+OFF = Thruster(heat_flow=Stamped.stamp(0))
 
 
 def _with_thrusters(
@@ -168,8 +168,8 @@ def test_recovery_falls_back_to_warmup(
     runner.update_simulation_inputs(
         _with_thrusters(
             simulation_inputs,
-            aft=Thruster(heat_flow=Stamped.stamp(0), active=Stamped.stamp(True)),
-            fwd=Thruster(heat_flow=Stamped.stamp(0), active=Stamped.stamp(True)),
+            aft=Thruster(heat_flow=Stamped.stamp(1)),
+            fwd=Thruster(heat_flow=Stamped.stamp(1)),
         )
     )
     _, control_values, controller_state = runner.run_until(

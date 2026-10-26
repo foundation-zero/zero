@@ -9,17 +9,25 @@ import {
 } from "@/components/ui/number-field";
 import { ThrsSimulationType } from "@/modules/thrsim/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrsim/stores/thrs";
-import { HeatSourceSimulation } from "@/modules/thrsim/types";
+import { HeatSourceSimulation, SimulationComponentType } from "@/modules/thrsim/types";
 import { toUpperCamelCase } from "@common/lib/utils";
 import { RiLoader2Line, RiSendPlaneLine } from "@remixicon/vue";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
+
+const INPUT_TYPES = {
+  [SimulationComponentType.HeatSource]: "HeatSourceInputType!",
+  [SimulationComponentType.ActiveHeatSource]: "ActiveHeatSourceInputType!",
+  [SimulationComponentType.Ugrid]: "UgridInputType!",
+  [SimulationComponentType.PropulsionDrive]: "PropulsionDriveInputType!",
+} as const;
 
 const { t } = useI18n();
 
 const props = defineProps<{
   values: HeatSourceSimulation;
   componentName: string;
+  componentType: keyof typeof INPUT_TYPES;
   query: string;
   simulation: ThrsSimulationType;
 }>();
@@ -33,7 +41,7 @@ const values = toRef(props, "values");
 const { submit, isSubmitting, error, heatFlow } = controlValuesForm(
   props.simulation,
   MutationType.Simulation,
-  "HeatSourceInputType!",
+  INPUT_TYPES[props.componentType],
   props.componentName,
   values,
   ["heatFlow"],

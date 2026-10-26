@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
+import { reactiveOmit } from "@vueuse/core";
 import { computed } from "vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
@@ -17,15 +18,13 @@ const { getSensorValue, getComponentState } = getMimicDataProvider();
 const valve = getSensorValue(props.source);
 const state = getComponentState();
 const stateWithAlarms = computed(() => componentStateFromAlarms(state.value, valve.value));
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.SwitchValve"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <ActuatedValve
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="stateWithAlarms"
       :rotation="1 - (valve?.positionRel.value ?? 0)"
     >

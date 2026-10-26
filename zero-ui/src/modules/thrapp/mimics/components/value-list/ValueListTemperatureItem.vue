@@ -6,9 +6,16 @@
       | SensorComponentType.Temperature
       | SensorComponentType.CalculatedTemperature
       | SensorComponentType.HeatTransferDevice
+      | SensorComponentType.PropulsionDrive
+      | SensorComponentType.Ugrid
+      | SensorComponentType.Brightloop
+      | SensorComponentType.ShorePowerConverter
+      | SensorComponentType.BrightloopGroup
+      | SensorComponentType.UgridGroup
+      | SensorComponentType.ShorePowerGroup
   "
 >
-import { SensorComponentType, SensorDefinitionMap } from "@/modules/thrsim/types/index.ts";
+import { SensorComponentType, SensorDefinitionMap } from "@/modules/thrsim/types";
 import { RiTempColdLine } from "@remixicon/vue";
 import { HTMLAttributes } from "vue";
 import { useI18n } from "vue-i18n";

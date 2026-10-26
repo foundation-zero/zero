@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
+import { getTooltipContexts } from "../../../data";
 import { PressureGaugeInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
-import { DHW_MIMIC_DATA } from "../data";
 
-const manualPressureSensors = DHW_MIMIC_DATA[MimicComponentType.PressureGauge];
+const manualPressureSensors = getTooltipContexts(MimicComponentType.PressureGauge, ["1095-14"]);
 </script>
 
 <template>

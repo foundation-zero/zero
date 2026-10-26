@@ -2,10 +2,13 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { HEAT_EXCHANGER_WIDTH } from "../../../components/heat-exchanger";
+import { getTooltipContexts } from "../../../data";
 import { HeatExchangerInstance, HeatExchangerLabelInstance } from "../../../instances";
-import { DHW_MIMIC_DATA } from "../data";
 
-const heatExchangers = DHW_MIMIC_DATA[MimicComponentType.HeatExchanger];
+const heatExchangers = {
+  ...getTooltipContexts(MimicComponentType.HeatExchanger, ["1004", "1007", "1009"]),
+  ...getTooltipContexts(MimicComponentType.HeatExchanger, ["1008"], 1),
+};
 </script>
 
 <template>

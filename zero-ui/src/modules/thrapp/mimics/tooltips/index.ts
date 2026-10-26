@@ -1,7 +1,7 @@
 import { tScoped } from "@/modules/common/lib/utils.ts";
 import { Component, defineAsyncComponent } from "vue";
 import { useI18n } from "vue-i18n";
-import { MimicComponentType } from "../../types/index.ts";
+import { MimicComponentType } from "../../types";
 
 export const TOOLTIPS: Partial<Record<MimicComponentType, Component>> = {
   [MimicComponentType.ExpansionValve]: defineAsyncComponent(
@@ -57,6 +57,7 @@ export const TOOLTIPS: Partial<Record<MimicComponentType, Component>> = {
     () => import("./ExchangeCircuitTooltip.vue"),
   ),
   [MimicComponentType.Pvt]: defineAsyncComponent(() => import("./PvtTooltip.vue")),
+  [MimicComponentType.PvtString]: defineAsyncComponent(() => import("./PvtStringTooltip.vue")),
   [MimicComponentType.DcConverter]: defineAsyncComponent(() => import("./DcConverterTooltip.vue")),
   [MimicComponentType.Pcm]: defineAsyncComponent(() => import("./PcmTooltip.vue")),
   [MimicComponentType.Thruster]: defineAsyncComponent(() => import("./ThrustersTooltip.vue")),

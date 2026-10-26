@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { TooltipList, TooltipListHeader } from "../../components/tooltip-list/index.ts";
+import { useTranslations } from ".";
 import {
   MimicTooltip,
   NoopTooltipProvider,
   TooltipComponentContext,
-} from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { SensorGraph } from "../components/sensor-graph/index.ts";
-import { PropulsionDriveInstance } from "../instances/index.ts";
+} from "../../components/tooltip";
+import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
+import { MimicComponentType } from "../../types";
+import { SensorGraph } from "../components/sensor-graph";
+import { PropulsionDriveInstance } from "../instances";
 import { SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
-import { useTranslations } from "./index.ts";
+import * as Partials from "./partials";
 import Circuit from "./partials/ExchangeCircuitPartial.vue";
-import * as Partials from "./partials/index.ts";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.PropulsionDrive>>();
 
@@ -58,14 +58,26 @@ const { labels, items } = useTranslations();
         </Partials.ListItem>
       </SensorValue>
 
-      <SensorValue :source="sensors.power">
+      <SensorValue
+        :source="source"
+        field="power"
+      >
         <Partials.ListItem no-source>
           {{ items("power") }}
+          <template #value>
+            <FieldRenderer.Power />
+          </template>
         </Partials.ListItem>
       </SensorValue>
-      <SensorValue :source="sensors.temperature">
+      <SensorValue
+        :source="source"
+        field="tempPowerStage"
+      >
         <Partials.ListItem no-source>
           {{ items("internalTemperature") }}
+          <template #value>
+            <FieldRenderer.Temperature />
+          </template>
         </Partials.ListItem>
       </SensorValue>
     </TooltipList>

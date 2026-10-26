@@ -15,10 +15,7 @@ const props = defineProps<
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.FreshwaterCircuit"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <HTMLWrapper v-bind="{ width, height, x, y }">
       <FreshwaterCircuitContent
         v-bind="{ sensors, controllerState, controls, parameters, source, tooltip, custom }"

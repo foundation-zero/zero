@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ZiAradexPropDrive } from "@/modules/common/components/icons";
+import { reactiveOmit } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
-import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
-import { AssetBox, AssetBoxTitle } from "../components/asset-box/index.ts";
-import { DC_CONVERTER_WIDTH } from "../components/dc-converter/index.ts";
+import { MimicComponentInstanceProps } from ".";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
+import { AssetBox, AssetBoxTitle } from "../components/asset-box";
+import { DC_CONVERTER_WIDTH } from "../components/dc-converter";
 import {
   ValueList,
   ValueListDeltaTItem,
@@ -12,11 +14,10 @@ import {
   ValueListPowerItem,
   ValueListSeparator,
   ValueListTemperatureItem,
-} from "../components/value-list/index.ts";
-import { YardTag } from "../components/yard-tag/index.ts";
-import { getMimicDataProvider, SensorValue } from "../providers/index.ts";
-import { FieldRenderer } from "../renderers/index.ts";
-import { MimicComponentInstanceProps } from "./index.ts";
+} from "../components/value-list";
+import { YardTag } from "../components/yard-tag";
+import { getMimicDataProvider, SensorValue } from "../providers";
+import { FieldRenderer } from "../renderers";
 
 const props = withDefaults(
   defineProps<
@@ -39,15 +40,13 @@ const { t } = useI18n();
 const { getComponentState } = getMimicDataProvider();
 
 const state = getComponentState();
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.PropulsionDrive"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <AssetBox
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="state"
     >
       <YardTag>{{ tooltip?.yardTag }}</YardTag>
@@ -75,10 +74,14 @@ const state = getComponentState();
         <ValueListDeltaTItem :source="sensors.heatTransfer" />
         <ValueListTemperatureItem
           class="text-brand"
-          :source="sensors.temperature"
+          :source="source"
+          field="tempPowerStage"
           temperature-label="internal"
         />
-        <ValueListPowerItem :source="sensors.power" />
+        <ValueListPowerItem
+          :source="source"
+          field="power"
+        />
 
         <ValueListSeparator />
       </ValueList>

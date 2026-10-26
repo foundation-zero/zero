@@ -1,0 +1,20 @@
+set dotenv-load := true
+
+default: check
+
+check: lint type_check test
+
+lint:
+    uv run ruff check
+
+lint_no_fix:
+    uv run ruff check --no-fix src tests
+
+type_check:
+    uv run mypy src
+
+test *args:
+    uv run pytest {{ args }}
+
+format:
+    uv run ruff format --check src tests

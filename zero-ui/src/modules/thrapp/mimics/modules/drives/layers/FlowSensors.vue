@@ -1,11 +1,19 @@
 <script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { FLOW_SENSOR_WIDTH } from "../../../components/flow-sensor";
+import { getTooltipContexts } from "../../../data";
 import { FlowSensorInstance } from "../../../instances";
 import FlowLabelInstance from "../../../instances/FlowLabelInstance.vue";
-import { DRIVES_FLOW_SENSOR_DATA } from "../data";
 
-const flowSensors = DRIVES_FLOW_SENSOR_DATA.FlowSensor;
+const flowSensors = getTooltipContexts(MimicComponentType.FlowSensor, [
+  "1057-16",
+  "1057-13",
+  "1057-14",
+  "1057-15",
+  "1057-10",
+  "1058-03",
+]);
 </script>
 
 <template>

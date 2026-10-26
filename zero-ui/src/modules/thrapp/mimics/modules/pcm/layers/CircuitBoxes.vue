@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { RiArrowLeftLine, RiArrowRightLine, RiArrowUpLine } from "@remixicon/vue";
+import { getTooltipContexts } from "../../../data";
 import ConnectingCircuitInstance from "../../../instances/ConnectingCircuitInstance.vue";
 import ExchangeCircuitInstance from "../../../instances/ExchangeCircuitInstance.vue";
-import { PCM_MIMIC_DATA } from "../data";
 
-const circuits = PCM_MIMIC_DATA[MimicComponentType.ConnectingCircuit];
-const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
+const circuits = getTooltipContexts(MimicComponentType.ConnectingCircuit, [
+  "pcm:pvt",
+  "pcm:thrusters",
+  "pcm:freshwater",
+]);
+const exchangeCircuits = getTooltipContexts(MimicComponentType.ExchangeCircuit, [
+  "pcm:dhw",
+  "pcm:adsorption",
+]);
 </script>
 
 <template>
@@ -15,7 +22,7 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     y="290"
     force-height
     height="193"
-    v-bind="circuits.pvt"
+    v-bind="circuits['pcm:pvt']"
     inverted
   >
     <template #fromIcon>
@@ -30,7 +37,7 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     y="290"
     force-height
     height="193"
-    v-bind="circuits.thrusters"
+    v-bind="circuits['pcm:thrusters']"
     inverted
   >
     <template #fromIcon>
@@ -45,7 +52,7 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     y="35"
     force-height
     height="168"
-    v-bind="circuits.freshwater"
+    v-bind="circuits['pcm:freshwater']"
     inverted
   >
     <template #fromIcon>
@@ -60,14 +67,14 @@ const exchangeCircuits = PCM_MIMIC_DATA[MimicComponentType.ExchangeCircuit];
     y="222"
     force-height
     height="185"
-    v-bind="exchangeCircuits.dhw"
+    v-bind="exchangeCircuits['pcm:dhw']"
   />
   <ExchangeCircuitInstance
     x="1400"
     y="440"
     force-height
     height="168"
-    v-bind="exchangeCircuits.adsorption"
-    :tooltip="exchangeCircuits.adsorption.tooltip"
+    v-bind="exchangeCircuits['pcm:adsorption']"
+    :tooltip="exchangeCircuits['pcm:adsorption'].tooltip"
   />
 </template>

@@ -5,10 +5,10 @@ import MimicComponent from "../MimicComponent.vue";
 import PvtStringElement from "./PvtStringElement.vue";
 
 const props = withDefaults(defineProps<MimicComponentBaseProps & PvtStringProps>(), {
-  state: MimicComponentState.Normal,
-  orientation: PVT_BASE_ORIENTATION,
-  width: PVT_STRING_WIDTH,
-  height: PVT_STRING_HEIGHT,
+  state: () => MimicComponentState.Normal,
+  orientation: () => PVT_BASE_ORIENTATION,
+  width: () => PVT_STRING_WIDTH,
+  height: () => PVT_STRING_HEIGHT,
 });
 </script>
 

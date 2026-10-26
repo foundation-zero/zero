@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { MimicComponentType } from "../../../../types";
 import { ComponentOrientation } from "../../../components";
+import { getTooltipContexts } from "../../../data";
 import { DutypointLabelInstance, PumpInstance } from "../../../instances";
-import { DHW_MIMIC_DATA } from "../data";
 
-const pumps = DHW_MIMIC_DATA[MimicComponentType.Pump];
+const pumps = getTooltipContexts(MimicComponentType.Pump, ["1022"]);
 </script>
 
 <template>

@@ -9,7 +9,7 @@ import {
   LegendItemInfo,
   LegendItemPreview,
   LegendItemTitle,
-} from "../../legend/index.ts";
+} from "../../legend";
 
 const t = tScoped("thrapp.legends.switchValve");
 </script>

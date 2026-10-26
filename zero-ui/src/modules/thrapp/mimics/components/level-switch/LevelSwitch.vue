@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MimicComponentBaseProps } from "../index.ts";
+import { MimicComponentBaseProps } from "..";
 import MimicComponent from "../MimicComponent.vue";
 import {
   LEVEL_SWITCH_BASE_ORIENTATION,

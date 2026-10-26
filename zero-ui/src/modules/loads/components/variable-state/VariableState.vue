@@ -2,7 +2,7 @@
 import { cn, formatInt, useFixed } from "@/modules/common/lib/utils";
 import { reactiveOmit } from "@vueuse/core";
 import { PrimitiveProps } from "reka-ui";
-import { HTMLAttributes, provide, toRef } from "vue";
+import { computed, HTMLAttributes, provide, toRef } from "vue";
 import { VariableStateVariants, variableStateVariants } from ".";
 import { formatLoadFn } from "../../lib/utils";
 import { VariableState, VariableUnit } from "../../types";
@@ -22,7 +22,10 @@ const type = toRef(props, "type");
 
 provide("load-type", type);
 
-const splitValue = useFixed(toRef(props, "value"), 1);
+const splitValue = useFixed(
+  toRef(props, "value"),
+  computed(() => (props.value != null && Math.abs(props.value) < 1 ? 2 : 1)),
+);
 </script>
 
 <template>
@@ -38,13 +41,17 @@ const splitValue = useFixed(toRef(props, "value"), 1);
         :format="formatInt"
       />
 
-      <animated-number
-        v-if="splitValue[1] != undefined"
-        class="text-r2xs"
-        data-slot="load-value"
-        :to="splitValue[1]"
-        :format="(val: number) => `.${formatInt(val)}`"
-      />
+      <template v-if="splitValue[1] != undefined">
+        <span class="text-r2xs!">.</span>
+        <animated-number
+          v-for="(fraction, index) in splitValue[1]"
+          :key="index"
+          class="text-r2xs"
+          data-slot="load-value"
+          :to="fraction"
+          :format="formatInt"
+        />
+      </template>
     </template>
     <template v-else>
       <animated-number

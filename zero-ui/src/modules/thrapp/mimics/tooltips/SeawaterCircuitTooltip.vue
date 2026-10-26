@@ -3,7 +3,6 @@ import { useTranslations } from ".";
 import { MimicTooltip, TooltipComponentContext } from "../../components/tooltip";
 import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
-import { YardTag } from "../components/yard-tag";
 import SeawaterCircuitContent from "../instances/content/SeawaterCircuitContent.vue";
 import { SensorValue } from "../providers";
 import * as Partials from "./partials";
@@ -19,7 +18,6 @@ const { items } = useTranslations();
         v-bind="props"
         class="w-49"
       />
-      <YardTag class="text-sm">{{ tooltip?.yardTag }}</YardTag>
     </div>
 
     <TooltipList>

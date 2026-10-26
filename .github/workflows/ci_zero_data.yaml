@@ -22,30 +22,31 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: "0"
       - uses: actions/setup-python@v7
         with:
           python-version: 3.13
-      - uses: astral-sh/setup-uv@v10.0.1
+      - uses: astral-sh/setup-uv@v10.3.2
+      - uses: extractions/setup-just@v4
       - run: uv sync --locked
         working-directory: zero-data
-      - run: uv run ruff check --no-fix src tests
+      - run: just lint_no_fix
         working-directory: zero-data
-      - run: uv run ruff format --check src tests
+      - run: just format
         working-directory: zero-data
-      - run: uv run mypy src tests/greptime
+      - run: just type_check
         working-directory: zero-data
       # Local GreptimeDB for tests/greptime; offline — tests load the committed snapshot and run dbt build.
       - name: Start local GreptimeDB
         run: docker compose --profile data-collection up -d --wait greptimedb
       # Seed the raw tables and the `views` database from the committed snapshot.
       - name: Seed local Greptime from the committed snapshot
-        run: uv run zero-data greptime load
+        run: just seed_greptime
         working-directory: zero-data
       - name: Unit Test
-        run: uv run pytest .
+        run: just test
         working-directory: zero-data
       - name: Stop local GreptimeDB
         if: always()
@@ -60,7 +61,7 @@ jobs:
       id-token: "write"
       packages: "write"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       # Set up in https://github.com/foundation-zero/gcp-common
       - id: auth
         name: Authenticate with Google Cloud

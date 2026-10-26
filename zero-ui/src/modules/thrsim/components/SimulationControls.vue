@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="Definitions extends SimulationDefinitions">
+<script setup lang="ts">
 import {
   SIMULATION,
   SIMULATION_INPUT_QUERIES,
@@ -8,7 +8,7 @@ import {
   ExtractAllValues,
   SimulationComponentType,
   SimulationDefinitions,
-} from "@/modules/thrsim/types/index.ts";
+} from "@/modules/thrsim/types";
 import { type Component, computed, toRefs } from "vue";
 import { useThrsHistory } from "../stores/history.ts";
 import BoundaryControl from "./controls/BoundaryControl.vue";
@@ -29,9 +29,12 @@ const COMPONENTS: Record<SimulationComponentType, Component | null> = {
   [SimulationComponentType.OverpressureTemperature]: OverpressureTemperatureControl,
   [SimulationComponentType.Pcs]: PcsControl,
   [SimulationComponentType.HeatSource]: HeatSourceControl,
+  [SimulationComponentType.ActiveHeatSource]: HeatSourceControl,
   [SimulationComponentType.HvacExchanger]: HvacControl,
   [SimulationComponentType.AmcsControlMode]: null,
   [SimulationComponentType.AdsorptionChiller]: null,
+  [SimulationComponentType.Ugrid]: HeatSourceControl,
+  [SimulationComponentType.PropulsionDrive]: HeatSourceControl,
 };
 
 const { data } = toRefs(useThrsHistory());

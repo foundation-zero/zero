@@ -15,10 +15,10 @@ import {
   SensorComponentType,
   SensorDefinitionMap,
   SensorDefinitions,
-} from "@/modules/thrsim/types/index.ts";
+} from "@/modules/thrsim/types";
 import { createContext } from "reka-ui";
 import { inject, MaybeRef, provide, ref, Ref } from "vue";
-import { MimicComponentState } from "../components/index.ts";
+import { MimicComponentState } from "../components";
 
 export { default as ControllerStateValue } from "./ControllerStateValue.vue";
 export { default as ControlValue } from "./ControlValue.vue";
@@ -173,9 +173,13 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.CalculatedFlow]: "flow",
   [SensorComponentType.AdsorptionChiller]: "operating",
   [SensorComponentType.Brightloop]: "active",
+  [SensorComponentType.BrightloopConverter]: "active",
   [SensorComponentType.Ugrid]: "active",
   [SensorComponentType.PropulsionDrive]: "active",
   [SensorComponentType.ShorePowerConverter]: "active",
+  [SensorComponentType.BrightloopGroup]: "anyActive",
+  [SensorComponentType.UgridGroup]: "anyActive",
+  [SensorComponentType.ShorePowerGroup]: "anyActive",
   [SensorComponentType.Pyranometer]: "irradiance",
   [SensorComponentType.AmcsControlMode]: "mode",
 };

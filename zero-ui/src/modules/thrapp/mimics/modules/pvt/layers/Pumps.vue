@@ -2,16 +2,16 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { ComponentOrientation } from "../../../components";
 import { PUMP_WIDTH } from "../../../components/pump";
+import { getTooltipContexts } from "../../../data";
 import {
   DutypointLabelInstance,
   ManualPumpInstance,
   PumpInstance,
   TagLabelInstance,
 } from "../../../instances";
-import { PVT_MIMIC_DATA } from "../data";
 
-const pumps = PVT_MIMIC_DATA[MimicComponentType.Pump];
-const manualPumps = PVT_MIMIC_DATA[MimicComponentType.ManualPump];
+const pumps = getTooltipContexts(MimicComponentType.Pump, ["1018", "1019", "1021"]);
+const manualPumps = getTooltipContexts(MimicComponentType.ManualPump, ["1182"]);
 </script>
 
 <template>

@@ -23,14 +23,14 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: "0"
       - uses: extractions/setup-just@v4
       - uses: actions/setup-python@v7
         with:
           python-version: 3.13
-      - uses: astral-sh/setup-uv@v10.0.1
+      - uses: astral-sh/setup-uv@v10.3.2
       - run: uv sync --locked
         working-directory: zero-termodinamica
       - run: just lint
@@ -49,7 +49,7 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       # Set up in https://github.com/foundation-zero/gcp-common
       - id: auth
         name: Authenticate with Google Cloud

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { reactiveOmit } from "@vueuse/core";
 import { computed } from "vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
@@ -17,15 +18,13 @@ const { getSensorValue, getComponentState } = getMimicDataProvider();
 const valve = getSensorValue(props.source);
 const state = getComponentState();
 const stateWithAlarms = computed(() => componentStateFromAlarms(state.value, valve.value));
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.FlowControlValve"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <ActuatedValve
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="stateWithAlarms"
     >
       <TwoWayValve :flow="valve?.positionRel.value ?? 0" />

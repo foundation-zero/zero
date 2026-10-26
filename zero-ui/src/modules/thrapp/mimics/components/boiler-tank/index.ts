@@ -1,5 +1,5 @@
-import { BoilerTankState } from "@/modules/thrsim/types/index.ts";
-import { MimicComponentState } from "../index.ts";
+import { BoilerTankState } from "@/modules/thrsim/types";
+import { MimicComponentState } from "..";
 import { ModeBadgeMode } from "../mode-badge";
 
 export { default as BoilerTankTitle } from "../circuit-box/CircuitBoxTitle.vue";

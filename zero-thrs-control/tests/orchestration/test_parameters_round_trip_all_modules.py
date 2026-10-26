@@ -108,7 +108,6 @@ def _make_module(name: str, description: ModuleDescription) -> Module:
     return Module(
         name,
         description=description,
-        parameters=description.parameters_cls(),
         channels=channels,
         time_fn=lambda: datetime.now(UTC),
         state_logger=MachineStateLoggingServiceNoop(),

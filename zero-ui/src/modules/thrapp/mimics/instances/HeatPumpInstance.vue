@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RiTempHotLine } from "@remixicon/vue";
+import { reactiveOmit } from "@vueuse/core";
 import { computed } from "vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
@@ -32,15 +33,13 @@ const mode = computed(() => {
   if (heatpump.value?.on.value) return HeatPumpModes.Active;
   else return HeatPumpModes.Inactive;
 });
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.HeatPump"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <AssetBox
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="state"
     >
       <YardTag>{{ tooltip?.yardTag }}</YardTag>

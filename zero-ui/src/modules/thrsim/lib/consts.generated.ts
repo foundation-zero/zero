@@ -577,6 +577,9 @@ export const DC_PARAMETER_DEFINITION = toParameterDefinition({
 });
 
 export const DC_SENSOR_DEFINITION = toSensorDefinition({
+  dcAftBrightloops: {
+    componentType: SensorComponentType.BrightloopGroup,
+  },
   dcAftFlow: {
     componentType: SensorComponentType.CalculatedFlow,
   },
@@ -587,25 +590,113 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "45002076",
     componentType: SensorComponentType.Brightloop,
   },
+  dcBrightloopAft1Converter1: {
+    yardTag: "45002076",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopAft1Converter2: {
+    yardTag: "45002076",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopAft1Converter3: {
+    yardTag: "45002076",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopAft1Converter4: {
+    yardTag: "45002076",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
   dcBrightloopAft2: {
     yardTag: "45002075",
     componentType: SensorComponentType.Brightloop,
+  },
+  dcBrightloopAft2Converter1: {
+    yardTag: "45002075",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopAft2Converter2: {
+    yardTag: "45002075",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopAft2Converter3: {
+    yardTag: "45002075",
+    componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopAft3: {
     yardTag: "45002074",
     componentType: SensorComponentType.Brightloop,
   },
+  dcBrightloopAft3Converter1: {
+    yardTag: "45002074",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopAft3Converter2: {
+    yardTag: "45002074",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopAft3Converter3: {
+    yardTag: "45002074",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
   dcBrightloopAft4: {
     yardTag: "45002073",
     componentType: SensorComponentType.Brightloop,
+  },
+  dcBrightloopAft4Converter1: {
+    yardTag: "45002073",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopAft4Converter2: {
+    yardTag: "45002073",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopAft4Converter3: {
+    yardTag: "45002073",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopAft4Converter4: {
+    yardTag: "45002073",
+    componentType: SensorComponentType.BrightloopConverter,
   },
   dcBrightloopFwd1: {
     yardTag: "45002078",
     componentType: SensorComponentType.Brightloop,
   },
+  dcBrightloopFwd1Converter1: {
+    yardTag: "45002078",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopFwd1Converter2: {
+    yardTag: "45002078",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopFwd1Converter3: {
+    yardTag: "45002078",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopFwd1Converter4: {
+    yardTag: "45002078",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
   dcBrightloopFwd2: {
     yardTag: "45002077",
     componentType: SensorComponentType.Brightloop,
+  },
+  dcBrightloopFwd2Converter1: {
+    yardTag: "45002077",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopFwd2Converter2: {
+    yardTag: "45002077",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopFwd2Converter3: {
+    yardTag: "45002077",
+    componentType: SensorComponentType.BrightloopConverter,
+  },
+  dcBrightloopFwd2Converter4: {
+    yardTag: "45002077",
+    componentType: SensorComponentType.BrightloopConverter,
   },
   dcDhwExchanger: {
     yardTag: "50001008",
@@ -658,6 +749,9 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
   dcFlowUgridReturn: {
     yardTag: "50001058-06",
     componentType: SensorComponentType.Flow,
+  },
+  dcFwdBrightloops: {
+    componentType: SensorComponentType.BrightloopGroup,
   },
   dcFwdFlow: {
     componentType: SensorComponentType.CalculatedFlow,
@@ -847,6 +941,9 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
   dcUgridHeat: {
     componentType: SensorComponentType.HeatTransferDevice,
   },
+  dcUgrids: {
+    componentType: SensorComponentType.UgridGroup,
+  },
   mode: {
     componentType: SensorComponentType.AmcsControlMode,
   },
@@ -854,22 +951,22 @@ export const DC_SENSOR_DEFINITION = toSensorDefinition({
 
 export const DC_SIMULATION_INPUTS = toSimulationDefinition({
   dcBrightloopAft1: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopAft2: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopAft3: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopAft4: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopFwd1: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopFwd2: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcDhwSupply: {
     componentType: SimulationComponentType.Boundary,
@@ -878,10 +975,10 @@ export const DC_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.Boundary,
   },
   dcUgrid1: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.Ugrid,
   },
   dcUgrid2: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.Ugrid,
   },
   mode: {
     componentType: SimulationComponentType.AmcsControlMode,
@@ -1596,6 +1693,22 @@ export const DRIVES_SENSOR_DEFINITION = toSensorDefinition({
   },
   drivesShorepower: {
     yardTag: "45002001",
+    componentType: SensorComponentType.ShorePowerGroup,
+  },
+  drivesShorepower1a: {
+    yardTag: "45002001",
+    componentType: SensorComponentType.ShorePowerConverter,
+  },
+  drivesShorepower1b: {
+    yardTag: "45002001",
+    componentType: SensorComponentType.ShorePowerConverter,
+  },
+  drivesShorepower2a: {
+    yardTag: "45002001",
+    componentType: SensorComponentType.ShorePowerConverter,
+  },
+  drivesShorepower2b: {
+    yardTag: "45002001",
     componentType: SensorComponentType.ShorePowerConverter,
   },
   drivesShorepowerHeat: {
@@ -1691,22 +1804,22 @@ export const DRIVES_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.HeatSource,
   },
   drivesPropdriveAft1: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.PropulsionDrive,
   },
   drivesPropdriveAft2: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.PropulsionDrive,
   },
   drivesPropdriveFwd1: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.PropulsionDrive,
   },
   drivesPropdriveFwd2: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.PropulsionDrive,
   },
   drivesSeawaterSupply: {
     componentType: SimulationComponentType.Boundary,
   },
   drivesShorepower: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   mode: {
     componentType: SimulationComponentType.AmcsControlMode,
@@ -2327,6 +2440,9 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50009009-03",
     componentType: SensorComponentType.Flow,
   },
+  pvtFlowMainStrings: {
+    componentType: SensorComponentType.CalculatedFlow,
+  },
   pvtFlowOwnersRecovery: {
     yardTag: "50001057-03",
     componentType: SensorComponentType.Flow,
@@ -2440,6 +2556,9 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   },
   pvtPvtMainFwdHeat: {
     yardTag: "50009001-01",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtPvtMainHeat: {
     componentType: SensorComponentType.HeatTransferDevice,
   },
   pvtPvtOwners: {
@@ -2639,6 +2758,12 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50009005-29",
     componentType: SensorComponentType.Temperature,
   },
+  pvtTemperatureMainStringsReturn: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
+  pvtTemperatureMainStringsSupply: {
+    componentType: SensorComponentType.CalculatedTemperature,
+  },
   pvtTemperatureOwnersReturn: {
     yardTag: "50001038-04",
     componentType: SensorComponentType.Temperature,
@@ -2763,31 +2888,31 @@ export const THRS_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.Boundary,
   },
   dcBrightloopAft1: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopAft2: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopAft3: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopAft4: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopFwd1: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcBrightloopFwd2: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   dcSeawaterSupply: {
     componentType: SimulationComponentType.Boundary,
   },
   dcUgrid1: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.Ugrid,
   },
   dcUgrid2: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.Ugrid,
   },
   dhwFreshwaterSupply: {
     componentType: SimulationComponentType.OverpressureTemperature,
@@ -2808,22 +2933,22 @@ export const THRS_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.HeatSource,
   },
   drivesPropdriveAft1: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.PropulsionDrive,
   },
   drivesPropdriveAft2: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.PropulsionDrive,
   },
   drivesPropdriveFwd1: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.PropulsionDrive,
   },
   drivesPropdriveFwd2: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.PropulsionDrive,
   },
   drivesSeawaterSupply: {
     componentType: SimulationComponentType.Boundary,
   },
   drivesShorepower: {
-    componentType: SimulationComponentType.HeatSource,
+    componentType: SimulationComponentType.ActiveHeatSource,
   },
   mode: {
     componentType: SimulationComponentType.AmcsControlMode,

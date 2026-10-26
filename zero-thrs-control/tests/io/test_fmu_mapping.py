@@ -51,6 +51,27 @@ class ExcludedSensorValues(ThrsValues):
     excluded_field_component: ExcludedFieldComponent
 
 
+class SourceComponent(ThrsValues):
+    level: Stamped[Ratio]
+
+    @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
+    @property
+    def doubled(self) -> Stamped[Ratio]:
+        return Stamped.combine(self.level, value=self.level.value * 2)
+
+
+class DoubledComponent(ThrsValues):
+    doubled: Stamped[Ratio]
+
+
+class SourceSimulationInputs(ThrsValues):
+    source: SourceComponent
+
+
+class DoubledSensorValues(ThrsValues):
+    source: Annotated[DoubledComponent, component_meta(included_in_fmu=False)]
+
+
 class ModelWithComputed(ThrsValues):
     flow_sensor: FlowSensor
 
@@ -137,6 +158,18 @@ def test_extract_excluded():
         ),
         ExcludedSensorValues,
     )
+
+
+def test_extract_excluded_component_only_takes_sensor_fields():
+    level = Stamped.stamp(0.25)
+
+    extracted = extract_non_fmu_values(
+        SourceSimulationInputs(source=SourceComponent(level=level)),
+        DoubledSensorValues,
+    )
+
+    assert list(extracted["source"]) == ["doubled"]
+    assert extracted["source"]["doubled"].value == 0.5
 
 
 def test_fmu_roundtrip():

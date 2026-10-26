@@ -1,24 +1,23 @@
 <script setup lang="ts">
-import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip/index.ts";
-import { MimicComponentType } from "../../types/index.ts";
+import { reactiveOmit } from "@vueuse/core";
+import { MimicComponentInstanceProps } from ".";
+import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
+import { MimicComponentType } from "../../types";
 import PressureSensor from "../components/pressure-sensor/PressureSensor.vue";
-import { getMimicDataProvider } from "../providers/index.ts";
-import { MimicComponentInstanceProps } from "./index.ts";
+import { getMimicDataProvider } from "../providers";
 const props = defineProps<
   MimicComponentInstanceProps & TooltipComponentContext<MimicComponentType.LevelSensor>
 >();
 
 const { getComponentState } = getMimicDataProvider();
 const state = getComponentState();
+const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 </script>
 
 <template>
-  <MimicTooltipTrigger
-    :type="MimicComponentType.LevelSensor"
-    :data="props"
-  >
+  <MimicTooltipTrigger :data="props">
     <PressureSensor
-      v-bind="props"
+      v-bind="forwardedProps"
       :state="state"
     />
     <slot />

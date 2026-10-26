@@ -2,10 +2,10 @@
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/modules/common/lib/utils.ts";
 import { computed, toRef } from "vue";
+import { FieldEditorProps } from ".";
+import { getFieldValue } from "../providers";
 import { injectValueForm } from "../providers/forms.ts";
-import { getFieldValue } from "../providers/index.ts";
 import EditableField from "./EditableField.vue";
-import { FieldEditorProps } from "./index.ts";
 
 const props = defineProps<FieldEditorProps<boolean>>();
 

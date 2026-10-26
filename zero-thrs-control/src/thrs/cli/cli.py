@@ -1,12 +1,16 @@
 import contextlib
 import logging
 from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Annotated
 
 from aiomqtt import Client as MqttClient
+from pydantic import BaseModel, Field
 from pydantic_settings import (
     BaseSettings,
     CliApp,
     CliImplicitFlag,
+    CliPositionalArg,
     CliSubCommand,
     SettingsConfigDict,
 )
@@ -225,6 +229,37 @@ class LockstepCmd(BaseSettings):
                 await runtime.start()
 
 
+class AsyncApiCmd(BaseModel):
+    """Generate the THRS AsyncAPI document."""
+
+    output_file: Annotated[
+        CliPositionalArg[str], Field(description="File to store the resulting asyncapi")
+    ]
+
+    def cli_cmd(self) -> None:
+        # Spec generation walks every module description; keep it off the
+        # import path of the runtime commands.
+        from thrs.spec.asyncapi import generate_asyncapi  # noqa: PLC0415
+
+        # Hardcoded because we can't really change them on the places where it matters
+        settings = Config(
+            mqtt_host="",
+            mqtt_port=0,
+            mqtt_devices_topic_prefix="marpower",
+            mqtt_controller_topic_prefix="thrs/controller",
+            mqtt_controller_topic_suffix="set",
+            mqtt_simulator_topic_prefix="thrs/simulator",
+            mqtt_simulator_topic_suffix="set",
+            mqtt_control_topic_suffix="Command",
+        )
+        thrs_mode = lookup_mode("thrs")
+
+        spec = generate_asyncapi(settings, thrs_mode)
+
+        with Path(self.output_file).open("w") as result_file:
+            result_file.write(spec.model_dump_json(indent=2, by_alias=True))
+
+
 class ThrsCli(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -236,6 +271,7 @@ class ThrsCli(BaseSettings, cli_kebab_case=True):
     lockstep: CliSubCommand[LockstepCmd]
     simulation: CliSubCommand[SimulationCmd]
     control: CliSubCommand[ControlCmd]
+    generate_asyncapi: CliSubCommand[AsyncApiCmd]
 
     def cli_cmd(self) -> None:
         setup_logging()

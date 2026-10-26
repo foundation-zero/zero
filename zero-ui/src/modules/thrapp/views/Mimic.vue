@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import Label from "@/components/ui/label/Label.vue";
 import { Switch } from "@/components/ui/switch";
-import { LegendTrigger } from "@/modules/thrapp/components/legends";
+import {
+  DynamicLegend,
+  LegendTrigger,
+  MIMIC_LEGEND_MAP,
+} from "@/modules/thrapp/components/legends";
 import { MimicTooltipProvider } from "@/modules/thrapp/components/tooltip";
 import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltipProvider.vue";
 import GridPattern from "@/modules/thrapp/mimics/modules/GridPattern.vue";
 import { GraphQLProvider, MockProvider } from "@/modules/thrapp/mimics/providers";
-import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import { ENV } from "@/settings";
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
-import { MIMICS } from "../router/mimics";
+import { MIMICS, MimicKey } from "../router/mimics";
 
 const demoMode = ref(false);
 const provider = computed(() => (demoMode.value ? MockProvider : GraphQLProvider));
@@ -19,13 +22,9 @@ const provider = computed(() => (demoMode.value ? MockProvider : GraphQLProvider
 const { currentRoute } = useRouter();
 const { t } = useI18n();
 
-const currentMimic = computed(() => MIMICS[currentRoute.value.params.module as keyof ThrsModules]);
-const data = ref(currentMimic.value?.data);
-
-watch(currentMimic, (mimic) => {
-  data.value = undefined;
-  nextTick(() => (data.value = mimic?.data));
-});
+const currentModule = computed(() => currentRoute.value.params.module as MimicKey);
+const currentMimic = computed(() => MIMICS[currentModule.value]);
+const currentLegend = computed(() => MIMIC_LEGEND_MAP[currentModule.value]);
 
 const showDemoMode = computed(() => ENV.VITE_SHOW_DEMO_MODE === "1");
 </script>
@@ -47,20 +46,14 @@ const showDemoMode = computed(() => ENV.VITE_SHOW_DEMO_MODE === "1");
           <Label>{{ t("thrapp.labels.demoMode") }}</Label>
         </div>
 
-        <LegendTrigger>
+        <LegendTrigger v-if="currentLegend">
           <NoopTooltipProvider>
-            <component
-              :is="currentMimic?.legend"
-              v-if="currentMimic?.legend"
-            />
+            <DynamicLegend :legend="currentLegend" />
           </NoopTooltipProvider>
         </LegendTrigger>
       </aside>
 
-      <MimicTooltipProvider
-        v-if="currentMimic && data"
-        :source="data"
-      >
+      <MimicTooltipProvider v-if="currentMimic">
         <component
           :is="currentMimic.component"
           class="z-1 mx-auto max-h-[calc(100svh-14em)] xl:my-auto portrait:my-auto"
