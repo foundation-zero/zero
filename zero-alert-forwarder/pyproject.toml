@@ -4,7 +4,7 @@ description = "Forwards AMCS alerts to ntfy so the crew is notified above decks.
 authors = [
     { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org" },
 ]
-requires-python = ">= 3.13.1,<4.0"
+requires-python = ">=3.15.1,<4.0"
 readme = "README.md"
 dependencies = [
     "aiomysql>=0.2.0,<1.0.0",
