@@ -28,4 +28,4 @@ warnings = "deny"
 result_large_err = "deny"
 
 [dev-dependencies]
-tower = { version = "0.5", features = ["util"] }
+tower = { version = "=0.5.3", features = ["util"] }
