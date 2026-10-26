@@ -52,12 +52,21 @@ def clear_mutating_tables(
 
 
 class ExistingDatabaseRef:
-    def __init__(self, host: str, port: str, user: str, password: str, dbname: str):
+    def __init__(
+        self,
+        host: str,
+        port: str,
+        user: str,
+        password: str,
+        dbname: str,
+        maintenance_dbname: str,
+    ):
         self.host = host
         self.port = int(port)
         self.user = user
         self.password = password
         self.options = ""
+        self.maintenance_dbname = maintenance_dbname
         self._template_dbname = dbname
 
     @property
@@ -90,6 +99,7 @@ def zero_db(integration_admin_noproc):
         user=integration_admin_noproc.user,
         password=integration_admin_noproc.password or "",
         dbname=_INTEGRATION_SETTINGS.pg_db,
+        maintenance_dbname=integration_admin_noproc.maintenance_dbname,
     )
 
 
