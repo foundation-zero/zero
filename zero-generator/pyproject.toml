@@ -10,7 +10,7 @@ readme = "README.md"
 dependencies = ["aiomqtt>=2.4.0,<3.0.0", "pydantic-settings>=2.11.0,<3.0.0"]
 
 [dependency-groups]
-dev = ["mypy>=1.14.1,<2.0.0", "ruff>=0.9.5,<1.0.0"]
+dev = ["mypy>=2.4.0,<2.5.0", "ruff>=0.9.5,<1.0.0"]
 test = [
     "pytest>=9.1.1,<9.2.0",
     "pytest-asyncio>=1.4.0,<1.5.0",
