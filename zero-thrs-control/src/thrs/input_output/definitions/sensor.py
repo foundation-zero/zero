@@ -252,7 +252,7 @@ class HeatTransferDevice(ThrsValues):
         temperature_supply: Stamped[Celsius] | Stamped[Celsius | None],
         temperature_return: Stamped[Celsius] | Stamped[Celsius | None],
         flow: Stamped[LMin] | Stamped[LMin | None],
-        mix_valve: "Valve",
+        mix_valve: Valve,
         temperature_supply_source: str,
         temperature_return_source: str,
         heat_transfer_conversion: float,
@@ -395,7 +395,7 @@ def weighted_combined_measurement[
     return Stamped.combine(*weights, *measurements, value=value)
 
 
-def inverse_ratio(ratio: Stamped["Ratio"]) -> Stamped["Ratio"]:
+def inverse_ratio(ratio: Stamped[Ratio]) -> Stamped[Ratio]:
     return Stamped(
         value=1 - ratio.value,
         timestamp=ratio.timestamp,

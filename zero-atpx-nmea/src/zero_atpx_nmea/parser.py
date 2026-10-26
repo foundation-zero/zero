@@ -81,7 +81,7 @@ def parse(raw_sentence: str, topic: str) -> dict[str, Any] | None:
         else:
             try:
                 value = getattr(msg, name)
-            except (ValueError, TypeError):
+            except ValueError, TypeError:
                 value = None
         envelope[_envelope_key(name)] = _jsonable(value)
 
@@ -89,7 +89,7 @@ def parse(raw_sentence: str, topic: str) -> dict[str, Any] | None:
         try:
             envelope["latitude"] = _jsonable(msg.latitude)
             envelope["longitude"] = _jsonable(msg.longitude)
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             envelope["latitude"] = None
             envelope["longitude"] = None
 

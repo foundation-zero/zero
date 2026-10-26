@@ -18,7 +18,7 @@ class AmcsControlMode(ThrsValues):
     mode: Stamped[ControlMode]
 
     @classmethod
-    def create_advisory(cls) -> "AmcsControlMode":
+    def create_advisory(cls) -> AmcsControlMode:
         return cls(mode=Stamped.stamp(value=ControlMode.EXTERNAL))
 
     @property

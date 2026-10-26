@@ -5,7 +5,7 @@ readme = "README.md"
 authors = [
     { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org" }
 ]
-requires-python = ">= 3.13.1,<4.0"
+requires-python = ">=3.15.1,<4.0"
 dependencies = [
     "faststream[mqtt]>=0.7.0,<1.0.0",
     "pydantic>=2.11.7,<3.0.0",

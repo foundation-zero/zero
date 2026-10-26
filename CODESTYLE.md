@@ -50,7 +50,7 @@ Idioms:   match/if let, ? everywhere, /// docs on all public API
 |------|------------|
 | Build system | uv. `hatch-vcs` for versioning from git tags. |
 | Versioning | `hatch-vcs` from git tags (via `[tool.hatch.version] source = "vcs"`). All packages keep `dynamic = ["version"]` and fallback `0.0.0` in pyproject. |
-| Python version | Each service specifies its own in `pyproject.toml`. Most require `>= 3.13.1,<4.0`; `zero-thrs-control` uses `<3.14`. |
+| Python version | Each service specifies its own in `pyproject.toml`. Most require `>=3.15.1,<4.0`; `zero-loads-app` and `zero-thrs-control` cap at `<3.16`. Dockerfiles (uv builder and runtime), CI `setup-python` and `requires-python` move together. |
 
 ### 2.2 Naming
 

@@ -1,6 +1,6 @@
 import json
 import logging
-from asyncio import Event, Future, TaskGroup, gather, timeout
+from asyncio import Event, TaskGroup, gather, timeout
 from collections import defaultdict
 from collections.abc import Awaitable, Callable, Coroutine, Iterable, Mapping
 from functools import partial
@@ -127,7 +127,7 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         topic_prefix: str,
         module_name: str,
         topic_suffix: str | None = None,
-    ) -> "PartialMqttMapping[T]":
+    ) -> PartialMqttMapping[T]:
         return PartialMqttMapping(
             message_type,
             topic_prefix,
@@ -201,7 +201,10 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         self._adapter: TypeAdapter[M] = TypeAdapter(validate_type)
         self._topic = f"{topic}{f'/{topic_suffix}' if topic_suffix else ''}"
         self._value = None
-        self._future = Future()
+        # An Event rather than a Future: since Python 3.14 a Future needs a running loop,
+        # and mappings are fed outside one.
+        self._first_value: M | None = None
+        self._first_received = Event()
         self._update_event = Event()
         self._hooks: list[Callable[[M], object]] = []
         self._autoclear = autoclear
@@ -215,7 +218,7 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         type_topic: str | None = None,
         topic_suffix: str | None = None,
         autoclear: bool = False,
-    ) -> "DirectMqttMapping[M]":
+    ) -> DirectMqttMapping[M]:
         base = f"{topic_prefix}/{module_name}{f'/{type_topic}' if type_topic else ''}"
         return DirectMqttMapping(
             message_type,
@@ -236,8 +239,9 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         awaitables: list[Awaitable] = []
         if topic == self._topic:
             self._value = cast(M, self._adapter.validate_json(json))
-            if not self._future.done():
-                self._future.set_result(self._value)
+            if not self._first_received.is_set():
+                self._first_value = self._value
+                self._first_received.set()
             self._update_event.set()
             for hook in self._hooks:
                 result = hook(self._value)
@@ -252,7 +256,8 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         return value
 
     async def wait_for_result(self) -> M:
-        result = await self._future
+        await self._first_received.wait()
+        result = cast(M, self._first_value)
         if self._autoclear:
             self._value = None
         return result
@@ -402,7 +407,7 @@ class ControlChannels[
 ]:
     def __init__(
         self,
-        connector: "MqttConnector",
+        connector: MqttConnector,
         config: Config,
         module_name: str,
         control_module: ModuleDescription[S, C, P, M, CS],
@@ -523,8 +528,8 @@ class SimulationChannels[
 ]:
     def __init__(
         self,
-        connector: "MqttConnector",
-        config: "Config",
+        connector: MqttConnector,
+        config: Config,
         sensor_values_clss: ModuleClassMap,
         control_values_clss: ModuleClassMap,
         simulation_inputs_cls: type[I],
@@ -588,10 +593,10 @@ class ControlApiChannels[
 ]:
     def __init__(
         self,
-        connector: "MqttConnector",
-        config: "Config",
+        connector: MqttConnector,
+        config: Config,
         module_name: str,
-        module_description: "ModuleDescription[S, C, P, M, CS]",
+        module_description: ModuleDescription[S, C, P, M, CS],
     ) -> None:
         self.module_name = module_name
         sensor_values_mapping = PartialMqttMapping[S](
@@ -675,8 +680,8 @@ class ControlApiChannels[
 class SimulationApiChannels[I: ThrsValues, O: ThrsValues]:
     def __init__(
         self,
-        connector: "MqttConnector",
-        config: "Config",
+        connector: MqttConnector,
+        config: Config,
         simulation_inputs_cls: type[I] | tuple[type[I], ...],
         simulation_outputs_cls: type[O] | tuple[type[O], ...],
     ) -> None:
@@ -705,7 +710,7 @@ class SimulationApiChannels[I: ThrsValues, O: ThrsValues]:
 
 
 class DirectivesChannels:
-    def __init__(self, connector: "MqttConnector", config: "Config") -> None:
+    def __init__(self, connector: MqttConnector, config: Config) -> None:
         self._connector = connector
         play_mapping = DirectMqttMapping(
             PlayMessage,
@@ -742,7 +747,7 @@ class DirectivesChannels:
 
 
 class DirectivesApiChannels:
-    def __init__(self, connector: "MqttConnector", config: "Config") -> None:
+    def __init__(self, connector: MqttConnector, config: Config) -> None:
         status_topic = f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}"
         simulation_status_mapping = DirectMqttMapping(
             SimulationStatusMessage, status_topic

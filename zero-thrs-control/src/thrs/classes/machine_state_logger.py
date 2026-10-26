@@ -28,7 +28,7 @@ class LoggableControl(Protocol):
     Structurally matches Control without importing it,
     keeping the dependency graph acyclic (since Control imports StateLogger)."""
 
-    state_logger: "StateLogger"
+    state_logger: StateLogger
     _parameters: Any
     state: str
 
@@ -212,7 +212,7 @@ class StateLogger:
 
     @staticmethod
     def _log_new_or_changed_alarms(
-        state_logger: "StateLogger",
+        state_logger: StateLogger,
         previously_active: dict[str, Alarm],
         currently_active: dict[str, Alarm],
     ) -> None:
@@ -224,7 +224,7 @@ class StateLogger:
 
     @staticmethod
     def _log_resolved_alarms(
-        state_logger: "StateLogger",
+        state_logger: StateLogger,
         previously_active: dict[str, Alarm],
         currently_active: dict[str, Alarm],
     ) -> None:

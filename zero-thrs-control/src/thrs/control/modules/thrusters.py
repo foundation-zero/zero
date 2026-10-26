@@ -160,10 +160,10 @@ class ThrustersControl(
     _state_machine: Machine
     _transitions: list[dict]
     _states: list[State]
-    _parameters: "ThrustersParameters"
+    _parameters: ThrustersParameters
 
     # Log state machine attributes
-    state_logger: "StateLogger"
+    state_logger: StateLogger
     state: str  # Value set by Machine transitions logic
 
     def __init__(

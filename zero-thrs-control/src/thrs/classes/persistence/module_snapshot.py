@@ -25,7 +25,7 @@ class ModulePersistenceSnapshot(BaseModel):
     manual_control_values: dict[str, Any] | None = None
     control_mode: ControlModes = "manual"
 
-    def _diff(self, other: "ModulePersistenceSnapshot") -> dict[str, tuple[Any, Any]]:
+    def _diff(self, other: ModulePersistenceSnapshot) -> dict[str, tuple[Any, Any]]:
         """Return the leaf values that differ from another snapshot, as
         {dotted.path: (self_value, other_value)}. Nested dicts (e.g. per-actuator
         manual control values) are compared recursively so only the fields that
@@ -36,7 +36,7 @@ class ModulePersistenceSnapshot(BaseModel):
         return diffs
 
     def value_diff(
-        self, other: "ModulePersistenceSnapshot"
+        self, other: ModulePersistenceSnapshot
     ) -> dict[str, tuple[Any, Any]]:
         """Like diff(), but with Stamped `timestamp` leaves stripped out - only
         actual value changes remain."""
@@ -46,7 +46,7 @@ class ModulePersistenceSnapshot(BaseModel):
             if path.rsplit(".", 1)[-1] != "timestamp"
         }
 
-    def equals_ignoring_timestamps(self, other: "ModulePersistenceSnapshot") -> bool:
+    def equals_ignoring_timestamps(self, other: ModulePersistenceSnapshot) -> bool:
         """Whether this snapshot is equal to another once `timestamp` leaves
         (from Stamped values) are disregarded. Every Stamped value is re-stamped
         on every tick, so a plain `==`/diff() comparison never considers two
