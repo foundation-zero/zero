@@ -5,7 +5,7 @@ authors = [
     { name = "Boudewijn van Groos", email = "boudewijn.vangroos@foundationzero.org" },
     { name = "Dustin van Weersel", email = "dustin.vanweersel@foundationzero.org" },
 ]
-requires-python = ">= 3.13.1,<4.0"
+requires-python = ">=3.15.1,<4.0"
 readme = "README.md"
 dependencies = [
     "aiomqtt>=2.3.0,<3.0.0",
