@@ -4,6 +4,7 @@ on:
     paths:
       - zero-alert-forwarder/**
       - .github/workflows/ci_alert_forwarder.yaml
+      - .github/actions/coverage-report/**
   release:
     types: [released]
   push:
@@ -12,6 +13,7 @@ on:
     paths:
       - zero-alert-forwarder/**
       - .github/workflows/ci_alert_forwarder.yaml
+      - .github/actions/coverage-report/**
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-alert-forwarder"
@@ -28,15 +30,42 @@ jobs:
         with:
           python-version: 3.15
       - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
       - run: uv sync --locked
         working-directory: zero-alert-forwarder
-      - run: uv run ruff check --no-fix zero_alert_forwarder tests
+      - run: just lint_no_fix
         working-directory: zero-alert-forwarder
-      - run: uv run pyright
+      - run: just type_check
         working-directory: zero-alert-forwarder
       - name: Unit Test
-        run: uv run pytest
+        run: just test --cov-report=xml
         working-directory: zero-alert-forwarder
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: coverage-zero-alert-forwarder
+          path: zero-alert-forwarder/coverage.xml
+          retention-days: 90
+
+  coverage:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: "read"
+      actions: "read"
+      pull-requests: "write"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: "0"
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: coverage-zero-alert-forwarder
+          path: ${{ runner.temp }}/coverage
+      - uses: ./.github/actions/coverage-report
+        with:
+          project: zero-alert-forwarder
+          report-dir: ${{ runner.temp }}/coverage
 
   docker-push:
     timeout-minutes: 10
