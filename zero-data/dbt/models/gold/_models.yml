@@ -19,7 +19,7 @@ models:
         tests:
           - not_null
       - name: power
-        description: "Average active power consumption aggregated per minute."
+        description: "Power consumption aggregated per minute."
         tests:
           - not_null
       - name: main_group
@@ -46,7 +46,7 @@ models:
         tests:
           - not_null
       - name: power
-        description: "Average active power consumption aggregated per minute."
+        description: "Power consumption aggregated per minute."
         tests:
           - not_null
       - name: main_group
@@ -99,46 +99,46 @@ models:
           - not_null
   - name: gld_24vdc_power_per_minute_per_sub_group
     description: >
-      24V DC converter power aggregated per minute per sub group.
+      24V DC power consumption aggregated per minute per sub group.
       Materialized as a view in the `views` database.
     columns:
       - name: time
-        description: "Timestamp representing the start of the minute interval for the aggregated converter power."
+        description: "Timestamp representing the start of the minute interval for the aggregated power consumption values."
         tests:
           - not_null
       - name: converter
-        description: "Identifier of the 24V DC converter."
+        description: "The converter associated with the 24V DC device."
         tests:
           - not_null
       - name: main_group
-        description: "The main group classification of the power tag."
+        description: "The main group classification of the 24V DC device."
         tests:
           - not_null
       - name: sub_group
-        description: "The sub group classification, within the main group, of the power tag."
+        description: "The sub group classification, within the main group, of the 24V DC device."
       - name: power
-        description: "Power of the 24V DC converter aggregated per minute."
+        description: "Power consumption of the 24V DC device aggregated per minute."
         tests:
           - not_null
   - name: gld_24vdc_power_per_minute_per_main_group
     description: >
-      24V DC converter power aggregated per minute per main group.
+      24V DC power consumption aggregated per minute per main group.
       Materialized as a view in the `views` database.
     columns:
       - name: time
-        description: "Timestamp representing the start of the minute interval for the aggregated converter power."
+        description: "Timestamp representing the start of the minute interval for the aggregated power consumption values."
         tests:
           - not_null
       - name: converter
-        description: "Identifier of the 24V DC converter."
+        description: "The converter associated with the 24V DC device."
         tests:
           - not_null
       - name: main_group
-        description: "The main group classification of the power tag."
+        description: "The main group classification of the 24V DC device."
         tests:
           - not_null
       - name: power
-        description: "Power of the 24V DC converter aggregated per minute."
+        description: "Power consumption of the 24V DC device aggregated per minute."
         tests:
           - not_null
   - name: gld_aradex_power_per_minute

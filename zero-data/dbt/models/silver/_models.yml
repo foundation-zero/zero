@@ -3,7 +3,7 @@ version: 2
 models:
   - name: slv_power_tags
     description: >
-      Power-tag enriched with metadata: electrical consumption measures with main- and sub-group classifications.
+      Power tags enriched with metadata: electrical consumption measures with main- and sub-group classifications.
       Materialized as a view in the `views` database.
     columns:
       - name: ts
@@ -67,19 +67,19 @@ models:
         tests:
           - not_null
       - name: output_current
-        description: "Output current of the 24V DC system."
+        description: "Output current of the 24V DC device."
         tests:
           - not_null
       - name: converter
-        description: "The converter associated with the 24V DC tag."
+        description: "The converter the 24V DC device is connected to."
         tests:
           - not_null
       - name: main_group
-        description: "The main group classification of the 24V DC tag."
+        description: "The main group classification of the 24V DC device."
         tests:
           - not_null
       - name: sub_group
-        description: "The sub group classification, within the main group, of the 24V DC tag."
+        description: "The sub group classification, within the main group, of the 24V DC device."
   - name: slv_24vdc_converter_voltages
     description: >
       24V DC system converter voltages enriched with metadata.
@@ -98,11 +98,11 @@ models:
         tests:
           - not_null
       - name: converter
-        description: "The converter associated with the 24V DC tag."
+        description: "The converter name."
         tests:
           - not_null
       - name: converter_subnr
-        description: "The sub-number of the converter associated with the 24V DC tag."
+        description: "The sub-number of the converter."
         tests:
           - not_null
   - name: slv_pcs_aradexes
