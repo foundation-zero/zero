@@ -5,8 +5,7 @@
     "security:minimumReleaseAgeCrate",
     "security:minimumReleaseAgeNpm",
     "security:minimumReleaseAgePypi",
-    "workarounds:all",
-    ":approveMajorUpdates"
+    "workarounds:all"
   ],
   "packageRules": [
     {
@@ -21,11 +20,10 @@
       "versioning": "regex:^python(?<major>\\d+)\\.(?<minor>\\d+)-(?<compatibility>.+)$"
     },
     {
-      "description": "Move the Python version in Dockerfiles, workflows and requires-python together, and only when requested on the Dependency Dashboard",
+      "description": "Move the Python version in Dockerfiles, workflows and requires-python together",
       "matchDepNames": ["python", "ghcr.io/astral-sh/uv"],
       "matchUpdateTypes": ["major", "minor", "patch"],
-      "groupName": "Python",
-      "dependencyDashboardApproval": true
+      "groupName": "Python"
     }
   ]
 }
