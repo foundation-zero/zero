@@ -7,9 +7,9 @@ import { useIntervalFn } from "@vueuse/core";
 import { OperationResult } from "graphql-ws";
 import { Maybe } from "graphql/jsutils/Maybe";
 
+import { AmcsControlModeSensor, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { AmcsControlModeSensor, DcMode, PvtMode } from "../types";
 
 export type ThrustersAutomaticMode = { mode: string };
 export type PcmAutomaticMode = { mode: string };

@@ -7,11 +7,11 @@ import { useIntervalFn } from "@vueuse/core";
 import { OperationResult } from "graphql-ws";
 import { Maybe } from "graphql/jsutils/Maybe";
 
+import { AmcsControlMode } from "@/modules/thrapp/types/thrs";
 import { defineStore } from "pinia";
 import { computed, ref, toRefs } from "vue";
 import { SIMULATION_INPUT_QUERIES } from "../lib/consts";
 import { SIMULATION_TYPES } from "../lib/consts.types";
-import { AmcsControlMode } from "../types";
 import { useThrsHistory } from "./history";
 
 export type SimulationStatus = {

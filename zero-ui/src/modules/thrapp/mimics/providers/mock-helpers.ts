@@ -14,7 +14,7 @@ import {
   SensorComponentType,
   SensorDefinitionMap,
   ThrusterMode,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
 import { useIntervalFn } from "@vueuse/core";
 import { computed, MaybeRef, ref, Ref, unref } from "vue";
 

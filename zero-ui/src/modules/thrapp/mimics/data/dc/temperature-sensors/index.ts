@@ -1,5 +1,5 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { toFieldsMap } from "../../../modules";
 import { getField } from "../../../providers";
 import { measuredTemperatureFields, toTemperatureSensor } from "../../helpers";

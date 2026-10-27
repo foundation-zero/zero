@@ -1,7 +1,7 @@
 import { getField } from "@/modules/thrapp/mimics/providers";
 import { toTemperatureSensor } from "../../helpers";
 
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 
 export default toTemperatureSensor(
   {

@@ -10,7 +10,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrsim/stores/thrs";
-import { PumpControl } from "@/modules/thrsim/types";
+import { PumpControl } from "@/modules/thrapp/types/thrs";
 import { toUpperCamelCase } from "@common/lib/utils";
 import { RiLoader2Line, RiSendPlaneLine } from "@remixicon/vue";
 import { toRef } from "vue";

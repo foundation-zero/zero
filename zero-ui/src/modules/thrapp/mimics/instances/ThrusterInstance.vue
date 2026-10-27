@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { reactiveOmit } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";

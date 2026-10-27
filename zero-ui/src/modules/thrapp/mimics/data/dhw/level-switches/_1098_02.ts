@@ -2,7 +2,7 @@ import { getField } from "@/modules/thrapp/mimics/providers";
 import { MimicComponentType } from "../../../../types";
 import { toInstance } from "../../../modules";
 
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { tooltip } from "./shared";
 
 export default toInstance<MimicComponentType.LevelSwitch>({

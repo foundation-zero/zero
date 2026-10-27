@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { ControllerFields, ControlValueFields, SensorValueFields } from "@/modules/thrsim/types";
+import {
+  ControllerFields,
+  ControlValueFields,
+  SensorValueFields,
+} from "@/modules/thrapp/types/thrs";
 import { computed } from "vue";
 import { FieldRenderer } from ".";
 import { injectFieldValueField, injectFieldValueSource, isPlaceholderField } from "../providers";

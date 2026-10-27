@@ -6,7 +6,8 @@
     Values extends ExtractAllValues<Definitions> = ExtractAllValues<Definitions>
   "
 >
-import { ExtractAllValues, SchemaDefinition, SchemaDefinitions } from "@/modules/thrsim/types";
+import { ExtractAllValues } from "@/modules/thrsim/types";
+import { SchemaDefinition, SchemaDefinitions } from "@/modules/thrapp/types/thrs";
 
 import { objectEntries } from "@vueuse/core";
 import { computed, ref, toRefs, watch } from "vue";

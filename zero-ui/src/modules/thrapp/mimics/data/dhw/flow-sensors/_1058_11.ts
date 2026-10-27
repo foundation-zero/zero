@@ -1,4 +1,4 @@
-import { ParametersType, SensorComponentType } from "@/modules/thrsim/types";
+import { ParametersType, SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { toFlowSensor } from "../../helpers";
 
 import { getField } from "../../../providers";

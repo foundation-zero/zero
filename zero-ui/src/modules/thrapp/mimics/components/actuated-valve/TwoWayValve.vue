@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ratio } from "@/modules/thrsim/types";
+import { Ratio } from "@/modules/thrapp/types/thrs";
 import ValvePortLeft from "./ValvePortLeft.vue";
 import ValvePortRight from "./ValvePortRight.vue";
 

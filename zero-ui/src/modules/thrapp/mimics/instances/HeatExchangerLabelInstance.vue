@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { MimicComponentInstanceProps } from ".";
 import type { LabelProps } from "../components/label";
 import { Label } from "../components/label";

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ZiDcConverter } from "@/modules/common/components/icons";
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { reactiveOmit } from "@vueuse/core";
 import { first, last } from "lodash";
 import { useI18n } from "vue-i18n";

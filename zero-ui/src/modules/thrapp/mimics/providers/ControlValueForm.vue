@@ -3,7 +3,7 @@
   lang="ts"
   generic="Control extends ControlComponentType, Key extends keyof ControlDefinitionMap[Control]"
 >
-import { ControlComponentType, ControlDefinitionMap } from "@/modules/thrsim/types";
+import { ControlComponentType, ControlDefinitionMap } from "@/modules/thrapp/types/thrs";
 import { DEFAULT_CONTROL_FIELD_VALUE_FIELD, ModuleField } from ".";
 import { createFormContext, provideControlValue, provideControlValueForm } from "./forms.control";
 

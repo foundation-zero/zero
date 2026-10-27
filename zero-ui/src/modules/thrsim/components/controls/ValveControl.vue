@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/number-field";
 import { ThrsModules } from "@/modules/thrsim/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrsim/stores/thrs";
-import { ValveControl } from "@/modules/thrsim/types";
+import { ValveControl } from "@/modules/thrapp/types/thrs";
 import { toUpperCamelCase } from "@common/lib/utils";
 import { RiLoader2Line, RiSendPlaneLine } from "@remixicon/vue";
 import { toRef } from "vue";

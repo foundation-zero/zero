@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ControlComponentType } from "@/modules/thrsim/types";
+import { ControlComponentType } from "@/modules/thrapp/types/thrs";
 import { MimicComponentInstanceProps } from ".";
 import { Label } from "../components/label";
 import { ModuleField } from "../providers";

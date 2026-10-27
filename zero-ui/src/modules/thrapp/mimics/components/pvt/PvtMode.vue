@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils";
 import { useAdvisoryEnabled } from "@/modules/thrapp/state";
-import { PvtMode } from "@/modules/thrsim/types";
+import { PvtMode } from "@/modules/thrapp/types/thrs";
 import { computed } from "vue";
 import { PVT_MODE_COLORS } from ".";
 import { MimicComponentState } from "..";

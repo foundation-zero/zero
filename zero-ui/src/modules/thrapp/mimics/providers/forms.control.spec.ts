@@ -1,4 +1,4 @@
-import { ControlComponentType, ControlDefinitionMap } from "@/modules/thrsim/types";
+import { ControlComponentType, ControlDefinitionMap } from "@/modules/thrapp/types/thrs";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 import { ModuleField } from ".";

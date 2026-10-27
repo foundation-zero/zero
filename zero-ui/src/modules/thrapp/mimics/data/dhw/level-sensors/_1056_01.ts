@@ -1,4 +1,4 @@
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { MimicComponentType } from "../../../../types";
 import { toInstance } from "../../../modules";
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ControlValueFields } from "@/modules/thrsim/types";
+import { ControlValueFields } from "@/modules/thrapp/types/thrs";
 import { computed } from "vue";
 import { FieldEditor } from ".";
 import { injectFieldValueField } from "../providers";

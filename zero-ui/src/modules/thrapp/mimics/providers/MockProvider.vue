@@ -9,7 +9,7 @@ import {
   ParametersType,
   SensorComponentType,
   SensorDefinitionMap,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
 import { Ref, toRef } from "vue";
 import {
   createMimicDataProvider,

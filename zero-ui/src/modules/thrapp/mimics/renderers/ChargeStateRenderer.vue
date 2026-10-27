@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PcmChargeStatus } from "@/modules/thrsim/types";
+import { PcmChargeStatus } from "@/modules/thrapp/types/thrs";
 import { computed, toRef } from "vue";
 import { FieldRendererProps } from ".";
 import { ChargeState, PcmChargeState } from "../components/pcm";
