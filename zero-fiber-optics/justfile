@@ -1,0 +1,12 @@
+default: check
+
+check: format lint test
+
+lint:
+    cargo clippy --all --all-features --locked
+
+test *args:
+    cargo llvm-cov --all --all-features --locked {{ args }}
+
+format:
+    cargo fmt --check
