@@ -37,18 +37,22 @@ The panel reports two modes for this module, independently:
 
 ## Boosting
 
-![DHW boosting mode](figures/dhw-states.png){width=78%}
+![DHW boosting mode](figures/dhw-states.png){width=72%}
 
 The high-temperature loop is the preferred source and the heatpump the fallback:
 heatpump boosting is available only while high-temperature boosting is not, and
 the module moves directly between the two without passing through idle.
+High-temperature boosting takes over from the heatpump as soon as any tank
+qualifies for it, also when that is not the tank the heatpump is heating.
 
 While boosting, the module compares heat transfer into the tank against
-`boosting_minimum_heat`. If it stays below that threshold for longer than
-`boosting_stall_window`, after an initial `boosting_startup_grace`, boosting
-stops. Stopping from heatpump boosting also disables heatpump boosting for
-`boosting_stall_cooldown`, because heat transfer cannot be measured with the
-boosting loop closed.
+`boosting_minimum_heat`. When it stays below that threshold for longer than
+`boosting_stall_window`, after an initial `boosting_startup_grace`, the source in
+use skips that tank for `boosting_stall_lockout`; the other source may still
+boost it. In the same second the module boosts another tank from the same
+source, switches to the other source, or goes idle. The skipped tank still shows
+*needs boost*. The startup grace restarts whenever the source or the tank
+changes.
 
 ## Tuning
 
@@ -96,11 +100,12 @@ boosting loop closed.
   of service. A disabled tank is released immediately, without waiting for its
   valves to travel.
 - **Stall guard** (`boosting_minimum_heat` 1000 W, `boosting_stall_window` 120 s,
-  `boosting_startup_grace` 180 s, `boosting_stall_cooldown` 900 s) — the heat
-  transfer threshold below which boosting is stopped, how long it must stay
-  below, the delay before checking starts, and how long heatpump boosting stays
-  disabled afterwards. Lengthen the grace and window if boosting stops during
-  normal warm-up.
+  `boosting_startup_grace` 180 s, `boosting_stall_lockout` 900 s) — the heat
+  transfer threshold below which a tank counts as stalled, how long it must stay
+  below, the delay after boosting starts on a source or tank before checking
+  starts, and how long the source then skips that tank. Lengthen the grace and
+  window if boosting stalls during normal warm-up. Shorten the lockout to retry a
+  stalled tank sooner; lengthen it if a tank keeps stalling on the same source.
 - **Minimum valve and pump openings** (`minimum_pump_dutypoint` 0.3,
   `drives_flowcontrol_minimum_setpoint` 0.1, `dc_flowcontrol_minimum_setpoint`
   0.1) — floors that guarantee flow through the system, for example so the

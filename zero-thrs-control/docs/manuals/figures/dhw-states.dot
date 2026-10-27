@@ -12,23 +12,26 @@ digraph dhw_states {
 
   idle [fillcolor="#e0e0e0", label=<<b>Idle</b><br align="left"/>
       <font point-size="9">on entry: close the boosting valves, stop the pump,<br align="left"/>
-      disable pump flow control<br align="left"/></font>>];
+      disable pump flow control<br align="left"/>
+      on exit: start the pump<br align="left"/></font>>];
 
   ht [label=<<b>High-temperature boosting</b><br align="left"/>
       <font point-size="9">on entry: open the high-temperature source valve<br align="left"/>
-      pump flow held at ht_boosting_flow_setpoint<br align="left"/></font>>];
+      pump flow held at ht_boosting_flow_setpoint<br align="left"/>
+      on exit: disable pump flow control<br align="left"/></font>>];
 
   hp [label=<<b>Heatpump boosting</b><br align="left"/>
       <font point-size="9">on entry: open the heatpump source valve,<br align="left"/>
       start the heatpump at heatpump_temperature_setpoint<br align="left"/>
-      pump flow held at heatpump_flow_setpoint<br align="left"/></font>>];
+      pump flow held at heatpump_flow_setpoint<br align="left"/>
+      on exit: stop the heatpump, disable pump flow control<br align="left"/></font>>];
 
-  idle -> ht [label="  a tank needs boosting, HT boosting\l  enabled, and the consumers DHW supply\l  exceeds the tank by more than\l  ht_boosting_minimum_delta\l"];
-  ht -> idle [label="  no tank needs boosting, the supply\l  margin is lost, or heat transfer stays\l  below boosting_minimum_heat\l"];
+  idle -> ht [label="  a tank needs boosting that HT is not\l  skipping after a stall, HT boosting\l  enabled, and the consumers DHW supply\l  exceeds that tank by more than\l  ht_boosting_minimum_delta\l"];
+  ht -> idle [label="  no tank left that HT may boost,\l  or the supply margin is lost\l"];
 
   ht -> hp [label="  high-temperature\l  boosting becomes\l  unavailable\l"];
-  hp -> ht [label="  high-temperature\l  boosting becomes\l  available\l"];
+  hp -> ht [label="  high-temperature\l  boosting becomes\l  available on any tank\l"];
 
-  idle -> hp [label="  a tank needs boosting, heatpump\l  boosting enabled, high-temperature\l  boosting unavailable, and the heatpump\l  is not in its stall cooldown\l"];
-  hp -> idle [label="  no tank needs boosting, or heat\l  transfer stays below\l  boosting_minimum_heat\l"];
+  idle -> hp [label="  a tank needs boosting that the\l  heatpump is not skipping after a\l  stall, heatpump boosting enabled, and\l  high-temperature boosting unavailable\l"];
+  hp -> idle [label="  no tank left that the\l  heatpump may boost\l"];
 }

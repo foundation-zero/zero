@@ -299,7 +299,7 @@ than saving room:
 - **Functional groups** — several parameters that only make sense together get
   one row under a name, with the defaults listed in order. DHW's four stall-guard
   settings become "Stall guard: `boosting_minimum_heat`, `boosting_stall_window`,
-  `boosting_startup_grace`, `boosting_stall_cooldown` | 1000 W, 120 s, 180 s,
+  `boosting_startup_grace`, `boosting_stall_lockout` | 1000 W, 120 s, 180 s,
   900 s | how patient the module is with a boost that is not delivering…". One
   row the engineer can act on beats four they have to reassemble.
 - **Controller gains** — the `*_tuning` PID triplets, all in a single closing
