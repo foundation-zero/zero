@@ -40,6 +40,8 @@ dev = [
     "seaborn>=0.13.2,<0.14",
     "bs4>=0.0.2,<0.0.3",
     "pyright>=1.1.411",
+    "xlsxwriter>=3.2,<4",
+    "pypdfium2>=4.30,<5",
 ]
 test = [
     "pytest>=9.1.1,<10",
@@ -92,4 +94,4 @@ search_parent_directories = true
 fallback_version = "0.0.0"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/loads", "src/sailpack"]
+packages = ["src/loads", "src/sailpack", "src/cheat_sheet"]

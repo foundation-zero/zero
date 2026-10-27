@@ -225,6 +225,45 @@ class CheckSeedCmd(SeedPaths):
         )
 
 
+class ExportCheatSheetCmd(BaseSettings, cli_kebab_case=True):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        env_nested_delimiter="__",
+        extra="allow",
+    )
+
+    input: Path = Path("src/sailpack/load_cases")
+    dashboards: Path = Path("../zero-ui/src/modules/loads/lib/consts.dashboards.ts")
+    booklet: Path = Path(
+        "src/cheat_sheet/out/sources/Project Zero - PZ - Sail Plan Rig load Guide v6_compressed.pdf"
+    )
+    xlsx_output: Path = Path("src/cheat_sheet/out/cheat_sheet.xlsx")
+    pdf_output: Path = Path("src/cheat_sheet/out/cheat_sheet.pdf")
+
+    async def cli_cmd(self) -> None:
+        from cheat_sheet.build import build_cheat_sheet
+        from cheat_sheet.pdf import write_pdf
+        from cheat_sheet.ui_dashboards import read_overview_groups
+        from cheat_sheet.xlsx import write_xlsx
+        from sailpack.parse import parse_directory
+
+        sheet = _download_consistent_sheet()
+        cheat_sheet = build_cheat_sheet(
+            parse_directory(self.input),
+            sheet.sailpack_mapping,
+            sheet.max_loads,
+            read_overview_groups(self.dashboards.read_text()),
+        )
+        self.xlsx_output.parent.mkdir(parents=True, exist_ok=True)
+        write_xlsx(cheat_sheet, self.xlsx_output)
+        write_pdf(cheat_sheet, self.booklet, self.pdf_output)
+        logger.info(
+            f"Generated {self.xlsx_output} and {self.pdf_output} "
+            f"with {len(cheat_sheet.load_cases)} load cases."
+        )
+
+
 class ZeroLoads(BaseSettings, cli_kebab_case=True):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -243,6 +282,7 @@ class ZeroLoads(BaseSettings, cli_kebab_case=True):
     sensors_stub: CliSubCommand[SensorsStubCmd]
     export_seed: CliSubCommand[ExportSeedCmd]
     check_seed: CliSubCommand[CheckSeedCmd]
+    export_cheat_sheet: CliSubCommand[ExportCheatSheetCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)
