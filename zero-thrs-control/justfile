@@ -1,6 +1,8 @@
 set dotenv-load := true
 set dotenv-required := true
 
+cov := "--cov --cov-report=term-missing:skip-covered"
+
 fmu_files := (
     "src/thrs/simulation/models/XRGTestModel/FMUInterfaceTester_MECS_regular.fmu " +
     "src/thrs/simulation/models/Adsorption_ModuleV1.fmu " +
@@ -46,10 +48,10 @@ type_check:
     uv run pyright
 
 test *args:
-    uv run pytest -m "not io" {{ args }}
+    uv run pytest {{ cov }} -m "not io" {{ args }}
 
 test_io *args:
-    uv run pytest -m "io" {{ args }}
+    uv run pytest {{ cov }} -m "io" {{ args }}
 
 format:
     uv run ruff format --check src tests
@@ -99,7 +101,7 @@ generate_asyncapi output="../specs/thrs-control.json":
     uv run python -m thrs.cli generate-asyncapi {{ output }}
 
 test_spec *args:
-    uv run pytest tests/spec {{ args }}
+    uv run pytest {{ cov }} tests/spec {{ args }}
 
 export_schema:
     uv run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrsim/graphql/schema.graphql
