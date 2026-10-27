@@ -15,6 +15,7 @@ Types:    pydantic BaseModel/BaseSettings, 3.12+ generics (list[T] not List[T])
 Async:    asyncio.TaskGroup, aiomqtt, @asynccontextmanager
 Log:      %(asctime)s | %(levelname)-8s | %(message)s
 Testing:  pytest + pytest-asyncio, asyncio_mode=auto, function loop scope
+Coverage: pytest-cov, branch=true, [tool.coverage] in pyproject.toml
 CLI:      pydantic-settings (CliApp), not argparse/click
 Idioms:   comprehensions > loops, f-strings, pathlib, MqttTopic not MQTTTopic
 ```
@@ -27,6 +28,7 @@ Vue:      <script setup lang="ts"> → <template> → <style>
 Stores:   Pinia setup-function syntax
 Styles:   Tailwind utilities + cn() for merging
 Testing:  Vitest, *.spec.ts (unit), *.integration.spec.ts (API), msw for mocks
+Coverage: @vitest/coverage-v8, include src/**, Cobertura in CI
 Idioms:   arrow fns, const > let, ?./??, map/filter over for, backticks, as T
 ```
 
@@ -37,6 +39,7 @@ Errors:   anyhow for applications, thiserror for libraries
 Derives:  serde::Deserialize, Debug, Clone, clap::Parser
 Async:    JoinSet, Arc<T>, log-and-continue on errors
 Testing:  #[cfg(test)] inline modules, unwrap() only in tests
+Coverage: cargo-llvm-cov (lines), llvm-tools-preview in rust-toolchain.toml
 Log:      env_logger + log facade (info!/debug!/error!)
 Config:   config crate (env vars) + dotenvy
 Idioms:   match/if let, ? everywhere, /// docs on all public API
@@ -149,6 +152,27 @@ The shared log format is:
 
 - **Markers**: `io`, `mqtt`, `slow`
 - **Unit/integration split**: `tests/unit/` and `tests/integration/` where present
+- **Coverage**: `pytest-cov` in the `test` group. `just test` runs
+  `pytest --cov --cov-report=term-missing:skip-covered`; CI adds `--cov-report=xml`
+  (and `--cov-append` on every test step after the first). Configure it in
+  `pyproject.toml`, not in `addopts`:
+
+```toml
+[tool.coverage.run]
+source = ["src"]  # the package directory for flat layouts
+branch = true
+
+[tool.coverage.report]
+exclude_also = [
+    "if TYPE_CHECKING:",
+    'if __name__ == "__main__":',
+    "@overload",
+    "raise NotImplementedError",
+    '^\s*\.\.\.$',
+]
+```
+
+- `# pragma: no cover` only with a comment explaining why the code can't be tested.
 
 ### 2.6 Dependency Groups
 
@@ -348,6 +372,11 @@ Name store files after their domain: `stores/thrs.ts`, `stores/auth.ts`.
 
 Config: `globals: true`, `environment: "jsdom"`, `clearMocks: true`.
 
+**Coverage:** `@vitest/coverage-v8`. `include: ["**/*.{ts,vue}"]` (relative to `src/`) so
+untested files count; exclude specs, `*.d.ts`, `components/ui/**` (shadcn copies) and
+generated GraphQL code. Each suite writes to its own `coverage/<suite>/` directory; CI adds
+`--coverage.reporter=cobertura`.
+
 ### 3.8 Idioms & Comment Style
 
 - **Arrow functions** as the default. Function declarations for exported utilities.
@@ -409,6 +438,10 @@ Config: `globals: true`, `environment: "jsdom"`, `clearMocks: true`.
 - Helper constructors at test-module level to reduce boilerplate.
 - `#[should_panic]` for expected panics.
 - Literal byte arrays for parser test input.
+- **Coverage**: `just test` runs `cargo llvm-cov --locked` (install it locally with
+  `cargo install cargo-llvm-cov`), so test filters go after `--`: `just test -- name`.
+  Add `llvm-tools-preview` to `rust-toolchain.toml`. Line coverage only: branch coverage
+  needs nightly. `#[cfg(test)]` modules are excluded automatically.
 
 ### 4.6 Logging
 
@@ -509,8 +542,15 @@ test (lint → type-check → unit test → integration test)
 | Language | Pipeline |
 |----------|----------|
 | Python | `uv sync --locked` → `ruff check` + `ruff format --check` → `pyright`/`mypy` → `pytest` (unit, then integration against `docker compose` services) |
-| Rust | `setup-rust-toolchain` (clippy, rustfmt) → `cargo test --locked` → `cargo clippy --locked` |
+| Rust | `setup-rust-toolchain` (clippy, rustfmt, llvm-tools-preview) → `cargo fmt --check` + `cargo clippy --locked` → `cargo llvm-cov --locked --cobertura` |
 | TypeScript | `pnpm install` → `pnpm lint --max-warnings 0` → `pnpm test:unit` → `docker compose` services → `pnpm test:api` → `pnpm exec playwright test` → Cloudflare Pages deploy |
+
+**Coverage:** the `test` job writes Cobertura XML and uploads it as the
+`coverage-<project>` artifact (`retention-days: 90`). A separate `coverage` job (`needs:
+test`, `actions: read`, `pull-requests: write`) downloads it and runs
+`./.github/actions/coverage-report`, which posts a sticky PR comment and fails when changed
+lines are under 80% covered or total line coverage drops more than 0.1 points below the
+latest main artifact. It is not a required check, and deploy jobs never depend on it.
 
 **Docker tagging:** Python projects use `uvx hatch version` (via `hatch-vcs`
 from git tags). Rust uses `Cargo.toml` version + short SHA. CI apps use

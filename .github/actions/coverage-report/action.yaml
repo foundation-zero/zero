@@ -1,0 +1,126 @@
+name: "Coverage Report"
+description: >
+  Reports a project's line coverage in the job summary and a sticky PR comment, and fails
+  (soft gate, never a required check) when the lines a PR changes are under-covered or
+  total coverage drops below main. The test job uploads its Cobertura reports as the
+  `coverage-<project>` artifact; the latest one from main is the baseline for PRs.
+inputs:
+  project:
+    description: "Project name, used for the artifact and the comment"
+    required: true
+  report-dir:
+    description: "Directory with the project's Cobertura XML reports"
+    required: true
+  fail-under:
+    description: "Minimum coverage (%) of the lines a PR changes"
+    required: false
+    default: "80"
+  max-drop:
+    description: "Maximum drop (percentage points) of total coverage compared to main"
+    required: false
+    default: "0.1"
+runs:
+  using: "composite"
+  steps:
+    - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+
+    - name: Merge reports
+      id: total
+      shell: bash
+      env:
+        REPORT_DIR: ${{ inputs.report-dir }}
+      run: |
+        total=$(python3 "$GITHUB_ACTION_PATH/merge_coverage.py" "$REPORT_DIR" "$GITHUB_WORKSPACE" "$RUNNER_TEMP/coverage.xml")
+        echo "total=$total" >> "$GITHUB_OUTPUT"
+
+    - name: Compare with main
+      id: compare
+      if: github.event_name == 'pull_request'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PROJECT: ${{ inputs.project }}
+        TOTAL: ${{ steps.total.outputs.total }}
+        MAX_DROP: ${{ inputs.max-drop }}
+      run: |
+        artifact_id=$(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?name=coverage-$PROJECT&per_page=100" \
+          --jq '[.artifacts[] | select(.workflow_run.head_branch == "main" and .expired == false)][0].id // empty')
+        if [ -z "$artifact_id" ]; then
+          echo "::notice::No coverage baseline from main for $PROJECT yet, skipping the comparison"
+          exit 0
+        fi
+        mkdir -p "$RUNNER_TEMP/baseline"
+        gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$artifact_id/zip" > "$RUNNER_TEMP/baseline.zip"
+        unzip -q "$RUNNER_TEMP/baseline.zip" -d "$RUNNER_TEMP/baseline"
+        baseline=$(python3 "$GITHUB_ACTION_PATH/merge_coverage.py" "$RUNNER_TEMP/baseline" "$GITHUB_WORKSPACE" "$RUNNER_TEMP/baseline.xml")
+        ok=$(python3 -c "print(str($TOTAL >= $baseline - $MAX_DROP).lower())")
+        echo "baseline=$baseline" >> "$GITHUB_OUTPUT"
+        echo "ok=$ok" >> "$GITHUB_OUTPUT"
+
+    - name: Patch coverage
+      id: patch
+      if: github.event_name == 'pull_request'
+      shell: bash
+      env:
+        BASE_REF: ${{ github.base_ref }}
+        FAIL_UNDER: ${{ inputs.fail-under }}
+      run: |
+        if uvx diff-cover@11.0.0 "$RUNNER_TEMP/coverage.xml" --compare-branch="origin/$BASE_REF" \
+          --fail-under="$FAIL_UNDER" --format "markdown:$RUNNER_TEMP/patch.md"; then
+          echo "ok=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "ok=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Write report
+      shell: bash
+      env:
+        PROJECT: ${{ inputs.project }}
+        TOTAL: ${{ steps.total.outputs.total }}
+        BASELINE: ${{ steps.compare.outputs.baseline }}
+        TOTAL_OK: ${{ steps.compare.outputs.ok }}
+        PATCH_OK: ${{ steps.patch.outputs.ok }}
+        FAIL_UNDER: ${{ inputs.fail-under }}
+        MAX_DROP: ${{ inputs.max-drop }}
+      run: |
+        report="$RUNNER_TEMP/coverage.md"
+        {
+          echo "### Coverage: $PROJECT"
+          echo
+          if [ -n "$BASELINE" ]; then
+            delta=$(python3 -c "print(f'{$TOTAL - $BASELINE:+.2f}')")
+            mark=$([ "$TOTAL_OK" = "true" ] && echo "✅" || echo "❌ more than $MAX_DROP points below main")
+            echo "**Total:** $TOTAL% (main $BASELINE%, $delta) $mark"
+          else
+            echo "**Total:** $TOTAL%"
+          fi
+          if [ -f "$RUNNER_TEMP/patch.md" ]; then
+            mark=$([ "$PATCH_OK" = "true" ] && echo "✅" || echo "❌ below $FAIL_UNDER%")
+            echo
+            echo "**Changed lines:** $mark"
+            echo
+            echo "<details><summary>Patch coverage report</summary>"
+            echo
+            # Nest diff-cover's headings under this report's heading.
+            sed -E 's/^(#+) /\1### /' "$RUNNER_TEMP/patch.md"
+            echo
+            echo "</details>"
+          fi
+        } > "$report"
+        cat "$report" >> "$GITHUB_STEP_SUMMARY"
+
+    - name: Comment on PR
+      if: >-
+        github.event_name == 'pull_request' &&
+        github.event.pull_request.head.repo.full_name == github.repository
+      uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+      with:
+        header: coverage-${{ inputs.project }}
+        path: ${{ runner.temp }}/coverage.md
+
+    - name: Apply coverage gates
+      if: steps.compare.outputs.ok == 'false' || steps.patch.outputs.ok == 'false'
+      shell: bash
+      run: |
+        echo "::error::Coverage gate failed, see the job summary"
+        exit 1
