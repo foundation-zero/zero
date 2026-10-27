@@ -14,6 +14,12 @@ export default defineConfig(({ mode }) => {
       clearMocks: true,
       globals: true,
       environment: "jsdom",
+      coverage: {
+        provider: "v8",
+        include: ["**/*.{ts,vue}"],
+        exclude: ["**/*.spec.ts", "**/*.d.ts", "components/ui/**", "modules/domestic/gql/**"],
+        reporter: ["text-summary"],
+      },
     },
 
     root: resolve(__dirname, "src"),
