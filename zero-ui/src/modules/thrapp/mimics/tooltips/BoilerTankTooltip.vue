@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { ratioToPercentage } from "@/modules/common/lib/utils";
 import { BoilerTankState } from "@/modules/thrsim/types";
-import { computed } from "vue";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
@@ -20,7 +20,7 @@ import { MimicComponentType } from "../../types";
 import { DHW_TANK_CAPACITY } from "../../utils/consts.ts";
 import { YardTag } from "../components/yard-tag";
 import BoilerTankInstance from "../instances/BoilerTankInstance.vue";
-import { ControllerStateValue, getMimicDataProvider, ParameterValue } from "../providers";
+import { ControllerStateValue, ParameterValue } from "../providers";
 import SensorValue from "../providers/SensorValue.vue";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
@@ -30,12 +30,7 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.BoilerTank>
 const { sensors, parameters, custom, tooltip } = props;
 
 const { sources, labels, items } = useTranslations();
-const { getSensorValue } = getMimicDataProvider();
-
-const currentLevel = getSensorValue(sensors.level);
-const currentLevelPercentage = computed(
-  () => (currentLevel.value?.level.value ?? 0) / DHW_TANK_CAPACITY,
-);
+const levelToPercentage = (level: number) => ratioToPercentage(level / DHW_TANK_CAPACITY);
 </script>
 
 <template>
@@ -126,12 +121,17 @@ const currentLevelPercentage = computed(
         </Partials.ListItem>
       </ParameterValue>
 
-      <TooltipListItem>
-        <TooltipListItemTitle>{{ items("filling") }}</TooltipListItemTitle>
-        <TooltipListItemValue>
-          <FieldRenderer.Percentage :value="currentLevelPercentage" />
-        </TooltipListItemValue>
-      </TooltipListItem>
+      <SensorValue
+        :source="sensors.level"
+        field="level"
+      >
+        <TooltipListItem>
+          <TooltipListItemTitle>{{ items("filling") }}</TooltipListItemTitle>
+          <TooltipListItemValue>
+            <FieldRenderer.Percentage :transform="levelToPercentage" />
+          </TooltipListItemValue>
+        </TooltipListItem>
+      </SensorValue>
 
       <SensorValue
         :source="sensors.level"
