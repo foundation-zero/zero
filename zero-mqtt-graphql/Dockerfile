@@ -2,9 +2,6 @@ FROM --platform=$BUILDPLATFORM rust:1.99-trixie@sha256:931c2c0531a8b143e044f0f39
 
 WORKDIR /app
 
-COPY Cargo.toml Cargo.lock ./
-COPY src ./src
-
 ARG TARGETARCH
 
 RUN apt-get update && \
@@ -24,13 +21,27 @@ ENV CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
 ENV CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc
 ENV CXX_aarch64_unknown_linux_gnu=aarch64-linux-gnu-g++
 
-RUN if [ "$TARGETARCH" = "arm64" ]; then \
-  cargo build --release --target aarch64-unknown-linux-gnu && \
-  cp target/aarch64-unknown-linux-gnu/release/zero-mqtt-graphql /app/zero-mqtt-graphql; \
-  else \
-  cargo build --release --target x86_64-unknown-linux-gnu && \
-  cp target/x86_64-unknown-linux-gnu/release/zero-mqtt-graphql /app/zero-mqtt-graphql; \
-  fi
+RUN case "$TARGETARCH" in \
+  arm64) echo aarch64-unknown-linux-gnu ;; \
+  amd64) echo x86_64-unknown-linux-gnu ;; \
+  esac > /rust-target
+
+# Build dependencies against stub sources first, so this layer stays cached
+# until Cargo.toml or Cargo.lock change.
+COPY Cargo.toml Cargo.lock ./
+RUN mkdir src && \
+  echo 'fn main() {}' > src/main.rs && \
+  touch src/lib.rs && \
+  cargo build --release --locked --target "$(cat /rust-target)" && \
+  rm -rf src
+
+COPY src ./src
+
+# COPY keeps the checkout mtimes, which are older than the stub build, so touch
+# the sources to make cargo rebuild the crate itself.
+RUN touch src/*.rs && \
+  cargo build --release --locked --target "$(cat /rust-target)" && \
+  cp "target/$(cat /rust-target)/release/zero-mqtt-graphql" /app/zero-mqtt-graphql
 
 FROM debian:trixie-slim@sha256:62bd423aeee912639ca8ee681c2b762cb3e25137e0a92b20be455898a9f034ad AS runtime
 
