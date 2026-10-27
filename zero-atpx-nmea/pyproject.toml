@@ -19,7 +19,11 @@ dev = [
     "ruff>=0.17.2,<0.18",
     "pyright>=1.1.403,<2",
 ]
-test = ["pytest-asyncio>=1.1.0,<2", "pytest>=9.1.1,<10"]
+test = [
+    "pytest-asyncio>=1.1.0,<2",
+    "pytest-cov>=7.1.0,<8",
+    "pytest>=9.1.1,<10",
+]
 
 [tool.uv]
 default-groups = ["dev", "test"]
@@ -34,6 +38,19 @@ select = ["E4", "E7", "E9", "F", "W", "I"]
 asyncio_default_fixture_loop_scope = "function"
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["src/zero_atpx_nmea"]
+branch = true
+
+[tool.coverage.report]
+exclude_also = [
+    "if TYPE_CHECKING:",
+    'if __name__ == "__main__":',
+    "@overload",
+    "raise NotImplementedError",
+    '^\s*\.\.\.$',
+]
 
 [build-system]
 requires = ["hatchling>=1.26,<2", "hatch-vcs>=0.4,<1"]
