@@ -10,7 +10,7 @@ import {
   SimulationDefinitions,
 } from "@/modules/thrsim/types";
 import { type Component, computed, toRefs } from "vue";
-import { useThrsHistory } from "../stores/history.ts";
+import { useSimulationStore } from "../stores/simulation";
 import BoundaryControl from "./controls/BoundaryControl.vue";
 import FlowControl from "./controls/FlowControl.vue";
 import HeatSourceControl from "./controls/HeatSourceControl.vue";
@@ -37,14 +37,14 @@ const COMPONENTS: Record<SimulationComponentType, Component | null> = {
   [SimulationComponentType.PropulsionDrive]: HeatSourceControl,
 };
 
-const { data } = toRefs(useThrsHistory());
+const { simulation } = toRefs(useSimulationStore());
 
 const props = defineProps<{ type: ThrsSimulationType }>();
 
 const definition = computed(() => SIMULATION.inputs[props.type] as SimulationDefinitions);
 
 const simulationInputsData = computed(
-  () => data.value?.simulation?.inputs as unknown as ExtractAllValues<SimulationDefinitions>,
+  () => simulation.value?.inputs as unknown as ExtractAllValues<SimulationDefinitions>,
 );
 </script>
 <template>

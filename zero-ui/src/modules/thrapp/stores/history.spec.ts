@@ -1,10 +1,10 @@
-import { client } from "@/modules/thrsim/graphql/client";
+import { client } from "@/modules/thrapp/graphql/client";
 import { createTestingPinia } from "@pinia/testing";
 import { createUseQueryFake } from "@tests/lib/urql";
 import { useQuery } from "@urql/vue";
 import { setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { ComponentRecord, QUERY_ALL } from "../lib/consts";
+import { ComponentRecord, QUERY_MODULES } from "../lib/consts";
 import { useThrsHistory } from "./history";
 
 vi.mock(import("@urql/vue"), async (importOriginal) => ({
@@ -12,15 +12,15 @@ vi.mock(import("@urql/vue"), async (importOriginal) => ({
   useQuery: vi.fn(),
 }));
 
-vi.mock("@/modules/thrsim/graphql/client", () => ({
+vi.mock("@/modules/thrapp/graphql/client", () => ({
   client: { mutation: vi.fn() },
   context: {},
 }));
 
 const queries = createUseQueryFake();
-const allQuery = () => queries.resultOf(QUERY_ALL);
+const modulesQuery = () => queries.resultOf(QUERY_MODULES);
 
-describe("thrsim history store", () => {
+describe("THRS history store", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     localStorage.clear();
@@ -39,11 +39,11 @@ describe("thrsim history store", () => {
 
     await vi.advanceTimersByTimeAsync(5000);
 
-    expect(allQuery().executeQuery).toHaveBeenCalledOnce();
+    expect(modulesQuery().executeQuery).toHaveBeenCalledOnce();
     expect(history.lastUpdate).toBe(new Date("2026-10-27T12:00:05Z").getTime());
   });
 
-  it("sends mutations through the thrsim client", async () => {
+  it("sends mutations through the THRS client", async () => {
     const result = { data: { ok: true } };
     vi.mocked(client.mutation).mockReturnValue({
       toPromise: () => Promise.resolve(result),

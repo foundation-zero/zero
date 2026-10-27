@@ -1,11 +1,11 @@
-import { ThrsDefinitions } from "@/modules/thrsim/lib/consts";
+import { ThrsDefinitions } from "@/modules/thrapp/lib/consts";
 import {
   ControllerStateComponentType,
   ParametersType,
   PickKeys,
   SchemaDefinition,
   SensorComponentType,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
 import { getField, ModuleField, Placeholder } from "../mimics/providers";
 
 export type PidControllerTuning = {

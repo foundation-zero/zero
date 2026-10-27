@@ -1,4 +1,4 @@
-import { ParametersType } from "@/modules/thrsim/types";
+import { ParametersType } from "@/modules/thrapp/types/thrs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 import { ModuleField } from ".";

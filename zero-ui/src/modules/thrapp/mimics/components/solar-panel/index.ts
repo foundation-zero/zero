@@ -1,4 +1,4 @@
-import { Ratio } from "@/modules/thrsim/types";
+import { Ratio } from "@/modules/thrapp/types/thrs";
 
 export { default as SolarPanel } from "./SolarPanel.vue";
 

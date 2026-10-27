@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ControllerStateComponentType } from "@/modules/thrsim/types";
+import { ControllerStateComponentType } from "@/modules/thrapp/types/thrs";
 import { useTranslations } from ".";
 import {
   MimicTooltip,

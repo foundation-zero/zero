@@ -1,4 +1,4 @@
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { toHeatExchanger } from "../../helpers";
 
 import { HeatExchangerPortOrientation } from "../../../components/heat-exchanger";

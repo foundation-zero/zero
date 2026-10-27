@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SensorComponentType, ThrusterMode } from "@/modules/thrsim/types";
+import { SensorComponentType, ThrusterMode } from "@/modules/thrapp/types/thrs";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { getMimicDataProvider, ModuleField } from "../../providers";

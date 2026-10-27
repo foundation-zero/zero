@@ -1,4 +1,4 @@
-import { SensorAlarms } from "@/modules/thrsim/types";
+import { SensorAlarms } from "@/modules/thrapp/types/thrs";
 import { describe, expect, it } from "vitest";
 import { MimicComponentState } from "../components";
 import { componentStateFromAlarms, extractFieldValue } from "./helpers";

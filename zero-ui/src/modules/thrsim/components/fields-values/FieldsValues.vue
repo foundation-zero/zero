@@ -2,8 +2,8 @@
 import { useLocalStorage } from "@vueuse/core";
 import { computed } from "vue";
 import { FieldSeries, provideContext } from ".";
-import { ComponentRecord, ThrsModules } from "../../lib/consts";
-import { useThrsHistory } from "../../stores/history.ts";
+import { ComponentRecord, ThrsModules } from "@/modules/thrapp/lib/consts";
+import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import FieldValues from "./FieldValues.vue";
 
 const props = defineProps<{

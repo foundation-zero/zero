@@ -1,4 +1,4 @@
-import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrsim/types";
+import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp, reactive, ref } from "vue";
 import { useAdvisoryEnabled, useAutomaticMode, useDcMode, usePvtMode } from ".";
@@ -9,7 +9,7 @@ const automation = reactive({
   setAutomatedControl: vi.fn(() => setModuleAutomation),
 });
 
-vi.mock("@/modules/thrsim/stores/automation", () => ({
+vi.mock("@/modules/thrapp/stores/automation", () => ({
   useAutomationStore: () => automation,
 }));
 

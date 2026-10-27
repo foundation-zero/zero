@@ -1,5 +1,5 @@
 import { tScoped } from "@/modules/common/lib/utils";
-import { ThrsModules } from "@/modules/thrsim/lib/consts";
+import { ThrsModules } from "@/modules/thrapp/lib/consts";
 import {
   DcAutomaticMode,
   DhwAutomaticMode,
@@ -8,8 +8,8 @@ import {
   PvtAutomaticMode,
   ThrustersAutomaticMode,
   useAutomationStore,
-} from "@/modules/thrsim/stores/automation";
-import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrsim/types";
+} from "@/modules/thrapp/stores/automation";
+import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
 import { computed, MaybeRef, unref } from "vue";
 
 export { default as ModeBadge } from "./ModeBadge.vue";

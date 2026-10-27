@@ -3,6 +3,8 @@
 /**
  * Script to extract GraphQL schema types and update definition constants in consts.generated.ts
  *
+ * Simulation definitions are written to the thrsim module, all other definitions to thrapp.
+ *
  * This script parses a GraphQL schema file and extracts type definitions to generate
  * TypeScript constants. It supports four definition types:
  * - Control definitions (for control systems)
@@ -36,8 +38,13 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SCHEMA_PATH = path.join(__dirname, "../src/modules/thrsim/graphql/schema.graphql");
-const CONSTS_PATH = path.join(__dirname, "../src/modules/thrsim/lib/consts.generated.ts");
+const SCHEMA_PATH = path.join(__dirname, "../src/modules/thrapp/graphql/schema.graphql");
+const THRAPP_CONSTS_PATH = path.join(__dirname, "../src/modules/thrapp/lib/consts.generated.ts");
+// Simulation is only used by the temporary thrsim module, so its definitions live there
+const THRSIM_CONSTS_PATH = path.join(__dirname, "../src/modules/thrsim/lib/consts.generated.ts");
+
+const getConstsPath = (definitionType: DefinitionType): string =>
+  definitionType === "simulation" ? THRSIM_CONSTS_PATH : THRAPP_CONSTS_PATH;
 
 // ============================================================================
 // Types
@@ -537,17 +544,18 @@ function writeUpdatedConstants(extractedValues: ExtractedValues, config: Config)
   );
 
   const newObjectString = generateObjectString(extractedValues, config);
+  const constsPath = getConstsPath(config.definitionType);
 
-  if (!fs.existsSync(CONSTS_PATH)) {
-    throw new Error(`Constants file not found: ${CONSTS_PATH}`);
+  if (!fs.existsSync(constsPath)) {
+    throw new Error(`Constants file not found: ${constsPath}`);
   }
 
-  const constsContent = fs.readFileSync(CONSTS_PATH, "utf8");
+  const constsContent = fs.readFileSync(constsPath, "utf8");
   const updatedContent = updateConstsFile(constsContent, newObjectString, config);
 
-  fs.writeFileSync(CONSTS_PATH, updatedContent);
+  fs.writeFileSync(constsPath, updatedContent);
 
-  console.log(`✅ Successfully updated ${CONSTS_PATH}`);
+  console.log(`✅ Successfully updated ${constsPath}`);
   console.log(`📊 Generated object with ${Object.keys(extractedValues).length} entries`);
 }
 

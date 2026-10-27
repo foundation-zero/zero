@@ -1,7 +1,7 @@
 import { capitalizeFirst } from "@/modules/common/lib/utils";
-import { QUERIES } from "@/modules/thrsim/lib/consts";
-import { ThrsDefinitions, ThrsModules } from "@/modules/thrsim/lib/consts.types";
-import { useThrsHistory } from "@/modules/thrsim/stores/history";
+import { QUERIES } from "@/modules/thrapp/lib/consts";
+import { ThrsDefinitions, ThrsModules } from "@/modules/thrapp/lib/consts.types";
+import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import {
   ControlComponentType,
   ControlDefinitionMap,
@@ -12,7 +12,7 @@ import {
   ParametersType,
   SensorComponentType,
   SensorDefinitionMap,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
 import { gql } from "@urql/vue";
 import { computed, Ref, toRefs, unref } from "vue";
 import { MimicDataProvider, ModuleField } from ".";

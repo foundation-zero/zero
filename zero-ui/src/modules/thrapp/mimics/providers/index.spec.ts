@@ -1,4 +1,4 @@
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { describe, expect, it } from "vitest";
 import { deserializeField, getCustomField, ModuleField, serializeField } from ".";
 

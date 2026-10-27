@@ -1,5 +1,5 @@
 import { stamp, stampWithSource } from "@/modules/common/lib/utils";
-import { Stamped } from "@/modules/common/types";
+import { PID, Stamped } from "@/modules/common/types";
 import {
   AmcsControlMode,
   BoilerTankState,
@@ -11,11 +11,10 @@ import {
   ParametersType,
   PcmChargeStatus,
   PcmChargingState,
-  PID,
   SensorComponentType,
   SensorDefinitionMap,
   ThrusterMode,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
 import { useIntervalFn } from "@vueuse/core";
 import { computed, MaybeRef, ref, Ref, unref } from "vue";
 

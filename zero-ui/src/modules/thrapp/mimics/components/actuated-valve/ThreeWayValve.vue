@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ratio } from "@/modules/thrsim/types";
+import { Ratio } from "@/modules/thrapp/types/thrs";
 import { computed } from "vue";
 import {
   createThreeWayValveFlows,

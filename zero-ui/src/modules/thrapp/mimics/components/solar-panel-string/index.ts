@@ -1,4 +1,4 @@
-import { Ratio } from "@/modules/thrsim/types";
+import { Ratio } from "@/modules/thrapp/types/thrs";
 import { SolarPanelOrientation, SolarPanelSize } from "../solar-panel";
 
 export { default as SolarPanelString } from "./SolarPanelString.vue";

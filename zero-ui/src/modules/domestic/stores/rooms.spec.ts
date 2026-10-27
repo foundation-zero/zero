@@ -95,7 +95,7 @@ describe("Rooms Store", () => {
     setActivePinia(pinia);
     useSubscription.mockImplementation((_, cb) => {
       subscriptionCallback = cb as urql.SubscriptionHandler<{ rooms: Room[] }, Room[]>;
-      return { data } as urql.UseSubscriptionResponse;
+      return { data, error: ref() } as urql.UseSubscriptionResponse;
     });
 
     useMutation.mockImplementation(<T>() => ({

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils";
-import { DcMode } from "@/modules/thrsim/types";
+import { DcMode } from "@/modules/thrapp/types/thrs";
 import { computed } from "vue";
 import { DC_MODE_COLORS } from ".";
 import { MimicComponentState } from "..";

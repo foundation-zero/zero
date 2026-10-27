@@ -3,7 +3,7 @@ import {
   ControllerStateComponentType,
   ParametersType,
   SensorComponentType,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
 import { toFlowControlValve } from "../../helpers";
 
 import { getField } from "../../../providers";

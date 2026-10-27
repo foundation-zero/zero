@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ThrsDefinitions } from "@/modules/thrsim/lib/consts.types";
+import { ThrsDefinitions } from "@/modules/thrapp/lib/consts.types";
 import {
   ControlComponentType,
   ControlDefinitionMap,
@@ -9,7 +9,7 @@ import {
   ParametersType,
   SensorComponentType,
   SensorDefinitionMap,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
 import { Ref, toRef } from "vue";
 import {
   createMimicDataProvider,

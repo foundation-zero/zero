@@ -8,7 +8,7 @@
   "
 >
 import { Unstamp } from "@/modules/common/types";
-import { ControlComponentType, ControlDefinitionMap } from "@/modules/thrsim/types";
+import { ControlComponentType, ControlDefinitionMap } from "@/modules/thrapp/types/thrs";
 import { ModuleField, provideFieldValueSource } from ".";
 import { provideControlValue } from "./forms.control";
 

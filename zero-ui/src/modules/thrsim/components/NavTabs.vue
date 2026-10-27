@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ThrsModules } from "@/modules/thrsim/lib/consts.types";
+import { ThrsModules } from "@/modules/thrapp/lib/consts.types";
 import RouterLinkWithFallback from "@common/components/RouterLinkWithFallback.vue";
 import { Tabs, TabsList, TabsTrigger } from "@common/components/tab-links";
 import { useI18n } from "vue-i18n";

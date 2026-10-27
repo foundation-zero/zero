@@ -7,12 +7,12 @@ import SimulationActions from "@/modules/thrsim/components/SimulationActions.vue
 import TopNav from "@/modules/common/components/navigation/TopNav.vue";
 import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.vue";
 import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
-import { client } from "@/modules/thrsim/graphql/client.ts";
-import { ThrsModules } from "@/modules/thrsim/lib/consts.types.ts";
+import { client } from "@/modules/thrapp/graphql/client";
+import { ThrsModules } from "@/modules/thrapp/lib/consts.types";
 import { provideClient } from "@urql/vue";
 import { computed, provide } from "vue";
 import { useRoute } from "vue-router";
-import ControlActions from "../components/ControlActions.vue";
+import ControlActions from "@/modules/thrapp/components/control-actions/ControlActions.vue";
 import SimulationTabs from "../components/SimulationTabs.vue";
 import SubNavTabs from "../components/SubNavTabs.vue";
 

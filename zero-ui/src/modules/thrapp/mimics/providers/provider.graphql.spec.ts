@@ -3,7 +3,7 @@ import {
   ControllerStateComponentType,
   ParametersType,
   SensorComponentType,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
 import { DocumentNode, print } from "graphql";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { reactive, ref } from "vue";
@@ -19,7 +19,7 @@ const history = reactive({
 const automaticMode = ref<boolean | undefined>(true);
 const advisoryEnabled = ref<boolean | null>(true);
 
-vi.mock("@/modules/thrsim/stores/history", () => ({
+vi.mock("@/modules/thrapp/stores/history", () => ({
   useThrsHistory: () => history,
 }));
 

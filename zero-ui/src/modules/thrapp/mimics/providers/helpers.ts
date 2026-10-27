@@ -1,6 +1,6 @@
 import { unstamp } from "@/modules/common/lib/utils";
 import { Unstamp } from "@/modules/common/types";
-import { SensorAlarms } from "@/modules/thrsim/types";
+import { SensorAlarms } from "@/modules/thrapp/types/thrs";
 import { MimicComponentState } from "../components";
 
 export const extractFieldValue =

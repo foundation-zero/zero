@@ -4,7 +4,7 @@ import { HTMLAttributes } from "vue";
 import { FieldRenderer } from "../../renderers";
 import ValueListItem from "./ValueListItem.vue";
 
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { ModuleField } from "../../providers";
 import SensorValue from "../../providers/SensorValue.vue";
 

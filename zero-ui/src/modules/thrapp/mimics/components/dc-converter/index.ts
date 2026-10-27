@@ -1,4 +1,4 @@
-import { DcMode, SensorComponentType } from "@/modules/thrsim/types";
+import { DcMode, SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { ModuleField } from "../../providers";
 import { ModeBadgeMode } from "../mode-badge";
 export { default as DcConverterStatus } from "./DcConverterStatus.vue";

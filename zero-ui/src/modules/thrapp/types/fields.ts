@@ -1,10 +1,10 @@
-import { ControlStatus } from "@/modules/thrsim/stores/automation";
+import { ControlStatus } from "@/modules/thrapp/stores/automation";
 import {
   ControlComponentType,
   ControllerStateComponentType,
   ParametersType,
   SensorComponentType,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
 import { BoilerTankStateField, MimicComponentType } from ".";
 import { TooltipComponentContext } from "../components/tooltip";
 import { HeatExchangerPortOrientation } from "../mimics/components/heat-exchanger";

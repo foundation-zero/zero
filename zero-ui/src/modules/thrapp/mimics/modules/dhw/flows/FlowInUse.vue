@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { getField } from "../../../providers";
 import AnimatedCircuit from "./AnimatedCircuit.vue";
 import AnimatedPipe from "./AnimatedPipe.vue";
