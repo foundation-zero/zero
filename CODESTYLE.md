@@ -159,7 +159,7 @@ The shared log format is:
 
 ```toml
 [tool.coverage.run]
-source = ["src/<package>"]
+source = ["src"]  # the package directory for flat layouts
 branch = true
 
 [tool.coverage.report]

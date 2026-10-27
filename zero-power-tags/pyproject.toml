@@ -42,7 +42,7 @@ asyncio_mode = "auto"
 testpaths = ["tests"]
 
 [tool.coverage.run]
-source = ["src/zero_power_tags"]
+source = ["src"]
 branch = true
 
 [tool.coverage.report]
