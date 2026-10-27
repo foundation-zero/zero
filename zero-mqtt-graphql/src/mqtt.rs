@@ -216,7 +216,7 @@ impl MqttSubscriber {
         if !valid {
             let details: Vec<String> = validator
                 .iter_errors(value)
-                .map(|e| format!("{}: {}", e.instance_path, e))
+                .map(|e| format!("{}: {}", e.instance_path(), e))
                 .collect();
             warn!(
                 "Schema mismatch on topic '{}': {} | payload: {}",
