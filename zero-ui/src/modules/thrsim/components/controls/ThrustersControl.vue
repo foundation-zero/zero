@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="K extends keyof ThrsModules">
+<script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import {
   NumberField,
@@ -7,7 +7,7 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/number-field";
-import { ThrsModules, ThrsSimulationType } from "@/modules/thrsim/lib/consts";
+import { ThrsSimulationType } from "@/modules/thrsim/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrsim/stores/thrs";
 import { ThrusterSimulation } from "@/modules/thrsim/types";
 import { toUpperCamelCase } from "@common/lib/utils";

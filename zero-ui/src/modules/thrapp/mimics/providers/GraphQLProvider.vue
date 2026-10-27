@@ -1,7 +1,7 @@
-<script setup lang="ts" generic="K extends keyof THRS['modules']">
+<script setup lang="ts">
 import { capitalizeFirst } from "@/modules/common/lib/utils";
 import { QUERIES } from "@/modules/thrsim/lib/consts";
-import { THRS, ThrsDefinitions, ThrsModules } from "@/modules/thrsim/lib/consts.types";
+import { ThrsDefinitions, ThrsModules } from "@/modules/thrsim/lib/consts.types";
 import { useThrsHistory } from "@/modules/thrsim/stores/history";
 import {
   ControlComponentType,

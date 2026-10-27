@@ -1,10 +1,5 @@
 export type MessageType =
-  | "connection_init"
-  | "connection_ack"
-  | "ping"
-  | "pong"
-  | "subscribe"
-  | "next";
+  "connection_init" | "connection_ack" | "ping" | "pong" | "subscribe" | "next";
 
 export interface KeepAlivePayload {
   message: "keepalive";

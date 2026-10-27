@@ -28,7 +28,6 @@ const { setAutomatedControl } = useAutomationStore();
 const currentDefinition = inject<Ref<string>>("currentModule")!;
 
 const { stop, start, remaining, isActive } = useCountdown(COOLDOWN_SECONDS, {
-  immediate: false,
   onComplete: async () => {
     await setAutomatedControl(currentDefinition.value)(false);
 
