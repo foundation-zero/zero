@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Roles } from "@/modules/domestic/types";
+import { Roles } from "@/modules/common/types";
 import WithRole from "./WithRole.vue";
 </script>
 

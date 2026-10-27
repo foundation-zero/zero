@@ -10,7 +10,7 @@ import {
 import { CO2_SETPOINT_RANGE } from "@/modules/domestic/lib/consts";
 import { useRoomStore } from "@/modules/domestic/stores/rooms";
 import { ResponsivePopup } from "@common/components/responsive-dialog";
-import { hasCO2Control, updateSetpointWhenControlsHaveChanged } from "@common/lib/utils";
+import { hasCO2Control, updateSetpointWhenControlsHaveChanged } from "@/modules/domestic/lib/utils";
 
 import { RiSettingsLine } from "@remixicon/vue";
 import { computed, ref, toRefs } from "vue";

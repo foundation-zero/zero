@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Table, TableBody } from "@/components/ui/table";
 import { RoomWithState, ShipArea } from "@/modules/domestic/types";
-import { compareByValidationStatus, getRoomState } from "@common/lib/utils";
+import { compareByValidationStatus, getRoomState } from "@/modules/domestic/lib/utils";
 import { computed } from "vue";
 import SensorStateRow from "./SensorStateRow.vue";
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { groupLights } from "@/modules/domestic/lib/mappers";
 import { useRoomStore } from "@/modules/domestic/stores/rooms";
-import LightGroup from "@common/components/lights-list/LightGroup.vue";
+import LightGroup from "@/modules/domestic/cabin/components/lights-list/LightGroup.vue";
 import { useUIStore } from "@common/stores/ui";
 
 import { LightingGroup } from "@/modules/domestic/types";

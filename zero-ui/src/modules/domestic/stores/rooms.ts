@@ -24,10 +24,10 @@ import { Room, RoomGroup, ShipArea } from "@/modules/domestic/types";
 import { useMutation, UseMutationResponse, useSubscription } from "@urql/vue";
 import { useDebounceFn, useLocalStorage, useTimeoutFn } from "@vueuse/core";
 
+import { useAuthStore } from "@/modules/common/stores/auth";
 import { defineStore } from "pinia";
 import { computed, MaybeRefOrGetter, ref, toRefs, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { useAuthStore } from "./auth";
 
 const MUTATION_DELAY_IN_MS = 5;
 

@@ -1,21 +1,15 @@
-import client from "@/modules/domestic/graphql/client";
-import { Roles } from "@/modules/domestic/types";
+import { Roles } from "@/modules/common/types";
 import { createTestingPinia } from "@pinia/testing";
 import { tokens } from "@tests/lib/auth";
 import { setActivePinia } from "pinia";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { nextTick } from "vue";
 import { useAuthStore } from "./auth";
-
-vi.mock("@/modules/domestic/graphql/client", () => ({
-  default: { query: vi.fn() },
-}));
 
 describe("auth store", () => {
   beforeEach(() => {
     localStorage.clear();
     setActivePinia(createTestingPinia({ stubActions: false }));
-    vi.mocked(client.query).mockReset();
   });
 
   it("is logged out without a token", () => {
@@ -58,30 +52,5 @@ describe("auth store", () => {
 
     expect(auth.isLoggedIn).toBe(false);
     expect(localStorage.getItem("token")).toBeNull();
-  });
-
-  describe("verifyToken", () => {
-    it("accepts a token the API accepts", async () => {
-      vi.mocked(client.query).mockResolvedValue({} as never);
-      const auth = useAuthStore();
-      auth.setToken(tokens[Roles.User]);
-
-      await expect(auth.verifyToken()).resolves.toBeUndefined();
-    });
-
-    it("rejects a token the API refuses", async () => {
-      vi.mocked(client.query).mockResolvedValue({ error: new Error("Unauthorized") } as never);
-      const auth = useAuthStore();
-      auth.setToken(tokens[Roles.User]);
-
-      await expect(auth.verifyToken()).rejects.toThrow("Token verification failed");
-    });
-
-    it("rejects without calling the API when the token has no roles", async () => {
-      const auth = useAuthStore();
-
-      await expect(auth.verifyToken()).rejects.toThrow("No roles defined in token");
-      expect(client.query).not.toHaveBeenCalled();
-    });
   });
 });

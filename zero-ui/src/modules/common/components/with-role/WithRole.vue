@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useAuthStore } from "@/modules/domestic/stores/auth";
-import { Roles } from "@/modules/domestic/types";
+import { useAuthStore } from "@/modules/common/stores/auth";
+import { Roles } from "@/modules/common/types";
 
 const auth = useAuthStore();
 

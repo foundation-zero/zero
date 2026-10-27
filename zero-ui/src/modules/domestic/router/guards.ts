@@ -1,6 +1,6 @@
-import { Roles } from "@/modules/domestic/types";
+import { useAuthStore } from "@/modules/common/stores/auth";
+import { Roles } from "@/modules/common/types";
 import { _Awaitable, RouteLocationNormalizedGeneric, RouteLocationRaw, Router } from "vue-router";
-import { useAuthStore } from "../stores/auth";
 
 export const withGuards = (router: Router) => {
   router.beforeEach((to) => {

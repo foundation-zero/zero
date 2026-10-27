@@ -3,7 +3,6 @@ import { PID } from "@/modules/thrsim/types";
 import { unstamp } from "@common/lib/utils";
 import { Stamped } from "@common/types";
 import { useClientHandle } from "@urql/vue";
-import { defineStore } from "pinia";
 import { computed, ref, Ref, WritableComputedRef } from "vue";
 
 type FormValue<T> = {
@@ -158,5 +157,3 @@ export const controlValuesForm = <
     error: Ref<null | string>;
   } & Form;
 };
-
-defineStore("thrs", () => {});
