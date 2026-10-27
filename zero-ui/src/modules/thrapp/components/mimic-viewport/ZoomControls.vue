@@ -2,9 +2,9 @@
 import { Button } from "@/components/ui/button";
 import { tScoped } from "@/modules/common/lib/utils";
 import { RiSearch2Line, RiZoomInLine, RiZoomOutLine } from "@remixicon/vue";
+import { injectMimicZoomContext } from "./context";
 
-defineProps<{ canZoomIn: boolean; canZoomOut: boolean }>();
-const emit = defineEmits<{ zoomIn: []; zoomOut: []; actualSize: []; fit: [] }>();
+const { canZoomIn, canZoomOut, zoomIn, zoomOut, actualSize, fit } = injectMimicZoomContext();
 
 const t = tScoped("thrapp.labels.zoom");
 </script>
@@ -21,7 +21,7 @@ const t = tScoped("thrapp.labels.zoom");
       :disabled="!canZoomIn"
       :title="t('in')"
       :aria-label="t('in')"
-      @click="emit('zoomIn')"
+      @click="zoomIn"
     >
       <RiZoomInLine class="size-5" />
     </Button>
@@ -30,13 +30,13 @@ const t = tScoped("thrapp.labels.zoom");
       size="icon"
       :title="t('actualSize')"
       :aria-label="t('actualSize')"
-      @click="emit('actualSize')"
+      @click="actualSize"
     >
       <span class="relative size-5">
         <RiSearch2Line class="size-5" />
         <!-- "1" inside the magnifier lens, as in the design. -->
         <span
-          class="absolute top-[9px] left-[7px] w-1.5 -translate-y-1/2 text-center text-[10px] leading-none"
+          class="absolute top-2.25 left-1.5 w-1.5 -translate-y-1/2 text-center text-[10px] leading-none"
           aria-hidden="true"
         >
           1
@@ -48,7 +48,7 @@ const t = tScoped("thrapp.labels.zoom");
       size="icon"
       :title="t('fit')"
       :aria-label="t('fit')"
-      @click="emit('fit')"
+      @click="fit"
     >
       <span class="relative size-5">
         <RiSearch2Line class="size-5" />
@@ -71,7 +71,7 @@ const t = tScoped("thrapp.labels.zoom");
       :disabled="!canZoomOut"
       :title="t('out')"
       :aria-label="t('out')"
-      @click="emit('zoomOut')"
+      @click="zoomOut"
     >
       <RiZoomOutLine class="size-5" />
     </Button>
