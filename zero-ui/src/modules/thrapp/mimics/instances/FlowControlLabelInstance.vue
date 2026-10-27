@@ -1,22 +1,11 @@
 <script setup lang="ts">
-import { ratioAsPercentage } from "@/modules/common/lib/utils";
-import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
 import { SensorComponentType } from "@/modules/thrsim/types";
-import { computed } from "vue";
-import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
 import { Label } from "../components/label";
-import { getMimicDataProvider, ModuleField } from "../providers";
+import { ModuleField, SensorValue } from "../providers";
+import { FieldRenderer } from "../renderers";
 
-const props = defineProps<
-  MimicComponentInstanceProps & { valve: ModuleField<SensorComponentType.Valve> }
->();
-
-const { getSensorValue } = getMimicDataProvider();
-const valve = getSensorValue(props.valve);
-const position = computed(() => valve.value?.positionRel?.value);
-const positionPercentage = ratioAsPercentage(position);
-const { t } = useI18n();
+defineProps<MimicComponentInstanceProps & { valve: ModuleField<SensorComponentType.Valve> }>();
 </script>
 
 <template>
@@ -28,11 +17,12 @@ const { t } = useI18n();
   >
     {{ tagId }}
     <template #value>
-      <AnimatedNumber
-        :to="positionPercentage"
-        :fraction-digits="0"
-      />
-      <span>{{ t("units.percent") }}</span>
+      <SensorValue
+        :source="valve"
+        field="positionRel"
+      >
+        <FieldRenderer.Percentage />
+      </SensorValue>
     </template>
   </Label>
 </template>
