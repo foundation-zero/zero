@@ -7,6 +7,13 @@
     "security:minimumReleaseAgePypi",
     "workarounds:all"
   ],
+  "hostRules": [
+    {
+      "matchHost": "europe-west1-docker.pkg.dev",
+      "username": "_json_key_base64",
+      "password": "{{ secrets.GAR_JSON_KEY_BASE64 }}"
+    }
+  ],
   "packageRules": [
     {
       "description": "One PR for all non-major Rust crate updates, so they stop conflicting on the shared Cargo.lock files",
