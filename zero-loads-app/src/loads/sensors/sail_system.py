@@ -206,23 +206,28 @@ class BladeAdjuster(LoadsModel, ABC):
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
+    # The PLC adds the blade cunningham load to the adjuster load.
     headstay_combined_load: Annotated[
         Load,
-        Field(validation_alias="i_ActualLoad2"),
+        Field(validation_alias="i_CombinedLoad"),
         VariableMeta(
             name="headstay_combined_load",
             display_name="Headstay Comb",
             technical_name="main-headstay-combined-load",
         ),
     ]
-    # TODO: Confirm this alarm and add its max load setting once the max loads sheet is finished.
     headstay_combined_load_alarm: Annotated[
         LoadAlarm,
-        Field(validation_alias="ox_LoadAlarm"),
+        Field(validation_alias="x_CombinedLoadAlarm"),
         VariableMeta(
             name="headstay_combined_max_load_alarm",
             alarm_for="headstay_combined_load",
         ),
+    ]
+    headstay_combined_max_load: Annotated[
+        MaxLoad,
+        Field(validation_alias="i_MaxCombinedLoadSetting"),
+        VariableMeta(threshold_for="headstay_combined_load_alarm"),
     ]
     relative_position: Annotated[
         RelativePosition,
@@ -809,7 +814,12 @@ class MainCunningham(LoadsModel, ABC):
 
 class MainHalyard(LoadsModel, ABC):
     TOPIC = "sail-systems/fe207-main-halyard-captive-winch"
-    load: Annotated[Load, VariableMeta(display_name="Halyard")]
+    # TODO: Check with Vitters what the PLC calculates for i_Load; it has equalled st_Load/i_Load so far.
+    load: Annotated[
+        Load,
+        Field(validation_alias="i_Load"),
+        VariableMeta(display_name="Halyard"),
+    ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
@@ -1177,7 +1187,12 @@ class MizzenCunningham(LoadsModel, ABC):
 
 class MizzenHalyard(LoadsModel, ABC):
     TOPIC = "sail-systems/fe404-mizzen-halyard-captive-winch"
-    load: Annotated[Load, VariableMeta(display_name="Halyard")]
+    # TODO: Check with Vitters what the PLC calculates for i_Load; it has equalled st_Load/i_Load so far.
+    load: Annotated[
+        Load,
+        Field(validation_alias="i_Load"),
+        VariableMeta(display_name="Halyard"),
+    ]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
     max_load: MaxLoad
