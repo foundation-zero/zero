@@ -6,8 +6,8 @@ use nom::character::complete::{char, digit1, multispace0, multispace1};
 use nom::combinator::{map, map_res};
 use nom::error::{ErrorKind, FromExternalError, ParseError};
 use nom::multi::{many0, separated_list1};
-use nom::sequence::{delimited, pair, preceded, terminated, tuple};
-use nom::{Err, IResult};
+use nom::sequence::{delimited, pair, preceded, terminated};
+use nom::{Err, IResult, Parser};
 
 /// Prefixes that single out the two value families of a cell declaration.
 const VOLTAGE_MARKER: &str = "CellVoltage_";
@@ -350,7 +350,8 @@ pub fn parse_var_declarations(declarations: &str) -> std::result::Result<Vec<Var
             many0(item),
             preceded(multispace0, terminated(tag_no_case("END_VAR"), multispace0)),
         ),
-    )(input)
+    )
+    .parse(input)
     .map_err(|error| match error {
         Err::Error(parsing) | Err::Failure(parsing) => parsing.message.clone(),
         Err::Incomplete(_) => "incomplete declaration data".to_string(),
@@ -397,20 +398,22 @@ fn item(input: &[u8]) -> DeclResult<'_, Option<(Vec<String>, DeclType)>> {
         map(line_comment, |_| None),
         map(block_comment, |_| None),
         map(declaration, Some),
-    ))(input)
+    ))
+    .parse(input)
 }
 
 /// `name [, name ...] : TYPE;`
 fn declaration(input: &[u8]) -> DeclResult<'_, (Vec<String>, DeclType)> {
     map(
-        tuple((
+        (
             separated_list1(delimited(multispace0, char(','), multispace0), identifier),
             preceded(multispace0, char(':')),
             preceded(multispace0, decl_type),
             terminated(multispace0, char(';')),
-        )),
+        ),
         |(names, _, data_type, _)| (names, data_type),
-    )(input)
+    )
+    .parse(input)
 }
 
 /// `REAL`, `ARRAY[0..4] OF REAL`, ...
@@ -421,7 +424,7 @@ fn decl_type(input: &[u8]) -> DeclResult<'_, DeclType> {
         let (input, _) = multispace0(input)?;
         let (input, elements) = array_dimensions(input)?;
         let (input, _) = multispace0(input)?;
-        let (input, _) = tag_no_case("OF")(input)?;
+        let (input, _) = tag_no_case("OF").parse(input)?;
         let (input, _) = multispace1(input)?;
         let (input, base) = base_type(input)?;
         Ok((input, DeclType::Array(base, elements)))
@@ -444,7 +447,8 @@ fn array_dimensions(input: &[u8]) -> DeclResult<'_, u32> {
         pair(char('['), multispace0),
         pair(terminated(unsigned, tag_no_case("..")), unsigned),
         pair(multispace0, char(']')),
-    )(input)?;
+    )
+    .parse(input)?;
     match end.checked_sub(start).and_then(|span| span.checked_add(1)) {
         Some(elements) => Ok((input, elements)),
         None => Err(Err::Failure(DeclError {
@@ -470,13 +474,14 @@ fn identifier(input: &[u8]) -> DeclResult<'_, String> {
     map(
         take_while1(|byte: u8| byte.is_ascii_alphanumeric() || byte == b'_' || byte == b'$'),
         |name| String::from_utf8_lossy(name).into_owned(),
-    )(input)
+    )
+    .parse(input)
 }
 
 /// `// ...` comment, up to (not including) the end of the line.
 fn line_comment(input: &[u8]) -> DeclResult<'_, ()> {
-    let (input, _) = tag("//")(input)?;
-    let (input, _) = take_while(|byte: u8| byte != b'\n')(input)?;
+    let (input, _) = tag("//").parse(input)?;
+    let (input, _) = take_while(|byte: u8| byte != b'\n').parse(input)?;
     Ok((input, ()))
 }
 
@@ -492,7 +497,8 @@ fn block_comment(input: &[u8]) -> DeclResult<'_, ()> {
 fn unsigned(input: &[u8]) -> DeclResult<'_, u32> {
     map_res(digit1, |digits| {
         std::str::from_utf8(digits).unwrap_or("0").parse::<u32>()
-    })(input)
+    })
+    .parse(input)
 }
 
 /// Last few bytes of undeclared input.

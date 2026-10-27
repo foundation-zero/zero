@@ -1,8 +1,7 @@
 use nom::bytes::complete::take;
 use nom::combinator::map;
 use nom::number::complete::{le_u16, le_u32};
-use nom::sequence::tuple;
-use nom::IResult;
+use nom::{IResult, Parser};
 
 /// Byte length of the fixed NetVar UDP header.
 pub const HEADER_LEN: usize = 20;
@@ -94,7 +93,7 @@ pub struct ParsedDatagram<'a> {
 /// ```
 pub fn parse_header(input: &[u8]) -> IResult<&[u8], NetvarHeader> {
     map(
-        tuple((take(PREAMBLE_LEN), le_u16, le_u16, le_u16, le_u16, le_u32)),
+        (take(PREAMBLE_LEN), le_u16, le_u16, le_u16, le_u16, le_u32),
         |(_preamble, list_id, packet_index, variables, total_len, counter)| NetvarHeader {
             list_id,
             packet_index,
@@ -102,7 +101,8 @@ pub fn parse_header(input: &[u8]) -> IResult<&[u8], NetvarHeader> {
             total_len,
             counter,
         },
-    )(input)
+    )
+    .parse(input)
 }
 
 /// Whether the datagram starts with the expected CODESYS preamble.
