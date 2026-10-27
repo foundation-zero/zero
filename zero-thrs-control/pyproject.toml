@@ -65,7 +65,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["src/thrs"]
+source = ["src"]
 branch = true
 
 [tool.coverage.report]
