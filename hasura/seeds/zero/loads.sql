@@ -471,19 +471,19 @@ reference_payload AS (
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 28.0
+    "target": 26.4
   },
   {
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "blade-cunningham-load",
     "tack": "port",
-    "target": 20.0
+    "target": 19.1
   },
   {
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
-    "target": 14.0
+    "target": 14.5
   },
   {
     "load_case_id": "FM B Upwind 20261006",
@@ -507,7 +507,7 @@ reference_payload AS (
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "FM B Upwind 20261006",
@@ -561,19 +561,19 @@ reference_payload AS (
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "main-cunningham-load",
     "tack": "port",
-    "target": 5.0
+    "target": 5.0985810648896415
   },
   {
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "main-headstay-combined-load",
     "tack": "port",
-    "target": 47.5
+    "target": 46.8
   },
   {
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 12.5
+    "target": 13.6
   },
   {
     "load_case_id": "FM B Upwind 20261006",
@@ -597,7 +597,7 @@ reference_payload AS (
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 11.5
+    "target": 10.9
   },
   {
     "load_case_id": "FM B Upwind 20261006",
@@ -651,19 +651,19 @@ reference_payload AS (
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 28.0
+    "target": 26.4
   },
   {
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "blade-cunningham-load",
     "tack": "starboard",
-    "target": 20.0
+    "target": 19.1
   },
   {
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "blade-sheet-ps-load",
     "tack": "starboard",
-    "target": 14.0
+    "target": 14.5
   },
   {
     "load_case_id": "FM B Upwind 20261006",
@@ -693,7 +693,7 @@ reference_payload AS (
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "FM B Upwind 20261006",
@@ -741,19 +741,19 @@ reference_payload AS (
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "main-cunningham-load",
     "tack": "starboard",
-    "target": 5.0
+    "target": 5.0985810648896415
   },
   {
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "main-headstay-combined-load",
     "tack": "starboard",
-    "target": 47.5
+    "target": 46.8
   },
   {
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 12.5
+    "target": 13.6
   },
   {
     "load_case_id": "FM B Upwind 20261006",
@@ -777,7 +777,7 @@ reference_payload AS (
     "load_case_id": "FM B Upwind 20261006",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 11.5
+    "target": 10.9
   },
   {
     "load_case_id": "FM B Upwind 20261006",
@@ -867,7 +867,7 @@ reference_payload AS (
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 68.3344465235325
+    "target": 65.9
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -897,7 +897,7 @@ reference_payload AS (
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 37.76172291251345
+    "target": 36.6
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -951,7 +951,7 @@ reference_payload AS (
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 23.0
+    "target": 22.1
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -981,7 +981,7 @@ reference_payload AS (
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 2.2
+    "target": 2.0
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -993,7 +993,7 @@ reference_payload AS (
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-outhaul-load",
     "tack": "port",
-    "target": 8.0
+    "target": 8.559905778221921
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -1083,7 +1083,7 @@ reference_payload AS (
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 68.3344465235325
+    "target": 65.9
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -1113,7 +1113,7 @@ reference_payload AS (
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 37.76172291251345
+    "target": 36.6
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -1161,7 +1161,7 @@ reference_payload AS (
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 23.0
+    "target": 22.1
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -1191,7 +1191,7 @@ reference_payload AS (
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 2.2
+    "target": 2.0
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -1203,7 +1203,7 @@ reference_payload AS (
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "mizzen-outhaul-load",
     "tack": "starboard",
-    "target": 8.0
+    "target": 8.559905778221921
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -1251,7 +1251,7 @@ reference_payload AS (
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 27.570271193526843
+    "target": 26.4
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
@@ -1311,7 +1311,7 @@ reference_payload AS (
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
@@ -1431,7 +1431,7 @@ reference_payload AS (
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 6.0
+    "target": 6.396781775631842
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
@@ -1449,7 +1449,7 @@ reference_payload AS (
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 27.570271193526843
+    "target": 26.4
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
@@ -1509,7 +1509,7 @@ reference_payload AS (
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
@@ -1629,7 +1629,7 @@ reference_payload AS (
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 6.0
+    "target": 6.396781775631842
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
@@ -1689,7 +1689,7 @@ reference_payload AS (
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 24.91656172087308
+    "target": 24.2
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -1713,7 +1713,7 @@ reference_payload AS (
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 12.5
+    "target": 11.7
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -1761,7 +1761,7 @@ reference_payload AS (
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 2.2
+    "target": 2.0
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -1773,7 +1773,7 @@ reference_payload AS (
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 9.563047559630354
+    "target": 9.751594642034084
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -1785,7 +1785,7 @@ reference_payload AS (
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 5.0
+    "target": 5.0985810648896415
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -1809,7 +1809,7 @@ reference_payload AS (
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "storm-jib-tack-load",
     "tack": "port",
-    "target": 25.0
+    "target": 23.0
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -1857,7 +1857,7 @@ reference_payload AS (
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 24.91656172087308
+    "target": 24.2
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -1881,7 +1881,7 @@ reference_payload AS (
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 12.5
+    "target": 11.7
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -1929,7 +1929,7 @@ reference_payload AS (
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 2.2
+    "target": 2.0
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -1941,7 +1941,7 @@ reference_payload AS (
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 9.563047559630354
+    "target": 9.751594642034084
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -1953,7 +1953,7 @@ reference_payload AS (
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 5.0
+    "target": 5.0985810648896415
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -1977,7 +1977,7 @@ reference_payload AS (
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "storm-jib-tack-load",
     "tack": "starboard",
-    "target": 25.0
+    "target": 23.0
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
@@ -1989,7 +1989,7 @@ reference_payload AS (
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 35.0
+    "target": 33.0
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
@@ -2001,7 +2001,7 @@ reference_payload AS (
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
@@ -2163,7 +2163,7 @@ reference_payload AS (
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 35.0
+    "target": 33.0
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
@@ -2175,7 +2175,7 @@ reference_payload AS (
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
@@ -2325,7 +2325,7 @@ reference_payload AS (
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "code-zero-tack-load",
     "tack": "port",
-    "target": 20.0
+    "target": 21.3
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
@@ -2343,7 +2343,7 @@ reference_payload AS (
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 68.5889676902918
+    "target": 65.9
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
@@ -2421,7 +2421,7 @@ reference_payload AS (
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 22.44538145034237
+    "target": 22.1
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
@@ -2517,7 +2517,7 @@ reference_payload AS (
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "code-zero-tack-load",
     "tack": "starboard",
-    "target": 20.0
+    "target": 21.3
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
@@ -2541,7 +2541,7 @@ reference_payload AS (
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 68.5889676902918
+    "target": 65.9
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
@@ -2613,7 +2613,7 @@ reference_payload AS (
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 22.44538145034237
+    "target": 22.1
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
@@ -2745,7 +2745,7 @@ reference_payload AS (
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 65.91017319879877
+    "target": 65.9
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -2775,7 +2775,7 @@ reference_payload AS (
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 38.0
+    "target": 36.6
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -2859,7 +2859,7 @@ reference_payload AS (
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 2.2
+    "target": 2.0
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -2871,7 +2871,7 @@ reference_payload AS (
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-headsail-tack-adjuster-load",
     "tack": "port",
-    "target": 13.0
+    "target": 12.3
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -2907,7 +2907,7 @@ reference_payload AS (
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-sheet-load",
     "tack": "port",
-    "target": 6.0
+    "target": 6.295421984061836
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -2973,7 +2973,7 @@ reference_payload AS (
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 65.91017319879877
+    "target": 65.9
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -3003,7 +3003,7 @@ reference_payload AS (
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 38.0
+    "target": 36.6
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -3081,7 +3081,7 @@ reference_payload AS (
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 2.2
+    "target": 2.0
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -3093,7 +3093,7 @@ reference_payload AS (
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-headsail-tack-adjuster-load",
     "tack": "starboard",
-    "target": 13.0
+    "target": 12.3
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -3129,7 +3129,7 @@ reference_payload AS (
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
-    "target": 6.0
+    "target": 6.295421984061836
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -3147,7 +3147,7 @@ reference_payload AS (
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 27.84651231562256
+    "target": 26.4
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
@@ -3183,7 +3183,7 @@ reference_payload AS (
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 68.32373950329624
+    "target": 65.9
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
@@ -3339,7 +3339,7 @@ reference_payload AS (
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 27.84651231562256
+    "target": 26.4
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
@@ -3381,7 +3381,7 @@ reference_payload AS (
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 68.32373950329624
+    "target": 65.9
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
@@ -3555,7 +3555,7 @@ reference_payload AS (
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
@@ -3753,7 +3753,7 @@ reference_payload AS (
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
@@ -3981,7 +3981,7 @@ reference_payload AS (
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 38.0
+    "target": 36.6
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -4077,7 +4077,7 @@ reference_payload AS (
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-headsail-tack-adjuster-load",
     "tack": "port",
-    "target": 13.0
+    "target": 12.3
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -4095,7 +4095,7 @@ reference_payload AS (
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 9.563047559630354
+    "target": 9.75430851082296
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -4107,7 +4107,7 @@ reference_payload AS (
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 5.0
+    "target": 5.1
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -4203,7 +4203,7 @@ reference_payload AS (
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 38.0
+    "target": 36.6
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -4293,7 +4293,7 @@ reference_payload AS (
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-headsail-tack-adjuster-load",
     "tack": "starboard",
-    "target": 13.0
+    "target": 12.3
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -4311,7 +4311,7 @@ reference_payload AS (
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 9.563047559630354
+    "target": 9.75430851082296
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -4323,7 +4323,7 @@ reference_payload AS (
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 5.0
+    "target": 5.1
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -4347,7 +4347,7 @@ reference_payload AS (
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 28.0
+    "target": 26.4
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
@@ -4407,7 +4407,7 @@ reference_payload AS (
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
@@ -4533,7 +4533,7 @@ reference_payload AS (
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 28.0
+    "target": 26.4
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
@@ -4593,7 +4593,7 @@ reference_payload AS (
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
@@ -4725,7 +4725,7 @@ reference_payload AS (
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 33.58007066633356
+    "target": 33.0
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -4737,7 +4737,7 @@ reference_payload AS (
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 66.9248928023331
+    "target": 65.9
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -4749,7 +4749,7 @@ reference_payload AS (
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 20.5
+    "target": 19.4
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -4767,7 +4767,7 @@ reference_payload AS (
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 37.057710839073486
+    "target": 36.6
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -4917,7 +4917,7 @@ reference_payload AS (
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 33.58007066633356
+    "target": 33.0
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -4929,7 +4929,7 @@ reference_payload AS (
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 66.9248928023331
+    "target": 65.9
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -4941,7 +4941,7 @@ reference_payload AS (
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 20.5
+    "target": 19.4
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -4959,7 +4959,7 @@ reference_payload AS (
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 37.057710839073486
+    "target": 36.6
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -5097,7 +5097,7 @@ reference_payload AS (
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 35.0
+    "target": 33.0
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -5109,7 +5109,7 @@ reference_payload AS (
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -5121,7 +5121,7 @@ reference_payload AS (
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "tack": "port",
-    "target": 20.5
+    "target": 19.4
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -5139,7 +5139,7 @@ reference_payload AS (
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "tack": "port",
-    "target": 38.0
+    "target": 36.6
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -5229,7 +5229,7 @@ reference_payload AS (
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-outhaul-load",
     "tack": "port",
-    "target": 8.0
+    "target": 9.4
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -5283,7 +5283,7 @@ reference_payload AS (
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 35.0
+    "target": 33.0
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -5295,7 +5295,7 @@ reference_payload AS (
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -5307,7 +5307,7 @@ reference_payload AS (
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "tack": "starboard",
-    "target": 20.5
+    "target": 19.4
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -5325,7 +5325,7 @@ reference_payload AS (
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "tack": "starboard",
-    "target": 38.0
+    "target": 36.6
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -5409,7 +5409,7 @@ reference_payload AS (
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "mizzen-outhaul-load",
     "tack": "starboard",
-    "target": 8.0
+    "target": 9.4
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -5457,7 +5457,7 @@ reference_payload AS (
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 35.0
+    "target": 33.0
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
@@ -5469,7 +5469,7 @@ reference_payload AS (
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
@@ -5631,7 +5631,7 @@ reference_payload AS (
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "port",
-    "target": 30.0
+    "target": 28.2
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
@@ -5649,7 +5649,7 @@ reference_payload AS (
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 35.0
+    "target": 33.0
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
@@ -5661,7 +5661,7 @@ reference_payload AS (
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
@@ -5817,7 +5817,7 @@ reference_payload AS (
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "starboard",
-    "target": 30.0
+    "target": 28.2
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
@@ -6153,13 +6153,13 @@ reference_payload AS (
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "aft-winch-sb-load",
     "tack": "port",
-    "target": 7.0
+    "target": 6.8
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "blade-adjuster-load",
     "tack": "port",
-    "target": 26.841174101247624
+    "target": 26.4
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
@@ -6267,7 +6267,7 @@ reference_payload AS (
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 2.2
+    "target": 2.0
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
@@ -6303,7 +6303,7 @@ reference_payload AS (
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "aft-winch-ps-load",
     "tack": "starboard",
-    "target": 7.0
+    "target": 6.8
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
@@ -6315,7 +6315,7 @@ reference_payload AS (
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "blade-adjuster-load",
     "tack": "starboard",
-    "target": 26.841174101247624
+    "target": 26.4
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
@@ -6423,7 +6423,7 @@ reference_payload AS (
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 2.2
+    "target": 2.0
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
@@ -6465,7 +6465,7 @@ reference_payload AS (
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "aft-winch-sb-load",
     "tack": "port",
-    "target": 7.0
+    "target": 6.8
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
@@ -6579,7 +6579,7 @@ reference_payload AS (
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 2.2
+    "target": 2.0
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
@@ -6615,7 +6615,7 @@ reference_payload AS (
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "aft-winch-ps-load",
     "tack": "starboard",
-    "target": 7.0
+    "target": 6.8
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
@@ -6735,7 +6735,7 @@ reference_payload AS (
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 2.2
+    "target": 2.0
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
@@ -6789,7 +6789,7 @@ reference_payload AS (
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -6813,7 +6813,7 @@ reference_payload AS (
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -6867,7 +6867,7 @@ reference_payload AS (
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-sheet-load",
     "tack": "port",
-    "target": 11.152432278097006
+    "target": 10.9
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -6897,7 +6897,7 @@ reference_payload AS (
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 9.563047559630354
+    "target": 9.634965570115357
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -6909,7 +6909,7 @@ reference_payload AS (
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 5.0
+    "target": 5.0376020353535615
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -6939,7 +6939,7 @@ reference_payload AS (
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "port",
-    "target": 30.0
+    "target": 28.2
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -6969,7 +6969,7 @@ reference_payload AS (
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -6987,7 +6987,7 @@ reference_payload AS (
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -7041,7 +7041,7 @@ reference_payload AS (
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
-    "target": 11.152432278097006
+    "target": 10.9
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -7071,7 +7071,7 @@ reference_payload AS (
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 9.563047559630354
+    "target": 9.634965570115357
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -7083,7 +7083,7 @@ reference_payload AS (
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 5.0
+    "target": 5.0376020353535615
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -7113,7 +7113,7 @@ reference_payload AS (
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "starboard",
-    "target": 30.0
+    "target": 28.2
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7125,7 +7125,7 @@ reference_payload AS (
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-main-d1-ps",
     "tack": "port",
-    "target": 34.47782882023933
+    "target": 33.0
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7137,7 +7137,7 @@ reference_payload AS (
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 68.21819887525302
+    "target": 65.9
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7161,7 +7161,7 @@ reference_payload AS (
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7257,7 +7257,7 @@ reference_payload AS (
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-runner-block-ps-load",
     "tack": "port",
-    "target": 9.563047559630354
+    "target": 9.75430851082296
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7269,7 +7269,7 @@ reference_payload AS (
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-runner-tail-ps-load",
     "tack": "port",
-    "target": 5.0
+    "target": 5.1
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7299,7 +7299,7 @@ reference_payload AS (
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "port",
-    "target": 29.41932260251972
+    "target": 28.2
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7317,7 +7317,7 @@ reference_payload AS (
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-main-d1-sb",
     "tack": "starboard",
-    "target": 34.47782882023933
+    "target": 33.0
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7329,7 +7329,7 @@ reference_payload AS (
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 68.21819887525302
+    "target": 65.9
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7347,7 +7347,7 @@ reference_payload AS (
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7443,7 +7443,7 @@ reference_payload AS (
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-runner-block-sb-load",
     "tack": "starboard",
-    "target": 9.563047559630354
+    "target": 9.75430851082296
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7455,7 +7455,7 @@ reference_payload AS (
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "mizzen-runner-tail-sb-load",
     "tack": "starboard",
-    "target": 5.0
+    "target": 5.1
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7485,7 +7485,7 @@ reference_payload AS (
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "starboard",
-    "target": 29.41932260251972
+    "target": 28.2
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
@@ -7533,7 +7533,7 @@ reference_payload AS (
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
@@ -7623,7 +7623,7 @@ reference_payload AS (
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
-    "target": 9.0
+    "target": 9.116976745371764
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
@@ -7659,7 +7659,7 @@ reference_payload AS (
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "port",
-    "target": 30.0
+    "target": 28.2
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
@@ -7707,7 +7707,7 @@ reference_payload AS (
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
@@ -7797,7 +7797,7 @@ reference_payload AS (
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 9.0
+    "target": 9.116976745371764
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
@@ -7833,7 +7833,7 @@ reference_payload AS (
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "starboard",
-    "target": 30.0
+    "target": 28.2
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -7845,7 +7845,7 @@ reference_payload AS (
     "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "blade-cunningham-load",
     "tack": "port",
-    "target": 20.0
+    "target": 19.1
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -7875,7 +7875,7 @@ reference_payload AS (
     "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -7941,7 +7941,7 @@ reference_payload AS (
     "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 12.5
+    "target": 12.972421775020011
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -7953,7 +7953,7 @@ reference_payload AS (
     "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "main-runner-stay-ps-load",
     "tack": "port",
-    "target": 23.0
+    "target": 22.1
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -7983,7 +7983,7 @@ reference_payload AS (
     "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "mizzen-checkstay-ps-load",
     "tack": "port",
-    "target": 2.2
+    "target": 2.0
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -8019,7 +8019,7 @@ reference_payload AS (
     "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "primary-winch-sb-load",
     "tack": "port",
-    "target": 11.5
+    "target": 11.0
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -8031,7 +8031,7 @@ reference_payload AS (
     "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "blade-cunningham-load",
     "tack": "starboard",
-    "target": 20.0
+    "target": 19.1
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -8067,7 +8067,7 @@ reference_payload AS (
     "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -8127,7 +8127,7 @@ reference_payload AS (
     "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 12.5
+    "target": 12.972421775020011
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -8139,7 +8139,7 @@ reference_payload AS (
     "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "main-runner-stay-sb-load",
     "tack": "starboard",
-    "target": 23.0
+    "target": 22.1
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -8169,7 +8169,7 @@ reference_payload AS (
     "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "mizzen-checkstay-sb-load",
     "tack": "starboard",
-    "target": 2.2
+    "target": 2.0
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -8205,7 +8205,7 @@ reference_payload AS (
     "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "primary-winch-ps-load",
     "tack": "starboard",
-    "target": 11.5
+    "target": 11.0
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
@@ -8229,7 +8229,7 @@ reference_payload AS (
     "load_case_id": "M1R M12R SS Upwind 20261009",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 69.53495842107142
+    "target": 65.9
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
@@ -8253,7 +8253,7 @@ reference_payload AS (
     "load_case_id": "M1R M12R SS Upwind 20261009",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
@@ -8283,7 +8283,7 @@ reference_payload AS (
     "load_case_id": "M1R M12R SS Upwind 20261009",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 12.5
+    "target": 13.6
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
@@ -8331,13 +8331,13 @@ reference_payload AS (
     "load_case_id": "M1R M12R SS Upwind 20261009",
     "variable_id": "mizzen-cunningham-load",
     "tack": "port",
-    "target": 3.0
+    "target": 3.370467998755946
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
     "variable_id": "mizzen-outhaul-load",
     "tack": "port",
-    "target": 8.0
+    "target": 9.4
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
@@ -8415,7 +8415,7 @@ reference_payload AS (
     "load_case_id": "M1R M12R SS Upwind 20261009",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 69.53495842107142
+    "target": 65.9
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
@@ -8433,7 +8433,7 @@ reference_payload AS (
     "load_case_id": "M1R M12R SS Upwind 20261009",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
@@ -8463,7 +8463,7 @@ reference_payload AS (
     "load_case_id": "M1R M12R SS Upwind 20261009",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 12.5
+    "target": 13.6
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
@@ -8511,13 +8511,13 @@ reference_payload AS (
     "load_case_id": "M1R M12R SS Upwind 20261009",
     "variable_id": "mizzen-cunningham-load",
     "tack": "starboard",
-    "target": 3.0
+    "target": 3.370467998755946
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
     "variable_id": "mizzen-outhaul-load",
     "tack": "starboard",
-    "target": 8.0
+    "target": 9.4
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
@@ -8577,19 +8577,19 @@ reference_payload AS (
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "blade-cunningham-load",
     "tack": "port",
-    "target": 20.0
+    "target": 19.1
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "blade-sheet-sb-load",
     "tack": "port",
-    "target": 14.0
+    "target": 14.5
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "blade-tweaker-sb-load",
     "tack": "port",
-    "target": 6.5
+    "target": 7.3642885185053
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
@@ -8607,7 +8607,7 @@ reference_payload AS (
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "fiber-optic-main-v1-ps",
     "tack": "port",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
@@ -8631,7 +8631,7 @@ reference_payload AS (
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "port",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
@@ -8667,13 +8667,13 @@ reference_payload AS (
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "main-headstay-combined-load",
     "tack": "port",
-    "target": 47.03910101818664
+    "target": 46.8
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 12.5
+    "target": 12.880749287473297
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
@@ -8769,19 +8769,19 @@ reference_payload AS (
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "blade-cunningham-load",
     "tack": "starboard",
-    "target": 20.0
+    "target": 19.1
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "blade-sheet-ps-load",
     "tack": "starboard",
-    "target": 14.0
+    "target": 14.5
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "blade-tweaker-ps-load",
     "tack": "starboard",
-    "target": 6.5
+    "target": 7.3642885185053
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
@@ -8805,7 +8805,7 @@ reference_payload AS (
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "fiber-optic-main-v1-sb",
     "tack": "starboard",
-    "target": 70.0
+    "target": 65.9
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
@@ -8823,7 +8823,7 @@ reference_payload AS (
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "fiber-optic-mizzen-forestay",
     "tack": "starboard",
-    "target": 25.0
+    "target": 24.2
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
@@ -8859,13 +8859,13 @@ reference_payload AS (
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "main-headstay-combined-load",
     "tack": "starboard",
-    "target": 47.03910101818664
+    "target": 46.8
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 12.5
+    "target": 12.880749287473297
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
@@ -9033,7 +9033,7 @@ reference_payload AS (
     "load_case_id": "M2R SJ Upwind 20261008",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 12.5
+    "target": 13.6
   },
   {
     "load_case_id": "M2R SJ Upwind 20261008",
@@ -9117,7 +9117,7 @@ reference_payload AS (
     "load_case_id": "M2R SJ Upwind 20261008",
     "variable_id": "storm-jib-tack-load",
     "tack": "port",
-    "target": 23.546165102252044
+    "target": 23.0
   },
   {
     "load_case_id": "M2R SJ Upwind 20261008",
@@ -9201,7 +9201,7 @@ reference_payload AS (
     "load_case_id": "M2R SJ Upwind 20261008",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 12.5
+    "target": 13.6
   },
   {
     "load_case_id": "M2R SJ Upwind 20261008",
@@ -9285,7 +9285,7 @@ reference_payload AS (
     "load_case_id": "M2R SJ Upwind 20261008",
     "variable_id": "storm-jib-tack-load",
     "tack": "starboard",
-    "target": 23.546165102252044
+    "target": 23.0
   },
   {
     "load_case_id": "M2R SS Upwind 20261008",
@@ -9369,7 +9369,7 @@ reference_payload AS (
     "load_case_id": "M2R SS Upwind 20261008",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 12.5
+    "target": 13.0376836126506
   },
   {
     "load_case_id": "M2R SS Upwind 20261008",
@@ -9459,7 +9459,7 @@ reference_payload AS (
     "load_case_id": "M2R SS Upwind 20261008",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "port",
-    "target": 30.0
+    "target": 28.2
   },
   {
     "load_case_id": "M2R SS Upwind 20261008",
@@ -9543,7 +9543,7 @@ reference_payload AS (
     "load_case_id": "M2R SS Upwind 20261008",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 12.5
+    "target": 13.0376836126506
   },
   {
     "load_case_id": "M2R SS Upwind 20261008",
@@ -9633,7 +9633,7 @@ reference_payload AS (
     "load_case_id": "M2R SS Upwind 20261008",
     "variable_id": "staysail-stay-adjuster-load",
     "tack": "starboard",
-    "target": 30.0
+    "target": 28.2
   },
   {
     "load_case_id": "M3R SJ Rchng 20261008",
@@ -9705,7 +9705,7 @@ reference_payload AS (
     "load_case_id": "M3R SJ Rchng 20261008",
     "variable_id": "main-checkstay-ps-load",
     "tack": "port",
-    "target": 12.5
+    "target": 11.7
   },
   {
     "load_case_id": "M3R SJ Rchng 20261008",
@@ -9717,7 +9717,7 @@ reference_payload AS (
     "load_case_id": "M3R SJ Rchng 20261008",
     "variable_id": "main-outhaul-load",
     "tack": "port",
-    "target": 12.5
+    "target": 13.6
   },
   {
     "load_case_id": "M3R SJ Rchng 20261008",
@@ -9801,7 +9801,7 @@ reference_payload AS (
     "load_case_id": "M3R SJ Rchng 20261008",
     "variable_id": "storm-jib-tack-load",
     "tack": "port",
-    "target": 24.97815258013695
+    "target": 23.0
   },
   {
     "load_case_id": "M3R SJ Rchng 20261008",
@@ -9873,7 +9873,7 @@ reference_payload AS (
     "load_case_id": "M3R SJ Rchng 20261008",
     "variable_id": "main-checkstay-sb-load",
     "tack": "starboard",
-    "target": 12.5
+    "target": 11.7
   },
   {
     "load_case_id": "M3R SJ Rchng 20261008",
@@ -9885,7 +9885,7 @@ reference_payload AS (
     "load_case_id": "M3R SJ Rchng 20261008",
     "variable_id": "main-outhaul-load",
     "tack": "starboard",
-    "target": 12.5
+    "target": 13.6
   },
   {
     "load_case_id": "M3R SJ Rchng 20261008",
@@ -9969,7 +9969,7 @@ reference_payload AS (
     "load_case_id": "M3R SJ Rchng 20261008",
     "variable_id": "storm-jib-tack-load",
     "tack": "starboard",
-    "target": 24.97815258013695
+    "target": 23.0
   },
   {
     "load_case_id": "M3R SJ Upwind 20261008",
@@ -10137,7 +10137,7 @@ reference_payload AS (
     "load_case_id": "M3R SJ Upwind 20261008",
     "variable_id": "storm-jib-tack-load",
     "tack": "port",
-    "target": 25.0
+    "target": 23.0
   },
   {
     "load_case_id": "M3R SJ Upwind 20261008",
@@ -10305,7 +10305,7 @@ reference_payload AS (
     "load_case_id": "M3R SJ Upwind 20261008",
     "variable_id": "storm-jib-tack-load",
     "tack": "starboard",
-    "target": 25.0
+    "target": 23.0
   }
 ]$$::jsonb) AS t(
         load_case_id TEXT,
@@ -10333,189 +10333,189 @@ FROM jsonb_to_recordset($$[
     "variable_id": "aft-winch-ps-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "warning_high": 6.8,
+    "alarm_high": 8.0
   },
   {
     "variable_id": "aft-winch-sb-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 7.0,
-    "alarm_high": 9.0
+    "warning_high": 6.8,
+    "alarm_high": 8.0
   },
   {
     "variable_id": "blade-adjuster-load",
     "alarm_low": 7.5,
     "warning_low": 8.4,
-    "warning_high": 28.0,
-    "alarm_high": 31.3
+    "warning_high": 26.4,
+    "alarm_high": 31.0
   },
   {
     "variable_id": "blade-cunningham-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 20.0,
+    "warning_high": 19.1,
     "alarm_high": 22.5
   },
   {
     "variable_id": "blade-sheet-ps-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 14.0,
-    "alarm_high": 16.0
+    "warning_high": 14.5,
+    "alarm_high": 17.0
   },
   {
     "variable_id": "blade-sheet-sb-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 14.0,
-    "alarm_high": 16.0
+    "warning_high": 14.5,
+    "alarm_high": 17.0
   },
   {
     "variable_id": "blade-tweaker-ps-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 6.5,
-    "alarm_high": 7.5
+    "warning_high": 8.5,
+    "alarm_high": 10.0
   },
   {
     "variable_id": "blade-tweaker-sb-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 6.5,
-    "alarm_high": 7.5
+    "warning_high": 8.5,
+    "alarm_high": 10.0
   },
   {
     "variable_id": "code-zero-tack-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 24.0
+    "warning_high": 21.3,
+    "alarm_high": 25.0
   },
   {
     "variable_id": "fiber-optic-main-d1-ps",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "warning_high": 33.0,
+    "alarm_high": 38.8
   },
   {
     "variable_id": "fiber-optic-main-d1-sb",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 35.0,
-    "alarm_high": 39.0
+    "warning_high": 33.0,
+    "alarm_high": 38.8
   },
   {
     "variable_id": "fiber-optic-main-v1-ps",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 70.0,
+    "warning_high": 65.9,
     "alarm_high": 77.5
   },
   {
     "variable_id": "fiber-optic-main-v1-sb",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 70.0,
+    "warning_high": 65.9,
     "alarm_high": 77.5
   },
   {
     "variable_id": "fiber-optic-mizzen-d1-ps",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 20.5,
+    "warning_high": 19.4,
     "alarm_high": 22.8
   },
   {
     "variable_id": "fiber-optic-mizzen-d1-sb",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 20.5,
+    "warning_high": 19.4,
     "alarm_high": 22.8
   },
   {
     "variable_id": "fiber-optic-mizzen-forestay",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 25.0,
-    "alarm_high": 28.0
+    "warning_high": 24.2,
+    "alarm_high": 28.5
   },
   {
     "variable_id": "fiber-optic-mizzen-v1-ps",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "warning_high": 36.6,
+    "alarm_high": 43.1
   },
   {
     "variable_id": "fiber-optic-mizzen-v1-sb",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 38.0,
-    "alarm_high": 43.0
+    "warning_high": 36.6,
+    "alarm_high": 43.1
   },
   {
     "variable_id": "main-checkstay-deflector-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "warning_high": 11.9,
+    "alarm_high": 14.0
   },
   {
     "variable_id": "main-checkstay-ps-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "warning_high": 11.7,
+    "alarm_high": 13.8
   },
   {
     "variable_id": "main-checkstay-sb-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "warning_high": 11.7,
+    "alarm_high": 13.8
   },
   {
     "variable_id": "main-cunningham-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "warning_high": 5.1,
+    "alarm_high": 6.0
   },
   {
     "variable_id": "main-halyard-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 2.5,
+    "warning_high": 2.6,
     "alarm_high": 3.0
   },
   {
     "variable_id": "main-headstay-combined-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 47.5,
-    "alarm_high": 52.6
+    "warning_high": 46.8,
+    "alarm_high": 55.0
   },
   {
     "variable_id": "main-mast-compression-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 212.0,
+    "warning_high": 189.6,
     "alarm_high": 223.0
   },
   {
     "variable_id": "main-outhaul-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 12.5,
-    "alarm_high": 13.5
+    "warning_high": 13.6,
+    "alarm_high": 16.0
   },
   {
     "variable_id": "main-preventer-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 38.0,
+    "warning_high": 35.7,
     "alarm_high": 42.0
   },
   {
@@ -10536,14 +10536,14 @@ FROM jsonb_to_recordset($$[
     "variable_id": "main-runner-stay-ps-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 23.0,
+    "warning_high": 22.1,
     "alarm_high": 26.0
   },
   {
     "variable_id": "main-runner-stay-sb-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 23.0,
+    "warning_high": 22.1,
     "alarm_high": 26.0
   },
   {
@@ -10564,13 +10564,13 @@ FROM jsonb_to_recordset($$[
     "variable_id": "main-sheet-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 13.0
+    "warning_high": 10.9,
+    "alarm_high": 12.8
   },
   {
     "variable_id": "main-vang-load",
-    "alarm_low": null,
-    "warning_low": null,
+    "alarm_low": -28.0,
+    "warning_low": -24.0,
     "warning_high": 40.0,
     "alarm_high": 43.0
   },
@@ -10578,118 +10578,118 @@ FROM jsonb_to_recordset($$[
     "variable_id": "mizzen-checkstay-deflector-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 0.55,
+    "warning_high": 0.6,
     "alarm_high": 0.75
   },
   {
     "variable_id": "mizzen-checkstay-ps-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "warning_high": 2.0,
+    "alarm_high": 2.4
   },
   {
     "variable_id": "mizzen-checkstay-sb-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 2.2,
-    "alarm_high": 2.45
+    "warning_high": 2.0,
+    "alarm_high": 2.4
   },
   {
     "variable_id": "mizzen-cunningham-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 3.0,
+    "warning_high": 3.4,
     "alarm_high": 4.0
   },
   {
     "variable_id": "mizzen-halyard-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 2.0,
+    "warning_high": 2.1,
     "alarm_high": 2.5
   },
   {
     "variable_id": "mizzen-headsail-tack-adjuster-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 13.0,
+    "warning_high": 12.3,
     "alarm_high": 14.5
   },
   {
     "variable_id": "mizzen-mast-compression-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 121.0,
+    "warning_high": 108.4,
     "alarm_high": 127.5
   },
   {
     "variable_id": "mizzen-outhaul-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 8.0,
-    "alarm_high": 9.0
+    "warning_high": 9.4,
+    "alarm_high": 11.0
   },
   {
     "variable_id": "mizzen-preventer-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 20.0,
-    "alarm_high": 22.5
+    "warning_high": 22.5,
+    "alarm_high": 26.5
   },
   {
     "variable_id": "mizzen-runner-block-ps-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 9.563047559630354,
-    "alarm_high": 10.51935231559339
+    "warning_high": 9.75430851082296,
+    "alarm_high": 11.475657071556425
   },
   {
     "variable_id": "mizzen-runner-block-sb-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 9.563047559630354,
-    "alarm_high": 10.51935231559339
+    "warning_high": 9.75430851082296,
+    "alarm_high": 11.475657071556425
   },
   {
     "variable_id": "mizzen-runner-stay-ps-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 9.0,
+    "warning_high": 9.8,
     "alarm_high": 11.5
   },
   {
     "variable_id": "mizzen-runner-stay-sb-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 9.0,
+    "warning_high": 9.8,
     "alarm_high": 11.5
   },
   {
     "variable_id": "mizzen-runner-tail-ps-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "warning_high": 5.1,
+    "alarm_high": 6.0
   },
   {
     "variable_id": "mizzen-runner-tail-sb-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 5.0,
-    "alarm_high": 5.5
+    "warning_high": 5.1,
+    "alarm_high": 6.0
   },
   {
     "variable_id": "mizzen-sheet-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 6.0,
-    "alarm_high": 6.5
+    "warning_high": 6.6,
+    "alarm_high": 7.8
   },
   {
     "variable_id": "mizzen-vang-load",
-    "alarm_low": null,
-    "warning_low": null,
+    "alarm_low": -20.0,
+    "warning_low": -17.5,
     "warning_high": 25.0,
     "alarm_high": 28.0
   },
@@ -10697,15 +10697,15 @@ FROM jsonb_to_recordset($$[
     "variable_id": "primary-winch-ps-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "warning_high": 11.0,
+    "alarm_high": 13.0
   },
   {
     "variable_id": "primary-winch-sb-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 11.5,
-    "alarm_high": 12.5
+    "warning_high": 11.0,
+    "alarm_high": 13.0
   },
   {
     "variable_id": "staysail-sheet-ps-load",
@@ -10725,14 +10725,14 @@ FROM jsonb_to_recordset($$[
     "variable_id": "staysail-stay-adjuster-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 30.0,
-    "alarm_high": 33.0
+    "warning_high": 28.2,
+    "alarm_high": 33.2
   },
   {
     "variable_id": "storm-jib-tack-load",
     "alarm_low": null,
     "warning_low": null,
-    "warning_high": 25.0,
+    "warning_high": 23.0,
     "alarm_high": 27.0
   }
 ]$$::jsonb) AS t(
