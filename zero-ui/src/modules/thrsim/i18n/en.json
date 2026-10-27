@@ -90,7 +90,11 @@
       "tuning": "Tuning",
       "seconds": "Seconds",
       "mode": "Mode",
-      "stepInSeconds": "Step (seconds)"
+      "stepInSeconds": "Step (seconds)",
+      "selectMode": "Select a mode",
+      "speed": "Speed",
+      "setpoint": "Setpoint",
+      "failedToSubmit": "Failed to submit"
     }
   },
   "components": {

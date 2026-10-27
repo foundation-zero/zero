@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { BypassArea } from "../../../components/bypass-area";
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -10,7 +13,7 @@ import { BypassArea } from "../../../components/bypass-area";
       :width="172"
       :height="181"
     >
-      Support components
+      {{ t("thrapp.mimics.sections.supportComponents") }}
     </BypassArea>
   </g>
 </template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { MimicComponentType } from "@/modules/thrapp/types";
 import { BypassArea } from "../../../components/bypass-area";
 import { PYRANO_METER_WIDTH } from "../../../components/pyrano-meter";
@@ -7,6 +8,8 @@ import { IrradianceLabelInstance, PvtInstance, PyranometerInstance } from "../..
 
 const pvt = getTooltipContexts(MimicComponentType.Pvt, ["9001-01", "9002-01", "9001-03"]);
 const pyranometers = getTooltipContexts(MimicComponentType.Pyranometer, ["9044", "9043"]);
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -17,7 +20,7 @@ const pyranometers = getTooltipContexts(MimicComponentType.Pyranometer, ["9044",
       :width="301.5"
       :height="448"
     >
-      Main bimini
+      {{ t("thrapp.mimics.pvt.sections.mainBimini") }}
     </BypassArea>
 
     <BypassArea
@@ -26,7 +29,7 @@ const pyranometers = getTooltipContexts(MimicComponentType.Pyranometer, ["9044",
       :width="242"
       :height="237"
     >
-      Owners bimini
+      {{ t("thrapp.mimics.pvt.sections.ownersBimini") }}
     </BypassArea>
 
     <IrradianceLabelInstance
