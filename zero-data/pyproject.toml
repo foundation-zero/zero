@@ -61,13 +61,25 @@ check_untyped_defs = true
 default-groups = ["dev", "test"]
 
 [tool.pytest.ini_options]
-addopts = "--cov=zero_data --cov-report=html --cov-branch"
 asyncio_default_fixture_loop_scope = "function"
 asyncio_mode = "auto"
 testpaths = ["tests"]
 log_level = "DEBUG"
 log_format = "%(asctime)s.%(msecs)03d | %(levelname)-8s | %(message)s"
 markers = ["greptimedb: tests requiring a running greptimedb"]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+exclude_also = [
+    "if TYPE_CHECKING:",
+    'if __name__ == "__main__":',
+    "@overload",
+    "raise NotImplementedError",
+    '^\s*\.\.\.$',
+]
 
 [tool.ruff]
 fix = true

@@ -16,7 +16,7 @@ type_check:
     uv run mypy src tests/greptime
 
 test *args:
-    uv run pytest {{ args }}
+    uv run pytest --cov --cov-report=term-missing:skip-covered {{ args }}
 
 format:
     uv run ruff format --check src tests

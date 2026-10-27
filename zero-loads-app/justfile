@@ -1,3 +1,5 @@
+cov := "--cov --cov-report=term-missing:skip-covered"
+
 export_seed:
     uv run loads export-seed
 
@@ -8,13 +10,13 @@ export_cheat_sheet:
     uv run loads export-cheat-sheet
 
 test:
-    uv run pytest
+    uv run pytest {{ cov }}
 
 test_integration *args:
-    uv run pytest --run=integration {{ args }}
+    uv run pytest {{ cov }} --run=integration {{ args }}
 
 test_unit *args:
-    uv run pytest --run=unit {{ args }}
+    uv run pytest {{ cov }} --run=unit {{ args }}
 
 run_demo:
     uv run loads api &

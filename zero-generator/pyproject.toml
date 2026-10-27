@@ -14,6 +14,7 @@ dev = ["mypy>=2.4.0,<2.5.0", "ruff>=0.9.5,<1.0.0"]
 test = [
     "pytest>=9.1.1,<9.2.0",
     "pytest-asyncio>=1.4.0,<1.5.0",
+    "pytest-cov>=7.1.0,<8",
     "pytest-mock>=3.14.0,<4.0.0",
 ]
 
@@ -30,6 +31,19 @@ asyncio_mode = "auto"
 testpaths = ["tests"]
 log_level = "DEBUG"
 log_format = "%(asctime)s.%(msecs)03d | %(levelname)-8s | %(message)s"
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+exclude_also = [
+    "if TYPE_CHECKING:",
+    'if __name__ == "__main__":',
+    "@overload",
+    "raise NotImplementedError",
+    '^\s*\.\.\.$',
+]
 
 [tool.ruff]
 fix = true

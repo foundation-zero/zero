@@ -439,9 +439,12 @@ generated GraphQL code. Each suite writes to its own `coverage/<suite>/` directo
 - `#[should_panic]` for expected panics.
 - Literal byte arrays for parser test input.
 - **Coverage**: `just test` runs `cargo llvm-cov --locked` (install it locally with
-  `cargo install cargo-llvm-cov`), so test filters go after `--`: `just test -- name`.
-  Add `llvm-tools-preview` to `rust-toolchain.toml`. Line coverage only: branch coverage
-  needs nightly. `#[cfg(test)]` modules are excluded automatically.
+  `cargo install cargo-llvm-cov`; crates without a `rust-toolchain.toml` also need
+  `rustup component add llvm-tools-preview` once), so test filters go after `--`:
+  `just test -- name`.
+  Add `llvm-tools-preview` to `rust-toolchain.toml`, or to the `setup-rust-toolchain`
+  components in CI for crates without one. Line coverage only: branch coverage needs
+  nightly. `#[cfg(test)]` modules are excluded automatically.
 
 ### 4.6 Logging
 

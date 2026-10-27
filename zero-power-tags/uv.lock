@@ -532,6 +532,7 @@ dev = [
 test = [
     { name = "pytest", specifier = ">=9.1.1,<10" },
     { name = "pytest-asyncio", specifier = ">=1.1.0,<2" },
+    { name = "pytest-cov", specifier = ">=7.1.0,<8" },
 ]
 
 [[package]]
