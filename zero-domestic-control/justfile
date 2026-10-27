@@ -1,5 +1,7 @@
 set dotenv-load := true
 
+cov := "--cov --cov-report=term-missing:skip-covered"
+
 default: check
 
 check: lint type_check test
@@ -14,13 +16,13 @@ type_check:
     uv run pyright
 
 test *args:
-    uv run pytest {{ args }}
+    uv run pytest {{ cov }} {{ args }}
 
 test_integration *args:
-    uv run pytest --run=integration {{ args }}
+    uv run pytest {{ cov }} --run=integration {{ args }}
 
 test_unit *args:
-    uv run pytest --run=unit {{ args }}
+    uv run pytest {{ cov }} --run=unit {{ args }}
 
 format:
     uv run ruff format --check src tests
