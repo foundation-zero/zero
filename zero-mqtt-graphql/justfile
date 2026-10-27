@@ -26,7 +26,7 @@ print_schema:
 check: format lint test
 
 test *args:
-    cargo test --locked {{ args }}
+    cargo llvm-cov --locked {{ args }}
 
 lint:
     cargo clippy --all --all-features --locked
