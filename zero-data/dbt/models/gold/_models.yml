@@ -1,9 +1,9 @@
 version: 2
 
 models:
-  - name: gld_power_tags_active_power_per_minute
+  - name: gld_power_tags_power_per_minute_per_sub_group
     description: >
-      Active power values of power tags aggregated per minute.
+      Active power values of power tags aggregated per minute per sub group.
       Materialized as a view in the `views` database.
     columns:
       - name: time
@@ -18,7 +18,7 @@ models:
         description: "Consumer identifier associated with the tag."
         tests:
           - not_null
-      - name: avg_power
+      - name: power
         description: "Average active power consumption aggregated per minute."
         tests:
           - not_null
@@ -28,25 +28,31 @@ models:
           - not_null
       - name: sub_group
         description: "The sub group classification, within the main group, of the power tag."
-  - name: gld_electrical_power_consumption_per_minute
+  - name: gld_power_tags_power_per_minute_per_main_group
     description: >
-      Electrical power consumption aggregated per main group and sub group per minute.
+      Active power values of power tags aggregated per minute per main group.
       Materialized as a view in the `views` database.
     columns:
       - name: time
-        description: "Timestamp representing the start of the minute interval for the aggregated electrical power consumption."
+        description: "Timestamp representing the start of the minute interval for the aggregated active power."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: consumer
+        description: "Consumer identifier associated with the tag."
         tests:
           - not_null
       - name: power
-        description: "Electrical power consumption in watts aggregated per minute."
+        description: "Average active power consumption aggregated per minute."
         tests:
           - not_null
       - name: main_group
         description: "The main group classification of the power tag."
         tests:
           - not_null
-      - name: sub_group
-        description: "The sub group classification, within the main group, of the power tag."
   - name: gld_batteries_per_minute
     description: >
       Battery metrics aggregated per minute.
@@ -91,17 +97,13 @@ models:
         description: "Voltage of the 24V DC converter aggregated per minute."
         tests:
           - not_null
-  - name: gld_24vdc_power_per_minute
+  - name: gld_24vdc_power_per_minute_per_sub_group
     description: >
-      24V DC converter power aggregated per minute.
+      24V DC converter power aggregated per minute per sub group.
       Materialized as a view in the `views` database.
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated converter power."
-        tests:
-          - not_null
-      - name: topic
-        description: "MQTT topic associated with the raw message."
         tests:
           - not_null
       - name: converter
@@ -114,6 +116,27 @@ models:
           - not_null
       - name: sub_group
         description: "The sub group classification, within the main group, of the power tag."
+      - name: power
+        description: "Power of the 24V DC converter aggregated per minute."
+        tests:
+          - not_null
+  - name: gld_24vdc_power_per_minute_per_main_group
+    description: >
+      24V DC converter power aggregated per minute per main group.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the minute interval for the aggregated converter power."
+        tests:
+          - not_null
+      - name: converter
+        description: "Identifier of the 24V DC converter."
+        tests:
+          - not_null
+      - name: main_group
+        description: "The main group classification of the power tag."
+        tests:
+          - not_null
       - name: power
         description: "Power of the 24V DC converter aggregated per minute."
         tests:
