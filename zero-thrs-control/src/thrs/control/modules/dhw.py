@@ -346,7 +346,9 @@ class TanksController:
         self._tanks = [tank1, tank2, tank3]
         self._filling_tank: Tank | None = None
         self._boosting_tank: Tank | None = None
-        self._boost_candidates: dict[BoostingSource, Tank | None] = dict.fromkeys(BOOSTING_SOURCES)
+        self._boost_candidates: dict[BoostingSource, Tank | None] = dict.fromkeys(
+            BOOSTING_SOURCES
+        )
         self._tank_in_use: Tank | None = None
         self._boost_lockout_until: dict[tuple[Tank, BoostingSource], datetime] = {}
 
