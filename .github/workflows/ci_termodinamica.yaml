@@ -68,6 +68,7 @@ jobs:
         with:
           project: zero-termodinamica
           report-dir: ${{ runner.temp }}/coverage
+          fail-under: "72"
 
   docker-push:
     timeout-minutes: 10

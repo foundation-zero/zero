@@ -81,6 +81,7 @@ jobs:
         with:
           project: zero-hull-temperature
           report-dir: ${{ runner.temp }}/coverage
+          fail-under: "75"
 
   docker-push:
     timeout-minutes: 10

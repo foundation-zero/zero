@@ -76,6 +76,7 @@ jobs:
         with:
           project: zero-fiber-optics
           report-dir: ${{ runner.temp }}/coverage
+          fail-under: "67"
 
   docker-push:
     timeout-minutes: 10

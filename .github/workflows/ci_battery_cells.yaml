@@ -81,6 +81,7 @@ jobs:
         with:
           project: zero-battery-cells
           report-dir: ${{ runner.temp }}/coverage
+          fail-under: "72"
 
   docker-push:
     timeout-minutes: 15
