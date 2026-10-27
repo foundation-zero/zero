@@ -81,6 +81,7 @@ pub fn build_schema(config: &UdpChannels, prefix: &str, topic_map: &TopicMap) ->
                     required,
                     Some(format!("Packet payload for channel {}", port.channel)),
                 )),
+                bindings: None,
             },
         );
     }
@@ -111,6 +112,7 @@ fn receive_operation(topic: &str, message_name: &str) -> Operation {
         messages: Some(vec![MessageRef::Reference {
             reference: format!("#/components/messages/{}", message_name),
         }]),
+        bindings: None,
     }
 }
 
