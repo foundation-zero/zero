@@ -25,7 +25,7 @@ dependencies = [
   "sqlmodel>=0.0.24,<0.1.0",
   "asyncpg>=0.30.0,<1.0.0",
   "strawberry-graphql[debug-server,asgi,fastapi,cli]",
-  "fastapi[standard]>=0.117.1,<0.118.0",
+  "fastapi[standard]>=0.162.0,<0.163.0",
   "uvicorn>=0.54.0,<0.55.0",
   "asyncapi3==0.0.2",
   "more_itertools==11.2.1",
