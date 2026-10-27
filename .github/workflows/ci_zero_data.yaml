@@ -79,6 +79,7 @@ jobs:
         with:
           project: zero-data
           report-dir: ${{ runner.temp }}/coverage
+          fail-under: "68"
 
   docker-push:
     timeout-minutes: 10

@@ -83,6 +83,7 @@ jobs:
         with:
           project: zero-domestic-control
           report-dir: ${{ runner.temp }}/coverage
+          fail-under: "79"
 
   docker-push:
     timeout-minutes: 10

@@ -137,6 +137,7 @@ jobs:
         with:
           project: zero-ui
           report-dir: ${{ runner.temp }}/coverage
+          fail-under: "11"
 
   docker-push:
     runs-on: ubuntu-latest

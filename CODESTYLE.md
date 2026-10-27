@@ -552,8 +552,10 @@ test (lint → type-check → unit test → integration test)
 `coverage-<project>` artifact (`retention-days: 90`). A separate `coverage` job (`needs:
 test`, `actions: read`, `pull-requests: write`) downloads it and runs
 `./.github/actions/coverage-report`, which posts a sticky PR comment and fails when changed
-lines are under 80% covered or total line coverage drops more than 0.1 points below the
-latest main artifact. It is not a required check, and deploy jobs never depend on it.
+lines are under the `fail-under` input (default 80%; projects below that start at their
+coverage when this was introduced, rounded down) or total line coverage drops more than
+0.1 points below the latest main artifact. It is not a required check, and deploy jobs never
+depend on it.
 
 **Docker tagging:** Python projects use `uvx hatch version` (via `hatch-vcs`
 from git tags). Rust uses `Cargo.toml` version + short SHA. CI apps use
