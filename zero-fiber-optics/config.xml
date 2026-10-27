@@ -391,5 +391,9 @@
     <Var num="387" name="MZRiggingSumLoadV2_Stbd" type="Float" status="Valid" units="T" factor="1" decimals="0" class="linear" tags="MZRigging_Vars" description="" shortname=""/>
     <Var num="388" name="MZRiggingSumLoadV3_Stbd" type="Float" status="Valid" units="T" factor="1" decimals="0" class="linear" tags="MZRigging_Vars" description="" shortname=""/>
     <Var num="389" name="MZRiggingSumLoadV4_Stbd" type="Float" status="Valid" units="T" factor="1" decimals="0" class="linear" tags="MZRigging_Vars" description="" shortname=""/>
+    <Var num="390" name="MZRiggingStrainForestay" type="Float" status="Valid" units="um/m" factor="1" decimals="0" class="linear" tags="MZRigging_Vars" description="" shortname=""/>
+    <Var num="391" name="MZRiggingTemperatureForestay" type="Float" status="Valid" units="degC" factor="1" decimals="0" class="linear" tags="MZRigging_Vars" description="" shortname=""/>
+    <Var num="392" name="MZRiggingLoadForestay" type="Float" status="Valid" units="T" factor="1" decimals="0" class="linear" tags="MZRigging_Vars" description="" shortname=""/>
   </port>
 </UDPChannels>
+
