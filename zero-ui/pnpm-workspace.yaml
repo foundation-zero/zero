@@ -1,7 +1,9 @@
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@tailwindcss/oxide'
-  - es5-ext
-  - esbuild
-  - msw
-  - vue-demi
+allowBuilds:
+  '@parcel/watcher': true
+  '@tailwindcss/oxide': true
+  es5-ext: true
+  esbuild: true
+  msw: true
+  vue-demi: true
+  # wrangler-action installs wrangler in CI; pages deploy doesn't need workerd's postinstall
+  workerd: false
