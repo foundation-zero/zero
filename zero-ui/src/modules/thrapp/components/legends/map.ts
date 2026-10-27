@@ -19,8 +19,7 @@ export type LegendSubType = {
 
 export type LegendMap = {
   [Type in MimicComponentType]?:
-    | true
-    | (Type extends keyof LegendSubType ? LegendSubType[Type][number][] : never);
+    true | (Type extends keyof LegendSubType ? LegendSubType[Type][number][] : never);
 } & {
   [Feature in LegendFeature]?: true;
 };

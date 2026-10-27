@@ -14,12 +14,14 @@ import {
 export const fieldTooltip = <
   Type extends SensorComponentType | "custom",
   Module extends keyof ThrsDefinitions = keyof {
-    [M in keyof ThrsDefinitions as PickKeys<
-      ThrsDefinitions[M]["sensorValues"],
-      SchemaDefinition<Type>
-    > extends never
-      ? never
-      : M]: ThrsDefinitions[M];
+    [
+      M in keyof ThrsDefinitions as PickKeys<
+        ThrsDefinitions[M]["sensorValues"],
+        SchemaDefinition<Type>
+      > extends never
+        ? never
+        : M
+    ]: ThrsDefinitions[M];
   },
 >(
   field: ModuleField<Type, Module>,

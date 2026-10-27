@@ -1,9 +1,15 @@
 allowBuilds:
-  '@parcel/watcher': true
-  '@tailwindcss/oxide': true
+  "@parcel/watcher": true
+  "@tailwindcss/oxide": true
   es5-ext: true
   esbuild: true
   msw: true
   vue-demi: true
   # wrangler-action installs wrangler in CI; pages deploy doesn't need workerd's postinstall
   workerd: false
+permissions:
+  "@tanstack/vue-table":
+    skills: true
+skills:
+  dirs:
+    - .claude/skills

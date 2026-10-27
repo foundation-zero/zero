@@ -90,10 +90,7 @@ export type AdsorptionChillerControl = {
 };
 
 export type ControlValueFields =
-  | keyof PumpControl
-  | keyof ValveControl
-  | keyof PcmControl
-  | keyof HeatpumpControl;
+  keyof PumpControl | keyof ValveControl | keyof PcmControl | keyof HeatpumpControl;
 
 export type ControlFields = {
   [ControlComponentType.Pump]: (keyof PumpControl)[];
@@ -326,11 +323,7 @@ export type SensorType =
   | PyranometerSensor;
 
 export type ControlType =
-  | PumpControl
-  | ValveControl
-  | PcmControl
-  | HeatpumpControl
-  | AdsorptionChillerControl;
+  PumpControl | ValveControl | PcmControl | HeatpumpControl | AdsorptionChillerControl;
 
 export type ControllerStateType = DhwTankController | PIDController;
 export type Sensors = Record<string, SensorType>;
@@ -584,15 +577,13 @@ export type ExtractValues<
   T extends Record<string, unknown>,
   Map extends Record<string, unknown>,
 > = {
-  [K in keyof T as T[K] extends { componentType: infer C }
-    ? C extends keyof Map
-      ? K
+  [
+    K in keyof T as T[K] extends { componentType: infer C }
+      ? C extends keyof Map
+        ? K
+        : never
       : never
-    : never]: T[K] extends { componentType: infer C }
-    ? C extends keyof Map
-      ? Map[C]
-      : never
-    : never;
+  ]: T[K] extends { componentType: infer C } ? (C extends keyof Map ? Map[C] : never) : never;
 };
 
 export type ExtractSensorValues<T extends SensorDefinitions> = ExtractValues<

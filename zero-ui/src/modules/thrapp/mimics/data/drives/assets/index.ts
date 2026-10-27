@@ -6,10 +6,7 @@ import { getField } from "../../../providers";
 
 const propdrive = (
   field:
-    | "drivesPropdriveAft1"
-    | "drivesPropdriveAft2"
-    | "drivesPropdriveFwd1"
-    | "drivesPropdriveFwd2",
+    "drivesPropdriveAft1" | "drivesPropdriveAft2" | "drivesPropdriveFwd1" | "drivesPropdriveFwd2",
   heatField:
     | "drivesPropdriveAft1Heat"
     | "drivesPropdriveAft2Heat"

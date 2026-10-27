@@ -1,13 +1,13 @@
 import { ENV } from "./settings";
 
 export const enum ZeroApps {
-  "thrsim" = "thrsim",
-  "thrs" = "thrs",
-  "loads" = "loads",
-  "grafana" = "grafana",
-  "domestic" = "domestic",
-  "sailSystem" = "sailSystem",
-  "powerTags" = "powerTags",
+  thrsim = "thrsim",
+  thrs = "thrs",
+  loads = "loads",
+  grafana = "grafana",
+  domestic = "domestic",
+  sailSystem = "sailSystem",
+  powerTags = "powerTags",
 }
 
 const DEFAULT_INCLUDED_APPS: ZeroApps[] = [ZeroApps.loads, ZeroApps.thrs, ZeroApps.domestic];

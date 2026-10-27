@@ -1,9 +1,9 @@
 import { SubscriptionInterceptor } from "@foundation-zero/graphql-subscriptions-mock";
 import { createSubscriptionFixture } from "@foundation-zero/graphql-subscriptions-mock/adapters/playwright";
+import { defineNetworkFixture, type NetworkFixture } from "@msw/playwright";
 import { test as base, expect } from "@playwright/test";
-import { graphql, http } from "msw";
-import type { MockServiceWorker } from "playwright-msw";
-import { createWorkerFixture } from "playwright-msw";
+import { http } from "msw";
+import { graphql } from "msw/graphql";
 import { Room } from "../../src/@types";
 import { AuthFixture, createAuthFixture } from "../integration/fixtures/auth";
 import { createSessionFixture, SessionFixture } from "../integration/fixtures/session";
@@ -13,14 +13,19 @@ export type ZeroSubscriptions = {
 };
 
 const test = base.extend<{
-  worker: MockServiceWorker;
+  worker: NetworkFixture;
   http: typeof http;
   graphql: typeof graphql;
   subscriptions: SubscriptionInterceptor<ZeroSubscriptions>;
   auth: AuthFixture;
   session: SessionFixture;
 }>({
-  worker: createWorkerFixture([], { graphqlUrl: process.env.VITE_GRAPHQL_URL }),
+  worker: async ({ context }, use) => {
+    const network = defineNetworkFixture({ context, onUnhandledFrame: "bypass" });
+    await network.enable();
+    await use(network);
+    await network.disable();
+  },
   http,
   graphql,
   subscriptions: createSubscriptionFixture<ZeroSubscriptions>(process.env.VITE_GRAPHQL_WS_URL!),

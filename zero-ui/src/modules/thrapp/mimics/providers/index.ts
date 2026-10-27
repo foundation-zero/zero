@@ -42,10 +42,7 @@ export const getCustomField = <Module extends keyof ThrsDefinitions>(
 
 export const getField = <
   Type extends
-    | SensorComponentType
-    | ControlComponentType
-    | ParametersType
-    | ControllerStateComponentType,
+    SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType,
   Section extends "sensorValues" | "controlValues" | "parameters" | "controllerState" =
     Type extends SensorComponentType
       ? "sensorValues"
@@ -55,12 +52,14 @@ export const getField = <
           ? "controllerState"
           : "parameters",
   Module extends keyof ThrsDefinitions = keyof {
-    [M in keyof ThrsDefinitions as PickKeys<
-      ThrsDefinitions[M][Section],
-      SchemaDefinition<Type>
-    > extends never
-      ? never
-      : M]: ThrsDefinitions[M];
+    [
+      M in keyof ThrsDefinitions as PickKeys<
+        ThrsDefinitions[M][Section],
+        SchemaDefinition<Type>
+      > extends never
+        ? never
+        : M
+    ]: ThrsDefinitions[M];
   },
 >(
   type: Type,
@@ -245,20 +244,14 @@ export const injectFieldValueField = <T extends string = string>() =>
 
 export const provideFieldValueSource = <
   T extends
-    | SensorComponentType
-    | ControlComponentType
-    | ParametersType
-    | ControllerStateComponentType,
+    SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType,
 >(
   value: ModuleField<T>,
 ) => provide("FieldValueSource", value);
 
 export const injectFieldValueSource = <
   T extends
-    | SensorComponentType
-    | ControlComponentType
-    | ParametersType
-    | ControllerStateComponentType,
+    SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType,
 >(
   fallback: ModuleField<T> | undefined = undefined,
 ) => inject<ModuleField<T> | undefined>("FieldValueSource", fallback);
