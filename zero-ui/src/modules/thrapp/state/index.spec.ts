@@ -9,7 +9,7 @@ const automation = reactive({
   setAutomatedControl: vi.fn(() => setModuleAutomation),
 });
 
-vi.mock("@/modules/thrsim/stores/automation", () => ({
+vi.mock("@/modules/thrapp/stores/automation", () => ({
   useAutomationStore: () => automation,
 }));
 

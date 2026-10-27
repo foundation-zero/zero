@@ -1,10 +1,10 @@
-import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
-import { DEFINITIONS } from "@/modules/thrsim/lib/consts";
+import { DEFINITIONS } from "@/modules/thrapp/lib/consts";
 import {
   DcAutomaticMode,
   type PvtAutomaticMode,
   useAutomationStore,
-} from "@/modules/thrsim/stores/automation";
+} from "@/modules/thrapp/stores/automation";
+import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
 import { computed, inject, Ref, toRefs } from "vue";
 
 export type PvtGroup = keyof PvtAutomaticMode;

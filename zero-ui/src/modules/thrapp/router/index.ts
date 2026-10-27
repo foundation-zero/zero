@@ -22,7 +22,7 @@ export const thrappRoutes: RouteRecordRaw = {
           () => import("@/modules/thrapp/components/navigation/ModuleTabs.vue"),
         ),
         toolbarRight: defineAsyncComponent(
-          () => import("@/modules/thrsim/components/ControlActions.vue"),
+          () => import("@/modules/thrapp/components/control-actions/ControlActions.vue"),
         ),
         views: MIMICS,
       },
@@ -36,7 +36,7 @@ export const thrappRoutes: RouteRecordRaw = {
           () => import("@/modules/thrapp/components/navigation/ModuleTabs.vue"),
         ),
         toolbarRight: defineAsyncComponent(
-          () => import("@/modules/thrsim/components/ControlActions.vue"),
+          () => import("@/modules/thrapp/components/control-actions/ControlActions.vue"),
         ),
         views: PARAMETERS,
       },

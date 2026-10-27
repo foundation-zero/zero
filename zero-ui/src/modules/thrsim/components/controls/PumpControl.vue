@@ -8,7 +8,7 @@ import {
   NumberFieldInput,
 } from "@/components/ui/number-field";
 import { Switch } from "@/components/ui/switch";
-import { ThrsModules } from "@/modules/thrsim/lib/consts";
+import { ThrsModules } from "@/modules/thrapp/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrsim/stores/thrs";
 import { PumpControl } from "@/modules/thrapp/types/thrs";
 import { toUpperCamelCase } from "@common/lib/utils";

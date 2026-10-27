@@ -73,12 +73,12 @@ pnpm extract-schema-values <CONST_NAME> <TYPE_NAME>
 
 **What it does:**
 
-1. Parses the GraphQL schema file at `src/modules/thrsim/graphql/schema.graphql` using the official GraphQL parser
+1. Parses the GraphQL schema file at `src/modules/thrapp/graphql/schema.graphql` using the official GraphQL parser
 2. Finds the specified GraphQL type definition using AST visitor pattern
 3. Extracts field metadata from `@jsonSchemaDirective` annotations (for controls/sensors) or infers types directly (for parameters/simulation)
 4. Infers component types (control/sensor/parameter/simulation) from field metadata and GraphQL types
 5. Generates appropriate TypeScript definition objects with proper typing
-6. Updates or creates the specified constant in `src/modules/thrsim/lib/consts.generated.ts`
+6. Updates or creates the specified constant in `src/modules/thrapp/lib/consts.generated.ts`, or in `src/modules/thrsim/lib/consts.generated.ts` for simulation definitions
 7. Supports union types by merging fields from each member type (first occurrence wins on conflicts)
 
 **Architecture:**
@@ -127,11 +127,11 @@ pnpm generate-graphql-queries <INPUT_CONST_NAME> <OUTPUT_QUERY_NAME>
 
 **What it does:**
 
-1. Reads definition constants from `src/modules/thrsim/lib/consts.generated.ts`
+1. Reads the definition constant from `src/modules/thrapp/lib/consts.generated.ts` or, for simulation definitions, `src/modules/thrsim/lib/consts.generated.ts`
 2. Parses field definitions to extract component type information
 3. Looks up appropriate GraphQL fields for each component type from centralized mappings
 4. Generates properly formatted GraphQL query fragments with nested field structures
-5. Updates or creates the query constant in `src/modules/thrsim/lib/queries.generated.ts`
+5. Updates or creates the query constant in the `queries.generated.ts` next to that constants file
 
 **Architecture:**
 
@@ -177,8 +177,8 @@ Batch script that extracts all schema values and generates GraphQL queries for a
 2. Executes all 20 `generate-graphql-queries` commands for all modules and definition types
 3. Processes all modules: THRUSTERS, PVT, PCM, CONSUMERS
 4. Extracts all definition types: control, sensor, parameter, simulation inputs, simulation outputs
-5. Updates `src/lib/consts.generated.ts` with all extracted definitions
-6. Updates `src/lib/queries.generated.ts` with all generated GraphQL queries
+5. Updates `src/modules/thrapp/lib/consts.generated.ts` and `queries.generated.ts` with all module definitions and queries
+6. Updates `src/modules/thrsim/lib/consts.generated.ts` and `queries.generated.ts` with all simulation definitions and queries
 
 **Total operations:** 40 commands (20 extractions + 20 query generations)
 
@@ -219,7 +219,7 @@ Paths without a detectable chevron are left untouched and reported as skipped â€
 
 ## Generated Output
 
-The scripts generate constants in `src/lib/consts.generated.ts` and `src/lib/queries.generated.ts`:
+The scripts generate constants in `consts.generated.ts` and `queries.generated.ts`. Control, sensor, parameter and controller state definitions go to `src/modules/thrapp/lib/`; simulation definitions go to `src/modules/thrsim/lib/`, since simulation is only used by the temporary thrsim module:
 
 ### Control Definitions
 
@@ -379,7 +379,7 @@ export const THRUSTERS_SIMULATION_OUTPUTS_QUERY = `
 
 ## Type System Integration
 
-The generated definitions integrate with the TypeScript type system defined in `src/@types/thrs.ts`:
+The generated definitions integrate with the TypeScript types defined in `src/modules/thrapp/types/thrs.ts` (simulation types in `src/modules/thrsim/types/index.ts`):
 
 ### Component Types
 

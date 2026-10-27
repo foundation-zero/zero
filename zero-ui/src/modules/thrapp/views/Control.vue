@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { GraphQLProvider } from "@/modules/thrapp/mimics/providers";
-import { ThrsModules } from "@/modules/thrsim/lib/consts";
+import { ThrsModules } from "@/modules/thrapp/lib/consts";
 import { inject, Ref } from "vue";
 import { PARAMETERS } from "../router/parameters";
 

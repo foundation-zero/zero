@@ -19,7 +19,7 @@ const history = reactive({
 const automaticMode = ref<boolean | undefined>(true);
 const advisoryEnabled = ref<boolean | null>(true);
 
-vi.mock("@/modules/thrsim/stores/history", () => ({
+vi.mock("@/modules/thrapp/stores/history", () => ({
   useThrsHistory: () => history,
 }));
 

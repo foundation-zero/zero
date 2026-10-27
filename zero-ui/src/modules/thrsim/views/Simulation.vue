@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatInt } from "@/modules/common/lib/utils";
-import { toRef, toRefs } from "vue";
+import { toRefs } from "vue";
 import { useI18n } from "vue-i18n";
 import AlertBox from "../components/AlertBox.vue";
 import FieldCurrent from "../components/fields-values/FieldCurrent.vue";
@@ -9,14 +9,13 @@ import FieldsFilter from "../components/fields-values/FieldsFilter.vue";
 import FieldsValues from "../components/fields-values/FieldsValues.vue";
 import FieldsValuesEmpty from "../components/fields-values/FieldsValuesEmpty.vue";
 import SimulationControls from "../components/SimulationControls.vue";
-import { ComponentRecord, SIMULATION, SIMULATION_FIELDS } from "../lib/consts.ts";
-import { useThrsHistory } from "../stores/history";
+import { SIMULATION, SIMULATION_FIELDS } from "../lib/consts.ts";
+import { ComponentRecord } from "@/modules/thrapp/lib/consts";
 import { useSimulationStore } from "../stores/simulation.ts";
 
 const { t } = useI18n();
-const data = toRef(useThrsHistory(), "data");
 const FIELDS = Array.from(new Set(Object.values(SIMULATION_FIELDS).flat()));
-const { activeSimulationType } = toRefs(useSimulationStore());
+const { activeSimulationType, simulation } = toRefs(useSimulationStore());
 </script>
 <template>
   <template v-if="activeSimulationType">
@@ -24,8 +23,8 @@ const { activeSimulationType } = toRefs(useSimulationStore());
       module="simulation"
       :fields="FIELDS"
       :data="[
-        data?.simulation?.inputs as Record<string, ComponentRecord> | undefined,
-        data?.simulation?.outputs as Record<string, ComponentRecord> | undefined,
+        simulation?.inputs as Record<string, ComponentRecord> | undefined,
+        simulation?.outputs as Record<string, ComponentRecord> | undefined,
       ]"
       :definitions="[
         SIMULATION.outputs[activeSimulationType!],

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ThrsDefinitions } from "@/modules/thrsim/lib/consts.types";
+import { ThrsDefinitions } from "@/modules/thrapp/lib/consts.types";
 import {
   ControlComponentType,
   ControlDefinitionMap,

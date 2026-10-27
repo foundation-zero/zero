@@ -1,15 +1,15 @@
 import { Nullable, PromiseFn } from "@/modules/common/types";
-import { mutationWithValue } from "@/modules/thrsim/graphql";
-import { context } from "@/modules/thrsim/graphql/client";
+import { mutationWithValue } from "../graphql";
+import { context } from "../graphql/client";
 
 import { gql, TypedDocumentNode, useClientHandle, useQuery } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { OperationResult } from "graphql-ws";
 import { Maybe } from "graphql/jsutils/Maybe";
 
-import { AmcsControlModeSensor, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { AmcsControlModeSensor, DcMode, PvtMode } from "../types/thrs";
 
 export type ThrustersAutomaticMode = { mode: string };
 export type PcmAutomaticMode = { mode: string };

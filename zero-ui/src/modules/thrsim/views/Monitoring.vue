@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatInt } from "@/modules/common/lib/utils";
-import { CONTROL_FIELDS, DEFINITIONS, SENSOR_FIELDS } from "@/modules/thrsim/lib/consts";
+import { CONTROL_FIELDS, DEFINITIONS, SENSOR_FIELDS } from "@/modules/thrapp/lib/consts";
 import { inject, Ref, toRef } from "vue";
 import { useI18n } from "vue-i18n";
 import {
@@ -10,7 +10,7 @@ import {
   FieldsValues,
   FieldsValuesEmpty,
 } from "../components/fields-values";
-import { useThrsHistory } from "../stores/history";
+import { useThrsHistory } from "@/modules/thrapp/stores/history";
 
 const { t } = useI18n();
 

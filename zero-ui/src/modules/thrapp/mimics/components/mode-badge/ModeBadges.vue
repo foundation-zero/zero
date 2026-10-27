@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ThrsModules } from "@/modules/thrsim/lib/consts";
+import { ThrsModules } from "@/modules/thrapp/lib/consts";
 import { HTMLAttributes, toRef } from "vue";
 import { ModeBadge, ModeBadgeSize, useModuleMode } from ".";
 

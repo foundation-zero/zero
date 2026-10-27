@@ -1,4 +1,4 @@
-import { ThrsModules } from "@/modules/thrsim/lib/consts";
+import { ThrsModules } from "@/modules/thrapp/lib/consts";
 import { Component, defineAsyncComponent } from "vue";
 
 export type MimicKey = keyof ThrsModules | "pvt-main" | "pvt-owners" | "pvt-main-heat";

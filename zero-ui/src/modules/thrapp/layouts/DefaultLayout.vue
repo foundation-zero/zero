@@ -6,7 +6,7 @@ import TopNav from "@/modules/common/components/navigation/TopNav.vue";
 import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.vue";
 import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
 import { MimicKey } from "@/modules/thrapp/router/mimics";
-import { client } from "@/modules/thrsim/graphql/client";
+import { client } from "@/modules/thrapp/graphql/client";
 import { provideClient } from "@urql/vue";
 import { computed, provide } from "vue";
 import { useRoute } from "vue-router";

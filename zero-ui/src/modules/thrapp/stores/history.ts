@@ -2,16 +2,16 @@ import { defineStore } from "pinia";
 
 import { entriesOf } from "@/modules/common/lib/utils";
 import { ChartDataType, TimeSeriesData } from "@/modules/common/types";
-import { client, context } from "@/modules/thrsim/graphql/client";
 import { DocumentInput, useQuery } from "@urql/vue";
 import { useIntervalFn, useLocalStorage } from "@vueuse/core";
-import { ComponentRecord, QUERY_ALL, THRS } from "../lib/consts";
+import { client, context } from "../graphql/client";
+import { ComponentRecord, QUERY_MODULES, THRS } from "../lib/consts";
 
 export const useThrsHistory = defineStore("thrsHistory", () => {
   const lastUpdate = useLocalStorage<number | null>("thrs-history-last-update", null);
 
   const { data, executeQuery: update } = useQuery<THRS>({
-    query: QUERY_ALL,
+    query: QUERY_MODULES,
     context,
     requestPolicy: "network-only",
   });

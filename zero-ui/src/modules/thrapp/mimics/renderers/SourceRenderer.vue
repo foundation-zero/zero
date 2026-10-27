@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cn, isStampedWithSource } from "@/modules/common/lib/utils";
-import { THRS_YARDTAG_PREFIX_REGEX } from "@/modules/thrsim/lib/consts";
+import { THRS_YARDTAG_PREFIX_REGEX } from "@/modules/thrapp/lib/consts";
 import { snakeCase } from "lodash";
 import { computed, type HTMLAttributes } from "vue";
 import { FieldRenderer } from ".";

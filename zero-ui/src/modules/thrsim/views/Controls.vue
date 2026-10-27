@@ -2,7 +2,7 @@
 import { ModuleDefinition } from "@/modules/thrapp/types/thrs";
 
 import ControlValuesControls from "@/modules/thrsim/components/ControlValuesControls.vue";
-import { DEFINITIONS } from "@/modules/thrsim/lib/consts";
+import { DEFINITIONS } from "@/modules/thrapp/lib/consts";
 import { computed, inject, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 

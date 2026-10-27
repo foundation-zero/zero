@@ -1,12 +1,13 @@
+import { client as thrsimClient } from "@/modules/thrapp/graphql/client";
+import { QUERY_MODULES } from "@/modules/thrapp/lib/consts";
 import { AmcsControlMode } from "@/modules/thrapp/types/thrs";
-import { client as thrsimClient } from "@/modules/thrsim/graphql/client";
 import { createTestingPinia } from "@pinia/testing";
 import { createUseQueryFake } from "@tests/lib/urql";
 import { useClientHandle, useQuery } from "@urql/vue";
 import { DocumentNode, print } from "graphql";
 import { setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { QUERY_ALL } from "../lib/consts";
+import { QUERY_SIMULATION } from "../lib/consts";
 import { SimulationStatus, STATUS_QUERY, useSimulationStore } from "./simulation";
 
 vi.mock(import("@urql/vue"), async (importOriginal) => ({
@@ -15,20 +16,21 @@ vi.mock(import("@urql/vue"), async (importOriginal) => ({
   useClientHandle: vi.fn(),
 }));
 
-// used by the history store, which the simulation store reads and mutates through
-vi.mock("@/modules/thrsim/graphql/client", () => ({
+// used by the THRS history store, which the simulation store mutates through
+vi.mock("@/modules/thrapp/graphql/client", () => ({
   client: { mutation: vi.fn() },
   context: {},
 }));
 
 const queries = createUseQueryFake();
 const statusQuery = () => queries.resultOf<SimulationStatus>(STATUS_QUERY);
-const historyQuery = () => queries.resultOf(QUERY_ALL);
+const historyQuery = () => queries.resultOf(QUERY_MODULES);
+const simulationQuery = () => queries.resultOf(QUERY_SIMULATION);
 const mutation = vi.fn();
 const historyMutation = vi.fn();
 
 const withInputs = (inputs: Record<string, unknown>) => {
-  historyQuery().data.value = { simulation: { inputs } };
+  simulationQuery().data.value = { simulation: { inputs } };
 };
 
 describe("simulation store", () => {
@@ -105,6 +107,7 @@ describe("simulation store", () => {
       expect(query).toContain("thrustersSimulationSetMode(value: $input)");
       expect(variables).toEqual({ input: { mode } });
       expect(historyQuery().executeQuery).toHaveBeenCalled();
+      expect(simulationQuery().executeQuery).toHaveBeenCalled();
       expect(simulation.advisoryError).toBeNull();
     });
 

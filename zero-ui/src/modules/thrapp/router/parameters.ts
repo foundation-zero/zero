@@ -1,4 +1,4 @@
-import { ThrsModules } from "@/modules/thrsim/lib/consts";
+import { ThrsModules } from "@/modules/thrapp/lib/consts";
 import { Component, defineAsyncComponent } from "vue";
 
 export const PARAMETERS: Partial<Record<keyof ThrsModules, Component>> = {

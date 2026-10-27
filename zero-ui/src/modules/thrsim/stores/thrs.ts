@@ -1,5 +1,6 @@
 import { PID } from "@/modules/common/types";
-import { ThrsModules, ThrsSimulationType } from "@/modules/thrsim/lib/consts";
+import { ThrsModules } from "@/modules/thrapp/lib/consts";
+import { ThrsSimulationType } from "@/modules/thrsim/lib/consts";
 import { unstamp } from "@common/lib/utils";
 import { Stamped } from "@common/types";
 import { useClientHandle } from "@urql/vue";

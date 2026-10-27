@@ -5,6 +5,8 @@
  *
  * This script reads definition constants (control, sensor, parameter, or simulation)
  * and generates corresponding GraphQL query fragments with appropriate field mappings.
+ * The query is written next to the constant it was generated from: thrapp for module
+ * definitions, thrsim for simulation definitions.
  *
  * Usage:
  *   pnpm tsx scripts/generate-graphql-queries.ts <INPUT_CONST_NAME> <OUTPUT_QUERY_NAME>
@@ -27,8 +29,21 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const CONSTS_PATH = path.join(__dirname, "../src/modules/thrsim/lib/consts.generated.ts");
-const OUTPUT_PATH = path.join(__dirname, "../src/modules/thrsim/lib/queries.generated.ts");
+interface ModulePaths {
+  consts: string;
+  queries: string;
+}
+
+const MODULE_PATHS: ModulePaths[] = [
+  {
+    consts: path.join(__dirname, "../src/modules/thrapp/lib/consts.generated.ts"),
+    queries: path.join(__dirname, "../src/modules/thrapp/lib/queries.generated.ts"),
+  },
+  {
+    consts: path.join(__dirname, "../src/modules/thrsim/lib/consts.generated.ts"),
+    queries: path.join(__dirname, "../src/modules/thrsim/lib/queries.generated.ts"),
+  },
+];
 
 // ============================================================================
 // Types
@@ -350,14 +365,30 @@ function generateQuery(definitions: Definitions): string {
 // ============================================================================
 
 /**
+ * Find the module whose consts file defines the given constant
+ */
+function resolveModulePaths(constName: string): ModulePaths {
+  const constPattern = new RegExp(`export const ${constName} = `);
+  const modulePaths = MODULE_PATHS.find(
+    ({ consts }) => fs.existsSync(consts) && constPattern.test(fs.readFileSync(consts, "utf8")),
+  );
+
+  if (!modulePaths) {
+    throw new Error(`Could not find constant: ${constName}`);
+  }
+
+  return modulePaths;
+}
+
+/**
  * Update or create the queries file with the generated query
  */
-function updateQueriesFile(queryString: string, outputQueryName: string): void {
+function updateQueriesFile(queryString: string, outputQueryName: string, outputPath: string): void {
   let queriesContent = "";
 
   // Read existing file if it exists
-  if (fs.existsSync(OUTPUT_PATH)) {
-    queriesContent = fs.readFileSync(OUTPUT_PATH, "utf8");
+  if (fs.existsSync(outputPath)) {
+    queriesContent = fs.readFileSync(outputPath, "utf8");
   }
 
   // Format the new query export
@@ -394,7 +425,7 @@ function updateQueriesFile(queryString: string, outputQueryName: string): void {
     ? `${headerContent}\n\n${sortedQueries}\n`
     : `${sortedQueries}\n`;
 
-  fs.writeFileSync(OUTPUT_PATH, updatedContent);
+  fs.writeFileSync(outputPath, updatedContent);
 }
 
 function generateGraphqlQueries(config: Config): void {
@@ -402,20 +433,17 @@ function generateGraphqlQueries(config: Config): void {
   console.log(`📋 Input: ${config.inputConstName}`);
   console.log(`📋 Output: ${config.outputQueryName}`);
 
-  if (!fs.existsSync(CONSTS_PATH)) {
-    throw new Error(`Constants file not found: ${CONSTS_PATH}`);
-  }
-
-  const constsContent = fs.readFileSync(CONSTS_PATH, "utf8");
+  const modulePaths = resolveModulePaths(config.inputConstName);
+  const constsContent = fs.readFileSync(modulePaths.consts, "utf8");
   const definitions = extractDefinitions(constsContent, config.inputConstName);
   const fieldCount = Object.keys(definitions).length;
 
   console.log(`✓ Found ${fieldCount} fields:`, Object.keys(definitions));
 
   const queryString = generateQuery(definitions);
-  updateQueriesFile(queryString, config.outputQueryName);
+  updateQueriesFile(queryString, config.outputQueryName, modulePaths.queries);
 
-  console.log(`✅ Successfully updated ${OUTPUT_PATH}`);
+  console.log(`✅ Successfully updated ${modulePaths.queries}`);
   console.log(`📊 Generated query with ${fieldCount} fields`);
 }
 
