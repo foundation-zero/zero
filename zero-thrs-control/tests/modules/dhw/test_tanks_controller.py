@@ -1,4 +1,6 @@
-from thrs.control.modules.dhw import DhwParameters, TanksController
+from datetime import datetime, timedelta
+
+from thrs.control.modules.dhw import BoostingSource, DhwParameters, TanksController
 from thrs.input_output.definitions.units import TankState
 from thrs.input_output.modules.dhw import DhwSensorValues
 
@@ -7,10 +9,10 @@ def run_tick_boosting(
     tanks_controller: TanksController,
     sensor_values: DhwSensorValues,
     parameters: DhwParameters,
-    boosting_available: bool = True,
+    boosting_source: BoostingSource | None = "boosting_high_temperature",
 ):
     tanks_controller(sensor_values, parameters)
-    tanks_controller.apply_boosting(boosting_available)
+    tanks_controller.apply_boosting(boosting_source)
 
 
 def set_levels(sensor_values: DhwSensorValues, l1: float, l2: float, l3: float):
@@ -590,3 +592,86 @@ def test_fallback_excludes_disabled_and_unknown_temperature(
         tanks_controller._fallback_tank_in_use(parameters)
         is (tanks_controller._tanks[1])
     )
+
+
+def test_boost_lockout_skips_tank_for_another_candidate(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    set_temps(sensor_values, 60, 20, 30)
+    set_levels(sensor_values, 250, 250, 250)
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+    assert tanks_controller.boosting_tank is tanks_controller._tanks[2]
+
+    tanks_controller.lock_out_boosting_tank(
+        "boosting_high_temperature", datetime.now() + timedelta(hours=1)
+    )
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert tanks_controller.boosting_tank is tanks_controller._tanks[1]
+    assert (
+        tanks_controller.tank_state(tanks_controller._tanks[2], parameters)
+        == TankState.NEEDS_BOOST
+    )
+
+
+def test_boost_lockout_without_other_candidate_has_no_candidate(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    set_temps(sensor_values, 60, 60, 30)
+    set_levels(sensor_values, 250, 250, 250)
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+    assert tanks_controller.boosting_tank is tanks_controller._tanks[2]
+
+    tanks_controller.lock_out_boosting_tank(
+        "boosting_high_temperature", datetime.now() + timedelta(hours=1)
+    )
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert tanks_controller.boost_candidate("boosting_high_temperature") is None
+    assert tanks_controller.boosting_tank is None
+
+
+def test_boost_lockout_only_applies_to_its_source(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    set_temps(sensor_values, 60, 60, 30)
+    set_levels(sensor_values, 250, 250, 250)
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    tanks_controller.lock_out_boosting_tank(
+        "boosting_high_temperature", datetime.now() + timedelta(hours=1)
+    )
+    run_tick_boosting(tanks_controller, sensor_values, parameters, "boosting_heatpump")
+
+    assert (
+        tanks_controller.boost_candidate("boosting_heatpump")
+        is tanks_controller._tanks[2]
+    )
+    assert tanks_controller.boosting_tank is tanks_controller._tanks[2]
+
+
+def test_boost_lockout_expires(
+    tanks_controller: TanksController,
+    sensor_values: DhwSensorValues,
+    parameters: DhwParameters,
+):
+    set_temps(sensor_values, 60, 60, 30)
+    set_levels(sensor_values, 250, 250, 250)
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+    tanks_controller.lock_out_boosting_tank(
+        "boosting_high_temperature", datetime.now() - timedelta(seconds=1)
+    )
+
+    run_tick_boosting(tanks_controller, sensor_values, parameters)
+
+    assert (
+        tanks_controller.boost_candidate("boosting_high_temperature")
+        is tanks_controller._tanks[2]
+    )
+    assert tanks_controller.boosting_tank is tanks_controller._tanks[2]

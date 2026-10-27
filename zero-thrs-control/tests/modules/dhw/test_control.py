@@ -378,7 +378,14 @@ def test_reset_restores_initial_control_state(
     control._tanks_controller._filling_tank = control._tanks_controller._tanks[0]
     control._boosting_entered_at = datetime.now()
     control._boosting_shortfall_since = datetime.now()
-    control._heatpump_stall_cooldown_until = datetime.now()
+    control._stall_tracking_key = (
+        "boosting_heatpump",
+        control._tanks_controller._tanks[2],
+    )
+    control._tanks_controller._boosting_tank = control._tanks_controller._tanks[2]
+    control._tanks_controller.lock_out_boosting_tank(
+        "boosting_heatpump", datetime.now()
+    )
 
     control.reset()
 
@@ -401,7 +408,8 @@ def test_reset_restores_initial_control_state(
     assert not control._pump_flow_controller.enabled()
     assert control._boosting_entered_at is None
     assert control._boosting_shortfall_since is None
-    assert control._heatpump_stall_cooldown_until is None
+    assert control._stall_tracking_key is None
+    assert control._tanks_controller._boost_lockout_until == {}
     assert not control._tanks_controller.filling
     assert not control._tanks_controller.boosting
     assert (
@@ -452,7 +460,7 @@ def test_boosting_stall_grace_suppresses_check(parameters: DhwParameters):
     assert control._boosting_shortfall_since is None
 
 
-def test_boosting_stall_trips_after_window_and_sets_heatpump_cooldown(
+def test_boosting_stall_trips_after_window(
     parameters: DhwParameters,
 ):
     clock = _Clock(datetime(2026, 1, 1))
@@ -472,9 +480,6 @@ def test_boosting_stall_trips_after_window_and_sets_heatpump_cooldown(
     clock.advance(parameters.boosting_stall_window)
     assert control._boosting_stalled(sensor_values, "boosting_heatpump")
     assert control._boosting_shortfall_since is None
-    assert control._heatpump_stall_cooldown_until == clock() + timedelta(
-        seconds=parameters.boosting_stall_cooldown
-    )
 
 
 def test_boosting_stall_debounce_resets_on_recovery(parameters: DhwParameters):
@@ -504,41 +509,29 @@ def test_boosting_stall_debounce_resets_on_recovery(parameters: DhwParameters):
     assert control._boosting_stalled(recovered, "boosting_heatpump")
 
 
-def test_boosting_stall_high_temperature_does_not_set_cooldown(
+def test_boosting_stall_locks_out_boosting_tank_for_its_source(
     parameters: DhwParameters,
 ):
     clock = _Clock(datetime(2026, 1, 1))
     control = DhwControl(parameters, clock)
     sensor_values = DhwSensorValues.zero()
+    boosting_tank = control._tanks_controller._tanks[2]
+    control._tanks_controller._boosting_tank = boosting_tank
     control._state_machine.set_state("boosting_high_temperature")
     control._boosting_entered_at = clock()
     clock.advance(parameters.boosting_startup_grace + 1)
 
-    assert not control._boosting_stalled(sensor_values, "boosting_high_temperature")
+    control._lock_out_stalled_boosting_tank(sensor_values)
     clock.advance(parameters.boosting_stall_window / 2)
-    assert not control._boosting_stalled(sensor_values, "boosting_high_temperature")
+    control._lock_out_stalled_boosting_tank(sensor_values)
+    assert control._tanks_controller._boost_lockout_until == {}
+
     clock.advance(parameters.boosting_stall_window)
-    assert control._boosting_stalled(sensor_values, "boosting_high_temperature")
-    # HT re-enters via its primary-side gate, so it takes no cooldown.
-    assert control._heatpump_stall_cooldown_until is None
-
-
-def test_heatpump_boosting_unavailable_during_cooldown(parameters: DhwParameters):
-    clock = _Clock(datetime(2026, 1, 1))
-    control = DhwControl(parameters, clock)
-    sensor_values = DhwSensorValues.zero()
-    control._tanks_controller._boost_candidate = control._tanks_controller._tanks[0]
-    _drive_heatpump_boosting_heat(sensor_values, flow=25, delta=5)
-    control._heatpump_stall_cooldown_until = clock() + timedelta(
-        seconds=parameters.boosting_stall_cooldown
-    )
-
-    # Demand and heat are fine, but a live cooldown blocks the heatpump.
-    assert not control._heatpump_boosting_available(sensor_values)
-
-    clock.advance(parameters.boosting_stall_cooldown + 1)
-    assert control._heatpump_boosting_available(sensor_values)
-    assert control._heatpump_stall_cooldown_until is None
+    control._lock_out_stalled_boosting_tank(sensor_values)
+    assert control._tanks_controller._boost_lockout_until == {
+        (boosting_tank, "boosting_high_temperature"): clock()
+        + timedelta(seconds=parameters.boosting_stall_lockout)
+    }
 
 
 def test_control_loop_aborts_stalled_heatpump_boost(parameters: DhwParameters):
@@ -549,7 +542,7 @@ def test_control_loop_aborts_stalled_heatpump_boost(parameters: DhwParameters):
             "heatpump_boosting_enabled": True,
             "boosting_startup_grace": 3,
             "boosting_stall_window": 3,
-            "boosting_stall_cooldown": 100,
+            "boosting_stall_lockout": 100,
         }
     )
     control = DhwControl(fast, clock)
@@ -571,10 +564,131 @@ def test_control_loop_aborts_stalled_heatpump_boost(parameters: DhwParameters):
 
     assert "boosting_heatpump" in modes  # it did start boosting the cold tank
     assert control.mode.is_boosting_idle  # and gave up once it stalled
-    assert control._heatpump_stall_cooldown_until is not None
+    assert control._tanks_controller._in_boost_lockout(
+        control._tanks_controller._tanks[1], "boosting_heatpump"
+    )
     assert control._current_values.dhw_switch_heatpump.setpoint.value == 0.0
 
 
 def test_boosting_stall_window_rejects_negative(parameters: DhwParameters):
     with pytest.raises(ValueError, match=r"greater than or equal to 0"):
         DhwParameters(**{**parameters.model_dump(), "boosting_stall_window": -1})
+
+
+def _stalling_ht_control(
+    parameters: DhwParameters, clock: _Clock, heatpump_boosting_enabled: bool
+) -> DhwControl:
+    fast = parameters.model_copy(
+        update={
+            "ht_boosting_enabled": True,
+            "heatpump_boosting_enabled": heatpump_boosting_enabled,
+            "boosting_startup_grace": 3,
+            "boosting_stall_window": 3,
+            "boosting_stall_lockout": 100,
+        }
+    )
+    return DhwControl(fast, clock)
+
+
+def _ht_stall_sensor_values(tank2_temperature: float) -> DhwSensorValues:
+    # The HT primary side passes the start gate, but the boosting loop sensor
+    # valves stay shut, so heat transfer to the tank reads zero.
+    sensor_values = DhwSensorValues.zero()
+    sensor_values.consumers_temperature_dhw_supply.temperature.value = 70
+    sensor_values.consumers_flow_dhw.flow.value = 10
+    sensor_values.dhw_temperature_tank1.temperature.value = 60
+    sensor_values.dhw_temperature_tank2.temperature.value = tank2_temperature
+    sensor_values.dhw_temperature_tank3.temperature.value = 30
+    sensor_values.dhw_level_tank1.level.value = 250
+    sensor_values.dhw_level_tank2.level.value = 250
+    sensor_values.dhw_level_tank3.level.value = 250
+    return sensor_values
+
+
+def _run_ticks(
+    control: DhwControl, sensor_values: DhwSensorValues, clock: _Clock, ticks: int
+) -> list[tuple[str, int | None]]:
+    tanks = control._tanks_controller._tanks
+    history = []
+    for _ in range(ticks):
+        control.control(sensor_values)
+        boosting_tank = control._tanks_controller.boosting_tank
+        history.append(
+            (
+                control.mode.boosting_mode,
+                tanks.index(boosting_tank) if boosting_tank is not None else None,
+            )
+        )
+        clock.advance(1)
+    return history
+
+
+def _first_stall_tick(history: list[tuple[str, int | None]]) -> int:
+    return next(i for i, entry in enumerate(history) if entry != history[0])
+
+
+@pytest.mark.parametrize("heatpump_boosting_enabled", [False, True])
+def test_ht_stall_moves_ht_boosting_to_another_tank(
+    parameters: DhwParameters, heatpump_boosting_enabled: bool
+):
+    clock = _Clock(datetime(2026, 1, 1))
+    control = _stalling_ht_control(parameters, clock, heatpump_boosting_enabled)
+    # tank1 hot (in use), tank3 the hottest cold tank, tank2 also cold.
+    sensor_values = _ht_stall_sensor_values(tank2_temperature=20)
+
+    history = _run_ticks(control, sensor_values, clock, 20)
+
+    assert history[0] == ("boosting_high_temperature", 2)
+    stall = _first_stall_tick(history)
+    # Same tick, same source, no idle or heatpump tick in between, and tank2 gets
+    # a full startup grace and stall window before it stalls too.
+    grace_and_window = int(
+        control.parameters.boosting_startup_grace
+        + control.parameters.boosting_stall_window
+    )
+    assert (
+        history[stall : stall + grace_and_window]
+        == [("boosting_high_temperature", 1)] * grace_and_window
+    )
+
+
+def test_ht_stall_falls_back_to_heatpump_on_the_same_tank(parameters: DhwParameters):
+    clock = _Clock(datetime(2026, 1, 1))
+    control = _stalling_ht_control(parameters, clock, heatpump_boosting_enabled=True)
+    # Only tank3 needs boosting.
+    sensor_values = _ht_stall_sensor_values(tank2_temperature=60)
+
+    history = _run_ticks(control, sensor_values, clock, 10)
+
+    assert history[0] == ("boosting_high_temperature", 2)
+    assert history[_first_stall_tick(history)] == ("boosting_heatpump", 2)
+
+    # HT is preferred again as soon as another tank can take it.
+    sensor_values.dhw_temperature_tank2.temperature.value = 20
+    assert _run_ticks(control, sensor_values, clock, 1) == [
+        ("boosting_high_temperature", 1)
+    ]
+
+
+def test_ht_stall_idles_until_lockout_expires(parameters: DhwParameters):
+    clock = _Clock(datetime(2026, 1, 1))
+    control = _stalling_ht_control(parameters, clock, heatpump_boosting_enabled=False)
+    # Only tank3 needs boosting.
+    sensor_values = _ht_stall_sensor_values(tank2_temperature=60)
+
+    history = _run_ticks(control, sensor_values, clock, 20)
+
+    assert history[0] == ("boosting_high_temperature", 2)
+    assert history[-1] == ("idle", None)
+    assert (
+        control._tanks_controller.boost_candidate("boosting_high_temperature") is None
+    )
+    assert (
+        control._current_controller_state.dhw_tanks_controller.tank3_state.value
+        == TankState.NEEDS_BOOST.value
+    )
+
+    clock.advance(control.parameters.boosting_stall_lockout)
+    assert _run_ticks(control, sensor_values, clock, 1) == [
+        ("boosting_high_temperature", 2)
+    ]

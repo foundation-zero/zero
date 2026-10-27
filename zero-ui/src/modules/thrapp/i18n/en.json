@@ -333,7 +333,7 @@
           "htBoostingMinimumDelta": "HT boosting minimum delta",
           "boostingStartupGrace": "Boosting startup grace",
           "boostingStallWindow": "Boosting stall window",
-          "boostingStallCooldown": "Boosting stall cooldown",
+          "boostingStallLockout": "Boosting stall lockout",
           "boostingMinimumHeat": "Boosting minimum heat",
           "minimumTankTemperature": "Minimum tank temperature",
           "maximumTankTemperature": "Maximum tank temperature",
