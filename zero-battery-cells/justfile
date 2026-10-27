@@ -8,7 +8,7 @@ lint:
     cargo clippy --all-targets --locked -- -D warnings
 
 test *args:
-    cargo test --locked {{ args }}
+    cargo llvm-cov --locked {{ args }}
 
 format:
     cargo fmt --check
