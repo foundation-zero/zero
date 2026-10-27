@@ -21,7 +21,11 @@ dev = [
     "pymodbus-repl",
     "pymodbus>=3.13.1,<4",
 ]
-test = ["pytest-asyncio>=1.1.0,<2", "pytest>=9.1.1,<10"]
+test = [
+    "pytest-asyncio>=1.1.0,<2",
+    "pytest-cov>=7.1.0,<8",
+    "pytest>=9.1.1,<10",
+]
 
 [tool.uv]
 default-groups = ["dev", "test"]
@@ -42,6 +46,19 @@ asyncio_mode = "auto"
 testpaths = ["tests"]
 log_level = "DEBUG"
 log_format = "%(asctime)s.%(msecs)03d | %(levelname)-8s | %(message)s"
+
+[tool.coverage.run]
+source = ["src/zero_termodinamica"]
+branch = true
+
+[tool.coverage.report]
+exclude_also = [
+    "if TYPE_CHECKING:",
+    'if __name__ == "__main__":',
+    "@overload",
+    "raise NotImplementedError",
+    '^\s*\.\.\.$',
+]
 
 [build-system]
 requires = ["hatchling>=1.26,<2", "hatch-vcs>=0.4,<1"]
