@@ -1,20 +1,18 @@
-import re
 from pathlib import Path
 
 import polars as pl
 import pytest
 
 from cheat_sheet.build import (
-    OVERVIEW_GROUPS,
     UNIT_SYMBOLS,
     Column,
-    OverviewGroup,
     ThresholdLevel,
     build_columns,
     build_load_cases,
     overview_columns,
 )
 from cheat_sheet.pdf import BOOKLET_LOAD_CASES, headsail_category, table_rows
+from cheat_sheet.ui_dashboards import OverviewGroup, read_overview_groups
 from loads.registry.registry import VARIABLES
 from sailpack.seed_utils import KNOWN_SAIL_ABBREVIATIONS
 
@@ -22,25 +20,31 @@ UI_DASHBOARDS = (
     Path(__file__).parents[3] / "zero-ui/src/modules/loads/lib/consts.dashboards.ts"
 )
 
+DASHBOARDS_TS = """
+export const SAIL_GROUP = group(
+  "Sail",
+  PositionId.Main,
+  "main-sheet-load",
+  ["main-vang-load", false],
+);
 
-def _ui_overview_groups() -> tuple[OverviewGroup, ...]:
-    dashboards = UI_DASHBOARDS.read_text()
-    group_definitions = {
-        constant: OverviewGroup(name, tuple(re.findall(r'"([a-z0-9-]+)"', variables)))
-        for constant, name, variables in re.findall(
-            r'export const (\w+_GROUP) = group\(\s*"([^"]+)",\s*PositionId\.\w+,(.*?)\);',
-            dashboards,
-            flags=re.DOTALL,
-        )
-    }
-    overview = re.search(
-        r"export const OVERVIEW = dashboard\((.*?)\);", dashboards, re.DOTALL
-    )
-    assert overview is not None
-    return tuple(
-        group_definitions[constant]
-        for constant in re.findall(r"\w+_GROUP", overview.group(1))
-    )
+export const LOCKS_GROUP = group("Locks", PositionId.Main, "mast-lock-storm-jib");
+
+export const MAST_GROUP = group("Mast", PositionId.Main, "main-mast-compression-load");
+
+export const OVERVIEW = dashboard(
+  DashboardType.Static,
+  FixedColumnsLayout,
+  BrokenRowsLayout,
+  MAST_GROUP,
+  SAIL_GROUP,
+);
+"""
+
+
+@pytest.fixture
+def ui_overview_groups() -> tuple[OverviewGroup, ...]:
+    return read_overview_groups(UI_DASHBOARDS.read_text())
 
 
 def _column(
@@ -64,26 +68,54 @@ def _column(
     )
 
 
-def test_overview_groups_match_the_ui_overview_dashboard():
-    assert OVERVIEW_GROUPS == _ui_overview_groups()
-
-
-def test_overview_variables_are_in_the_registry_with_a_known_unit():
-    assert all(
-        technical_name in VARIABLES and VARIABLES[technical_name].unit in UNIT_SYMBOLS
-        for _, technical_name in overview_columns()
+def test_read_overview_groups_follows_the_overview_order():
+    assert read_overview_groups(DASHBOARDS_TS) == (
+        OverviewGroup("Mast", ("main-mast-compression-load",)),
+        OverviewGroup("Sail", ("main-sheet-load", "main-vang-load")),
     )
 
 
-def test_overview_columns_keep_each_variable_once_in_its_first_group():
-    columns = overview_columns()
+def test_read_overview_groups_raises_without_an_overview():
+    with pytest.raises(ValueError, match="OVERVIEW dashboard not found"):
+        read_overview_groups(DASHBOARDS_TS.replace("OVERVIEW", "OTHER"))
+
+
+def test_read_overview_groups_raises_on_an_unparsed_group():
+    with pytest.raises(ValueError, match="MAST_GROUP"):
+        read_overview_groups(
+            DASHBOARDS_TS.replace('PositionId.Main, "main-mast', 'position, "main-mast')
+        )
+
+
+def test_read_overview_groups_raises_on_a_group_without_variables():
+    with pytest.raises(ValueError, match="Mast"):
+        read_overview_groups(
+            DASHBOARDS_TS.replace(', "main-mast-compression-load"', ", MAST_VARIABLES")
+        )
+
+
+def test_ui_overview_variables_are_in_the_registry_with_a_known_unit(
+    ui_overview_groups: tuple[OverviewGroup, ...],
+):
+    assert all(
+        technical_name in VARIABLES and VARIABLES[technical_name].unit in UNIT_SYMBOLS
+        for _, technical_name in overview_columns(ui_overview_groups)
+    )
+
+
+def test_overview_columns_keep_each_variable_once_in_its_first_group(
+    ui_overview_groups: tuple[OverviewGroup, ...],
+):
+    columns = overview_columns(ui_overview_groups)
 
     assert len(columns) == len({technical_name for _, technical_name in columns})
     assert ("Storm Jib", "primary-winch-ps-load") in columns
     assert ("Mizzen jib", "mizzen-headsail-tack-adjuster-load") in columns
 
 
-def test_build_columns_label_with_the_ui_label_and_add_the_thresholds():
+def test_build_columns_label_with_the_ui_label_and_add_the_thresholds(
+    ui_overview_groups: tuple[OverviewGroup, ...],
+):
     max_loads = pl.DataFrame(
         {
             "variable": ["main-vang-load"],
@@ -95,7 +127,10 @@ def test_build_columns_label_with_the_ui_label_and_add_the_thresholds():
         schema_overrides={"alarm_low": pl.Float64, "warning_low": pl.Float64},
     )
 
-    columns = {column.technical_name: column for column in build_columns(max_loads)}
+    columns = {
+        column.technical_name: column
+        for column in build_columns(max_loads, ui_overview_groups)
+    }
 
     assert columns["main-vang-load"].label == VARIABLES["main-vang-load"].name
     assert columns["main-vang-load"].warning_high == 40.0

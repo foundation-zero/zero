@@ -234,6 +234,7 @@ class ExportCheatSheetCmd(BaseSettings, cli_kebab_case=True):
     )
 
     input: Path = Path("src/sailpack/load_cases")
+    dashboards: Path = Path("../zero-ui/src/modules/loads/lib/consts.dashboards.ts")
     booklet: Path = Path(
         "src/cheat_sheet/out/sources/Project Zero - PZ - Sail Plan Rig load Guide v6_compressed.pdf"
     )
@@ -243,6 +244,7 @@ class ExportCheatSheetCmd(BaseSettings, cli_kebab_case=True):
     async def cli_cmd(self) -> None:
         from cheat_sheet.build import build_cheat_sheet
         from cheat_sheet.pdf import write_pdf
+        from cheat_sheet.ui_dashboards import read_overview_groups
         from cheat_sheet.xlsx import write_xlsx
         from sailpack.parse import parse_directory
 
@@ -251,6 +253,7 @@ class ExportCheatSheetCmd(BaseSettings, cli_kebab_case=True):
             parse_directory(self.input),
             sheet.sailpack_mapping,
             sheet.max_loads,
+            read_overview_groups(self.dashboards.read_text()),
         )
         self.xlsx_output.parent.mkdir(parents=True, exist_ok=True)
         write_xlsx(cheat_sheet, self.xlsx_output)
