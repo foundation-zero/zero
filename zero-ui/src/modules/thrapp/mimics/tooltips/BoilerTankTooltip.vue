@@ -29,7 +29,7 @@ import BoilerTankOperator from "./partials/BoilerTankOperator.vue";
 const props = defineProps<TooltipComponentContext<MimicComponentType.BoilerTank>>();
 const { sensors, parameters, custom, tooltip } = props;
 
-const { sources, labels, items } = useTranslations();
+const { sources, labels, items, t } = useTranslations();
 const levelToPercentage = (level: number) => ratioToPercentage(level / DHW_TANK_CAPACITY);
 </script>
 
@@ -142,7 +142,7 @@ const levelToPercentage = (level: number) => ratioToPercentage(level / DHW_TANK_
             {{ items("levelSensor") }}
             <FieldRenderer.Source />
           </TooltipListItemTitle>
-          <TooltipListItemValue>Not empty</TooltipListItemValue>
+          <TooltipListItemValue>{{ t("thrapp.labels.notEmpty") }}</TooltipListItemValue>
         </TooltipListItem>
 
         <Partials.ListItem size="sm">

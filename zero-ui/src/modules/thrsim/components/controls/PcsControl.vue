@@ -56,7 +56,7 @@ const { submit, isSubmitting, error, mode } = controlValuesForm(
           <SelectTrigger class="border-border w-full capitalize">
             <SelectValue
               class="capitalize"
-              placeholder="Select a mode"
+              :placeholder="t('thrs.labels.selectMode')"
             >
               <span class="capitalize">{{ mode.value.value.toLocaleLowerCase() }}</span>
             </SelectValue>

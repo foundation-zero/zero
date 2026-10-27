@@ -1,3 +1,4 @@
+import i18n from "@/i18n";
 import { PromiseFn } from "@/modules/common/types";
 import { mutationWithoutValue, mutationWithValue } from "@/modules/thrapp/graphql";
 import { context } from "@/modules/thrapp/graphql/client";
@@ -99,14 +100,15 @@ export const useSimulationStore = defineStore("simulation", () => {
       const result = await history.mutate(query, { input });
       const resultError = (result as { error?: { message?: string } })?.error;
       if (resultError) {
-        advisoryError.value = resultError.message ?? "Failed to submit";
+        advisoryError.value = resultError.message ?? i18n.global.t("thrs.labels.failedToSubmit");
         return;
       }
       await history.refresh();
       await refreshSimulation();
       await updateStatus();
     } catch (err) {
-      advisoryError.value = err instanceof Error ? err.message : "Failed to submit";
+      advisoryError.value =
+        err instanceof Error ? err.message : i18n.global.t("thrs.labels.failedToSubmit");
     } finally {
       isProcessing.value = false;
     }

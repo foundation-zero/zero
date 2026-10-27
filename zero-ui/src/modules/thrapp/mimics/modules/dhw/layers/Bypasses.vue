@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { BypassArea } from "../../../components/bypass-area";
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -10,7 +13,7 @@ import { BypassArea } from "../../../components/bypass-area";
       :width="310"
       :height="72"
     >
-      Bypass A
+      {{ t("thrapp.mimics.sections.bypassA") }}
     </BypassArea>
 
     <BypassArea
@@ -19,7 +22,7 @@ import { BypassArea } from "../../../components/bypass-area";
       :width="60"
       :height="273"
     >
-      Bypass B
+      {{ t("thrapp.mimics.sections.bypassB") }}
     </BypassArea>
   </g>
 </template>

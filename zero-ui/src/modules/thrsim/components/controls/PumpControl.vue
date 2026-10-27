@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import {
   NumberField,
@@ -38,6 +39,8 @@ const { submit, isSubmitting, error, dutypoint, on } = controlValuesForm(
   props.query,
   emit,
 );
+
+const { t } = useI18n();
 </script>
 <template>
   <div class="bg-background flex flex-col rounded-md border p-4 shadow-md">
@@ -55,7 +58,7 @@ const { submit, isSubmitting, error, dutypoint, on } = controlValuesForm(
     <p class="text-muted-foreground text-xs">{{ yardTag }}</p>
 
     <div class="mt-6 grid gap-1.5">
-      <header class="text-2xs tracking-wide uppercase">Speed</header>
+      <header class="text-2xs tracking-wide uppercase">{{ t("thrs.labels.speed") }}</header>
       <div class="flex items-center gap-2">
         <NumberField
           v-model="dutypoint.value.value"
