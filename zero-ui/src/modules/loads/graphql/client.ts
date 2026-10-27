@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/modules/domestic/stores/auth";
+import { useAuthStore } from "@/modules/common/stores/auth";
 import { ENV } from "@env";
 import { authExchange } from "@urql/exchange-auth";
 import { cacheExchange, Client, fetchExchange, OperationContext } from "@urql/vue";

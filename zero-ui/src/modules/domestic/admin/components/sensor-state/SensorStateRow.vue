@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Room, RoomState } from "@/modules/domestic/types";
+import { formatInt } from "@common/lib/utils";
 import {
   extractActualCO2,
   extractActualHumidity,
   extractActualTemperature,
-  formatInt,
-} from "@common/lib/utils";
+} from "@/modules/domestic/lib/utils";
 import { RiDropLine, RiThermometerLine, RiWindyLine } from "@remixicon/vue";
 import { computed } from "vue";
 import SensorStateValue from "./StatusIcon.vue";

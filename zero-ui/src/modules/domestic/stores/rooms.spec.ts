@@ -1,3 +1,4 @@
+import { Roles } from "@/modules/common/types";
 import client from "@/modules/domestic/graphql/client";
 import { setBlindsLevelMutation } from "@/modules/domestic/graphql/queries/blinds";
 import { setLightingGroupsLevelMutation } from "@/modules/domestic/graphql/queries/light-groups";
@@ -8,7 +9,7 @@ import {
   setTemperatureSetpointMutation,
   subscribeToRooms,
 } from "@/modules/domestic/graphql/queries/rooms";
-import { Roles, Room } from "@/modules/domestic/types";
+import { Room } from "@/modules/domestic/types";
 
 import {
   extractActualCO2,
@@ -18,7 +19,7 @@ import {
   extractCO2Setpoint,
   extractHumiditySetpoint,
   extractTemperatureSetpoint,
-} from "@common/lib/utils";
+} from "@/modules/domestic/lib/utils";
 import { ENV } from "@env";
 import { createTestingPinia, TestingPinia } from "@pinia/testing";
 import * as urql from "@urql/vue";

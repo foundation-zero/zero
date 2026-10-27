@@ -1,4 +1,3 @@
-import { Breakpoints } from "@/modules/domestic/types";
 import {
   BasicColorSchema,
   useBreakpoints,
@@ -11,8 +10,8 @@ import {
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
-import { useAuthStore } from "../../domestic/stores/auth";
 import { breakpointsZero } from "../lib/consts";
+import { Breakpoints } from "../types";
 
 export const BREAKPOINTS = useBreakpoints(breakpointsZero);
 const orientation = useScreenOrientation();
@@ -23,11 +22,8 @@ export const useUIStore = defineStore("UI", () => {
     initialValue: darkMode.value,
   });
 
-  const auth = useAuthStore();
   const isTouchDevice = "ontouchstart" in document.documentElement;
   const scroll = useScroll(window, { behavior: "smooth" });
-
-  const scrollPositions = ref<Record<string, number>>({});
 
   const isScrolling = computed(() => scroll.y.value > 45);
   const isBottom = ref(false);
@@ -44,22 +40,6 @@ export const useUIStore = defineStore("UI", () => {
     landscape: !!orientation.orientation.value?.includes("landscape"),
     portrait: !!orientation.orientation.value?.includes("portrait"),
   }));
-
-  const showSideNav = ref((!isTouchDevice || breakpoints.value.tablet) && auth.isAdmin);
-
-  // Only show the sidenav for admins, and hide it on mobile devices
-  watch(
-    () => auth.isAdmin,
-    (isAdmin) => {
-      showSideNav.value = isAdmin && (!isTouchDevice || breakpoints.value.tablet);
-    },
-    { immediate: true },
-  );
-
-  const setScrollPosition = (key: string, value: number) => (scrollPositions.value[key] = value);
-  const toggleNav = (val = !showSideNav.value) => {
-    showSideNav.value = val || !isTouchDevice;
-  };
 
   const setColorMode = (mode: BasicColorSchema) => {
     darkMode.value = mode;
@@ -81,10 +61,6 @@ export const useUIStore = defineStore("UI", () => {
     hasScroll,
     isBottom,
     breakpoints,
-    scrollPositions,
-    showSideNav,
-    toggleNav,
-    setScrollPosition,
     darkMode,
     colorMode,
     setColorMode,

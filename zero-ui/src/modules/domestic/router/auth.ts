@@ -1,6 +1,7 @@
+import { useAuthStore } from "@/modules/common/stores/auth";
 import EmptyLayout from "@common/layouts/EmptyLayout.vue";
 import { RouteRecordRaw } from "vue-router";
-import { useAuthStore } from "../stores/auth";
+import { verifyToken } from "../lib/auth";
 
 export const authRoutes: RouteRecordRaw = {
   path: "auth",
@@ -17,7 +18,7 @@ export const authRoutes: RouteRecordRaw = {
     const { cabin } = authStore.setToken(String(token));
 
     try {
-      await authStore.verifyToken();
+      await verifyToken();
 
       if (cabin.value) {
         localStorage.setItem("currentRoomId", cabin.value);
