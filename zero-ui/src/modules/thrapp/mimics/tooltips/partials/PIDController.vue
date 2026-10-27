@@ -26,7 +26,7 @@ const props = defineProps<{
   controller: ModuleField<ControllerStateComponentType.PIDController>;
   actuator?: ModuleField;
   measurement?: ModuleField<Type>;
-  setpoint?: ModuleField<Parameter>;
+  target?: ModuleField<Parameter>;
   outputMinimum?: ModuleField<Parameter>;
 }>();
 
@@ -85,19 +85,19 @@ const t = tScoped("thrapp.parameters.pid");
 
   <ControllerStateValue
     :source="controller"
-    field="setpoint"
+    field="target"
   >
     <Partials.ListItem
       size="sm"
       :renderer="fieldRenderer"
-      :no-source="!setpoint"
+      :no-source="!target"
     >
-      {{ items("setpoint") }}
+      {{ items("target") }}
       <template #source>
-        <slot name="setpoint">
+        <slot name="target">
           <FieldRenderer.Source
-            v-if="setpoint"
-            :source="setpoint"
+            v-if="target"
+            :source="target"
           />
         </slot>
       </template>

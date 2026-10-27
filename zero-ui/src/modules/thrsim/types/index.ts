@@ -40,7 +40,7 @@ export type DhwTankController = {
 };
 
 export type PIDController = {
-  setpoint: Stamped<number>;
+  target: Stamped<number>;
   measurement: Stamped<number | undefined>;
   output: Stamped<number | undefined>;
   error: Stamped<number | undefined>;

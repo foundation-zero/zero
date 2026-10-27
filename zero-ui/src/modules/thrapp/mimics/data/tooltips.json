@@ -1672,7 +1672,7 @@
               "dhwDcFlowController",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "dhw",
               "fillingTemperatureSetpoint",
@@ -1810,7 +1810,7 @@
               "dhwDrivesFlowController",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "dhw",
               "fillingTemperatureSetpoint",
@@ -4525,7 +4525,7 @@
               "pvtTemperatureOwnersReturn",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "pvt",
               "warmupTemperature",
@@ -4594,7 +4594,7 @@
               "pvtTemperatureMainFwdReturn",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "pvt",
               "warmupTemperature",
@@ -4640,7 +4640,7 @@
               "pvtTemperatureMainAftReturn",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "pvt",
               "warmupTemperature",
@@ -4801,7 +4801,7 @@
               "pvtTemperatureSupply",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "pvt",
               "maximumSupplyTemperature",
@@ -5553,7 +5553,7 @@
               "pvtTemperatureMainFwdReturn",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "pvt",
               "recoveryTemperature",
@@ -5613,7 +5613,7 @@
               "pvtTemperatureMainAftReturn",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "pvt",
               "recoveryTemperature",
@@ -5696,7 +5696,7 @@
               "pvtTemperatureOwnersReturn",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "pvt",
               "recoveryTemperature",
@@ -9059,7 +9059,7 @@
               "thrustersFwdRecoveryTemperatureController",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "thrusters",
               "recoveryTemperature",
@@ -9525,7 +9525,7 @@
               "dhwDcFlowController",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "dhw",
               "fillingTemperatureSetpoint",
@@ -9563,7 +9563,7 @@
               "dhwDcFlowController",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "dhw",
               "fillingTemperatureSetpoint",
@@ -9807,7 +9807,7 @@
               "dhwDrivesFlowController",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "dhw",
               "fillingTemperatureSetpoint",
@@ -9898,7 +9898,7 @@
               "dhwDcFlowController",
               null
             ],
-            "setpoint": [
+            "target": [
               "parameter:temperature",
               "dhw",
               "fillingTemperatureSetpoint",

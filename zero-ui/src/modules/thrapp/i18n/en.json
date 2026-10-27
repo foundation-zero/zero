@@ -5,6 +5,7 @@
         "title": "PID controller tuning",
         "components": "Components",
         "configuration": "Configuration",
+        "graph": "Graph",
         "table": {
           "tuning": "PID tuning",
           "actual": "Actual",
@@ -477,6 +478,7 @@
         "actuator": "Actuator",
         "relativePosition": "Relative position",
         "absolutePosition": "Absolute position",
+        "target": "Target",
         "setpoint": "Setpoint",
         "componentType": "Component Type",
         "tankSelector": "Tank selector",

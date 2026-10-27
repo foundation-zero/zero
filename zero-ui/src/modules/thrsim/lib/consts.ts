@@ -151,7 +151,7 @@ export const CONTROLLER_STATE_FIELDS: ControllerStateFields = {
     "timeToHot",
   ],
   [ControllerStateComponentType.PIDController]: [
-    "setpoint",
+    "target",
     "measurement",
     "output",
     "error",

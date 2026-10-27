@@ -420,7 +420,7 @@ async def test_query_controller_state(app, test_client):
         json={
             "query": """
                 fragment PidControllerFields on ControllerPidControllerValuesType {
-                    setpoint { value }
+                    target { value }
                     measurement { value }
                     output { value }
                     error { value }
@@ -533,7 +533,7 @@ async def test_query_controller_state(app, test_client):
         "error": {"value": None},
         "measurement": {"value": None},
         "output": {"value": None},
-        "setpoint": {"value": 0.0},
+        "target": {"value": 0.0},
         "tuning": {"value": [0.0, 0.0, 0.0]},
     }
 

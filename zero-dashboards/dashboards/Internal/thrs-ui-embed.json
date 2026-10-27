@@ -264,6 +264,42 @@
                                 "value": "bool"
                             }
                         ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "output"
+                        },
+                        "properties": [
+                            {
+                                "id": "unit",
+                                "value": "percentunit"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "enabled"
+                        },
+                        "properties": [
+                            {
+                                "id": "unit",
+                                "value": "bool_on_off"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "time_to_fill"
+                        },
+                        "properties": [
+                            {
+                                "id": "unit",
+                                "value": "dthms"
+                            }
+                        ]
                     }
                 ]
             },
@@ -596,6 +632,66 @@
                             {
                                 "id": "unit",
                                 "value": "watt"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "on"
+                        },
+                        "properties": [
+                            {
+                                "id": "unit",
+                                "value": "bool_on_off"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "empty"
+                        },
+                        "properties": [
+                            {
+                                "id": "unit",
+                                "value": "bool"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "output"
+                        },
+                        "properties": [
+                            {
+                                "id": "unit",
+                                "value": "percentunit"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "enabled"
+                        },
+                        "properties": [
+                            {
+                                "id": "unit",
+                                "value": "bool_on_off"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "time_to_fill"
+                        },
+                        "properties": [
+                            {
+                                "id": "unit",
+                                "value": "dthms"
                             }
                         ]
                     }
@@ -936,6 +1032,66 @@
                                 "value": "watt"
                             }
                         ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "on"
+                        },
+                        "properties": [
+                            {
+                                "id": "unit",
+                                "value": "bool_on_off"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "empty"
+                        },
+                        "properties": [
+                            {
+                                "id": "unit",
+                                "value": "bool"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "output"
+                        },
+                        "properties": [
+                            {
+                                "id": "unit",
+                                "value": "percentunit"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "enabled"
+                        },
+                        "properties": [
+                            {
+                                "id": "unit",
+                                "value": "bool_on_off"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "time_to_fill"
+                        },
+                        "properties": [
+                            {
+                                "id": "unit",
+                                "value": "dthms"
+                            }
+                        ]
                     }
                 ]
             },
@@ -1178,5 +1334,5 @@
     "timezone": "browser",
     "title": "THRS ui embed",
     "uid": "adzxbs2",
-    "version": 21
+    "version": 22
 }
