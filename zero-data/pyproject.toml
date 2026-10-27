@@ -28,7 +28,7 @@ zero-data = "zero_data.__main__:run"
 
 [dependency-groups]
 dev = [
-    "ipykernel>=6.29.5,<7",
+    "ipykernel>=7.4,<8",
     "mypy>=2.4,<3",
     "notebook>=7.3.2,<8",
     "pandas>=3.0.6,<4",
