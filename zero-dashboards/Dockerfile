@@ -39,3 +39,7 @@ ENV GF_PLUGINS_PREINSTALL_DISABLED="true"
 COPY ./dashboard-provider.yaml /etc/grafana/provisioning/dashboards/dashboard-embedded-provider.yaml
 COPY ./dashboards /embedded-dashboards
 COPY ./extra /usr/share/grafana/public/extra
+COPY --chmod=755 ./create-local-users.sh /usr/local/bin/create-local-users.sh
+COPY --chmod=755 ./entrypoint.sh /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
