@@ -4,7 +4,6 @@ on:
     paths:
       - zero-dashboards/**
       - .github/workflows/ci_zero_dashboards.yaml
-      - .github/actions/registry-cache/**
   release:
     types: [released]
   push:
@@ -13,10 +12,10 @@ on:
     paths:
       - zero-dashboards/**
       - .github/workflows/ci_zero_dashboards.yaml
-      - .github/actions/registry-cache/**
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/grafana-zero-dashboards"
+  CACHE: "europe-west1-docker.pkg.dev/common-449414/buildcache/grafana-zero-dashboards:main"
 
 jobs:
   docker-push:
@@ -56,11 +55,6 @@ jobs:
             ${{ env.IMAGE }}
           tags: |
             type=raw,value=${{ steps.version.outputs.version }}
-      - name: Build cache
-        id: cache
-        uses: ./.github/actions/registry-cache
-        with:
-          image: ${{ env.IMAGE }}
       - name: Build and push
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:
@@ -68,5 +62,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: ${{ steps.cache.outputs.cache-from }}
-          cache-to: ${{ steps.cache.outputs.cache-to }}
+          cache-from: type=registry,ref=${{ env.CACHE }}
+          cache-to: ${{ github.ref == 'refs/heads/main' && format('type=registry,ref={0},mode=max,ignore-error=true', env.CACHE) || '' }}

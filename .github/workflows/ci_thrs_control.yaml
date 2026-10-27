@@ -4,7 +4,6 @@ on:
     paths:
       - zero-thrs-control/**
       - .github/workflows/ci_thrs_control.yaml
-      - .github/actions/registry-cache/**
       - .github/actions/coverage-report/**
   release:
     types: [released]
@@ -14,7 +13,6 @@ on:
     paths:
       - zero-thrs-control/**
       - .github/workflows/ci_thrs_control.yaml
-      - .github/actions/registry-cache/**
       - .github/actions/coverage-report/**
 
 env:
@@ -105,6 +103,8 @@ jobs:
     strategy:
       matrix:
         target: [control, api]
+    env:
+      CACHE: "europe-west1-docker.pkg.dev/common-449414/buildcache/zero-thrs-${{ matrix.target }}:main"
     permissions:
       contents: "read"
       id-token: "write"
@@ -139,11 +139,6 @@ jobs:
             ${{ env.IMAGE_PREFIX }}${{matrix.target}}
           tags: |
             type=raw,value=${{ steps.version.outputs.version }}
-      - name: Build cache
-        id: cache
-        uses: ./.github/actions/registry-cache
-        with:
-          image: ${{ env.IMAGE_PREFIX }}${{ matrix.target }}
       - name: Build and push
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:
@@ -153,8 +148,8 @@ jobs:
           target: ${{matrix.target}}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: ${{ steps.cache.outputs.cache-from }}
-          cache-to: ${{ steps.cache.outputs.cache-to }}
+          cache-from: type=registry,ref=${{ env.CACHE }}
+          cache-to: ${{ github.ref == 'refs/heads/main' && format('type=registry,ref={0},mode=max,ignore-error=true', env.CACHE) || '' }}
   helm-push:
     if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
     needs: docker-push
