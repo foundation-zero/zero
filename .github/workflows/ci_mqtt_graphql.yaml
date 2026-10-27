@@ -130,7 +130,7 @@ jobs:
           report-dir: ${{ runner.temp }}/coverage
 
   docker-push:
-    timeout-minutes: 10
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     needs: test
     permissions:
