@@ -2,8 +2,9 @@
 import { cn } from "@/modules/common/lib/utils";
 import { HTMLAttributes } from "vue";
 import { formatLoadFn } from "../../lib/utils";
-import { Nullable, VariableUnit } from "../../types";
-import AnimatedNumber from "../animated-number/AnimatedNumber.vue";
+import { Nullable } from "@/modules/common/types";
+import { VariableUnit } from "../../types";
+import AnimatedNumber from "@/modules/common/components/animated-number/AnimatedNumber.vue";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];

@@ -1,8 +1,7 @@
-import { PromiseFn } from "@/modules/domestic/types";
+import { Nullable, PromiseFn } from "@/modules/common/types";
 import { mutationWithValue } from "@/modules/thrsim/graphql";
 import { context } from "@/modules/thrsim/graphql/client";
 
-import { Nullable } from "@/modules/loads/types";
 import { gql, TypedDocumentNode, useClientHandle, useQuery } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { OperationResult } from "graphql-ws";

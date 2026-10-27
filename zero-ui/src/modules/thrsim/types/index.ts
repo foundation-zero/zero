@@ -1,4 +1,4 @@
-import { Stamped, StampedWithSource, Unstamp } from "@common/types";
+import { PID, Stamped, StampedWithSource, Unstamp } from "@common/types";
 import { Ref, WritableComputedRef } from "vue";
 
 export type SchemaDefinition<T> = {
@@ -602,8 +602,6 @@ export type PickMap<T extends Record<string, unknown>, FromType, ToType> = {
 export type PickKeys<T extends Record<string, unknown>, Type> = keyof {
   [K in keyof StringKeys<T> as T[K] extends Type ? K : never]: T[K];
 };
-
-export type PID = [proportional: number, integral: number, derivative: number];
 
 export const enum ParametersType {
   Temperature = "parameter:temperature",

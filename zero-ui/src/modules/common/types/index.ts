@@ -1,5 +1,8 @@
-import { PID } from "@/modules/thrsim/types";
 import { Ref } from "vue";
+
+export type Nullable<T> = T | null;
+export type PromiseFn<T = unknown> = () => Promise<T> | T;
+export type PID = [proportional: number, integral: number, derivative: number];
 
 export type Stamped<T> = { value: T; timestamp: Date };
 export type StampedWithSource<T> = { value: T; timestamp: Date; source: string };

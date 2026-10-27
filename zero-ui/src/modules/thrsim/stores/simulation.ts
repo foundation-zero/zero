@@ -1,4 +1,4 @@
-import { PromiseFn } from "@/modules/domestic/types";
+import { PromiseFn } from "@/modules/common/types";
 import { mutationWithoutValue, mutationWithValue } from "@/modules/thrsim/graphql";
 import { context } from "@/modules/thrsim/graphql/client";
 

@@ -1,3 +1,4 @@
+import { Nullable } from "@/modules/common/types";
 import { SailId } from "../lib/consts.sails";
 
 export type ReferenceThresholds = {
@@ -59,8 +60,6 @@ export type VariableDefinition = {
   scaleMinLabel: Nullable<string>;
   scaleMaxLabel: Nullable<string>;
 };
-
-export type Nullable<T> = T | null;
 
 export type VariableActual<T extends number | boolean = number> = {
   id: string;

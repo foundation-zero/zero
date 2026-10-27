@@ -6,7 +6,7 @@ import { computed, HTMLAttributes, provide, toRef } from "vue";
 import { VariableStateVariants, variableStateVariants } from ".";
 import { formatLoadFn } from "../../lib/utils";
 import { VariableState, VariableUnit } from "../../types";
-import AnimatedNumber from "../animated-number/AnimatedNumber.vue";
+import AnimatedNumber from "@/modules/common/components/animated-number/AnimatedNumber.vue";
 
 type VariableStateProps = PrimitiveProps & {
   value?: number | null;
