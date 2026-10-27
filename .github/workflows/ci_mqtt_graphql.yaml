@@ -33,6 +33,7 @@ on:
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-mqtt-graphql"
+  CACHE: "europe-west1-docker.pkg.dev/common-449414/buildcache/zero-mqtt-graphql:main"
 
 jobs:
   test:
@@ -176,8 +177,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=${{ env.CACHE }}
+          cache-to: ${{ github.ref == 'refs/heads/main' && format('type=registry,ref={0},mode=max,ignore-error=true', env.CACHE) || '' }}
   helm-push:
     if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
     needs: docker-push
