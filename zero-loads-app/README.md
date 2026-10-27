@@ -111,8 +111,7 @@ conditions. Targets outside their thresholds are clamped to the warning, or to t
 that side has no warning, and listed in `src/sailpack/target_threshold_conflicts.csv`.
 
 Regenerate the seeds, which downloads the sheet and first checks its technical names against the
-registry, that every Vitters IO list row with a display name matches a registry variable on its
-topic, and that the max loads are numeric and ordered:
+registry and that the max loads are numeric and ordered:
 
 ```bash
 just export_seed

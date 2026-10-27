@@ -9,7 +9,7 @@ This repository currently includes the frontend for the Zero Domestic Control ap
 ## Prerequisites
 
 - NodeJS 22.x LTS (or newer)
-- PNPM 9.x (or newer)
+- PNPM 12.x (or newer)
 
 ## Project Setup
 
