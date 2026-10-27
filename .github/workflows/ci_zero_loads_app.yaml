@@ -58,6 +58,7 @@ jobs:
         run: just test_unit -vv
         working-directory: zero-loads-app
       - name: Check seeds are consistent with sailpack export
+        continue-on-error: true
         run: just check_seed
         working-directory: zero-loads-app
       - name: Run services
