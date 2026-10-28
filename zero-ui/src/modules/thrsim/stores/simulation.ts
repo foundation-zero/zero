@@ -1,6 +1,7 @@
 import { PromiseFn } from "@/modules/common/types";
-import { mutationWithoutValue, mutationWithValue } from "@/modules/thrsim/graphql";
-import { context } from "@/modules/thrsim/graphql/client";
+import { mutationWithoutValue, mutationWithValue } from "@/modules/thrapp/graphql";
+import { context } from "@/modules/thrapp/graphql/client";
+import { useThrsHistory } from "@/modules/thrapp/stores/history";
 
 import { gql, TypedDocumentNode, useClientHandle, useQuery } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
@@ -9,10 +10,9 @@ import { Maybe } from "graphql/jsutils/Maybe";
 
 import { AmcsControlMode } from "@/modules/thrapp/types/thrs";
 import { defineStore } from "pinia";
-import { computed, ref, toRefs } from "vue";
-import { SIMULATION_INPUT_QUERIES } from "../lib/consts";
+import { computed, ref } from "vue";
+import { QUERY_SIMULATION, SIMULATION_INPUT_QUERIES, THRSIM } from "../lib/consts";
 import { SIMULATION_TYPES } from "../lib/consts.types";
-import { useThrsHistory } from "./history";
 
 export type SimulationStatus = {
   simulation: {
@@ -39,8 +39,15 @@ export const useSimulationStore = defineStore("simulation", () => {
   const step = mutationWithValue("simulationStep", "seconds", "Float!");
   // TODO: make set automated control module dependent
   const isProcessing = ref(false);
-  const { data } = toRefs(useThrsHistory());
-  const activeSimulation = computed(() => data.value?.simulation?.inputs?.__typename);
+  const simulationQuery = useQuery<THRSIM>({
+    query: QUERY_SIMULATION,
+    context,
+    requestPolicy: "network-only",
+  });
+  const simulation = computed(() => simulationQuery.data.value?.simulation);
+  const refreshSimulation = () => simulationQuery.executeQuery({ requestPolicy: "network-only" });
+
+  const activeSimulation = computed(() => simulation.value?.inputs?.__typename);
   const activeSimulationType = computed(() =>
     SIMULATION_TYPES.find((type) =>
       `${activeSimulation.value?.charAt(0)?.toLowerCase()}${activeSimulation.value?.slice(1)}`.startsWith(
@@ -57,9 +64,15 @@ export const useSimulationStore = defineStore("simulation", () => {
   // Use network-only policy to always get the latest status
   const updateStatus = () => statusQuery.executeQuery({ requestPolicy: "network-only" });
 
-  useIntervalFn(updateStatus, 5000, {
-    immediate: true,
-  });
+  // Poll only while a simulation view is open; the store outlives the views.
+  const { resume: startPolling, pause: stopPolling } = useIntervalFn(
+    () => {
+      refreshSimulation();
+      updateStatus();
+    },
+    5000,
+    { immediate: false, immediateCallback: true },
+  );
 
   const status = computed(() => statusQuery.data?.value?.simulation.status);
   const isAvailable = computed(() => status.value === "available");
@@ -69,8 +82,8 @@ export const useSimulationStore = defineStore("simulation", () => {
   const advisoryError = ref<string | null>(null);
   const isAdvisory = computed(
     () =>
-      (data.value?.simulation?.inputs as { mode?: { mode?: { value?: string } } } | undefined)?.mode
-        ?.mode?.value === AmcsControlMode.External,
+      (simulation.value?.inputs as { mode?: { mode?: { value?: string } } } | undefined)?.mode?.mode
+        ?.value === AmcsControlMode.External,
   );
 
   const setAdvisory = async (enabled: boolean) => {
@@ -94,6 +107,7 @@ export const useSimulationStore = defineStore("simulation", () => {
         return;
       }
       await history.refresh();
+      await refreshSimulation();
       await updateStatus();
     } catch (err) {
       advisoryError.value = err instanceof Error ? err.message : "Failed to submit";
@@ -127,6 +141,10 @@ export const useSimulationStore = defineStore("simulation", () => {
   }
 
   return {
+    simulation,
+    refreshSimulation,
+    startPolling,
+    stopPolling,
     pause: mutationFn(pause, updateStatus),
     play: mutationFn<number>(play, updateStatus),
     step: mutationFn<number>(step, updateStatus),

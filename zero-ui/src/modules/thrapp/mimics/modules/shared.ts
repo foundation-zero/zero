@@ -1,7 +1,7 @@
 import { toUpperCamelCase } from "@/modules/common/lib/utils";
 import { TooltipContent } from "@/modules/thrapp/components/tooltip";
+import { THRS_YARDTAG_PREFIX_REGEX, ThrsDefinitions } from "@/modules/thrapp/lib/consts";
 import { PickKeys, SchemaDefinition, SensorComponentType } from "@/modules/thrapp/types/thrs";
-import { THRS_YARDTAG_PREFIX_REGEX, ThrsDefinitions } from "@/modules/thrsim/lib/consts";
 import { kebabCase } from "lodash";
 import {
   getSensorDefinition,

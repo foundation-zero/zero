@@ -7,7 +7,7 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/number-field";
-import { ThrsModules } from "@/modules/thrsim/lib/consts";
+import { ThrsModules } from "@/modules/thrapp/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrsim/stores/thrs";
 import { ValveControl } from "@/modules/thrapp/types/thrs";
 import { toUpperCamelCase } from "@common/lib/utils";

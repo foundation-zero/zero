@@ -104,4 +104,4 @@ test_spec *args:
     uv run pytest {{ cov }} tests/spec {{ args }}
 
 export_schema:
-    uv run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrsim/graphql/schema.graphql
+    uv run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrapp/graphql/schema.graphql

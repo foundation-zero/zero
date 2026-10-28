@@ -10,9 +10,9 @@
 import { ExtractAllValues } from "@/modules/thrsim/types";
 import { ControlComponentType, ControlDefinitions } from "@/modules/thrapp/types/thrs";
 
-import { QUERIES, ThrsModules } from "@/modules/thrsim/lib/consts.ts";
+import { QUERIES, ThrsModules } from "@/modules/thrapp/lib/consts";
 import { type Component, computed, toRefs } from "vue";
-import { useThrsHistory } from "../stores/history.ts";
+import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import ModuleControls from "./controls/ModuleControls.vue";
 import PumpControl from "./controls/PumpControl.vue";
 import ValveControl from "./controls/ValveControl.vue";

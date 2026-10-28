@@ -867,6 +867,12 @@
         "title": "Asset - Thruster",
         "description": "The properties are rendered based upon relevant sensor values of the asset."
       }
+    },
+    "components": {
+      "controlActions": {
+        "automatedControl": "Automated control",
+        "manualControl": "Manual control"
+      }
     }
   }
 }

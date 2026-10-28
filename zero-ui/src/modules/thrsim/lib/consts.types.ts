@@ -1,28 +1,7 @@
-import { ChartDataType, RecordIndex, Stamped, StringKeyOf } from "@/modules/common/types";
-import {
-  ModuleDefinition,
-  SchemaDefinition,
-  SchemaDefinitions,
-  THRSModule,
-} from "@/modules/thrapp/types/thrs";
-import { ExtractSimulationValues } from "@/modules/thrsim/types";
-import { DEFINITIONS, SIMULATION, SimulationInputsOutputs } from "./consts";
-
-export type ThrsDefinitions<T extends Record<string, ModuleDefinition> = typeof DEFINITIONS> = T;
-
-export type ThrsModules<
-  TDefinitions extends Record<string, ModuleDefinition> = typeof DEFINITIONS,
-> = {
-  [K in keyof TDefinitions]: THRSModule<TDefinitions[K]>;
-};
-
-export type GraphQLRecord<K extends RecordIndex = RecordIndex> = {
-  __typename?: K;
-};
-
-export type ComponentRecord<
-  T extends Record<string, Stamped<ChartDataType>> = Record<string, Stamped<ChartDataType>>,
-> = T;
+import { StringKeyOf } from "@/modules/common/types";
+import { ComponentRecord, GraphQLRecord } from "@/modules/thrapp/lib/consts.types";
+import { ExtractSimulationValues } from "../types";
+import { SIMULATION, SimulationInputsOutputs } from "./consts";
 
 export type SimulationInputsType<K extends string> = `${Capitalize<K>}SimulationInputsType`;
 export type SimulationOutputsType<K extends string> = `${Capitalize<K>}SimulationOutputsType`;
@@ -40,21 +19,6 @@ export type ThrsSimulation<TDefinitions extends SimulationInputsOutputs = typeof
   }[StringKeyOf<TDefinitions["outputs"]>];
 };
 
-export type ThrsQueries<
-  TDefinitions extends Record<string, ModuleDefinition> = typeof DEFINITIONS,
-> = {
-  [Module in keyof TDefinitions]: {
-    [QueryGroup in keyof TDefinitions[Module]]: TDefinitions[Module][QueryGroup] extends Record<
-      string,
-      SchemaDefinitions<SchemaDefinition<unknown>>
-    >
-      ? {
-          [DefinitionPart in keyof TDefinitions[Module][QueryGroup]]: string;
-        }
-      : string;
-  };
-};
-
 export const SIMULATION_TYPES = [
   "highTemperature",
   "thrusters",
@@ -69,7 +33,6 @@ export const SIMULATION_TYPES = [
 ] as const;
 export type ThrsSimulationType = (typeof SIMULATION_TYPES)[number];
 
-export type THRS = {
-  modules: ThrsModules;
+export type THRSIM = {
   simulation: ThrsSimulation | null;
 };

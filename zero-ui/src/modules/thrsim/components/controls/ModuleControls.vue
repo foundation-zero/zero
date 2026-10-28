@@ -6,12 +6,11 @@
     Values extends ExtractAllValues<Definitions> = ExtractAllValues<Definitions>
   "
 >
-import { ExtractAllValues } from "@/modules/thrsim/types";
 import { SchemaDefinition, SchemaDefinitions } from "@/modules/thrapp/types/thrs";
+import { ExtractAllValues } from "@/modules/thrsim/types";
 
 import { objectEntries } from "@vueuse/core";
-import { computed, ref, toRefs, watch } from "vue";
-import { useThrsHistory } from "../../stores/history";
+import { computed, ref, watch } from "vue";
 
 const props = defineProps<{
   controls: Definitions;
@@ -21,13 +20,15 @@ const props = defineProps<{
 
 const controlValuesFromMutation = ref<Values | null>(null);
 const controlValues = computed(() => (controlValuesFromMutation.value ?? props.data) as Values);
-const { lastUpdate } = toRefs(useThrsHistory());
 
-watch(lastUpdate, (next, prev) => {
-  if (next !== prev) {
+// Show the mutation result until the data it came from is refreshed. The data comes from either
+// the module history or the simulation, which refresh independently.
+watch(
+  () => props.data,
+  () => {
     controlValuesFromMutation.value = null;
-  }
-});
+  },
+);
 
 const setControlValues = (newValues: Values) => {
   controlValuesFromMutation.value = newValues;

@@ -7,15 +7,16 @@ import SimulationActions from "@/modules/thrsim/components/SimulationActions.vue
 import TopNav from "@/modules/common/components/navigation/TopNav.vue";
 import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.vue";
 import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
+import ControlActions from "@/modules/thrapp/components/control-actions/ControlActions.vue";
+import { client } from "@/modules/thrapp/graphql/client";
+import { ThrsModules } from "@/modules/thrapp/lib/consts.types";
 import { MimicKey } from "@/modules/thrapp/router/mimics";
-import { client } from "@/modules/thrsim/graphql/client.ts";
-import { ThrsModules } from "@/modules/thrsim/lib/consts.types.ts";
 import { provideClient } from "@urql/vue";
-import { computed, provide } from "vue";
+import { computed, onMounted, onUnmounted, provide } from "vue";
 import { useRoute } from "vue-router";
-import ControlActions from "../components/ControlActions.vue";
 import SimulationTabs from "../components/SimulationTabs.vue";
 import SubNavTabs from "../components/SubNavTabs.vue";
+import { useSimulationStore } from "../stores/simulation";
 
 // Provide the URL client to inner scope. Pinia stores have their own scope, so they need to manually provide the correct context.
 provideClient(client);
@@ -38,6 +39,11 @@ const modules: Array<MimicKey> = [
 const currentModuleKey = computed(() => (currentRoute.params.module as string) ?? "simulation");
 
 provide("currentModule", currentModuleKey);
+
+const { startPolling, stopPolling } = useSimulationStore();
+
+onMounted(startPolling);
+onUnmounted(stopPolling);
 </script>
 
 <template>
