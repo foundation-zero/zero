@@ -233,7 +233,7 @@ services:
         condition: service_healthy
 
   greptimedb:
-    image: greptime/greptimedb:v1.1.3@sha256:9c5017e61fa63ab1ce78cbc4b1b7df0128b844327840890e2b388e68503c30b2
+    image: greptime/greptimedb:v1.3.0@sha256:d8a199398da2b105e6cb3a168f249ecbbc078893abff5ea668bd59e05f1027df
     security_opt:
       - seccomp=unconfined
     environment:
