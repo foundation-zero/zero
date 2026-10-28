@@ -43,7 +43,7 @@ RUN touch src/*.rs && \
   cargo build --release --locked --target "$(cat /rust-target)" && \
   cp "target/$(cat /rust-target)/release/zero-mqtt-graphql" /app/zero-mqtt-graphql
 
-FROM debian:trixie-slim@sha256:62bd423aeee912639ca8ee681c2b762cb3e25137e0a92b20be455898a9f034ad AS runtime
+FROM debian:trixie-slim@sha256:89c1ea91e897f0fe0a3731595330bc45b8bdef4047464a07116f891a94054b31 AS runtime
 
 RUN apt-get update && \
   apt-get install -y --no-install-recommends ca-certificates && \
