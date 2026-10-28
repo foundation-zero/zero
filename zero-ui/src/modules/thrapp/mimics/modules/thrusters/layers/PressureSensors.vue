@@ -9,6 +9,8 @@ import PressureLabelInstance from "../../../instances/PressureLabelInstance.vue"
 const pressureSensors = getTooltipContexts(MimicComponentType.PressureSensor, [
   "1097-01",
   "1097-02",
+  "1057-24",
+  "1097-06",
 ]);
 </script>
 
@@ -29,16 +31,42 @@ const pressureSensors = getTooltipContexts(MimicComponentType.PressureSensor, [
       />
     </PressureSensorInstance>
     <PressureSensorInstance
-      x="938.637"
-      y="229"
-      :orientation="ComponentOrientation.Down"
+      x="201"
+      y="118"
+      :orientation="ComponentOrientation.Left"
       v-bind="pressureSensors['1097-02']"
-      ><PressureLabelInstance
-        :target-x="938.637"
-        :target-width="PRESSURE_SENSOR_WIDTH"
-        y="193"
+    >
+      <PressureLabelInstance
+        x="236"
+        y="114"
         :tag-id="pressureSensors['1097-02'].tooltip?.yardTag"
         :pressure="pressureSensors['1097-02'].source"
+      />
+    </PressureSensorInstance>
+    <PressureSensorInstance
+      x="956"
+      y="228"
+      :orientation="ComponentOrientation.Down"
+      v-bind="pressureSensors['1057-24']"
+    >
+      <PressureLabelInstance
+        x="946.5"
+        y="192"
+        :tag-id="pressureSensors['1057-24'].tooltip?.yardTag"
+        :pressure="pressureSensors['1057-24'].source"
+      />
+    </PressureSensorInstance>
+    <PressureSensorInstance
+      x="853"
+      y="312"
+      :orientation="ComponentOrientation.Down"
+      v-bind="pressureSensors['1097-06']"
+    >
+      <PressureLabelInstance
+        x="843"
+        y="276"
+        :tag-id="pressureSensors['1097-06'].tooltip?.yardTag"
+        :pressure="pressureSensors['1097-06'].source"
       />
     </PressureSensorInstance>
   </g>

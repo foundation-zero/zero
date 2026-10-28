@@ -13,6 +13,7 @@ const manualValveTags = [
   "1212-06",
   "1212-07",
   "1087-03",
+  "1167-11",
 ];
 
 export const THRUSTERS_MANUAL_VALVE_DATA = toFieldsMap({

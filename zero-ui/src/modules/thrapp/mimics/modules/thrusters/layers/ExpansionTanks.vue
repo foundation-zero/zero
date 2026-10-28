@@ -14,7 +14,7 @@ const expansionValves = getTooltipContexts(MimicComponentType.ExpansionValve, ["
 <template>
   <ExpansionTankInstance
     x="1108"
-    y="135"
+    y="127"
     v-bind="expansionTanks['1092']"
   />
 
@@ -30,8 +30,8 @@ const expansionValves = getTooltipContexts(MimicComponentType.ExpansionValve, ["
     tag-id="1041-04"
   />
   <TagLabelInstance
-    x="1144"
-    y="152"
+    x="1152"
+    y="146"
     tag-id="1092"
   />
 </template>
