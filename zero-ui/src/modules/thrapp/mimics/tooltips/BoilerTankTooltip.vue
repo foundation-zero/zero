@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ratioToPercentage } from "@/modules/common/lib/utils";
+import { ratioToPercentage } from "@/modules/common/lib/numbers";
 import { BoilerTankState } from "@/modules/thrsim/types";
 import { useTranslations } from ".";
 import {
