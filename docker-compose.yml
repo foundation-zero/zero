@@ -1,6 +1,6 @@
 services:
   vernemq:
-    image: vernemq/vernemq:2.0.0-alpine@sha256:efb696f346cf381c536888967d992a6a6df3ede77eb454f8e4ea7bc6809cd0f4
+    image: vernemq/vernemq:2.2.1-alpine@sha256:1cd64a3a9ac8dd479f8429deec85679c178e03784033a7f5cfe2a97d865d22f4
     container_name: vernemq
     restart: always
     ports:
