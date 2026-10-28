@@ -186,7 +186,7 @@ services:
 
   # ---- data collection ----
   vector-process:
-    image: timberio/vector:0.55.0-debian@sha256:a4be1111b40303524aae2ffb02cd59cef2a4e9753bd13d265bf0233e921828d9
+    image: timberio/vector:0.60.0-debian@sha256:3ccb4bbd36e38734394e158db1411e91a69d076ed25013f8de385046a382d36a
     profiles:
       - data-collection
     command: -c /etc/vector-config.yaml
@@ -212,7 +212,7 @@ services:
         condition: service_started
 
   vector-atpx:
-    image: timberio/vector:0.55.0-debian@sha256:a4be1111b40303524aae2ffb02cd59cef2a4e9753bd13d265bf0233e921828d9
+    image: timberio/vector:0.60.0-debian@sha256:3ccb4bbd36e38734394e158db1411e91a69d076ed25013f8de385046a382d36a
     profiles:
       - data-collection
     command: -c /etc/vector-config.yaml
