@@ -186,7 +186,7 @@ importers:
         version: 3.0.0(@urql/core@6.0.3(graphql@16.13.2))
       '@urql/vue':
         specifier: ^2.1.0
-        version: 2.1.0(@urql/core@6.0.3(graphql@16.13.2))(vue@3.5.31(typescript@6.0.2))
+        version: 2.1.1(@urql/core@6.0.3(graphql@16.13.2))(vue@3.5.31(typescript@6.0.2))
       '@vueuse/core':
         specifier: ^14.2.1
         version: 14.2.1(vue@3.5.31(typescript@6.0.2))
@@ -2144,8 +2144,8 @@ packages:
     peerDependencies:
       '@urql/core': ^6.0.0
 
-  '@urql/vue@2.1.0':
-    resolution: {integrity: sha512-fRsMOSJze7d9y2NUd31ekZMUWDoc+HYv/jFcO9iPpRFCFlqcuqto5r0v54jDB6C7MEo+xLsqRQGuxe0NM0J8YA==}
+  '@urql/vue@2.1.1':
+    resolution: {integrity: sha512-gmQBQtHO7Rtw1W+CiLb6YcnQEczog3ZxLsFhMvTex1aM1mczT6dDJuiYpJDg2KkuJ8zqXSbMnbwwbm4ukr9vTA==}
     peerDependencies:
       '@urql/core': ^6.0.0
       vue: ^3.2.0
@@ -7181,7 +7181,7 @@ snapshots:
       '@urql/core': 6.0.3(graphql@16.13.2)
       wonka: 6.3.6
 
-  '@urql/vue@2.1.0(@urql/core@6.0.3(graphql@16.13.2))(vue@3.5.31(typescript@6.0.2))':
+  '@urql/vue@2.1.1(@urql/core@6.0.3(graphql@16.13.2))(vue@3.5.31(typescript@6.0.2))':
     dependencies:
       '@urql/core': 6.0.3(graphql@16.13.2)
       vue: 3.5.31(typescript@6.0.2)
