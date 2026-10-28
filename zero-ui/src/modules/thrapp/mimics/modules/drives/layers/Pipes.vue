@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+</script>
+
 <template>
   <g>
     <path
@@ -146,7 +152,7 @@
         x="928.537"
         y="12.8995"
       >
-        Shorepower converters
+        {{ t("thrapp.mimics.drives.assets.shorepower") }}
       </tspan>
     </text>
     <mask
@@ -195,7 +201,7 @@
         x="1580.54"
         y="55.7213"
       >
-        Support components
+        {{ t("thrapp.mimics.sections.supportComponents") }}
       </tspan>
     </text>
     <path
@@ -221,7 +227,7 @@
         x="109.145"
         y="465.769"
       >
-        FWD
+        {{ t("thrapp.mimics.sections.fwd") }}
       </tspan>
     </text>
     <text
@@ -236,7 +242,7 @@
         x="109.643"
         y="29.6959"
       >
-        AFT
+        {{ t("thrapp.mimics.sections.aft") }}
       </tspan>
     </text>
     <circle
@@ -322,7 +328,7 @@
         x="83.9969"
         y="10.3636"
       >
-        AFT Manual flow bypass
+        {{ t("thrapp.mimics.drives.sections.aftManualFlowBypass") }}
       </tspan>
     </text>
     <circle
@@ -384,7 +390,7 @@
         x="81.8934"
         y="10.3636"
       >
-        FWD Manual flow bypass
+        {{ t("thrapp.mimics.drives.sections.fwdManualFlowBypass") }}
       </tspan>
     </text>
     <circle

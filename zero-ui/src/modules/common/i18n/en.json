@@ -112,7 +112,10 @@
     "from": "From",
     "in": "In",
     "out": "Out",
-    "internal": "internal"
+    "internal": "internal",
+    "close": "Close",
+    "breadcrumb": "Breadcrumb",
+    "moreInformation": "More information"
   },
   "views": {
     "splash": {

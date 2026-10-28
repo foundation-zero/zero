@@ -70,7 +70,9 @@ const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
         />
         <SensorValue :source="source">
           <ValueListItem class="text-brand">
-            <span class="flex items-center gap-0.5"> Power </span>
+            <span class="flex items-center gap-0.5">{{
+              t("thrapp.mimics.thrusters.assets.labels.power")
+            }}</span>
             <span></span>
           </ValueListItem>
         </SensorValue>

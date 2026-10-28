@@ -1,3 +1,4 @@
+import i18n from "@/i18n";
 import { PID } from "@/modules/common/types";
 import { ThrsModules } from "@/modules/thrapp/lib/consts";
 import { ThrsSimulationType } from "@/modules/thrsim/lib/consts";
@@ -138,7 +139,7 @@ export const controlValuesForm = <
       }
       const newControlValues = result.data?.[mutation];
       if (newControlValues === undefined) {
-        error.value = "Failed to submit";
+        error.value = i18n.global.t("thrs.labels.failedToSubmit");
         return;
       }
       emit("update:controlValues", newControlValues);
@@ -146,7 +147,8 @@ export const controlValuesForm = <
         refs[ref].isDirty.value = false;
       }
     } catch (err) {
-      error.value = err instanceof Error ? err.message : "Failed to submit";
+      error.value =
+        err instanceof Error ? err.message : i18n.global.t("thrs.labels.failedToSubmit");
     } finally {
       isSubmitting.value = false;
     }

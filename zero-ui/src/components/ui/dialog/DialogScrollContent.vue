@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { cn } from "@common/lib/utils";
 import { RiCloseLine } from "@remixicon/vue";
 import { reactiveOmit } from "@vueuse/core";
@@ -19,6 +20,8 @@ const emits = defineEmits<DialogContentEmits>();
 const delegatedProps = reactiveOmit(props, "class");
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits);
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -53,7 +56,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
           class="hover:bg-secondary absolute top-4 right-4 rounded-md p-0.5 transition-colors"
         >
           <RiCloseLine class="h-4 w-4" />
-          <span class="sr-only">Close</span>
+          <span class="sr-only">{{ t("labels.close") }}</span>
         </DialogClose>
       </DialogContent>
     </DialogOverlay>

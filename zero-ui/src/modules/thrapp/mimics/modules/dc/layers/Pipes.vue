@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+</script>
+
 <template>
   <svg
     width="1404"
@@ -156,7 +162,7 @@
         x="1161.56"
         y="546.057"
       >
-        Support components
+        {{ t("thrapp.mimics.sections.supportComponents") }}
       </tspan>
     </text>
     <text
@@ -171,7 +177,7 @@
         x="95.1484"
         y="15.5531"
       >
-        Aftship
+        {{ t("thrapp.mimics.sections.aftship") }}
       </tspan>
     </text>
     <text
@@ -186,7 +192,7 @@
         x="97.1484"
         y="489.247"
       >
-        Foreship
+        {{ t("thrapp.mimics.sections.foreship") }}
       </tspan>
     </text>
     <circle
@@ -290,7 +296,7 @@
         x="4.24036"
         y="10.3636"
       >
-        Bypass A
+        {{ t("thrapp.mimics.sections.bypassA") }}
       </tspan>
     </text>
   </svg>

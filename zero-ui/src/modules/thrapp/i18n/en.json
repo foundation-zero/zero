@@ -406,7 +406,12 @@
         "actualSize": "Actual size (1:1)",
         "fit": "Fit to screen",
         "out": "Zoom out"
-      }
+      },
+      "open": "Open",
+      "closed": "Closed",
+      "empty": "Empty",
+      "notEmpty": "Not empty",
+      "placeholder": "Placeholder"
     },
     "tooltips": {
       "titles": {
@@ -602,7 +607,8 @@
           "fwdTitle": "Thruster FWD",
           "labels": {
             "status": "Status",
-            "internalTemperature": "Internal temp"
+            "internalTemperature": "Internal temp",
+            "power": "Power"
           },
           "modes": {
             "off": "Off",
@@ -627,6 +633,12 @@
             "idle": "Idle",
             "manual": "Manual"
           }
+        },
+        "string": "String {label}",
+        "sections": {
+          "mainBimini": "Main bimini",
+          "ownersBimini": "Owners bimini",
+          "section2SupportComponents": "Section 2 Support components"
         }
       },
       "dc": {
@@ -650,6 +662,10 @@
             "aft": "Aft. Prop. Oil Cooler",
             "fwd": "Fwd. Prop. Oil Cooler"
           }
+        },
+        "sections": {
+          "aftManualFlowBypass": "AFT Manual flow bypass",
+          "fwdManualFlowBypass": "FWD Manual flow bypass"
         }
       },
       "modeBadge": {
@@ -698,6 +714,15 @@
             }
           }
         }
+      },
+      "sections": {
+        "supportComponents": "Support components",
+        "bypassA": "Bypass A",
+        "bypassB": "Bypass B",
+        "aft": "AFT",
+        "fwd": "FWD",
+        "aftship": "Aftship",
+        "foreship": "Foreship"
       }
     },
     "legends": {

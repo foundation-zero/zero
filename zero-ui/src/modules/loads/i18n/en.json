@@ -87,7 +87,8 @@
       "cardTypeToggle": {
         "numerical": "Numerical",
         "graphical": "Graphical"
-      }
+      },
+      "selectedLoadCase": "Sailpack model: {name} AWA: {awa}° AWS: {aws} kts Heel: {heel}° TWA: {twa}° TWS: {tws} kts"
     }
   }
 }
