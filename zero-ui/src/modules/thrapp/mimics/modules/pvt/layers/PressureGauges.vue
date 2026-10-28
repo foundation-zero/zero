@@ -9,49 +9,49 @@ import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
 const pressureGauges = getTooltipContexts(MimicComponentType.PressureGauge, [
   "1095-03",
   "1095-04",
-  "1095-05",
+  "1188-03",
 ]);
 </script>
 
 <template>
   <g>
     <PressureGaugeInstance
-      x="400"
+      x="391"
       y="190"
       :orientation="ComponentOrientation.Down"
       v-bind="pressureGauges['1095-03']"
     >
       <TagLabelInstance
-        :target-x="400"
+        :target-x="391.5"
         :target-width="PRESSURE_GAUGE_WIDTH"
         y="175"
         :tag-id="pressureGauges['1095-03'].tooltip?.yardTag"
       />
     </PressureGaugeInstance>
     <PressureGaugeInstance
-      x="400"
+      x="391"
       y="387"
       :orientation="ComponentOrientation.Down"
       v-bind="pressureGauges['1095-04']"
     >
       <TagLabelInstance
-        :target-x="400"
+        :target-x="391.5"
         :target-width="PRESSURE_GAUGE_WIDTH"
-        y="372"
+        y="370"
         :tag-id="pressureGauges['1095-04'].tooltip?.yardTag"
       />
     </PressureGaugeInstance>
     <PressureGaugeInstance
-      x="400"
+      x="391"
       y="611"
       :orientation="ComponentOrientation.Down"
-      v-bind="pressureGauges['1095-05']"
+      v-bind="pressureGauges['1188-03']"
     >
       <TagLabelInstance
-        :target-x="400"
+        :target-x="392.5"
         :target-width="PRESSURE_GAUGE_WIDTH"
-        y="597"
-        :tag-id="pressureGauges['1095-05'].tooltip?.yardTag"
+        y="595"
+        :tag-id="pressureGauges['1188-03'].tooltip?.yardTag"
       />
     </PressureGaugeInstance>
   </g>

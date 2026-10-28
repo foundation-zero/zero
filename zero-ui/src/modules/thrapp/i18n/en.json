@@ -638,8 +638,7 @@
         "string": "String {label}",
         "sections": {
           "mainBimini": "Main bimini",
-          "ownersBimini": "Owners bimini",
-          "section2SupportComponents": "Section 2 Support components"
+          "ownersBimini": "Owners bimini"
         }
       },
       "dc": {
@@ -718,6 +717,7 @@
       },
       "sections": {
         "supportComponents": "Support components",
+        "bilge": "Bilge",
         "bypassA": "Bypass A",
         "bypassB": "Bypass B",
         "aft": "AFT",

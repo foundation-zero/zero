@@ -9,91 +9,91 @@ import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
 const checkValves = getTooltipContexts(MimicComponentType.CheckValve, [
   "1188-01",
   "1188-02",
-  "1188-03",
+  "1095-05",
   "1077-01",
   "1077-02",
   "1076-01",
-  "1085-01",
+  "1185-01",
 ]);
 </script>
 
 <template>
   <g>
     <CheckValveInstance
-      x="430"
+      x="423"
       y="200"
       :orientation="ComponentOrientation.Left"
       v-bind="checkValves['1188-01']"
     >
       <TagLabelInstance
-        :target-x="430"
+        :target-x="422"
         :target-width="CHECK_VALVE_WIDTH"
-        y="234"
+        y="238"
         :tag-id="checkValves['1188-01'].tooltip?.yardTag"
       />
     </CheckValveInstance>
     <CheckValveInstance
-      x="430"
+      x="423"
       y="400"
       :orientation="ComponentOrientation.Left"
       v-bind="checkValves['1188-02']"
     >
       <TagLabelInstance
-        :target-x="430"
+        :target-x="420.5"
         :target-width="CHECK_VALVE_WIDTH"
-        y="434"
+        y="431"
         :tag-id="checkValves['1188-02'].tooltip?.yardTag"
       />
     </CheckValveInstance>
     <CheckValveInstance
-      x="430"
+      x="423"
       y="620"
       :orientation="ComponentOrientation.Left"
-      v-bind="checkValves['1188-03']"
+      v-bind="checkValves['1095-05']"
     >
       <TagLabelInstance
-        :target-x="430"
+        :target-x="422.5"
         :target-width="CHECK_VALVE_WIDTH"
-        y="654"
-        :tag-id="checkValves['1188-03'].tooltip?.yardTag"
+        y="660"
+        :tag-id="checkValves['1095-05'].tooltip?.yardTag"
       />
     </CheckValveInstance>
     <CheckValveInstance
-      x="750"
+      x="745"
       y="104"
       :orientation="ComponentOrientation.Right"
       v-bind="checkValves['1077-01']"
     >
       <TagLabelInstance
-        :target-x="750"
+        :target-x="745"
         :target-width="CHECK_VALVE_WIDTH"
-        y="128"
+        y="130"
         :tag-id="checkValves['1077-01'].tooltip?.yardTag"
       />
     </CheckValveInstance>
     <CheckValveInstance
-      x="750"
+      x="745"
       y="312"
       :orientation="ComponentOrientation.Right"
       v-bind="checkValves['1077-02']"
     >
       <TagLabelInstance
-        :target-x="750"
+        :target-x="746"
         :target-width="CHECK_VALVE_WIDTH"
-        y="335"
+        y="337"
         :tag-id="checkValves['1077-02'].tooltip?.yardTag"
       />
     </CheckValveInstance>
     <CheckValveInstance
-      x="750"
+      x="745"
       y="520"
       :orientation="ComponentOrientation.Right"
       v-bind="checkValves['1076-01']"
     >
       <TagLabelInstance
-        :target-x="750"
+        :target-x="745"
         :target-width="CHECK_VALVE_WIDTH"
-        y="543"
+        y="546"
         :tag-id="checkValves['1076-01'].tooltip?.yardTag"
       />
     </CheckValveInstance>
@@ -101,13 +101,13 @@ const checkValves = getTooltipContexts(MimicComponentType.CheckValve, [
       x="885"
       y="622"
       :orientation="ComponentOrientation.Left"
-      v-bind="checkValves['1085-01']"
+      v-bind="checkValves['1185-01']"
     >
       <TagLabelInstance
-        :target-x="885"
+        :target-x="878"
         :target-width="CHECK_VALVE_WIDTH"
-        y="653"
-        :tag-id="checkValves['1085-01'].tooltip?.yardTag"
+        y="657"
+        :tag-id="checkValves['1185-01'].tooltip?.yardTag"
       />
     </CheckValveInstance>
   </g>
