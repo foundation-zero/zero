@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils";
-import { BoilerTankState, ParametersType, SensorComponentType } from "@/modules/thrsim/types";
+import { BoilerTankState, ParametersType, SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { computed, toRef } from "vue";
 import { FieldRendererProps } from ".";
 import { getFieldValue, getMimicDataProvider, ModuleField } from "../providers";

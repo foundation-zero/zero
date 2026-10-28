@@ -13,7 +13,7 @@ import {
   ControllerStateComponentType,
   ParametersType,
   SensorComponentType,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
 import { computed } from "vue";
 import * as Partials from ".";
 import { useTranslations } from "..";

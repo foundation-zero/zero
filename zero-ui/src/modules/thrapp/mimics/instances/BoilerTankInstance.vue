@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BoilerTankState, ControllerStateComponentType } from "@/modules/thrsim/types";
+import { BoilerTankState, ControllerStateComponentType } from "@/modules/thrapp/types/thrs";
 import { computed } from "vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";

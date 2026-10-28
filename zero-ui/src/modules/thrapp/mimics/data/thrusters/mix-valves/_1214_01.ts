@@ -2,7 +2,7 @@ import {
   ControlComponentType,
   ControllerStateComponentType,
   SensorComponentType,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
 import { getField } from "../../../providers";
 import { toMixValve } from "../../helpers";
 

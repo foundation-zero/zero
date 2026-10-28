@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ratioToPercentage } from "@/modules/common/lib/numbers";
-import { BoilerTankState } from "@/modules/thrsim/types";
+import { BoilerTankState } from "@/modules/thrapp/types/thrs";
 import { useTranslations } from ".";
 import {
   MimicTooltip,

@@ -1,4 +1,5 @@
 import { keysOf } from "@/modules/common/lib/utils";
+import { ParameterDefinitions } from "@/modules/thrapp/types/thrs";
 import { ENV } from "@/settings";
 import { Client, fetchExchange, OperationResult, TypedDocumentNode } from "@urql/vue";
 import { describe, expect, test } from "vitest";
@@ -6,7 +7,6 @@ import { mutationWithoutValue, mutationWithValue } from "../graphql";
 import { DEFINITIONS, QUERY_ALL, THRS } from "../lib/consts";
 import { CONTROL_QUERY, ControlStatus } from "../stores/automation";
 import { SimulationStatus, STATUS_QUERY } from "../stores/simulation";
-import { ParameterDefinitions } from "../types";
 
 const client = new Client({
   url: ENV.VITE_THRS_API_SERVER,

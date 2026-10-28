@@ -1,5 +1,5 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { DC_EXCHANGE_CIRCUIT_DATA } from "..";
 import { HeatExchangerPortOrientation } from "../../../components/heat-exchanger";
 import { toFieldsMap } from "../../../modules";

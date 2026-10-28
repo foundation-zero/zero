@@ -1,11 +1,11 @@
 import { ChartDataType, RecordIndex, Stamped, StringKeyOf } from "@/modules/common/types";
 import {
-  ExtractSimulationValues,
   ModuleDefinition,
   SchemaDefinition,
   SchemaDefinitions,
   THRSModule,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
+import { ExtractSimulationValues } from "@/modules/thrsim/types";
 import { DEFINITIONS, SIMULATION, SimulationInputsOutputs } from "./consts";
 
 export type ThrsDefinitions<T extends Record<string, ModuleDefinition> = typeof DEFINITIONS> = T;

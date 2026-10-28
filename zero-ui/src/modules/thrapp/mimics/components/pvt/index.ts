@@ -1,4 +1,4 @@
-import { PvtMode } from "@/modules/thrsim/types";
+import { PvtMode } from "@/modules/thrapp/types/thrs";
 import { ModeBadgeMode } from "../mode-badge";
 
 export { default as PvtMode } from "./PvtMode.vue";

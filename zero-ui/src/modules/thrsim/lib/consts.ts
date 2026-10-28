@@ -6,10 +6,12 @@ import {
   ModuleDefinition,
   SensorComponentType,
   SensorFields,
+  ThrusterMode,
+} from "@/modules/thrapp/types/thrs";
+import {
   SimulationComponentType,
   SimulationDefinitions,
   SimulationFields,
-  ThrusterMode,
 } from "@/modules/thrsim/types";
 import { gql } from "@urql/vue";
 import * as Definitions from "./consts.generated";

@@ -1,4 +1,4 @@
-import { DhwTankController } from "@/modules/thrsim/types";
+import { DhwTankController } from "@/modules/thrapp/types/thrs";
 
 export const enum MimicComponentType {
   ExchangeCircuit = "ExchangeCircuit",

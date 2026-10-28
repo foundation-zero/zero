@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ModuleDefinition } from "@/modules/thrsim/types";
+import { ModuleDefinition } from "@/modules/thrapp/types/thrs";
 
 import ControlValuesControls from "@/modules/thrsim/components/ControlValuesControls.vue";
 import { DEFINITIONS } from "@/modules/thrsim/lib/consts";

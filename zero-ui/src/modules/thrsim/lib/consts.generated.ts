@@ -7,10 +7,9 @@ import {
   ParametersType,
   SensorComponentType,
   SensorDefinitions,
-  SimulationComponentType,
-  SimulationDefinitions,
   ValveType,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
+import { SimulationComponentType, SimulationDefinitions } from "@/modules/thrsim/types";
 
 const toControlDefinition = <T extends ControlDefinitions>(input: T): T => input;
 const toSensorDefinition = <T extends SensorDefinitions>(input: T): T => input;

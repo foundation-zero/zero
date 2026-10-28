@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BoilerTankState } from "@/modules/thrsim/types";
+import { BoilerTankState } from "@/modules/thrapp/types/thrs";
 import { toRef } from "vue";
 import { FieldRendererProps } from ".";
 import { BoilerTankMode } from "../components/boiler-tank";

@@ -1,5 +1,5 @@
 import { CustomFieldDefinitions } from "@/modules/thrapp/types/fields";
-import { ControllerStateComponentType } from "@/modules/thrsim/types";
+import { ControllerStateComponentType } from "@/modules/thrapp/types/thrs";
 import { MimicComponentType } from "../../../../types";
 import { getField } from "../../../providers";
 import { DHW_TANK_DATA } from "../boiler-tanks";

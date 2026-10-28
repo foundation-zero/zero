@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ratioToPercentage } from "@/modules/common/lib/numbers";
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { PidControllerTuning, pidControllerTuning } from "../../..";
 import PidControllerCard from "../../../components/pid-controller-card/PidControllerCard.vue";
 

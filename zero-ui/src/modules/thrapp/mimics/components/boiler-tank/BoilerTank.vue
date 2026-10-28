@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
-import { BoilerTankState } from "@/modules/thrsim/types";
+import { BoilerTankState } from "@/modules/thrapp/types/thrs";
 import { computed, HTMLAttributes, toRefs } from "vue";
 import {
   DHW_TANK_HEIGHT,

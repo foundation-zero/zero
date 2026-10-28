@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { MimicComponentType } from "@/modules/thrapp/types";
-import { Ratio } from "@/modules/thrsim/types";
+import { Ratio } from "@/modules/thrapp/types/thrs";
 import { useIntervalFn, useTimeoutFn } from "@vueuse/core";
 import { ref } from "vue";
 import { getTooltipContext } from "../../../data";

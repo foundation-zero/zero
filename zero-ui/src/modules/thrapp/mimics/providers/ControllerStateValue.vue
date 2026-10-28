@@ -9,7 +9,10 @@
 >
 import { unstamp } from "@/modules/common/lib/utils";
 import { Unstamp } from "@/modules/common/types";
-import { ControllerStateComponentType, ControllerStateDefinitionMap } from "@/modules/thrsim/types";
+import {
+  ControllerStateComponentType,
+  ControllerStateDefinitionMap,
+} from "@/modules/thrapp/types/thrs";
 import { computed } from "vue";
 import {
   getMimicDataProvider,

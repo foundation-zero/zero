@@ -1,10 +1,10 @@
-import { ThrsDefinitions } from "@/modules/thrsim/lib/consts";
 import {
   ControlComponentType,
   PickKeys,
   SchemaDefinition,
   SensorComponentType,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
+import { ThrsDefinitions } from "@/modules/thrsim/lib/consts";
 import { TooltipComponentContext, TooltipContent } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
 import { toInstance } from "../modules";

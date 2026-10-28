@@ -1,4 +1,3 @@
-import { DEFINITIONS, ThrsDefinitions } from "@/modules/thrsim/lib/consts.ts";
 import {
   ControlComponentType,
   ControlDefinitionMap,
@@ -15,7 +14,8 @@ import {
   SensorComponentType,
   SensorDefinitionMap,
   SensorDefinitions,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
+import { DEFINITIONS, ThrsDefinitions } from "@/modules/thrsim/lib/consts.ts";
 import { createContext } from "reka-ui";
 import { inject, MaybeRef, provide, ref, Ref } from "vue";
 import { MimicComponentState } from "../components";

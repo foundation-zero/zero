@@ -3,7 +3,7 @@ import {
   ControllerStateComponentType,
   ParametersType,
   SensorComponentType,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
 import { DocumentNode, print } from "graphql";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { reactive, ref } from "vue";

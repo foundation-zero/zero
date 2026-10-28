@@ -1,4 +1,4 @@
-import { BoilerTankState } from "@/modules/thrsim/types";
+import { BoilerTankState } from "@/modules/thrapp/types/thrs";
 import { MimicComponentState } from "..";
 import { ModeBadgeMode } from "../mode-badge";
 

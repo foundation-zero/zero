@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { tScoped } from "@/modules/common/lib/utils";
 import { useAdvisoryEnabled } from "@/modules/thrapp/state";
-import { BoilerTankState } from "@/modules/thrsim/types";
+import { BoilerTankState } from "@/modules/thrapp/types/thrs";
 import { computed } from "vue";
 import { DHW_TANK_MODE_MODES } from ".";
 import { MimicComponentState } from "..";

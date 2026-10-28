@@ -1,4 +1,4 @@
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { getField } from "../../../providers";
 import { toExchangeCircuit } from "../../helpers";
 

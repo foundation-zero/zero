@@ -1,3 +1,4 @@
+import { AmcsControlMode } from "@/modules/thrapp/types/thrs";
 import { client as thrsimClient } from "@/modules/thrsim/graphql/client";
 import { createTestingPinia } from "@pinia/testing";
 import { createUseQueryFake } from "@tests/lib/urql";
@@ -6,7 +7,6 @@ import { DocumentNode, print } from "graphql";
 import { setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { QUERY_ALL } from "../lib/consts";
-import { AmcsControlMode } from "../types";
 import { SimulationStatus, STATUS_QUERY, useSimulationStore } from "./simulation";
 
 vi.mock(import("@urql/vue"), async (importOriginal) => ({

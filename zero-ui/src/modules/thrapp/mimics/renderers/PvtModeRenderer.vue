@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PvtMode as PvtModeEnum } from "@/modules/thrsim/types";
+import { PvtMode as PvtModeEnum } from "@/modules/thrapp/types/thrs";
 import { toRef } from "vue";
 import { FieldRendererProps } from ".";
 import { PvtMode } from "../components/pvt";

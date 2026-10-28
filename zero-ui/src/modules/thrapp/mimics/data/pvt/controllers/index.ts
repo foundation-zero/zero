@@ -4,7 +4,7 @@ import {
   ControllerStateComponentType,
   ParametersType,
   SensorComponentType,
-} from "@/modules/thrsim/types";
+} from "@/modules/thrapp/types/thrs";
 
 export const pvtHeatDumpController: PIDController<SensorComponentType.Temperature> = {
   type: SensorComponentType.Temperature,

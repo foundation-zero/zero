@@ -7,7 +7,8 @@
     Values extends ExtractAllValues<Definitions>
   "
 >
-import { ControlComponentType, ControlDefinitions, ExtractAllValues } from "@/modules/thrsim/types";
+import { ExtractAllValues } from "@/modules/thrsim/types";
+import { ControlComponentType, ControlDefinitions } from "@/modules/thrapp/types/thrs";
 
 import { QUERIES, ThrsModules } from "@/modules/thrsim/lib/consts.ts";
 import { type Component, computed, toRefs } from "vue";

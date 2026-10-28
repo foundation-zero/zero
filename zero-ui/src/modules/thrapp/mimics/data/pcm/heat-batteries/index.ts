@@ -1,5 +1,5 @@
 import { getField, ModuleField } from "@/modules/thrapp/mimics/providers";
-import { ControllerStateComponentType, SensorComponentType } from "@/modules/thrsim/types";
+import { ControllerStateComponentType, SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { MimicComponentType } from "../../../../types";
 import { toFieldsMap, toInstance } from "../../../modules";
 import { fieldTooltip } from "../../../modules/shared";
