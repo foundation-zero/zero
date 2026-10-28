@@ -52,10 +52,14 @@ export const createMimicZoomContext = (): MimicZoomContext => {
   // In fit mode the zoom follows the viewport size; any other zoom action switches to a fixed zoom.
   const fitting = ref(true);
   const fixedZoom = ref(1);
+  // By default the mimic only shrinks to fit and is never shown larger than its actual size; the
+  // fit control lifts that limit so the mimic fills the viewport.
+  const maxFitZoom = ref(1);
 
   const fitZoom = computed(() => {
     if (!intrinsic.value || !viewportWidth.value || !viewportHeight.value) return 1;
     return Math.min(
+      maxFitZoom.value,
       viewportWidth.value / intrinsic.value.width,
       viewportHeight.value / intrinsic.value.height,
     );
@@ -121,6 +125,9 @@ export const createMimicZoomContext = (): MimicZoomContext => {
     zoomIn: () => zoomTo(zoom.value * ZOOM_STEP),
     zoomOut: () => zoomTo(zoom.value / ZOOM_STEP),
     actualSize: () => zoomTo(1),
-    fit: () => (fitting.value = true),
+    fit: () => {
+      maxFitZoom.value = Infinity;
+      fitting.value = true;
+    },
   };
 };
