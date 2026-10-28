@@ -137,6 +137,28 @@ describe("createMimicZoomContext", () => {
     expect(context.scroller.value!.scrollTop).toBe(50);
   });
 
+  test("keeps a point in the viewport in place when zooming", async () => {
+    await mount({ width: 800, height: 400 }, { width: 800, height: 400 });
+    vi.spyOn(context.scroller.value!, "getBoundingClientRect").mockReturnValue(new DOMRect());
+    vi.spyOn(content, "getBoundingClientRect").mockReturnValue(new DOMRect());
+
+    await context.zoomTo(2, { x: 100, y: 50 });
+
+    expect(context.scroller.value!.scrollLeft).toBe(100);
+    expect(context.scroller.value!.scrollTop).toBe(50);
+  });
+
+  test("keeps the centre in place when the point is outside the viewport", async () => {
+    await mount({ width: 800, height: 400 }, { width: 800, height: 400 });
+    vi.spyOn(context.scroller.value!, "getBoundingClientRect").mockReturnValue(new DOMRect());
+    vi.spyOn(content, "getBoundingClientRect").mockReturnValue(new DOMRect());
+
+    await context.zoomTo(2, { x: 900, y: 50 });
+
+    expect(context.scroller.value!.scrollLeft).toBe(400);
+    expect(context.scroller.value!.scrollTop).toBe(200);
+  });
+
   test("does nothing without a viewport", async () => {
     await context.zoomIn();
 

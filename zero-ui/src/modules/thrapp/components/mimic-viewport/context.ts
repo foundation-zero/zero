@@ -3,6 +3,8 @@ import { createContext } from "reka-ui";
 import { computed, type ComputedRef, nextTick, type Ref, ref, shallowRef, watch } from "vue";
 import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from "./zoom";
 
+export type ZoomPoint = { x: number; y: number };
+
 export type MimicZoomContext = {
   /** The scroll container of the viewport, set by `MimicViewport`. */
   scroller: Ref<HTMLElement | undefined>;
@@ -15,6 +17,7 @@ export type MimicZoomContext = {
   zoom: ComputedRef<number>;
   canZoomIn: ComputedRef<boolean>;
   canZoomOut: ComputedRef<boolean>;
+  zoomTo: (zoom: number, point?: ZoomPoint) => Promise<void>;
   zoomIn: () => Promise<void>;
   zoomOut: () => Promise<void>;
   actualSize: () => Promise<void>;
@@ -68,16 +71,25 @@ export const createMimicZoomContext = (): MimicZoomContext => {
       : undefined,
   );
 
-  /** Zooms to a fixed level while keeping the point in the centre of the viewport in place. */
-  const zoomTo = async (next: number) => {
+  /**
+   * Zooms to a fixed level while keeping the given point (in client coordinates) in place. Without
+   * a point, or with one outside the viewport, the centre of the viewport stays in place.
+   */
+  const zoomTo = async (next: number, point?: ZoomPoint) => {
     const viewport = scroller.value;
     const mimic = content.value;
     if (!viewport || !mimic) return;
 
     const previous = zoom.value;
     const viewportBox = viewport.getBoundingClientRect();
-    const centerX = viewportBox.left + viewport.clientWidth / 2;
-    const centerY = viewportBox.top + viewport.clientHeight / 2;
+    const inViewport =
+      point &&
+      point.x >= viewportBox.left &&
+      point.x <= viewportBox.left + viewport.clientWidth &&
+      point.y >= viewportBox.top &&
+      point.y <= viewportBox.top + viewport.clientHeight;
+    const centerX = inViewport ? point.x : viewportBox.left + viewport.clientWidth / 2;
+    const centerY = inViewport ? point.y : viewportBox.top + viewport.clientHeight / 2;
     const before = mimic.getBoundingClientRect();
     const focusX = (centerX - before.left) / previous;
     const focusY = (centerY - before.top) / previous;
@@ -99,6 +111,7 @@ export const createMimicZoomContext = (): MimicZoomContext => {
     zoom,
     canZoomIn: computed(() => zoom.value < MAX_ZOOM),
     canZoomOut: computed(() => zoom.value > MIN_ZOOM),
+    zoomTo,
     zoomIn: () => zoomTo(zoom.value * ZOOM_STEP),
     zoomOut: () => zoomTo(zoom.value / ZOOM_STEP),
     actualSize: () => zoomTo(1),

@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
 import type { HTMLAttributes } from "vue";
+import { useBrowserZoomCapture } from "./browser-zoom";
 import { injectMimicZoomContext } from "./context";
 
 const props = defineProps<{ class?: HTMLAttributes["class"] }>();
 
-const { scroller, content, contentStyle, fitting } = injectMimicZoomContext();
+const context = injectMimicZoomContext();
+const { scroller, content, contentStyle, fitting } = context;
+
+useBrowserZoomCapture(context);
 </script>
 
 <template>
