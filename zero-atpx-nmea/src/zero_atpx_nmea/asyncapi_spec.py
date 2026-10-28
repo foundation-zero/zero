@@ -182,10 +182,11 @@ def build_spec(*, include_input_channel: bool = True) -> dict[str, Any]:
     for nmea_type in documented_types():
         field_types = _gather_envelope_for_type(nmea_type)
         message_id = f"{nmea_type}_envelope"
-        channel_id = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
+        topic = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
+        channel_id = topic.replace("/", "_").replace("{", "").replace("}", "")
 
         spec["channels"][channel_id] = {
-            "address": channel_id,
+            "address": topic,
             "title": f"{nmea_type.upper()} processed envelope",
             "description": (
                 f"Parsed JSON envelope for NMEA 0183 {nmea_type.upper()} sentences. "
@@ -200,6 +201,8 @@ def build_spec(*, include_input_channel: bool = True) -> dict[str, Any]:
             "messages": {
                 message_id: {"$ref": f"#/components/messages/{message_id}"},
             },
+            "x-group-topic-metadata": {},
+            "x-group-by": "sender",
         }
         spec["components"]["messages"][message_id] = _build_message_schema(
             nmea_type, field_types
@@ -214,9 +217,13 @@ def build_spec(*, include_input_channel: bool = True) -> dict[str, Any]:
 
 def _add_input_channel(spec: dict[str, Any]) -> None:
     """Add the raw NMEA input channel, its message, and its receive operation."""
-    input_channel_id = "atpx/nmea0183/{sender}/{TYPE}"
+    input_channel_topic = "atpx/nmea0183/{sender}/{TYPE}"
+    input_channel_id = (
+        input_channel_topic.replace("/", "_").replace("{", "").replace("}", "")
+    )
+
     spec["channels"][input_channel_id] = {
-        "address": input_channel_id,
+        "address": input_channel_topic,
         "title": "Raw NMEA 0183 input from A+T broker",
         "description": (
             "Raw NMEA 0183 sentences published by A+T's onboard systems. "

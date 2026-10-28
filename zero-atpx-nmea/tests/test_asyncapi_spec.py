@@ -72,8 +72,11 @@ class TestInputChannel:
     """The single input channel."""
 
     def test_input_channel_exists(self, spec: dict[str, Any]) -> None:
-        channel_id = "atpx/nmea0183/{sender}/{TYPE}"
+        channel_id = "atpx_nmea0183_sender_TYPE"
         assert channel_id in spec["channels"]
+        assert (
+            spec["channels"][channel_id]["address"] == "atpx/nmea0183/{sender}/{TYPE}"
+        )
 
     def test_input_channel_has_string_payload(self, spec: dict[str, Any]) -> None:
         msg = spec["components"]["messages"]["raw_nmea_sentence"]
@@ -83,7 +86,7 @@ class TestInputChannel:
     def test_input_channel_has_sender_and_type_parameters(
         self, spec: dict[str, Any]
     ) -> None:
-        channel_id = "atpx/nmea0183/{sender}/{TYPE}"
+        channel_id = "atpx_nmea0183_sender_TYPE"
         ch = spec["channels"][channel_id]
         assert "sender" in ch["parameters"]
         assert "TYPE" in ch["parameters"]
@@ -98,7 +101,7 @@ class TestOutputOnlySpec:
 
     def test_input_channel_omitted(self) -> None:
         spec = build_spec(include_input_channel=False)
-        assert "atpx/nmea0183/{sender}/{TYPE}" not in spec["channels"]
+        assert "atpx_nmea0183_sender_TYPE" not in spec["channels"]
         assert "raw_nmea_sentence" not in spec["components"]["messages"]
         assert "receive_raw_nmea" not in spec["operations"]
 
@@ -106,7 +109,7 @@ class TestOutputOnlySpec:
         """Dropping the input channel leaves every output channel intact."""
         output_only = build_spec(include_input_channel=False)
         for nmea_type in documented_types():
-            channel_id = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
+            channel_id = f"atpx_processed_nmea_{nmea_type}_sender"
             assert output_only["channels"][channel_id] == spec["channels"][channel_id]
         assert len(output_only["channels"]) == len(documented_types())
 
@@ -123,7 +126,7 @@ class TestOutputChannels:
         self, spec: dict[str, Any]
     ) -> None:
         for nmea_type in documented_types():
-            channel_id = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
+            channel_id = f"atpx_processed_nmea_{nmea_type}_sender"
             assert channel_id in spec["channels"]
             expected_address = f"atpx/processed/nmea/{nmea_type}/{{sender}}"
             assert spec["channels"][channel_id]["address"] == expected_address

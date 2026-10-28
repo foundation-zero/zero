@@ -21,8 +21,11 @@ test *args:
 format:
     uv run ruff format --check src tests
 
+generate-asyncapi file="../specs/atpx-nmea.json":
+    uv run python -m zero_atpx_nmea generate-asyncapi {{ file }}
+
 regenerate-spec:
-    uv run python -m zero_atpx_nmea asyncapi > asyncapi.json
+    uv run python -m zero_atpx_nmea generate-asyncapi ./asyncapi.json
 
 # Generate AsyncAPI HTML docs from the committed spec (output is gitignored).
 # Requires the AsyncAPI CLI on PATH: npm install -g @asyncapi/cli@6.0.2 (as CI does).
