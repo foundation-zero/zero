@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { SensorComponentType } from "@/modules/thrapp/types/thrs";
+import { ZiThrusters } from "@/modules/common/components/icons";
+import { RiFlashlightLine } from "@remixicon/vue";
 import { reactiveOmit } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
@@ -18,6 +20,7 @@ import {
 import { YardTag } from "../components/yard-tag";
 import { getField, getMimicDataProvider } from "../providers";
 import SensorValue from "../providers/SensorValue.vue";
+import { FieldRenderer } from "../renderers";
 
 const props = withDefaults(
   defineProps<
@@ -29,8 +32,8 @@ const props = withDefaults(
       }
   >(),
   {
-    width: 180,
-    height: 225,
+    width: 200,
+    height: 205,
     forceHeight: true,
   },
 );
@@ -49,7 +52,8 @@ const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
       :state="state"
     >
       <YardTag>{{ tooltip?.yardTag }}</YardTag>
-      <AssetBoxTitle class="pb-1">
+      <AssetBoxTitle class="gap-2 py-1">
+        <ZiThrusters />
         {{ t(`thrapp.mimics.thrusters.assets.${custom.titleKey}`) }}
       </AssetBoxTitle>
 
@@ -69,11 +73,13 @@ const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
           temperature-label="internal"
         />
         <SensorValue :source="source">
-          <ValueListItem class="text-brand">
-            <span class="flex items-center gap-0.5">{{
-              t("thrapp.mimics.thrusters.assets.labels.power")
-            }}</span>
-            <span></span>
+          <ValueListItem>
+            <span class="flex items-center gap-0.5">
+              <RiFlashlightLine class="text-constructive size-3.5" />
+            </span>
+            <span class="text-foreground font-medium">
+              <FieldRenderer.Placeholder />
+            </span>
           </ValueListItem>
         </SensorValue>
 

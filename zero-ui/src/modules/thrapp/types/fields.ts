@@ -99,7 +99,9 @@ export type SensorFieldDefinitions = SensorFields<{
     tIn: SensorComponentType.Temperature | SensorComponentType.CalculatedTemperature;
     tOut: SensorComponentType.Temperature;
   };
-  [MimicComponentType.SeawaterCircuit]: EmptyObject;
+  [MimicComponentType.SeawaterCircuit]: {
+    heatTransfer?: SensorComponentType.HeatTransferDevice;
+  };
   [MimicComponentType.HeatPump]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
   };

@@ -5075,6 +5075,19 @@
       }
     },
     "PressureSensor": {
+      "1057-24": {
+        "source": [
+          "sensor:pressure",
+          "thrusters",
+          "placeholder",
+          null
+        ],
+        "tooltip": {
+          "title": "Pressure sensor",
+          "componentType": "Pressure sensor",
+          "yardTag": "1057-24"
+        }
+      },
       "1097-01": {
         "controls": {
           "pump": [
@@ -5270,45 +5283,60 @@
           "componentType": "Pressure sensor"
         }
       },
-      "1097-06": {
-        "controls": {
-          "pump": [
-            "control:pump",
+      "1097-06": [
+        {
+          "controls": {
+            "pump": [
+              "control:pump",
+              "pvt",
+              "pvtPumpMainFwd",
+              null
+            ]
+          },
+          "parameters": {
+            "flow": [
+              "parameter:dutypoint",
+              "pvt",
+              "mainFwdMinimumPumpDutypoint",
+              null
+            ]
+          },
+          "sensors": {
+            "flow": [
+              "sensor:flow",
+              "pvt",
+              "pvtFlowMainFwdRecovery",
+              null
+            ]
+          },
+          "source": [
+            "sensor:pressure",
             "pvt",
-            "pvtPumpMainFwd",
+            "pvtPressureSystem",
             null
-          ]
+          ],
+          "tooltip": {
+            "title": "Pressure sensor",
+            "yardTag": "1097-06",
+            "technicalName": "pvt-pressure-system",
+            "mqttTopic": ".../pvt-pressure-system",
+            "componentType": "Pressure sensor"
+          }
         },
-        "parameters": {
-          "flow": [
-            "parameter:dutypoint",
-            "pvt",
-            "mainFwdMinimumPumpDutypoint",
+        {
+          "source": [
+            "sensor:pressure",
+            "thrusters",
+            "placeholder",
             null
-          ]
-        },
-        "sensors": {
-          "flow": [
-            "sensor:flow",
-            "pvt",
-            "pvtFlowMainFwdRecovery",
-            null
-          ]
-        },
-        "source": [
-          "sensor:pressure",
-          "pvt",
-          "pvtPressureSystem",
-          null
-        ],
-        "tooltip": {
-          "title": "Pressure sensor",
-          "yardTag": "1097-06",
-          "technicalName": "pvt-pressure-system",
-          "mqttTopic": ".../pvt-pressure-system",
-          "componentType": "Pressure sensor"
+          ],
+          "tooltip": {
+            "title": "Pressure sensor",
+            "componentType": "Pressure sensor",
+            "yardTag": "1097-06"
+          }
         }
-      },
+      ],
       "1097-07": {
         "source": [
           "sensor:pressure",
@@ -6935,6 +6963,14 @@
       "thrusters:seawater": {
         "custom": {
           "circuitName": "Seawater"
+        },
+        "sensors": {
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "thrusters",
+            "thrustersSeawaterExchanger",
+            null
+          ]
         },
         "source": [
           "sensor:temperature",

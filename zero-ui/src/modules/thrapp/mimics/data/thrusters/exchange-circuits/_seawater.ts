@@ -8,6 +8,13 @@ export default toSeawaterCircuit(
       circuitName: "Seawater",
     },
     source: getField(SensorComponentType.Temperature, "thrusters", "placeholder"),
+    sensors: {
+      heatTransfer: getField(
+        SensorComponentType.HeatTransferDevice,
+        "thrusters",
+        "thrustersSeawaterExchanger",
+      ),
+    },
   },
   { componentType: "Seawater" },
 );
