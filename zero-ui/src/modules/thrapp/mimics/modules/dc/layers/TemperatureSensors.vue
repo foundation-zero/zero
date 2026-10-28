@@ -31,7 +31,7 @@ const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSens
     <TemperatureLabelInstance
       target-x="250"
       :target-width="TEMPERATURE_SENSOR_WIDTH"
-      y="39.1458"
+      y="35.646"
       :tag-id="temperatureSensors['1038-20'].tooltip?.yardTag"
       :temperature="temperatureSensors['1038-20'].source"
     />
@@ -45,7 +45,7 @@ const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSens
     <TemperatureLabelInstance
       target-x="250"
       :target-width="TEMPERATURE_SENSOR_WIDTH"
-      y="132.1458"
+      y="129.646"
       :tag-id="temperatureSensors['1038-15'].tooltip?.yardTag"
       :temperature="temperatureSensors['1038-15'].source"
     />
@@ -71,7 +71,7 @@ const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSens
     v-bind="temperatureSensors['1038-70']"
   >
     <TemperatureLabelInstance
-      target-x="250"
+      target-x="248"
       :target-width="TEMPERATURE_SENSOR_WIDTH"
       y="344.1458"
       :tag-id="temperatureSensors['1038-70'].tooltip?.yardTag"
@@ -115,7 +115,7 @@ const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSens
     <TemperatureLabelInstance
       target-x="696.25"
       :target-width="TEMPERATURE_SENSOR_WIDTH"
-      y="345.1458"
+      y="341.646"
       :tag-id="temperatureSensors['1038-18'].tooltip?.yardTag"
       :temperature="temperatureSensors['1038-18'].source"
     />
@@ -127,7 +127,7 @@ const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSens
     v-bind="temperatureSensors['1038-52']"
   >
     <TemperatureLabelInstance
-      target-x="1023.1406"
+      target-x="1025.141"
       :target-width="TEMPERATURE_SENSOR_WIDTH"
       y="248.1458"
       :tag-id="temperatureSensors['1038-52'].tooltip?.yardTag"
@@ -143,7 +143,7 @@ const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSens
     <TemperatureLabelInstance
       target-x="1023.1406"
       :target-width="TEMPERATURE_SENSOR_WIDTH"
-      y="446.1458"
+      y="448.646"
       :tag-id="temperatureSensors['1038-17'].tooltip?.yardTag"
       :temperature="temperatureSensors['1038-17'].source"
     />
@@ -155,9 +155,9 @@ const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSens
     v-bind="temperatureSensors['1038-58']"
   >
     <TemperatureLabelInstance
-      target-x="1155.1406"
+      target-x="1152.141"
       :target-width="TEMPERATURE_SENSOR_WIDTH"
-      y="446.1458"
+      y="448.646"
       :tag-id="temperatureSensors['1038-58'].tooltip?.yardTag"
       :temperature="temperatureSensors['1038-58'].source"
     />

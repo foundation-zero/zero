@@ -28,7 +28,7 @@ const props = withDefaults(
       }
   >(),
   {
-    width: 220,
+    width: 200,
     height: 200,
     forceHeight: true,
   },

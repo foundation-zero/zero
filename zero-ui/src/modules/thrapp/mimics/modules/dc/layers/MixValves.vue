@@ -22,9 +22,9 @@ const mixValves = getTooltipContexts(MimicComponentType.MixValve, [
     v-bind="mixValves['1043-02']"
   >
     <ThreeWayValveLabelInstance
-      target-x="605"
+      target-x="613"
       :target-width="ACTUATED_VALVE_WIDTH"
-      y="212.1458"
+      y="219.646"
       :tag-id="mixValves['1043-02'].tooltip?.yardTag"
       :valve="mixValves['1043-02'].source"
     />
@@ -36,9 +36,9 @@ const mixValves = getTooltipContexts(MimicComponentType.MixValve, [
     v-bind="mixValves['1042-03']"
   >
     <ThreeWayValveLabelInstance
-      target-x="616"
+      target-x="613"
       :target-width="ACTUATED_VALVE_WIDTH"
-      y="662.1458"
+      y="664.646"
       :tag-id="mixValves['1042-03'].tooltip?.yardTag"
       :valve="mixValves['1042-03'].source"
     />
@@ -50,9 +50,9 @@ const mixValves = getTooltipContexts(MimicComponentType.MixValve, [
     v-bind="mixValves['1045-01']"
   >
     <ThreeWayValveLabelInstance
-      target-x="605"
+      target-x="613"
       :target-width="ACTUATED_VALVE_WIDTH"
-      y="431.1458"
+      y="433.646"
       :tag-id="mixValves['1045-01'].tooltip?.yardTag"
       :valve="mixValves['1045-01'].source"
     />
@@ -66,7 +66,7 @@ const mixValves = getTooltipContexts(MimicComponentType.MixValve, [
     <ThreeWayValveLabelInstance
       target-x="1087.1406"
       :target-width="ACTUATED_VALVE_WIDTH"
-      y="434.1458"
+      y="436.646"
       :tag-id="mixValves['1046-04'].tooltip?.yardTag"
       :valve="mixValves['1046-04'].source"
     />
@@ -84,7 +84,7 @@ const mixValves = getTooltipContexts(MimicComponentType.MixValve, [
   >
     <ThreeWayValveLabelInstance
       x="816.1406"
-      y="356.1458"
+      y="349.646"
       :tag-id="mixValves['1046-05'].tooltip?.yardTag"
       :valve="mixValves['1046-05'].source"
     />

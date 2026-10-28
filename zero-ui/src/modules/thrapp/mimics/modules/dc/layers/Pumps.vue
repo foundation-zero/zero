@@ -16,9 +16,9 @@ const pumps = getTooltipContexts(MimicComponentType.Pump, ["1020", "1023", "1025
     v-bind="pumps['1020']"
   >
     <DutypointLabelInstance
-      target-x="456.25"
+      target-x="458.25"
       :target-width="PUMP_WIDTH"
-      y="139.1458"
+      y="141.646"
       :tag-id="pumps['1020'].tooltip?.yardTag"
       :pump="pumps['1020'].controls.pump"
     />
@@ -30,9 +30,9 @@ const pumps = getTooltipContexts(MimicComponentType.Pump, ["1020", "1023", "1025
     v-bind="pumps['1023']"
   >
     <DutypointLabelInstance
-      target-x="456.25"
+      target-x="458.25"
       :target-width="PUMP_WIDTH"
-      y="352.1458"
+      y="354.646"
       :tag-id="pumps['1023'].tooltip?.yardTag"
       :pump="pumps['1023'].controls.pump"
     />
@@ -44,9 +44,9 @@ const pumps = getTooltipContexts(MimicComponentType.Pump, ["1020", "1023", "1025
     v-bind="pumps['1025']"
   >
     <DutypointLabelInstance
-      target-x="456.25"
+      target-x="458.25"
       :target-width="PUMP_WIDTH"
-      y="582.1458"
+      y="584.646"
       :tag-id="pumps['1025'].tooltip?.yardTag"
       :pump="pumps['1025'].controls.pump"
     />

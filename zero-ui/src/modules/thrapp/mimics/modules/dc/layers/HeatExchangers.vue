@@ -30,7 +30,7 @@ const heatExchangers = getTooltipContexts(MimicComponentType.HeatExchanger, ["10
     v-bind="heatExchangers['1008']"
   >
     <HeatExchangerLabelInstance
-      x="1308.1406"
+      x="1301.141"
       y="323.1458"
       :tag-id="heatExchangers['1008'].tooltip?.yardTag"
       :heat-exchanger="heatExchangers['1008'].source"
