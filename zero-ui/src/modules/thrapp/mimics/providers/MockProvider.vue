@@ -1,5 +1,5 @@
-<script setup lang="ts" generic="K extends keyof ThrsModules">
-import { ThrsDefinitions, ThrsModules } from "@/modules/thrsim/lib/consts.types";
+<script setup lang="ts">
+import { ThrsDefinitions } from "@/modules/thrsim/lib/consts.types";
 import {
   ControlComponentType,
   ControlDefinitionMap,

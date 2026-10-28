@@ -1,14 +1,4 @@
-<script
-  setup
-  lang="ts"
-  generic="
-    K extends keyof ThrsModules,
-    Definitions extends SchemaDefinitions<SchemaDefinition<unknown>>
-  "
->
-import { ThrsModules } from "@/modules/thrsim/lib/consts";
-import { SchemaDefinition, SchemaDefinitions } from "@/modules/thrsim/types";
-
+<script setup lang="ts">
 import { ChartDataType, SeriesChart } from "@/modules/common/types";
 import { provide, toRef } from "vue";
 

@@ -21,15 +21,14 @@ const props = defineProps<
 const context = inject<ToggleGroupVariants>("toggleGroup");
 
 const delegatedProps = reactiveOmit(props, "class", "size", "variant");
+
 const forwardedProps = useForwardProps(delegatedProps);
 </script>
 
 <template>
   <ToggleGroupItem
     v-slot="slotProps"
-    data-slot="toggle-group-item"
     :data-variant="context?.variant || variant"
-    :data-size="context?.size || size"
     v-bind="forwardedProps"
     :class="
       cn(

@@ -1,11 +1,11 @@
-<script setup lang="ts" generic="K extends keyof ThrsModules">
+<script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import Select from "@/components/ui/select/Select.vue";
 import SelectContent from "@/components/ui/select/SelectContent.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
 import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
 import SelectValue from "@/components/ui/select/SelectValue.vue";
-import { ThrsModules, ThrsSimulationType, THRUSTER_MODES } from "@/modules/thrsim/lib/consts";
+import { ThrsSimulationType, THRUSTER_MODES } from "@/modules/thrsim/lib/consts";
 import { controlValuesForm, MutationType } from "@/modules/thrsim/stores/thrs";
 import { PcsSimulation, SimulationComponentType } from "@/modules/thrsim/types";
 import { toUpperCamelCase } from "@common/lib/utils";

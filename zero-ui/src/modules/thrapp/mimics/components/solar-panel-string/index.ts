@@ -12,8 +12,7 @@ export type SolarPanelPlacement = {
 
 /** A rectangular frame, or an arbitrary outline path for strings that are not rectangular. */
 export type SolarPanelStringFrame =
-  | { x: number; y: number; width: number; height: number }
-  | { d: string };
+  { x: number; y: number; width: number; height: number } | { d: string };
 
 export type SolarPanelStringLabel = {
   /** Centre of the label. */

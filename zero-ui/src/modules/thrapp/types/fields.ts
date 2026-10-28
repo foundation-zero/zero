@@ -14,18 +14,12 @@ import type { DcConverterGroup, PvtGroup } from "../state";
 
 export type ComponentFields<
   Type extends
-    | ControlComponentType
-    | SensorComponentType
-    | ParametersType
-    | ControllerStateComponentType,
+    ControlComponentType | SensorComponentType | ParametersType | ControllerStateComponentType,
 > = Record<MimicComponentType, Record<string, Type>>;
 
 export type ComponentTypeFields<
   Type extends
-    | ControlComponentType
-    | SensorComponentType
-    | ParametersType
-    | ControllerStateComponentType,
+    ControlComponentType | SensorComponentType | ParametersType | ControllerStateComponentType,
   Fields extends ComponentFields<Type>,
 > = Fields;
 
@@ -48,11 +42,7 @@ export type ParameterFields<Fields extends ComponentFields<ParametersType>> = Co
 export type SourceFields<
   Fields extends {
     [Type in MimicComponentType]:
-      | SensorComponentType
-      | ControlComponentType
-      | ParametersType
-      | undefined
-      | null;
+      SensorComponentType | ControlComponentType | ParametersType | undefined | null;
   },
 > = Fields;
 
@@ -103,13 +93,9 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.FreshwaterCircuit]: {
     flowIn:
-      | SensorComponentType.Flow
-      | SensorComponentType.FlowOnly
-      | SensorComponentType.CalculatedFlow;
+      SensorComponentType.Flow | SensorComponentType.FlowOnly | SensorComponentType.CalculatedFlow;
     flowOut:
-      | SensorComponentType.Flow
-      | SensorComponentType.FlowOnly
-      | SensorComponentType.CalculatedFlow;
+      SensorComponentType.Flow | SensorComponentType.FlowOnly | SensorComponentType.CalculatedFlow;
     tIn: SensorComponentType.Temperature | SensorComponentType.CalculatedTemperature;
     tOut: SensorComponentType.Temperature;
   };
@@ -273,8 +259,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
 
 export type PIDController<
   Type extends SensorComponentType.Temperature | SensorComponentType.Flow =
-    | SensorComponentType.Temperature
-    | SensorComponentType.Flow,
+    SensorComponentType.Temperature | SensorComponentType.Flow,
   Parameter extends ParametersType = Type extends SensorComponentType.Temperature
     ? ParametersType.Temperature
     : ParametersType.Flow | ParametersType.FlowControl,
@@ -405,8 +390,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.BoilerTank]: undefined;
   [MimicComponentType.ExchangeCircuit]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.DcConverter]:
-    | SensorComponentType.BrightloopGroup
-    | SensorComponentType.UgridGroup;
+    SensorComponentType.BrightloopGroup | SensorComponentType.UgridGroup;
   [MimicComponentType.PropulsionDrive]: SensorComponentType.PropulsionDrive;
   [MimicComponentType.PropulsionCooler]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.ShorePowerConverter]: SensorComponentType.ShorePowerGroup;

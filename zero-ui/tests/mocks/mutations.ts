@@ -1,3 +1,5 @@
-import { graphql } from "msw";
+import { graphql } from "msw/graphql";
 
-export const setLightLevel = graphql.mutation("SetGroupLightLevel", () => {});
+const api = graphql.link(process.env.VITE_GRAPHQL_URL!);
+
+export const setLightLevel = api.mutation("SetGroupLightLevel", () => {});

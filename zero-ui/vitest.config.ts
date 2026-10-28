@@ -5,7 +5,7 @@ import { loadEnv } from "vite";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, __dirname, "");
+  const env = loadEnv(mode, import.meta.dirname, "");
   process.env = { ...process.env, ...env };
 
   return {
@@ -22,16 +22,16 @@ export default defineConfig(({ mode }) => {
       },
     },
 
-    root: resolve(__dirname, "src"),
+    root: resolve(import.meta.dirname, "src"),
 
     resolve: {
       alias: [
-        { find: "@", replacement: resolve(__dirname, "src") },
-        { find: "@env", replacement: resolve(__dirname, "src/settings/index.ts") },
-        { find: "@common", replacement: resolve(__dirname, "src/modules/common") },
-        { find: "@tests", replacement: resolve(__dirname, "tests") },
-        { find: "@components", replacement: resolve(__dirname, "src/components/ui") },
-        { find: "@modules", replacement: resolve(__dirname, "src/modules") },
+        { find: "@", replacement: resolve(import.meta.dirname, "src") },
+        { find: "@env", replacement: resolve(import.meta.dirname, "src/settings/index.ts") },
+        { find: "@common", replacement: resolve(import.meta.dirname, "src/modules/common") },
+        { find: "@tests", replacement: resolve(import.meta.dirname, "tests") },
+        { find: "@components", replacement: resolve(import.meta.dirname, "src/components/ui") },
+        { find: "@modules", replacement: resolve(import.meta.dirname, "src/modules") },
       ],
     },
   };

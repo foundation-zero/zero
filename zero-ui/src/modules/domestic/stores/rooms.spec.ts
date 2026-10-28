@@ -19,9 +19,11 @@ import {
   extractHumiditySetpoint,
   extractTemperatureSetpoint,
 } from "@common/lib/utils";
+import { ENV } from "@env";
 import { createTestingPinia, TestingPinia } from "@pinia/testing";
 import * as urql from "@urql/vue";
-import { graphql, HttpResponse } from "msw";
+import { HttpResponse } from "msw";
+import { graphql } from "msw/graphql";
 import { setupServer } from "msw/node";
 
 import { setActivePinia } from "pinia";
@@ -56,8 +58,10 @@ vi.mock(import("@urql/vue"), async (importOriginal) => ({
   useMutation: vi.fn(),
 }));
 
+const api = graphql.link(ENV.VITE_GRAPHQL_URL);
+
 const restHandlers = [
-  graphql.query("GetAllRooms", () => {
+  api.query("GetAllRooms", () => {
     return HttpResponse.json({ data: allRooms });
   }),
 ];
