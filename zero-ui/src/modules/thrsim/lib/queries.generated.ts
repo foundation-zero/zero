@@ -1277,7 +1277,7 @@ export const DHW_CONTROLLER_STATE_QUERY = `
 
 export const DHW_PARAMETERS_QUERY = `
   boostingMinimumHeat
-  boostingStallCooldown
+  boostingStallLockout
   boostingStallWindow
   boostingStartupGrace
   dcFlowTuning

@@ -210,7 +210,7 @@ function inferParameterType(fieldName: string, fieldType: string): string | null
   if (
     lowerFieldName.includes("grace") ||
     lowerFieldName.includes("window") ||
-    lowerFieldName.includes("cooldown") ||
+    lowerFieldName.includes("lockout") ||
     lowerFieldName.includes("duration") ||
     lowerFieldName.includes("delay")
   )

@@ -43,9 +43,9 @@ const t = tScoped("thrapp.parameters.dhw");
         {{ t("items.boostingStallWindow") }}
       </ParameterItems.Duration>
       <ParameterItems.Duration
-        :source="getField(ParametersType.Duration, 'dhw', 'boostingStallCooldown')"
+        :source="getField(ParametersType.Duration, 'dhw', 'boostingStallLockout')"
       >
-        {{ t("items.boostingStallCooldown") }}
+        {{ t("items.boostingStallLockout") }}
       </ParameterItems.Duration>
     </Parameters.List>
   </Parameters.Card>

@@ -1109,7 +1109,7 @@ export const DHW_PARAMETER_DEFINITION = toParameterDefinition({
   boostingMinimumHeat: {
     componentType: ParametersType.Power,
   },
-  boostingStallCooldown: {
+  boostingStallLockout: {
     componentType: ParametersType.Duration,
   },
   boostingStallWindow: {
