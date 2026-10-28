@@ -14,7 +14,7 @@ WORKDIR /app/zero-termodinamica
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev --no-editable
 
-FROM python:3.15-slim-trixie@sha256:f786b2e19cf9bb54e96bfcd4c1b40c4c56336c22e60607ffd4b080ae5b5dee83 AS runtime
+FROM python:3.15-slim-trixie@sha256:94d3426f1def7db4a106a232ac121bfd975393e5dfd40a619b955fae45fe7913 AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
