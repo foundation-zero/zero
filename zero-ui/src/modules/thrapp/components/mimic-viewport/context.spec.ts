@@ -86,7 +86,24 @@ describe("createMimicZoomContext", () => {
     expect(context.contentStyle.value).toBeUndefined();
 
     content.append(createSvg(250, 100));
-    await vi.waitFor(() => expect(context.zoom.value).toBe(2));
+    await vi.waitFor(() => expect(context.contentStyle.value).toBeDefined());
+    expect(context.zoom.value).toBe(1);
+  });
+
+  test("shows a mimic that fits at its actual size instead of zooming in", async () => {
+    await mount({ width: 800, height: 400 }, { width: 400, height: 100 });
+
+    expect(context.fitting.value).toBe(true);
+    expect(context.zoom.value).toBe(1);
+    expect(context.contentStyle.value).toEqual({ width: "400px", height: "100px" });
+  });
+
+  test("zooms in to fill the viewport when asked to fit", async () => {
+    await mount({ width: 800, height: 400 }, { width: 400, height: 100 });
+
+    context.fit();
+
+    expect(context.zoom.value).toBe(2);
   });
 
   test("zooms in and out by a step and stops fitting", async () => {
@@ -177,6 +194,7 @@ describe("createMimicZoomContext", () => {
 
   test("ignores zooming in when fitting is already above the maximum zoom", async () => {
     await mount({ width: 1000, height: 1000 }, { width: 100, height: 100 });
+    context.fit();
 
     await context.zoomIn();
 
