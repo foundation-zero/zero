@@ -69,7 +69,7 @@ const restHandlers = [
 
 const server = setupServer(...restHandlers);
 
-beforeAll(() => server.listen({ onUnhandledRequest: "bypass" }));
+beforeAll(() => server.listen({ onUnhandledFrame: "bypass" }));
 
 // Close server after all tests
 afterAll(() => server.close());
