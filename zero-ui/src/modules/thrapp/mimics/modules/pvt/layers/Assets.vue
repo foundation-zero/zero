@@ -58,19 +58,19 @@ const { t } = useI18n();
     />
 
     <PvtInstance
-      x="14"
+      x="22"
       y="30"
       v-bind="pvt['9001-01']"
     />
 
     <PvtInstance
-      x="14"
+      x="22"
       y="241"
       v-bind="pvt['9002-01']"
     />
 
     <PvtInstance
-      x="14"
+      x="22"
       y="500"
       v-bind="pvt['9001-03']"
     />

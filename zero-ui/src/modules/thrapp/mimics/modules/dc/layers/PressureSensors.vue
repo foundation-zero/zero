@@ -20,9 +20,9 @@ const pressureSensors = getTooltipContexts(MimicComponentType.PressureSensor, [
     v-bind="pressureSensors['1097-07']"
   >
     <PressureLabelInstance
-      target-x="564"
+      target-x="567"
       :target-width="PRESSURE_SENSOR_WIDTH"
-      y="128.1458"
+      y="131.646"
       :tag-id="pressureSensors['1097-07'].tooltip?.yardTag"
       :pressure="pressureSensors['1097-07'].source"
     />
@@ -34,9 +34,9 @@ const pressureSensors = getTooltipContexts(MimicComponentType.PressureSensor, [
     v-bind="pressureSensors['1097-08']"
   >
     <PressureLabelInstance
-      target-x="564"
+      target-x="567"
       :target-width="PRESSURE_SENSOR_WIDTH"
-      y="344.1458"
+      y="346.646"
       :tag-id="pressureSensors['1097-08'].tooltip?.yardTag"
       :pressure="pressureSensors['1097-08'].source"
     />
@@ -48,9 +48,9 @@ const pressureSensors = getTooltipContexts(MimicComponentType.PressureSensor, [
     v-bind="pressureSensors['1097-09']"
   >
     <PressureLabelInstance
-      target-x="564"
+      target-x="567"
       :target-width="PRESSURE_SENSOR_WIDTH"
-      y="569.1458"
+      y="571.646"
       :tag-id="pressureSensors['1097-09'].tooltip?.yardTag"
       :pressure="pressureSensors['1097-09'].source"
     />

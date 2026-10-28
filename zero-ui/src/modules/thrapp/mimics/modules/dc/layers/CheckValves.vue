@@ -22,8 +22,8 @@ const checkValves = getTooltipContexts(MimicComponentType.CheckValve, [
     v-bind="checkValves['1076-03']"
   >
     <TagLabelInstance
-      x="335"
-      y="217.1458"
+      x="330"
+      y="211.146"
       :tag-id="checkValves['1076-03'].tooltip?.yardTag"
     />
   </CheckValveInstance>
@@ -34,8 +34,8 @@ const checkValves = getTooltipContexts(MimicComponentType.CheckValve, [
     v-bind="checkValves['1077-04']"
   >
     <TagLabelInstance
-      x="335"
-      y="429.1458"
+      x="330"
+      y="423.146"
       :tag-id="checkValves['1077-04'].tooltip?.yardTag"
     />
   </CheckValveInstance>
@@ -46,8 +46,8 @@ const checkValves = getTooltipContexts(MimicComponentType.CheckValve, [
     v-bind="checkValves['1075-01']"
   >
     <TagLabelInstance
-      x="335"
-      y="661.1458"
+      x="330"
+      y="655.146"
       :tag-id="checkValves['1075-01'].tooltip?.yardTag"
     />
   </CheckValveInstance>
@@ -58,8 +58,8 @@ const checkValves = getTooltipContexts(MimicComponentType.CheckValve, [
     v-bind="checkValves['1076-02']"
   >
     <TagLabelInstance
-      x="754"
-      y="112.1458"
+      x="749"
+      y="116.146"
       :tag-id="checkValves['1076-02'].tooltip?.yardTag"
     />
   </CheckValveInstance>
@@ -70,8 +70,8 @@ const checkValves = getTooltipContexts(MimicComponentType.CheckValve, [
     v-bind="checkValves['1077-03']"
   >
     <TagLabelInstance
-      x="754"
-      y="326.1458"
+      x="749"
+      y="330.146"
       :tag-id="checkValves['1077-03'].tooltip?.yardTag"
     />
   </CheckValveInstance>
@@ -82,8 +82,8 @@ const checkValves = getTooltipContexts(MimicComponentType.CheckValve, [
     v-bind="checkValves['1075-06']"
   >
     <TagLabelInstance
-      x="754"
-      y="557.1458"
+      x="749"
+      y="561.146"
       :tag-id="checkValves['1075-06'].tooltip?.yardTag"
     />
   </CheckValveInstance>
