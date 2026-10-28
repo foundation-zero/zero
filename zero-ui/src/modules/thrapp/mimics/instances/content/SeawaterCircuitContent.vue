@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ZiSeawater } from "@/modules/common/components/icons";
-import { SensorComponentType } from "@/modules/thrsim/types";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { MimicComponentInstanceProps } from "..";
 import { TooltipComponentContext } from "../../../components/tooltip";
 import { MimicComponentType } from "../../../types";

@@ -5,5 +5,6 @@ import { toExpansionValve } from "../../helpers";
 export const PVT_EXPANSION_VALVE_DATA = toFieldsMap({
   [MimicComponentType.ExpansionValve]: {
     "1041-01": toExpansionValve("1041-01"),
+    "1039-01": toExpansionValve("1039-01"),
   },
 });

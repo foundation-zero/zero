@@ -953,13 +953,6 @@
           "componentType": "Check valve"
         }
       },
-      "1085-01": {
-        "tooltip": {
-          "yardTag": "1085-01",
-          "title": "Check valve",
-          "componentType": "3 way valve DN 25"
-        }
-      },
       "1085-02": {
         "tooltip": {
           "yardTag": "1085-02",
@@ -981,6 +974,20 @@
           "componentType": "Check valve"
         }
       },
+      "1095-05": {
+        "tooltip": {
+          "yardTag": "1095-05",
+          "title": "Check valve",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1185-01": {
+        "tooltip": {
+          "yardTag": "1185-01",
+          "title": "Check valve",
+          "componentType": "3 way valve DN 25"
+        }
+      },
       "1188-01": {
         "tooltip": {
           "yardTag": "1188-01",
@@ -991,13 +998,6 @@
       "1188-02": {
         "tooltip": {
           "yardTag": "1188-02",
-          "title": "Check valve",
-          "componentType": "3 way valve DN 25"
-        }
-      },
-      "1188-03": {
-        "tooltip": {
-          "yardTag": "1188-03",
           "title": "Check valve",
           "componentType": "3 way valve DN 25"
         }
@@ -1484,6 +1484,13 @@
       }
     },
     "ExpansionValve": {
+      "1039-01": {
+        "tooltip": {
+          "yardTag": "1039-01",
+          "title": "Pressure valve",
+          "componentType": "Pressure valve"
+        }
+      },
       "1041-01": {
         "tooltip": {
           "yardTag": "1041-01",
@@ -3444,6 +3451,13 @@
       }
     },
     "ManualValve": {
+      "1155": {
+        "tooltip": {
+          "yardTag": "1155",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
       "1067-07": {
         "tooltip": {
           "yardTag": "1067-07",
@@ -5003,13 +5017,6 @@
           "componentType": "Manual pressure sensor"
         }
       },
-      "1095-05": {
-        "tooltip": {
-          "yardTag": "1095-05",
-          "title": "Manual pressure sensor",
-          "componentType": "Manual pressure sensor"
-        }
-      },
       "1095-06": {
         "tooltip": {
           "yardTag": "1095-06",
@@ -5069,6 +5076,13 @@
       "1096-09": {
         "tooltip": {
           "yardTag": "1096-09",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1188-03": {
+        "tooltip": {
+          "yardTag": "1188-03",
           "title": "Manual pressure sensor",
           "componentType": "Manual pressure sensor"
         }
