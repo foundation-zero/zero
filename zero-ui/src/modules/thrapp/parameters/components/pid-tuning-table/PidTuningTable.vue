@@ -13,7 +13,7 @@ import { FieldEditor } from "@/modules/thrapp/mimics/editors";
 import { ControllerStateValue, ParameterValueForm } from "@/modules/thrapp/mimics/providers";
 import { FieldRenderer } from "@/modules/thrapp/mimics/renderers";
 import type { PidControllerTuning } from "@/modules/thrapp/parameters";
-import type { PID } from "@/modules/thrsim/types";
+import type { PID } from "@/modules/common/types";
 import { computed } from "vue";
 
 const t = tScoped("thrapp.parameters.pid");

@@ -2,7 +2,7 @@ import { ConnectionInitMessage } from "../../../lib/types";
 import { expect, test } from "../../../mocks/playwright";
 import { getAllRooms, getVersion } from "../../../mocks/queries";
 
-import { Roles } from "../../../../src/modules/domestic/types";
+import { Roles } from "../../../../src/modules/common/types";
 import { tokens } from "../../../lib/auth";
 
 test.describe("Auth", () => {

@@ -1,5 +1,5 @@
 import { stamp, stampWithSource } from "@/modules/common/lib/utils";
-import { Stamped } from "@/modules/common/types";
+import { PID, Stamped } from "@/modules/common/types";
 import {
   AmcsControlMode,
   BoilerTankState,
@@ -11,7 +11,6 @@ import {
   ParametersType,
   PcmChargeStatus,
   PcmChargingState,
-  PID,
   SensorComponentType,
   SensorDefinitionMap,
   ThrusterMode,

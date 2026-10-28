@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Switch } from "@/components/ui/switch";
 import { Room, ValidationStatus } from "@/modules/domestic/types";
-import { ValueTile } from "@common/components/value-tile";
+import { ValueTile } from "@/modules/domestic/admin/components/value-tile";
 import { RiLightbulbFlashLine, RiLightbulbLine } from "@remixicon/vue";
 import { computed } from "vue";
 import { useToggleableLights } from ".";

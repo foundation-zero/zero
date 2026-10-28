@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { cn, isDefined } from "@/modules/common/lib/utils";
-import AnimatedNumber from "@/modules/loads/components/animated-number/AnimatedNumber.vue";
+import AnimatedNumber from "@/modules/common/components/animated-number/AnimatedNumber.vue";
 import { computed } from "vue";
 import { FieldRendererProps } from ".";
 import { getFieldValue } from "../providers";

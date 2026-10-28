@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { CO2_RANGE, CO2_SETPOINT_RANGE, CO2_THRESHOLDS } from "@/modules/domestic/lib/consts";
 import { Room, Units, VentilationLog } from "@/modules/domestic/types";
-import AreaChart from "@common/components/area-chart/AreaChart.vue";
-import { ValueTile } from "@common/components/value-tile";
+import AreaChart from "@/modules/domestic/admin/components/area-chart/AreaChart.vue";
+import { ValueTile } from "@/modules/domestic/admin/components/value-tile";
+import { formatInt, logToSeries } from "@common/lib/utils";
 import {
   extractActualCO2,
-  formatInt,
-  logToSeries,
   useDemoControlValues,
   useDemoSensorValues,
   useThresholds,
-} from "@common/lib/utils";
+} from "@/modules/domestic/lib/utils";
 import { SeriesOption } from "echarts/types/dist/shared";
 import { computed } from "vue";
 

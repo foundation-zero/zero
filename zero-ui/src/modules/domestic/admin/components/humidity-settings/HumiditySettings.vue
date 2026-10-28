@@ -10,11 +10,11 @@ import {
 import { HUMIDITY_SETPOINT_RANGE } from "@/modules/domestic/lib/consts";
 import { useRoomStore } from "@/modules/domestic/stores/rooms";
 import { ResponsivePopup } from "@common/components/responsive-dialog";
+import { ratioAsPercentage } from "@common/lib/utils";
 import {
   hasHumidityControl,
-  ratioAsPercentage,
   updateSetpointWhenControlsHaveChanged,
-} from "@common/lib/utils";
+} from "@/modules/domestic/lib/utils";
 
 import { RiSettingsLine } from "@remixicon/vue";
 import { computed, ref, toRefs } from "vue";

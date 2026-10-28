@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TupleIndices } from "@/modules/common/types";
-import { PID } from "@/modules/thrsim/types";
+import { PID } from "@/modules/common/types";
 import { computed } from "vue";
 import { FieldEditor, NumberEditorProps } from ".";
 import { getFieldValue } from "../providers";

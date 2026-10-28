@@ -1,5 +1,8 @@
-import { PID } from "@/modules/thrsim/types";
 import { Ref } from "vue";
+
+export type Nullable<T> = T | null;
+export type PromiseFn<T = unknown> = () => Promise<T> | T;
+export type PID = [proportional: number, integral: number, derivative: number];
 
 export type Stamped<T> = { value: T; timestamp: Date };
 export type StampedWithSource<T> = { value: T; timestamp: Date; source: string };
@@ -11,13 +14,6 @@ export type Unstamp<T> =
       : T extends Record<string, Stamped<unknown>>
         ? { [K in keyof T]: Unstamp<T[K]> }
         : never;
-
-export type History<T> =
-  T extends Stamped<infer U extends ChartDataType>
-    ? TimeSeriesData<U>[]
-    : T extends Record<string, unknown>
-      ? { [K in keyof T as History<T[K]> extends never ? never : K]: History<T[K]> }
-      : T;
 
 export type Field<T> = Record<string, Stamped<T>>;
 export type Component = Record<string, Field<number>>;
@@ -63,3 +59,25 @@ export type NavItem = {
 
 export type TupleIndices<T extends readonly unknown[]> =
   Extract<keyof T, `${number}`> extends `${infer N extends number}` ? N : never;
+
+export interface Breakpoints {
+  tablet: boolean;
+  phone: boolean;
+  landscape: boolean;
+  portrait: boolean;
+  touch: boolean;
+  desktop: boolean;
+}
+
+export const enum Roles {
+  User = "user",
+  Admin = "admin",
+}
+
+export interface HasuraJWTToken {
+  "https://hasura.io/jwt/claims": {
+    "x-hasura-default-role": Roles;
+    "x-hasura-allowed-roles": Array<Roles>;
+    "x-hasura-cabin"?: string;
+  };
+}

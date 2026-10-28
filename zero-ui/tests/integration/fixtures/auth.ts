@@ -1,5 +1,5 @@
 import { PlaywrightTestArgs, TestFixture } from "@playwright/test";
-import { Roles } from "../../../src/modules/domestic/types";
+import { Roles } from "../../../src/modules/common/types";
 
 export interface AuthFixture {
   asAdmin(): Promise<void>;

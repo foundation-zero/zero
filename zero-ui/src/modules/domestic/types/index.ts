@@ -82,15 +82,6 @@ export const enum RoomGroup {
   HALLWAYS = "HALLWAYS",
 }
 
-export interface Breakpoints {
-  tablet: boolean;
-  phone: boolean;
-  landscape: boolean;
-  portrait: boolean;
-  touch: boolean;
-  desktop: boolean;
-}
-
 export interface ControlGroup<T> {
   name: string;
   controls: T[];
@@ -110,19 +101,6 @@ export type LogItem<T extends string> = {
 export type AirConditioningLog = LogItem<"humidity" | "temperature">;
 export type VentilationLog = LogItem<"co2">;
 
-export const enum Roles {
-  User = "user",
-  Admin = "admin",
-}
-
-export interface HasuraJWTToken {
-  "https://hasura.io/jwt/claims": {
-    "x-hasura-default-role": Roles;
-    "x-hasura-allowed-roles": Array<Roles>;
-    "x-hasura-cabin"?: string;
-  };
-}
-
 export const enum ValidationStatus {
   OK = "ok",
   WARN = "warn",
@@ -138,10 +116,6 @@ export type ValidateFn<T> = (value: T) => ValidationStatus;
 
 export interface ValueObject<V> {
   value: V;
-}
-
-export interface TimeValueObject<V> extends ValueObject<V> {
-  time: Date;
 }
 
 export type TimeValueTuple<V> = [time: Date, value: V];
@@ -170,5 +144,3 @@ export const enum ChartPeriod {
   MONTH = "month",
   YEAR = "year",
 }
-
-export type PromiseFn<T = unknown> = () => Promise<T> | T;

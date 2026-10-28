@@ -2,7 +2,7 @@
 import { cn, mmath } from "@/modules/common/lib/utils";
 import { computed, HTMLAttributes } from "vue";
 import { getContext } from ".";
-import { Nullable } from "../../types";
+import { Nullable } from "@/modules/common/types";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];

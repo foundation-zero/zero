@@ -5,18 +5,18 @@ import {
   TEMPERATURE_THRESHOLDS,
 } from "@/modules/domestic/lib/consts";
 import { AirConditioningLog, Room } from "@/modules/domestic/types";
-import AreaChart from "@common/components/area-chart/AreaChart.vue";
-import { ValueTile } from "@common/components/value-tile";
+import AreaChart from "@/modules/domestic/admin/components/area-chart/AreaChart.vue";
+import { ValueTile } from "@/modules/domestic/admin/components/value-tile";
+import { logToSeries } from "@common/lib/utils";
 import {
   extractActualHumidity,
   extractActualTemperature,
   extractTemperatureSetpoint,
   hasTemperatureControl,
-  logToSeries,
   useDemoControlValues,
   useDemoSensorValues,
   useThresholds,
-} from "@common/lib/utils";
+} from "@/modules/domestic/lib/utils";
 import { RiDropLine } from "@remixicon/vue";
 import { SeriesOption } from "echarts/types/dist/shared";
 import { computed } from "vue";

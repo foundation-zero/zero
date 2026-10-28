@@ -1,4 +1,4 @@
-import { Roles } from "@/modules/domestic/types";
+import { Roles } from "@/modules/common/types";
 import { defineAsyncComponent } from "vue";
 import { RouteRecordRaw } from "vue-router";
 
