@@ -6,7 +6,7 @@ import Pyranometers from "./layers/Pyranometers.vue";
 
 <template>
   <svg
-    viewBox="-1 -1 287 427"
+    viewBox="-10 -15 307 467"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"

@@ -37,7 +37,7 @@ provide("currentModule", currentTabKey);
 <template>
   <main class="h-svh pt-[12em]">
     <Suspense>
-      <article class="h-full px-4 pb-4 md:px-6 md:pb-6">
+      <article class="flex h-full flex-col px-4 md:px-6 md:pb-6">
         <slot />
       </article>
     </Suspense>

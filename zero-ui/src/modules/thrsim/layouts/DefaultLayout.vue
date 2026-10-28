@@ -7,6 +7,7 @@ import SimulationActions from "@/modules/thrsim/components/SimulationActions.vue
 import TopNav from "@/modules/common/components/navigation/TopNav.vue";
 import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.vue";
 import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
+import { MimicKey } from "@/modules/thrapp/router/mimics";
 import { client } from "@/modules/thrsim/graphql/client.ts";
 import { ThrsModules } from "@/modules/thrsim/lib/consts.types.ts";
 import { provideClient } from "@urql/vue";
@@ -22,15 +23,17 @@ provideClient(client);
 const { t } = useI18n();
 
 const currentRoute = useRoute();
-const modules: Array<keyof ThrsModules> = [
+const modules: Array<MimicKey> = [
+  "dhw",
   "thrusters",
   "pvt",
+  "pvt-main",
+  "pvt-owners",
+  "pvt-main-heat",
   "pcm",
-  "consumers",
-  "adsorption",
-  "drives",
-  "dhw",
   "dc",
+  "drives",
+  "adsorption",
 ];
 const currentModuleKey = computed(() => (currentRoute.params.module as string) ?? "simulation");
 
@@ -40,7 +43,7 @@ provide("currentModule", currentModuleKey);
 <template>
   <main class="h-svh pt-[12em]">
     <Suspense>
-      <article class="h-full px-4 pb-4 md:px-6 md:pb-6">
+      <article class="flex h-full flex-col px-4 md:px-6 md:pb-6">
         <slot />
       </article>
     </Suspense>

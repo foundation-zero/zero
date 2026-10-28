@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ThrsModules } from "@/modules/thrsim/lib/consts.types";
+import { MimicKey } from "@/modules/thrapp/router/mimics";
 import RouterLinkWithFallback from "@common/components/RouterLinkWithFallback.vue";
 import { Tabs, TabsList, TabsTrigger } from "@common/components/tab-links";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 
-defineProps<{ modules: Array<keyof ThrsModules> }>();
+defineProps<{ modules: Array<MimicKey> }>();
 const activeModule = defineModel<string | undefined>("activeModule", { required: true });
 const currentRoute = useRoute();
 

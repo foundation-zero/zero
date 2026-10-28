@@ -10,7 +10,11 @@
       "adsorption": "Adsorption",
       "dc": "DC converters",
       "drives": "Drives",
-      "thrs": "Heat"
+      "thrs": "Heat",
+      "simulation": "Simulation",
+      "pvt-main": "PVT Main",
+      "pvt-main-heat": "PVT Main (Heat)",
+      "pvt-owners": "PVT Owners"
     },
     "title": "HMI",
     "views": {
