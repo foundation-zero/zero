@@ -46,7 +46,14 @@ export const useBrowserZoomCapture = ({
   useEventListener(window, "keydown", (event: KeyboardEvent) => {
     if (!isZoomShortcut(event)) return;
 
-    const action = { "+": zoomIn, "=": zoomIn, "-": zoomOut, _: zoomOut, "0": fit }[event.key];
+    const actions: Record<string, (() => void) | undefined> = {
+      "+": zoomIn,
+      "=": zoomIn,
+      "-": zoomOut,
+      _: zoomOut,
+      "0": fit,
+    };
+    const action = actions[event.key];
     if (!action) return;
 
     event.preventDefault();

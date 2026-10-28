@@ -17,6 +17,7 @@ useBrowserZoomCapture(context);
   <div
     :ref="(element) => (scroller = (element as HTMLElement | null) ?? undefined)"
     :class="cn('flex', fitting ? 'overflow-hidden' : 'overflow-auto', props.class)"
+    tabindex="0"
     @dblclick.prevent.stop
   >
     <div
