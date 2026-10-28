@@ -159,6 +159,34 @@ describe("createMimicZoomContext", () => {
     expect(context.scroller.value!.scrollTop).toBe(200);
   });
 
+  test("ignores zooming out when fitting is already below the minimum zoom", async () => {
+    // The drives mimic on a phone fits at about 0.205.
+    await mount({ width: 360, height: 640 }, { width: 1758, height: 600 });
+    const fitZoom = context.zoom.value;
+    expect(fitZoom).toBeLessThan(MIN_ZOOM);
+
+    await context.zoomOut();
+    await context.zoomTo(fitZoom * 0.9);
+
+    expect(context.fitting.value).toBe(true);
+    expect(context.zoom.value).toBe(fitZoom);
+
+    await context.zoomIn();
+    expect(context.zoom.value).toBeCloseTo(fitZoom * ZOOM_STEP);
+  });
+
+  test("ignores zooming in when fitting is already above the maximum zoom", async () => {
+    await mount({ width: 1000, height: 1000 }, { width: 100, height: 100 });
+
+    await context.zoomIn();
+
+    expect(context.fitting.value).toBe(true);
+    expect(context.zoom.value).toBe(10);
+
+    await context.zoomOut();
+    expect(context.zoom.value).toBe(MAX_ZOOM);
+  });
+
   test("does nothing without a viewport", async () => {
     await context.zoomIn();
 

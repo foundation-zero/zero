@@ -81,6 +81,12 @@ export const createMimicZoomContext = (): MimicZoomContext => {
     if (!viewport || !mimic) return;
 
     const previous = zoom.value;
+    // Fitting can go beyond the limits (e.g. a wide mimic on a phone). Clamping a request to zoom
+    // further out (or in) would then do the opposite, so it is ignored instead.
+    if ((next < previous && previous <= MIN_ZOOM) || (next > previous && previous >= MAX_ZOOM)) {
+      return;
+    }
+
     const viewportBox = viewport.getBoundingClientRect();
     const inViewport =
       point &&
