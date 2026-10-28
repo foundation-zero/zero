@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { cn } from "@common/lib/utils";
 import { reactiveOmit } from "@vueuse/core";
-import { cn } from "cn";
 import type { ToggleEmits, ToggleProps } from "reka-ui";
 import { Toggle, useForwardPropsEmits } from "reka-ui";
 import type { HTMLAttributes } from "vue";

@@ -28,6 +28,7 @@ const forwardedProps = useForwardProps(delegatedProps);
 <template>
   <ToggleGroupItem
     v-slot="slotProps"
+    :data-variant="context?.variant || variant"
     v-bind="forwardedProps"
     :class="
       cn(
