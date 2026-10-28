@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
       environment: "jsdom",
       coverage: {
         provider: "v8",
-        include: ["**/*.{ts,vue}"],
+        include: ["**/*.ts"],
         exclude: ["**/*.spec.ts", "**/*.d.ts", "components/ui/**", "modules/domestic/gql/**"],
         reporter: ["text-summary"],
       },
