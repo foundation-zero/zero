@@ -641,6 +641,12 @@
           "ownersBimini": "Owners bimini"
         }
       },
+      "adsorption": {
+        "sections": {
+          "supportComponentsMt": "Support components-MT",
+          "supportComponentsHt": "Support components-HT"
+        }
+      },
       "dc": {
         "groups": {
           "group1": "DC/DC group 1",

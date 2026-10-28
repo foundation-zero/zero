@@ -4,6 +4,7 @@
     "1002": "HeatExchanger/1002",
     "1003": "HeatExchanger/1003",
     "1004": "HeatExchanger/1004",
+    "1005": "HeatExchanger/1005",
     "1006": "HeatExchanger/1006",
     "1007": "HeatExchanger/1007",
     "1008": "HeatExchanger/1008",
@@ -26,6 +27,7 @@
     "1050": "Pcm/1050",
     "1051": "Pcm/1051",
     "1052": "Pcm/1052",
+    "1059": "FlowSensor/1059",
     "1061": "FlowControlValve/1061",
     "1074": "MixValve/1074",
     "1192": "FlowSensor/1192",
@@ -61,17 +63,23 @@
     "1038-33": "TemperatureSensor/1038-33",
     "1038-34": "TemperatureSensor/1038-34",
     "1038-35": "TemperatureSensor/1038-35",
+    "1038-36": "TemperatureSensor/1038-36",
+    "1038-37": "TemperatureSensor/1038-37",
+    "1038-39": "TemperatureSensor/1038-39",
+    "1038-41": "TemperatureSensor/1038-41",
     "1038-44": "TemperatureSensor/1038-44",
     "1038-45": "TemperatureSensor/1038-45",
     "1038-46": "TemperatureSensor/1038-46",
     "1038-47": "TemperatureSensor/1038-47",
     "1038-48": "TemperatureSensor/1038-48",
     "1038-49": "TemperatureSensor/1038-49",
+    "1038-50": "TemperatureSensor/1038-50",
     "1038-51": "TemperatureSensor/1038-51",
     "1038-52": "TemperatureSensor/1038-52",
     "1038-53": "TemperatureSensor/1038-53",
     "1038-54": "TemperatureSensor/1038-54",
     "1038-55": "TemperatureSensor/1038-55",
+    "1038-56": "TemperatureSensor/1038-56",
     "1038-57": "TemperatureSensor/1038-57",
     "1038-58": "TemperatureSensor/1038-58",
     "1038-59": "TemperatureSensor/1038-59",
@@ -94,9 +102,11 @@
     "1044-02": "MixValve/1044-02",
     "1045-01": "MixValve/1045-01",
     "1046-01": "MixValve/1046-01",
+    "1046-02": "MixValve/1046-02",
     "1046-03": "MixValve/1046-03",
     "1046-04": "MixValve/1046-04",
     "1046-05": "MixValve/1046-05",
+    "1047-01": "MixValve/1047-01",
     "1047-02": "MixValve/1047-02",
     "1056-01": "LevelSensor/1056-01",
     "1056-02": "LevelSensor/1056-02",
@@ -116,16 +126,20 @@
     "1057-24": "FlowSensor/1057-24",
     "1057-25": "FlowSensor/1057-25",
     "1057-26": "FlowSensor/1057-26",
+    "1058-02": "FlowSensor/1058-02",
     "1058-03": "FlowSensor/1058-03",
     "1058-04": "FlowSensor/1058-04",
     "1058-06": "FlowSensor/1058-06",
     "1058-07": "FlowSensor/1058-07",
     "1058-08": "FlowSensor/1058-08",
+    "1058-09": "FlowSensor/1058-09",
+    "1058-10": "FlowSensor/1058-10",
     "1058-11": "FlowSensor/1058-11",
     "1058-12": "FlowSensor/1058-12",
     "1058-13": "FlowSensor/1058-13",
     "1062-01": "FlowControlValve/1062-01",
     "1062-02": "SwitchValve/1062-02",
+    "1062-03": "FlowControlValve/1062-03",
     "1064-02": "FlowControlValve/1064-02",
     "1064-03": "FlowControlValve/1064-03",
     "1064-04": "FlowControlValve/1064-04",
@@ -181,6 +195,7 @@
     "1098-01": "LevelSwitch/1098-01",
     "1098-02": "LevelSwitch/1098-02",
     "1098-03": "LevelSwitch/1098-03",
+    "1187-01": "SwitchValve/1187-01",
     "1190-01": "SwitchValve/1190-01",
     "1214-01": "MixValve/1214-01",
     "1218-01": "FlowSensor/1218-01",
@@ -258,6 +273,25 @@
     "9009-11": "FlowSensor/9009-11",
     "9009-12": "FlowSensor/9009-12",
     "adsorption": "ExchangeCircuit/dhw:adsorption",
+    "adsorption:adsorptionDhwExchanger": "HeatExchanger/1004",
+    "adsorption:adsorptionFlowcontrolWaste": "FlowControlValve/1062-03",
+    "adsorption:adsorptionFlowDhw": "FlowSensor/1058-10",
+    "adsorption:adsorptionFlowHot": "FlowSensor/1058-02",
+    "adsorption:adsorptionFlowHt": "FlowSensor/1058-09",
+    "adsorption:adsorptionFlowWaste": "FlowSensor/1059",
+    "adsorption:adsorptionHtExchanger": "ExchangeCircuit/adsorption:highTemperature",
+    "adsorption:adsorptionMixHot": "MixValve/1046-02",
+    "adsorption:adsorptionMixWaste": "MixValve/1047-01",
+    "adsorption:adsorptionSeawaterExchanger": "HeatExchanger/1005",
+    "adsorption:adsorptionSwitchDhw": "SwitchValve/1187-01",
+    "adsorption:adsorptionTemperatureDhwReturn": "TemperatureSensor/1038-56",
+    "adsorption:adsorptionTemperatureHotReturn": "TemperatureSensor/1038-36",
+    "adsorption:adsorptionTemperatureHotSupply": "TemperatureSensor/1038-37",
+    "adsorption:adsorptionTemperatureHtReturn": "TemperatureSensor/1038-41",
+    "adsorption:adsorptionTemperatureHtSupply": "TemperatureSensor/1038-50",
+    "adsorption:adsorptionTemperatureWasteSupply": "TemperatureSensor/1038-39",
+    "adsorption:dhwAdsorptionExchanger": "ExchangeCircuit/adsorption:domesticHotWater",
+    "adsorption:seawater": "SeawaterCircuit/adsorption:seawater",
     "dc:aft": "DcConverter/dc:aft",
     "dc:dcDhwExchanger": "HeatExchanger/1008",
     "dc:dcFlowAftReturn": "FlowSensor/1057-25",
@@ -339,7 +373,7 @@
     "dhw:dhwTemperatureTank2": "TemperatureSensor/1038-44",
     "dhw:dhwTemperatureTank3": "TemperatureSensor/1038-27",
     "dhw:drivesDhwExchanger": "ExchangeCircuit/dhw:drives",
-    "domesticHotWater": "ExchangeCircuit/dc:domesticHotWater",
+    "domesticHotWater": "ExchangeCircuit/adsorption:domesticHotWater",
     "drives": "ExchangeCircuit/dhw:drives",
     "drives:dhwDrivesExchanger": "ExchangeCircuit/drives:domesticHotWater",
     "drives:drivesAftOilCoolerHeat": "PropulsionCooler/1012",
@@ -381,6 +415,7 @@
     "drives:drivesTemperatureRecoveryReturn": "TemperatureSensor/1038-59",
     "drives:drivesTemperatureShorepowerReturn": "TemperatureSensor/1038-11",
     "drives:drivesTemperatureSupply": "TemperatureSensor/1038-14",
+    "highTemperature": "ExchangeCircuit/adsorption:highTemperature",
     "highTempLoop": "ExchangeCircuit/dhw:highTempLoop",
     "owners": "ConnectingCircuit/pvt:owners",
     "pcm:adsorptionHtExchanger": "ExchangeCircuit/pcm:adsorption",
@@ -1301,6 +1336,44 @@
       }
     },
     "ExchangeCircuit": {
+      "adsorption:domesticHotWater": {
+        "custom": {
+          "circuitName": "Domestic Hot",
+          "modeModule": "dhw"
+        },
+        "source": [
+          "sensor:heatTransferDevice",
+          "dhw",
+          "dhwAdsorptionExchanger",
+          null
+        ],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1004",
+          "technicalName": "dhw-adsorption-exchanger",
+          "mqttTopic": ".../dhw-adsorption-exchanger",
+          "componentType": "Domestic Hot Water loop"
+        }
+      },
+      "adsorption:highTemperature": {
+        "custom": {
+          "circuitName": "High Temp",
+          "modeModule": "pcm"
+        },
+        "source": [
+          "sensor:heatTransferDevice",
+          "adsorption",
+          "adsorptionHtExchanger",
+          null
+        ],
+        "tooltip": {
+          "title": "Exchange circuit",
+          "yardTag": "1003",
+          "technicalName": "adsorption-ht-exchanger",
+          "mqttTopic": ".../adsorption-ht-exchanger",
+          "componentType": "High Temperature loop"
+        }
+      },
       "dc:domesticHotWater": {
         "custom": {
           "circuitName": "Domestic Hot Water",
@@ -1469,6 +1542,20 @@
           "componentType": "Expansion tank"
         }
       },
+      "1040-02": {
+        "tooltip": {
+          "yardTag": "1040-02",
+          "title": "Expansion tank",
+          "componentType": "Expansion tank"
+        }
+      },
+      "1040-03": {
+        "tooltip": {
+          "yardTag": "1040-03",
+          "title": "Expansion tank",
+          "componentType": "Expansion tank"
+        }
+      },
       "1040-04": {
         "tooltip": {
           "yardTag": "1040-04",
@@ -1495,6 +1582,20 @@
       "1041-01": {
         "tooltip": {
           "yardTag": "1041-01",
+          "title": "Pressure valve",
+          "componentType": "Pressure valve"
+        }
+      },
+      "1041-02": {
+        "tooltip": {
+          "yardTag": "1041-02",
+          "title": "Pressure valve",
+          "componentType": "Pressure valve"
+        }
+      },
+      "1041-03": {
+        "tooltip": {
+          "yardTag": "1041-03",
           "title": "Pressure valve",
           "componentType": "Pressure valve"
         }
@@ -1613,6 +1714,29 @@
           "technicalName": "consumers-flowcontrol-bypass",
           "mqttTopic": ".../consumers-flowcontrol-bypass",
           "componentType": "Flow control valve"
+        }
+      },
+      "1062-03": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "adsorption",
+            "adsorptionFlowcontrolWaste",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "adsorption",
+          "adsorptionFlowcontrolWaste",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow control valve",
+          "yardTag": "1062-03",
+          "technicalName": "adsorption-flowcontrol-waste",
+          "mqttTopic": ".../adsorption-flowcontrol-waste",
+          "componentType": "2 way valve DN 25"
         }
       },
       "1064-02": {
@@ -1917,6 +2041,21 @@
       }
     },
     "FlowSensor": {
+      "1059": {
+        "source": [
+          "sensor:flow",
+          "adsorption",
+          "adsorptionFlowWaste",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1059",
+          "technicalName": "adsorption-flow-waste",
+          "mqttTopic": ".../adsorption-flow-waste",
+          "componentType": "Flow sensor"
+        }
+      },
       "1192": {
         "source": [
           "sensor:flow",
@@ -2253,6 +2392,21 @@
           "componentType": "Flow sensor"
         }
       },
+      "1058-02": {
+        "source": [
+          "sensor:flow",
+          "adsorption",
+          "adsorptionFlowHot",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1058-02",
+          "technicalName": "adsorption-flow-hot",
+          "mqttTopic": ".../adsorption-flow-hot",
+          "componentType": "Flow sensor"
+        }
+      },
       "1058-03": {
         "source": [
           "sensor:flow",
@@ -2325,6 +2479,36 @@
           "yardTag": "1058-08",
           "technicalName": "consumers-flow-adsorption",
           "mqttTopic": ".../consumers-flow-adsorption",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1058-09": {
+        "source": [
+          "sensor:flow",
+          "adsorption",
+          "adsorptionFlowHt",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1058-09",
+          "technicalName": "adsorption-flow-ht",
+          "mqttTopic": ".../adsorption-flow-ht",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1058-10": {
+        "source": [
+          "sensor:flow",
+          "adsorption",
+          "adsorptionFlowDhw",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1058-10",
+          "technicalName": "adsorption-flow-dhw",
+          "mqttTopic": ".../adsorption-flow-dhw",
           "componentType": "Flow sensor"
         }
       },
@@ -2930,6 +3114,47 @@
       }
     },
     "FreshwaterCircuit": {
+      "adsorption:cooling": {
+        "custom": {
+          "circuitName": "Cooling"
+        },
+        "source": [
+          "custom",
+          "adsorption",
+          "unknown",
+          {}
+        ],
+        "sensors": {
+          "flowIn": [
+            "sensor:flow",
+            "adsorption",
+            "coolingFlowAdsorption",
+            null
+          ],
+          "tIn": [
+            "sensor:temperature",
+            "adsorption",
+            "coolingTemperatureAdsorptionReturn",
+            null
+          ],
+          "flowOut": [
+            "sensor:flow",
+            "adsorption",
+            "coolingFlowAdsorption",
+            null
+          ],
+          "tOut": [
+            "sensor:temperature",
+            "adsorption",
+            "coolingTemperatureAdsorptionSupply",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "Cooling circuit",
+          "yardTag": "adsorption:cooling"
+        }
+      },
       "dhw:freshwater": {
         "custom": {
           "circuitName": "Fresh water"
@@ -3011,54 +3236,127 @@
           "componentType": "Heat exchanger"
         }
       },
-      "1003": {
-        "custom": {
-          "sideA": "side",
-          "sideB": "top",
-          "exchangeCircuit": [
+      "1003": [
+        {
+          "custom": {
+            "sideA": "side",
+            "sideB": "side",
+            "exchangeCircuit": [
+              "sensor:heatTransferDevice",
+              "adsorption",
+              "adsorptionHtExchanger",
+              null
+            ]
+          },
+          "source": [
             "sensor:heatTransferDevice",
             "adsorption",
             "adsorptionHtExchanger",
             null
-          ]
+          ],
+          "tooltip": {
+            "title": "Heat exchanger",
+            "yardTag": "1003",
+            "technicalName": "adsorption-ht-exchanger",
+            "mqttTopic": ".../adsorption-ht-exchanger",
+            "componentType": "Heat exchanger"
+          }
         },
-        "source": [
-          "sensor:heatTransferDevice",
-          "consumers",
-          "consumersAdsorptionExchanger",
-          null
-        ],
-        "tooltip": {
-          "title": "Heat Exchanger",
-          "yardTag": "1003",
-          "technicalName": "consumers-adsorption-exchanger",
-          "mqttTopic": ".../consumers-adsorption-exchanger",
-          "componentType": "Heat Exchanger"
+        {
+          "custom": {
+            "sideA": "side",
+            "sideB": "top",
+            "exchangeCircuit": [
+              "sensor:heatTransferDevice",
+              "adsorption",
+              "adsorptionHtExchanger",
+              null
+            ]
+          },
+          "source": [
+            "sensor:heatTransferDevice",
+            "consumers",
+            "consumersAdsorptionExchanger",
+            null
+          ],
+          "tooltip": {
+            "title": "Heat Exchanger",
+            "yardTag": "1003",
+            "technicalName": "consumers-adsorption-exchanger",
+            "mqttTopic": ".../consumers-adsorption-exchanger",
+            "componentType": "Heat Exchanger"
+          }
         }
-      },
-      "1004": {
-        "custom": {
-          "sideA": "side",
-          "sideB": "top",
-          "exchangeCircuit": [
+      ],
+      "1004": [
+        {
+          "custom": {
+            "sideA": "side",
+            "sideB": "side",
+            "exchangeCircuit": [
+              "sensor:heatTransferDevice",
+              "dhw",
+              "dhwAdsorptionExchanger",
+              null
+            ]
+          },
+          "source": [
             "sensor:heatTransferDevice",
             "adsorption",
             "adsorptionDhwExchanger",
             null
-          ]
+          ],
+          "tooltip": {
+            "title": "Heat exchanger",
+            "yardTag": "1004",
+            "technicalName": "adsorption-dhw-exchanger",
+            "mqttTopic": ".../adsorption-dhw-exchanger",
+            "componentType": "Heat exchanger"
+          }
+        },
+        {
+          "custom": {
+            "sideA": "side",
+            "sideB": "top",
+            "exchangeCircuit": [
+              "sensor:heatTransferDevice",
+              "adsorption",
+              "adsorptionDhwExchanger",
+              null
+            ]
+          },
+          "source": [
+            "sensor:heatTransferDevice",
+            "dhw",
+            "dhwAdsorptionExchanger",
+            null
+          ],
+          "tooltip": {
+            "title": "Heat Exchanger",
+            "yardTag": "1004",
+            "technicalName": "dhw-adsorption-exchanger",
+            "mqttTopic": ".../dhw-adsorption-exchanger",
+            "componentType": "Heat Exchanger"
+          }
+        }
+      ],
+      "1005": {
+        "custom": {
+          "sideA": "side",
+          "sideB": "top"
         },
         "source": [
           "sensor:heatTransferDevice",
-          "dhw",
-          "dhwAdsorptionExchanger",
+          "adsorption",
+          "adsorptionSeawaterExchanger",
           null
         ],
         "tooltip": {
-          "title": "Heat Exchanger",
-          "yardTag": "1004",
-          "technicalName": "dhw-adsorption-exchanger",
-          "mqttTopic": ".../dhw-adsorption-exchanger",
-          "componentType": "Heat Exchanger"
+          "title": "Heat exchanger",
+          "yardTag": "1005",
+          "technicalName": "adsorption-seawater-exchanger",
+          "mqttTopic": ".../adsorption-seawater-exchanger",
+          "componentType": "Heat exchanger"
         }
       },
       "1006": {
@@ -3459,6 +3757,13 @@
           "componentType": "2 way valve DN 15"
         }
       },
+      "1175": {
+        "tooltip": {
+          "yardTag": "1175",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
       "1067-07": {
         "tooltip": {
           "yardTag": "1067-07",
@@ -3518,6 +3823,34 @@
       "1069-18": {
         "tooltip": {
           "yardTag": "1069-18",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1072-01": {
+        "tooltip": {
+          "yardTag": "1072-01",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1072-02": {
+        "tooltip": {
+          "yardTag": "1072-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1072-03": {
+        "tooltip": {
+          "yardTag": "1072-03",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1072-04": {
+        "tooltip": {
+          "yardTag": "1072-04",
           "title": "Manual valve",
           "componentType": "2 way valve DN 15"
         }
@@ -3690,6 +4023,13 @@
           "componentType": "2 way valve DN 15"
         }
       },
+      "1167-12": {
+        "tooltip": {
+          "yardTag": "1167-12",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
       "1167-13": {
         "tooltip": {
           "yardTag": "1167-13",
@@ -3742,6 +4082,20 @@
       "1168-19": {
         "tooltip": {
           "yardTag": "1168-19",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-20": {
+        "tooltip": {
+          "yardTag": "1168-20",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-21": {
+        "tooltip": {
+          "yardTag": "1168-21",
           "title": "Manual valve",
           "componentType": "2 way valve DN 15"
         }
@@ -3879,6 +4233,13 @@
           "componentType": "2 way valve DN 15"
         }
       },
+      "1170-02": {
+        "tooltip": {
+          "yardTag": "1170-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
       "1170-03": {
         "tooltip": {
           "yardTag": "1170-03",
@@ -3903,6 +4264,27 @@
       "1170-06": {
         "tooltip": {
           "yardTag": "1170-06",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1170-08": {
+        "tooltip": {
+          "yardTag": "1170-08",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1171-01": {
+        "tooltip": {
+          "yardTag": "1171-01",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1171-02": {
+        "tooltip": {
+          "yardTag": "1171-02",
           "title": "Manual valve",
           "componentType": "2 way valve DN 15"
         }
@@ -4723,6 +5105,29 @@
           "componentType": "3 way valve DN 25"
         }
       },
+      "1046-02": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "adsorption",
+            "adsorptionMixHot",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "adsorption",
+          "adsorptionMixHot",
+          null
+        ],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1046-02",
+          "technicalName": "adsorption-mix-hot",
+          "mqttTopic": ".../adsorption-mix-hot",
+          "componentType": "3 way valve DN 25"
+        }
+      },
       "1046-03": {
         "controls": {
           "valve": [
@@ -4789,6 +5194,29 @@
           "yardTag": "1046-05",
           "technicalName": "dc-mix-exchanger",
           "mqttTopic": ".../dc-mix-exchanger",
+          "componentType": "3 way valve DN 25"
+        }
+      },
+      "1047-01": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "adsorption",
+            "adsorptionMixWaste",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "adsorption",
+          "adsorptionMixWaste",
+          null
+        ],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "1047-01",
+          "technicalName": "adsorption-mix-waste",
+          "mqttTopic": ".../adsorption-mix-waste",
           "componentType": "3 way valve DN 25"
         }
       },
@@ -5025,6 +5453,20 @@
           "componentType": "Manual pressure sensor"
         }
       },
+      "1095-07": {
+        "tooltip": {
+          "yardTag": "1095-07",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1095-09": {
+        "tooltip": {
+          "yardTag": "1095-09",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
       "1095-10": {
         "tooltip": {
           "yardTag": "1095-10",
@@ -5060,6 +5502,20 @@
           "componentType": "Manual pressure sensor"
         }
       },
+      "1096-01": {
+        "tooltip": {
+          "yardTag": "1096-01",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1096-02": {
+        "tooltip": {
+          "yardTag": "1096-02",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
       "1096-05": {
         "tooltip": {
           "yardTag": "1096-05",
@@ -5070,6 +5526,20 @@
       "1096-06": {
         "tooltip": {
           "yardTag": "1096-06",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1096-07": {
+        "tooltip": {
+          "yardTag": "1096-07",
+          "title": "Manual pressure sensor",
+          "componentType": "Manual pressure sensor"
+        }
+      },
+      "1096-08": {
+        "tooltip": {
+          "yardTag": "1096-08",
           "title": "Manual pressure sensor",
           "componentType": "Manual pressure sensor"
         }
@@ -6916,6 +7386,24 @@
       }
     },
     "SeawaterCircuit": {
+      "adsorption:seawater": {
+        "custom": {
+          "circuitName": "Seawater"
+        },
+        "source": [
+          "sensor:temperature",
+          "adsorption",
+          "adsorptionAvailableSeawaterTemperature",
+          null
+        ],
+        "tooltip": {
+          "title": "Seawater circuit",
+          "technicalName": "adsorption-available-seawater-temperature",
+          "mqttTopic": ".../adsorption-available-seawater-temperature",
+          "componentType": "Seawater loop",
+          "yardTag": "adsorption:seawater"
+        }
+      },
       "dc:seawater": {
         "custom": {
           "circuitName": "Seawater"
@@ -9029,6 +9517,29 @@
           "componentType": "Switch valve"
         }
       },
+      "1187-01": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "adsorption",
+            "adsorptionSwitchDhw",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "adsorption",
+          "adsorptionSwitchDhw",
+          null
+        ],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1187-01",
+          "technicalName": "adsorption-switch-dhw",
+          "mqttTopic": ".../adsorption-switch-dhw",
+          "componentType": "2 way valve DN 25"
+        }
+      },
       "1190-01": {
         "controls": {
           "valve": [
@@ -9819,6 +10330,98 @@
           "componentType": "Temperature sensor"
         }
       },
+      "1038-36": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "adsorption",
+            "adsorptionTemperatureHotReturn",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "adsorption",
+          "adsorptionTemperatureHotReturn",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-36",
+          "technicalName": "adsorption-temperature-hot-return",
+          "mqttTopic": ".../adsorption-temperature-hot-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-37": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "adsorption",
+            "adsorptionTemperatureHotSupply",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "adsorption",
+          "adsorptionTemperatureHotSupply",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-37",
+          "technicalName": "adsorption-temperature-hot-supply",
+          "mqttTopic": ".../adsorption-temperature-hot-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-39": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "adsorption",
+            "adsorptionTemperatureWasteSupply",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "adsorption",
+          "adsorptionTemperatureWasteSupply",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-39",
+          "technicalName": "adsorption-temperature-waste-supply",
+          "mqttTopic": ".../adsorption-temperature-waste-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-41": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "adsorption",
+            "adsorptionTemperatureHtReturn",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "adsorption",
+          "adsorptionTemperatureHtReturn",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-41",
+          "technicalName": "adsorption-temperature-ht-return",
+          "mqttTopic": ".../adsorption-temperature-ht-return",
+          "componentType": "Temperature sensor"
+        }
+      },
       "1038-44": {
         "source": [
           "sensor:temperature",
@@ -9940,6 +10543,29 @@
           "componentType": "Temperature sensor"
         }
       },
+      "1038-50": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "adsorption",
+            "adsorptionTemperatureHtSupply",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "adsorption",
+          "adsorptionTemperatureHtSupply",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-50",
+          "technicalName": "adsorption-temperature-ht-supply",
+          "mqttTopic": ".../adsorption-temperature-ht-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
       "1038-51": {
         "custom": {
           "controller": {
@@ -10051,6 +10677,29 @@
           "yardTag": "1038-55",
           "technicalName": "pcm-temperature-producers-supply",
           "mqttTopic": ".../pcm-temperature-producers-supply",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-56": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "adsorption",
+            "adsorptionTemperatureDhwReturn",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "adsorption",
+          "adsorptionTemperatureDhwReturn",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-56",
+          "technicalName": "adsorption-temperature-dhw-return",
+          "mqttTopic": ".../adsorption-temperature-dhw-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -11070,6 +11719,27 @@
           "technicalName": "pvt-temperature-owners-string-6-supply",
           "mqttTopic": ".../pvt-temperature-owners-string-6-supply",
           "componentType": "Temperature sensor"
+        }
+      },
+      "adsorption:9005-01/02": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "adsorption",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "adsorption",
+          "placeholder",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "componentType": "Temperature sensor",
+          "yardTag": "9005-01/02"
         }
       }
     },
