@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM rust:1.99.1-trixie@sha256:931c2c0531a8b143e044f0f3914dfe802f15bb3d1955f0b657e9359327ac2ffc AS builder
+FROM --platform=$BUILDPLATFORM rust:1.99.1-trixie@sha256:53766005847cbe02c3f59bfa49c1c4bb16695f2c9e5829c3d576a15406f5e733 AS builder
 
 WORKDIR /app
 
