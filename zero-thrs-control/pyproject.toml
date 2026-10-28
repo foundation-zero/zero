@@ -37,7 +37,7 @@ license-files = ["LICENSE"]
 dev = [
   "ruff==0.17.2",
   "pygraphviz==2.0.4",
-  "ipympl>=0.9.7,<0.10",
+  "ipympl>=0.10,<0.11",
   "pyqtgraph>=0.13.7,<1.0.0",
   "pyside6>=6.8.1.1,<7.0.0",
   "seaborn>=0.13.2,<1.0.0",
