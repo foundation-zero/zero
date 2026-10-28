@@ -78,7 +78,7 @@
     "class-variance-authority": "0.7.1",
     "dotenv": "17.4.0",
     "eslint": "10.13.0",
-    "eslint-plugin-prettier": "5.5.5",
+    "eslint-plugin-prettier": "5.5.7",
     "eslint-plugin-vue": "10.11.1",
     "globals": "17.4.0",
     "jsdom": "29.0.1",
