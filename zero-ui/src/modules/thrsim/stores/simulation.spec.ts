@@ -1,4 +1,4 @@
-import { client as thrsimClient } from "@/modules/thrapp/graphql/client";
+import { client as thrappClient } from "@/modules/thrapp/graphql/client";
 import { QUERY_MODULES } from "@/modules/thrapp/lib/consts";
 import { AmcsControlMode } from "@/modules/thrapp/types/thrs";
 import { createTestingPinia } from "@pinia/testing";
@@ -40,7 +40,7 @@ describe("simulation store", () => {
     queries.reset();
     vi.mocked(useQuery).mockImplementation(queries.useQuery);
     vi.mocked(useClientHandle).mockReturnValue({ client: { mutation } } as never);
-    vi.mocked(thrsimClient.mutation).mockImplementation(
+    vi.mocked(thrappClient.mutation).mockImplementation(
       (...args) => ({ toPromise: () => historyMutation(...args) }) as never,
     );
     mutation.mockReset().mockResolvedValue({ data: {} });
