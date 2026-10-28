@@ -52,6 +52,24 @@ describe("simulation store", () => {
     vi.useRealTimers();
   });
 
+  it("polls the simulation and its status only while polling is started", () => {
+    const simulation = useSimulationStore();
+
+    vi.advanceTimersByTime(10000);
+    expect(simulationQuery().executeQuery).not.toHaveBeenCalled();
+    expect(statusQuery().executeQuery).not.toHaveBeenCalled();
+
+    simulation.startPolling();
+    vi.advanceTimersByTime(10000);
+    expect(simulationQuery().executeQuery).toHaveBeenCalledTimes(3);
+    expect(statusQuery().executeQuery).toHaveBeenCalledTimes(3);
+
+    simulation.stopPolling();
+    vi.advanceTimersByTime(10000);
+    expect(simulationQuery().executeQuery).toHaveBeenCalledTimes(3);
+    expect(statusQuery().executeQuery).toHaveBeenCalledTimes(3);
+  });
+
   it.each([
     { status: "available", isAvailable: true, isRunning: false, isStepping: false },
     { status: "running", isAvailable: false, isRunning: true, isStepping: false },

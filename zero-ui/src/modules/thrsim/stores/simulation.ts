@@ -47,8 +47,6 @@ export const useSimulationStore = defineStore("simulation", () => {
   const simulation = computed(() => simulationQuery.data.value?.simulation);
   const refreshSimulation = () => simulationQuery.executeQuery({ requestPolicy: "network-only" });
 
-  useIntervalFn(refreshSimulation, 5000, { immediate: true });
-
   const activeSimulation = computed(() => simulation.value?.inputs?.__typename);
   const activeSimulationType = computed(() =>
     SIMULATION_TYPES.find((type) =>
@@ -66,9 +64,15 @@ export const useSimulationStore = defineStore("simulation", () => {
   // Use network-only policy to always get the latest status
   const updateStatus = () => statusQuery.executeQuery({ requestPolicy: "network-only" });
 
-  useIntervalFn(updateStatus, 5000, {
-    immediate: true,
-  });
+  // Poll only while a simulation view is open; the store outlives the views.
+  const { resume: startPolling, pause: stopPolling } = useIntervalFn(
+    () => {
+      refreshSimulation();
+      updateStatus();
+    },
+    5000,
+    { immediate: false, immediateCallback: true },
+  );
 
   const status = computed(() => statusQuery.data?.value?.simulation.status);
   const isAvailable = computed(() => status.value === "available");
@@ -139,6 +143,8 @@ export const useSimulationStore = defineStore("simulation", () => {
   return {
     simulation,
     refreshSimulation,
+    startPolling,
+    stopPolling,
     pause: mutationFn(pause, updateStatus),
     play: mutationFn<number>(play, updateStatus),
     step: mutationFn<number>(step, updateStatus),
