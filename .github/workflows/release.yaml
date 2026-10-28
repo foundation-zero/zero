@@ -20,6 +20,8 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       REPO: ${{ github.repository }}
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
       - name: Require the commit to be on main
         env:
           REF_NAME: ${{ github.ref_name }}
@@ -100,10 +102,11 @@ jobs:
           SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
+          python3 .github/scripts/release_notes.py "$REPO" "$TAG" "$SHA" > release-notes.md
           url=$(gh release create "$TAG" \
             --draft \
             --title "$TAG" \
-            --generate-notes \
+            --notes-file release-notes.md \
             --target "$SHA" \
             --repo "$REPO")
           echo "url=$url" >> "$GITHUB_OUTPUT"
