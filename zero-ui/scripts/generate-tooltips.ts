@@ -122,10 +122,25 @@ try {
     }
   }
 
+  // A named instance's bare name (e.g. "domesticHotWater") can be used by several modules, so it
+  // only becomes an alias when it points at a single context; otherwise the first module alphabetically
+  // would silently claim it.
+  const aliasTargets = new Map<string, Set<string>>();
+  for (const entry of entries) {
+    for (const registerKey of entry.registerKeys) {
+      const targets = aliasTargets.get(registerKey) ?? new Set();
+      aliasTargets.set(registerKey, targets.add(`${entry.componentType}/${entry.key}`));
+    }
+  }
+  const isAmbiguous = (registerKey: string) =>
+    !/^\d+(?:-\d+)*$/.test(registerKey) &&
+    !registerKey.includes(":") &&
+    aliasTargets.get(registerKey)!.size > 1;
+
   let redundant = 0;
   for (const entry of entries) {
     for (const registerKey of entry.registerKeys) {
-      if (!Object.hasOwn(register, registerKey)) {
+      if (!Object.hasOwn(register, registerKey) && !isAmbiguous(registerKey)) {
         register[registerKey] = `${entry.componentType}/${entry.key}`;
       }
     }

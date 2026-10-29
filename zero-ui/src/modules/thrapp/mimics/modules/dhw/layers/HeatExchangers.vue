@@ -6,8 +6,8 @@ import { getTooltipContexts } from "../../../data";
 import { HeatExchangerInstance, HeatExchangerLabelInstance } from "../../../instances";
 
 const heatExchangers = {
-  ...getTooltipContexts(MimicComponentType.HeatExchanger, ["1004", "1007", "1009"]),
-  ...getTooltipContexts(MimicComponentType.HeatExchanger, ["1008"], 1),
+  ...getTooltipContexts(MimicComponentType.HeatExchanger, ["1007", "1009"]),
+  ...getTooltipContexts(MimicComponentType.HeatExchanger, ["1004", "1008"], 1),
 };
 </script>
 
