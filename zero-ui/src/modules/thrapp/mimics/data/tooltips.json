@@ -22,6 +22,7 @@
     "1025": "Pump/1025",
     "1028": "Pump/1028",
     "1029": "Pump/1029",
+    "1034": "AdsorptionChiller/1034",
     "1035": "HeatPump/1035",
     "1049": "Pcm/1049",
     "1050": "Pcm/1050",
@@ -273,6 +274,7 @@
     "9009-11": "FlowSensor/9009-11",
     "9009-12": "FlowSensor/9009-12",
     "adsorption": "ExchangeCircuit/dhw:adsorption",
+    "adsorption:adsorptionChiller": "AdsorptionChiller/1034",
     "adsorption:adsorptionDhwExchanger": "HeatExchanger/1004",
     "adsorption:adsorptionFlowcontrolWaste": "FlowControlValve/1062-03",
     "adsorption:adsorptionFlowDhw": "FlowSensor/1058-10",
@@ -592,6 +594,51 @@
     "thrusters:thrustersThrusterFwd": "Thruster/15001002"
   },
   "contexts": {
+    "AdsorptionChiller": {
+      "1034": {
+        "controls": {
+          "chiller": [
+            "control:adsorptionChiller",
+            "adsorption",
+            "adsorptionChiller",
+            null
+          ]
+        },
+        "source": [
+          "sensor:adsorptionChiller",
+          "adsorption",
+          "adsorptionChiller",
+          null
+        ],
+        "sensors": {
+          "highTemperature": [
+            "sensor:heatTransferDevice",
+            "adsorption",
+            "adsorptionHotHeat",
+            null
+          ],
+          "mediumTemperature": [
+            "sensor:heatTransferDevice",
+            "adsorption",
+            "adsorptionWasteHeat",
+            null
+          ],
+          "lowTemperature": [
+            "sensor:heatTransferDevice",
+            "adsorption",
+            "adsorptionCoolingHeat",
+            null
+          ]
+        },
+        "tooltip": {
+          "title": "Fahrenheit",
+          "yardTag": "1034",
+          "technicalName": "adsorption-chiller",
+          "mqttTopic": ".../adsorption-chiller",
+          "componentType": "Adsorption chiller"
+        }
+      }
+    },
     "AirTrapVessel": {
       "1084": {
         "tooltip": {

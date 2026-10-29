@@ -6,6 +6,7 @@ import {
   FreshwaterCircuitInstance,
   SeawaterCircuitInstance,
 } from "../../../instances";
+import { RiArrowLeftLine } from "@remixicon/vue";
 
 const exchangeCircuits = getTooltipContexts(MimicComponentType.ExchangeCircuit, [
   "adsorption:domesticHotWater",
@@ -41,7 +42,11 @@ const seawaterCircuits = getTooltipContexts(MimicComponentType.SeawaterCircuit, 
       width="196"
       height="188"
       v-bind="freshwaterCircuits['adsorption:cooling']"
-    />
+    >
+      <template #toIcon>
+        <RiArrowLeftLine class="text-muted-foreground size-3" />
+      </template>
+    </FreshwaterCircuitInstance>
     <SeawaterCircuitInstance
       x="369"
       y="559"

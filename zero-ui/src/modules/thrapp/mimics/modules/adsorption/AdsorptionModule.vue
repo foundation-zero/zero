@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ActuatedValves from "./layers/ActuatedValves.vue";
+import Assets from "./layers/Assets.vue";
 import CircuitBoxes from "./layers/CircuitBoxes.vue";
 import DirectionArrows from "./layers/DirectionArrows.vue";
 import ExpansionTanks from "./layers/ExpansionTanks.vue";
@@ -12,7 +13,6 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
 </script>
 
 <template>
-  <!-- The Fahrenheit chiller asset is not part of the mimic yet. -->
   <svg
     viewBox="0 0 1848 677"
     fill="none"
@@ -29,5 +29,6 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
     <FlowSensors />
     <TemperatureSensors />
     <CircuitBoxes />
+    <Assets />
   </svg>
 </template>

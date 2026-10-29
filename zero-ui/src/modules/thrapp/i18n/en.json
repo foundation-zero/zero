@@ -645,6 +645,19 @@
         "sections": {
           "supportComponentsMt": "Support components-MT",
           "supportComponentsHt": "Support components-HT"
+        },
+        "chiller": {
+          "pumpSpeed": "Pump speed",
+          "modes": {
+            "cooling": "Cooling",
+            "freeCooling": "Free cooling",
+            "idle": "Idle"
+          },
+          "circuits": {
+            "highTemperature": "High Temp circuit",
+            "mediumTemperature": "Medium Temp circuit",
+            "lowTemperature": "Low Temp circuit"
+          }
         }
       },
       "dc": {
