@@ -31,6 +31,10 @@ on:
   release:
     types: [released]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-mqtt-graphql"
   CACHE: "europe-west1-docker.pkg.dev/common-449414/buildcache/zero-mqtt-graphql:main"

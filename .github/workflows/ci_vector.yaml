@@ -13,6 +13,10 @@ on:
       - .github/workflows/ci_vector.yaml
       - vector/**
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   test:
     timeout-minutes: 15
