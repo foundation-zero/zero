@@ -1,43 +1,18 @@
-//! GraphQL schema for MQTT topics, topic groups, and buckets.
-//!
-//! # Terminology
-//! - **Topic** (`TopicDef`): a single concrete MQTT topic with a fixed address
-//!   and no wildcards, e.g. `termodinamica/compressor/temperature`. Each topic
-//!   maps to one sanitized GraphQL query field returning its cached payload.
-//! - **Group** (`TopicGroupDef`): a parametrized topic family declared by one
-//!   AsyncAPI channel whose address contains `{param}` placeholders, e.g.
-//!   `power-tags/{panel}/{slug}` with MQTT pattern `power-tags/+/+`. A group
-//!   is enumerated by a `*-metadata.json` file listing its concrete topics and
-//!   static attributes; the schema exposes one list query `<group>: [<Group>Topic]`
-//!   (e.g. `powerTags: [PowerTagsTopic]`) whose rows merge that static metadata
-//!   with live values from the cache.
-//! - **Bucket**: a partition of a group's rows by the distinct value of the
-//!   `group_by` metadata attribute declared in the group's metadata file. For
-//!   example `group_by: "panel"` buckets `power-tags` rows into buckets `10P1`,
-//!   `10P2`, … Each bucket exposes `{ id, <group>: [GroupTopic] }` and the
-//!   schema exposes `<stem>Buckets: [Bucket]` (all buckets) and
-//!   `<stem>Bucket(id: String): Bucket` (single bucket by id).
-
 use std::collections::{BTreeMap, BTreeSet};
 use std::iter::once;
 use std::sync::Arc;
 
-use crate::roas_asyncapi::{
-    Document, OperationAction, Schema as AsyncApiSchema, SchemaOrMultiFormat, SchemaType, SubSchema,
-};
-use anyhow::Context;
+use crate::api_model::GraphqlType;
+use crate::graphql::{graphql_type_ref, json_to_graphql_value};
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
-use async_graphql::dynamic::{
-    Field, FieldValue, InputValue, Object, Schema, SchemaBuilder, TypeRef,
-};
+use async_graphql::dynamic::{Field, FieldValue, InputValue, Object, TypeRef};
 use log::warn;
-use roas_asyncapi::common::reference::RefOr;
 use serde_json::Value as JsonValue;
 
 use crate::naming::{is_reserved_name, pascal_case_graphql_name, sanitize_to_graphql_name};
 use crate::{
-    api_model::{Api, ApiModel, FieldDef, TopicDef, TopicGroupDef},
+    api_model::{ApiModel, TopicGroupDef},
     cache::TopicCache,
 };
 
@@ -45,80 +20,7 @@ use crate::{
 /// attribute: bucket id → `(topic, metadata)` pairs.
 type GroupedRows = BTreeMap<String, Vec<(String, BTreeMap<String, JsonValue>)>>;
 
-/// Build a dynamic GraphQL schema from topic definitions and the cache.
-///
-/// Sanitizes topic names to valid GraphQL identifiers and validates that no
-/// two topics collide after sanitization. Returns an error if any sanitized
-/// name is empty, duplicates another topic, or collides with a reserved
-/// GraphQL name. Topics without scalar fields are not registered as query
-/// types but stay visible through the `topics` introspection field.
-///
-/// Each topic group (a parametrized channel such as `power-tags/{panel}/{slug}`)
-/// with at least one metadata entry gains a `<group>: [<Group>Topic]` list
-/// query whose rows merge static metadata (`metadata { … }`) with live values
-/// from the cache (`values { … }`). A group whose metadata file declares
-/// `group_by: "<attr>"` additionally gains bucket queries
-/// `<stem>Buckets` / `<stem>Bucket(id)` partitioning its rows by that
-/// attribute. Concrete topics
-/// annotated in the metadata store gain an additive `metadata { … }` field on
-/// their own object type.
-pub fn build_schema(api: &Api, cache: &Arc<TopicCache>) -> anyhow::Result<Schema> {
-    validate_topics(api)?;
-
-    let mut used_query_fields = BTreeSet::new();
-
-    let mut query = Object::new("Query");
-    let mut schema_builder = Schema::build(query.type_name(), None, None);
-
-    for api_model in &api.models {
-        let new_objects;
-        (query, new_objects) = build_schema_topics(query, api_model, cache, &mut used_query_fields);
-        schema_builder = new_objects
-            .into_iter()
-            .fold(schema_builder, SchemaBuilder::register);
-
-        let group_objects;
-        (query, group_objects) =
-            build_schema_groups(query, api_model, cache, &mut used_query_fields)
-                .with_context(|| "Error while building group schema")?;
-        schema_builder = group_objects
-            .into_iter()
-            .fold(schema_builder, SchemaBuilder::register);
-    }
-
-    // Not really useful but prevents errors if no topics are defined
-    query = query.field(topics_introspection_field(&api.topics()));
-
-    schema_builder
-        .register(query)
-        .finish()
-        .with_context(|| "Schema building failed")
-}
-
-fn build_schema_topics(
-    mut schema_object: Object,
-    api: &ApiModel,
-    cache: &Arc<TopicCache>,
-    used_query_fields: &mut BTreeSet<String>,
-) -> (Object, Vec<Object>) {
-    let topics = &api.topics;
-
-    let mut objects = Vec::with_capacity(topics.len());
-
-    for topic_def in queryable_topics(topics) {
-        objects.push(topic_object(topic_def));
-
-        let field_name = sanitize_to_graphql_name(&topic_def.topic);
-        let field = topic_query_field(&topic_def.topic, &field_name, cache);
-
-        used_query_fields.insert(field_name);
-        schema_object = schema_object.field(field);
-    }
-
-    (schema_object, objects)
-}
-
-fn build_schema_groups(
+pub(super) fn build_schema_groups(
     mut schema_object: Object,
     api: &ApiModel,
     cache: &Arc<TopicCache>,
@@ -142,77 +44,6 @@ fn build_schema_groups(
         .fold(schema_object, Object::field);
 
     Ok((schema_object, group_objects.into_iter().flatten().collect()))
-}
-
-/// Topics eligible for a queryable payload object: those with fields.
-fn queryable_topics(topics: &[TopicDef]) -> impl Iterator<Item = &TopicDef> {
-    topics.iter().filter(|topic_def| {
-        !topic_def.fields.is_empty() && topic_def.action == OperationAction::Send
-    })
-}
-
-/// The read-only `topics: [String]` introspection field listing every topic.
-fn topics_introspection_field(topics: &[TopicDef]) -> Field {
-    let topic_list: Vec<String> = topics.iter().map(|t| t.topic.clone()).collect();
-    Field::new("topics", TypeRef::named_list("String"), move |_ctx| {
-        let names = topic_list.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
-            let values: Vec<GraphQlValue> = names.into_iter().map(GraphQlValue::String).collect();
-            Ok(Some(GraphQlValue::List(values)))
-        })
-    })
-}
-/// One concrete topic's `<Topic>` payload object, plus the additive
-/// `metadata { … }` field when the topic is annotated in the metadata store.
-fn topic_object(topic_def: &TopicDef) -> Object {
-    let type_name = sanitize_to_graphql_name(&topic_def.topic);
-    topic_def
-        .fields
-        .iter()
-        .map(payload_field)
-        .fold(Object::new(type_name.as_str()), |obj, field| {
-            obj.field(field)
-        })
-}
-
-/// The `<Topic>` query field: resolves to the topic's whole cached MQTT
-/// payload object. The object's scalar subfields project from this value
-/// (see [`payload_field`]), so the payload is read from the cache exactly
-/// once per query.
-fn topic_query_field(topic: &str, type_name: &str, cache: &Arc<TopicCache>) -> Field {
-    let obj_ref = TypeRef::named(type_name);
-    let topic = topic.to_string();
-    let cache_for_query = cache.clone();
-    Field::new(type_name, obj_ref, move |_ctx| {
-        let val = cache_for_query.get(&topic);
-        async_graphql::dynamic::FieldFuture::new(async move {
-            Ok(val.map(|json_val| json_to_graphql_value(&json_val)))
-        })
-    })
-}
-
-/// One scalar payload field on a `<Topic>` object: projects the raw field
-/// name from the object value returned by [`topic_query_field`].
-fn payload_field(field: &FieldDef) -> Field {
-    let field_name = sanitize_to_graphql_name(&field.name);
-    let raw_name = Name::new(field.name.clone());
-    Field::new(
-        field_name,
-        graphql_type_ref(&field.graphql_type),
-        move |ctx| {
-            let raw_name = raw_name.clone();
-            async_graphql::dynamic::FieldFuture::new(async move {
-                let parent = ctx.parent_value.try_to_value()?;
-                let value = match parent {
-                    GraphQlValue::Object(map) => {
-                        map.get(&raw_name).cloned().unwrap_or(GraphQlValue::Null)
-                    }
-                    _ => GraphQlValue::Null,
-                };
-                Ok(Some(FieldValue::value(value)))
-            })
-        },
-    )
 }
 
 /// Schema contributions of one topic group.
@@ -298,13 +129,14 @@ fn build_group_objects(
             obj.field(field)
         });
 
+    // let values_obj = payload_object(&values_type, &group.fields);
     let values_obj = group
         .fields
         .iter()
-        .map(|field| {
+        .map(|(field_name, graphql_type)| {
             row_projection_field(
-                &sanitize_to_graphql_name(&field.name),
-                graphql_type_ref(&field.graphql_type),
+                &sanitize_to_graphql_name(field_name),
+                graphql_type_ref(graphql_type),
             )
         })
         .fold(Object::new(values_type.as_str()), |obj, field| {
@@ -607,7 +439,7 @@ fn group_query_field(
 /// one per bucket id, each holding that bucket's group rows.
 fn bucket_rows_json(
     buckets: &GroupedRows,
-    fields: &[FieldDef],
+    fields: &BTreeMap<String, GraphqlType>,
     value_meta_json: &JsonValue,
     cache: &TopicCache,
     rows_key: &str,
@@ -632,11 +464,11 @@ fn value_metadata_json(group: &TopicGroupDef) -> JsonValue {
     JsonValue::Array(
         group
             .fields
-            .iter()
-            .map(|field| {
+            .keys()
+            .map(|field_name| {
                 let descriptors = group
                     .value_extensions
-                    .get(&field.name)
+                    .get(field_name)
                     .into_iter()
                     .flatten()
                     .map(|(key, value)| {
@@ -650,7 +482,7 @@ fn value_metadata_json(group: &TopicGroupDef) -> JsonValue {
                 JsonValue::Object(
                     once((
                         "name".to_string(),
-                        JsonValue::String(sanitize_to_graphql_name(&field.name)),
+                        JsonValue::String(sanitize_to_graphql_name(field_name)),
                     ))
                     .chain(descriptors)
                     .collect(),
@@ -665,7 +497,7 @@ fn value_metadata_json(group: &TopicGroupDef) -> JsonValue {
 fn group_row(
     topic: &str,
     metadata: &BTreeMap<String, JsonValue>,
-    fields: &[crate::api_model::FieldDef],
+    fields: &BTreeMap<String, GraphqlType>,
     cache: &TopicCache,
     value_meta: Option<&JsonValue>,
 ) -> JsonValue {
@@ -676,12 +508,12 @@ fn group_row(
         .collect();
 
     let values_json: serde_json::Map<String, JsonValue> = fields
-        .iter()
-        .map(|field| {
+        .keys()
+        .map(|field_name| {
             (
-                sanitize_to_graphql_name(&field.name),
+                sanitize_to_graphql_name(field_name),
                 cache
-                    .get_field(topic, &field.name)
+                    .get_field(topic, field_name)
                     .unwrap_or(JsonValue::Null),
             )
         })
@@ -740,531 +572,36 @@ fn singular_group_stem(group_id: &str) -> String {
     }
 }
 
-/// Convert a JSON value to an async-graphql Value.
-fn json_to_graphql_value(val: &JsonValue) -> GraphQlValue {
-    match val {
-        JsonValue::Null => GraphQlValue::Null,
-        JsonValue::Bool(b) => GraphQlValue::Boolean(*b),
-        JsonValue::Number(n) => {
-            if let Some(i) = n.as_i64() {
-                GraphQlValue::Number(i.into())
-            } else if let Some(f) = n.as_f64() {
-                GraphQlValue::Number(async_graphql::Number::from_f64(f).unwrap_or_else(|| 0.into()))
-            } else {
-                GraphQlValue::Null
-            }
-        }
-        JsonValue::String(s) => GraphQlValue::String(s.clone()),
-        JsonValue::Array(arr) => {
-            GraphQlValue::List(arr.iter().map(json_to_graphql_value).collect())
-        }
-        JsonValue::Object(map) => GraphQlValue::Object(
-            map.iter()
-                .map(|(k, v)| (Name::new(k.clone()), json_to_graphql_value(v)))
-                .collect(),
-        ),
-    }
-}
-
-/// Evict expired entries from the cache periodically.
-pub fn spawn_eviction(cache: std::sync::Arc<TopicCache>) {
-    tokio::spawn(async move {
-        let mut interval = tokio::time::interval(std::time::Duration::from_secs(30));
-        loop {
-            interval.tick().await;
-            cache.evict_expired();
-        }
-    });
-}
-
-/// Map a GraphQL type name to an async-graphql TypeRef.
-fn graphql_type_ref(typ: &str) -> TypeRef {
-    #[allow(clippy::match_same_arms)]
-    match typ {
-        "Float" => TypeRef::named(TypeRef::FLOAT),
-        "Int" => TypeRef::named(TypeRef::INT),
-        "Boolean" => TypeRef::named(TypeRef::BOOLEAN),
-        "String" => TypeRef::named(TypeRef::STRING),
-        _ => TypeRef::named(TypeRef::STRING),
-    }
-}
-
-/// Validate that sanitized topic and field names are unique and not reserved.
-///
-/// Returns an error if:
-/// - any topic sanitizes to an empty name
-/// - any topic sanitizes to a reserved GraphQL name
-/// - two topics sanitize to the same GraphQL name
-/// - any field sanitizes to an empty name
-/// - two fields within the same topic sanitize to the same name
-///
-pub fn validate_topics(api: &Api) -> anyhow::Result<()> {
-    let topics = api.topics();
-
-    let mut seen_topics: BTreeMap<String, String> = BTreeMap::new();
-
-    for td in topics {
-        let sanitized = sanitize_to_graphql_name(&td.topic);
-        if sanitized.is_empty() {
-            anyhow::bail!("topic '{}' sanitizes to an empty GraphQL name", td.topic);
-        }
-        if is_reserved_name(&sanitized) {
-            anyhow::bail!(
-                "topic '{}' sanitizes to reserved GraphQL name '{}'",
-                td.topic,
-                sanitized
-            );
-        }
-        if let Some(prev) = seen_topics.get(&sanitized) {
-            anyhow::bail!(
-                "duplicate sanitized topic name '{}' from topics '{}' and '{}'",
-                sanitized,
-                prev,
-                td.topic
-            );
-        }
-        seen_topics.insert(sanitized.clone(), td.topic.clone());
-
-        validate_topic_fields(&td.topic, &td.fields)?;
-    }
-
-    Ok(())
-}
-
-/// Validate one topic's payload fields: unique raw names, plus non-empty
-/// and unique sanitized GraphQL names.
-fn validate_topic_fields(topic: &str, fields: &[FieldDef]) -> anyhow::Result<()> {
-    let mut seen_fields: BTreeMap<String, String> = BTreeMap::new();
-    let mut seen_raw_fields: BTreeSet<String> = BTreeSet::new();
-    for field in fields {
-        // Raw duplicate (should also be caught by sanitized check, but give clearer error)
-        if !seen_raw_fields.insert(field.name.clone()) {
-            anyhow::bail!("duplicate field name '{}' in topic '{}'", field.name, topic);
-        }
-        let sanitized_field = sanitize_to_graphql_name(&field.name);
-        if sanitized_field.is_empty() {
-            anyhow::bail!(
-                "field '{}' in topic '{}' sanitizes to an empty GraphQL name",
-                field.name,
-                topic
-            );
-        }
-        if let Some(prev) = seen_fields.get(&sanitized_field) {
-            anyhow::bail!(
-                "duplicate sanitized field name '{}' in topic '{}' from fields '{}' and '{}'",
-                sanitized_field,
-                topic,
-                prev,
-                field.name
-            );
-        }
-        seen_fields.insert(sanitized_field, field.name.clone());
-    }
-    Ok(())
-}
-
-/// Derive a GraphQL scalar type name from a (possibly `$ref`'d) subschema.
-pub(crate) fn graphql_type_for_subschema(sub: &SubSchema, doc: &Document) -> Option<String> {
-    match sub {
-        SubSchema::Bool(_) => None,
-        SubSchema::Schema(boxed) => match boxed.as_ref() {
-            RefOr::Item(schema) => type_from_schema(schema, doc),
-            RefOr::Reference(r) => {
-                let key = r.component_key("schemas")?;
-                let entry = doc.components.as_ref()?.schemas.get(&key)?;
-                let resolved = entry.item()?;
-                match resolved {
-                    SchemaOrMultiFormat::Schema(s) => type_from_schema(s, doc),
-                    SchemaOrMultiFormat::MultiFormat(mf) => {
-                        let schema: AsyncApiSchema =
-                            serde_json::from_value(mf.schema.clone()).ok()?;
-                        type_from_schema(&schema, doc)
-                    }
-                    SchemaOrMultiFormat::Bool(_) => None,
-                }
-            }
-        },
-    }
-}
-
-fn type_from_schema(schema: &AsyncApiSchema, doc: &Document) -> Option<String> {
-    if let Some(schema_type) = &schema.schema_type {
-        return match schema_type {
-            SchemaType::Single(t) => map_json_type_to_graphql(t),
-            SchemaType::Multiple(types) => {
-                for t in types {
-                    if t == "null" {
-                        continue;
-                    }
-                    if let Some(gql) = map_json_type_to_graphql(t) {
-                        return Some(gql.clone());
-                    }
-                }
-                None
-            }
-        };
-    }
-
-    // Handle nullable via anyOf / oneOf / allOf
-    if let Some(any_of) = &schema.any_of {
-        for sub in any_of {
-            if let Some(t) = graphql_type_for_subschema(sub, doc) {
-                return Some(t);
-            }
-        }
-    }
-    if let Some(one_of) = &schema.one_of {
-        for sub in one_of {
-            if let Some(t) = graphql_type_for_subschema(sub, doc) {
-                return Some(t);
-            }
-        }
-    }
-    if let Some(all_of) = &schema.all_of {
-        for sub in all_of {
-            if let Some(t) = graphql_type_for_subschema(sub, doc) {
-                return Some(t);
-            }
-        }
-    }
-
-    None
-}
-
-fn map_json_type_to_graphql(t: &str) -> Option<String> {
-    match t {
-        "number" => Some("Float".to_string()),
-        "integer" => Some("Int".to_string()),
-        "boolean" => Some("Boolean".to_string()),
-        "string" => Some("String".to_string()),
-        _ => None,
-    }
-}
-
 #[cfg(test)]
 mod tests {
+    use std::collections::BTreeMap;
+
     use super::*;
-    use crate::api_model::{ApiModel, FieldDef};
-    use crate::http::router;
+    use crate::api_model::{Api, ApiModel};
+    use crate::graphql::build_schema;
     use crate::metadata::MetadataByTopic;
     use crate::roas_asyncapi::OperationAction;
     use crate::topic_map::TopicMap;
-    use axum::http::StatusCode;
     use serde_json::json;
-    use tower::ServiceExt;
 
-    fn api(topics: Vec<TopicDef>, groups: Vec<TopicGroupDef>) -> Api {
+    fn api(groups: Vec<TopicGroupDef>) -> Api {
         Api::new(vec![ApiModel::new(
             "".to_string(),
             TopicMap::new(),
-            topics,
+            vec![],
             groups,
             TopicMap::new(),
         )])
-    }
-
-    #[test_log::test]
-    fn test_build_schema_for_one_topic() {
-        let topics = vec![TopicDef {
-            topic: "test/channel".to_string(),
-            fields: vec![
-                FieldDef {
-                    name: "value".to_string(),
-                    graphql_type: "Float".to_string(),
-                },
-                FieldDef {
-                    name: "ok".to_string(),
-                    graphql_type: "Boolean".to_string(),
-                },
-            ],
-            payload_schema_ref: None,
-            action: OperationAction::Send,
-            ttl_secs: 300,
-        }];
-
-        let cache = Arc::new(TopicCache::new());
-        let _schema = build_schema(&api(topics, vec![]), &cache).unwrap();
-        // Schema builds without panicking
-    }
-
-    #[test_log::test]
-    fn test_colliding_sanitized_topics_error() {
-        // "a/b" and "a-b" both sanitize to "a_b" — should error rather than suffix
-        let topics = vec![
-            TopicDef {
-                topic: "a/b".to_string(),
-                fields: vec![FieldDef {
-                    name: "x".to_string(),
-                    graphql_type: "Float".to_string(),
-                }],
-                payload_schema_ref: None,
-                action: OperationAction::Send,
-                ttl_secs: 300,
-            },
-            TopicDef {
-                topic: "a-b".to_string(),
-                fields: vec![FieldDef {
-                    name: "y".to_string(),
-                    graphql_type: "Float".to_string(),
-                }],
-                payload_schema_ref: None,
-                action: OperationAction::Send,
-                ttl_secs: 300,
-            },
-        ];
-
-        let err = build_schema(&api(topics, vec![]), &Arc::new(TopicCache::new())).unwrap_err();
-        assert!(
-            err.to_string().contains("duplicate sanitized topic name"),
-            "{err}"
-        );
-    }
-
-    #[test_log::test]
-    fn test_reserved_topic_name_errors() {
-        let topics = vec![TopicDef {
-            topic: "Query".to_string(),
-            fields: vec![FieldDef {
-                name: "x".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
-            payload_schema_ref: None,
-            action: OperationAction::Send,
-            ttl_secs: 300,
-        }];
-
-        let err = build_schema(&api(topics, vec![]), &Arc::new(TopicCache::new())).unwrap_err();
-        assert!(err.to_string().contains("reserved"), "{err}");
-    }
-
-    #[test_log::test]
-    fn test_digit_prefixed_topic_is_valid() {
-        let topics = vec![TopicDef {
-            topic: "123/topic".to_string(),
-            fields: vec![FieldDef {
-                name: "x".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
-            payload_schema_ref: None,
-            action: OperationAction::Send,
-            ttl_secs: 300,
-        }];
-
-        let schema = build_schema(&api(topics, vec![]), &Arc::new(TopicCache::new())).unwrap();
-        let sdl = schema.sdl();
-        assert!(sdl.contains("_123Topic"), "{sdl}");
-    }
-
-    #[test_log::test]
-    fn test_empty_topic_is_listed_but_not_queryable() {
-        // A topic without scalar fields must not crash schema building;
-        // it stays visible via `topics` but has no query type.
-        let topics = vec![TopicDef {
-            topic: "empty/topic".to_string(),
-            fields: vec![],
-            payload_schema_ref: None,
-            action: OperationAction::Send,
-            ttl_secs: 300,
-        }];
-
-        let schema = build_schema(&api(topics, vec![]), &Arc::new(TopicCache::new())).unwrap();
-        let sdl = schema.sdl();
-        assert!(!sdl.contains("emptyTopic"), "{sdl}");
-    }
-
-    #[test_log::test]
-    fn test_field_types_in_schema() {
-        let topics = vec![TopicDef {
-            topic: "t".to_string(),
-            fields: vec![
-                FieldDef {
-                    name: "f_float".to_string(),
-                    graphql_type: "Float".to_string(),
-                },
-                FieldDef {
-                    name: "f_int".to_string(),
-                    graphql_type: "Int".to_string(),
-                },
-                FieldDef {
-                    name: "f_bool".to_string(),
-                    graphql_type: "Boolean".to_string(),
-                },
-                FieldDef {
-                    name: "f_str".to_string(),
-                    graphql_type: "String".to_string(),
-                },
-                FieldDef {
-                    name: "f_unknown".to_string(),
-                    graphql_type: "DateTime".to_string(),
-                },
-            ],
-            payload_schema_ref: None,
-            action: OperationAction::Send,
-            ttl_secs: 300,
-        }];
-
-        let schema = build_schema(&api(topics, vec![]), &Arc::new(TopicCache::new())).unwrap();
-        let sdl = schema.sdl();
-        assert!(sdl.contains("fFloat: Float"), "{sdl}");
-        assert!(sdl.contains("fInt: Int"), "{sdl}");
-        assert!(sdl.contains("fBool: Boolean"), "{sdl}");
-        assert!(sdl.contains("fStr: String"), "{sdl}");
-        // Unknown types fall back to String
-        assert!(sdl.contains("fUnknown: String"), "{sdl}");
-    }
-
-    #[tokio::test]
-    async fn test_query_returns_cached_values() {
-        let topics = vec![TopicDef {
-            topic: "test/channel".to_string(),
-            fields: vec![
-                FieldDef {
-                    name: "value".to_string(),
-                    graphql_type: "Float".to_string(),
-                },
-                FieldDef {
-                    name: "ok".to_string(),
-                    graphql_type: "Boolean".to_string(),
-                },
-                FieldDef {
-                    name: "label".to_string(),
-                    graphql_type: "String".to_string(),
-                },
-            ],
-            payload_schema_ref: None,
-            action: OperationAction::Send,
-            ttl_secs: 300,
-        }];
-
-        let cache = Arc::new(TopicCache::new());
-        cache.insert(
-            "test/channel",
-            json!({"value": 23.5, "ok": true, "label": "hello"}),
-        );
-        let schema = build_schema(&api(topics, vec![]), &cache).unwrap();
-
-        let response = schema.execute("{ testChannel { value ok label } }").await;
-        assert!(response.errors.is_empty(), "{:?}", response.errors);
-        let data: serde_json::Value = response.data.into_json().unwrap();
-        assert_eq!(data["testChannel"]["value"], json!(23.5));
-        assert_eq!(data["testChannel"]["ok"], json!(true));
-        assert_eq!(data["testChannel"]["label"], json!("hello"));
-    }
-
-    #[tokio::test]
-    async fn test_query_returns_null_for_missing_topic() {
-        let topics = vec![TopicDef {
-            topic: "test/channel".to_string(),
-            fields: vec![FieldDef {
-                name: "value".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
-            payload_schema_ref: None,
-            action: OperationAction::Send,
-            ttl_secs: 300,
-        }];
-
-        let schema = build_schema(&api(topics, vec![]), &Arc::new(TopicCache::new())).unwrap();
-
-        let response = schema.execute("{ testChannel { value } }").await;
-        assert!(response.errors.is_empty(), "{:?}", response.errors);
-        let data: serde_json::Value = response.data.into_json().unwrap();
-        assert_eq!(data["testChannel"], json!(null));
-    }
-
-    #[tokio::test]
-    async fn test_query_returns_null_for_missing_field() {
-        let topics = vec![TopicDef {
-            topic: "test/channel".to_string(),
-            fields: vec![FieldDef {
-                name: "value".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
-            payload_schema_ref: None,
-            action: OperationAction::Send,
-            ttl_secs: 300,
-        }];
-
-        let cache = Arc::new(TopicCache::new());
-        cache.insert("test/channel", json!({"other": 1.0}));
-        let schema = build_schema(&api(topics, vec![]), &cache).unwrap();
-
-        let response = schema.execute("{ testChannel { value } }").await;
-        assert!(response.errors.is_empty(), "{:?}", response.errors);
-        let data: serde_json::Value = response.data.into_json().unwrap();
-        assert_eq!(data["testChannel"]["value"], json!(null));
-    }
-
-    #[tokio::test]
-    async fn test_query_unknown_field_errors() {
-        let topics = vec![TopicDef {
-            topic: "test/channel".to_string(),
-            fields: vec![FieldDef {
-                name: "value".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
-            payload_schema_ref: None,
-            action: OperationAction::Send,
-            ttl_secs: 300,
-        }];
-
-        let schema = build_schema(&api(topics, vec![]), &Arc::new(TopicCache::new())).unwrap();
-
-        let response = schema.execute("{ testChannel { nope } }").await;
-        assert!(!response.errors.is_empty());
-    }
-
-    #[tokio::test]
-    async fn test_query_multiple_topics() {
-        let topics = vec![
-            TopicDef {
-                topic: "a/b".to_string(),
-                fields: vec![FieldDef {
-                    name: "x".to_string(),
-                    graphql_type: "Float".to_string(),
-                }],
-                payload_schema_ref: None,
-                action: OperationAction::Send,
-                ttl_secs: 300,
-            },
-            TopicDef {
-                topic: "c/d".to_string(),
-                fields: vec![FieldDef {
-                    name: "y".to_string(),
-                    graphql_type: "Float".to_string(),
-                }],
-                payload_schema_ref: None,
-                action: OperationAction::Send,
-                ttl_secs: 300,
-            },
-        ];
-
-        let cache = Arc::new(TopicCache::new());
-        cache.insert("a/b", json!({"x": 1.5}));
-        cache.insert("c/d", json!({"y": 2.5}));
-        let schema = build_schema(&api(topics, vec![]), &cache).unwrap();
-
-        let response = schema.execute("{ aB { x } cD { y } }").await;
-        assert!(response.errors.is_empty(), "{:?}", response.errors);
-        let data: serde_json::Value = response.data.into_json().unwrap();
-        assert_eq!(data["aB"]["x"], json!(1.5));
-        assert_eq!(data["cD"]["y"], json!(2.5));
     }
 
     fn power_tag_group(metadata: MetadataByTopic) -> Vec<TopicGroupDef> {
         vec![TopicGroupDef {
             group: "power-tags".to_string(),
             pattern: "power-tags/+/+".to_string(),
-            fields: vec![
-                FieldDef {
-                    name: "active_power_total".to_string(),
-                    graphql_type: "Float".to_string(),
-                },
-                FieldDef {
-                    name: "current_a".to_string(),
-                    graphql_type: "Float".to_string(),
-                },
-            ],
+            fields: BTreeMap::from_iter(vec![
+                ("active_power_total".to_string(), GraphqlType::Float),
+                ("current_a".to_string(), GraphqlType::Float),
+            ]),
             payload_schema_ref: None,
             action: OperationAction::Send,
             value_extensions: BTreeMap::from([
@@ -1305,8 +642,7 @@ mod tests {
             "power-tags/10P1/test-consumer",
             json!({"active_power_total": 42.0}),
         );
-        let schema =
-            build_schema(&api(vec![], power_tag_group(power_tag_metadata())), &cache).unwrap();
+        let schema = build_schema(&api(power_tag_group(power_tag_metadata())), &cache).unwrap();
 
         let response = schema
             .execute(
@@ -1343,7 +679,7 @@ mod tests {
     #[tokio::test]
     async fn test_group_without_mqtt_data_serves_static() {
         let schema = build_schema(
-            &api(vec![], power_tag_group(power_tag_metadata())),
+            &api(power_tag_group(power_tag_metadata())),
             &Arc::new(TopicCache::new()),
         )
         .unwrap();
@@ -1364,7 +700,7 @@ mod tests {
         // Without metadata there is no enumeration source, so no list field
         // (empty object types would be invalid GraphQL).
         let schema = build_schema(
-            &api(vec![], power_tag_group(BTreeMap::new())),
+            &api(power_tag_group(BTreeMap::new())),
             &Arc::new(TopicCache::new()),
         )
         .unwrap();
@@ -1379,8 +715,7 @@ mod tests {
             .collect();
         let cache = Arc::new(TopicCache::with_ttl(60, per_topic));
         cache.insert("power-tags/10P1/test-consumer", json!({"current_a": 1.0}));
-        let schema =
-            build_schema(&api(vec![], power_tag_group(power_tag_metadata())), &cache).unwrap();
+        let schema = build_schema(&api(power_tag_group(power_tag_metadata())), &cache).unwrap();
 
         let response = schema
             .execute("{ powerTags { values { currentA } } }")
@@ -1407,7 +742,7 @@ mod tests {
             "power-tags/10P1/test-consumer",
             json!({"active_power_total": 42.0}),
         );
-        let schema = build_schema(&api(vec![], power_tag_group(metadata)), &cache).unwrap();
+        let schema = build_schema(&api(power_tag_group(metadata)), &cache).unwrap();
 
         let response = schema
             .execute(
@@ -1473,7 +808,7 @@ mod tests {
         group.group_by = "tank".to_string();
 
         let cache = Arc::new(TopicCache::new());
-        let schema = build_schema(&api(vec![], vec![group]), &cache).unwrap();
+        let schema = build_schema(&api(vec![group]), &cache).unwrap();
 
         let response = schema
             .execute(
@@ -1494,58 +829,5 @@ mod tests {
         );
         assert_eq!(buckets[1]["id"], json!("unknown"));
         assert_eq!(data["fuelTagBucket"]["id"], json!("T01"));
-    }
-
-    #[tokio::test]
-    async fn test_health_endpoint() {
-        let app = router(build_schema(&api(vec![], vec![]), &Arc::new(TopicCache::new())).unwrap());
-
-        let response = app
-            .oneshot(
-                axum::http::Request::builder()
-                    .uri("/health")
-                    .body(axum::body::Body::empty())
-                    .unwrap(),
-            )
-            .await
-            .unwrap();
-
-        assert_eq!(response.status(), StatusCode::OK);
-    }
-
-    #[tokio::test]
-    async fn test_graphql_endpoint_returns_cached_values() {
-        let topics = vec![TopicDef {
-            topic: "test/channel".to_string(),
-            fields: vec![FieldDef {
-                name: "value".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
-            payload_schema_ref: None,
-            action: OperationAction::Send,
-            ttl_secs: 300,
-        }];
-
-        let cache = Arc::new(TopicCache::new());
-        cache.insert("test/channel", json!({"value": 42.0}));
-        let app = router(build_schema(&api(topics, vec![]), &cache).unwrap());
-
-        let request = axum::http::Request::builder()
-            .method("POST")
-            .uri("/graphql")
-            .header("content-type", "application/json")
-            .body(axum::body::Body::from(
-                r#"{"query": "{ testChannel { value } }"}"#,
-            ))
-            .unwrap();
-
-        let response = app.oneshot(request).await.unwrap();
-        assert_eq!(response.status(), StatusCode::OK);
-
-        let body = axum::body::to_bytes(response.into_body(), 1024 * 1024)
-            .await
-            .unwrap();
-        let data: serde_json::Value = serde_json::from_slice(&body).unwrap();
-        assert_eq!(data["data"]["testChannel"]["value"], json!(42.0));
     }
 }
