@@ -110,6 +110,10 @@ models:
         description: "The converter associated with the 24V DC device."
         tests:
           - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
       - name: main_group
         description: "The main group classification of the 24V DC device."
         tests:
@@ -127,6 +131,10 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated power consumption values."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
         tests:
           - not_null
       - name: converter
