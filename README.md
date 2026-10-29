@@ -31,6 +31,19 @@ docker compose --profile <profile_name> up
 
 *Note: domestic-control-api is a remote schema in Hasura. If Hasura boots before domestic-control-api, it'll not load the remote schema, because it can't verify it through introspection. Use `hasura metadata reload --admin-secret myadminsecretkey` to fix this.*
 
+## Image Versions
+
+The third-party images in `docker-compose.yml` follow what runs on board: the versions edge-flux deploys, and the on-board Home Assistant. Renovate does not update them; bump them by hand when the boat moves.
+
+### Postgres major upgrades
+
+A new Postgres major version cannot read the previous major's data directory, so `postgres` fails its healthcheck on an existing `db_data` volume. Back up anything you need with `docker compose exec postgres pg_dumpall -U "$PG_USER" > backup.sql`, then recreate the volume:
+
+```bash
+docker compose down -v   # deletes all local volumes, including db_data
+docker compose --profile <profile_name> up
+```
+
 ## Services Overview
 
 ### Core Infrastructure
