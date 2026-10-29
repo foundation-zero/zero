@@ -35,7 +35,7 @@ use log::warn;
 use roas_asyncapi::common::reference::RefOr;
 use serde_json::Value as JsonValue;
 
-use crate::naming::{is_reserved_name, pascal_case, sanitize_to_graphql_name};
+use crate::naming::{is_reserved_name, pascal_case_graphql_name, sanitize_to_graphql_name};
 use crate::{
     api_model::{Api, ApiModel, FieldDef, TopicDef, TopicGroupDef},
     cache::TopicCache,
@@ -424,7 +424,7 @@ fn register_group_queries(
         return Ok(None);
     };
     let value_meta_json = value_metadata_json(group);
-    let pascal = pascal_case(&group.group);
+    let pascal = pascal_case_graphql_name(&group.group);
 
     let (bucket_object, bucket_fields) =
         register_bucket_queries(group, value_meta_json.clone(), cache, used_query_fields)
@@ -480,7 +480,7 @@ fn register_bucket_queries(
         return None;
     }
 
-    let pascal = pascal_case(&group.group);
+    let pascal = pascal_case_graphql_name(&group.group);
     let rows_field = sanitize_to_graphql_name(&group.group);
     let bucket_type = format!("{pascal}Bucket");
     let buckets = bucket_rows_by(group);
