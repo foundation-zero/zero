@@ -20,6 +20,7 @@ anyhow = "1.0"
 env_logger = "0.11.11"
 log = "0.4.34"
 roas-asyncapi = { version = "0.4.0", features = ["v3_0"] }
+convert_case = "0.12.0"
 
 [lints.rust]
 warnings = "deny"
