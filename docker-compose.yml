@@ -1,6 +1,6 @@
 services:
   vernemq:
-    image: vernemq/vernemq:2.0.0-alpine@sha256:efb696f346cf381c536888967d992a6a6df3ede77eb454f8e4ea7bc6809cd0f4
+    image: vernemq/vernemq:2.1.1-alpine
     container_name: vernemq
     restart: always
     ports:
@@ -25,7 +25,7 @@ services:
       retries: 5
 
   postgres:
-    image: postgres:15@sha256:64b99032e218b66b1d1a6334995056e1aa57f50a0c522cc856e72dff0e4b0d63
+    image: postgres:16
     restart: always
     volumes:
       - db_data:/var/lib/postgresql/data
@@ -102,7 +102,7 @@ services:
         condition: service_healthy
 
   hass:
-    image: ghcr.io/home-assistant/home-assistant:2026.5.4@sha256:ceb1202133a5a036e8b03e20a10eb113186cc2f871968323c6fc6c3fc4205716
+    image: ghcr.io/home-assistant/home-assistant:2026.7.2
     profiles:
       - zero
       - domestic
@@ -186,7 +186,7 @@ services:
 
   # ---- data collection ----
   vector-process:
-    image: timberio/vector:0.55.0-debian@sha256:a4be1111b40303524aae2ffb02cd59cef2a4e9753bd13d265bf0233e921828d9
+    image: timberio/vector:0.55.0-debian
     profiles:
       - data-collection
     command: -c /etc/vector-config.yaml
@@ -212,7 +212,7 @@ services:
         condition: service_started
 
   vector-atpx:
-    image: timberio/vector:0.55.0-debian@sha256:a4be1111b40303524aae2ffb02cd59cef2a4e9753bd13d265bf0233e921828d9
+    image: timberio/vector:0.55.0-debian
     profiles:
       - data-collection
     command: -c /etc/vector-config.yaml
@@ -233,7 +233,7 @@ services:
         condition: service_healthy
 
   greptimedb:
-    image: greptime/greptimedb:v1.1.3@sha256:9c5017e61fa63ab1ce78cbc4b1b7df0128b844327840890e2b388e68503c30b2
+    image: greptime/greptimedb:v1.1.3
     security_opt:
       - seccomp=unconfined
     environment:
