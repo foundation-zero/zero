@@ -203,7 +203,7 @@ async fn reap_mqtt_subscriber(handle: JoinHandle<()>) {
 }
 
 async fn run_listen_only(api: &Api, config: AppConfig) -> Result<()> {
-    info!("Running in listen-only mode — validating payloads, not serving GraphQL",);
+    info!("Running in listen-only mode — validating payloads, not serving GraphQL");
 
     let cache = Arc::new(TopicCache::new());
     let mqtt_topics: Vec<String> = api.subscribe_topics();

@@ -11,7 +11,7 @@ pub mod naming;
 pub mod topic_map;
 
 pub mod roas_asyncapi {
-    // Rexport all asyncapi version specific stuff
+    // Re-export all asyncapi version specific stuff
     pub use roas_asyncapi::v3_0::channel::Channel;
     pub use roas_asyncapi::v3_0::message::Message;
     pub use roas_asyncapi::v3_0::schema::{Schema, SchemaOrMultiFormat, SchemaType, SubSchema};

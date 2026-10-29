@@ -160,6 +160,10 @@ impl MqttSubscriber {
             match self.validate_payload(topic, &value) {
                 Some(true) => info!("Schema OK for topic '{topic}': {value}"),
                 Some(false) => {} // mismatch already logged
+                // Avoid high volume warnings
+                None if self.validators.is_empty() => info!(
+                    "Received on topic '{topic}' but no schemas/validators are loaded: {value}"
+                ),
                 None => warn!("Received on unknown topic '{topic}' (not in specs): {value}"),
             }
             return;
@@ -394,7 +398,7 @@ mod tests {
         );
         let sub = test_subscriber(&api);
 
-        // Fails the exact-topic schema (missing req)uired field) even though
+        // Fails the exact-topic schema (missing required field) even though
         // it would pass the group's permissive schema — proves the exact
         // match, not the group, was used.
         assert_eq!(

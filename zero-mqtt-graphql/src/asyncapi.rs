@@ -151,7 +151,7 @@ fn channels_from_document<
     resolve_func: U,
 ) -> anyhow::Result<Vec<T>> {
     if doc.operations.is_empty() {
-        info!("File {} has no channels, skipping", path.display());
+        info!("File {} has no operations, skipping", path.display());
         return Ok(Vec::new());
     }
 

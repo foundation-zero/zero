@@ -80,13 +80,13 @@ pub fn build_schema(api: &Api, cache: &Arc<TopicCache>) -> anyhow::Result<Schema
         let group_objects;
         (query, group_objects) =
             build_schema_groups(query, api_model, cache, &mut used_query_fields)
-                .with_context(|| "Found and error while builds groups schema")?;
+                .with_context(|| "Error while building group schema")?;
         schema_builder = group_objects
             .into_iter()
             .fold(schema_builder, SchemaBuilder::register);
     }
 
-    // Not really usefull but prevents errors if no topics are defined
+    // Not really useful but prevents errors if no topics are defined
     query = query.field(topics_introspection_field(&api.topics()));
 
     schema_builder

@@ -1,6 +1,6 @@
-# Mqtt graphl api
+# MQTT GraphQL API
 
-Generate a graphql api based on asyncapi specs for mqtt topics
+Generate a GraphQL API based on AsyncAPI specs for MQTT topics
 
 
 # Dependencies

@@ -40,7 +40,7 @@ impl<T> TopicMap<T> {
         self.0.is_empty()
     }
 
-    /// Does this topic map include a topic or pattern that covers the topic given
+    /// Return whether this topic map include a topic or pattern that covers the topic given
     pub(crate) fn covers_topic(&self, key: &str) -> bool {
         self.get(key).is_some()
     }
