@@ -22,7 +22,7 @@ format:
     uv run ruff format --check src tests
 
 generate-asyncapi file="../specs/atpx-nmea.json":
-    uv run python -m zero_atpx_nmea generate-asyncapi {{ file }}
+    uv run python -m zero_atpx_nmea generate-asyncapi --output-only {{ file }}
 
 regenerate-spec:
     uv run python -m zero_atpx_nmea generate-asyncapi ./asyncapi.json
