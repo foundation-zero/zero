@@ -3,8 +3,8 @@ with aradex_power_per_minute as (
         date_bin('1 minute'::interval, ts)       as time,
         thruster,
         aradex,
-        avg(case when power >= 0 then power end) as propulsion_power,
-        avg(case when power < 0 then -power end) as hydrogeneration_power
+        avg(case when power >= 0 then power else 0 end) as propulsion_power,
+        avg(case when power < 0 then -power else 0 end) as hydrogeneration_power
     from {{ ref('slv_pcs_aradexes') }}
     group by time, thruster, aradex
 )
