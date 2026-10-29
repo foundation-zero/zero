@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - zero-domestic-control/**
+      - docker-compose.yml
+      - hass/**
       - .github/workflows/ci_domestic_control.yaml
       - .github/actions/coverage-report/**
   release:
@@ -12,6 +14,8 @@ on:
       - main
     paths:
       - zero-domestic-control/**
+      - docker-compose.yml
+      - hass/**
       - .github/workflows/ci_domestic_control.yaml
       - .github/actions/coverage-report/**
 

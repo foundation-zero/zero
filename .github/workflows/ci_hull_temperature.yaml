@@ -4,6 +4,9 @@ on:
     paths:
       - zero-modbus-bridge/**
       - zero-hull-temperature/**
+      - docker-compose.yml
+      - hass/**
+      - hasura/**
       - .github/workflows/ci_hull_temperature.yaml
       - .github/actions/coverage-report/**
   release:
@@ -14,6 +17,9 @@ on:
     paths:
       - zero-modbus-bridge/**
       - zero-hull-temperature/**
+      - docker-compose.yml
+      - hass/**
+      - hasura/**
       - .github/workflows/ci_hull_temperature.yaml
       - .github/actions/coverage-report/**
 

@@ -7,6 +7,8 @@ on:
       - zero-ui/**
       - zero-loads-app/**
       - zero-thrs-control/**
+      - docker-compose.yml
+      - hasura/**
   release:
     types: [released]
   push:
@@ -18,6 +20,8 @@ on:
       - zero-ui/**
       - zero-loads-app/**
       - zero-thrs-control/**
+      - docker-compose.yml
+      - hasura/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
