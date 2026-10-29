@@ -177,23 +177,23 @@ def build_asyncapi(io_result: IOResult) -> dict[str, Any]:
 
     topics = sorted(managed_topics, key=lambda topic: topic.topic.topic)
 
-    channels = {
+    subscribe_channels = {
         f"subscribe{system}": {
             "address": f"marpower/{system}/#",
             "messages": {},
         }
         for system in SYSTEMS
     }
-    channels |= {key(topic): channel(topic) for topic in topics}
+    channels = {key(topic): channel(topic) for topic in topics}
 
-    operations = {
+    subscribe_operations = {
         f"subscribe{system}": {
             "action": "send",
             "channel": {"$ref": f"#/channels/subscribe{system}"},
         }
         for system in SYSTEMS
     }
-    operations |= {
+    operations = {
         key(topic): {
             "action": "send",
             "channel": {"$ref": f"#/channels/{key(topic)}"},
@@ -207,7 +207,7 @@ def build_asyncapi(io_result: IOResult) -> dict[str, Any]:
         "asyncapi": "3.0.0",
         "info": {"title": "MarPower AMCS", "version": "1.0.0"},
         "defaultContentType": "application/json",
-        "channels": channels,
-        "operations": operations,
+        "channels": subscribe_channels | channels,
+        "operations": subscribe_operations | operations,
         "components": {"schemas": schemas},
     }

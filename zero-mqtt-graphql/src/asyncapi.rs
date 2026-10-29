@@ -21,26 +21,24 @@ use crate::topic_map::TopicMap;
 /// `(file name, path, document)` for each. Non-JSON files and topic-metadata
 /// files are skipped; unreadable or invalid `.json` files are an error —
 /// see [`read_asyncapi_document`].
-fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<(String, PathBuf)>> {
+fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<PathBuf>> {
     let dir = Path::new(spec_dir);
     if !dir.is_dir() {
         anyhow::bail!("spec_dir does not exist or is not a directory: {spec_dir}");
     }
 
-    Ok(std::fs::read_dir(dir)?
+    let mut files = std::fs::read_dir(dir)?
         .map(|entry| {
             let path = entry?.path();
-            let file_name = path
-                .file_name()
-                .and_then(|n| n.to_str())
-                .unwrap_or("")
-                .to_string();
-            Ok((file_name, path))
+            Ok(path)
         })
-        .collect::<anyhow::Result<Vec<_>>>()?
+        .collect::<anyhow::Result<Vec<_>>>()?;
+    files.sort();
+
+    Ok(files
         .into_iter()
-        .filter(|(_, path)| path.extension().and_then(|e| e.to_str()) == Some("json"))
-        .filter(|(_, path)| !crate::metadata::is_metadata_file(path))
+        .filter(|path| path.extension().and_then(|e| e.to_str()) == Some("json"))
+        .filter(|path| !crate::metadata::is_metadata_file(path))
         .collect())
 }
 
@@ -93,7 +91,7 @@ fn load_spec(path: &Path) -> anyhow::Result<ApiModel> {
             acc
         });
 
-    let validators = build_validators(validator_builder, &topics, &groups)?;
+    let validators = build_validators(&validator_builder, &topics, &groups)?;
 
     info!(
         "Parsed: {} topic(s), {} group(s) from '{}'.",
@@ -124,7 +122,7 @@ pub fn load_specs(spec_dir: &str, ignore_failures: bool) -> anyhow::Result<Api> 
 
     let api_models = specs
         .iter()
-        .filter_map(|(_, path)| {
+        .filter_map(|path| {
             let spec = load_spec(path);
             if ignore_failures && let Err(error) = spec {
                 warn!("Skipping AsyncAPI spec '{}': {:#}", path.display(), error);
@@ -144,7 +142,7 @@ pub fn load_specs(spec_dir: &str, ignore_failures: bool) -> anyhow::Result<Api> 
 /// channel and operation references.
 fn channels_from_document<
     T,
-    U: Fn(Reference, &str, OperationAction, &Channel, &Document, &Path) -> anyhow::Result<Option<T>>,
+    U: Fn(&Reference, &str, OperationAction, &Channel, &Document, &Path) -> anyhow::Result<Option<T>>,
 >(
     doc: &Document,
     path: &Path,
@@ -189,16 +187,14 @@ fn channels_from_document<
                     channel_name,
                     channel_ref
                         .reference()
-                        .map(|r| r.reference.as_str())
-                        .unwrap_or("<inline channel>"),
+                        .map_or("<inline channel>", |r| r.reference.as_str()),
                     path.display()
                 )
             })?;
             resolve_func(
                 channel_ref
                     .reference()
-                    .with_context(|| "Channel is wrongly embedded in the operation")?
-                    .clone(),
+                    .with_context(|| "Channel is wrongly embedded in the operation")?,
                 &channel_name,
                 action,
                 channel,
@@ -210,8 +206,9 @@ fn channels_from_document<
         .map(|items| items.into_iter().flatten().collect())
 }
 
+#[allow(clippy::unnecessary_wraps)]
 fn channel_addresses_from_channel(
-    _channel_ref: Reference,
+    _channel_ref: &Reference,
     _channel_name: &str,
     action: OperationAction,
     channel: &Channel,
@@ -231,8 +228,9 @@ fn channel_addresses_from_channel(
 
 /// Convert one concrete (non-parametrized) channel into a [`TopicDef`];
 /// returns `None` for parametrized channels or channels without a topic.
+#[allow(clippy::unnecessary_wraps)]
 fn topic_from_channel(
-    channel_ref: Reference,
+    channel_ref: &Reference,
     channel_name: &str,
     action: OperationAction,
     channel: &Channel,
@@ -258,14 +256,14 @@ fn topic_from_channel(
         info!("Channel '{channel_name}' (topic: '{mqtt_topic}') has no messages");
     }
 
-    let (fields, payload_schema_ref, _) = message_fields(&channel_ref, channel, doc);
+    let (fields, payload_schema_ref, _) = message_fields(channel_ref, channel, doc);
 
     Ok(Some(TopicDef {
         topic: mqtt_topic,
         action,
         fields,
         payload_schema_ref,
-        ttl_secs: ttl_for_channel(&channel_ref, channel, doc),
+        ttl_secs: ttl_for_channel(channel_ref, channel, doc),
     }))
 }
 
@@ -274,7 +272,7 @@ fn topic_from_channel(
 /// is an error: neither the group name nor the wildcard pattern can be
 /// derived without it.
 fn group_from_channel(
-    channel_ref: Reference,
+    channel_ref: &Reference,
     channel_name: &str,
     action: OperationAction,
     channel: &Channel,
@@ -294,7 +292,7 @@ fn group_from_channel(
     let group = static_prefix(&address).unwrap_or_else(|| address.clone());
     let pattern = wildcard_from_address(&address);
 
-    let (fields, payload_schema_ref, payload_schema) = message_fields(&channel_ref, channel, doc);
+    let (fields, payload_schema_ref, payload_schema) = message_fields(channel_ref, channel, doc);
     let value_extensions = payload_schema
         .as_ref()
         .map(extensions_from_payload_schema)
@@ -342,7 +340,7 @@ fn group_from_channel(
         fields,
         payload_schema_ref,
         value_extensions,
-        ttl_secs: ttl_for_channel(&channel_ref, channel, doc),
+        ttl_secs: ttl_for_channel(channel_ref, channel, doc),
         action,
         topic_metadata,
         group_by,

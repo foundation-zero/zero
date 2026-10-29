@@ -14,7 +14,7 @@ pub struct ValidatorBuilder<'a> {
 
 const ROOT_DOC_URI: &str = "urn:asyncapi:doc";
 
-impl<'a> ValidatorBuilder<'a> {
+impl ValidatorBuilder<'_> {
     pub fn new(document_json: Value) -> anyhow::Result<Self> {
         let registry: Registry<'_> = Registry::new()
             .add(ROOT_DOC_URI, Resource::from_contents(document_json))?
@@ -36,7 +36,7 @@ impl<'a> ValidatorBuilder<'a> {
 /// map keyed by exact topic (`TopicDef`) or wildcard pattern (`TopicGroupDef`,
 /// e.g. `power-tags/+/+`)
 pub fn build_validators(
-    validator_builder: ValidatorBuilder,
+    validator_builder: &ValidatorBuilder,
     topics: &[TopicDef],
     groups: &[TopicGroupDef],
 ) -> anyhow::Result<TopicMap<Validator>> {
@@ -45,7 +45,7 @@ pub fn build_validators(
         .filter_map(|td| {
             let payload_schema_ref = td.payload_schema_ref.clone()?;
             match validator_builder.build_validator(&payload_schema_ref) {
-                Ok(validator) => Some((td.topic.clone(), validator.clone())),
+                Ok(validator) => Some((td.topic.clone(), validator)),
                 Err(e) => {
                     warn!(
                         "Failed to compile JSON Schema for topic '{}': {e} — skipping validation for this topic",
@@ -68,7 +68,7 @@ pub fn build_validators(
         .filter_map(|group| {
             let payload_schema_ref = group.payload_schema_ref.clone()?;
             match validator_builder.build_validator(&payload_schema_ref) {
-                Ok(validator) => Some((group.pattern.clone(), validator.clone())),
+                Ok(validator) => Some((group.pattern.clone(), validator)),
                 Err(e) => {
                     warn!(
                         "Failed to compile JSON Schema for topic group '{}': {e} — skipping validation for this group",
@@ -135,7 +135,7 @@ mod tests {
             ttl_secs: 300,
         }];
 
-        let validators = build_validators(validator_builder, &topics, &[]).unwrap();
+        let validators = build_validators(&validator_builder, &topics, &[]).unwrap();
 
         let validator = validators.get("power-tags");
         assert!(validator.is_some());
@@ -162,7 +162,7 @@ mod tests {
             Some("#/validator".to_string()),
         )];
 
-        let validators = build_validators(validator_builder, &[], &groups).unwrap();
+        let validators = build_validators(&validator_builder, &[], &groups).unwrap();
 
         let validator = &validators.get("power-tags/+/+");
         assert!(validator.is_some());
@@ -183,7 +183,7 @@ mod tests {
 
         let groups = vec![group_with_schema("power-tags/+/+", None)];
 
-        let validators = build_validators(validator_builder, &[], &groups).unwrap();
+        let validators = build_validators(&validator_builder, &[], &groups).unwrap();
         assert!(validators.is_empty());
     }
 
@@ -214,7 +214,7 @@ mod tests {
             ttl_secs: 300,
         }];
 
-        let validators = build_validators(validator_builder, &topics, &[]).unwrap();
+        let validators = build_validators(&validator_builder, &topics, &[]).unwrap();
         let validator = validators.get("power-tags");
         assert!(validator.is_some());
 

@@ -4,6 +4,7 @@ use std::collections::{BTreeMap, btree_map::Keys};
 pub struct TopicMap<T>(BTreeMap<String, T>);
 
 impl<T> TopicMap<T> {
+    #[must_use]
     pub fn new() -> Self {
         Self(BTreeMap::new())
     }
@@ -36,6 +37,7 @@ impl<T> TopicMap<T> {
     }
 
     /// Returns true if the map contains no elements.
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }

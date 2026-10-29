@@ -101,7 +101,7 @@ async fn run_serve(config: AppConfig, api: &Api) -> Result<()> {
 
     let schema = build_schema(api, &cache)?;
     let addr = SocketAddr::from(([0, 0, 0, 0], config.listen_port));
-    info!("Listening on http://{}", addr);
+    info!("Listening on http://{addr}");
     let listener = TcpListener::bind(addr).await?;
 
     let sig = async {
@@ -114,7 +114,7 @@ async fn run_serve(config: AppConfig, api: &Api) -> Result<()> {
     // we only learn whether the MQTT subscriber died before the server.
     let mqtt_died = tokio::select! {
         result = server => { result?; false }
-        _ = mqtt_exit(&mut mqtt) => true,
+        () = mqtt_exit(&mut mqtt) => true,
     };
 
     match mqtt {
@@ -184,7 +184,7 @@ async fn report_mqtt_subscriber_death(handle: JoinHandle<()>) {
     }
     match handle.await {
         Err(e) if e.is_panic() => {
-            error!("MQTT subscriber panicked: {} — shutting down", e)
+            error!("MQTT subscriber panicked: {e} — shutting down");
         }
         Err(_) => error!("MQTT subscriber task cancelled unexpectedly — shutting down"),
         Ok(()) => error!("MQTT subscriber task exited unexpectedly — shutting down"),
@@ -225,7 +225,7 @@ async fn run_listen_only(api: &Api, config: AppConfig) -> Result<()> {
     };
 
     let interrupted = tokio::select! {
-        _ = sig => true,
+        () = sig => true,
         _ = dead_rx => false,
     };
 

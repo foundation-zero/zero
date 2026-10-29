@@ -54,6 +54,7 @@ pub struct ApiModel {
 }
 
 impl ApiModel {
+    #[must_use]
     pub fn new(
         name: String,
         subscribe_topics: TopicMap<()>,
@@ -70,6 +71,7 @@ impl ApiModel {
         }
     }
 
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.topics.is_empty() && self.groups.is_empty()
     }
@@ -80,6 +82,7 @@ pub struct Api {
 }
 
 impl Api {
+    #[must_use]
     pub fn new(models: Vec<ApiModel>) -> Self {
         Api { models }
     }
@@ -88,6 +91,7 @@ impl Api {
     ///
     /// This set will not be exactly the same as the topics that are exposed in the graphql schemas.
     /// We want to work as much as we can with mqtt wildcards
+    #[must_use]
     pub fn subscribe_topics(&self) -> Vec<String> {
         self.models
             .iter()
@@ -97,6 +101,7 @@ impl Api {
     }
 
     /// Build a list of topics
+    #[must_use]
     pub fn topics(&self) -> Vec<TopicDef> {
         self.models
             .iter()
@@ -111,6 +116,7 @@ impl Api {
     /// Build a set of validators
     ///
     /// This is used in validation incomming mqtt messages
+    #[must_use]
     pub fn validators(&self) -> crate::topic_map::TopicMap<jsonschema::Validator> {
         self.models.iter().fold(TopicMap::new(), |acc, model| {
             acc.extend(model.validators.clone())

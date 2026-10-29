@@ -463,6 +463,7 @@ struct BucketSchemaParts {
 /// buckets plus a `<stem>Bucket(id)` singleton, enabled by a `group_by`
 /// attribute in the group's metadata file. Returns `None` when the group
 /// declares no `group_by` or the derived query names collide.
+#[allow(clippy::similar_names)]
 fn register_bucket_queries(
     group: &TopicGroupDef,
     value_meta_json: JsonValue,
@@ -778,6 +779,7 @@ pub fn spawn_eviction(cache: std::sync::Arc<TopicCache>) {
 
 /// Map a GraphQL type name to an async-graphql TypeRef.
 fn graphql_type_ref(typ: &str) -> TypeRef {
+    #[allow(clippy::match_same_arms)]
     match typ {
         "Float" => TypeRef::named(TypeRef::FLOAT),
         "Int" => TypeRef::named(TypeRef::INT),
