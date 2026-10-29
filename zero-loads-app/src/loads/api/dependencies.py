@@ -3,6 +3,7 @@ import sys
 from asyncio import Task, create_task
 from collections.abc import Sequence
 from contextlib import asynccontextmanager
+from datetime import timedelta
 from itertools import groupby
 
 import strawberry
@@ -60,6 +61,7 @@ async def lifespan(app: FastAPI):
             modules=[sail_system_sensors, at_sensors, fiber_optic_sensors],
             variable_definitions=VARIABLES,
             alarm_definitions=ALARMS,
+            max_message_age=timedelta(seconds=settings.mqtt_max_message_age_s),
         )
         run_task = create_task(await messaging.run())
 
