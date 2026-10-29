@@ -70,6 +70,26 @@ export default [
     },
   },
   {
+    // Barrel files only re-export, so they need no test coverage. Generated shadcn components, the
+    // mimic data aggregates and route records (excluded from coverage as a whole) are exempt.
+    files: ["src/**/index.ts"],
+    ignores: [
+      "src/components/ui/**",
+      "src/modules/thrapp/mimics/data/**",
+      "src/modules/**/router/**",
+    ],
+    rules: {
+      "no-restricted-syntax": [
+        "warn",
+        {
+          selector: "Program > :not(ExportNamedDeclaration[source], ExportAllDeclaration)",
+          message:
+            "Barrel files may only re-export. Move types to {name}.types.ts, constants to {name}.consts.ts and logic to {name}.utils.ts.",
+        },
+      ],
+    },
+  },
+  {
     ignores: ["node_modules", ".nuxt", ".output", "dist", ".vite", "docs/dist", "docs/.vitepress"],
   },
   // prettier

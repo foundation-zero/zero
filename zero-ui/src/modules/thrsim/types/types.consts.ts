@@ -1,0 +1,15 @@
+export const enum SimulationComponentType {
+  Thruster = "thruster",
+  Boundary = "boundary",
+  Temperature = "temperature",
+  OverpressureTemperature = "overpressureTemperature",
+  Flow = "flow",
+  Pcs = "pcs",
+  HeatSource = "heatSource",
+  ActiveHeatSource = "activeHeatSource",
+  HvacExchanger = "hvacExchanger",
+  AmcsControlMode = "amcsControlMode",
+  AdsorptionChiller = "adsorptionChiller",
+  Ugrid = "ugrid",
+  PropulsionDrive = "propulsionDrive",
+}

@@ -30,6 +30,7 @@ Styles:   Tailwind utilities + cn() for merging
 Testing:  Vitest, *.spec.ts (unit), *.integration.spec.ts (API), msw for mocks
 Coverage: @vitest/coverage-v8, include src/**, Cobertura in CI
 Idioms:   arrow fns, const > let, ?./??, map/filter over for, backticks, as T
+Barrels:  index.ts only re-exports; {name}.types.ts, {name}.consts.ts, {name}.utils.ts
 ```
 
 ### Rust
@@ -324,6 +325,26 @@ modules/<name>/
   mimics/          # Mimic diagram providers (thrapp only)
   tests/           # Integration tests
 ```
+
+#### Barrel files
+
+An `index.ts` barrel only re-exports. Everything else lives next to it in a file named after its directory:
+
+- `{name}.types.ts` — types and interfaces.
+- `{name}.consts.ts` — constants and enums.
+- `{name}.utils.ts` — functions, composables and contexts.
+
+```ts
+// Good: modules/thrapp/mimics/components/pump/index.ts
+export { default as Pump } from "./Pump.vue";
+export * from "./pump.consts";
+export * from "./pump.types";
+
+// Bad: declarations in the barrel
+export const PUMP_WIDTH = 54;
+```
+
+Barrels, consts and types files are excluded from coverage. ESLint warns about anything other than re-exports in an `index.ts`. Generated shadcn components (`components/ui/`), the mimic data aggregates (`mimics/data/`) and route records (`router/`, excluded from coverage as a whole) are exempt.
 
 Shared code in `modules/common/`:
 

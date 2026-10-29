@@ -1,5 +1,3 @@
-import { MimicComponentBaseProps } from "../components";
-
 export { default as AirTrapVesselInstance } from "./AirTrapVesselInstance.vue";
 export { default as CheckValveInstance } from "./CheckValveInstance.vue";
 export { default as ConnectingCircuitInstance } from "./ConnectingCircuitInstance.vue";
@@ -13,6 +11,7 @@ export { default as FlowSensorInstance } from "./FlowSensorInstance.vue";
 export { default as FreshwaterCircuitInstance } from "./FreshwaterCircuitInstance.vue";
 export { default as HeatExchangerInstance } from "./HeatExchangerInstance.vue";
 export { default as HeatExchangerLabelInstance } from "./HeatExchangerLabelInstance.vue";
+export * from "./instances.types";
 export { default as IrradianceLabelInstance } from "./IrradianceLabelInstance.vue";
 export { default as LevelLabelInstance } from "./LevelLabelInstance.vue";
 export { default as LevelSensorInstance } from "./LevelSensorInstance.vue";
@@ -41,12 +40,3 @@ export { default as TemperatureSensorInstance } from "./TemperatureSensorInstanc
 export { default as ThreeWaySwitchValveInstance } from "./ThreeWaySwitchValveInstance.vue";
 export { default as ThreeWayValveLabelInstance } from "./ThreeWayValveLabelInstance.vue";
 export { default as ThrusterInstance } from "./ThrusterInstance.vue";
-
-export type TitleProps = {
-  title: string;
-};
-export type MimicComponentInstanceProps = MimicComponentBaseProps & {
-  x?: number | string;
-  y?: number | string;
-  tagId?: string;
-};
