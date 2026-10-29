@@ -17,57 +17,59 @@ const manualPumps = getTooltipContexts(MimicComponentType.ManualPump, ["1182"]);
 <template>
   <g>
     <PumpInstance
-      x="530"
-      y="194"
+      x="528"
+      y="193.3"
       :orientation="ComponentOrientation.Left"
       v-bind="pumps['1018']"
     >
       <DutypointLabelInstance
         :target-x="530"
         :target-width="PUMP_WIDTH"
-        y="161"
+        y="163.5"
         :tag-id="pumps['1018'].tooltip?.yardTag"
         :pump="pumps['1018'].controls.pump"
       />
     </PumpInstance>
     <PumpInstance
-      x="530"
-      y="390"
+      x="528"
+      y="389.92"
       :orientation="ComponentOrientation.Left"
       v-bind="pumps['1019']"
     >
       <DutypointLabelInstance
         :target-x="530"
         :target-width="PUMP_WIDTH"
-        y="356"
+        y="363.5"
         :tag-id="pumps['1019'].tooltip?.yardTag"
         :pump="pumps['1019'].controls.pump"
       />
     </PumpInstance>
     <PumpInstance
-      x="530"
-      y="613"
+      x="528"
+      y="613.15"
       :orientation="ComponentOrientation.Left"
       v-bind="pumps['1021']"
     >
       <DutypointLabelInstance
         :target-x="530"
         :target-width="PUMP_WIDTH"
-        y="580"
+        y="585.5"
         :tag-id="pumps['1021'].tooltip?.yardTag"
         :pump="pumps['1021'].controls.pump"
       />
     </PumpInstance>
     <ManualPumpInstance
-      x="872"
-      y="506"
+      x="885"
+      y="519"
+      :width="28"
+      :height="28"
       :orientation="ComponentOrientation.Left"
       v-bind="manualPumps['1182']"
     >
       <TagLabelInstance
-        :target-x="872"
-        :target-width="PUMP_WIDTH"
-        y="557"
+        :target-x="885"
+        :target-width="28"
+        y="550"
         :tag-id="manualPumps['1182'].tooltip?.yardTag"
       />
     </ManualPumpInstance>

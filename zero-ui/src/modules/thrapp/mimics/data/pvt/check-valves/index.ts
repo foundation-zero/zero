@@ -8,8 +8,8 @@ const checkValveTags = [
   "1076-01",
   "1188-01",
   "1188-02",
-  "1188-03",
-  "1085-01",
+  "1095-05",
+  "1185-01",
 ];
 
 export const PVT_CHECK_VALVE_DATA = toFieldsMap({
