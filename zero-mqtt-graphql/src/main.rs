@@ -10,7 +10,7 @@ use tokio::task::JoinHandle;
 
 use zero_mqtt_graphql::api_model::Api;
 use zero_mqtt_graphql::asyncapi::load_specs;
-use zero_mqtt_graphql::cache::TopicCache;
+use zero_mqtt_graphql::cache::{TopicCache, spawn_eviction};
 use zero_mqtt_graphql::config::AppConfig;
 use zero_mqtt_graphql::graphql::build_schema;
 use zero_mqtt_graphql::http::router;
@@ -95,7 +95,7 @@ async fn run_serve(config: AppConfig, api: &Api) -> Result<()> {
         config.default_ttl_secs,
         api.ttl_map(config.default_ttl_secs),
     ));
-    zero_mqtt_graphql::graphql::spawn_eviction(cache.clone());
+    spawn_eviction(cache.clone());
 
     let mut mqtt = spawn_mqtt_subscriber(&config, api, &cache)?;
 
@@ -263,20 +263,20 @@ fn export_sdl(api: &Api, output: Option<&str>) -> Result<()> {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::BTreeMap;
+
     use super::*;
+    use zero_mqtt_graphql::api_model::GraphqlType;
     use zero_mqtt_graphql::roas_asyncapi::OperationAction;
     use zero_mqtt_graphql::{
-        api_model::{ApiModel, FieldDef, TopicDef},
+        api_model::{ApiModel, TopicDef},
         topic_map::TopicMap,
     };
 
     fn sample_api() -> Api {
         let topics = vec![TopicDef {
             topic: "test/topic".to_string(),
-            fields: vec![FieldDef {
-                name: "x".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
+            fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
             payload_schema_ref: None,
             action: OperationAction::Send,
             ttl_secs: 300,
@@ -306,20 +306,6 @@ mod tests {
 
         let _ = std::fs::remove_dir_all(&dir);
     }
-
-    // #[test_log::test]
-    // fn test_export_sdl_empty_specs_error() {
-    //     let api = Api::new(vec![ApiModel::new(
-    //         "test".to_string(),
-    //         TopicMap::new(),
-    //         vec![],
-    //         vec![],
-    //         TopicMap::new(),
-    //     )]);
-
-    //     let err = export_sdl(&api, None).unwrap_err();
-    //     assert!(err.to_string().contains("no topics found"), "{err}");
-    // }
 
     #[test_log::test]
     fn test_export_sdl_stdout_does_not_fail() {

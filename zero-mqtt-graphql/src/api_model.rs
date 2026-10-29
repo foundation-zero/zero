@@ -8,7 +8,7 @@ use crate::topic_map::TopicMap;
 #[derive(Debug, Clone)]
 pub struct TopicDef {
     pub topic: String,
-    pub fields: Vec<FieldDef>,
+    pub fields: BTreeMap<String, GraphqlType>,
     /// Pointer to payload in json reference format (e.g. #/components/schemas/field)
     pub payload_schema_ref: Option<String>,
     /// TTL in seconds for cached values of this topic. Determined from
@@ -26,7 +26,7 @@ pub struct TopicGroupDef {
     pub group: String,
     /// Wildcard MQTT topic to subscribe to (`power-tags/+/+`).
     pub pattern: String,
-    pub fields: Vec<FieldDef>,
+    pub fields: BTreeMap<String, GraphqlType>,
     /// Raw JSON Schema value for the payload.
     pub payload_schema_ref: Option<String>,
     /// Extension attributes per payload field (`x-*` schema extensions
@@ -38,10 +38,13 @@ pub struct TopicGroupDef {
     pub group_by: String,
 }
 
-#[derive(Debug, Clone)]
-pub struct FieldDef {
-    pub name: String,
-    pub graphql_type: String,
+#[derive(Debug, Clone, PartialEq)]
+pub enum GraphqlType {
+    Object(Box<BTreeMap<String, GraphqlType>>),
+    String,
+    Float,
+    Int,
+    Boolean,
 }
 
 #[derive(Debug, Clone)]
@@ -167,7 +170,7 @@ mod tests {
             TopicMap::new(),
             vec![TopicDef {
                 topic: "".to_owned(),
-                fields: vec![],
+                fields: BTreeMap::new(),
                 payload_schema_ref: None,
                 ttl_secs: 0,
                 action: OperationAction::Send,
