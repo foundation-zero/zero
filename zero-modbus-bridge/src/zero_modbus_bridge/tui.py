@@ -255,7 +255,7 @@ class StubTui(App):
         row = tab.rows[row_index]
         try:
             write_value(tab.handler, row, text)
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             self.notify(f"Invalid value: {text!r}", severity="error")
             return
         self._render_tab(index)

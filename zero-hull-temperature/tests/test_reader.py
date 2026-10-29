@@ -51,7 +51,15 @@ def test_mapping_to_mqtt_payload():
     wrapped = HullTemperature(temperatures=read)
     assert wrapped.temperatures.s_94455001_26 == 20.0
     assert wrapped.model_dump(by_alias=True) == {
-        "temperatures": {"94455001-26": 20.0, "94455001-27": 18.5, **{k: None for k in wrapped.model_dump(by_alias=True)["temperatures"] if k not in ("94455001-26", "94455001-27")}}
+        "temperatures": {
+            "94455001-26": 20.0,
+            "94455001-27": 18.5,
+            **{
+                k: None
+                for k in wrapped.model_dump(by_alias=True)["temperatures"]
+                if k not in ("94455001-26", "94455001-27")
+            },
+        }
     }
 
 

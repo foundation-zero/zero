@@ -38,6 +38,9 @@ run_split module='thrs': run_api (run_control module) (run_simulation module)
 
 check: lint type_check test
 
+# Static checks for CI; tests run as separate steps since some need services
+ci: lint_no_fix format type_check
+
 lint:
     uv run ruff check src tests
 

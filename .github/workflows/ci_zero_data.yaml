@@ -41,11 +41,7 @@ jobs:
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
       - run: uv sync --locked
         working-directory: zero-data
-      - run: just lint_no_fix
-        working-directory: zero-data
-      - run: just format
-        working-directory: zero-data
-      - run: just type_check
+      - run: just ci
         working-directory: zero-data
       # Local GreptimeDB for tests/greptime; offline — tests load the committed snapshot and run dbt build.
       - name: Start local GreptimeDB
