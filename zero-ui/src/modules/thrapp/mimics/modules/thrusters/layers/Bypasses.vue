@@ -11,7 +11,7 @@ const { t } = useI18n();
       x="1018"
       y="67"
       :width="172"
-      :height="181"
+      :height="132"
     >
       {{ t("thrapp.mimics.sections.supportComponents") }}
     </BypassArea>

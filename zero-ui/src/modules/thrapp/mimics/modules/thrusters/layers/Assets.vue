@@ -9,14 +9,14 @@ const thrusters = getTooltipContexts(MimicComponentType.Thruster, ["15001001", "
 <template>
   <g>
     <ThrusterInstance
-      x="23"
-      y="143"
+      x="-24"
+      y="162"
       v-bind="thrusters['15001001']"
     />
 
     <ThrusterInstance
-      x="23"
-      y="401"
+      x="-24"
+      y="413"
       v-bind="thrusters['15001002']"
     />
   </g>
