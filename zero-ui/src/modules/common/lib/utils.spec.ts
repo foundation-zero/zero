@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { ref } from "vue";
 import {
   capitalizeFirst,
@@ -24,12 +24,21 @@ import {
   toRecord,
   toTimeSeriesData,
   toUpperCamelCase,
+  tScoped,
   unstamp,
   useFixed,
   valueAsArray,
   valueWithValidation,
   writeProtected,
 } from "./utils";
+
+vi.mock("vue-i18n", () => {
+  const messages: Record<string, string> = { "pump.title": "Pump", "pump.speed": "Speed {value}" };
+  const t = (key: string, value?: Record<string, unknown>) =>
+    (messages[key] ?? key).replace(/{(\w+)}/g, (_, name) => String(value?.[name]));
+
+  return { useI18n: () => ({ t, te: (key: string) => key in messages }) };
+});
 
 const timestamp = new Date("2026-01-01T12:00:00Z");
 
@@ -48,6 +57,20 @@ describe("strings", () => {
 
   test("toUpperCamelCase splits words on capitals", () => {
     expect(toUpperCamelCase("PumpSpeed")).toBe("Pump Speed");
+  });
+
+  test("tScoped prefixes keys with its scope", () => {
+    const t = tScoped("pump");
+
+    expect(t("title")).toBe("Pump");
+    expect(t("speed", { value: 50 })).toBe("Speed 50");
+  });
+
+  test("tScoped.exists checks keys within its scope", () => {
+    const t = tScoped("pump");
+
+    expect(t.exists("title")).toBe(true);
+    expect(t.exists("missing")).toBe(false);
   });
 });
 

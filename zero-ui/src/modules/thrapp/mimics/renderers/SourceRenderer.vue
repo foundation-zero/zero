@@ -19,6 +19,7 @@ const props = defineProps<{
   source?: ModuleField;
   apiOnly?: boolean;
   noLink?: boolean;
+  t?(fieldName: string): string;
 }>();
 
 const { sources } = useTranslations();
@@ -50,9 +51,9 @@ const sourceName = computed(() => {
     return backendSource.value ?? "";
   } else if (tooltipContext.value?.tooltip?.yardTag) return tooltipContext.value.tooltip.yardTag;
   else if (!definition.value || !("yardTag" in definition.value))
-    return snakeCase(source.value?.[2]);
+    return props.t ? props.t(`${source.value?.[2]}`) : snakeCase(source.value?.[2]);
 
-  return definition.value.yardTag ?? source.value?.[2];
+  return definition.value.yardTag!;
 });
 
 const { findTooltipContext } = getTooltipContext();

@@ -5539,27 +5539,29 @@
           ]
         },
         "custom": {
-          "temperatureController": {
-            "type": "sensor:temperature",
-            "controller": [
-              "controller:pidController",
-              "pvt",
-              "pvtMainFwdPumpController",
-              null
-            ],
-            "measurement": [
-              "sensor:temperature",
-              "pvt",
-              "pvtTemperatureMainFwdReturn",
-              null
-            ],
-            "target": [
-              "parameter:temperature",
-              "pvt",
-              "recoveryTemperature",
-              null
-            ]
-          }
+          "controllers": [
+            {
+              "type": "sensor:temperature",
+              "controller": [
+                "controller:pidController",
+                "pvt",
+                "pvtMainFwdPumpController",
+                null
+              ],
+              "measurement": [
+                "sensor:temperature",
+                "pvt",
+                "pvtTemperatureMainFwdReturn",
+                null
+              ],
+              "target": [
+                "parameter:temperature",
+                "pvt",
+                "recoveryTemperature",
+                null
+              ]
+            }
+          ]
         },
         "parameters": {
           "flow": [
@@ -5599,27 +5601,29 @@
           ]
         },
         "custom": {
-          "temperatureController": {
-            "type": "sensor:temperature",
-            "controller": [
-              "controller:pidController",
-              "pvt",
-              "pvtMainAftPumpController",
-              null
-            ],
-            "measurement": [
-              "sensor:temperature",
-              "pvt",
-              "pvtTemperatureMainAftReturn",
-              null
-            ],
-            "target": [
-              "parameter:temperature",
-              "pvt",
-              "recoveryTemperature",
-              null
-            ]
-          }
+          "controllers": [
+            {
+              "type": "sensor:temperature",
+              "controller": [
+                "controller:pidController",
+                "pvt",
+                "pvtMainAftPumpController",
+                null
+              ],
+              "measurement": [
+                "sensor:temperature",
+                "pvt",
+                "pvtTemperatureMainAftReturn",
+                null
+              ],
+              "target": [
+                "parameter:temperature",
+                "pvt",
+                "recoveryTemperature",
+                null
+              ]
+            }
+          ]
         },
         "parameters": {
           "flow": [
@@ -5682,27 +5686,29 @@
           ]
         },
         "custom": {
-          "temperatureController": {
-            "type": "sensor:temperature",
-            "controller": [
-              "controller:pidController",
-              "pvt",
-              "pvtOwnersPumpController",
-              null
-            ],
-            "measurement": [
-              "sensor:temperature",
-              "pvt",
-              "pvtTemperatureOwnersReturn",
-              null
-            ],
-            "target": [
-              "parameter:temperature",
-              "pvt",
-              "recoveryTemperature",
-              null
-            ]
-          }
+          "controllers": [
+            {
+              "type": "sensor:temperature",
+              "controller": [
+                "controller:pidController",
+                "pvt",
+                "pvtOwnersPumpController",
+                null
+              ],
+              "measurement": [
+                "sensor:temperature",
+                "pvt",
+                "pvtTemperatureOwnersReturn",
+                null
+              ],
+              "target": [
+                "parameter:temperature",
+                "pvt",
+                "recoveryTemperature",
+                null
+              ]
+            }
+          ]
         },
         "parameters": {
           "flow": [
@@ -5742,21 +5748,23 @@
           ]
         },
         "custom": {
-          "flowController": {
-            "type": "sensor:flow",
-            "controller": [
-              "controller:pidController",
-              "dhw",
-              "dhwPumpFlowController",
-              null
-            ],
-            "measurement": [
-              "sensor:flow",
-              "dhw",
-              "dhwFlowBoosting",
-              null
-            ]
-          }
+          "controllers": [
+            {
+              "type": "sensor:flow",
+              "controller": [
+                "controller:pidController",
+                "dhw",
+                "dhwPumpFlowController",
+                null
+              ],
+              "measurement": [
+                "sensor:flow",
+                "dhw",
+                "dhwFlowBoosting",
+                null
+              ]
+            }
+          ]
         },
         "parameters": {
           "flow": [
@@ -5888,15 +5896,17 @@
           ]
         },
         "custom": {
-          "flowController": {
-            "type": "sensor:flow",
-            "controller": [
-              "controller:pidController",
-              "thrusters",
-              "thrustersPumpController",
-              null
-            ]
-          }
+          "controllers": [
+            {
+              "type": "sensor:flow",
+              "controller": [
+                "controller:pidController",
+                "thrusters",
+                "thrustersPumpController",
+                null
+              ]
+            }
+          ]
         },
         "parameters": {
           "flow": [
@@ -5936,15 +5946,17 @@
           ]
         },
         "custom": {
-          "flowController": {
-            "type": "sensor:flow",
-            "controller": [
-              "controller:pidController",
-              "thrusters",
-              "thrustersPumpController",
-              null
-            ]
-          }
+          "controllers": [
+            {
+              "type": "sensor:flow",
+              "controller": [
+                "controller:pidController",
+                "thrusters",
+                "thrustersPumpController",
+                null
+              ]
+            }
+          ]
         },
         "parameters": {
           "flow": [
