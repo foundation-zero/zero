@@ -3,12 +3,13 @@ with currents as (
 		date_bin('1 minute'::interval, ts) as time,
 		topic,
 		converter,
-		AVG(output_current) as current,
+		avg(output_current)                as current,
 		main_group,
 		sub_group	
 	from {{ ref('slv_24vdc_currents') }}
 	group by time, topic, converter, main_group, sub_group
 )
+
 select
 	cur.time,
 	cur.topic,

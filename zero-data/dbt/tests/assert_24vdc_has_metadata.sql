@@ -7,7 +7,7 @@
         select topic
         from {{ ref('stg_marpower__24vdc') }}
         where (output_current__value is not null OR voltage__value is not null)
-        order by ts
+        order by ts desc
         limit 10000
     )
 
