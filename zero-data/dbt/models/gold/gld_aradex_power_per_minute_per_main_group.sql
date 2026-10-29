@@ -1,16 +1,26 @@
-with per_aradex as (
+with aradex_power_per_minute as (
     select
-        date_bin('1 minute'::interval, ts) as time,
+        date_bin('1 minute'::interval, ts)       as time,
         thruster,
         aradex,
-        avg(power)                         as power
+        avg(case when power >= 0 then power end) as propulsion_power,
+        avg(case when power < 0 then -power end) as hydrogeneration_power
     from {{ ref('slv_pcs_aradexes') }}
     group by time, thruster, aradex
 )
 
 select
     time,
-    case when power >= 0 then 'Propulsion' else 'Hydrogeneration' end as main_group,
-    sum(abs(power))                                                   as power
-from per_aradex
-group by time, main_group
+    'Propulsion'               as main_group,   
+    sum(propulsion_power)      as power
+from aradex_power_per_minute
+group by time
+
+union all
+
+select
+    time,
+    'Hydrogeneration'          as main_group,   
+    sum(hydrogeneration_power) as power
+from aradex_power_per_minute
+group by time

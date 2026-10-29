@@ -2,6 +2,7 @@ with power_tags as (
     select 
         ts,
         topic,
+        panel,
         consumer,
         active_power_total
     from {{ ref('stg_marpower__power_tags') }}
@@ -18,6 +19,7 @@ metadata as (
 select
     pt.ts,
     pt.topic,
+    pt.panel,
     pt.consumer,
     pt.active_power_total,
     meta.main_group,

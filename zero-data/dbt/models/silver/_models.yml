@@ -14,6 +14,8 @@ models:
         description: "MQTT topic associated with the raw message."
         tests:
           - not_null
+      - name: panel
+        description: "Panel identifier associated with the tag."
       - name: consumer
         description: "Consumer identifier associated with the tag."
       - name: active_power_total
