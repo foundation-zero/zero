@@ -36,7 +36,7 @@ jobs:
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
       - run: uv sync --locked
         working-directory: zero-termodinamica
-      - run: just ci
+      - run: just check_static
         working-directory: zero-termodinamica
       - name: Tests
         run: just test --cov-report=xml
