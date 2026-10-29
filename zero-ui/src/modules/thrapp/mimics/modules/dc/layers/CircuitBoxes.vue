@@ -12,7 +12,7 @@ const exchangeCircuits = getTooltipContexts(MimicComponentType.ExchangeCircuit, 
 <template>
   <SeawaterCircuitInstance
     x="815.1406"
-    y="570.1563"
+    y="613.1563"
     height="95"
     v-bind="seawaterCircuits['dc:seawater']"
   />
