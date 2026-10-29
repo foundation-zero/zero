@@ -52,13 +52,7 @@ jobs:
       - run: uv sync --locked
         working-directory: zero-thrs-control
 
-      - run: just type_check
-        working-directory: zero-thrs-control
-
-      - run: just lint_no_fix
-        working-directory: zero-thrs-control
-
-      - run: just format
+      - run: just check_static
         working-directory: zero-thrs-control
 
       - run: docker compose --profile thrs up -d --quiet-pull --wait vernemq

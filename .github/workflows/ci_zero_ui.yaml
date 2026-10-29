@@ -73,9 +73,13 @@ jobs:
       - name: Run services
         run: MACHINE_STATE_LOGGING=false docker compose --profile loads --profile thrs up --quiet-pull --wait
 
-      - name: Waiting for services to be ready
-        run: sleep 30s
-        shell: bash
+      - name: Wait for the APIs and the THRS simulation state
+        timeout-minutes: 2
+        run: |
+          until curl --silent --fail --output /dev/null --get http://localhost:5101/graphql --data-urlencode 'query={__typename}' \
+            && curl --silent --get http://localhost:5102/graphql --data-urlencode 'query={simulation{status}}' | grep --quiet '"status"'; do
+            sleep 1
+          done
 
       - name: Run api integration tests
         working-directory: zero-ui
@@ -93,7 +97,7 @@ jobs:
 
       - name: Install Playwright Browsers
         working-directory: zero-ui
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install chromium
 
       - name: Run Playwright tests
         working-directory: zero-ui

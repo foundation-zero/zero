@@ -9,7 +9,6 @@ on:
       - zero-hull-temperature/**
       - zero-atpx-nmea/**
       - zero-data/**
-      - zero-fiber-optics/**
       - zero-thrs-control/**
       - .github/workflows/ci_mqtt_graphql.yaml
       - .github/actions/coverage-report/**
@@ -24,7 +23,6 @@ on:
       - zero-hull-temperature/**
       - zero-atpx-nmea/**
       - zero-data/**
-      - zero-fiber-optics/**
       - zero-thrs-control/**
       - .github/workflows/ci_mqtt_graphql.yaml
       - .github/actions/coverage-report/**
@@ -50,6 +48,7 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@ecabd13d1c56bd1345c230e542e9144811ad706f # v2
         with:
           components: clippy, rustfmt, llvm-tools-preview
+          cache-workspaces: zero-mqtt-graphql
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
       - uses: taiki-e/install-action@86f7a0ffb25f40114606501a311ebcfaf882ea32 # v2.88.0
         with:
@@ -77,7 +76,10 @@ jobs:
         env:
           AGGREGATE_STRICT: "1"
       - name: Check formatting
-        run: cargo fmt --check
+        run: just format
+        working-directory: zero-mqtt-graphql
+      - name: Clippy zero-mqtt-graphql
+        run: just lint
         working-directory: zero-mqtt-graphql
       - name: Test zero-mqtt-graphql
         run: just test --cobertura --output-path coverage.xml
@@ -87,14 +89,11 @@ jobs:
           name: coverage-zero-mqtt-graphql
           path: zero-mqtt-graphql/coverage.xml
           retention-days: 90
-      - name: Clippy zero-mqtt-graphql
-        run: cargo clippy --all --all-features --locked
-        working-directory: zero-mqtt-graphql
       - name: Build zero-mqtt-graphql binary
         run: cargo build --locked
         working-directory: zero-mqtt-graphql
       - name: Validate specs (no sanitization collisions)
-        run: cargo run --locked -- validate --spec-dir ../specs
+        run: just validate
         working-directory: zero-mqtt-graphql
       - name: Copy specs into image build context
         run: cp -r specs zero-mqtt-graphql/specs
