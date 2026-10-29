@@ -75,8 +75,11 @@ jobs:
         run: bash scripts/aggregate-specs.sh
         env:
           AGGREGATE_STRICT: "1"
-      - name: Check formatting and lint
-        run: just format lint
+      - name: Check formatting
+        run: just format
+        working-directory: zero-mqtt-graphql
+      - name: Clippy zero-mqtt-graphql
+        run: just lint
         working-directory: zero-mqtt-graphql
       - name: Test zero-mqtt-graphql
         run: just test --cobertura --output-path coverage.xml
@@ -86,6 +89,9 @@ jobs:
           name: coverage-zero-mqtt-graphql
           path: zero-mqtt-graphql/coverage.xml
           retention-days: 90
+      - name: Build zero-mqtt-graphql binary
+        run: cargo build --locked
+        working-directory: zero-mqtt-graphql
       - name: Validate specs (no sanitization collisions)
         run: just validate
         working-directory: zero-mqtt-graphql
