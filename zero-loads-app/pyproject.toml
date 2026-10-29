@@ -41,7 +41,7 @@ dev = [
     "bs4>=0.0.2,<0.0.3",
     "pyright>=1.1.411",
     "xlsxwriter>=3.2,<4",
-    "pypdfium2>=4.30,<5",
+    "pypdfium2>=5.14,<6",
 ]
 test = [
     "pytest>=9.1.1,<10",
