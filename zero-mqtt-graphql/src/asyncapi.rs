@@ -1,254 +1,45 @@
 use std::collections::BTreeMap;
+use std::fmt::Debug;
 use std::path::{Path, PathBuf};
 
+use crate::metadata::MetadataByTopic;
+use crate::roas_asyncapi::{
+    Channel, Document, Message, Operation, OperationAction, Schema, SchemaOrMultiFormat,
+};
 use anyhow::Context;
-use log::{info, warn};
+use log::{debug, info, warn};
 use roas_asyncapi::common::reference::{RefOr, Reference};
-use roas_asyncapi::v3_0::channel::Channel;
-use roas_asyncapi::v3_0::message::Message;
-use roas_asyncapi::v3_0::schema::{Schema, SchemaOrMultiFormat};
-use roas_asyncapi::v3_0::Document;
 use serde_json::Value;
 
+use crate::api_model::{Api, ApiModel, FieldDef, TopicDef, TopicGroupDef};
 use crate::graphql::graphql_type_for_subschema;
-use crate::naming::*;
-
-#[derive(Debug, Clone)]
-pub struct TopicDef {
-    pub topic: String,
-    pub fields: Vec<FieldDef>,
-    /// Raw JSON Schema value for the payload, used for live validation in listen mode.
-    pub payload_schema: Option<Value>,
-    /// TTL in seconds for cached values of this topic. Determined from
-    /// `x-ttl` extensions on the AsyncAPI message or channel
-    /// (per-schema override) or a global default.
-    pub ttl_secs: u64,
-}
-
-/// A parametrized topic family declared by a single channel, e.g.
-/// address `power-tags/{panel}/{slug}` with mqtt binding `power-tags/+/+`.
-#[derive(Debug, Clone)]
-pub struct TopicGroupDef {
-    /// Static prefix of the address (`power-tags`); seeds the GraphQL names.
-    pub group: String,
-    /// Wildcard MQTT topic to subscribe to (`power-tags/+/+`).
-    pub pattern: String,
-    /// Parameter names, in address order (`panel`, `slug`). Reserved for
-    /// future use (e.g. per-parameter filtering); nothing reads it today.
-    pub params: Vec<String>,
-    pub fields: Vec<FieldDef>,
-    /// Raw JSON Schema value for the payload.
-    pub payload_schema: Option<Value>,
-    /// Extension attributes per payload field (`x-*` schema extensions
-    /// minus the prefix), keyed by raw field name.
-    pub value_extensions: BTreeMap<String, BTreeMap<String, String>>,
-    pub ttl_secs: u64,
-}
-
-#[derive(Debug, Clone)]
-pub struct FieldDef {
-    pub name: String,
-    pub graphql_type: String,
-}
+use crate::message_validation::{ValidatorBuilder, build_validators};
+use crate::naming::sanitize_to_graphql_name;
+use crate::topic_map::TopicMap;
 
 /// Read and parse every AsyncAPI document in `spec_dir` once, returning
 /// `(file name, path, document)` for each. Non-JSON files and topic-metadata
 /// files are skipped; unreadable or invalid `.json` files are an error —
 /// see [`read_asyncapi_document`].
-fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<(String, PathBuf, Document)>> {
+fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<PathBuf>> {
     let dir = Path::new(spec_dir);
     if !dir.is_dir() {
         anyhow::bail!("spec_dir does not exist or is not a directory: {spec_dir}");
     }
 
-    std::fs::read_dir(dir)?
+    let mut files = std::fs::read_dir(dir)?
         .map(|entry| {
             let path = entry?.path();
-            let file_name = path
-                .file_name()
-                .and_then(|n| n.to_str())
-                .unwrap_or("")
-                .to_string();
-            Ok((file_name, path))
+            Ok(path)
         })
-        .collect::<anyhow::Result<Vec<_>>>()?
+        .collect::<anyhow::Result<Vec<_>>>()?;
+    files.sort();
+
+    Ok(files
         .into_iter()
-        .filter(|(_, path)| path.extension().and_then(|e| e.to_str()) == Some("json"))
-        .filter(|(_, path)| !crate::metadata::is_metadata_file(path))
-        .map(|(file_name, path)| read_asyncapi_document(&path).map(|doc| (file_name, path, doc)))
-        .collect()
-}
-
-/// Load AsyncAPI 3.0.0 spec files from a directory in a single pass over the
-/// spec directory, extracting both concrete topics and parametrized groups.
-///
-/// Consumers that only need one of the two should still use this loader and
-/// ignore the other half, so each spec file is read exactly once.
-pub fn load_specs_and_groups(
-    spec_dir: &str,
-) -> anyhow::Result<(Vec<TopicDef>, Vec<TopicGroupDef>)> {
-    let docs = spec_documents(spec_dir)?;
-
-    let topics: Vec<TopicDef> = docs
-        .iter()
-        .map(|(_, path, doc)| topics_from_document(doc, path))
-        .collect::<anyhow::Result<Vec<_>>>()?
-        .into_iter()
-        .flatten()
-        .collect();
-
-    let groups: Vec<TopicGroupDef> = docs
-        .iter()
-        .map(|(_, path, doc)| groups_from_document(doc, path))
-        .collect::<anyhow::Result<Vec<_>>>()?
-        .into_iter()
-        .flatten()
-        .collect();
-
-    info!(
-        "Loaded {} topic(s) and {} topic group(s) from {}",
-        topics.len(),
-        groups.len(),
-        spec_dir
-    );
-    Ok((topics, groups))
-}
-
-/// Extract concrete topics from one document, erroring on unresolvable
-/// channel references.
-fn topics_from_document(doc: &Document, path: &Path) -> anyhow::Result<Vec<TopicDef>> {
-    if doc.channels.is_empty() {
-        info!("File {} has no channels, skipping", path.display());
-        return Ok(Vec::new());
-    }
-
-    doc.channels
-        .iter()
-        .map(|(channel_name, channel_ref)| {
-            let channel = resolve_channel(channel_ref, doc).with_context(|| {
-                format!(
-                    "unresolvable channel $ref '{}' in {}",
-                    channel_name,
-                    path.display()
-                )
-            })?;
-            Ok(topic_from_channel(channel_name, channel, doc, path))
-        })
-        .collect::<anyhow::Result<Vec<_>>>()
-        .map(|topics| topics.into_iter().flatten().collect())
-}
-
-/// Extract parametrized groups from one document, erroring on unresolvable
-/// channel references or malformed parametrized channels.
-fn groups_from_document(doc: &Document, path: &Path) -> anyhow::Result<Vec<TopicGroupDef>> {
-    doc.channels
-        .iter()
-        .map(|(channel_name, channel_ref)| {
-            let channel = resolve_channel(channel_ref, doc).with_context(|| {
-                format!(
-                    "unresolvable channel $ref '{}' in {}",
-                    channel_name,
-                    path.display()
-                )
-            })?;
-            group_from_channel(channel_name, channel, doc, path)
-        })
-        .collect::<anyhow::Result<Vec<_>>>()
-        .map(|groups| groups.into_iter().flatten().collect())
-}
-
-/// Convert one concrete (non-parametrized) channel into a [`TopicDef`];
-/// returns `None` for parametrized channels or channels without a topic.
-fn topic_from_channel(
-    channel_name: &str,
-    channel: &Channel,
-    doc: &Document,
-    path: &Path,
-) -> Option<TopicDef> {
-    // Parametrized channels are handled by groups_from_document.
-    let binding_topic = mqtt_topic_from_channel(channel);
-    if is_parametrized_channel(channel.address(), binding_topic.as_deref()) {
-        return None;
-    }
-
-    let mqtt_topic = binding_topic.or_else(|| channel.address().map(|s| s.to_string()));
-    let mqtt_topic = match mqtt_topic {
-        Some(t) => t,
-        None => {
-            warn!(
-                "Channel '{}' in {} has no mqtt binding topic and no address, skipping",
-                channel_name,
-                path.display()
-            );
-            return None;
-        }
-    };
-
-    if channel.messages.is_empty() {
-        info!(
-            "Channel '{}' (topic: '{}') has no messages",
-            channel_name, mqtt_topic
-        );
-    }
-
-    let (fields, payload_schema) = message_fields(channel, doc);
-
-    Some(TopicDef {
-        topic: mqtt_topic,
-        fields,
-        payload_schema,
-        ttl_secs: ttl_for_channel(channel, doc),
-    })
-}
-
-/// Convert one parametrized channel into a [`TopicGroupDef`]; returns
-/// `None` for concrete channels. A parametrized channel without an address
-/// is an error: neither the group name nor the wildcard pattern can be
-/// derived without it.
-fn group_from_channel(
-    channel_name: &str,
-    channel: &Channel,
-    doc: &Document,
-    path: &Path,
-) -> anyhow::Result<Option<TopicGroupDef>> {
-    let binding_topic = mqtt_topic_from_channel(channel);
-    if !is_parametrized_channel(channel.address(), binding_topic.as_deref()) {
-        return Ok(None);
-    }
-    let Some(address) = channel.address().map(str::to_string) else {
-        anyhow::bail!(
-            "parametrized channel '{}' in {} has no address",
-            channel_name,
-            path.display()
-        );
-    };
-    let params = extract_params(&address);
-    let group = static_prefix(&address).unwrap_or_else(|| address.clone());
-    let pattern = binding_topic
-        .filter(|topic| topic.contains('+') || topic.contains('#'))
-        .unwrap_or_else(|| wildcard_from_address(&address));
-
-    let (fields, payload_schema) = message_fields(channel, doc);
-    let value_extensions = payload_schema
-        .as_ref()
-        .map(extensions_from_payload_schema)
-        .unwrap_or_default();
-
-    info!(
-        "Loaded topic group '{}' ({}) from {}",
-        group,
-        pattern,
-        path.display()
-    );
-    Ok(Some(TopicGroupDef {
-        group,
-        pattern,
-        params,
-        fields,
-        payload_schema,
-        value_extensions,
-        ttl_secs: ttl_for_channel(channel, doc),
-    }))
+        .filter(|path| path.extension().and_then(|e| e.to_str()) == Some("json"))
+        .filter(|path| !crate::metadata::is_metadata_file(path))
+        .collect())
 }
 
 /// Read and parse one file into an AsyncAPI 3.x `Document`.
@@ -256,7 +47,7 @@ fn group_from_channel(
 /// Errors when the file is unreadable, not valid JSON, lacks an `asyncapi`
 /// version, or is not an AsyncAPI 3.x document — a spec directory is
 /// expected to contain only loadable specs.
-fn read_asyncapi_document(path: &Path) -> anyhow::Result<Document> {
+fn read_asyncapi_document(path: &Path) -> anyhow::Result<Value> {
     let content =
         std::fs::read_to_string(path).with_context(|| format!("reading {}", path.display()))?;
 
@@ -278,34 +69,298 @@ fn read_asyncapi_document(path: &Path) -> anyhow::Result<Document> {
         );
     }
 
-    serde_json::from_value::<Document>(spec_value)
-        .with_context(|| format!("parsing AsyncAPI document {}", path.display()))
+    Ok(spec_value)
+}
+
+fn load_spec(path: &Path) -> anyhow::Result<ApiModel> {
+    let document_json = read_asyncapi_document(path)?;
+
+    let validator_builder = ValidatorBuilder::new(document_json.clone())?;
+
+    let document = serde_json::from_value::<Document>(document_json.clone())
+        .with_context(|| format!("parsing AsyncAPI document {}", path.display()))?;
+
+    let topics: Vec<TopicDef> = channels_from_document(&document, path, topic_from_channel)?;
+    let groups: Vec<TopicGroupDef> = channels_from_document(&document, path, group_from_channel)?;
+    let subscribe_topics = channels_from_document(&document, path, channel_addresses_from_channel)?
+        .into_iter()
+        .fold(TopicMap::new(), |mut acc, topic| {
+            if !acc.covers_topic(&topic) {
+                acc.insert_with_replace(topic, ());
+            }
+            acc
+        });
+
+    let validators = build_validators(&validator_builder, &topics, &groups)?;
+
+    info!(
+        "Parsed: {} topic(s), {} group(s) from '{}'.",
+        topics.len(),
+        groups.len(),
+        path.display()
+    );
+
+    Ok(ApiModel::new(
+        path.file_prefix()
+            .ok_or(anyhow::anyhow!("File prefix is not valid as name"))?
+            .to_string_lossy()
+            .into_owned(),
+        subscribe_topics,
+        topics,
+        groups,
+        validators,
+    ))
+}
+
+/// Load AsyncAPI 3.0.0 spec files from a directory in a single pass over the
+/// spec directory, extracting both concrete topics and parametrized groups.
+///
+/// Consumers that only need one of the two should still use this loader and
+/// ignore the other half, so each spec file is read exactly once.
+pub fn load_specs(spec_dir: &str, ignore_failures: bool) -> anyhow::Result<Api> {
+    let specs = spec_documents(spec_dir)?;
+
+    let api_models = specs
+        .iter()
+        .filter_map(|path| {
+            let spec = load_spec(path);
+            if ignore_failures && let Err(error) = spec {
+                warn!("Skipping AsyncAPI spec '{}': {:#}", path.display(), error);
+                None
+            } else {
+                Some(spec)
+            }
+        })
+        .collect::<anyhow::Result<Vec<_>>>()?;
+
+    info!("Loaded {} api's from {spec_dir} ", api_models.len());
+
+    Ok(Api::new(api_models))
+}
+
+/// Extract channels and create relevant datastructure from one document, erroring on unresolvable
+/// channel and operation references.
+fn channels_from_document<
+    T,
+    U: Fn(&Reference, &str, OperationAction, &Channel, &Document, &Path) -> anyhow::Result<Option<T>>,
+>(
+    doc: &Document,
+    path: &Path,
+    resolve_func: U,
+) -> anyhow::Result<Vec<T>> {
+    if doc.operations.is_empty() {
+        info!("File {} has no operations, skipping", path.display());
+        return Ok(Vec::new());
+    }
+
+    let operations: Vec<_> = doc
+        .operations
+        .iter()
+        .map(|(operation_name, operation_ref)| {
+            debug!("Parsing operation {operation_name} from {}", path.display());
+
+            let operation = resolve_operation(operation_ref, doc).with_context(|| {
+                format!(
+                    "unresolvable operation $ref '{}' in {}",
+                    operation_name,
+                    path.display()
+                )
+            })?;
+
+            Ok::<(OperationAction, String, RefOr<Channel>), anyhow::Error>((
+                operation.action,
+                operation
+                    .channel
+                    .local_key()
+                    .with_context(|| "Can't find operation key")?,
+                RefOr::Reference(operation.channel.clone()),
+            ))
+        })
+        .collect::<anyhow::Result<Vec<(_, _, _)>>>()?;
+    operations
+        .into_iter()
+        .map(|(action, channel_name, channel_ref)| {
+            debug!("Parsing channel {channel_name} from {}", path.display());
+            let channel = resolve_channel(&channel_ref, doc).with_context(|| {
+                format!(
+                    "unresolvable channel $ref '{}' ({}) in {}",
+                    channel_name,
+                    channel_ref
+                        .reference()
+                        .map_or("<inline channel>", |r| r.reference.as_str()),
+                    path.display()
+                )
+            })?;
+            resolve_func(
+                channel_ref
+                    .reference()
+                    .with_context(|| "Channel is wrongly embedded in the operation")?,
+                &channel_name,
+                action,
+                channel,
+                doc,
+                path,
+            )
+        })
+        .collect::<anyhow::Result<Vec<_>>>()
+        .map(|items| items.into_iter().flatten().collect())
+}
+
+#[allow(clippy::unnecessary_wraps)]
+fn channel_addresses_from_channel(
+    _channel_ref: &Reference,
+    _channel_name: &str,
+    action: OperationAction,
+    channel: &Channel,
+    _doc: &Document,
+    _path: &Path,
+) -> anyhow::Result<Option<String>> {
+    if let OperationAction::Receive = action {
+        return Ok(None);
+    }
+
+    let Some(Some(address)) = &channel.address else {
+        return Ok(None);
+    };
+
+    Ok(Some(wildcard_from_address(address)))
+}
+
+/// Convert one concrete (non-parametrized) channel into a [`TopicDef`];
+/// returns `None` for parametrized channels or channels without a topic.
+#[allow(clippy::unnecessary_wraps)]
+fn topic_from_channel(
+    channel_ref: &Reference,
+    channel_name: &str,
+    action: OperationAction,
+    channel: &Channel,
+    doc: &Document,
+    path: &Path,
+) -> anyhow::Result<Option<TopicDef>> {
+    // Parametrized channels are handled by groups_from_document.
+    if is_parametrized_channel(channel.address()) {
+        return Ok(None);
+    }
+
+    let mqtt_topic = channel.address().map(ToString::to_string);
+    let Some(mqtt_topic) = mqtt_topic else {
+        warn!(
+            "Channel '{}' in {} has no mqtt binding topic and no address, skipping",
+            channel_name,
+            path.display()
+        );
+        return Ok(None);
+    };
+
+    if channel.messages.is_empty() {
+        info!("Channel '{channel_name}' (topic: '{mqtt_topic}') has no messages");
+    }
+
+    let (fields, payload_schema_ref, _) = message_fields(channel_ref, channel, doc);
+
+    Ok(Some(TopicDef {
+        topic: mqtt_topic,
+        action,
+        fields,
+        payload_schema_ref,
+        ttl_secs: ttl_for_channel(channel_ref, channel, doc),
+    }))
+}
+
+/// Convert one parametrized channel into a [`TopicGroupDef`]; returns
+/// `None` for concrete channels. A parametrized channel without an address
+/// is an error: neither the group name nor the wildcard pattern can be
+/// derived without it.
+fn group_from_channel(
+    channel_ref: &Reference,
+    channel_name: &str,
+    action: OperationAction,
+    channel: &Channel,
+    doc: &Document,
+    path: &Path,
+) -> anyhow::Result<Option<TopicGroupDef>> {
+    if !is_parametrized_channel(channel.address()) {
+        return Ok(None);
+    }
+    let Some(address) = channel.address().map(str::to_string) else {
+        anyhow::bail!(
+            "parametrized channel '{}' in {} has no address",
+            channel_name,
+            path.display()
+        );
+    };
+    let group = static_prefix(&address).unwrap_or_else(|| address.clone());
+    let pattern = wildcard_from_address(&address);
+
+    let (fields, payload_schema_ref, payload_schema) = message_fields(channel_ref, channel, doc);
+    let value_extensions = payload_schema
+        .as_ref()
+        .map(extensions_from_payload_schema)
+        .unwrap_or_default();
+
+    let topic_metadata = serde_json::from_value::<MetadataByTopic>(
+        channel
+            .extensions
+            .clone()
+            .unwrap_or_default()
+            .get("x-group-topic-metadata")
+            .with_context(|| {
+                format!(
+                    "Missing x-group-topic-metadata extension for {channel_name} in {}",
+                    path.display()
+                )
+            })?
+            .clone(),
+    )?;
+
+    let group_by = serde_json::from_value::<String>(
+        channel
+            .extensions
+            .clone()
+            .with_context(|| format!("No extensions found on {channel_name}"))?
+            .get("x-group-by")
+            .with_context(|| {
+                format!(
+                    "Missing x-group-by extension for {channel_name} in {}",
+                    path.display()
+                )
+            })?
+            .clone(),
+    )?;
+
+    info!(
+        "Loaded topic group '{}' ({}) from {}",
+        group,
+        pattern,
+        path.display()
+    );
+    Ok(Some(TopicGroupDef {
+        group,
+        pattern,
+        fields,
+        payload_schema_ref,
+        value_extensions,
+        ttl_secs: ttl_for_channel(channel_ref, channel, doc),
+        action,
+        topic_metadata,
+        group_by,
+    }))
 }
 
 /// Whether a channel describes a parametrized topic family rather than one
-/// concrete topic: a `{placeholder}` segment in the address or `+`/`#` in
-/// the binding.
-fn is_parametrized_channel(address: Option<&str>, binding_topic: Option<&str>) -> bool {
+/// concrete topic: a `{placeholder}` segment in the address
+fn is_parametrized_channel(address: Option<&str>) -> bool {
     address.is_some_and(|address| {
         address
             .split('/')
             .any(|segment| param_name(segment).is_some())
-    }) || binding_topic.is_some_and(|topic| topic.contains('+') || topic.contains('#'))
+    })
 }
 
 /// Parameter name when an address segment is a `{placeholder}`, else
 /// `None`: `{panel}` → `panel`.
 fn param_name(segment: &str) -> Option<&str> {
     segment.strip_prefix('{')?.strip_suffix('}')
-}
-
-/// Parameter names in order: `power-tags/{panel}/{slug}` → `[panel, slug]`.
-fn extract_params(address: &str) -> Vec<String> {
-    address
-        .split('/')
-        .filter_map(param_name)
-        .map(str::to_string)
-        .collect()
 }
 
 /// Static leading segments of the address: `power-tags/{panel}/{slug}` →
@@ -338,31 +393,63 @@ fn wildcard_from_address(address: &str) -> String {
 ///
 /// Channels with multiple messages are not yet union-typed; only the first
 /// message contributes fields and schema.
-fn message_fields(channel: &Channel, doc: &Document) -> (Vec<FieldDef>, Option<Value>) {
-    let Some(message) = channel_messages(channel, doc).into_iter().next() else {
-        return (Vec::new(), None);
+fn message_fields(
+    channel_ref: &Reference,
+    channel: &Channel,
+    doc: &Document,
+) -> (Vec<FieldDef>, Option<String>, Option<Value>) {
+    let Some((message_ref, message)) = channel_messages(channel_ref, channel, doc)
+        .into_iter()
+        .next()
+    else {
+        return (Vec::new(), None, None);
     };
-    // The message payload may be inline or a `$ref` into components; both are
-    // resolved by `resolve_payload_schema`.
+    // The message payload may be inline or a `$ref` into components
     let Some(payload_ref) = &message.payload else {
-        return (Vec::new(), None);
+        return (Vec::new(), None, None);
     };
-    match resolve_payload_schema(payload_ref, doc) {
-        Some(schema_or_multi) => {
-            let schema_value = serde_json::to_value(&schema_or_multi).ok();
-            let fields = extract_fields_from_schema_or_multi(&schema_or_multi, doc);
-            (fields, schema_value)
+
+    let (schema_or_multi, payload_schema_ref, payload_schema) = match payload_ref {
+        RefOr::Reference(payload_reference) => match resolve_payload_schema(payload_ref, doc) {
+            Some(schema_or_multi) => (
+                schema_or_multi,
+                Some(payload_reference.reference.clone()),
+                serde_json::to_value(schema_or_multi).ok(),
+            ),
+            None => return (Vec::new(), None, None),
+        },
+        RefOr::Item(schema_or_multi) => {
+            let schema_ref = format!("{message_ref}/payload");
+            let schema_value = serde_json::to_value(schema_or_multi).ok();
+            (schema_or_multi, Some(schema_ref), schema_value)
         }
-        None => (Vec::new(), None),
-    }
+    };
+
+    let fields = extract_fields_from_schema_or_multi(schema_or_multi, doc);
+
+    (fields, payload_schema_ref, payload_schema)
 }
 
 /// All messages referenced by the channel, resolved against components.
-fn channel_messages<'a>(channel: &'a Channel, doc: &'a Document) -> Vec<&'a Message> {
+fn channel_messages<'a>(
+    channel_ref: &Reference,
+    channel: &'a Channel,
+    doc: &'a Document,
+) -> BTreeMap<String, &'a Message> {
     channel
         .messages
-        .values()
-        .filter_map(|message_ref| resolve_message(message_ref, doc))
+        .iter()
+        .filter_map(|(message_key, message_ref)| {
+            let message_reference = match message_ref {
+                RefOr::Reference(reference) => reference.reference.clone(),
+                RefOr::Item(_) => format!(
+                    "{}/messages/{}",
+                    channel_ref.reference,
+                    message_key.replace('~', "~0").replace('/', "~1")
+                ),
+            };
+            resolve_message(message_ref, doc).map(|message| (message_reference, message))
+        })
         .collect()
 }
 
@@ -397,103 +484,92 @@ fn extensions_from_payload_schema(
         .collect()
 }
 
-/// Resolve a channel that may be a `$ref` into components.
-///
-/// Near-duplicate of [`resolve_ref_to_entry`] (as are the message/schema
-/// resolvers) but kept separate: channel refs additionally fall back to
-/// root-level `channels` entries and guard self-referential component refs.
-fn resolve_channel<'a>(r: &'a RefOr<Channel>, doc: &'a Document) -> Option<&'a Channel> {
-    match r {
-        RefOr::Item(c) => Some(c),
-        RefOr::Reference(reference) => {
-            let key = reference
-                .component_key("channels")
-                .or_else(|| reference.local_key())?;
-            // If the key is the current iteration key itself, avoid infinite recursion
-            // by looking directly in components without recursing into the same ref.
-            if let Some(components) = &doc.components {
-                if let Some(entry) = components.channels.get(&key) {
-                    return match entry {
-                        RefOr::Item(c) => Some(c),
-                        RefOr::Reference(r2) => {
-                            let key2 = r2.component_key("channels").or_else(|| r2.local_key())?;
-                            if key2 == key {
-                                return None;
-                            }
-                            components.channels.get(&key2)?.item()
-                        }
-                    };
-                }
-            }
-            if let Some(entry) = doc.channels.get(&key) {
-                if let RefOr::Item(c) = entry {
-                    return Some(c);
-                }
-                // Root entry is itself a $ref — if it points to the same key we'd loop
-                return None;
-            }
-            None
-        }
+/// Follow a component `$ref` to a real entry
+fn resolve_ref_to_entry<'a, T: Debug>(
+    reference: &'a Reference,
+    entries_main: Option<&'a BTreeMap<String, RefOr<T>>>,
+    entries_components: Option<&'a BTreeMap<String, RefOr<T>>>,
+    mut traversed_keys: Vec<&'a str>,
+) -> Option<&'a T> {
+    let pointer = reference.local_pointer()?;
+    let key = reference.local_key()?;
+
+    let entries = if reference.reference.starts_with("#/components/") {
+        entries_components
+    } else {
+        entries_main
+    };
+
+    let entries = entries?;
+
+    if (traversed_keys).contains(&pointer) {
+        info!("Found circular refs, aborting on: {key}");
+        return None;
     }
-}
 
-fn mqtt_topic_from_channel(channel: &Channel) -> Option<String> {
-    let bindings = channel.bindings.as_ref()?.item()?;
-    let mqtt_val = bindings.get("mqtt")?;
-    mqtt_val.get("topic")?.as_str().map(|s| s.to_string())
-}
-
-/// Follow a component `$ref` to its entry in one components map, resolving
-/// at most one extra level of indirection (`ref` → `ref` → item).
-///
-/// Shared by [`resolve_message`] and [`resolve_payload_schema`].
-/// [`resolve_channel`] duplicates this pattern but cannot reuse it: it also
-/// falls back to root-level `channels` entries and guards against
-/// self-referential channel refs.
-fn resolve_ref_to_entry<'a, T>(
-    reference: &Reference,
-    section: &str,
-    entries: &'a BTreeMap<String, RefOr<T>>,
-) -> Option<&'a RefOr<T>> {
-    let key = reference
-        .component_key(section)
-        .or_else(|| reference.local_key())?;
     match entries.get(&key)? {
         RefOr::Reference(nested) => {
-            let key2 = nested
-                .component_key(section)
-                .or_else(|| nested.local_key())?;
-            // A ref pointing back at itself would loop forever.
-            if key2 == key {
-                return None;
-            }
-            entries.get(&key2)
+            traversed_keys.push(pointer);
+            resolve_ref_to_entry(nested, entries_main, entries_components, traversed_keys)
         }
-        entry => Some(entry),
+        RefOr::Item(entry) => Some(entry),
     }
+}
+
+fn resolve_refor<'a, T: Debug>(
+    reference: &'a RefOr<T>,
+    entries_main: Option<&'a BTreeMap<String, RefOr<T>>>,
+    entries_components: Option<&'a BTreeMap<String, RefOr<T>>>,
+) -> Option<&'a T> {
+    match reference {
+        RefOr::Item(m) => Some(m),
+        RefOr::Reference(reference) => {
+            resolve_ref_to_entry(reference, entries_main, entries_components, vec![])
+        }
+    }
+}
+
+fn resolve_channel<'a>(r: &'a RefOr<Channel>, doc: &'a Document) -> Option<&'a Channel> {
+    resolve_refor(
+        r,
+        Some(&doc.channels),
+        doc.components
+            .as_ref()
+            .map(|componentens| &componentens.channels),
+    )
+}
+
+fn resolve_operation<'a>(r: &'a RefOr<Operation>, doc: &'a Document) -> Option<&'a Operation> {
+    resolve_refor(
+        r,
+        Some(&doc.operations),
+        doc.components
+            .as_ref()
+            .map(|componentens| &componentens.operations),
+    )
 }
 
 fn resolve_message<'a>(r: &'a RefOr<Message>, doc: &'a Document) -> Option<&'a Message> {
-    match r {
-        RefOr::Item(m) => Some(m),
-        RefOr::Reference(reference) => {
-            resolve_ref_to_entry(reference, "messages", &doc.components.as_ref()?.messages)?.item()
-        }
-    }
+    resolve_refor(
+        r,
+        None,
+        doc.components
+            .as_ref()
+            .map(|componentens| &componentens.messages),
+    )
 }
 
 fn resolve_payload_schema<'a>(
     r: &'a RefOr<SchemaOrMultiFormat>,
     doc: &'a Document,
-) -> Option<SchemaOrMultiFormat> {
-    match r {
-        RefOr::Item(s) => Some(s.clone()),
-        RefOr::Reference(reference) => {
-            resolve_ref_to_entry(reference, "schemas", &doc.components.as_ref()?.schemas)?
-                .item()
-                .cloned()
-        }
-    }
+) -> Option<&'a SchemaOrMultiFormat> {
+    resolve_refor(
+        r,
+        None,
+        doc.components
+            .as_ref()
+            .map(|componentens| &componentens.schemas),
+    )
 }
 
 fn extract_fields_from_schema_or_multi(
@@ -538,9 +614,9 @@ fn extract_fields_from_schema(schema: &Schema, doc: &Document) -> Vec<FieldDef> 
 /// Effective TTL for cached values of a channel: the maximum `x-ttl`
 /// across its messages (a channel may declare several), falling back to the
 /// channel's own extension, then the global default.
-fn ttl_for_channel(channel: &Channel, doc: &Document) -> u64 {
-    channel_messages(channel, doc)
-        .into_iter()
+fn ttl_for_channel(channel_ref: &Reference, channel: &Channel, doc: &Document) -> u64 {
+    channel_messages(channel_ref, channel, doc)
+        .into_values()
         .filter_map(|message| ttl_from_extensions(message.extensions.as_ref()))
         .max()
         .or_else(|| ttl_from_extensions(channel.extensions.as_ref()))
@@ -578,28 +654,27 @@ fn parse_ttl_str(s: &str) -> Option<u64> {
         );
         return None;
     };
-    match num.parse::<u64>() {
-        Ok(n) => Some(n * mult),
-        Err(_) => {
-            warn!(
-                "Unparseable x-ttl value '{s}' (expected seconds, '30s', '5m' or '1h') — using default"
-            );
-            None
-        }
+    if let Ok(n) = num.parse::<u64>() {
+        Some(n * mult)
+    } else {
+        warn!(
+            "Unparseable x-ttl value '{s}' (expected seconds, '30s', '5m' or '1h') — using default"
+        );
+        None
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use roas_asyncapi::v3_0::schema::{Schema, SubSchema};
+    use crate::roas_asyncapi::SubSchema;
     use serde_json::json;
     use std::collections::BTreeMap;
 
-    /// Test convenience wrapper extracting just the topics.
+    /// Test convenience wrapper.
     fn loaded_topics(dir: &Path) -> anyhow::Result<Vec<TopicDef>> {
-        let (topics, _) = load_specs_and_groups(dir.to_str().unwrap())?;
-        Ok(topics)
+        let api = load_specs(dir.to_str().unwrap(), false)?;
+        Ok(api.topics())
     }
 
     fn schema_with_properties(props: BTreeMap<String, Value>) -> Schema {
@@ -614,7 +689,7 @@ mod tests {
         }
     }
 
-    #[test]
+    #[test_log::test]
     fn test_extract_scalar_fields() {
         let props = BTreeMap::from([
             ("celsius".to_string(), json!({"type": "number"})),
@@ -639,7 +714,7 @@ mod tests {
         assert_eq!(get("label").graphql_type, "String");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_specs_from_json() {
         let spec = json!({
             "asyncapi": "3.0.0",
@@ -654,13 +729,20 @@ mod tests {
                     },
                     "bindings": {
                         "mqtt": {
-                            "topic": "termodinamica/compressor/temperature",
                             "qos": 0,
                             "retain": false,
                             "bindingVersion": "0.2.0"
                         }
                     }
                 }
+            },
+            "operations": {
+                "termodinamica.compressor.temperature:Publisher": {
+                    "action": "send",
+                    "channel": {
+                        "$ref": "#/channels/termodinamica.compressor.temperature:Publisher"
+                    }
+                },
             },
             "components": {
                 "messages": {
@@ -692,13 +774,16 @@ mod tests {
         let _ = std::fs::remove_dir_all(&dir);
 
         assert_eq!(topics.len(), 1);
-        assert_eq!(topics[0].topic, "termodinamica/compressor/temperature");
+        assert_eq!(
+            topics[0].topic,
+            "termodinamica/compressor/temperature:Publisher"
+        );
         assert_eq!(topics[0].fields.len(), 3);
         assert_eq!(topics[0].fields[0].name, "celsius");
         assert_eq!(topics[0].fields[0].graphql_type, "Float");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_no_mqtt_binding_skipped() {
         let spec = json!({
             "asyncapi": "3.0.0",
@@ -715,6 +800,14 @@ mod tests {
                         "http": {}
                     }
                 }
+            },
+            "operations": {
+                "some.channel:Publisher": {
+                    "action": "send",
+                    "channel": {
+                        "$ref": "#/channels/some.channel:Publisher"
+                    }
+                },
             },
             "components": {
                 "messages": {
@@ -749,7 +842,7 @@ mod tests {
         assert_eq!(topics[0].topic, "some/channel:Publisher");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_empty_properties_returns_empty_fields() {
         let schema = Schema::default();
         let doc = Document::default();
@@ -757,7 +850,7 @@ mod tests {
         assert_eq!(fields.len(), 0);
     }
 
-    #[test]
+    #[test_log::test]
     fn test_inline_payload_without_ref() {
         let spec = json!({
             "asyncapi": "3.0.0",
@@ -783,6 +876,14 @@ mod tests {
                         }
                     }
                 }
+            },
+            "operations": {
+                "test.channel:Publisher": {
+                    "action": "send",
+                    "channel": {
+                        "$ref": "#/channels/test.channel:Publisher"
+                    }
+                },
             }
         });
 
@@ -796,13 +897,13 @@ mod tests {
         let _ = std::fs::remove_dir_all(&dir);
 
         assert_eq!(topics.len(), 1);
-        assert_eq!(topics[0].topic, "test/channel");
+        assert_eq!(topics[0].topic, "test/channel:Publisher");
         assert_eq!(topics[0].fields.len(), 1);
         assert_eq!(topics[0].fields[0].name, "value");
         assert_eq!(topics[0].fields[0].graphql_type, "Float");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_specs_skips_non_json_files() {
         let dir = std::env::temp_dir().join("mqtt-graphql-test-nonjson");
         let _ = std::fs::remove_dir_all(&dir);
@@ -815,7 +916,7 @@ mod tests {
         assert!(topics.is_empty());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_specs_rejects_invalid_json() {
         let dir = std::env::temp_dir().join("mqtt-graphql-test-invalidjson");
         let _ = std::fs::remove_dir_all(&dir);
@@ -828,7 +929,7 @@ mod tests {
         assert!(err.to_string().contains("parsing JSON"), "{err}");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_specs_rejects_missing_asyncapi_field() {
         let spec = json!({
             "info": { "title": "no version" },
@@ -850,7 +951,7 @@ mod tests {
         assert!(err.to_string().contains("no 'asyncapi' field"), "{err}");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_specs_rejects_non_v3_spec() {
         let spec = json!({
             "asyncapi": "2.6.0",
@@ -878,7 +979,7 @@ mod tests {
         assert!(err.to_string().contains("only 3.x is supported"), "{err}");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_load_specs_multiple_channels() {
         let spec = json!({
             "asyncapi": "3.0.0",
@@ -908,6 +1009,20 @@ mod tests {
                     },
                     "bindings": { "mqtt": { "topic": "two/channel" } }
                 }
+            },
+            "operations": {
+                "one.channel:Publisher": {
+                    "action": "send",
+                    "channel": {
+                        "$ref": "#/channels/one.channel:Publisher"
+                    }
+                },
+                "two.channel:Publisher": {
+                    "action": "send",
+                    "channel": {
+                        "$ref": "#/channels/two.channel:Publisher"
+                    }
+                },
             }
         });
 
@@ -929,7 +1044,88 @@ mod tests {
         assert!(topics.iter().any(|t| t.topic == "two/channel"));
     }
 
-    #[test]
+    #[test_log::test]
+    fn test_load_specs_subscribe_topics() {
+        let spec = json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "Test", "version": "1.0.0"},
+            "channels": {
+                "receive_channel": {
+                    "address": "one/channel",
+                    "messages": {
+                        "Message": {
+                            "$ref": "#/components/messages/Message"
+                        }
+                    },
+                },
+                "send_channel": {
+                    "address": "two/channel",
+                    "messages": {
+                        "Message": {
+                            "$ref": "#/components/messages/Message"
+                        }
+                    },
+                },
+                "send_channel_broader": {
+                    "address": "two/#",
+                    "messages": {
+                        "Message": {
+                            "$ref": "#/components/messages/Message"
+                        }
+                    },
+                }
+            },
+            "operations": {
+                "receive_channel": {
+                    "action": "receive",
+                    "channel": {
+                        "$ref": "#/channels/receive_channel"
+                    }
+                },
+                "send_channel": {
+                    "action": "send",
+                    "channel": {
+                        "$ref": "#/channels/send_channel"
+                    }
+                },
+                "send_channel_broader": {
+                    "action": "send",
+                    "channel": {
+                        "$ref": "#/channels/send_channel_broader"
+                    }
+                },
+            },
+            "components": {
+                "messages": {
+                    "Message": {
+                        "payload": {
+                            "type": "object",
+                            "properties": { "a": { "type": "number" } }
+                        }
+                    }
+                }
+            }
+        });
+
+        let dir = std::env::temp_dir().join("mqtt-graphql-test-subscribe");
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(
+            dir.join("test.json"),
+            serde_json::to_string_pretty(&spec).unwrap(),
+        )
+        .unwrap();
+
+        let api = load_specs(dir.to_str().unwrap(), false).unwrap();
+        let subscribed_topics = api.subscribe_topics();
+        let _ = std::fs::remove_dir_all(&dir);
+
+        // We expect one topic that is not receive and the broadest
+        assert_eq!(subscribed_topics.len(), 1);
+        assert!(subscribed_topics.contains(&"two/#".to_string()));
+    }
+
+    #[test_log::test]
     fn test_channel_ref_is_resolved() {
         let spec = json!({
             "asyncapi": "3.0.0",
@@ -938,6 +1134,14 @@ mod tests {
                 "referenced.channel:Publisher": {
                     "$ref": "#/components/channels/referenced.channel:Publisher"
                 }
+            },
+            "operations": {
+                "referenced.channel:Publisher": {
+                    "action": "send",
+                    "channel": {
+                        "$ref": "#/channels/referenced.channel:Publisher"
+                    }
+                },
             },
             "components": {
                 "channels": {
@@ -975,7 +1179,7 @@ mod tests {
         assert_eq!(topics[0].fields[0].graphql_type, "Int");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_no_resolvable_payload_yields_empty_fields() {
         let spec = json!({
             "asyncapi": "3.0.0",
@@ -988,7 +1192,15 @@ mod tests {
                     },
                     "bindings": { "mqtt": { "topic": "bare/channel" } }
                 }
-            }
+            },
+            "operations": {
+                "bare.channel:Publisher": {
+                    "action": "send",
+                    "channel": {
+                        "$ref": "#/channels/bare.channel:Publisher"
+                    }
+                },
+            },
         });
 
         let dir = std::env::temp_dir().join("mqtt-graphql-test-no-payload");
@@ -1008,7 +1220,7 @@ mod tests {
         assert!(topics[0].fields.is_empty());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_extensions_from_payload_schema() {
         let schema = json!({
             "type": "object",
@@ -1043,7 +1255,7 @@ mod tests {
         assert!(!extensions.contains_key("ignored"));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_nullable_anyof_field() {
         let props = BTreeMap::from([(
             "current_a".to_string(),
@@ -1057,7 +1269,7 @@ mod tests {
         assert_eq!(fields[0].graphql_type, "Float");
     }
 
-    #[test]
+    #[test_log::test]
     fn test_parse_ttl_str() {
         assert_eq!(parse_ttl_str("300"), Some(300));
         assert_eq!(parse_ttl_str("30s"), Some(30));
@@ -1069,7 +1281,7 @@ mod tests {
         assert_eq!(parse_ttl_str("5x"), None);
     }
 
-    #[test]
+    #[test_log::test]
     fn test_ttl_from_value() {
         assert_eq!(ttl_from_value(Some(&json!(45))), Some(45));
         assert_eq!(ttl_from_value(Some(&json!("2m"))), Some(120));

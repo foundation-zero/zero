@@ -82,12 +82,12 @@ jobs:
         run: just lint
         working-directory: zero-mqtt-graphql
       - name: Test zero-mqtt-graphql
-        run: just test --cobertura --output-path coverage.xml
+        run: just test
         working-directory: zero-mqtt-graphql
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: coverage-zero-mqtt-graphql
-          path: zero-mqtt-graphql/coverage.xml
+          path: zero-mqtt-graphql/target/coverage/coverage.xml
           retention-days: 90
       - name: Build zero-mqtt-graphql binary
         run: cargo build --locked

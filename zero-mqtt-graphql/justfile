@@ -26,7 +26,9 @@ print_schema:
 check: format lint test
 
 test *args:
-    cargo llvm-cov --locked {{ args }}
+    mkdir -p target/coverage
+    cargo llvm-cov --cobertura --output-path target/coverage/coverage.xml {{ args }}
+    cargo llvm-cov report
 
 lint:
     cargo clippy --all --all-features --locked

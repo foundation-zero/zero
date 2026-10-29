@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -7,8 +6,7 @@ use log::{debug, error, info, warn};
 use rumqttc::{AsyncClient, Event, EventLoop, Incoming, MqttOptions, QoS};
 use serde_json::Value;
 
-use crate::asyncapi::{TopicDef, TopicGroupDef};
-use crate::cache::{mqtt_pattern_matches, TopicCache};
+use crate::{cache::TopicCache, topic_map::TopicMap};
 
 pub struct MqttConnection<'a> {
     pub host: &'a str,
@@ -22,7 +20,7 @@ pub struct MqttSubscriber {
     event_loop: EventLoop,
     cache: Arc<TopicCache>,
     listen_only: bool,
-    validators: HashMap<String, Validator>,
+    validators: TopicMap<Validator>,
     /// Topics to subscribe once the connection is established. Subscribing
     /// from within the polled event loop avoids deadlocking on the bounded
     /// request channel when the topic count exceeds its capacity.
@@ -31,11 +29,10 @@ pub struct MqttSubscriber {
 
 impl MqttSubscriber {
     pub fn new_with_mode(
-        connection: MqttConnection,
+        connection: &MqttConnection,
         cache: Arc<TopicCache>,
         listen_only: bool,
-        topics: &[TopicDef],
-        groups: &[TopicGroupDef],
+        validators: TopicMap<Validator>,
     ) -> anyhow::Result<Self> {
         let client_id = format!("zero-mqtt-graphql-{:012x}", rand_u64());
 
@@ -50,7 +47,6 @@ impl MqttSubscriber {
 
         // Validators are built in both modes: listen-only rejects mismatches
         // outright, serve mode logs them and still caches the payload.
-        let validators = build_validators(topics, groups);
 
         Ok(Self {
             client,
@@ -83,7 +79,7 @@ impl MqttSubscriber {
         loop {
             match self.event_loop.poll().await {
                 Ok(Event::Incoming(Incoming::Publish(publish))) => {
-                    self.handle_publish(publish.topic, &publish.payload).await;
+                    self.handle_publish(&publish.topic, &publish.payload);
                 }
                 Ok(Event::Incoming(Incoming::ConnAck(_))) => {
                     backoff = INITIAL_BACKOFF;
@@ -94,10 +90,7 @@ impl MqttSubscriber {
                     // Other events — ignore
                 }
                 Err(e) => {
-                    error!(
-                        "MQTT event loop error: {}. Reconnecting in {:?}...",
-                        e, backoff
-                    );
+                    error!("MQTT event loop error: {e}. Reconnecting in {backoff:?}...");
                     // rumqttc auto-reconnects; back off exponentially to avoid
                     // hammering the broker on persistent failures.
                     tokio::time::sleep(backoff).await;
@@ -138,24 +131,24 @@ impl MqttSubscriber {
     ///
     /// Takes `&mut self` because `EventLoop` (owned by the same struct) is
     /// `!Sync`; a shared borrow would make the polling future non-`Send`.
-    async fn handle_publish(&mut self, topic: String, payload: &[u8]) {
+    fn handle_publish(&mut self, topic: &str, payload: &[u8]) {
         let payload = match std::str::from_utf8(payload) {
             Ok(s) => s,
             Err(e) => {
-                warn!("Non-UTF8 payload on topic '{}': {}", topic, e);
+                warn!("Non-UTF8 payload on topic '{topic}': {e}");
                 return;
             }
         };
 
         if payload.trim().is_empty() {
-            debug!("Empty payload on topic '{}', skipping", topic);
+            debug!("Empty payload on topic '{topic}', skipping");
             return;
         }
 
         match serde_json::from_str::<Value>(payload) {
-            Ok(value) => self.handle_json_payload(&topic, value),
+            Ok(value) => self.handle_json_payload(topic, value),
             Err(e) => {
-                warn!("Non-JSON payload on topic '{}': {}", topic, e);
+                warn!("Non-JSON payload on topic '{topic}': {e}");
             }
         }
     }
@@ -165,15 +158,13 @@ impl MqttSubscriber {
     fn handle_json_payload(&self, topic: &str, value: Value) {
         if self.listen_only {
             match self.validate_payload(topic, &value) {
-                Some(true) => info!("Schema OK for topic '{}': {}", topic, value),
+                Some(true) => info!("Schema OK for topic '{topic}': {value}"),
                 Some(false) => {} // mismatch already logged
-                None if self.validators.is_empty() => {
-                    info!("Received on topic '{}' (no schema known): {}", topic, value)
-                }
-                None => warn!(
-                    "Received on unknown topic '{}' (not in specs): {}",
-                    topic, value
+                // Avoid high volume warnings
+                None if self.validators.is_empty() => info!(
+                    "Received on topic '{topic}' but no schemas/validators are loaded: {value}"
                 ),
+                None => warn!("Received on unknown topic '{topic}' (not in specs): {value}"),
             }
             return;
         }
@@ -186,8 +177,7 @@ impl MqttSubscriber {
         let preview_len = rendered
             .char_indices()
             .nth(100)
-            .map(|(idx, _)| idx)
-            .unwrap_or(rendered.len());
+            .map_or(rendered.len(), |(idx, _)| idx);
         if preview_len < rendered.len() {
             debug!(
                 "Caching payload for topic '{}': {}...",
@@ -195,7 +185,7 @@ impl MqttSubscriber {
                 &rendered[..preview_len]
             );
         } else {
-            debug!("Caching payload for topic '{}': {}", topic, rendered);
+            debug!("Caching payload for topic '{topic}': {rendered}");
         }
         self.cache.insert(topic, flatten_payload(value));
     }
@@ -205,13 +195,7 @@ impl MqttSubscriber {
     /// the wildcard-containing keys (from topic groups). Returns `None`
     /// when no schema covers the topic, else whether the payload is valid.
     fn validate_payload(&self, topic: &str, value: &Value) -> Option<bool> {
-        let validator = self.validators.get(topic).or_else(|| {
-            self.validators
-                .iter()
-                .filter(|(pattern, _)| pattern.contains('+') || pattern.contains('#'))
-                .find(|(pattern, _)| mqtt_pattern_matches(pattern, topic))
-                .map(|(_, validator)| validator)
-        })?;
+        let validator = self.validators.get(topic)?;
         let valid = validator.is_valid(value);
         if !valid {
             let details: Vec<String> = validator
@@ -229,65 +213,10 @@ impl MqttSubscriber {
     }
 }
 
-/// Compile one validator per topic and one per topic group, into a single
-/// map keyed by exact topic (`TopicDef`) or wildcard pattern (`TopicGroupDef`,
-/// e.g. `power-tags/+/+`)
-fn build_validators(topics: &[TopicDef], groups: &[TopicGroupDef]) -> HashMap<String, Validator> {
-    let topic_validators: Vec<(String, Validator)> = topics
-        .iter()
-        .filter_map(|td| {
-            let schema_value = td.payload_schema.as_ref()?;
-            match Validator::new(schema_value) {
-                Ok(validator) => Some((td.topic.clone(), validator)),
-                Err(e) => {
-                    warn!(
-                        "Failed to compile JSON Schema for topic '{}': {} — skipping validation for this topic",
-                        td.topic, e
-                    );
-                    None
-                }
-            }
-        })
-        .collect();
-    if !topic_validators.is_empty() {
-        info!(
-            "Compiled JSON Schema validators for {} topic(s)",
-            topic_validators.len()
-        );
-    }
-
-    let group_validators: Vec<(String, Validator)> = groups
-        .iter()
-        .filter_map(|group| {
-            let schema_value = group.payload_schema.as_ref()?;
-            match Validator::new(schema_value) {
-                Ok(validator) => Some((group.pattern.clone(), validator)),
-                Err(e) => {
-                    warn!(
-                        "Failed to compile JSON Schema for topic group '{}': {} — skipping validation for this group",
-                        group.pattern, e
-                    );
-                    None
-                }
-            }
-        })
-        .collect();
-    if !group_validators.is_empty() {
-        info!(
-            "Compiled JSON Schema validators for {} topic group(s)",
-            group_validators.len()
-        );
-    }
-
-    topic_validators
-        .into_iter()
-        .chain(group_validators)
-        .collect()
-}
-
 /// Generate a unique suffix for the MQTT client ID from full-precision
 /// wall-clock nanoseconds, so concurrent instances and rapid restarts do not
 /// collide (brokers disconnect clients sharing an ID).
+#[allow(clippy::cast_possible_truncation)]
 fn rand_u64() -> u64 {
     use std::time::{SystemTime, UNIX_EPOCH};
     let nanos = SystemTime::now()
@@ -328,42 +257,40 @@ fn flatten_payload(value: Value) -> Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::asyncapi::FieldDef;
+    use crate::api_model::{Api, ApiModel, FieldDef, TopicDef, TopicGroupDef};
+    use crate::roas_asyncapi::OperationAction;
     use serde_json::json;
     use std::collections::BTreeMap;
 
-    fn group_with_schema(pattern: &str, schema: Value) -> TopicGroupDef {
-        TopicGroupDef {
+    fn groups_with_schema(pattern: &str, schema_ref: &str) -> Vec<TopicGroupDef> {
+        vec![TopicGroupDef {
             group: "power-tags".to_string(),
             pattern: pattern.to_string(),
-            params: vec!["panel".to_string(), "slug".to_string()],
             fields: vec![FieldDef {
                 name: "active_power_total".to_string(),
                 graphql_type: "Float".to_string(),
             }],
-            payload_schema: Some(schema),
+            payload_schema_ref: Some(schema_ref.to_string()),
             value_extensions: BTreeMap::new(),
             ttl_secs: 300,
-        }
+            action: OperationAction::Send,
+            group_by: "".to_string(),
+            topic_metadata: BTreeMap::new(),
+        }]
     }
 
-    #[test]
-    fn test_build_validators_compiles_group_schema() {
-        let groups = vec![group_with_schema(
-            "power-tags/+/+",
-            json!({"type": "object", "required": ["active_power_total"]}),
-        )];
-        let validators = build_validators(&[], &groups);
-        assert_eq!(validators.len(), 1);
-        assert!(validators.contains_key("power-tags/+/+"));
-    }
-
-    #[test]
-    fn test_build_validators_skips_group_without_schema() {
-        let mut group = group_with_schema("power-tags/+/+", json!({}));
-        group.payload_schema = None;
-        let validators = build_validators(&[], &[group]);
-        assert!(validators.is_empty());
+    fn api(
+        topics: Vec<TopicDef>,
+        groups: Vec<TopicGroupDef>,
+        validators: TopicMap<Validator>,
+    ) -> Api {
+        Api::new(vec![ApiModel::new(
+            "".to_string(),
+            TopicMap::new(),
+            topics,
+            groups,
+            validators,
+        )])
     }
 
     /// Regression test for the gap where payloads on parametrized topic
@@ -371,13 +298,20 @@ mod tests {
     /// validator was ever compiled from `TopicGroupDef`, and the exact-key
     /// lookup wouldn't have matched a concrete topic against a pattern key
     /// anyway.
-    #[test]
+    #[test_log::test]
     fn test_validate_payload_matches_concrete_topic_against_group_pattern() {
-        let group = group_with_schema(
-            "power-tags/+/+",
-            json!({"type": "object", "required": ["active_power_total"]}),
+        let validator = jsonschema::validator_for(
+            &json!({"type": "object", "required": ["active_power_total"]}),
+        )
+        .unwrap();
+        let mut validators = TopicMap::new();
+        validators.insert("power-tags/+/+".to_string(), validator);
+        let api = api(
+            vec![],
+            groups_with_schema("power-tags/+/+", "/"),
+            validators,
         );
-        let sub = test_subscriber(&[], &[group]);
+        let sub = test_subscriber(&api);
 
         // Matches: concrete topic under the group's wildcard pattern.
         assert_eq!(
@@ -399,13 +333,21 @@ mod tests {
     /// One group validator must cover every concrete topic under its
     /// pattern, not just whichever one happens to be tested — two unrelated
     /// panels here both validate against the same `power-tags/+/+` schema.
-    #[test]
+    #[test_log::test]
     fn test_validate_payload_group_validator_covers_multiple_distinct_topics() {
-        let group = group_with_schema(
-            "power-tags/+/+",
-            json!({"type": "object", "required": ["active_power_total"]}),
+        let validator = jsonschema::validator_for(
+            &json!({"type": "object", "required": ["active_power_total"]}),
+        )
+        .unwrap();
+        let mut validators = TopicMap::new();
+        validators.insert("power-tags/+/+".to_string(), validator);
+
+        let api = api(
+            vec![],
+            groups_with_schema("power-tags/+/+", "/"),
+            validators,
         );
-        let sub = test_subscriber(&[], &[group]);
+        let sub = test_subscriber(&api);
 
         assert_eq!(
             sub.validate_payload(
@@ -430,19 +372,31 @@ mod tests {
     /// A topic-specific validator must win over an overlapping group
     /// pattern for the same concrete topic, per the exact-key-first lookup
     /// in `validate_payload`.
-    #[test]
+    #[test_log::test]
     fn test_validate_payload_exact_topic_wins_over_overlapping_group() {
+        let validator = jsonschema::validator_for(
+            &json!({"type": "object", "required": ["active_power_total"]}),
+        )
+        .unwrap();
+        let mut validators = TopicMap::new();
+        validators.insert("power-tags/+/+".to_string(), validator);
+
         let topic = TopicDef {
             topic: "power-tags/10P1/breaker3".to_string(),
             fields: vec![FieldDef {
                 name: "active_power_total".to_string(),
                 graphql_type: "Float".to_string(),
             }],
-            payload_schema: Some(json!({"type": "object", "required": ["active_power_total"]})),
+            payload_schema_ref: None,
+            action: OperationAction::Send,
             ttl_secs: 300,
         };
-        let group = group_with_schema("power-tags/+/+", json!({"type": "object"}));
-        let sub = test_subscriber(&[topic], &[group]);
+        let api = api(
+            vec![topic],
+            groups_with_schema("power-tags/+/+", "/"),
+            validators,
+        );
+        let sub = test_subscriber(&api);
 
         // Fails the exact-topic schema (missing required field) even though
         // it would pass the group's permissive schema — proves the exact
@@ -455,10 +409,15 @@ mod tests {
 
     /// The `#` multi-level wildcard, used e.g. for a catch-all logs group,
     /// must also drive validation — not just the `+` groups exercised above.
-    #[test]
+    #[test_log::test]
     fn test_validate_payload_matches_hash_wildcard_pattern() {
-        let group = group_with_schema("logs/#", json!({"type": "object", "required": ["level"]}));
-        let sub = test_subscriber(&[], &[group]);
+        let validator =
+            jsonschema::validator_for(&json!({"type": "object", "required": ["level"]})).unwrap();
+        let mut validators = TopicMap::new();
+        validators.insert("logs/#".to_string(), validator);
+
+        let api = api(vec![], groups_with_schema("logs/#", "/"), validators);
+        let sub = test_subscriber(&api);
 
         assert_eq!(
             sub.validate_payload("logs/a", &json!({"level": "info"})),
@@ -472,7 +431,7 @@ mod tests {
         assert_eq!(sub.validate_payload("metrics/a", &json!({})), None);
     }
 
-    fn test_subscriber(topics: &[TopicDef], groups: &[TopicGroupDef]) -> MqttSubscriber {
+    fn test_subscriber(api: &Api) -> MqttSubscriber {
         let connection = MqttConnection {
             host: "localhost",
             port: 1883,
@@ -480,16 +439,15 @@ mod tests {
             password: None,
         };
         MqttSubscriber::new_with_mode(
-            connection,
+            &connection,
             Arc::new(TopicCache::new()),
             true,
-            topics,
-            groups,
+            api.validators(),
         )
         .unwrap()
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_nested_payload() {
         let payload = json!({"temperatures": {"sensor_a": 20.0, "sensor_b": 21.5}});
         let flattened = flatten_payload(payload);
@@ -498,27 +456,27 @@ mod tests {
         assert!(flattened.get("temperatures").is_some());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_keeps_existing_keys() {
         let payload = json!({"watts": 4.2, "nested": {"watts": 99.0}});
         let flattened = flatten_payload(payload);
         assert_eq!(flattened["watts"], json!(4.2));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_flat_payload_is_unchanged() {
         let payload = json!({"watts": 4.2, "ok": true});
         let flattened = flatten_payload(payload);
         assert_eq!(flattened, json!({"watts": 4.2, "ok": true}));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_non_object_passthrough() {
         let payload = json!(42.0);
         assert_eq!(flatten_payload(payload), json!(42.0));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_merges_multiple_nested_objects() {
         let payload = json!({"a": {"x": 1.0}, "b": {"y": 2.0}});
         let flattened = flatten_payload(payload);
@@ -527,7 +485,7 @@ mod tests {
         assert_eq!(flattened["a"]["x"], json!(1.0));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_ignores_non_object_values() {
         let payload = json!({"a": 1, "b": "str", "c": [1, 2], "d": {"z": 3}});
         let flattened = flatten_payload(payload);
@@ -537,7 +495,7 @@ mod tests {
         assert_eq!(flattened["z"], json!(3));
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_only_hoists_one_level() {
         let payload = json!({"a": {"b": {"c": 1}}});
         let flattened = flatten_payload(payload);
@@ -546,7 +504,7 @@ mod tests {
         assert!(flattened.get("c").is_none());
     }
 
-    #[test]
+    #[test_log::test]
     fn test_flatten_empty_payload_is_unchanged() {
         let payload = json!({});
         assert_eq!(flatten_payload(payload), json!({}));

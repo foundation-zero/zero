@@ -2,8 +2,9 @@ import asyncio
 import json
 import logging
 import re
+from pathlib import Path
 from secrets import token_hex
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
 from faststream import FastStream
 from faststream.mqtt import MQTTBroker, ReconnectConfig
@@ -11,6 +12,7 @@ from pydantic import BaseModel, Field
 from pydantic_settings import (
     BaseSettings,
     CliApp,
+    CliPositionalArg,
     CliSubCommand,
     SettingsConfigDict,
 )
@@ -24,7 +26,6 @@ from zero_power_tags.io import (
     build_asyncapi,
     create_publisher,
     read_modbus_bridge_specs,
-    read_topics_metadata,
 )
 
 logging.basicConfig(
@@ -252,20 +253,21 @@ class TuiCmd(BaseSettings):
 class AsyncApiCmd(BaseSettings):
     title: str = "Power Tags"
     version: str = "1.0.0"
+    output_file: Annotated[
+        CliPositionalArg[Path],
+        Field(description="File to store the resulting asyncapi"),
+    ]
 
     def cli_cmd(self) -> None:
         # FastStream derives specs from publishers registered on a broker,
-        # so print-asyncapi registers the same publisher shape as run.
-        print(
-            json.dumps(
-                build_asyncapi(self.title, self.version), indent=2, ensure_ascii=False
+        # so generate-asyncapi registers the same publisher shape as run.
+        with self.output_file.open("w") as result_file:
+            json.dump(
+                build_asyncapi(self.title, self.version),
+                result_file,
+                indent=2,
+                ensure_ascii=False,
             )
-        )
-
-
-class MetadataCmd(BaseSettings):
-    def cli_cmd(self) -> None:
-        print(json.dumps(read_topics_metadata(), indent=2, ensure_ascii=False))
 
 
 class ZeroPowerTags(BaseSettings, cli_kebab_case=True):
@@ -274,8 +276,7 @@ class ZeroPowerTags(BaseSettings, cli_kebab_case=True):
     run: CliSubCommand[RunCmd]
     stub: CliSubCommand[StubCmd]
     tui: CliSubCommand[TuiCmd]
-    print_asyncapi: CliSubCommand[AsyncApiCmd]
-    print_metadata: CliSubCommand[MetadataCmd]
+    generate_asyncapi: CliSubCommand[AsyncApiCmd]
 
     def cli_cmd(self) -> None:
         try:

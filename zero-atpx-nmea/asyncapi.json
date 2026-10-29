@@ -6,7 +6,7 @@
     "description": "Zero ATPX NMEA bridges A+T's raw NMEA 0183 stream onto our own MQTT broker. It subscribes to `atpx/nmea0183/<sender>/<TYPE>` on **A+T's onboard broker** (the ATPX MQTT host), parses each sentence with pynmea2 into a JSON envelope, and republishes it to `atpx/processed/nmea/<type>/<sender>` on **our own MQTT broker** (the output MQTT host).\n\n**Known-type scope.** The documented type set below is the known/supported subset for which this service has been tested with real A+T data. The service subscribes to `atpx/nmea0183/#` and parses any type pynmea2 or our registered custom parsers support, including types not listed here \u2014 an undocumented type carries whatever fields pynmea2 produces rather than a curated schema, while unparseable sentences are dropped. Adding a new documented type is a one-line corpus addition plus a spec regeneration."
   },
   "channels": {
-    "atpx/nmea0183/{sender}/{TYPE}": {
+    "atpx_nmea0183_sender_TYPE": {
       "address": "atpx/nmea0183/{sender}/{TYPE}",
       "title": "Raw NMEA 0183 input from A+T broker",
       "description": "Raw NMEA 0183 sentences published by A+T's onboard systems. ``{sender}`` identifies the A+T device (e.g. ``3143``, ``3145``), ``{TYPE}`` is the uppercase NMEA 0183 sentence type (e.g. ``ROT``, ``GGA``).",
@@ -26,7 +26,7 @@
         }
       }
     },
-    "atpx/processed/nmea/rot/{sender}": {
+    "atpx_processed_nmea_rot_sender": {
       "address": "atpx/processed/nmea/rot/{sender}",
       "title": "ROT processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 ROT sentences. ``{sender}`` identifies the originating A+T device.",
@@ -40,9 +40,11 @@
         "rot_envelope": {
           "$ref": "#/components/messages/rot_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/hdt/{sender}": {
+    "atpx_processed_nmea_hdt_sender": {
       "address": "atpx/processed/nmea/hdt/{sender}",
       "title": "HDT processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 HDT sentences. ``{sender}`` identifies the originating A+T device.",
@@ -56,9 +58,11 @@
         "hdt_envelope": {
           "$ref": "#/components/messages/hdt_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/fec/{sender}": {
+    "atpx_processed_nmea_fec_sender": {
       "address": "atpx/processed/nmea/fec/{sender}",
       "title": "FEC processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 FEC sentences. ``{sender}`` identifies the originating A+T device.",
@@ -72,9 +76,11 @@
         "fec_envelope": {
           "$ref": "#/components/messages/fec_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/gga/{sender}": {
+    "atpx_processed_nmea_gga_sender": {
       "address": "atpx/processed/nmea/gga/{sender}",
       "title": "GGA processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 GGA sentences. ``{sender}`` identifies the originating A+T device.",
@@ -88,9 +94,11 @@
         "gga_envelope": {
           "$ref": "#/components/messages/gga_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/dbt/{sender}": {
+    "atpx_processed_nmea_dbt_sender": {
       "address": "atpx/processed/nmea/dbt/{sender}",
       "title": "DBT processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 DBT sentences. ``{sender}`` identifies the originating A+T device.",
@@ -104,9 +112,11 @@
         "dbt_envelope": {
           "$ref": "#/components/messages/dbt_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/dpt/{sender}": {
+    "atpx_processed_nmea_dpt_sender": {
       "address": "atpx/processed/nmea/dpt/{sender}",
       "title": "DPT processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 DPT sentences. ``{sender}`` identifies the originating A+T device.",
@@ -120,9 +130,11 @@
         "dpt_envelope": {
           "$ref": "#/components/messages/dpt_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/gll/{sender}": {
+    "atpx_processed_nmea_gll_sender": {
       "address": "atpx/processed/nmea/gll/{sender}",
       "title": "GLL processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 GLL sentences. ``{sender}`` identifies the originating A+T device.",
@@ -136,9 +148,11 @@
         "gll_envelope": {
           "$ref": "#/components/messages/gll_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/vtg/{sender}": {
+    "atpx_processed_nmea_vtg_sender": {
       "address": "atpx/processed/nmea/vtg/{sender}",
       "title": "VTG processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 VTG sentences. ``{sender}`` identifies the originating A+T device.",
@@ -152,9 +166,11 @@
         "vtg_envelope": {
           "$ref": "#/components/messages/vtg_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/vbw/{sender}": {
+    "atpx_processed_nmea_vbw_sender": {
       "address": "atpx/processed/nmea/vbw/{sender}",
       "title": "VBW processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 VBW sentences. ``{sender}`` identifies the originating A+T device.",
@@ -168,9 +184,11 @@
         "vbw_envelope": {
           "$ref": "#/components/messages/vbw_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/zda/{sender}": {
+    "atpx_processed_nmea_zda_sender": {
       "address": "atpx/processed/nmea/zda/{sender}",
       "title": "ZDA processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 ZDA sentences. ``{sender}`` identifies the originating A+T device.",
@@ -184,9 +202,11 @@
         "zda_envelope": {
           "$ref": "#/components/messages/zda_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/vhw/{sender}": {
+    "atpx_processed_nmea_vhw_sender": {
       "address": "atpx/processed/nmea/vhw/{sender}",
       "title": "VHW processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 VHW sentences. ``{sender}`` identifies the originating A+T device.",
@@ -200,9 +220,11 @@
         "vhw_envelope": {
           "$ref": "#/components/messages/vhw_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/vlw/{sender}": {
+    "atpx_processed_nmea_vlw_sender": {
       "address": "atpx/processed/nmea/vlw/{sender}",
       "title": "VLW processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 VLW sentences. ``{sender}`` identifies the originating A+T device.",
@@ -216,9 +238,11 @@
         "vlw_envelope": {
           "$ref": "#/components/messages/vlw_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/rmc/{sender}": {
+    "atpx_processed_nmea_rmc_sender": {
       "address": "atpx/processed/nmea/rmc/{sender}",
       "title": "RMC processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 RMC sentences. ``{sender}`` identifies the originating A+T device.",
@@ -232,9 +256,11 @@
         "rmc_envelope": {
           "$ref": "#/components/messages/rmc_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/alr/{sender}": {
+    "atpx_processed_nmea_alr_sender": {
       "address": "atpx/processed/nmea/alr/{sender}",
       "title": "ALR processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 ALR sentences. ``{sender}`` identifies the originating A+T device.",
@@ -248,9 +274,11 @@
         "alr_envelope": {
           "$ref": "#/components/messages/alr_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/alc/{sender}": {
+    "atpx_processed_nmea_alc_sender": {
       "address": "atpx/processed/nmea/alc/{sender}",
       "title": "ALC processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 ALC sentences. ``{sender}`` identifies the originating A+T device.",
@@ -264,9 +292,11 @@
         "alc_envelope": {
           "$ref": "#/components/messages/alc_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     },
-    "atpx/processed/nmea/pos/{sender}": {
+    "atpx_processed_nmea_pos_sender": {
       "address": "atpx/processed/nmea/pos/{sender}",
       "title": "POS processed envelope",
       "description": "Parsed JSON envelope for NMEA 0183 POS sentences. ``{sender}`` identifies the originating A+T device.",
@@ -280,110 +310,112 @@
         "pos_envelope": {
           "$ref": "#/components/messages/pos_envelope"
         }
-      }
+      },
+      "x-group-topic-metadata": {},
+      "x-group-by": "sender"
     }
   },
   "operations": {
     "receive_raw_nmea": {
       "action": "receive",
       "channel": {
-        "$ref": "#/channels/atpx~1nmea0183~1%7Bsender%7D~1%7BTYPE%7D"
+        "$ref": "#/channels/atpx_nmea0183_sender_TYPE"
       }
     },
     "send_rot_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1rot~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_rot_sender"
       }
     },
     "send_hdt_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1hdt~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_hdt_sender"
       }
     },
     "send_fec_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1fec~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_fec_sender"
       }
     },
     "send_gga_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1gga~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_gga_sender"
       }
     },
     "send_dbt_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1dbt~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_dbt_sender"
       }
     },
     "send_dpt_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1dpt~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_dpt_sender"
       }
     },
     "send_gll_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1gll~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_gll_sender"
       }
     },
     "send_vtg_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1vtg~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_vtg_sender"
       }
     },
     "send_vbw_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1vbw~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_vbw_sender"
       }
     },
     "send_zda_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1zda~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_zda_sender"
       }
     },
     "send_vhw_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1vhw~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_vhw_sender"
       }
     },
     "send_vlw_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1vlw~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_vlw_sender"
       }
     },
     "send_rmc_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1rmc~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_rmc_sender"
       }
     },
     "send_alr_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1alr~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_alr_sender"
       }
     },
     "send_alc_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1alc~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_alc_sender"
       }
     },
     "send_pos_envelope": {
       "action": "send",
       "channel": {
-        "$ref": "#/channels/atpx~1processed~1nmea~1pos~1%7Bsender%7D"
+        "$ref": "#/channels/atpx_processed_nmea_pos_sender"
       }
     }
   },

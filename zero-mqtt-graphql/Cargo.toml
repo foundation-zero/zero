@@ -1,31 +1,36 @@
 [package]
 name = "zero-mqtt-graphql"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-tokio = { version = "1.43", features = ["full", "sync"] }
+jsonschema = { version = "0.60.2", default-features = false }
+tokio = { version = "1.54.1", features = ["full", "sync"] }
 axum = "0.8"
-async-graphql = { version = "7.2", features = ["dynamic-schema"] }
-rumqttc = "0.25"
+async-graphql = { version = "8.0.0-rc.5", features = ["dynamic-schema"] }
+rumqttc = "0.25.1"
 dashmap = "6.2"
 serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-tower-http = { version = "0.7", features = ["cors"] }
-clap = { version = "4.5", features = ["derive"] }
-config = "0.15"
+serde_json = "1.0.154"
+tower-http = { version = "0.7.1", features = ["cors"] }
+clap = { version = "4.6.7", features = ["derive"] }
+config = "0.15.27"
 dotenvy = "0.15"
 anyhow = "1.0"
-env_logger = "0.11"
-log = "0.4"
+env_logger = "0.11.11"
+log = "0.4.34"
 roas-asyncapi = { version = "0.4.0", features = ["v3_0"] }
-jsonschema = { version = "0.60", default-features = false }
 
 [lints.rust]
 warnings = "deny"
 
 [lints.clippy]
 result_large_err = "deny"
+dbg_macro = "warn"
+pedantic = { level = "warn", priority = -1 }
+doc_markdown = "allow"
+missing_errors_doc = "allow"
 
 [dev-dependencies]
 tower = { version = "=0.5.3", features = ["util"] }
+test-log = "0.2.21"

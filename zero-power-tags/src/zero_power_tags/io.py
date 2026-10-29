@@ -177,37 +177,6 @@ def parse_topic(t: dict, panel: str) -> ModbusTopic:
     )
 
 
-def read_topics_metadata() -> dict[str, Any]:
-    """Build the generic topic-metadata document consumed by zero-mqtt-graphql.
-
-    One entry per breaker: the concrete MQTT topic plus static attributes.
-    Panel/slug mirror the topic segments; component/consumer carry the
-    human-readable identity from the Excel sources and patches.
-    """
-    raw = _read_bridges()
-
-    entries = [
-        _metadata_entry(unit["panel"], topic_raw)
-        for unit in raw
-        for topic_raw in unit["topics"]
-    ]
-    group = entries[0]["topic"].split("/")[0] if entries else TOPIC_PREFIX
-    return {"group": group, "group_by": "panel", "topics": entries}
-
-
-def _metadata_entry(panel: str, topic_raw: dict) -> dict[str, Any]:
-    extras = _extra_fields(topic_raw)
-    return {
-        "topic": build_topic(panel, topic_raw["name"]),
-        "metadata": {
-            "panel": extras.get("panel") or panel,
-            "slug": topic_raw["name"],
-            "component": extras.get("component"),
-            "consumer": extras.get("consumer"),
-        },
-    }
-
-
 def topic_parameters(specs: list[BridgeSpec]) -> dict[str, dict[str, Any]]:
     """AsyncAPI channel parameters (enums) collected from the bridge specs."""
     panels = sorted({spec.panel for spec in specs})
@@ -251,4 +220,21 @@ def build_asyncapi(title: str = "Power Tags", version: str = "1.0.0") -> dict[st
     doc = (
         AsyncAPI(broker, title=title, version=version).to_specification().to_jsonable()
     )
-    return finalize_parametrized_spec(doc, publisher.parameters)
+    doc = finalize_parametrized_spec(doc, publisher.parameters)
+    add_spec_metadata(doc, specs)
+    return doc
+
+
+def add_spec_metadata(doc: dict[str, Any], specs: list[BridgeSpec]) -> None:
+    for channel in doc.get("channels", {}).values():
+        if "{" in channel.get("address", ""):
+            channel["x-group-by"] = "panel"
+            channel["x-group-topic-metadata"] = {
+                topic.topic: {
+                    "panel": spec.panel,
+                    "slug": topic.topic.rsplit("/", 1)[-1],
+                    **topic.extra_fields,
+                }
+                for spec in specs
+                for topic in spec.topics
+            }

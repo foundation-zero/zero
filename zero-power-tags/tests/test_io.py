@@ -7,12 +7,12 @@ from zero_modbus_bridge.io import ModbusTopic, RegisterValue
 from zero_power_tags.io import (
     BridgeSpec,
     PowerTag,
+    add_spec_metadata,
     build_asyncapi,
     modbus_host_env,
     modbus_port_env,
     parse_topic,
     read_modbus_bridge_specs,
-    read_topics_metadata,
 )
 
 
@@ -182,88 +182,39 @@ class TestReadModbusBridgeSpecs:
         assert all(isinstance(spec, BridgeSpec) and spec.topics for spec in specs)
 
 
-class TestReadTopicsMetadata:
-    """read_topics_metadata transforms bridges JSON into the metadata document."""
-
-    def _write_bridges(self, tmp_path: Path, units: list[dict]) -> Path:
-        path = tmp_path / "bridges.json"
-        path.write_text(json.dumps(units), encoding="utf-8")
-        return path
-
-    def test_metadata_entry_fields(self, tmp_path: Path):
-        bridges = self._write_bridges(
-            tmp_path,
-            [
-                {
-                    "panel": "10P1",
-                    "topics": [
-                        {
-                            "name": "test-consumer",
-                            "extra_fields": [
-                                {"field_name": "component", "value": "150F01"},
-                                {"field_name": "panel", "value": "10P1"},
-                                {"field_name": "consumer", "value": "TEST CONSUMER"},
-                            ],
-                        }
-                    ],
-                }
+def test_add_spec_metadata():
+    doc = {"channels": {"test_channel": {"address": "test/{panel}"}}}
+    specs = [
+        BridgeSpec(
+            panel="10P1",
+            topics=[
+                parse_topic(
+                    {
+                        "name": "test-consumer",
+                        "unit_id": 1,
+                        "extra_fields": [
+                            {"field_name": "component", "value": "150F01"},
+                            {"field_name": "panel", "value": "10P1"},
+                            {"field_name": "consumer", "value": "TEST CONSUMER"},
+                        ],
+                    },
+                    "10P1",
+                )
             ],
         )
-        with pytest.MonkeyPatch.context() as mp:
-            mp.setenv("MODBUS_BRIDGES_PATH", str(bridges))
-            doc = read_topics_metadata()
+    ]
 
-        assert doc["group"] == "power-tags"
-        assert doc["topics"] == [
-            {
-                "topic": "power-tags/10P1/test-consumer",
-                "metadata": {
-                    "panel": "10P1",
-                    "slug": "test-consumer",
-                    "component": "150F01",
-                    "consumer": "TEST CONSUMER",
-                },
-            }
-        ]
+    add_spec_metadata(doc, specs)
 
-    def test_missing_attributes_are_none(self, tmp_path: Path):
-        bridges = self._write_bridges(
-            tmp_path,
-            [
-                {
-                    "panel": "x",
-                    "topics": [
-                        {
-                            "name": "y",
-                            "extra_fields": {"component": "1F01"},
-                        }
-                    ],
-                }
-            ],
-        )
-        with pytest.MonkeyPatch.context() as mp:
-            mp.setenv("MODBUS_BRIDGES_PATH", str(bridges))
-            entry = read_topics_metadata()["topics"][0]
-
-        assert entry["metadata"]["component"] == "1F01"
-        assert entry["metadata"]["consumer"] is None
-        assert entry["metadata"]["panel"] == "x"
-        assert entry["metadata"]["slug"] == "y"
-
-    def test_project_metadata_is_complete(self):
-        """The checked-in bridges file yields full metadata for every breaker."""
-        with pytest.MonkeyPatch.context() as mp:
-            mp.delenv("MODBUS_BRIDGES_PATH", raising=False)
-            doc = read_topics_metadata()
-
-        topics = doc["topics"]
-        assert len(topics) > 0
-        assert all(t["topic"].startswith("power-tags/") for t in topics)
-        assert all(
-            None not in t["metadata"].values()
-            and set(t["metadata"]) == {"panel", "slug", "component", "consumer"}
-            for t in topics
-        )
+    assert doc["channels"]["test_channel"]["x-group-by"] == "panel"
+    assert doc["channels"]["test_channel"]["x-group-topic-metadata"] == {
+        "power-tags/10P1/test-consumer": {
+            "panel": "10P1",
+            "slug": "test-consumer",
+            "component": "150F01",
+            "consumer": "TEST CONSUMER",
+        },
+    }
 
 
 class TestBuildAsyncapi:

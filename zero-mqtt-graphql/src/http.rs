@@ -1,10 +1,10 @@
-use async_graphql::dynamic::Schema;
+use async_graphql::{dynamic::Schema, http::GraphiQLSource};
 use axum::{
+    Json, Router,
     extract::Extension,
     http::StatusCode,
     response::Html,
     routing::{get, post},
-    Json, Router,
 };
 use log::warn;
 use tower_http::cors::{Any, CorsLayer};
@@ -18,7 +18,8 @@ pub fn router(schema: Schema) -> Router {
         .expose_headers(Any);
 
     Router::new()
-        .route("/graphql", post(graphql_handler).get(graphql_playground))
+        .route("/", get(graphql_playground))
+        .route("/graphql", post(graphql_handler))
         .route("/health", get(health))
         .layer(cors)
         .layer(Extension(schema))
@@ -38,9 +39,7 @@ async fn graphql_handler(
 }
 
 async fn graphql_playground() -> Html<String> {
-    Html(async_graphql::http::playground_source(
-        async_graphql::http::GraphQLPlaygroundConfig::new("/graphql"),
-    ))
+    Html(GraphiQLSource::build().endpoint("/graphql").finish())
 }
 
 /// Liveness probe. Deliberately does not touch the MQTT connection: a
