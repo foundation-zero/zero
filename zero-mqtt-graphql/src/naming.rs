@@ -1,17 +1,12 @@
-/// Sanitize a topic name to lowerCamelCase (for GraphQL query fields).
-#[must_use]
-pub fn sanitize_to_graphql_name(raw: &str) -> String {
-    to_camel_case(raw)
-}
-
-/// Convert a raw identifier to lowerCamelCase.
+/// Convert a raw identifier to lowerCamelCase like graphql compatible strings.
 ///
 /// Tokens are split on every non-alphanumeric character, so `a/b-c` and
 /// `a_b_c` both become `aBC`. A leading digit is prefixed with `_` to keep
 /// the result a valid GraphQL name, and an underscore is inserted between two
 /// adjacent digit-only tokens (`string1-2` → `string1_2`) so that `string1-2`
 /// and `string12` cannot collide after sanitization.
-fn to_camel_case(raw: &str) -> String {
+#[must_use]
+pub fn sanitize_to_graphql_name(raw: &str) -> String {
     let parts = split_to_words(raw);
     if parts.is_empty() {
         return String::new();
@@ -58,9 +53,9 @@ fn split_to_words(raw: &str) -> Vec<String> {
     words
 }
 
-/// PascalCase form of a group id (`power-tags` → `PowerTags`).
+/// PascalCase form of a sanitized graphql name (`power-tags` → `PowerTags`).
 #[must_use]
-pub fn pascal_case(name: &str) -> String {
+pub fn pascal_case_graphql_name(name: &str) -> String {
     let camel = sanitize_to_graphql_name(name);
     let mut chars = camel.chars();
     match chars.next() {
@@ -140,7 +135,7 @@ mod tests {
 
     #[test_log::test]
     fn test_pascal_case() {
-        assert_eq!(pascal_case("power-tags"), "PowerTags");
-        assert_eq!(pascal_case(""), "");
+        assert_eq!(pascal_case_graphql_name("power-tags"), "PowerTags");
+        assert_eq!(pascal_case_graphql_name(""), "");
     }
 }
