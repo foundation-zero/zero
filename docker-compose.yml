@@ -323,11 +323,9 @@ services:
   # ---- loads ----
   loads-api:
     command: api
-    build: &loads_build
+    build:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
-      cache_from:
-        - europe-west1-docker.pkg.dev/common-449414/buildcache/zero-loads-app:main
     ports:
       - 5101:5101
     profiles:
@@ -340,7 +338,9 @@ services:
 
   loads-conditions-stub:
     command: conditions-stub
-    build: *loads_build
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
     profiles:
       - loads-dev
     environment:
@@ -351,7 +351,9 @@ services:
 
   loads-at-sensors-stub:
     command: at-sensors-stub
-    build: *loads_build
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
     profiles:
       - loads
     environment:
@@ -362,7 +364,9 @@ services:
 
   loads-fiber-optic-sensors-stub:
     command: fiber-optic-sensors-stub
-    build: *loads_build
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
     profiles:
       - loads
     environment:
@@ -373,7 +377,9 @@ services:
 
   loads-sail-system-sensors-stub:
     command: sail-system-sensors-stub
-    build: *loads_build
+    build:
+      context: .
+      dockerfile: ./zero-loads-app/Dockerfile
     profiles:
       - loads
     environment:
@@ -388,8 +394,6 @@ services:
       context: ./zero-thrs-control
       dockerfile: Dockerfile
       target: api
-      cache_from:
-        - europe-west1-docker.pkg.dev/common-449414/buildcache/zero-thrs-api:main
     profiles:
       - thrs
     ports:
@@ -423,8 +427,6 @@ services:
       context: ./zero-thrs-control
       dockerfile: Dockerfile
       target: control
-      cache_from:
-        - europe-west1-docker.pkg.dev/common-449414/buildcache/zero-thrs-control:main
     profiles:
       - thrs
     environment:
