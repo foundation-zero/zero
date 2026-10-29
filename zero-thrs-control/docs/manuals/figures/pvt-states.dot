@@ -1,0 +1,27 @@
+// Operating states of one PVT group.
+// Redrawn for the manual from the machine in src/thrs/control/modules/pvt_group.py.
+// All three groups (main forward, main aft, owners) run this machine independently.
+// Check against: uv run python .../module_facts.py pvt --diagram /tmp/pvt-truth.png
+digraph pvt_states {
+  rankdir=TB;
+  bgcolor="white";
+  nodesep=0.5;
+  ranksep=1.0;
+  node [shape=box, style="rounded,filled", fillcolor="#f4f4f4", color="#333333",
+        fontname="Helvetica", fontsize=10, margin="0.2,0.12"];
+  edge [fontname="Helvetica", fontsize=9, color="#333333"];
+
+  idle [fillcolor="#e0e0e0", label=<<b>Idle</b><br align="left"/>
+      <font point-size="9">on entry: set the mix valve to full recirculation,<br align="left"/>
+      stop the pump<br align="left"/></font>>];
+
+  recovery [label=<<b>Recovery</b><br align="left"/>
+      <font point-size="9">on entry: start the pump, enable warm-up mixing control<br align="left"/>
+      and pump flow control<br align="left"/>
+      the mix valve holds the return at warmup_temperature,<br align="left"/>
+      then opens to the high temperature circuit; the pump<br align="left"/>
+      then holds the return at recovery_temperature<br align="left"/></font>>];
+
+  idle -> recovery [label="  the warmest string return rises above\l  recovery_activation_string_temperature\l"];
+  recovery -> idle [label="  the group return temperature falls below\l  minimum_return_temperature\l"];
+}
