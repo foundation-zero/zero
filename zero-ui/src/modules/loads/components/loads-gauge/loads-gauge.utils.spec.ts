@@ -11,8 +11,8 @@ import {
   POINT_ARC_RADIUS,
   START_ANGLE,
   TOTAL_AMOUNT_OF_POINTS,
-  type GaugeStep,
 } from ".";
+import type { GaugeStep } from "./loads-gauge.types";
 
 const makeTick = (index: number, color: Colors): GaugeStep => ({
   x: 0,
