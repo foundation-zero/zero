@@ -7,6 +7,8 @@ on:
       - zero-ui/**
       - zero-loads-app/**
       - zero-thrs-control/**
+      - docker-compose.yml
+      - hasura/**
   release:
     types: [released]
   push:
@@ -18,6 +20,8 @@ on:
       - zero-ui/**
       - zero-loads-app/**
       - zero-thrs-control/**
+      - docker-compose.yml
+      - hasura/**
 
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/zero-ui"

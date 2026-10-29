@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - zero-data/**
+      - docker-compose.yml
       - .github/workflows/ci_zero_data.yaml
       - .github/actions/coverage-report/**
   release:
@@ -12,6 +13,7 @@ on:
       - main
     paths:
       - zero-data/**
+      - docker-compose.yml
       - .github/workflows/ci_zero_data.yaml
       - .github/actions/coverage-report/**
 

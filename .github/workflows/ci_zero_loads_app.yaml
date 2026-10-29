@@ -5,8 +5,9 @@ on:
       - zero-loads-app/**
       - data/**
       - zero-generator/**
-      - hasura/seeds/zero/loads.sql
       - zero-ui/src/modules/loads/lib/consts.dashboards.ts
+      - docker-compose.yml
+      - hasura/**
       - .github/workflows/ci_zero_loads_app.yaml
       - .github/actions/coverage-report/**
   release:
@@ -18,8 +19,9 @@ on:
       - zero-loads-app/**
       - data/**
       - zero-generator/**
-      - hasura/seeds/zero/loads.sql
       - zero-ui/src/modules/loads/lib/consts.dashboards.ts
+      - docker-compose.yml
+      - hasura/**
       - .github/workflows/ci_zero_loads_app.yaml
       - .github/actions/coverage-report/**
 

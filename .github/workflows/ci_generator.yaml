@@ -4,6 +4,7 @@ on:
     paths:
       - zero-generator/**
       - zero-loads-app/**
+      - docker-compose.yml
       - .github/workflows/ci_generator.yaml
       - .github/actions/coverage-report/**
   release:
@@ -14,6 +15,7 @@ on:
     paths:
       - zero-generator/**
       - zero-loads-app/**
+      - docker-compose.yml
       - .github/workflows/ci_generator.yaml
       - .github/actions/coverage-report/**
 
