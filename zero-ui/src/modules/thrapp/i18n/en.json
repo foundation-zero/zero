@@ -911,6 +911,10 @@
       "thruster": {
         "title": "Asset - Thruster",
         "description": "The properties are rendered based upon relevant sensor values of the asset."
+      },
+      "adsorptionChiller": {
+        "title": "Asset - Adsorption chiller",
+        "description": "The properties are rendered based upon relevant sensor values of the asset."
       }
     },
     "components": {

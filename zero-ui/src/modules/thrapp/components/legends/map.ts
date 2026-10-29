@@ -133,6 +133,7 @@ export const MIMIC_LEGEND_MAP: Partial<Record<MimicKey, LegendMap>> = {
     [MimicComponentType.ExpansionValve]: true,
   },
   adsorption: {
+    [MimicComponentType.AdsorptionChiller]: true,
     [MimicComponentType.ExchangeCircuit]: true,
     [MimicComponentType.FreshwaterCircuit]: true,
     [MimicComponentType.SeawaterCircuit]: true,
