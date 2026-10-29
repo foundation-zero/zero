@@ -141,7 +141,7 @@ models:
         description: "Power consumption of the 24V DC device aggregated per minute."
         tests:
           - not_null
-  - name: gld_aradex_power_per_minute
+  - name: gld_aradex_power_per_minute_per_main_group
     description: >
       Aradex power aggregated per minute.
       Materialized as a view in the `views` database.
