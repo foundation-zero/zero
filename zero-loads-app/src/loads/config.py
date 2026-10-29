@@ -29,6 +29,13 @@ class Settings(BaseSettings):
     mqtt_stub_client_id: str = Field(
         default_factory=lambda: f"loads-stub-{token_hex(4)}"
     )
+    mqtt_max_message_age_s: float = Field(
+        default=30,
+        gt=0,
+        description="Values from a topic without a message for this long are "
+        "reported as missing; set above the slowest re-publish interval (10 s for "
+        "the sail system PLC)",
+    )
 
     @property
     def pg_url(self) -> str:

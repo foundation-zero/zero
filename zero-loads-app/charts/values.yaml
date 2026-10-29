@@ -10,6 +10,8 @@ mqtt:
   port: 1883
   existingSecret:
   existingSecretPasswordKey: password
+  # Above the slowest re-publish interval (10 s for the sail system PLC)
+  maxMessageAgeSeconds: 30
 
 postgresql:
   host:

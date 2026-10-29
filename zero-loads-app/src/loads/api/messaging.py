@@ -1,7 +1,8 @@
 # Adapted from THRS messaging (zero-thrs-control/src/thrs/graphql/messaging.py)
 
-import asyncio
 import logging
+import time
+from datetime import timedelta
 from typing import Any, Callable, Coroutine
 
 from aiomqtt import Client as MqttClient
@@ -17,18 +18,32 @@ logger = logging.getLogger(__name__)
 class MessageReceiver[T: LoadsModel]:
     """Receiver for MQTT messages of a specific type and topic."""
 
-    def __init__(self, cls: type[T], topic: str):
+    def __init__(
+        self,
+        cls: type[T],
+        topic: str,
+        max_age: timedelta,
+        clock: Callable[[], float],
+    ):
         self._cls = cls
         self._last: T | None = None
-        self._msgs = asyncio.Queue[T]()
+        self._received_at: float | None = None
+        self._max_age_s = max_age.total_seconds()
+        self._clock = clock
         self._topic = topic
 
     @property
     def last(self) -> T | None:
+        """The last message, or None when none arrived within the max age."""
+        if self._received_at is None:
+            return None
+        if self._clock() - self._received_at > self._max_age_s:
+            return None
         return self._last
 
     async def handle(self, msg: T):
         self._last = msg
+        self._received_at = self._clock()
 
     @property
     def cls(self):
@@ -48,13 +63,17 @@ class Messaging:
         modules: list[MessagingModule],
         variable_definitions: dict[str, VariableDefinition],
         alarm_definitions: dict[str, AlarmDefinition],
+        max_message_age: timedelta,
+        clock: Callable[[], float] = time.monotonic,
     ):
         self._mqtt_client = mqtt_client
         self._modules = modules
         self._variable_definitions = variable_definitions
         self._alarm_definitions = alarm_definitions
         self._receivers: dict[str, MessageReceiver] = {
-            topic: MessageReceiver(cls=model, topic=topic)
+            topic: MessageReceiver(
+                cls=model, topic=topic, max_age=max_message_age, clock=clock
+            )
             for module in self._modules
             for topic, model in module._mapping.items()
         }
