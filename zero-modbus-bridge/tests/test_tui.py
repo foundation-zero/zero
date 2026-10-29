@@ -139,6 +139,27 @@ async def test_tui_edit_flow_writes_to_handler():
         assert handler.read_float(3, 100) == 23.5
 
 
+async def test_tui_edit_rejects_invalid_value():
+    topic = _sensor_topic()
+    handler = MultiUnitDataHandler([topic], float_default=20.0)
+    tab = _ServerTab(title="stub", handler=handler, rows=build_rows([topic]))
+    app = StubTui([tab])
+    notifications: list[tuple[str, str]] = []
+    app.notify = lambda message, severity="information", **_: notifications.append(
+        (message, severity)
+    )
+
+    async with app.run_test() as pilot:
+        app.query_one(DataTable).focus()
+        await pilot.press("enter")
+        app.screen.query_one(Input).value = ""
+        await pilot.press(*"abc")
+        await pilot.press("enter")
+
+        assert notifications == [("Invalid value: 'abc'", "error")]
+        assert handler.read_float(3, 100) == 20.0
+
+
 async def test_tui_scrolls_cursor_past_the_fold():
     topics: list[ModbusTopic] = [
         _sensor_topic(start_register=1000 + index * 10) for index in range(46)
