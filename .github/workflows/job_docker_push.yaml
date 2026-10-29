@@ -1,0 +1,84 @@
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: "Image name in the common registry; also names its buildcache ref"
+        type: string
+        required: true
+      context:
+        description: "Docker build context"
+        type: string
+        required: true
+      dockerfile:
+        description: "Path to the Dockerfile (default: <context>/Dockerfile)"
+        type: string
+        required: false
+      target:
+        description: "Build stage to target"
+        type: string
+        required: false
+      platforms:
+        description: "Comma-separated target platforms"
+        type: string
+        default: "linux/amd64,linux/arm64"
+      artifact-name:
+        description: "Artifact downloaded into <context>/<artifact-name> before building"
+        type: string
+        required: false
+env:
+  IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/${{ inputs.image }}"
+  CACHE: "europe-west1-docker.pkg.dev/common-449414/buildcache/${{ inputs.image }}:main"
+jobs:
+  docker-push:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Generate Version
+        id: version
+        uses: ./.github/actions/generate-version
+      - name: Download ${{ inputs.artifact-name }} artifact
+        if: ${{ inputs.artifact-name }}
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.context }}/${{ inputs.artifact-name }}
+      # Set up in https://github.com/foundation-zero/gcp-common
+      - id: auth
+        name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          token_format: access_token
+          project_id: ${{ secrets.GCP_COMMON_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_COMMON_SERVICE_ACCOUNT }}
+          access_token_lifetime: 600s
+      - name: Login to Artifact Registry
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4
+        with:
+          registry: europe-west1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
+        with:
+          images: ${{ env.IMAGE }}
+          tags: type=raw,value=${{ steps.version.outputs.version }}
+      - name: Build and push
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
+        with:
+          context: ${{ inputs.context }}
+          file: ${{ inputs.dockerfile }}
+          target: ${{ inputs.target }}
+          push: true
+          platforms: ${{ inputs.platforms }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.CACHE }}
+          cache-to: ${{ github.ref == 'refs/heads/main' && format('type=registry,ref={0},mode=max,ignore-error=true', env.CACHE) || '' }}

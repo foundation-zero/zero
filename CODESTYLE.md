@@ -582,6 +582,9 @@ depend on it.
 from git tags). Rust uses `Cargo.toml` version + short SHA. CI apps use
 `docker/metadata-action` (semver + sha).
 
+**Docker images:** Workflows delegate to the reusable `job_docker_push.yaml` (only
+`zero-data` keeps its own job for its second GHCR image).
+
 **Helm charts:** Workflows delegate to the reusable `job_helm_push.yaml`.
 Charts are pushed as OCI artifacts to GCP Artifact Registry.
 
