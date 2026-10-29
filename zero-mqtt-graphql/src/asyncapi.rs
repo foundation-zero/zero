@@ -257,6 +257,11 @@ fn topic_from_channel(
     }
 
     let (fields, payload_schema_ref, _) = message_fields(channel_ref, channel, doc);
+    debug!(
+        "Parsed channel {} with {} fields",
+        channel_name,
+        fields.len()
+    );
 
     Ok(Some(TopicDef {
         topic: mqtt_topic,
@@ -402,22 +407,31 @@ fn message_fields(
         .into_iter()
         .next()
     else {
+        info!("Channel {} has no message", channel_ref.reference);
         return (Vec::new(), None, None);
     };
     // The message payload may be inline or a `$ref` into components
     let Some(payload_ref) = &message.payload else {
+        info!("Channel {} message has no payload", channel_ref.reference);
         return (Vec::new(), None, None);
     };
 
     let (schema_or_multi, payload_schema_ref, payload_schema) = match payload_ref {
-        RefOr::Reference(payload_reference) => match resolve_payload_schema(payload_ref, doc) {
-            Some(schema_or_multi) => (
-                schema_or_multi,
-                Some(payload_reference.reference.clone()),
-                serde_json::to_value(schema_or_multi).ok(),
-            ),
-            None => return (Vec::new(), None, None),
-        },
+        RefOr::Reference(payload_reference) => {
+            if let Some(schema_or_multi) = resolve_payload_schema(payload_ref, doc) {
+                (
+                    schema_or_multi,
+                    Some(payload_reference.reference.clone()),
+                    serde_json::to_value(schema_or_multi).ok(),
+                )
+            } else {
+                info!(
+                    "Channel {} message payload reference {} does not resolve",
+                    channel_ref.reference, payload_reference.reference
+                );
+                return (Vec::new(), None, None);
+            }
+        }
         RefOr::Item(schema_or_multi) => {
             let schema_ref = format!("{message_ref}/payload");
             let schema_value = serde_json::to_value(schema_or_multi).ok();
@@ -583,10 +597,14 @@ fn extract_fields_from_schema_or_multi(
             if let Ok(schema) = serde_json::from_value::<Schema>(mf.schema.clone()) {
                 extract_fields_from_schema(&schema, doc)
             } else {
+                info!("Payload schema has no fields");
                 Vec::new()
             }
         }
-        SchemaOrMultiFormat::Bool(_) => Vec::new(),
+        SchemaOrMultiFormat::Bool(_) => {
+            info!("Payload schema has no fields");
+            Vec::new()
+        }
     }
 }
 
