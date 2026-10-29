@@ -23,6 +23,7 @@ const manualValveTags = [
   "1177-02",
   "1167-11",
   "1168-19",
+  "1155",
 ];
 
 export const PVT_MANUAL_VALVE_DATA = toFieldsMap({

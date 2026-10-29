@@ -19,23 +19,26 @@ const supportedViews = computed(
       class="backdrop-blur-md"
       as="nav"
     >
-      <RouterLinkWithFallback
+      <template
         v-for="key in modules"
         :key="key"
-        :to="{
-          name: currentRoute.name as string,
-          params: { module: key },
-        }"
-        :disabled="!supportedViews[key]"
       >
-        <TabsTrigger
-          :value="key"
-          class="uppercase"
-          :disabled="!supportedViews[key]"
+        <RouterLinkWithFallback
+          v-if="supportedViews[key]"
+          :to="{
+            name: currentRoute.name as string,
+            params: { module: key },
+          }"
         >
-          {{ key }}
-        </TabsTrigger>
-      </RouterLinkWithFallback>
+          <TabsTrigger
+            :value="key"
+            class="uppercase"
+            :disabled="!supportedViews[key]"
+          >
+            {{ key }}
+          </TabsTrigger>
+        </RouterLinkWithFallback>
+      </template>
     </TabsList>
   </Tabs>
 </template>

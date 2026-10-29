@@ -33,44 +33,44 @@ const { t } = useI18n();
     </BypassArea>
 
     <IrradianceLabelInstance
-      :target-x="-52"
+      :target-x="-46"
       :target-width="PYRANO_METER_WIDTH"
       :source="pyranometers['9044'].source"
-      y="290"
+      y="287.5"
       tag-id="9044"
     />
     <PyranometerInstance
-      x="-52"
-      y="260"
+      x="-44"
+      y="257.5"
       v-bind="pyranometers['9044']"
     />
     <IrradianceLabelInstance
-      :target-x="-52"
+      :target-x="-46"
       :source="pyranometers['9043'].source"
       :target-width="PYRANO_METER_WIDTH"
-      y="390"
+      y="403.5"
       tag-id="9043"
     />
     <PyranometerInstance
-      x="-52"
-      y="360"
+      x="-44"
+      y="372"
       v-bind="pyranometers['9043']"
     />
 
     <PvtInstance
-      x="14"
+      x="22"
       y="30"
       v-bind="pvt['9001-01']"
     />
 
     <PvtInstance
-      x="14"
+      x="22"
       y="241"
       v-bind="pvt['9002-01']"
     />
 
     <PvtInstance
-      x="14"
+      x="22"
       y="500"
       v-bind="pvt['9001-03']"
     />

@@ -4,6 +4,7 @@ from unittest.mock import patch
 from pydantic_settings import CliApp
 
 from zero_termodinamica.cli import RunCmd, StubCmd, ZeroTermodinamica
+from zero_termodinamica.io import read_modbus_topics
 
 
 def test_run_cmd_from_env():
@@ -94,3 +95,21 @@ def test_run_cmd_from_args():
         assert run_cmd.modbus_port == 1502
         assert run_cmd.mqtt_host == "localhost"
         assert run_cmd.mqtt_port == 1884
+
+
+def test_stub_cmd_serves_termodinamica_topics():
+    """Test that StubCmd.cli_cmd starts a stub serving the termodinamica topics."""
+    stub_cmd = StubCmd(
+        modbus_host="127.0.0.1", modbus_port=502, default_register_value=7
+    )
+
+    with patch("zero_termodinamica.cli.Stub") as mock_stub:
+        stub_cmd.cli_cmd()
+
+    settings, topics, default_value = mock_stub.from_settings.call_args.args
+    assert settings is stub_cmd
+    assert [topic.topic for topic in topics] == [
+        topic.topic for topic in read_modbus_topics()
+    ]
+    assert default_value == 7
+    mock_stub.from_settings.return_value.run.assert_called_once_with()

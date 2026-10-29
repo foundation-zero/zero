@@ -6,6 +6,8 @@ generate-asyncapi file="../specs/marpower.json":
 
 check: lint type_check test
 
+check_static: lint_no_fix format type_check
+
 lint:
     uv run ruff check src tests
 

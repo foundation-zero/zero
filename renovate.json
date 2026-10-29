@@ -16,6 +16,12 @@
   ],
   "packageRules": [
     {
+      "description": "docker-compose.yml images follow what runs on board (edge-flux, or the on-board Home Assistant), so we bump them by hand instead of tracking upstream",
+      "matchManagers": ["docker-compose"],
+      "matchFileNames": ["docker-compose.yml"],
+      "enabled": false
+    },
+    {
       "description": "One PR for all non-major Rust crate updates, so they stop conflicting on the shared Cargo.lock files",
       "matchManagers": ["cargo"],
       "matchUpdateTypes": ["minor", "patch"],

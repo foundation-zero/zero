@@ -23,9 +23,9 @@ const connectingCircuits = getTooltipContexts(MimicComponentType.ConnectingCircu
 
     <SeawaterCircuitInstance
       x="595"
-      y="20"
+      y="6"
       width="194"
-      height="85"
+      height="105"
       force-height
       v-bind="seaWaterCircuits['thrusters:seawater']"
     />

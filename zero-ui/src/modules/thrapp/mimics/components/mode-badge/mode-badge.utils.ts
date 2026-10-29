@@ -1,0 +1,137 @@
+import { tScoped } from "@/modules/common/lib/utils";
+import { ThrsModules } from "@/modules/thrapp/lib/consts";
+import {
+  DcAutomaticMode,
+  DhwAutomaticMode,
+  DrivesAutomaticMode,
+  PcmAutomaticMode,
+  PvtAutomaticMode,
+  ThrustersAutomaticMode,
+  useAutomationStore,
+} from "@/modules/thrapp/stores/automation";
+import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
+import { computed, MaybeRef, unref } from "vue";
+import { ModeBadgeMode } from "./mode-badge.consts";
+
+export const useModuleMode = (moduleRef?: MaybeRef<keyof ThrsModules | undefined>) => {
+  const t = tScoped("thrapp.mimics.modeBadge");
+
+  return computed(() => {
+    const module = unref(moduleRef);
+
+    if (!module) {
+      return [];
+    }
+
+    const { control } = useAutomationStore();
+
+    const automaticMode = control?.modules?.[module]?.controlMode?.automaticMode;
+    const advisoryEnabled =
+      control?.modules?.[module]?.sensorValues?.mode?.mode.value === AmcsControlMode.External;
+
+    if (!advisoryEnabled) {
+      return [{ mode: ModeBadgeMode.AdvisoryOff }];
+    } else if (!automaticMode) {
+      return [{ mode: ModeBadgeMode.ManualControl }];
+    } else if (module === "pvt") {
+      const pvtMode = automaticMode as PvtAutomaticMode;
+      const MODES: Record<PvtMode, ModeBadgeMode> = {
+        [PvtMode.Idle]: ModeBadgeMode.Idle,
+        [PvtMode.Warmup]: ModeBadgeMode.BoostingLow,
+        [PvtMode.Recovery]: ModeBadgeMode.Using,
+      };
+
+      return [
+        { mode: MODES[pvtMode.aft.mode], label: t(`modes.pvt.${pvtMode.aft.mode}`, { count: 0 }) },
+        {
+          mode: MODES[pvtMode.fwd.mode],
+          label: t(`modes.pvt.${pvtMode.fwd.mode}`, { count: 1 }),
+        },
+        {
+          mode: MODES[pvtMode.owners.mode],
+          label: t(`modes.pvt.${pvtMode.owners.mode}`, { count: 2 }),
+        },
+      ];
+    } else if (module === "drives") {
+      const drivesMode = automaticMode as DrivesAutomaticMode;
+      const MODES: Record<string, ModeBadgeMode> = {
+        idle: ModeBadgeMode.Idle,
+        propulsion: ModeBadgeMode.Active,
+        shorepower: ModeBadgeMode.Active,
+      };
+
+      return [{ mode: MODES[drivesMode.mode], label: t(`modes.drives.${drivesMode.mode}`) }];
+    } else if (module === "pcm") {
+      const pcmMode = automaticMode as PcmAutomaticMode;
+      const MODES: Record<string, ModeBadgeMode> = {
+        idle: ModeBadgeMode.Idle,
+        supplying: ModeBadgeMode.Using,
+        boosting: ModeBadgeMode.BoostingLow,
+        charging: ModeBadgeMode.Boosting,
+      };
+
+      return [{ mode: MODES[pcmMode.mode], label: t(`modes.pcm.${pcmMode.mode}`) }];
+    } else if (module === "dhw") {
+      const dhwMode = automaticMode as DhwAutomaticMode;
+
+      const BOOSTING_MODES: Record<string, ModeBadgeMode> = {
+        idle: ModeBadgeMode.Idle,
+        boosting_low_temperature: ModeBadgeMode.BoostingLow,
+        boosting_high_temperature: ModeBadgeMode.Boosting,
+        boosting_heatpump: ModeBadgeMode.BoostingHigh,
+      };
+
+      const FILLING_MODES: Record<string, ModeBadgeMode> = {
+        idle: ModeBadgeMode.Idle,
+        filling: ModeBadgeMode.Filling,
+      };
+
+      return [
+        {
+          mode: BOOSTING_MODES[dhwMode.boostingMode],
+          label: t(`modes.dhw.boosting.${dhwMode.boostingMode}`),
+        },
+        {
+          mode: FILLING_MODES[dhwMode.fillingMode],
+          label: t(`modes.dhw.filling.${dhwMode.fillingMode}`),
+        },
+      ];
+    } else if (module === "thrusters") {
+      const thrustersMode = automaticMode as ThrustersAutomaticMode;
+      const MODES: Record<string, ModeBadgeMode> = {
+        idle: ModeBadgeMode.Idle,
+        warmup: ModeBadgeMode.BoostingLow,
+        recovery: ModeBadgeMode.Using,
+        cooling: ModeBadgeMode.Cooling,
+        cooldown: ModeBadgeMode.CoolingLow,
+      };
+      return [
+        { mode: MODES[thrustersMode.mode], label: t(`modes.thrusters.${thrustersMode.mode}`) },
+      ];
+    } else if (module === "dc") {
+      const { brightloopsAft, brightloopsFwd, ugrids } = automaticMode as DcAutomaticMode;
+
+      const MODES: Record<DcMode, ModeBadgeMode> = {
+        [DcMode.Idle]: ModeBadgeMode.Idle,
+        [DcMode.Recovery]: ModeBadgeMode.Using,
+      };
+
+      return [
+        {
+          mode: MODES[brightloopsAft.mode],
+          label: t(`modes.dc.${brightloopsAft.mode}`, { count: 0 }),
+        },
+        {
+          mode: MODES[brightloopsFwd.mode],
+          label: t(`modes.dc.${brightloopsFwd.mode}`, { count: 1 }),
+        },
+        {
+          mode: MODES[ugrids.mode],
+          label: t(`modes.dc.${ugrids.mode}`, { count: 2 }),
+        },
+      ];
+    } else {
+      return [{ mode: ModeBadgeMode.Active, label: t(`modes.${module}`, automaticMode) }];
+    }
+  });
+};

@@ -6,3 +6,4 @@ export { default as ZiInfoIcon } from "./InfoIcon.vue";
 export { default as ZiPlug3 } from "./Plug3.vue";
 export { default as ZiSeawater } from "./Seawater.vue";
 export { default as ZiSolarPanel } from "./SolarPanelIcon.vue";
+export { default as ZiThrusters } from "./Thrusters.vue";

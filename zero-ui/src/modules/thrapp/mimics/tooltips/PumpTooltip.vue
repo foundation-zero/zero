@@ -22,7 +22,8 @@ import ManualControl from "./partials/ManualControl.vue";
 import SubmitControlForm from "./partials/SubmitControlForm.vue";
 const props = defineProps<TooltipComponentContext<MimicComponentType.Pump>>();
 
-const { labels, actions, items, sources } = useTranslations();
+const { labels, actions, items, t } = useTranslations();
+const tController = (fieldName: string) => t(`thrapp.parameters.pid.${fieldName}.title`);
 </script>
 
 <template>
@@ -51,10 +52,13 @@ const { labels, actions, items, sources } = useTranslations();
           :source="controls.pump"
           field="dutypoint"
         >
-          <Partials.EditableListItem>
+          <Partials.EditableListItem :no-source="!custom.controllers?.length">
             {{ items("relativeDutyPoint") }}
-            <template #sourceName>
-              {{ sources("this") }}
+            <template #source>
+              <FieldRenderer.Source
+                :source="custom.controllers?.[0]?.controller"
+                :t="tController"
+              />
             </template>
           </Partials.EditableListItem>
         </ControlValue>
@@ -62,10 +66,13 @@ const { labels, actions, items, sources } = useTranslations();
           :source="controls.pump"
           field="on"
         >
-          <Partials.EditableListItem>
+          <Partials.EditableListItem :no-source="!custom.controllers?.length">
             {{ items("onOff") }}
-            <template #sourceName>
-              {{ sources("this") }}
+            <template #source>
+              <FieldRenderer.Source
+                :source="custom.controllers?.[0]?.controller"
+                :t="tController"
+              />
             </template>
           </Partials.EditableListItem>
         </ControlValue>
@@ -132,23 +139,16 @@ const { labels, actions, items, sources } = useTranslations();
       </SensorValue>
     </TooltipList>
 
-    <TooltipList>
+    <TooltipList v-if="custom.controllers?.length">
       <TooltipListHeader>
         {{ labels("controls") }}
         <TooltipListItemAction>{{ actions("viewControls") }}</TooltipListItemAction>
       </TooltipListHeader>
       <Partials.PIDController
-        v-if="custom.flowController"
-        v-bind="custom.flowController"
-      >
-        {{ sources("pumpFlowController") }}
-      </Partials.PIDController>
-      <Partials.PIDController
-        v-if="custom.temperatureController"
-        v-bind="custom.temperatureController"
-      >
-        {{ sources("pumpTemperatureController") }}
-      </Partials.PIDController>
+        v-for="controller in custom.controllers"
+        :key="controller.type"
+        v-bind="controller"
+      />
     </TooltipList>
   </MimicTooltip>
 </template>

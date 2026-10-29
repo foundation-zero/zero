@@ -8,13 +8,13 @@
       : ParametersType.Flow | ParametersType.FlowControl
   "
 >
-import { tScoped } from "@/modules/common/lib/utils";
 import {
   ControllerStateComponentType,
   ParametersType,
   SensorComponentType,
 } from "@/modules/thrapp/types/thrs";
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import * as Partials from ".";
 import { useTranslations } from "..";
 import { ControllerStateValue, ModuleField, ParameterValue } from "../../providers";
@@ -38,7 +38,8 @@ const fieldRenderer = computed(() => {
   }
 });
 
-const t = tScoped("thrapp.parameters.pid");
+const { t } = useI18n();
+const tController = (fieldName: string) => t(`thrapp.parameters.pid.${fieldName}.title`);
 </script>
 
 <template>
@@ -52,9 +53,8 @@ const t = tScoped("thrapp.parameters.pid");
           <FieldRenderer.Source
             :source="controller"
             class="text-foreground"
-          >
-            {{ t(`${controller[2]}.title`) }}
-          </FieldRenderer.Source>
+            :t="tController"
+          />
         </template>
         <template #value>
           <FieldRenderer.HeatPumpMode />

@@ -13,6 +13,10 @@ on:
       - .github/workflows/ci_modbus_bridge.yaml
       - .github/actions/coverage-report/**
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   test:
     timeout-minutes: 10
@@ -28,9 +32,7 @@ jobs:
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
       - run: uv sync --locked --extra tui
         working-directory: zero-modbus-bridge
-      - run: just lint_no_fix
-        working-directory: zero-modbus-bridge
-      - run: just type_check
+      - run: just check_static
         working-directory: zero-modbus-bridge
       - run: just test --cov-report=xml
         working-directory: zero-modbus-bridge

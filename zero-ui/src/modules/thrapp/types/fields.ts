@@ -99,7 +99,9 @@ export type SensorFieldDefinitions = SensorFields<{
     tIn: SensorComponentType.Temperature | SensorComponentType.CalculatedTemperature;
     tOut: SensorComponentType.Temperature;
   };
-  [MimicComponentType.SeawaterCircuit]: EmptyObject;
+  [MimicComponentType.SeawaterCircuit]: {
+    heatTransfer?: SensorComponentType.HeatTransferDevice;
+  };
   [MimicComponentType.HeatPump]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
   };
@@ -176,7 +178,9 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.BoilerTank]: {
     controller: ControllerStateComponentType.DhwTanksController;
   };
-  [MimicComponentType.Pump]: EmptyObject;
+  [MimicComponentType.Pump]: {
+    controller?: ControllerStateComponentType.PIDController;
+  };
   [MimicComponentType.ManualPump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: EmptyObject;
   [MimicComponentType.PressureSensor]: EmptyObject;
@@ -280,8 +284,7 @@ export type CustomFieldDefinitions = CustomFields<{
     tankStateField: BoilerTankStateField;
   };
   [MimicComponentType.Pump]: {
-    flowController?: PIDController<SensorComponentType.Flow>;
-    temperatureController?: PIDController<SensorComponentType.Temperature>;
+    controllers?: PIDController[];
   };
   [MimicComponentType.ManualPump]: EmptyObject;
   [MimicComponentType.HeatExchanger]: {

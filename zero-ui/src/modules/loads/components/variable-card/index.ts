@@ -1,3 +1,5 @@
+export * from "./variable-card.types";
+export * from "./variable-card.utils";
 export { default as VariableCard } from "./VariableCard.vue";
 export { default as VariableCardFooter } from "./VariableCardFooter.vue";
 export { default as VariableCardReferenceTarget } from "./VariableCardReferenceTarget.vue";
@@ -6,17 +8,3 @@ export { default as VariableCardState } from "./VariableCardState.vue";
 export { default as VariableCardStateLabel } from "./VariableCardStateLabel.vue";
 export { default as VariableCardTitle } from "./VariableCardTitle.vue";
 export { default as VariableCardValue } from "./VariableCardValue.vue";
-
-import { createContext } from "reka-ui";
-import { ComputedRef, Ref } from "vue";
-import { ReferenceThresholds, VariableState, VariableUnit } from "../../types";
-
-export type PositionCardContext = {
-  state: ComputedRef<VariableState>;
-  value: Ref<number | undefined | null>;
-  thresholds?: Ref<Partial<ReferenceThresholds> | undefined>;
-  type: Ref<VariableUnit>;
-};
-
-export const [getContext, provideContext] =
-  createContext<PositionCardContext>("loads.variable-card");

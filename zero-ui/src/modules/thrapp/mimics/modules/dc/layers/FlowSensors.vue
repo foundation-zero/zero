@@ -24,7 +24,7 @@ const flowSensors = getTooltipContexts(MimicComponentType.FlowSensor, [
     <FlowLabelInstance
       target-x="692.25"
       :target-width="FLOW_SENSOR_WIDTH"
-      y="31.1458"
+      y="33.646"
       :tag-id="flowSensors['1057-25'].tooltip?.yardTag"
       :flow="flowSensors['1057-25'].source"
     />
@@ -38,7 +38,7 @@ const flowSensors = getTooltipContexts(MimicComponentType.FlowSensor, [
     <FlowLabelInstance
       target-x="692.25"
       :target-width="FLOW_SENSOR_WIDTH"
-      y="238.1458"
+      y="240.646"
       :tag-id="flowSensors['1058-06'].tooltip?.yardTag"
       :flow="flowSensors['1058-06'].source"
     />
@@ -52,7 +52,7 @@ const flowSensors = getTooltipContexts(MimicComponentType.FlowSensor, [
     <FlowLabelInstance
       target-x="692.25"
       :target-width="FLOW_SENSOR_WIDTH"
-      y="470.1458"
+      y="472.646"
       :tag-id="flowSensors['1057-26'].tooltip?.yardTag"
       :flow="flowSensors['1057-26'].source"
     />
@@ -66,7 +66,7 @@ const flowSensors = getTooltipContexts(MimicComponentType.FlowSensor, [
     <FlowLabelInstance
       target-x="1151.1406"
       :target-width="FLOW_SENSOR_WIDTH"
-      y="239.1458"
+      y="241.646"
       :tag-id="flowSensors['1058-04'].tooltip?.yardTag"
       :flow="flowSensors['1058-04'].source"
     />
