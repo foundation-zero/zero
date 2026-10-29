@@ -17,6 +17,10 @@ on:
       - .github/workflows/ci_generator.yaml
       - .github/actions/coverage-report/**
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   test:
     timeout-minutes: 15

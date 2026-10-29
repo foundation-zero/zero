@@ -13,6 +13,10 @@ on:
       - zero-dashboards/**
       - .github/workflows/ci_zero_dashboards.yaml
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/grafana-zero-dashboards"
   CACHE: "europe-west1-docker.pkg.dev/common-449414/buildcache/grafana-zero-dashboards:main"
