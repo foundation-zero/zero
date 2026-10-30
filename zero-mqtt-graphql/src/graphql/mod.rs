@@ -27,10 +27,11 @@ use crate::graphql::topics::build_schema_topics;
 use anyhow::Context;
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
-use async_graphql::dynamic::{Field, Object, Schema, SchemaBuilder, TypeRef};
+use async_graphql::dynamic::{Field, FieldValue, Object, Schema, SchemaBuilder, TypeRef};
+use log::warn;
 use serde_json::Value as JsonValue;
 
-use crate::naming::{is_reserved_name, sanitize_to_graphql_name};
+use crate::naming::{is_reserved_name, pascal_case_graphql_name, sanitize_to_graphql_name};
 use crate::{
     api_model::{Api, TopicDef},
     cache::TopicCache,
@@ -59,22 +60,19 @@ mod topics;
 pub fn build_schema(api: &Api, cache: &Arc<TopicCache>) -> anyhow::Result<Schema> {
     validate_topics(api)?;
 
-    let mut used_query_fields = BTreeSet::new();
-
     let mut query = Object::new("Query");
     let mut schema_builder = Schema::build(query.type_name(), None, None);
 
     for api_model in &api.models {
         let new_objects;
-        (query, new_objects) = build_schema_topics(query, api_model, cache, &mut used_query_fields);
+        (query, new_objects) = build_schema_topics(query, api_model, cache);
         schema_builder = new_objects
             .into_iter()
             .fold(schema_builder, SchemaBuilder::register);
 
         let group_objects;
-        (query, group_objects) =
-            build_schema_groups(query, api_model, cache, &mut used_query_fields)
-                .with_context(|| "Error while building group schema")?;
+        (query, group_objects) = build_schema_groups(query, api_model, cache)
+            .with_context(|| "Error while building group schema")?;
         schema_builder = group_objects
             .into_iter()
             .fold(schema_builder, SchemaBuilder::register);
@@ -127,15 +125,60 @@ fn json_to_graphql_value(val: &JsonValue) -> GraphQlValue {
     }
 }
 
+/// One concrete topic's `<Topic>` payload object
+fn payload_object(name: &str, fields: &BTreeMap<String, GraphqlType>) -> Vec<Object> {
+    if fields.is_empty() {
+        warn!("Object {name} can't have zero fields!");
+    }
+
+    let type_name = pascal_case_graphql_name(name);
+    let (object, mut objects) = fields.iter().map(payload_field).fold(
+        (Object::new(type_name.as_str()), Vec::new()),
+        |(obj, mut objects): (Object, Vec<Object>), (field, new_objects)| {
+            objects.extend(new_objects);
+            (obj.field(field), objects)
+        },
+    );
+    objects.insert(0, object);
+    objects
+}
+
+/// One scalar payload field on a `<Topic>` object: projects the raw field
+/// name from the object value returned by [`topic_query_field`].
+fn payload_field(field: (&String, &GraphqlType)) -> (Field, Vec<Object>) {
+    let field_name = sanitize_to_graphql_name(field.0);
+    let raw_name = Name::new(field.0.clone());
+    let (graphql_type, objects) = graphql_type_ref(field.0, field.1);
+
+    let field = Field::new(field_name, graphql_type, move |ctx| {
+        let raw_name = raw_name.clone();
+        async_graphql::dynamic::FieldFuture::new(async move {
+            let parent = ctx.parent_value.try_to_value()?;
+            let value = match parent {
+                GraphQlValue::Object(map) => {
+                    map.get(&raw_name).cloned().unwrap_or(GraphQlValue::Null)
+                }
+                _ => GraphQlValue::Null,
+            };
+            Ok(Some(FieldValue::value(value)))
+        })
+    });
+
+    (field, objects)
+}
+
 /// Map a GraphQL type name to an async-graphql TypeRef.
-fn graphql_type_ref(typ: &GraphqlType) -> TypeRef {
+fn graphql_type_ref(name: &str, typ: &GraphqlType) -> (TypeRef, Vec<Object>) {
     #[allow(clippy::match_same_arms)]
     match typ {
-        GraphqlType::Float => TypeRef::named(TypeRef::FLOAT),
-        GraphqlType::Int => TypeRef::named(TypeRef::INT),
-        GraphqlType::Boolean => TypeRef::named(TypeRef::BOOLEAN),
-        GraphqlType::String => TypeRef::named(TypeRef::STRING),
-        GraphqlType::Object(_) => TypeRef::named(TypeRef::STRING),
+        GraphqlType::Float => (TypeRef::named(TypeRef::FLOAT), vec![]),
+        GraphqlType::Int => (TypeRef::named(TypeRef::INT), vec![]),
+        GraphqlType::Boolean => (TypeRef::named(TypeRef::BOOLEAN), vec![]),
+        GraphqlType::String => (TypeRef::named(TypeRef::STRING), vec![]),
+        GraphqlType::Object(fields) => {
+            let objects = payload_object(name, fields);
+            (TypeRef::named(objects[0].type_name()), objects)
+        }
     }
 }
 

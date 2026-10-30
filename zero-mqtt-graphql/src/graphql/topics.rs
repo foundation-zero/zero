@@ -18,16 +18,12 @@
 //!   schema exposes `<stem>Buckets: [Bucket]` (all buckets) and
 //!   `<stem>Bucket(id: String): Bucket` (single bucket by id).
 
-use std::collections::BTreeSet;
 use std::sync::Arc;
 
-use crate::api_model::GraphqlType;
-use crate::graphql::graphql_type_ref;
 use crate::graphql::json_to_graphql_value;
+use crate::graphql::payload_object;
 use crate::roas_asyncapi::OperationAction;
-use async_graphql::Name;
-use async_graphql::Value as GraphQlValue;
-use async_graphql::dynamic::{Field, FieldValue, Object, TypeRef};
+use async_graphql::dynamic::{Field, Object, TypeRef};
 use log::info;
 
 use crate::naming::sanitize_to_graphql_name;
@@ -40,7 +36,6 @@ pub(super) fn build_schema_topics(
     mut schema_object: Object,
     api: &ApiModel,
     cache: &Arc<TopicCache>,
-    used_query_fields: &mut BTreeSet<String>,
 ) -> (Object, Vec<Object>) {
     let topics = &api.topics;
 
@@ -48,13 +43,24 @@ pub(super) fn build_schema_topics(
 
     for topic_def in queryable_topics(topics) {
         info!("Building schema for topic {}", topic_def.topic);
-        let object_type = topic_object(topic_def);
+        let name = &topic_def.payload_schema_ref.clone().map_or_else(
+            || topic_def.topic.clone(),
+            |s| {
+                s.chars()
+                    .rev()
+                    .take_while(|c| *c != '/')
+                    .collect::<Vec<char>>()
+                    .iter()
+                    .rev()
+                    .collect::<String>()
+            },
+        );
+        let new_objects = payload_object(name, &topic_def.fields);
 
-        let field_name = object_type.type_name();
-        let field = topic_query_field(&topic_def.topic, &field_name, cache);
+        let field_name = new_objects[0].type_name();
+        let field = topic_query_field(&topic_def.topic, field_name, cache);
 
-        used_query_fields.insert(field_name.to_string());
-        objects.push(object_type);
+        objects.extend(new_objects);
         schema_object = schema_object.field(field);
     }
 
@@ -68,19 +74,6 @@ fn queryable_topics(topics: &[TopicDef]) -> impl Iterator<Item = &TopicDef> {
     })
 }
 
-/// One concrete topic's `<Topic>` payload object, plus the additive
-/// `metadata { … }` field when the topic is annotated in the metadata store.
-fn topic_object(topic_def: &TopicDef) -> Object {
-    let type_name = sanitize_to_graphql_name(&topic_def.topic);
-    topic_def
-        .fields
-        .iter()
-        .map(payload_field)
-        .fold(Object::new(type_name.as_str()), |obj, field| {
-            obj.field(field)
-        })
-}
-
 /// The `<Topic>` query field: resolves to the topic's whole cached MQTT
 /// payload object. The object's scalar subfields project from this value
 /// (see [`payload_field`]), so the payload is read from the cache exactly
@@ -89,30 +82,10 @@ fn topic_query_field(topic: &str, type_name: &str, cache: &Arc<TopicCache>) -> F
     let obj_ref = TypeRef::named(type_name);
     let topic = topic.to_string();
     let cache_for_query = cache.clone();
-    Field::new(type_name, obj_ref, move |_ctx| {
+    Field::new(sanitize_to_graphql_name(&topic), obj_ref, move |_ctx| {
         let val = cache_for_query.get(&topic);
         async_graphql::dynamic::FieldFuture::new(async move {
             Ok(val.map(|json_val| json_to_graphql_value(&json_val)))
-        })
-    })
-}
-
-/// One scalar payload field on a `<Topic>` object: projects the raw field
-/// name from the object value returned by [`topic_query_field`].
-fn payload_field(field: (&String, &GraphqlType)) -> Field {
-    let field_name = sanitize_to_graphql_name(field.0);
-    let raw_name = Name::new(field.0.clone());
-    Field::new(field_name, graphql_type_ref(field.1), move |ctx| {
-        let raw_name = raw_name.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
-            let parent = ctx.parent_value.try_to_value()?;
-            let value = match parent {
-                GraphQlValue::Object(map) => {
-                    map.get(&raw_name).cloned().unwrap_or(GraphQlValue::Null)
-                }
-                _ => GraphQlValue::Null,
-            };
-            Ok(Some(FieldValue::value(value)))
         })
     })
 }
@@ -122,7 +95,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, ApiModel};
+    use crate::api_model::{Api, ApiModel, GraphqlType};
     use crate::graphql::build_schema;
     use crate::http::router;
     use crate::roas_asyncapi::OperationAction;

@@ -24,18 +24,16 @@ pub(super) fn build_schema_groups(
     mut schema_object: Object,
     api: &ApiModel,
     cache: &Arc<TopicCache>,
-    used_query_fields: &mut BTreeSet<String>,
 ) -> anyhow::Result<(Object, Vec<Object>)> {
     // Group list queries: one merged list per parametrized channel whose
     // domain ships a metadata file (which enumerates the concrete topics).
     let (query_fields, group_objects): (Vec<_>, Vec<_>) = api
         .groups
         .iter()
-        .map(|group| register_group_queries(group, used_query_fields, cache))
+        .map(|group| register_group_queries(group, cache))
         .collect::<anyhow::Result<Vec<_>>>()?
         .into_iter()
         .flatten()
-        .map(|parts| (parts.query_fields, parts.objects))
         .unzip();
 
     schema_object = query_fields
@@ -46,25 +44,11 @@ pub(super) fn build_schema_groups(
     Ok((schema_object, group_objects.into_iter().flatten().collect()))
 }
 
-/// Schema contributions of one topic group.
-struct GroupSchemaParts {
-    /// The group's supporting object types plus its optional bucket type.
-    objects: Vec<Object>,
-    /// The list query field plus optional grouped-by query fields.
-    query_fields: Vec<Field>,
-}
-
 /// Sanitize a group id into a fresh query field name, rejecting empty,
 /// reserved, or already-claimed names.
-fn claim_group_query_name(
-    group: &TopicGroupDef,
-    used_query_fields: &mut BTreeSet<String>,
-) -> anyhow::Result<String> {
+fn claim_group_query_name(group: &TopicGroupDef) -> anyhow::Result<String> {
     let query_field_name = sanitize_to_graphql_name(&group.group);
-    if query_field_name.is_empty()
-        || is_reserved_name(&query_field_name)
-        || !used_query_fields.insert(query_field_name.clone())
-    {
+    if query_field_name.is_empty() || is_reserved_name(&query_field_name) {
         anyhow::bail!(
             "topic group '{}' resolves to a reserved or duplicate query name '{}'",
             group.group,
@@ -136,7 +120,7 @@ fn build_group_objects(
         .map(|(field_name, graphql_type)| {
             row_projection_field(
                 &sanitize_to_graphql_name(field_name),
-                graphql_type_ref(graphql_type),
+                graphql_type_ref(field_name, graphql_type).0,
             )
         })
         .fold(Object::new(values_type.as_str()), |obj, field| {
@@ -240,17 +224,15 @@ fn bucket_object(pascal: &str, rows_field: &str) -> Object {
 /// `<group>: [<Group>Topic]` list query with its supporting object types,
 /// and — when the group's metadata declares `group_by` — grouped-by
 /// bucket queries. Returns `None` when the group must be skipped entirely
-/// (no usable metadata or a reserved/duplicate query name); claims all
-/// used query names in `used_query_fields`.
+/// (no usable metadata);
 fn register_group_queries(
     group: &TopicGroupDef,
-    used_query_fields: &mut BTreeSet<String>,
     cache: &Arc<TopicCache>,
-) -> anyhow::Result<Option<GroupSchemaParts>> {
+) -> anyhow::Result<Option<(Vec<Field>, Vec<Object>)>> {
     if group.fields.is_empty() {
         anyhow::bail!("topic group '{}' has no payload fields", group.group);
     }
-    let query_field_name = claim_group_query_name(group, used_query_fields)?;
+    let query_field_name = claim_group_query_name(group)?;
     let Some(metadata_fields) = group_metadata_fields(group)? else {
         warn!("No metadata for this group, ignoring");
         return Ok(None);
@@ -259,36 +241,21 @@ fn register_group_queries(
     let pascal = pascal_case_graphql_name(&group.group);
 
     let (bucket_object, bucket_fields) =
-        register_bucket_queries(group, value_meta_json.clone(), cache, used_query_fields)
-            .map_or_else(
-                || (None, Vec::new()),
-                |parts| (Some(parts.object), parts.query_fields),
-            );
+        register_bucket_queries(group, value_meta_json.clone(), cache);
 
-    Ok(Some(GroupSchemaParts {
-        query_fields: [group_query_field(
-            &query_field_name,
-            &format!("{pascal}Topic"),
-            group,
-            value_meta_json,
-            cache.clone(),
-        )]
-        .into_iter()
-        .chain(bucket_fields)
-        .collect(),
-        objects: build_group_objects(&pascal, &metadata_fields, group)
-            .into_iter()
-            .chain(bucket_object)
-            .collect(),
-    }))
-}
+    let mut objects = build_group_objects(&pascal, &metadata_fields, group);
+    objects.push(bucket_object);
 
-/// Schema contributions of a group's grouped-by bucket queries.
-struct BucketSchemaParts {
-    /// The bucket object type (`<stem>Bucket`).
-    object: Object,
-    /// The `<stem>Buckets` list field plus the `<stem>Bucket(id)` singleton.
-    query_fields: Vec<Field>,
+    let mut fields = vec![group_query_field(
+        &query_field_name,
+        &format!("{pascal}Topic"),
+        group,
+        value_meta_json,
+        cache.clone(),
+    )];
+    fields.extend(bucket_fields);
+
+    Ok(Some((fields, objects)))
 }
 
 /// Build the grouped-by bucket schema parts: a `<stem>Buckets` list of
@@ -300,17 +267,10 @@ fn register_bucket_queries(
     group: &TopicGroupDef,
     value_meta_json: JsonValue,
     cache: &Arc<TopicCache>,
-    used_query_fields: &mut BTreeSet<String>,
-) -> Option<BucketSchemaParts> {
+) -> (Object, Vec<Field>) {
     let group_stem = singular_group_stem(&group.group);
     let buckets_field = format!("{group_stem}Buckets");
     let bucket_field = format!("{group_stem}Bucket");
-    if !used_query_fields.insert(buckets_field.clone())
-        || !used_query_fields.insert(bucket_field.clone())
-    {
-        warn!("Duplicate grouped-by query name '{buckets_field}'");
-        return None;
-    }
 
     let pascal = pascal_case_graphql_name(&group.group);
     let rows_field = sanitize_to_graphql_name(&group.group);
@@ -372,10 +332,10 @@ fn register_bucket_queries(
     })
     .argument(InputValue::new("id", TypeRef::named(TypeRef::STRING)));
 
-    Some(BucketSchemaParts {
-        object: bucket_object(&pascal, &rows_field),
-        query_fields: vec![list_field, singleton_field],
-    })
+    (
+        bucket_object(&pascal, &rows_field),
+        vec![list_field, singleton_field],
+    )
 }
 
 /// A field resolver that returns the named key of its parent row object.
