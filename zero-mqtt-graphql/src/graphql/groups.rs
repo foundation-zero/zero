@@ -2,8 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::iter::once;
 use std::sync::Arc;
 
-use crate::api_model::GraphqlType;
-use crate::graphql::{graphql_type_ref, json_to_graphql_value};
+use crate::graphql::{json_to_graphql_value, payload_object};
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{Field, FieldValue, InputValue, Object, TypeRef};
@@ -90,6 +89,7 @@ fn build_group_objects(
     let meta_type = format!("{pascal}Metadata");
     let values_type = format!("{pascal}Values");
     let value_meta_type = format!("{pascal}ValueMeta");
+    let mut objects = vec![];
 
     let item_obj = [
         ("topic", TypeRef::named(TypeRef::STRING)),
@@ -101,6 +101,7 @@ fn build_group_objects(
     .fold(Object::new(item_type.as_str()), |obj, field| {
         obj.field(field)
     });
+    objects.push(item_obj);
 
     let meta_obj = metadata_fields
         .iter()
@@ -112,27 +113,18 @@ fn build_group_objects(
         .fold(Object::new(meta_type.as_str()), |obj, field| {
             obj.field(field)
         });
+    objects.push(meta_obj);
 
-    // let values_obj = payload_object(&values_type, &group.fields);
-    let values_obj = group
-        .fields
-        .iter()
-        .map(|(field_name, graphql_type)| {
-            row_projection_field(
-                &sanitize_to_graphql_name(field_name),
-                graphql_type_ref(field_name, graphql_type).0,
-            )
-        })
-        .fold(Object::new(values_type.as_str()), |obj, field| {
-            obj.field(field)
-        });
+    let values_objects = payload_object(&values_type, &group.fields);
+    objects.extend(values_objects);
 
     let value_meta_obj = value_meta_descriptor_fields(group)
         .fold(Object::new(value_meta_type.as_str()), |obj, field| {
             obj.field(field)
         });
+    objects.push(value_meta_obj);
 
-    vec![item_obj, meta_obj, values_obj, value_meta_obj]
+    objects
 }
 
 /// Union of a group's collected `x-*` extension keys across all its payload
@@ -276,11 +268,9 @@ fn register_bucket_queries(
     let rows_field = sanitize_to_graphql_name(&group.group);
     let bucket_type = format!("{pascal}Bucket");
     let buckets = bucket_rows_by(group);
-    let fields = group.fields.clone();
 
     // `<stem>Buckets`: every bucket with its materialized group rows.
     let buckets_for_list = buckets.clone();
-    let fields_for_list = fields.clone();
     let value_meta_for_list = value_meta_json.clone();
     let rows_for_list = rows_field.clone();
     let cache_for_list = cache.clone();
@@ -289,13 +279,11 @@ fn register_bucket_queries(
         TypeRef::named_list(bucket_type.clone()),
         move |_ctx| {
             let buckets = buckets_for_list.clone();
-            let fields = fields_for_list.clone();
             let value_meta_json = value_meta_for_list.clone();
             let rows_field = rows_for_list.clone();
             let cache = cache_for_list.clone();
             async_graphql::dynamic::FieldFuture::new(async move {
-                let values =
-                    bucket_rows_json(&buckets, &fields, &value_meta_json, &cache, &rows_field);
+                let values = bucket_rows_json(&buckets, &value_meta_json, &cache, &rows_field);
                 Ok(Some(FieldValue::value(json_to_graphql_value(
                     &JsonValue::Array(values),
                 ))))
@@ -310,7 +298,6 @@ fn register_bucket_queries(
     let cache_for_bucket = cache.clone();
     let singleton_field = Field::new(bucket_field, TypeRef::named(bucket_type), move |ctx| {
         let buckets = buckets.clone();
-        let fields = fields.clone();
         let value_meta_json = value_meta_for_bucket.clone();
         let rows_field = rows_for_bucket.clone();
         let cache = cache_for_bucket.clone();
@@ -319,8 +306,7 @@ fn register_bucket_queries(
             match buckets.get(id) {
                 Some(rows) => {
                     let single = BTreeMap::from([(id.to_string(), rows.clone())]);
-                    let values =
-                        bucket_rows_json(&single, &fields, &value_meta_json, &cache, &rows_field);
+                    let values = bucket_rows_json(&single, &value_meta_json, &cache, &rows_field);
                     Ok(values
                         .into_iter()
                         .next()
@@ -366,14 +352,12 @@ fn group_query_field(
     value_meta_json: JsonValue,
     cache: Arc<TopicCache>,
 ) -> Field {
-    let fields = group.fields.clone();
     let metadata = group.topic_metadata.clone();
     Field::new(
         query_field_name,
         TypeRef::named_list(item_type),
         move |_ctx| {
             let entries = metadata.clone();
-            let fields = fields.clone();
             let value_meta_json = value_meta_json.clone();
             let cache = cache.clone();
             async_graphql::dynamic::FieldFuture::new(async move {
@@ -383,7 +367,6 @@ fn group_query_field(
                         json_to_graphql_value(&group_row(
                             topic,
                             meta,
-                            &fields,
                             &cache,
                             Some(&value_meta_json),
                         ))
@@ -399,7 +382,6 @@ fn group_query_field(
 /// one per bucket id, each holding that bucket's group rows.
 fn bucket_rows_json(
     buckets: &GroupedRows,
-    fields: &BTreeMap<String, GraphqlType>,
     value_meta_json: &JsonValue,
     cache: &TopicCache,
     rows_key: &str,
@@ -409,7 +391,7 @@ fn bucket_rows_json(
         .map(|(id, rows)| {
             let group_rows: Vec<JsonValue> = rows
                 .iter()
-                .map(|(topic, meta)| group_row(topic, meta, fields, cache, Some(value_meta_json)))
+                .map(|(topic, meta)| group_row(topic, meta, cache, Some(value_meta_json)))
                 .collect();
             let mut bucket = serde_json::json!({ "id": id });
             bucket[rows_key] = JsonValue::Array(group_rows);
@@ -457,7 +439,6 @@ fn value_metadata_json(group: &TopicGroupDef) -> JsonValue {
 fn group_row(
     topic: &str,
     metadata: &BTreeMap<String, JsonValue>,
-    fields: &BTreeMap<String, GraphqlType>,
     cache: &TopicCache,
     value_meta: Option<&JsonValue>,
 ) -> JsonValue {
@@ -467,17 +448,7 @@ fn group_row(
         .chain(value_meta.map(|meta| ("values".to_string(), meta.clone())))
         .collect();
 
-    let values_json: serde_json::Map<String, JsonValue> = fields
-        .keys()
-        .map(|field_name| {
-            (
-                sanitize_to_graphql_name(field_name),
-                cache
-                    .get_field(topic, field_name)
-                    .unwrap_or(JsonValue::Null),
-            )
-        })
-        .collect();
+    let values_json = cache.get(topic).unwrap_or(JsonValue::Null);
 
     serde_json::json!({
         "topic": topic,
@@ -537,7 +508,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, ApiModel};
+    use crate::api_model::{Api, ApiModel, GraphqlType};
     use crate::graphql::build_schema;
     use crate::metadata::MetadataByTopic;
     use crate::roas_asyncapi::OperationAction;
