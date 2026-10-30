@@ -180,8 +180,7 @@ impl MqttSubscriber {
             .map_or(rendered.len(), |(idx, _)| idx);
         if preview_len < rendered.len() {
             debug!(
-                "Caching payload for topic '{}': {}...",
-                topic,
+                "Caching payload for topic '{topic}': {}...",
                 &rendered[..preview_len]
             );
         } else {
@@ -200,14 +199,9 @@ impl MqttSubscriber {
         if !valid {
             let details: Vec<String> = validator
                 .iter_errors(value)
-                .map(|e| format!("{}: {}", e.instance_path(), e))
+                .map(|e| format!("{}: {e}", e.instance_path()))
                 .collect();
-            warn!(
-                "Schema mismatch on topic '{}': {} | payload: {}",
-                topic,
-                details.join("; "),
-                value
-            );
+            warn!("Schema mismatch on topic '{topic}': {}", details.join("; "));
         }
         Some(valid)
     }
