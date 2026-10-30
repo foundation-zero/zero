@@ -1,7 +1,8 @@
 {
-    "coverage-gutters.coverageReportFileName": "target/coverage/html/index.html",
     "coverage-gutters.coverageBaseDir": "target/coverage",
     "coverage-gutters.coverageFileNames": [
+        "coverage.xml",
         "lcov"
-    ]
+    ],
+    "coverage-gutters.coverageReportFileName": "coverage/llvm-cov/html/index.html"
 }

@@ -180,8 +180,7 @@ impl MqttSubscriber {
             .map_or(rendered.len(), |(idx, _)| idx);
         if preview_len < rendered.len() {
             debug!(
-                "Caching payload for topic '{}': {}...",
-                topic,
+                "Caching payload for topic '{topic}': {}...",
                 &rendered[..preview_len]
             );
         } else {
@@ -200,14 +199,9 @@ impl MqttSubscriber {
         if !valid {
             let details: Vec<String> = validator
                 .iter_errors(value)
-                .map(|e| format!("{}: {}", e.instance_path(), e))
+                .map(|e| format!("{}: {e}", e.instance_path()))
                 .collect();
-            warn!(
-                "Schema mismatch on topic '{}': {} | payload: {}",
-                topic,
-                details.join("; "),
-                value
-            );
+            warn!("Schema mismatch on topic '{topic}': {}", details.join("; "));
         }
         Some(valid)
     }
@@ -257,7 +251,7 @@ fn flatten_payload(value: Value) -> Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{Api, ApiModel, FieldDef, TopicDef, TopicGroupDef};
+    use crate::api_model::{Api, ApiModel, GraphqlType, TopicDef, TopicGroupDef};
     use crate::roas_asyncapi::OperationAction;
     use serde_json::json;
     use std::collections::BTreeMap;
@@ -266,10 +260,10 @@ mod tests {
         vec![TopicGroupDef {
             group: "power-tags".to_string(),
             pattern: pattern.to_string(),
-            fields: vec![FieldDef {
-                name: "active_power_total".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
+            fields: BTreeMap::from_iter(vec![(
+                "active_power_total".to_string(),
+                GraphqlType::Float,
+            )]),
             payload_schema_ref: Some(schema_ref.to_string()),
             value_extensions: BTreeMap::new(),
             ttl_secs: 300,
@@ -383,10 +377,10 @@ mod tests {
 
         let topic = TopicDef {
             topic: "power-tags/10P1/breaker3".to_string(),
-            fields: vec![FieldDef {
-                name: "active_power_total".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
+            fields: BTreeMap::from_iter(vec![(
+                "active_power_total".to_string(),
+                GraphqlType::Float,
+            )]),
             payload_schema_ref: None,
             action: OperationAction::Send,
             ttl_secs: 300,

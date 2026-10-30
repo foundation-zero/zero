@@ -1,66 +1,87 @@
-/// Sanitize a topic name to lowerCamelCase (for GraphQL query fields).
+use std::sync::LazyLock;
+
+use convert_case::{Boundary, Case, Casing, Converter, Pattern};
+
+static INVALID_CHARS: Boundary = Boundary::Custom {
+    condition: |s: &[&str]| {
+        s.first()
+            .and_then(|g| g.chars().take(1).map(|c: char| !c.is_alphanumeric()).next())
+            .unwrap_or(false)
+    },
+    start: 0,
+    len: 1,
+};
+
+/// Applies capital pattern to a single word using graphemes.
+fn capital_word(word: &str) -> String {
+    let mut chars = word.chars();
+
+    if let Some(c) = chars.next() {
+        [
+            c.to_uppercase().collect(),
+            chars.as_str().to_ascii_lowercase(),
+        ]
+        .concat()
+    } else {
+        String::new()
+    }
+}
+
+/// camel-case-1-2 -> camelCase1_2
+static CAMEL_WITH_DIGIT_GROUPS: Pattern = Pattern::Custom(|words| {
+    words
+        .iter()
+        .enumerate()
+        .fold(Vec::with_capacity(words.len()), |mut acc, (i, word)| {
+            let word = if i == 0 {
+                word.to_ascii_lowercase()
+            } else {
+                capital_word(word)
+            };
+
+            // Fix digit groups
+            if let Some(prev) = acc.last_mut()
+                && prev.ends_with(|c: char| c.is_ascii_digit())
+                && word.starts_with(|c: char| c.is_ascii_digit())
+            {
+                prev.push('_');
+            }
+
+            acc.push(word);
+            acc
+        })
+});
+
+// Basically CamelCase but we skip anything that is not alphanumeric and it keeps an extra '-' as separator for digit groups
+static GRAPHQL_CASE_CONVERTER: LazyLock<Converter> = LazyLock::new(|| {
+    Converter::new()
+        .set_boundaries(&[
+            INVALID_CHARS,
+            Boundary::LowerUpper,
+            Boundary::Acronym,
+            Boundary::DigitLower,
+            Boundary::DigitUpper,
+        ])
+        .set_pattern(CAMEL_WITH_DIGIT_GROUPS)
+        .set_delimiter("")
+});
+
+/// Sanitize a topic name to lowerCamelCase and other stuff for GraphQL query fields.
 #[must_use]
 pub fn sanitize_to_graphql_name(raw: &str) -> String {
-    to_camel_case(raw)
+    let mut result = GRAPHQL_CASE_CONVERTER.convert(raw);
+
+    // Make sure we don't start with a digit
+    if result.starts_with(|c: char| c.is_ascii_digit()) {
+        result.insert(0, '_');
+    }
+
+    result
 }
 
-/// Convert a raw identifier to lowerCamelCase.
-///
-/// Tokens are split on every non-alphanumeric character, so `a/b-c` and
-/// `a_b_c` both become `aBC`. A leading digit is prefixed with `_` to keep
-/// the result a valid GraphQL name, and an underscore is inserted between two
-/// adjacent digit-only tokens (`string1-2` → `string1_2`) so that `string1-2`
-/// and `string12` cannot collide after sanitization.
-fn to_camel_case(raw: &str) -> String {
-    let parts = split_to_words(raw);
-    if parts.is_empty() {
-        return String::new();
-    }
-    let mut out = String::new();
-    for (i, part) in parts.iter().enumerate() {
-        let is_digits = part.chars().all(|c| c.is_ascii_digit());
-        let prev_ends_digit = out.chars().last().is_some_and(|c| c.is_ascii_digit());
-        // Preserve boundary between digit-only parts (e.g. "string1-2" vs "string12")
-        if is_digits && prev_ends_digit {
-            out.push('_');
-            out.push_str(part);
-            continue;
-        }
-        if i == 0 {
-            out.push_str(&part.to_ascii_lowercase());
-        } else {
-            let mut chars = part.chars();
-            if let Some(first) = chars.next() {
-                out.push(first.to_ascii_uppercase());
-                out.push_str(&chars.as_str().to_ascii_lowercase());
-            }
-        }
-    }
-    if out.chars().next().is_some_and(|c| c.is_ascii_digit()) {
-        out.insert(0, '_');
-    }
-    out
-}
-
-fn split_to_words(raw: &str) -> Vec<String> {
-    let mut words: Vec<String> = Vec::new();
-    let mut current = String::new();
-    for c in raw.chars() {
-        if c.is_alphanumeric() {
-            current.push(c);
-        } else if !current.is_empty() {
-            words.push(std::mem::take(&mut current));
-        }
-    }
-    if !current.is_empty() {
-        words.push(current);
-    }
-    words
-}
-
-/// PascalCase form of a group id (`power-tags` → `PowerTags`).
+/// PascalCase form of a sanitized graphql name (`power-tags` → `PowerTags`).
 #[must_use]
-pub fn pascal_case(name: &str) -> String {
+pub fn pascal_case_graphql_name(name: &str) -> String {
     let camel = sanitize_to_graphql_name(name);
     let mut chars = camel.chars();
     match chars.next() {
@@ -104,7 +125,7 @@ mod tests {
 
     #[test_log::test]
     fn test_sanitize_digit_prefix() {
-        assert_eq!(sanitize_to_graphql_name("123abc"), "_123abc");
+        assert_eq!(sanitize_to_graphql_name("123abc"), "_123Abc");
     }
 
     #[test_log::test]
@@ -120,7 +141,7 @@ mod tests {
         );
         assert_eq!(
             sanitize_to_graphql_name("power-tags/10P1/ahu1500-aft-area"),
-            "powerTags10p1Ahu1500AftArea"
+            "powerTags10P1Ahu1500AftArea"
         );
         assert_eq!(
             sanitize_to_graphql_name("hull-temperature/temperatures"),
@@ -140,7 +161,29 @@ mod tests {
 
     #[test_log::test]
     fn test_pascal_case() {
-        assert_eq!(pascal_case("power-tags"), "PowerTags");
-        assert_eq!(pascal_case(""), "");
+        assert_eq!(pascal_case_graphql_name("power-tags"), "PowerTags");
+        assert_eq!(pascal_case_graphql_name(""), "");
+    }
+
+    #[test_log::test]
+    fn test_is_reserved_name() {
+        assert!(!is_reserved_name("power-tags"));
+
+        assert!(
+            &[
+                "query",
+                "mutation",
+                "subscription",
+                "topics",
+                "boolean",
+                "float",
+                "int",
+                "string",
+                "id",
+            ]
+            .iter()
+            .map(|n| is_reserved_name(n))
+            .all(|b| b)
+        );
     }
 }
