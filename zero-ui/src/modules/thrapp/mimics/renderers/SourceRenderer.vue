@@ -4,7 +4,7 @@ import { THRS_YARDTAG_PREFIX_REGEX } from "@/modules/thrapp/lib/consts";
 import { snakeCase } from "lodash";
 import { computed, type HTMLAttributes } from "vue";
 import { FieldRenderer } from ".";
-import { getTooltipContext } from "../../components/tooltip";
+import { getTooltipContext, TooltipComponentContext } from "../../components/tooltip";
 import {
   getDefinition,
   getFieldValueData,
@@ -58,11 +58,16 @@ const sourceName = computed(() => {
 
 const { findTooltipContext } = getTooltipContext();
 
+// A yard tag shared by several modules (e.g. a heat exchanger between two circuits) has a context
+// per module; prefer the one of the module this field belongs to over whichever sorts first.
+const ownContext = (contexts: TooltipComponentContext[]) =>
+  contexts.find((context) => context.source?.[1] === source.value?.[1]) ?? contexts[0];
+
 const tooltipContext = computed(() => {
   if (backendSource.value) {
-    return findTooltipContext(backendSource.value)[0];
+    return ownContext(findTooltipContext(backendSource.value));
   } else if (source.value) {
-    return findTooltipContext(source.value)[0];
+    return ownContext(findTooltipContext(source.value));
   }
   return null;
 });
@@ -84,6 +89,7 @@ const showLink = computed(() => !props.noLink && tooltipContext.value);
           ...$route.query,
           tooltip: tooltipContext.registerField,
           type: tooltipContext.type,
+          index: tooltipContext.index ? tooltipContext.index : undefined,
         },
       }"
     >
