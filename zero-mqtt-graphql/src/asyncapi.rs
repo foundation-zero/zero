@@ -658,13 +658,13 @@ fn graphql_type_for_subschema(sub: &SubSchema, doc: &Document) -> Option<Graphql
 fn type_from_schema(schema: &Schema, doc: &Document) -> Option<GraphqlType> {
     if let Some(schema_type) = &schema.schema_type {
         return match schema_type {
-            SchemaType::Single(t) => map_json_type_to_graphql(t),
+            SchemaType::Single(t) => map_json_type_to_graphql(t, schema, doc),
             SchemaType::Multiple(types) => {
                 for t in types {
                     if t == "null" {
                         continue;
                     }
-                    if let Some(gql) = map_json_type_to_graphql(t) {
+                    if let Some(gql) = map_json_type_to_graphql(t, schema, doc) {
                         // TODO: properly handle unions here
                         return Some(gql);
                     }
@@ -700,9 +700,12 @@ fn type_from_schema(schema: &Schema, doc: &Document) -> Option<GraphqlType> {
     None
 }
 
-fn map_json_type_to_graphql(t: &str) -> Option<GraphqlType> {
+fn map_json_type_to_graphql(t: &str, schema: &Schema, doc: &Document) -> Option<GraphqlType> {
     match t {
-        "object" => Some(GraphqlType::Object(Box::default())),
+        "object" => {
+            let fields = extract_fields_from_schema(schema, doc);
+            (!fields.is_empty()).then(|| GraphqlType::Object(Box::new(fields)))
+        }
         "number" => Some(GraphqlType::Float),
         "integer" => Some(GraphqlType::Int),
         "boolean" => Some(GraphqlType::Boolean),
@@ -812,7 +815,12 @@ mod tests {
         assert_eq!(get("sensor_id"), &GraphqlType::Int);
         assert_eq!(get("ok"), &GraphqlType::Boolean);
         assert_eq!(get("label"), &GraphqlType::String);
-        assert_eq!(get("nested"), &GraphqlType::Object(Box::default()));
+        assert_eq!(
+            get("nested"),
+            &GraphqlType::Object(Box::new(BTreeMap::from(
+                [("x".to_owned(), GraphqlType::Float); 1]
+            )))
+        );
     }
 
     #[test_log::test]
