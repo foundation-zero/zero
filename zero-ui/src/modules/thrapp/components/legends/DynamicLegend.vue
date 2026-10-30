@@ -92,6 +92,10 @@ const GROUPS: { title: string; entries: LegendEntry[] }[] = [
         key: MimicComponentType.ShorePowerConverter,
         item: defineAsyncComponent(() => import("./items/ShorePowerConverter.vue")),
       },
+      {
+        key: MimicComponentType.AdsorptionChiller,
+        item: defineAsyncComponent(() => import("./items/AdsorptionChiller.vue")),
+      },
     ],
   },
   {

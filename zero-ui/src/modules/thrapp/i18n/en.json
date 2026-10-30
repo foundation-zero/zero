@@ -641,6 +641,25 @@
           "ownersBimini": "Owners bimini"
         }
       },
+      "adsorption": {
+        "sections": {
+          "supportComponentsMt": "Support components-MT",
+          "supportComponentsHt": "Support components-HT"
+        },
+        "chiller": {
+          "pumpSpeed": "Pump speed",
+          "modes": {
+            "cooling": "Cooling",
+            "freeCooling": "Free cooling",
+            "idle": "Idle"
+          },
+          "circuits": {
+            "highTemperature": "High Temp circuit",
+            "mediumTemperature": "Medium Temp circuit",
+            "lowTemperature": "Low Temp circuit"
+          }
+        }
+      },
       "dc": {
         "groups": {
           "group1": "DC/DC group 1",
@@ -891,6 +910,10 @@
       },
       "thruster": {
         "title": "Asset - Thruster",
+        "description": "The properties are rendered based upon relevant sensor values of the asset."
+      },
+      "adsorptionChiller": {
+        "title": "Asset - Adsorption chiller",
         "description": "The properties are rendered based upon relevant sensor values of the asset."
       }
     },

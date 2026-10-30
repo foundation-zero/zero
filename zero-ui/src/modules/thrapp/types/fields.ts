@@ -120,6 +120,11 @@ export type SensorFieldDefinitions = SensorFields<{
     heatTransfer: SensorComponentType.HeatTransferDevice;
     pcs: SensorComponentType.Pcs;
   };
+  [MimicComponentType.AdsorptionChiller]: {
+    highTemperature: SensorComponentType.HeatTransferDevice;
+    mediumTemperature: SensorComponentType.HeatTransferDevice;
+    lowTemperature: SensorComponentType.HeatTransferDevice;
+  };
 }>;
 
 export type ControlFieldDefinitions = ControlFields<{
@@ -169,6 +174,9 @@ export type ControlFieldDefinitions = ControlFields<{
   [MimicComponentType.Pvt]: EmptyObject;
   [MimicComponentType.PvtString]: EmptyObject;
   [MimicComponentType.Thruster]: EmptyObject;
+  [MimicComponentType.AdsorptionChiller]: {
+    chiller: ControlComponentType.AdsorptionChiller;
+  };
 }>;
 
 export type ControllerStateFieldDefinitions = ControllerStateFields<{
@@ -214,6 +222,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.Pvt]: EmptyObject;
   [MimicComponentType.PvtString]: EmptyObject;
   [MimicComponentType.Thruster]: EmptyObject;
+  [MimicComponentType.AdsorptionChiller]: EmptyObject;
 }>;
 
 export type ParameterFieldDefinitions = ParameterFields<{
@@ -259,6 +268,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.Pvt]: EmptyObject;
   [MimicComponentType.PvtString]: EmptyObject;
   [MimicComponentType.Thruster]: EmptyObject;
+  [MimicComponentType.AdsorptionChiller]: EmptyObject;
 }>;
 
 export type PIDController<
@@ -365,6 +375,7 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.Thruster]: {
     titleKey: "fwdTitle" | "aftTitle";
   };
+  [MimicComponentType.AdsorptionChiller]: EmptyObject;
 }>;
 
 export type SourceFieldDefinitions = SourceFields<{
@@ -400,6 +411,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.Pvt]: SensorComponentType.Pvt;
   [MimicComponentType.PvtString]: undefined;
   [MimicComponentType.Thruster]: SensorComponentType.Thruster;
+  [MimicComponentType.AdsorptionChiller]: SensorComponentType.AdsorptionChiller;
   [MimicComponentType.FreshwaterCircuit]: undefined;
   [MimicComponentType.SeawaterCircuit]: SensorComponentType.Temperature;
   [MimicComponentType.ConnectingCircuit]: SensorComponentType.HeatTransferDevice;

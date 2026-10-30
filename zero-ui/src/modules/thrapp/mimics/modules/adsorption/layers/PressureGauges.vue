@@ -1,0 +1,92 @@
+<script setup lang="ts">
+import { MimicComponentType } from "@/modules/thrapp/types";
+import { ComponentOrientation } from "../../../components";
+import { getTooltipContexts } from "../../../data";
+import { PressureGaugeInstance, TagLabelInstance } from "../../../instances";
+
+const pressureGauges = getTooltipContexts(MimicComponentType.PressureGauge, [
+  "1095-07",
+  "1096-02",
+  "1096-01",
+  "1095-09",
+  "1096-08",
+  "1096-07",
+]);
+</script>
+
+<template>
+  <g>
+    <PressureGaugeInstance
+      x="674"
+      y="256"
+      :orientation="ComponentOrientation.Down"
+      v-bind="pressureGauges['1095-07']"
+    >
+      <TagLabelInstance
+        x="672"
+        y="290"
+        :tag-id="pressureGauges['1095-07'].tooltip?.yardTag"
+      />
+    </PressureGaugeInstance>
+    <PressureGaugeInstance
+      x="674"
+      y="367"
+      :orientation="ComponentOrientation.Down"
+      v-bind="pressureGauges['1096-02']"
+    >
+      <TagLabelInstance
+        x="672"
+        y="397"
+        :tag-id="pressureGauges['1096-02'].tooltip?.yardTag"
+      />
+    </PressureGaugeInstance>
+    <PressureGaugeInstance
+      x="1148.53"
+      y="123"
+      :orientation="ComponentOrientation.Down"
+      v-bind="pressureGauges['1096-01']"
+    >
+      <TagLabelInstance
+        x="1150.03"
+        y="151"
+        :tag-id="pressureGauges['1096-01'].tooltip?.yardTag"
+      />
+    </PressureGaugeInstance>
+    <PressureGaugeInstance
+      x="1147.53"
+      y="232"
+      :orientation="ComponentOrientation.Down"
+      v-bind="pressureGauges['1095-09']"
+    >
+      <TagLabelInstance
+        x="1146"
+        y="263"
+        :tag-id="pressureGauges['1095-09'].tooltip?.yardTag"
+      />
+    </PressureGaugeInstance>
+    <PressureGaugeInstance
+      x="121.5"
+      y="495"
+      :orientation="ComponentOrientation.Right"
+      v-bind="pressureGauges['1096-08']"
+    >
+      <TagLabelInstance
+        x="69"
+        y="495"
+        :tag-id="pressureGauges['1096-08'].tooltip?.yardTag"
+      />
+    </PressureGaugeInstance>
+    <PressureGaugeInstance
+      x="1673"
+      y="510"
+      :orientation="ComponentOrientation.Left"
+      v-bind="pressureGauges['1096-07']"
+    >
+      <TagLabelInstance
+        x="1716"
+        y="511"
+        :tag-id="pressureGauges['1096-07'].tooltip?.yardTag"
+      />
+    </PressureGaugeInstance>
+  </g>
+</template>

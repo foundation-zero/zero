@@ -48,6 +48,11 @@ export const MIMICS: Partial<Record<MimicKey, MimicDefinition>> = {
       () => import("@/modules/thrapp/mimics/modules/dc/DcModule.vue"),
     ),
   },
+  adsorption: {
+    component: defineAsyncComponent(
+      () => import("@/modules/thrapp/mimics/modules/adsorption/AdsorptionModule.vue"),
+    ),
+  },
   drives: {
     component: defineAsyncComponent(
       () => import("@/modules/thrapp/mimics/modules/drives/DrivesModule.vue"),
