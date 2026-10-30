@@ -1,5 +1,5 @@
 import { client as thrappClient } from "@/modules/thrapp/graphql/client";
-import { QUERY_MODULES } from "@/modules/thrapp/lib/consts";
+import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import { AmcsControlMode } from "@/modules/thrapp/types/thrs";
 import { createTestingPinia } from "@pinia/testing";
 import { createUseQueryFake } from "@tests/lib/urql";
@@ -24,7 +24,6 @@ vi.mock("@/modules/thrapp/graphql/client", () => ({
 
 const queries = createUseQueryFake();
 const statusQuery = () => queries.resultOf<SimulationStatus>(STATUS_QUERY);
-const historyQuery = () => queries.resultOf(QUERY_MODULES);
 const simulationQuery = () => queries.resultOf(QUERY_SIMULATION);
 const mutation = vi.fn();
 const historyMutation = vi.fn();
@@ -117,6 +116,7 @@ describe("simulation store", () => {
       { enabled: false, mode: AmcsControlMode.Manual },
     ])("sets the AMCS mode to $mode when enabled=$enabled", async ({ enabled, mode }) => {
       const simulation = useSimulationStore();
+      const refreshHistory = vi.spyOn(useThrsHistory(), "refresh");
       withInputs({ __typename: "ThrustersSimulationInputs" });
 
       await simulation.setAdvisory(enabled);
@@ -124,7 +124,7 @@ describe("simulation store", () => {
       const [query, variables] = historyMutation.mock.lastCall as [string, unknown];
       expect(query).toContain("thrustersSimulationSetMode(value: $input)");
       expect(variables).toEqual({ input: { mode } });
-      expect(historyQuery().executeQuery).toHaveBeenCalled();
+      expect(refreshHistory).toHaveBeenCalled();
       expect(simulationQuery().executeQuery).toHaveBeenCalled();
       expect(simulation.advisoryError).toBeNull();
     });

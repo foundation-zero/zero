@@ -44,6 +44,20 @@ describe("GraphQL mimic data provider", () => {
   });
 
   describe("reading values", () => {
+    it("warns once when the loaded data lacks a module part that is read", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      history.data = { modules: { thrusters: { controlValues: {} } } };
+      const provider = useGraphQLDataProvider();
+      const field = [SensorComponentType.Temperature, "thrusters", "tempIn", null] as const;
+
+      expect(provider.getSensorValue([...field]).value).toBeUndefined();
+      expect(provider.getSensorValue([...field]).value).toBeUndefined();
+
+      expect(warn).toHaveBeenCalledOnce();
+      expect(warn.mock.calls[0][0]).toContain('"thrusters.sensorValues"');
+      warn.mockRestore();
+    });
+
     it("reads each kind of field from its own section of the module", () => {
       const sensor = { temperature: stamp(20) };
       const control = { dutypoint: stamp(0.5) };
