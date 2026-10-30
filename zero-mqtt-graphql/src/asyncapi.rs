@@ -72,9 +72,7 @@ fn read_asyncapi_document(path: &Path) -> anyhow::Result<Value> {
     Ok(spec_value)
 }
 
-fn load_spec(path: &Path) -> anyhow::Result<ApiModel> {
-    let document_json = read_asyncapi_document(path)?;
-
+fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<ApiModel> {
     let validator_builder = ValidatorBuilder::new(document_json.clone())?;
 
     let document = serde_json::from_value::<Document>(document_json.clone())
@@ -123,7 +121,9 @@ pub fn load_specs(spec_dir: &str, ignore_failures: bool) -> anyhow::Result<Api> 
     let api_models = specs
         .iter()
         .filter_map(|path| {
-            let spec = load_spec(path);
+            let spec = read_asyncapi_document(path)
+                .and_then(|document_json| load_spec(path, &document_json));
+
             if ignore_failures && let Err(error) = spec {
                 warn!("Skipping AsyncAPI spec '{}': {:#}", path.display(), error);
                 None
@@ -161,8 +161,11 @@ fn channels_from_document<
 
             let operation = resolve_operation(operation_ref, doc).with_context(|| {
                 format!(
-                    "unresolvable operation $ref '{}' in {}",
+                    "unresolvable operation $ref '{}' ({}) in {}",
                     operation_name,
+                    operation_ref
+                        .reference()
+                        .map_or("<inline channel>", |r| r.reference.as_str()),
                     path.display()
                 )
             })?;
@@ -245,7 +248,7 @@ fn topic_from_channel(
     let mqtt_topic = channel.address().map(ToString::to_string);
     let Some(mqtt_topic) = mqtt_topic else {
         warn!(
-            "Channel '{}' in {} has no mqtt binding topic and no address, skipping",
+            "Channel '{}' in {} has no address, skipping",
             channel_name,
             path.display()
         );
@@ -373,7 +376,7 @@ fn param_name(segment: &str) -> Option<&str> {
 fn static_prefix(address: &str) -> Option<String> {
     let prefix = address
         .split('/')
-        .take_while(|segment| param_name(segment).is_none())
+        .take_while(|segment| param_name(segment).is_none() && !segment.is_empty())
         .collect::<Vec<_>>()
         .join("/");
     (!prefix.is_empty()).then_some(prefix)
@@ -775,9 +778,9 @@ mod tests {
     use std::collections::BTreeMap;
 
     /// Test convenience wrapper.
-    fn loaded_topics(dir: &Path) -> anyhow::Result<Vec<TopicDef>> {
-        let api = load_specs(dir.to_str().unwrap(), false)?;
-        Ok(api.topics())
+    fn loaded_topics(spec: Value) -> anyhow::Result<Vec<TopicDef>> {
+        let api = load_spec(Path::new("test"), &spec)?;
+        Ok(api.topics)
     }
 
     fn schema_with_properties(props: BTreeMap<String, Value>) -> Schema {
@@ -835,13 +838,6 @@ mod tests {
                         "Message": {
                             "$ref": "#/components/messages/termodinamica.compressor.temperature:Publisher:Message"
                         }
-                    },
-                    "bindings": {
-                        "mqtt": {
-                            "qos": 0,
-                            "retain": false,
-                            "bindingVersion": "0.2.0"
-                        }
                     }
                 }
             },
@@ -873,14 +869,7 @@ mod tests {
             }
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-specs");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        let path = dir.join("test.json");
-        std::fs::write(&path, serde_json::to_string_pretty(&spec).unwrap()).unwrap();
-
-        let topics = loaded_topics(&dir).unwrap();
-        let _ = std::fs::remove_dir_all(&dir);
+        let topics = loaded_topics(spec).unwrap();
 
         assert_eq!(topics.len(), 1);
         assert_eq!(
@@ -892,62 +881,57 @@ mod tests {
     }
 
     #[test_log::test]
-    fn test_no_mqtt_binding_skipped() {
+    fn test_load_specs_from_json_groups() {
         let spec = json!({
             "asyncapi": "3.0.0",
             "info": {"title": "Test", "version": "1.0.0"},
             "channels": {
-                "some.channel:Publisher": {
-                    "address": "some/channel:Publisher",
+                "power-tags": {
+                    "address": "power-tags/{panel}/{slug}",
                     "messages": {
                         "Message": {
-                            "$ref": "#/components/messages/some.channel:Publisher:Message"
+                            "$ref": "#/components/messages/power-tags:Message"
                         }
                     },
-                    "bindings": {
-                        "http": {}
-                    }
+                    "x-group-topic-metadata": {},
+                    "x-group-by": "panel"
                 }
             },
             "operations": {
-                "some.channel:Publisher": {
+                "power-tags": {
                     "action": "send",
                     "channel": {
-                        "$ref": "#/channels/some.channel:Publisher"
+                        "$ref": "#/channels/power-tags"
                     }
                 },
             },
             "components": {
                 "messages": {
-                    "some.channel:Publisher:Message": {
-                        "payload": { "$ref": "#/components/schemas/SomeType" }
+                    "power-tags:Message": {
+                        "payload": { "$ref": "#/components/schemas/Temperature" }
                     }
                 },
                 "schemas": {
-                    "SomeType": {
+                    "Temperature": {
                         "type": "object",
                         "properties": {
-                            "x": { "type": "integer" }
-                        }
+                            "celsius": { "type": "number" },
+                            "sensor_id": { "type": "integer" },
+                            "ok": { "type": "boolean" }
+                        },
+                        "required": ["celsius", "sensor_id", "ok"]
                     }
                 }
             }
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-no-mqtt");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        let path = dir.join("test.json");
-        std::fs::write(&path, serde_json::to_string_pretty(&spec).unwrap()).unwrap();
+        let api_model = load_spec(Path::new("test"), &spec).unwrap();
+        let groups = api_model.groups;
 
-        let topics = loaded_topics(&dir).unwrap();
-        let _ = std::fs::remove_dir_all(&dir);
-
-        // Channel has no mqtt binding but has address, so it falls back to address
-        // For this spec address is "some/channel:Publisher", so it is not skipped.
-        // To test skipping, we need a channel with no bindings and no address.
-        assert_eq!(topics.len(), 1);
-        assert_eq!(topics[0].topic, "some/channel:Publisher");
+        assert_eq!(groups.len(), 1);
+        assert_eq!(groups[0].pattern, "power-tags/+/+");
+        assert_eq!(groups[0].fields.len(), 3);
+        assert_eq!(groups[0].fields.get("celsius"), Some(&GraphqlType::Float));
     }
 
     #[test_log::test]
@@ -976,13 +960,6 @@ mod tests {
                             }
                         }
                     },
-                    "bindings": {
-                        "mqtt": {
-                            "topic": "test/channel",
-                            "qos": 0,
-                            "retain": false
-                        }
-                    }
                 }
             },
             "operations": {
@@ -995,14 +972,7 @@ mod tests {
             }
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-inline");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        let path = dir.join("test.json");
-        std::fs::write(&path, serde_json::to_string_pretty(&spec).unwrap()).unwrap();
-
-        let topics = loaded_topics(&dir).unwrap();
-        let _ = std::fs::remove_dir_all(&dir);
+        let topics = loaded_topics(spec).unwrap();
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "test/channel:Publisher");
@@ -1017,7 +987,7 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(dir.join("readme.txt"), "not a spec").unwrap();
 
-        let topics = loaded_topics(&dir).unwrap();
+        let topics = load_specs(&dir.to_str().unwrap(), false).unwrap();
         let _ = std::fs::remove_dir_all(&dir);
 
         assert!(topics.is_empty());
@@ -1030,7 +1000,7 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(dir.join("broken.json"), "{ not json }").unwrap();
 
-        let err = loaded_topics(&dir).unwrap_err();
+        let err = load_specs(&dir.to_str().unwrap(), false).unwrap_err();
         let _ = std::fs::remove_dir_all(&dir);
 
         assert!(err.to_string().contains("parsing JSON"), "{err}");
@@ -1052,7 +1022,7 @@ mod tests {
         )
         .unwrap();
 
-        let err = loaded_topics(&dir).unwrap_err();
+        let err = load_specs(&dir.to_str().unwrap(), false).unwrap_err();
         let _ = std::fs::remove_dir_all(&dir);
 
         assert!(err.to_string().contains("no 'asyncapi' field"), "{err}");
@@ -1065,8 +1035,7 @@ mod tests {
             "info": {"title": "Test", "version": "1.0.0"},
             "channels": {
                 "test.channel:Publisher": {
-                    "address": "test/channel",
-                    "bindings": { "mqtt": { "topic": "test/channel" } }
+                    "address": "test/channel"
                 }
             }
         });
@@ -1080,7 +1049,7 @@ mod tests {
         )
         .unwrap();
 
-        let err = loaded_topics(&dir).unwrap_err();
+        let err = load_specs(&dir.to_str().unwrap(), false).unwrap_err();
         let _ = std::fs::remove_dir_all(&dir);
 
         assert!(err.to_string().contains("only 3.x is supported"), "{err}");
@@ -1102,7 +1071,6 @@ mod tests {
                             }
                         }
                     },
-                    "bindings": { "mqtt": { "topic": "one/channel" } }
                 },
                 "two.channel:Publisher": {
                     "address": "two/channel",
@@ -1114,7 +1082,6 @@ mod tests {
                             }
                         }
                     },
-                    "bindings": { "mqtt": { "topic": "two/channel" } }
                 }
             },
             "operations": {
@@ -1133,17 +1100,7 @@ mod tests {
             }
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-multi");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        std::fs::write(
-            dir.join("test.json"),
-            serde_json::to_string_pretty(&spec).unwrap(),
-        )
-        .unwrap();
-
-        let topics = loaded_topics(&dir).unwrap();
-        let _ = std::fs::remove_dir_all(&dir);
+        let topics = loaded_topics(spec).unwrap();
 
         assert_eq!(topics.len(), 2);
         // BTreeMap ordering
@@ -1214,18 +1171,8 @@ mod tests {
             }
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-subscribe");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        std::fs::write(
-            dir.join("test.json"),
-            serde_json::to_string_pretty(&spec).unwrap(),
-        )
-        .unwrap();
-
-        let api = load_specs(dir.to_str().unwrap(), false).unwrap();
+        let api = Api::new(vec![load_spec(Path::new("test"), &spec).unwrap()]);
         let subscribed_topics = api.subscribe_topics();
-        let _ = std::fs::remove_dir_all(&dir);
 
         // We expect one topic that is not receive and the broadest
         assert_eq!(subscribed_topics.len(), 1);
@@ -1262,23 +1209,12 @@ mod tests {
                                 }
                             }
                         },
-                        "bindings": { "mqtt": { "topic": "ref/channel" } }
                     }
                 }
             }
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-channel-ref");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        std::fs::write(
-            dir.join("test.json"),
-            serde_json::to_string_pretty(&spec).unwrap(),
-        )
-        .unwrap();
-
-        let topics = loaded_topics(&dir).unwrap();
-        let _ = std::fs::remove_dir_all(&dir);
+        let topics = loaded_topics(spec).unwrap();
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "ref/channel");
@@ -1296,7 +1232,6 @@ mod tests {
                     "messages": {
                         "Message": { "summary": "no payload" }
                     },
-                    "bindings": { "mqtt": { "topic": "bare/channel" } }
                 }
             },
             "operations": {
@@ -1309,17 +1244,84 @@ mod tests {
             },
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-no-payload");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        std::fs::write(
-            dir.join("test.json"),
-            serde_json::to_string_pretty(&spec).unwrap(),
-        )
-        .unwrap();
+        let topics = loaded_topics(spec).unwrap();
 
-        let topics = loaded_topics(&dir).unwrap();
-        let _ = std::fs::remove_dir_all(&dir);
+        assert_eq!(topics.len(), 1);
+        assert_eq!(topics[0].topic, "bare/channel");
+        assert!(topics[0].fields.is_empty());
+    }
+
+    #[test_log::test]
+    fn test_no_resolvable_channel() {
+        let spec = json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "Test", "version": "1.0.0"},
+            "channels": {},
+            "operations": {
+                "bare.channel:Publisher": {
+                    "action": "send",
+                    "channel": {
+                        "$ref": "#/channels/does-not-exist"
+                    }
+                },
+            },
+        });
+
+        let err = loaded_topics(spec).unwrap_err();
+
+        assert_eq!(
+            err.to_string(),
+            "unresolvable channel $ref 'does-not-exist' (#/channels/does-not-exist) in test",
+            "{err}"
+        );
+    }
+
+    #[test_log::test]
+    fn test_no_resolvable_operation() {
+        let spec = json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "Test", "version": "1.0.0"},
+            "channels": {},
+            "operations": {
+                "bare.channel:Publisher": {
+                     "$ref": "#/operations/does-not-exist"
+                },
+            },
+        });
+
+        let err = loaded_topics(spec).unwrap_err();
+
+        assert_eq!(
+            err.to_string(),
+            "unresolvable operation $ref 'bare.channel:Publisher' (#/operations/does-not-exist) in test",
+            "{err}"
+        );
+    }
+
+    #[test_log::test]
+    fn test_no_resolvable_message_yields_empty_fields() {
+        let spec = json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "Test", "version": "1.0.0"},
+            "channels": {
+                "channel": {
+                    "address": "bare/channel",
+                    "messages": {
+                        "Message": { "$ref": "#/channels/does-not-exist" }
+                    },
+                }
+            },
+            "operations": {
+                "bare.channel:Publisher": {
+                    "action": "send",
+                    "channel": {
+                        "$ref": "#/channels/channel"
+                    }
+                },
+            },
+        });
+
+        let topics = loaded_topics(spec).unwrap();
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "bare/channel");
@@ -1393,5 +1395,21 @@ mod tests {
         assert_eq!(ttl_from_value(Some(&json!(-1.5))), None);
         assert_eq!(ttl_from_value(Some(&json!(true))), None);
         assert_eq!(ttl_from_value(None), None);
+    }
+
+    #[test_log::test]
+    fn test_static_prefix() {
+        assert_eq!(
+            static_prefix("powertags/{aa}/{bb}"),
+            Some("powertags".to_string())
+        );
+        assert_eq!(
+            static_prefix("powertags/{aa}/middle/{bb}"),
+            Some("powertags".to_string())
+        );
+        assert_eq!(static_prefix("{aa}/middle/{bb}"), None);
+        assert_eq!(static_prefix("{aa}/{bb}"), None);
+        assert_eq!(static_prefix("/"), None);
+        assert_eq!(static_prefix(""), None);
     }
 }

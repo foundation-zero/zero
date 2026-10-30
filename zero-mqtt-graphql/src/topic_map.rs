@@ -323,4 +323,44 @@ mod tests {
         assert_eq!(map.0.get("metrics/disk/io"), Some(42).as_ref()); // Kept (depth 2 vs '+')
         assert_eq!(map.0.get("metrics/+"), Some(42).as_ref());
     }
+
+    #[test_log::test]
+    fn test_topic_map_remove() {
+        let mut topic_map: TopicMap<_> = [("metrics/#".to_string(), 1)].into_iter().collect();
+
+        topic_map.remove("metrics/#");
+
+        assert!(topic_map.is_empty());
+    }
+
+    #[test_log::test]
+    fn test_topic_map_extend() {
+        let topic_map1: TopicMap<_> = [("metrics/#".to_string(), 1)].into_iter().collect();
+        let topic_map2: TopicMap<_> = [("metrics/#".to_string(), 1), ("metrics/a".to_string(), 1)]
+            .into_iter()
+            .collect();
+
+        let result = topic_map1.extend(topic_map2);
+
+        assert_eq!(result.0.get("metrics/#"), Some(1).as_ref());
+        assert_eq!(result.0.get("metrics/a"), Some(1).as_ref());
+    }
+
+    #[test_log::test]
+    fn test_topic_map_keys() {
+        let topic_map: TopicMap<_> = [("metrics/#".to_string(), 1)].into_iter().collect();
+
+        let result: Vec<_> = topic_map.keys().collect();
+
+        assert_eq!(result, vec!["metrics/#"]);
+    }
+
+    #[test_log::test]
+    fn test_topic_map_insert() {
+        let mut topic_map: TopicMap<_> = TopicMap::new();
+
+        topic_map.insert("metrics/a".to_string(), ());
+
+        assert_eq!(topic_map.0.get("metrics/a"), Some(()).as_ref());
+    }
 }

@@ -164,4 +164,26 @@ mod tests {
         assert_eq!(pascal_case_graphql_name("power-tags"), "PowerTags");
         assert_eq!(pascal_case_graphql_name(""), "");
     }
+
+    #[test_log::test]
+    fn test_is_reserved_name() {
+        assert!(!is_reserved_name("power-tags"));
+
+        assert!(
+            &[
+                "query",
+                "mutation",
+                "subscription",
+                "topics",
+                "boolean",
+                "float",
+                "int",
+                "string",
+                "id",
+            ]
+            .iter()
+            .map(|n| is_reserved_name(n))
+            .all(|b| b)
+        );
+    }
 }

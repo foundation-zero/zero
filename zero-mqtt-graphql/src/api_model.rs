@@ -19,7 +19,7 @@ pub struct TopicDef {
 }
 
 /// A parametrized topic family declared by a single channel, e.g.
-/// address `power-tags/{panel}/{slug}` with mqtt binding `power-tags/+/+`.
+/// address `power-tags/{panel}/{slug}`.
 #[derive(Debug, Clone)]
 pub struct TopicGroupDef {
     /// Static prefix of the address (`power-tags`); seeds the GraphQL names.
@@ -79,6 +79,7 @@ impl ApiModel {
         self.topics.is_empty() && self.groups.is_empty()
     }
 }
+#[derive(Debug)]
 
 pub struct Api {
     pub(crate) models: Vec<ApiModel>,
