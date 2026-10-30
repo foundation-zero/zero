@@ -35,7 +35,7 @@ license-files = ["LICENSE"]
 
 [dependency-groups]
 dev = [
-  "ruff==0.17.2",
+  "ruff==0.17.3",
   "pygraphviz==2.0.4",
   "ipympl>=0.10,<0.11",
   "pyqtgraph>=0.13.7,<1.0.0",
