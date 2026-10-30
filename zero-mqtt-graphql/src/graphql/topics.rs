@@ -20,8 +20,7 @@
 
 use std::sync::Arc;
 
-use crate::graphql::json_to_graphql_value;
-use crate::graphql::payload_object;
+use crate::graphql::{json_to_graphql_value, payload_object};
 use crate::roas_asyncapi::OperationAction;
 use async_graphql::dynamic::{Field, Object, TypeRef};
 use log::info;
@@ -41,7 +40,7 @@ pub(super) fn build_schema_topics(
 
     let mut objects = Vec::with_capacity(topics.len());
 
-    for topic_def in queryable_topics(topics) {
+    for topic_def in topics.iter().filter(|t| queryable_topic(t)) {
         info!("Building schema for topic {}", topic_def.topic);
         let name = &topic_def.payload_schema_ref.clone().map_or_else(
             || topic_def.topic.clone(),
@@ -57,8 +56,8 @@ pub(super) fn build_schema_topics(
         );
         let new_objects = payload_object(name, &topic_def.fields);
 
-        let field_name = new_objects[0].type_name();
-        let field = topic_query_field(&topic_def.topic, field_name, cache);
+        let field_name = sanitize_to_graphql_name(&topic_def.topic);
+        let field = payload_query_field(&field_name, &topic_def.topic, &new_objects[0], cache);
 
         objects.extend(new_objects);
         schema_object = schema_object.field(field);
@@ -68,21 +67,24 @@ pub(super) fn build_schema_topics(
 }
 
 /// Topics eligible for a queryable payload object: those with fields.
-fn queryable_topics(topics: &[TopicDef]) -> impl Iterator<Item = &TopicDef> {
-    topics.iter().filter(|topic_def| {
-        !topic_def.fields.is_empty() && topic_def.action == OperationAction::Send
-    })
+fn queryable_topic(topic_def: &TopicDef) -> bool {
+    !topic_def.fields.is_empty() && topic_def.action == OperationAction::Send
 }
 
 /// The `<Topic>` query field: resolves to the topic's whole cached MQTT
 /// payload object. The object's scalar subfields project from this value
 /// (see [`payload_field`]), so the payload is read from the cache exactly
 /// once per query.
-fn topic_query_field(topic: &str, type_name: &str, cache: &Arc<TopicCache>) -> Field {
-    let obj_ref = TypeRef::named(type_name);
+fn payload_query_field(
+    name: &str,
+    topic: &str,
+    graphql_type: &Object,
+    cache: &Arc<TopicCache>,
+) -> Field {
+    let obj_ref = TypeRef::named(graphql_type.type_name());
     let topic = topic.to_string();
     let cache_for_query = cache.clone();
-    Field::new(sanitize_to_graphql_name(&topic), obj_ref, move |_ctx| {
+    Field::new(name, obj_ref, move |_ctx| {
         let val = cache_for_query.get(&topic);
         async_graphql::dynamic::FieldFuture::new(async move {
             Ok(val.map(|json_val| json_to_graphql_value(&json_val)))
