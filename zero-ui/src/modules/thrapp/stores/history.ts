@@ -43,7 +43,9 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
   const { pause, resume } = useIntervalFn(refresh, 5000);
 
   // The data of another view's query lacks what this view shows, so drop it before refreshing.
+  // Pending responses are dropped too, also when the query is cleared.
   watch(activeQuery, () => {
+    latestRequest++;
     data.value = undefined;
     refresh();
   });

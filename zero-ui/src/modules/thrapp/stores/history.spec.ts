@@ -77,6 +77,24 @@ describe("THRS history store", () => {
     expect(history.data).toBeUndefined();
   });
 
+  it("drops late responses once the active query is cleared", async () => {
+    let resolveFirst!: (value: unknown) => void;
+    vi.mocked(client.query).mockReturnValueOnce({
+      toPromise: () => new Promise((resolve) => (resolveFirst = resolve)),
+    } as never);
+    const history = useThrsHistory();
+
+    history.activeQuery = DHW_MIMIC_QUERY;
+    await nextTick();
+    history.activeQuery = undefined;
+    await nextTick();
+    resolveFirst({ data: { modules: { dhw: {} } } });
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(history.data).toBeUndefined();
+    expect(history.lastUpdate).toBeNull();
+  });
+
   it("sends mutations through the THRS client", async () => {
     const result = { data: { ok: true } };
     vi.mocked(client.mutation).mockReturnValue({
