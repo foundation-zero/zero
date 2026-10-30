@@ -58,13 +58,6 @@ impl TopicCache {
         Some(entry.value.clone())
     }
 
-    /// Get a specific field from a topic's cached payload.
-    #[must_use]
-    pub fn get_field(&self, topic: &str, field: &str) -> Option<Value> {
-        let entry = self.get_entry_if_fresh(topic)?;
-        entry.value.get(field).cloned()
-    }
-
     /// Borrow the live entry for `topic`, evicting it first when its TTL
     /// has elapsed.
     fn get_entry_if_fresh(
@@ -147,20 +140,6 @@ mod tests {
     }
 
     #[test_log::test]
-    fn test_get_field() {
-        let cache = TopicCache::new();
-        let payload = json!({"celsius": 23.5, "ok": true});
-        cache.insert("test/topic", payload);
-
-        assert_eq!(
-            cache.get_field("test/topic", "celsius").unwrap(),
-            json!(23.5)
-        );
-        assert_eq!(cache.get_field("test/topic", "ok").unwrap(), json!(true));
-        assert!(cache.get_field("test/topic", "missing").is_none());
-    }
-
-    #[test_log::test]
     fn test_overwrite() {
         let cache = TopicCache::new();
         cache.insert("test/topic", json!({"v": 1}));
@@ -170,26 +149,11 @@ mod tests {
     }
 
     #[test_log::test]
-    fn test_get_field_returns_raw_nested_payload() {
-        let cache = TopicCache::new();
-        cache.insert("test/topic", json!({"nested": {"v": 1.0}, "flat": 2}));
-
-        assert_eq!(cache.get_field("test/topic", "flat").unwrap(), json!(2));
-        assert_eq!(
-            cache.get_field("test/topic", "nested").unwrap(),
-            json!({"v": 1.0})
-        );
-        // The cache stores payloads verbatim; flattening happens at insert time upstream
-        assert!(cache.get_field("test/topic", "v").is_none());
-    }
-
-    #[test_log::test]
     fn test_insert_null_payload_is_stored() {
         let cache = TopicCache::new();
         cache.insert("test/topic", serde_json::Value::Null);
 
         assert_eq!(cache.get("test/topic").unwrap(), serde_json::Value::Null);
-        assert!(cache.get_field("test/topic", "anything").is_none());
     }
 
     #[test_log::test]
@@ -198,7 +162,6 @@ mod tests {
         cache.insert("test/topic", json!({"v": 1}));
         std::thread::sleep(std::time::Duration::from_millis(10));
         assert!(cache.get("test/topic").is_none());
-        assert!(cache.get_field("test/topic", "v").is_none());
     }
 
     #[test_log::test]
