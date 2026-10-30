@@ -20,14 +20,9 @@ const props = defineProps<{
   <component
     :is="wrapper"
     v-model:open="open"
-    :title="title"
-    :description="description"
-    :class="props.class"
+    v-bind="props"
   >
-    <template
-      v-if="$slots['title']"
-      #title
-    >
+    <template #title>
       <slot name="title" />
     </template>
     <template #trigger>
