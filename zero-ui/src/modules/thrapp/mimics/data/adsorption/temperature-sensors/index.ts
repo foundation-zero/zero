@@ -31,17 +31,15 @@ export const ADSORPTION_TEMPERATURE_SENSOR_DATA = toFieldsMap({
         getField(SensorComponentType.Temperature, "adsorption", "adsorptionTemperatureHtSupply"),
       ),
     ),
+    "1038-38": toTemperatureSensor(
+      measuredTemperatureFields(
+        getField(SensorComponentType.Temperature, "adsorption", "adsorptionTemperatureWasteReturn"),
+      ),
+    ),
     "1038-56": toTemperatureSensor(
       measuredTemperatureFields(
         getField(SensorComponentType.Temperature, "adsorption", "adsorptionTemperatureDhwReturn"),
       ),
-    ),
-    // The design tags this sensor 9005-01/02; it has no thrsim field yet.
-    "9005-01/02": toTemperatureSensor(
-      measuredTemperatureFields(
-        getField(SensorComponentType.Temperature, "adsorption", "placeholder"),
-      ),
-      { yardTag: "9005-01/02" },
     ),
   },
 });

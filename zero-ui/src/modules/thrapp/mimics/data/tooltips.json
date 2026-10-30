@@ -66,6 +66,7 @@
     "1038-35": "TemperatureSensor/1038-35",
     "1038-36": "TemperatureSensor/1038-36",
     "1038-37": "TemperatureSensor/1038-37",
+    "1038-38": "TemperatureSensor/1038-38",
     "1038-39": "TemperatureSensor/1038-39",
     "1038-41": "TemperatureSensor/1038-41",
     "1038-44": "TemperatureSensor/1038-44",
@@ -290,6 +291,7 @@
     "adsorption:adsorptionTemperatureHotSupply": "TemperatureSensor/1038-37",
     "adsorption:adsorptionTemperatureHtReturn": "TemperatureSensor/1038-41",
     "adsorption:adsorptionTemperatureHtSupply": "TemperatureSensor/1038-50",
+    "adsorption:adsorptionTemperatureWasteReturn": "TemperatureSensor/1038-38",
     "adsorption:adsorptionTemperatureWasteSupply": "TemperatureSensor/1038-39",
     "adsorption:dhwAdsorptionExchanger": "ExchangeCircuit/adsorption:domesticHotWater",
     "adsorption:seawater": "SeawaterCircuit/adsorption:seawater",
@@ -10421,6 +10423,29 @@
           "componentType": "Temperature sensor"
         }
       },
+      "1038-38": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "adsorption",
+            "adsorptionTemperatureWasteReturn",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "adsorption",
+          "adsorptionTemperatureWasteReturn",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-38",
+          "technicalName": "adsorption-temperature-waste-return",
+          "mqttTopic": ".../adsorption-temperature-waste-return",
+          "componentType": "Temperature sensor"
+        }
+      },
       "1038-39": {
         "sensors": {
           "measurement": [
@@ -11764,27 +11789,6 @@
           "technicalName": "pvt-temperature-owners-string-6-supply",
           "mqttTopic": ".../pvt-temperature-owners-string-6-supply",
           "componentType": "Temperature sensor"
-        }
-      },
-      "adsorption:9005-01/02": {
-        "sensors": {
-          "measurement": [
-            "sensor:temperature",
-            "adsorption",
-            "placeholder",
-            null
-          ]
-        },
-        "source": [
-          "sensor:temperature",
-          "adsorption",
-          "placeholder",
-          null
-        ],
-        "tooltip": {
-          "title": "Temperature sensor",
-          "componentType": "Temperature sensor",
-          "yardTag": "9005-01/02"
         }
       }
     },

@@ -26,7 +26,7 @@ const seawaterCircuits = getTooltipContexts(MimicComponentType.SeawaterCircuit, 
       x="0"
       y="12"
       width="196"
-      height="174"
+      height="188"
       v-bind="exchangeCircuits['adsorption:domesticHotWater']"
     />
     <ExchangeCircuitInstance
