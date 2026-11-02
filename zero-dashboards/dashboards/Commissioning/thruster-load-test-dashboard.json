@@ -12,29 +12,6 @@
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
         "type": "dashboard"
-      },
-      {
-        "datasource": {
-          "type": "info8fcc-greptimedb-datasource",
-          "uid": "${datasource}"
-        },
-        "enable": true,
-        "hide": false,
-        "iconColor": "rgba(255, 152, 48, 0.4)",
-        "name": "Test steps",
-        "target": {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorType": "sql",
-          "format": 1,
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "SELECT start_time AS time, stop_time AS \"timeEnd\",\n  'Step ' || CAST(step AS VARCHAR) || ' · ' || label || ' · log ' || CAST(load_kw AS VARCHAR) || ' kW' AS text\nFROM (VALUES (1, '25 % rpm', TIMESTAMP '2026-10-13 09:12:00', TIMESTAMP '2026-10-13 09:20:00', -5, 0.9),\n    (2, '50 % rpm', TIMESTAMP '2026-10-13 09:21:00', TIMESTAMP '2026-10-13 09:31:00', -35, 0.9),\n    (3, '75 % rpm', TIMESTAMP '2026-10-13 09:32:00', TIMESTAMP '2026-10-13 09:55:00', -105, 0.65),\n    (4, '100 % rpm', TIMESTAMP '2026-10-13 09:56:00', TIMESTAMP '2026-10-13 10:05:00', -160, 0.65),\n    (5, 'cool down', TIMESTAMP '2026-10-13 10:06:00', TIMESTAMP '2026-10-13 12:28:00', 0, NULL),\n    (11, '25 % rpm', TIMESTAMP '2026-10-13 12:28:00', TIMESTAMP '2026-10-13 13:01:00', -5, 0.9),\n    (12, '50 % rpm', TIMESTAMP '2026-10-13 13:16:00', TIMESTAMP '2026-10-13 13:59:00', -50, 0.9),\n    (13, '75 % rpm', TIMESTAMP '2026-10-13 13:59:00', TIMESTAMP '2026-10-13 14:30:00', -77, 0.7),\n    (14, '100 % rpm', TIMESTAMP '2026-10-13 14:31:00', TIMESTAMP '2026-10-13 15:01:00', -140, 0.6),\n    (15, 'cool down', TIMESTAMP '2026-10-13 15:01:00', TIMESTAMP '2026-10-13 15:53:00', 0, NULL)) v (step, label, start_time, stop_time, load_kw, pitch_override)\nWHERE stop_time >= $__fromTime AND start_time <= $__toTime",
-          "refId": "Anno"
-        }
       }
     ]
   },
@@ -73,13 +50,13 @@
       "transparent": false,
       "options": {
         "mode": "markdown",
-        "content": "<center><h2>Thruster load test</h2></center>\n\nThe items to be monitored of the thruster load test of 13 Oct 2026, per test step. Only the FWD pod was run that day; the **Pod** selector switches the propulsion, drive, cooling and hydraulics panels between FWD and AFT. Batteries and DC switches serve both pods.\n**Times are UTC.** The test log was kept in local time (UTC+2); the annotations are the logged steps converted to UTC, labelled with the step, the planned rpm and the load as logged. The AMCS trend screenshots are in UTC.\n**DC power** = raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** = raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature raw × 0.1 °C.\nThe info icon of each panel states its source, scaling and corrections."
+        "content": "<center><h2>Thruster load test</h2></center>\n\nThe items to be monitored of the thruster load test plan. The **Pod** selector switches every panel between FWD and AFT, except the batteries and DC switches, which serve both pods.\n**Times are UTC.**\n**DC power** = raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** = raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature raw × 0.1 °C.\nThe info icon of each panel states its source, scaling and corrections."
       }
     },
     {
       "id": 2,
       "type": "row",
-      "title": "Step",
+      "title": "Propulsion",
       "collapsed": false,
       "gridPos": {
         "x": 0,
@@ -88,93 +65,6 @@
         "h": 1
       },
       "panels": []
-    },
-    {
-      "id": 3,
-      "title": "Logged steps against the data",
-      "type": "table",
-      "datasource": {
-        "type": "info8fcc-greptimedb-datasource",
-        "uid": "${datasource}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 6,
-        "w": 24,
-        "h": 9
-      },
-      "description": "One row per logged step, in UTC. Logged: the load and pitch override setting as written in the test log. The pitch override is presumably a pitch ratio P/D, not an angle; it is converted to degrees with the PLC's own conversion, angle = atan(P/D / 2.2), to compare with the measured pitch. Measured: the average over the step of the PLC's propeller speed (raw / 10 rpm) and shaft power (raw / 10 kW, negative when propelling), the pitch and the azimuth range (whole degrees), and the DC power of drive 1 and 2 (raw × 0.1 kW, positive when consuming). Only FWD was run on 13 Oct 2026.",
-      "pluginVersion": "12.3.0",
-      "transparent": false,
-      "targets": [
-        {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorType": "sql",
-          "format": 1,
-          "pluginVersion": "2.1.4",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "WITH steps AS (SELECT * FROM (VALUES (1, '25 % rpm', TIMESTAMP '2026-10-13 09:12:00', TIMESTAMP '2026-10-13 09:20:00', -5, 0.9),\n    (2, '50 % rpm', TIMESTAMP '2026-10-13 09:21:00', TIMESTAMP '2026-10-13 09:31:00', -35, 0.9),\n    (3, '75 % rpm', TIMESTAMP '2026-10-13 09:32:00', TIMESTAMP '2026-10-13 09:55:00', -105, 0.65),\n    (4, '100 % rpm', TIMESTAMP '2026-10-13 09:56:00', TIMESTAMP '2026-10-13 10:05:00', -160, 0.65),\n    (5, 'cool down', TIMESTAMP '2026-10-13 10:06:00', TIMESTAMP '2026-10-13 12:28:00', 0, NULL),\n    (11, '25 % rpm', TIMESTAMP '2026-10-13 12:28:00', TIMESTAMP '2026-10-13 13:01:00', -5, 0.9),\n    (12, '50 % rpm', TIMESTAMP '2026-10-13 13:16:00', TIMESTAMP '2026-10-13 13:59:00', -50, 0.9),\n    (13, '75 % rpm', TIMESTAMP '2026-10-13 13:59:00', TIMESTAMP '2026-10-13 14:30:00', -77, 0.7),\n    (14, '100 % rpm', TIMESTAMP '2026-10-13 14:31:00', TIMESTAMP '2026-10-13 15:01:00', -140, 0.6),\n    (15, 'cool down', TIMESTAMP '2026-10-13 15:01:00', TIMESTAMP '2026-10-13 15:53:00', 0, NULL)) v (step, label, start_time, stop_time, load_kw, pitch_override)),\npcs AS (SELECT s.step, avg(p.azimuth_prop_speed__value) / 10.0 AS rpm, avg(p.azimuth_prop_mech_power__value) / 10.0 AS shaft,\n    avg(p.propellor_pitch__value) AS pitch, min(p.propellor_azimuth__value) AS az_min, max(p.propellor_azimuth__value) AS az_max\n  FROM steps s JOIN (SELECT * FROM public.marpower__150000_propulsion__pcs_${pod} WHERE $__timeFilter(timestamp)) p ON p.timestamp >= s.start_time AND p.timestamp < s.stop_time\n  GROUP BY s.step),\ndc AS (SELECT s.step, avg(CASE WHEN d.drive = 1 THEN d.power END) * 0.1 AS d1, avg(CASE WHEN d.drive = 2 THEN d.power END) * 0.1 AS d2\n  FROM steps s JOIN (SELECT timestamp, 1 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp, 2 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE $__timeFilter(timestamp)) d\n    ON d.timestamp >= s.start_time AND d.timestamp < s.stop_time\n  GROUP BY s.step)\nSELECT s.step AS \"Step\", s.label AS \"Planned\", s.start_time AS \"Start\", s.stop_time AS \"Stop\",\n  s.load_kw AS \"Load, logged [kW]\", round(pcs.shaft, 1) AS \"Shaft power [kW]\",\n  round(dc.d1, 1) AS \"DC drive 1 [kW]\", round(dc.d2, 1) AS \"DC drive 2 [kW]\", round(pcs.rpm, 1) AS \"Propeller speed [rpm]\",\n  s.pitch_override AS \"Pitch override, logged [P/D]\",\n  round(degrees(atan(s.pitch_override / 2.2)), 1) AS \"Pitch override [deg]\", round(pcs.pitch, 1) AS \"Pitch [deg]\",\n  pcs.az_min AS \"Azimuth min [deg]\", pcs.az_max AS \"Azimuth max [deg]\"\nFROM steps s LEFT JOIN pcs ON pcs.step = s.step LEFT JOIN dc ON dc.step = s.step\nORDER BY s.start_time",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "inspect": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Start"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "dateTimeAsSystem"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Stop"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "dateTimeAsSystem"
-              }
-            ]
-          }
-        ]
-      },
-      "options": {
-        "cellHeight": "sm",
-        "showHeader": true,
-        "footer": {
-          "show": false
-        }
-      }
     },
     {
       "id": 4,
@@ -186,11 +76,11 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 15,
+        "y": 6,
         "w": 12,
         "h": 8
       },
-      "description": "Propeller speed from the PLC, raw / 10 rpm, without sign. Shaft power: the propeller's mechanical power from the PLC, raw / 10 kW, with the sign as the PLC sends it: negative when propelling. The load column of the test log fits this value.",
+      "description": "Propeller speed from the PLC, raw / 10 rpm, without sign. Shaft power: the propeller's mechanical power from the PLC, raw / 10 kW, with the sign as the PLC sends it: negative when propelling.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -335,11 +225,11 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 15,
+        "y": 6,
         "w": 12,
         "h": 8
       },
-      "description": "Propeller pitch and azimuth from the PLC, in whole degrees. The pitch is shown as an angle, not as the pitch ratio P/D = 2.2 × tan(pitch): the whole-degree resolution makes P/D move in steps of about 0.04 at 15° to 0.05 at 30°, coarser than the differences between the pitch override settings in the test log (0.6, 0.65, 0.7, 0.9), and the feathered position (about 87°) converts to a P/D of about 42. The test log's pitch override setting is presumably a P/D; the setting itself is not published, and the step table shows it converted to degrees.",
+      "description": "Propeller pitch and azimuth from the PLC, in whole degrees. The pitch is shown as an angle, not as the pitch ratio P/D = 2.2 × tan(pitch): the whole-degree resolution makes P/D move in steps of about 0.04 at 15° to 0.05 at 30°, and the feathered position (about 87°) converts to a P/D of about 42.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -481,7 +371,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 23,
+        "y": 14,
         "w": 12,
         "h": 8
       },
@@ -673,7 +563,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 23,
+        "y": 14,
         "w": 12,
         "h": 8
       },
@@ -852,7 +742,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 31,
+        "y": 22,
         "w": 24,
         "h": 8
       },
@@ -1130,7 +1020,7 @@
       "collapsed": true,
       "gridPos": {
         "x": 0,
-        "y": 39,
+        "y": 30,
         "w": 24,
         "h": 1
       },
@@ -1145,7 +1035,7 @@
           },
           "gridPos": {
             "x": 0,
-            "y": 40,
+            "y": 31,
             "w": 24,
             "h": 4
           },
@@ -1220,7 +1110,7 @@
           },
           "gridPos": {
             "x": 0,
-            "y": 44,
+            "y": 35,
             "w": 24,
             "h": 5
           },
@@ -1294,7 +1184,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 40,
+        "y": 31,
         "w": 24,
         "h": 1
       },
@@ -1310,7 +1200,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 41,
+        "y": 32,
         "w": 12,
         "h": 8
       },
@@ -1408,7 +1298,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 41,
+        "y": 32,
         "w": 12,
         "h": 8
       },
@@ -1503,7 +1393,7 @@
       "collapsed": true,
       "gridPos": {
         "x": 0,
-        "y": 49,
+        "y": 40,
         "w": 24,
         "h": 1
       },
@@ -1518,7 +1408,7 @@
           },
           "gridPos": {
             "x": 0,
-            "y": 50,
+            "y": 41,
             "w": 24,
             "h": 4
           },
@@ -1592,7 +1482,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 50,
+        "y": 41,
         "w": 24,
         "h": 1
       },
@@ -1608,7 +1498,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 51,
+        "y": 42,
         "w": 12,
         "h": 8
       },
@@ -1737,7 +1627,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 51,
+        "y": 42,
         "w": 12,
         "h": 8
       },
@@ -1863,7 +1753,7 @@
       "collapsed": true,
       "gridPos": {
         "x": 0,
-        "y": 59,
+        "y": 50,
         "w": 24,
         "h": 1
       },
@@ -1878,7 +1768,7 @@
           },
           "gridPos": {
             "x": 0,
-            "y": 60,
+            "y": 51,
             "w": 12,
             "h": 5
           },
@@ -1952,7 +1842,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 60,
+        "y": 51,
         "w": 24,
         "h": 1
       },
@@ -1968,7 +1858,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 61,
+        "y": 52,
         "w": 12,
         "h": 8
       },
@@ -2118,7 +2008,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 61,
+        "y": 52,
         "w": 12,
         "h": 8
       },
@@ -2268,7 +2158,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 69,
+        "y": 60,
         "w": 12,
         "h": 8
       },
@@ -2418,7 +2308,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 69,
+        "y": 60,
         "w": 12,
         "h": 8
       },
@@ -2568,7 +2458,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 77,
+        "y": 68,
         "w": 24,
         "h": 8
       },
@@ -2715,7 +2605,7 @@
       "collapsed": true,
       "gridPos": {
         "x": 0,
-        "y": 85,
+        "y": 76,
         "w": 24,
         "h": 1
       },
@@ -2730,7 +2620,7 @@
           },
           "gridPos": {
             "x": 0,
-            "y": 86,
+            "y": 77,
             "w": 16,
             "h": 12
           },
@@ -2804,7 +2694,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 86,
+        "y": 77,
         "w": 24,
         "h": 1
       },
@@ -2820,7 +2710,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 87,
+        "y": 78,
         "w": 24,
         "h": 7
       },
@@ -2915,7 +2805,7 @@
       "collapsed": true,
       "gridPos": {
         "x": 0,
-        "y": 94,
+        "y": 85,
         "w": 24,
         "h": 1
       },
@@ -2930,7 +2820,7 @@
           },
           "gridPos": {
             "x": 0,
-            "y": 95,
+            "y": 86,
             "w": 8,
             "h": 4
           },
@@ -3004,7 +2894,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 95,
+        "y": 86,
         "w": 24,
         "h": 1
       },
@@ -3020,7 +2910,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 96,
+        "y": 87,
         "w": 24,
         "h": 8
       },
@@ -3201,7 +3091,7 @@
       "collapsed": true,
       "gridPos": {
         "x": 0,
-        "y": 104,
+        "y": 95,
         "w": 24,
         "h": 1
       },
@@ -3216,7 +3106,7 @@
           },
           "gridPos": {
             "x": 0,
-            "y": 105,
+            "y": 96,
             "w": 16,
             "h": 4
           },
@@ -3290,7 +3180,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 105,
+        "y": 96,
         "w": 24,
         "h": 1
       },
@@ -3306,11 +3196,11 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 106,
+        "y": 97,
         "w": 12,
         "h": 8
       },
-      "description": "Minimum state of charge of the pack's strings, in %; the test log matches the minimum. Zero is left out. One series per pack (05_41_1 … 05_46_4), from the pack's BMS. On 13 Oct 2026 packs 05_42 and 05_45 published zeros, and 05_41, 05_43_1 and 05_43_2 temperatures but no SoC.",
+      "description": "Minimum state of charge of the pack's strings, in %. Zero is left out. One series per pack (05_41_1 … 05_46_4), from the pack's BMS. On 13 Oct 2026 packs 05_42 and 05_45 published zeros, and 05_41, 05_43_1 and 05_43_2 temperatures but no SoC.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -3404,7 +3294,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 106,
+        "y": 97,
         "w": 12,
         "h": 8
       },
@@ -3502,11 +3392,11 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 114,
+        "y": 105,
         "w": 12,
         "h": 8
       },
-      "description": "Maximum battery cell temperature per pack, in °C: the Max temp column of the test log. One series per pack (05_41_1 … 05_46_4), from the pack's BMS. On 13 Oct 2026 packs 05_42 and 05_45 published zeros, and 05_41, 05_43_1 and 05_43_2 temperatures but no SoC.",
+      "description": "Maximum battery cell temperature per pack, in °C. One series per pack (05_41_1 … 05_46_4), from the pack's BMS. On 13 Oct 2026 packs 05_42 and 05_45 published zeros, and 05_41, 05_43_1 and 05_43_2 temperatures but no SoC.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -3600,11 +3490,11 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 114,
+        "y": 105,
         "w": 12,
         "h": 8
       },
-      "description": "The highest of the four channel temperatures of the pack's brightloop DC/DC converter, in °C: the DC:DC Max Cell °C column of the test log. Zero is left out. One series per pack (05_41_1 … 05_46_4), from the pack's BMS. On 13 Oct 2026 packs 05_42 and 05_45 published zeros, and 05_41, 05_43_1 and 05_43_2 temperatures but no SoC.",
+      "description": "The highest of the four channel temperatures of the pack's brightloop DC/DC converter, in °C. Zero is left out. One series per pack (05_41_1 … 05_46_4), from the pack's BMS. On 13 Oct 2026 packs 05_42 and 05_45 published zeros, and 05_41, 05_43_1 and 05_43_2 temperatures but no SoC.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -3698,11 +3588,11 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 122,
+        "y": 113,
         "w": 12,
         "h": 12
       },
-      "description": "The last value per pack within the selected range, laid out as the battery sheet of the test log. Zoom to a step to read the values at its end. SoC is the minimum of the pack's strings; DC:DC max is the highest of the four channel temperatures of the pack's brightloop converter.",
+      "description": "The last value per pack within the selected range, laid out as the battery sheet of the test plan. Narrow the range to read the values at a given time. SoC is the minimum of the pack's strings; DC:DC max is the highest of the four channel temperatures of the pack's brightloop converter.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -3760,7 +3650,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 122,
+        "y": 113,
         "w": 12,
         "h": 12
       },
@@ -3906,7 +3796,7 @@
       "collapsed": true,
       "gridPos": {
         "x": 0,
-        "y": 134,
+        "y": 125,
         "w": 24,
         "h": 1
       },
@@ -3921,7 +3811,7 @@
           },
           "gridPos": {
             "x": 0,
-            "y": 135,
+            "y": 126,
             "w": 18,
             "h": 28
           },
@@ -3996,7 +3886,7 @@
           },
           "gridPos": {
             "x": 18,
-            "y": 135,
+            "y": 126,
             "w": 6,
             "h": 4
           },
@@ -4070,7 +3960,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 135,
+        "y": 126,
         "w": 24,
         "h": 1
       },
@@ -4086,7 +3976,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 136,
+        "y": 127,
         "w": 24,
         "h": 8
       },
@@ -4184,7 +4074,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 144,
+        "y": 135,
         "w": 8,
         "h": 8
       },
@@ -4282,7 +4172,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 144,
+        "y": 135,
         "w": 8,
         "h": 8
       },
@@ -4380,7 +4270,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 144,
+        "y": 135,
         "w": 8,
         "h": 8
       },
@@ -4478,7 +4368,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 152,
+        "y": 143,
         "w": 12,
         "h": 8
       },
@@ -4576,7 +4466,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 152,
+        "y": 143,
         "w": 12,
         "h": 8
       },
@@ -4671,7 +4561,7 @@
       "collapsed": true,
       "gridPos": {
         "x": 0,
-        "y": 160,
+        "y": 151,
         "w": 24,
         "h": 1
       },
@@ -4686,7 +4576,7 @@
           },
           "gridPos": {
             "x": 0,
-            "y": 161,
+            "y": 152,
             "w": 24,
             "h": 12
           },
@@ -4823,8 +4713,8 @@
     ]
   },
   "time": {
-    "from": "2026-10-13T09:00:00.000Z",
-    "to": "2026-10-13T16:00:00.000Z"
+    "from": "now-3h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "utc",
