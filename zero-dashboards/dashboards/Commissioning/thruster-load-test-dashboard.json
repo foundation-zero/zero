@@ -50,7 +50,7 @@
       "transparent": false,
       "options": {
         "mode": "markdown",
-        "content": "<center><h2>Thruster load test</h2></center>\n\nMonitoring of a thruster pod: propulsion, motor, drives, cooling water, hydraulics and mounts, with the batteries and DC switches. The **Pod** selector switches every panel between FWD and AFT, except the batteries and DC switches, which serve both pods.\n**Times are UTC.**\n**DC power** = raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** = raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature raw × 0.1 °C.\nWhere the published values disagree with their declared unit, the dashboard scales them and the info icon of the panel says so. The info icon of each panel states its source and scaling."
+        "content": "<center><h2>Thruster load test</h2></center>\n\nMonitoring of a thruster pod: propulsion, motor, drives, cooling water, hydraulics and mounts, with the batteries and DC switches. The **Pod** selector switches every panel between FWD and AFT, except the batteries and DC switches, which serve both pods.\n**Times are UTC.**\n**DC power** corrected: raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, corrected: raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** corrected: raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature corrected: raw × 0.1 °C; currents raw.\nWhere a published value disagrees with the unit its IO list declares, the dashboard shows the corrected value and the info icon says so. Values another device reads and acts on are shown as published: the power limits the PMS sends, the PMS's consumed power and the torque setpoints. The info icon of each panel states the source and any correction."
       }
     },
     {
@@ -80,7 +80,7 @@
         "w": 24,
         "h": 10
       },
-      "description": "Transitions only, for the selected pod. Mode is R45: the mode the pod's PLC is in, from the pod's own table, not the mode lamps of a helm. Pitch mode is R54 (1 Normal, 2 High thrust, 3 Motor sail, 4 Auto). Drive control mode is R30/31 per drive, as published: its values are not documented, and it has read 32 on all four drives throughout, so it does not yet show the drive's control mode. The hydrogeneration sub-mode (torque or speed) is not published, so hydrogeneration is shown as one mode. Station selected and drive enable come from the helm and Aradex tables; the selected station is as published and may not match the helm in use. The mode button and lamp registers are not published.",
+      "description": "Transitions only, for the selected pod. Mode: R45 from the pod table (0 Off, 1 Sailing, 2 Propulsion, 3 Maneuvering, 4 Hydrogeneration). Pitch mode: R54 (1 Normal, 2 High thrust, 3 Motor sail, 4 Auto). Lever not in zero: from the pod table. Drive control mode: R30/31 per drive, as published; its values are not documented. Station selected: from the PS and SB helm tables. Drive enabled: from the Aradex tables.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -530,7 +530,7 @@
                         "index": 3
                       },
                       "4": {
-                        "text": "Hydrogen",
+                        "text": "Hydrogeneration",
                         "color": "orange",
                         "index": 4
                       }
@@ -739,7 +739,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Propeller speed from the PLC, declared in rpm but published in 0.1 rpm, so raw / 10 rpm, without sign. Shaft power: the propeller's mechanical power from the PLC, declared in kW but published in 0.1 kW, so raw / 10 kW, with the sign as published: negative when propelling.",
+      "description": "Propeller speed from the PLC, declared in rpm but published in 0.1 rpm: shown corrected, raw / 10 rpm, without sign. Shaft power: the propeller's mechanical power from the PLC, declared in kW but published in 0.1 kW: shown corrected, raw / 10 kW, with the published sign, negative when propelling.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -888,7 +888,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Propeller pitch and azimuth from the PLC, in whole degrees. The pitch is shown as an angle, not as the pitch ratio P/D = 2.2 × tan(pitch): the whole-degree resolution makes P/D move in steps of about 0.04 at 15° to 0.05 at 30°, and the feathered position (about 87°) converts to a P/D of about 42.",
+      "description": "Propeller pitch and azimuth from the PLC, in whole degrees as published. The pitch is the blade angle, not the pitch ratio P/D = 2.2 × tan(pitch).",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1034,7 +1034,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Solid: DC power per drive, declared in kW but published in 0.1 kW, so raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS gives each drive, in kW as the PMS sends them, positive; the propulsion limit is drawn above zero, the regeneration limit negated below zero. Dotted: the power the torque limit sent to each drive allows at its speed, in kW: maximum torque × motor rpm / 9550 ahead, minimum torque × motor rpm / 9550 astern. All limits are the lowest value in each interval, so short drops show.",
+      "description": "Solid: DC power per drive, declared in kW but published in 0.1 kW: shown corrected, raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS sends each drive, in kW as sent and not corrected, since the PCS reads them as they are; the propulsion limit above zero, the regeneration limit negated below zero, the lowest value in each interval. Dotted: the torque limit sent to each drive × motor speed / 9550, in kW: setpoint 2 (maximum torque) at a speed of zero or more, setpoint 3 (minimum torque) below; the lowest value in each interval.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1257,7 +1257,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Solid: the torque each Aradex drive's winding set puts on the motor shaft (before the 1.478 gearbox), declared in Nm but published as whole % of 10 000 Nm, so raw × 100 Nm, in steps of 100 Nm. Dashed: the maximum and minimum torque the PLC sends each drive (setpoints 2 and 3, published without unit, in Nm), the lowest maximum and the highest minimum in each interval. In torque mode the drive reads setpoints 2 and 3 as speed limits, so there they mean nothing on this axis.",
+      "description": "Solid: the torque of each Aradex drive at the motor shaft (before the 1.478 gearbox), declared in Nm but published as whole % of 10 000 Nm: shown corrected, raw × 100 Nm, in steps of 100 Nm. Dashed: setpoints 2 (maximum torque) and 3 (minimum torque) the PLC sends each drive, as sent, in Nm; the IO list declares no unit. The lowest maximum and the highest minimum in each interval.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1436,7 +1436,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Rate of change of the propeller speed from the PLC (raw / 10 rpm, without sign) between consecutive samples: positive = speeding up, negative = slowing down. Dashed: the drive ramps as configured in the drives, 3 Hz/s both ways = ±121.8 propeller rpm/s. Samples are about 3 s apart and skip unchanged values, so peaks are underestimated.",
+      "description": "Rate of change of the propeller speed (corrected, raw / 10 rpm, without sign) between consecutive samples: positive when speeding up, negative when slowing down. Dashed: the drive ramps as configured in the drives, 3 Hz/s both ways = ±121.8 propeller rpm/s. Samples are about 3 s apart, and unchanged values are not published.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1643,7 +1643,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Per drive, the PMS's consumed power (from the PMS power object, which is not in the IO lists) divided by the drive's DC power (raw × 0.1 kW, see the power panel). A ratio of 1 means the consumed power is published in kW, a ratio of 10 that it is published in 0.1 kW. It was published in 0.1 kW until 15 Oct 2026 and in kW from 15 Oct. Averages per interval; intervals where the drive draws less than 3 kW are left out.",
+      "description": "Per drive, the PMS's consumed power, as published and not corrected (the PMS uses it; it is in no IO list), divided by the drive's DC power (corrected, raw × 0.1 kW). A ratio of 1 means the consumed power is published in kW, a ratio of 10 that it is published in 0.1 kW. It was published in 0.1 kW until 15 Oct 2026 and in kW from 15 Oct. Averages per interval; intervals where the drive draws less than 3 kW are left out.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -2256,7 +2256,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "IGBT temperature of each Aradex drive, in °C. The drives publish 199 while off; those values are left out. Drive 1 is presumably U101, drive 2 U102.",
+      "description": "IGBT temperature of each Aradex drive, in °C. Values of 199, published while the drive is off, are left out.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -2385,7 +2385,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Power stage temperature of each Aradex drive, in °C. The drives publish 199 while off; those values are left out.",
+      "description": "Power stage temperature of each Aradex drive, in °C. Values of 199, published while the drive is off, are left out.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -2526,7 +2526,7 @@
             "w": 12,
             "h": 5
           },
-          "description": "The drives publish 199 while off; those values are left out. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "Values of 199, published while the drive is off, are left out. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
           "pluginVersion": "12.3.0",
           "transparent": false,
           "targets": [
@@ -3668,7 +3668,7 @@
         "w": 24,
         "h": 8
       },
-      "description": "The four shear beams, the load cells in the pod's mounts, raw, in N. Dashed: the calculated shear beam value. It should be torque in Nm, but reads as a force in N: on AFT about −0.43 N per Nm propeller torque, on FWD about 1.25× that.",
+      "description": "The four shear beams, the load cells in the pod's mounts, and the calculated shear beam value (dashed), as published, in the unit the IO list declares, Nm.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -3723,7 +3723,7 @@
               }
             ]
           },
-          "unit": "forceN"
+          "unit": "forceNm"
         },
         "overrides": [
           {
@@ -4408,7 +4408,7 @@
         "w": 12,
         "h": 12
       },
-      "description": "The total available battery energy, in kWh, and SoC, in %, that the PMS sends the PCS of the selected pod. Available power is not published.",
+      "description": "The total available battery energy, in kWh, and SoC, in %, that the PMS sends the PCS of the selected pod, as published.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -4734,7 +4734,7 @@
         "w": 24,
         "h": 8
       },
-      "description": "DC switch heat sink temperatures Hs-0 and Hs-1, declared in ℃ but published in 0.1 °C, so raw × 0.1 °C. One series per heat sink per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+      "description": "DC switch heat sink temperatures Hs-0 and Hs-1, declared in ℃ but published in 0.1 °C: shown corrected, raw × 0.1 °C. One series per heat sink per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -4832,7 +4832,7 @@
         "w": 8,
         "h": 8
       },
-      "description": "DC switch voltage, left section, in V; about 670 V on a live bus. With the battery voltages this shows the DC bus stability. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+      "description": "DC switch voltage, left section, in V as published. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -4930,7 +4930,7 @@
         "w": 8,
         "h": 8
       },
-      "description": "DC switch voltage, right section, in V; about 670 V on a live bus. With the battery voltages this shows the DC bus stability. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+      "description": "DC switch voltage, right section, in V as published. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -5028,7 +5028,7 @@
         "w": 8,
         "h": 8
       },
-      "description": "DC switch voltage, external, in V; about 670 V on a live bus. With the battery voltages this shows the DC bus stability. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+      "description": "DC switch voltage, external, behind the contactor, in V as published. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -5126,7 +5126,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "DC switch current, left section, raw: the scaling is unknown, to be fixed. A live switch reads about −950 at no load. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+      "description": "DC switch current, left section, raw as published: the IO list declares it as DcCurrent, without a scale. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -5224,7 +5224,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "DC switch current, right section, raw: the scaling is unknown, to be fixed. A live switch reads about −950 at no load. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+      "description": "DC switch current, right section, raw as published: the IO list declares it as DcCurrent, without a scale. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -5334,7 +5334,7 @@
             "w": 24,
             "h": 12
           },
-          "description": "The current scaling is unknown, so the currents are raw. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "Currents raw as published; their scale is not declared. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
           "pluginVersion": "12.3.0",
           "transparent": false,
           "targets": [
