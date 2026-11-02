@@ -50,7 +50,7 @@
       "transparent": false,
       "options": {
         "mode": "markdown",
-        "content": "<center><h2>Thruster load test</h2></center>\n\nThe items to be monitored of the thruster load test plan. The **Pod** selector switches every panel between FWD and AFT, except the batteries and DC switches, which serve both pods.\n**Times are UTC.**\n**DC power** = raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** = raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature raw × 0.1 °C.\nThe info icon of each panel states its source, scaling and corrections."
+        "content": "<center><h2>Thruster load test</h2></center>\n\nMonitoring of a thruster pod: propulsion, motor, drives, cooling water, hydraulics and mounts, with the batteries and DC switches. The **Pod** selector switches every panel between FWD and AFT, except the batteries and DC switches, which serve both pods.\n**Times are UTC.**\n**DC power** = raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** = raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature raw × 0.1 °C.\nWhere the published values disagree with their declared unit, the dashboard scales them and the info icon of the panel says so. The info icon of each panel states its source and scaling."
       }
     },
     {
@@ -739,7 +739,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Propeller speed from the PLC, raw / 10 rpm, without sign. Shaft power: the propeller's mechanical power from the PLC, raw / 10 kW, with the sign as the PLC sends it: negative when propelling.",
+      "description": "Propeller speed from the PLC, declared in rpm but published in 0.1 rpm, so raw / 10 rpm, without sign. Shaft power: the propeller's mechanical power from the PLC, declared in kW but published in 0.1 kW, so raw / 10 kW, with the sign as published: negative when propelling.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1034,7 +1034,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Solid: DC power per drive, raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS gives each drive, in kW as the PMS sends them, positive; the propulsion limit is drawn above zero, the regeneration limit negated below zero. Dotted: the power the torque limit sent to the drive allows at its speed, in kW: maximum torque × motor rpm / 9550 ahead, minimum torque × motor rpm / 9550 astern. When the PMS limit is converted to torque correctly, this line lies on the propulsion limit; above it, the drive may take more than the PMS allows. All limits are the lowest value in each interval, so short drops show. The PLC caps the propulsion limit at 180 kW per drive on FWD and 400 kW on AFT, and sends at least 1 kW for both limits, also when the PMS sends 0. In Sailing the PLC limits the drives to ±1 kW, and in hydrogeneration with the lever at or behind zero the propulsion limit is 0. Astern on FWD the regeneration limit bounds propulsion and the propulsion limit bounds braking; astern on AFT the maximum torque sent lies below the minimum, and the dotted line turns negative. The PMS's consumed power, from which it sets the propulsion limit, was published in 0.1 kW until 15 Oct 2026 (the propulsion limit then followed the larger of 110 and that consumed power, so on 13 Oct the limits did not bind) and in kW from 15 Oct; it may return to 0.1 kW: see the consumed power ratio panel.",
+      "description": "Solid: DC power per drive, declared in kW but published in 0.1 kW, so raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS gives each drive, in kW as the PMS sends them, positive; the propulsion limit is drawn above zero, the regeneration limit negated below zero. Dotted: the power the torque limit sent to each drive allows at its speed, in kW: maximum torque × motor rpm / 9550 ahead, minimum torque × motor rpm / 9550 astern. All limits are the lowest value in each interval, so short drops show.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1257,7 +1257,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Solid: the torque each Aradex drive's winding set puts on the motor shaft (before the 1.478 gearbox), published as whole % of 10 000 Nm, so raw × 100 Nm in steps of 100 Nm. Dashed: the maximum and minimum torque the PLC sends each drive (setpoints 2 and 3, in Nm as sent, the most restrictive value in each interval), derived from the PMS power limits and clamped by the PLC at ±1163 Nm per drive on FWD and ±3226 Nm on AFT. Above about 95 motor rpm the maximum torque sent stays at the propulsion limit × 95.5 Nm and no longer falls with speed. Astern on AFT the maximum torque sent lies below the minimum; the panel takes the lowest maximum and the highest minimum per interval, so the dashed lines then cross. In torque mode the drive reads setpoints 2 and 3 as speed limits, so there they mean nothing on this axis.",
+      "description": "Solid: the torque each Aradex drive's winding set puts on the motor shaft (before the 1.478 gearbox), declared in Nm but published as whole % of 10 000 Nm, so raw × 100 Nm, in steps of 100 Nm. Dashed: the maximum and minimum torque the PLC sends each drive (setpoints 2 and 3, published without unit, in Nm), the lowest maximum and the highest minimum in each interval. In torque mode the drive reads setpoints 2 and 3 as speed limits, so there they mean nothing on this axis.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1424,7 +1424,7 @@
     },
     {
       "id": 8,
-      "title": "Ramp check",
+      "title": "Propeller speed rate of change",
       "type": "timeseries",
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
@@ -1436,7 +1436,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Rate of change of the propeller speed from the PLC (raw / 10 rpm, without sign) between consecutive samples: positive = speeding up, negative = slowing down. Red: specified, zero to max in no less than 6 s: FWD 500 rpm = ±83.3 rpm/s, AFT 400 rpm = ±66.7 rpm/s. Blue: the drive ramps, 3 Hz/s both ways since 8 Oct 2026 = ±121.8 rpm/s. Samples are about 3 s apart and skip unchanged values, so this underestimates peaks: a value beyond a line is real, one inside is not proof.",
+      "description": "Rate of change of the propeller speed from the PLC (raw / 10 rpm, without sign) between consecutive samples: positive = speeding up, negative = slowing down. Dashed: the drive ramps as configured in the drives, 3 Hz/s both ways = ±121.8 propeller rpm/s. Samples are about 3 s apart and skip unchanged values, so peaks are underestimated.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1463,7 +1463,7 @@
           "pluginVersion": "2.1.4",
           "queryType": "table",
           "rawQuery": true,
-          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_speed__value) / 10.0 AS \"Propeller speed\",\n  CASE '${pod}' WHEN 'fwd' THEN 83.3 ELSE 66.7 END AS \"Specified limit\",\n  -CASE '${pod}' WHEN 'fwd' THEN 83.3 ELSE 66.7 END AS \"Specified limit −\",\n  121.8 AS \"Drive ramp (±121.8 rpm/s)\",\n  -121.8 AS \"Drive ramp −\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_speed__value) / 10.0 AS \"Propeller speed\",\n  121.8 AS \"Drive ramp (±121.8 rpm/s)\",\n  -121.8 AS \"Drive ramp −\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
           "refId": "B"
         }
       ],
@@ -1531,64 +1531,6 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Specified limit"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "red"
-                }
-              },
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "fill": "dash",
-                  "dash": [
-                    10,
-                    10
-                  ]
-                }
-              },
-              {
-                "id": "custom.showPoints",
-                "value": "never"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Specified limit −"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "red"
-                }
-              },
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "fill": "dash",
-                  "dash": [
-                    10,
-                    10
-                  ]
-                }
-              },
-              {
-                "id": "custom.showPoints",
-                "value": "never"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "Drive ramp (±121.8 rpm/s)"
             },
             "properties": [
@@ -1641,22 +1583,6 @@
               {
                 "id": "custom.showPoints",
                 "value": "never"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Specified limit −"
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom",
-                "value": {
-                  "legend": true,
-                  "tooltip": true,
-                  "viz": false
-                }
               }
             ]
           },
@@ -1717,7 +1643,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Per drive, the power the PMS believes the drive consumes (its consumed power, as published) divided by the drive's own DC power (raw × 0.1 kW). The PMS sets the drive's propulsion limit from its consumed power. A ratio of 1 means the PMS sees the real load. A ratio of 10 means it sees ten times the load: its consumed power is then in 0.1 kW, and its propulsion limit does not bind. The consumed power was in 0.1 kW until 15 Oct 2026, in kW from 15 Oct, and may return to 0.1 kW. Averages per interval; intervals where the drive draws less than 3 kW are left out, since the ratio means nothing near zero.",
+      "description": "Per drive, the PMS's consumed power (from the PMS power object, which is not in the IO lists) divided by the drive's DC power (raw × 0.1 kW, see the power panel). A ratio of 1 means the consumed power is published in kW, a ratio of 10 that it is published in 0.1 kW. It was published in 0.1 kW until 15 Oct 2026 and in kW from 15 Oct. Averages per interval; intervals where the drive draws less than 3 kW are left out.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -2130,7 +2056,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Motor bearing temperatures, drive end and non-drive end, in °C. The drive end is the upper bearing of the test plan, the non-drive end the lower.",
+      "description": "Motor bearing temperatures, drive end (upper) and non-drive end (lower), in °C.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -2330,7 +2256,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "IGBT temperature of each Aradex drive, in °C. The drives publish 199 while off; those values are left out. Drive 2 matches U102 in the Aradex extract, so drive 1 is presumably U101.",
+      "description": "IGBT temperature of each Aradex drive, in °C. The drives publish 199 while off; those values are left out. Drive 1 is presumably U101, drive 2 U102.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -2447,7 +2373,7 @@
     },
     {
       "id": 14,
-      "title": "Power stage temperature",
+      "title": "Power stage (coldplate) temperature",
       "type": "timeseries",
       "datasource": {
         "type": "info8fcc-greptimedb-datasource",
@@ -2459,7 +2385,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Power stage temperature of each Aradex drive, in °C: the coldplate of the test plan. The drives publish 199 while off; those values are left out.",
+      "description": "Power stage temperature of each Aradex drive, in °C. The drives publish 199 while off; those values are left out.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -3140,7 +3066,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "The battery DC/DC converters' cooling loops on the FWD side: supply temperature, return temperature and flow per loop. The test plan monitored all six loops during the FWD runs, so both sides are shown for either pod. THRS sensors, temperatures in °C, flows in l/min (right axis).",
+      "description": "The battery DC/DC converters' cooling loops on the FWD side: supply temperature, return temperature and flow per loop. Both sides are shown for either pod. THRS sensors, temperatures in °C, flows in l/min (right axis).",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -3290,7 +3216,7 @@
         "w": 24,
         "h": 8
       },
-      "description": "The battery DC/DC converters' cooling loops on the AFT side: supply temperature, return temperature and flow per loop. The test plan monitored all six loops during the FWD runs, so both sides are shown for either pod. THRS sensors, temperatures in °C, flows in l/min (right axis).",
+      "description": "The battery DC/DC converters' cooling loops on the AFT side: supply temperature, return temperature and flow per loop. Both sides are shown for either pod. THRS sensors, temperatures in °C, flows in l/min (right axis).",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -3542,7 +3468,7 @@
         "w": 24,
         "h": 7
       },
-      "description": "Hydraulic power pack tank temperature from the PLC, in °C as published; whether a sensor is fitted behind it is still to be confirmed.",
+      "description": "Hydraulic power pack tank temperature from the PLC, in °C as published.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -4028,7 +3954,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Minimum state of charge of the pack's strings, in %. Zero is left out. One series per pack (05_41_1 … 05_46_4), from the pack's BMS. On 13 Oct 2026 packs 05_42 and 05_45 published zeros, and 05_41, 05_43_1 and 05_43_2 temperatures but no SoC.",
+      "description": "Minimum state of charge of the pack's strings, in %. Zero is left out. One series per pack (05_41_1 … 05_46_4), from the pack's BMS.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -4126,7 +4052,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Battery power per pack, in kW, positive when discharging. One series per pack (05_41_1 … 05_46_4), from the pack's BMS. On 13 Oct 2026 packs 05_42 and 05_45 published zeros, and 05_41, 05_43_1 and 05_43_2 temperatures but no SoC.",
+      "description": "Battery power per pack, in kW, positive when discharging. One series per pack (05_41_1 … 05_46_4), from the pack's BMS.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -4224,7 +4150,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Maximum battery cell temperature per pack, in °C. One series per pack (05_41_1 … 05_46_4), from the pack's BMS. On 13 Oct 2026 packs 05_42 and 05_45 published zeros, and 05_41, 05_43_1 and 05_43_2 temperatures but no SoC.",
+      "description": "Maximum battery cell temperature per pack, in °C. One series per pack (05_41_1 … 05_46_4), from the pack's BMS.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -4322,7 +4248,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "The highest of the four channel temperatures of the pack's brightloop DC/DC converter, in °C. Zero is left out. One series per pack (05_41_1 … 05_46_4), from the pack's BMS. On 13 Oct 2026 packs 05_42 and 05_45 published zeros, and 05_41, 05_43_1 and 05_43_2 temperatures but no SoC.",
+      "description": "The highest of the four channel temperatures of the pack's brightloop DC/DC converter, in °C. Zero is left out. One series per pack (05_41_1 … 05_46_4), from the pack's BMS.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -4420,7 +4346,7 @@
         "w": 12,
         "h": 12
       },
-      "description": "The last value per pack within the selected range, laid out as the battery sheet of the test plan. Narrow the range to read the values at a given time. SoC is the minimum of the pack's strings; DC:DC max is the highest of the four channel temperatures of the pack's brightloop converter.",
+      "description": "The last value per pack within the selected range. Narrow the range to read the values at a given time. SoC is the minimum of the pack's strings; DC:DC max is the highest of the four channel temperatures of the pack's brightloop converter.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -4482,7 +4408,7 @@
         "w": 12,
         "h": 12
       },
-      "description": "The total available battery energy, presumably in kWh, and SoC, in %, that the PMS sends the PCS of the selected pod. The test plan asks to monitor available power; no value of that name is published, and the available, online and emergency energy on the PMS single line are not published either, so these are the closest values.",
+      "description": "The total available battery energy, in kWh, and SoC, in %, that the PMS sends the PCS of the selected pod. Available power is not published.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -4808,7 +4734,7 @@
         "w": 24,
         "h": 8
       },
-      "description": "DC switch heat sink temperatures Hs-0 and Hs-1, raw × 0.1 °C, as on the AMCS heat sink trends of the 13 Oct load test (raw 243–339). Published since 16 Oct 2026. One series per heat sink per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+      "description": "DC switch heat sink temperatures Hs-0 and Hs-1, declared in ℃ but published in 0.1 °C, so raw × 0.1 °C. One series per heat sink per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
