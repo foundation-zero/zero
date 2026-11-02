@@ -159,7 +159,7 @@ fn channels_from_document<
         .map(|(operation_name, operation_ref)| {
             debug!("Parsing operation {operation_name} from {}", path.display());
 
-            let operation = resolve_operation(operation_ref, doc).with_context(|| {
+            let (_, operation) = resolve_operation(operation_ref, doc).with_context(|| {
                 format!(
                     "unresolvable operation $ref '{}' ({}) in {}",
                     operation_name,
@@ -184,7 +184,7 @@ fn channels_from_document<
         .into_iter()
         .map(|(action, channel_name, channel_ref)| {
             debug!("Parsing channel {channel_name} from {}", path.display());
-            let channel = resolve_channel(&channel_ref, doc).with_context(|| {
+            let (_, channel) = resolve_channel(&channel_ref, doc).with_context(|| {
                 format!(
                     "unresolvable channel $ref '{}' ({}) in {}",
                     channel_name,
@@ -261,8 +261,9 @@ fn topic_from_channel(
 
     let (fields, payload_schema_ref, _) = message_fields(channel_ref, channel, doc);
     debug!(
-        "Parsed channel {} with {} fields",
+        "Parsed channel {} with payload {:?} with {} fields",
         channel_name,
+        payload_schema_ref,
         fields.len()
     );
 
@@ -419,32 +420,19 @@ fn message_fields(
         return (BTreeMap::new(), None, None);
     };
 
-    let (schema_or_multi, payload_schema_ref, payload_schema) = match payload_ref {
-        RefOr::Reference(payload_reference) => {
-            if let Some(schema_or_multi) = resolve_payload_schema(payload_ref, doc) {
-                (
-                    schema_or_multi,
-                    Some(payload_reference.reference.clone()),
-                    serde_json::to_value(schema_or_multi).ok(),
-                )
-            } else {
-                info!(
-                    "Channel {} message payload reference {} does not resolve",
-                    channel_ref.reference, payload_reference.reference
-                );
-                return (BTreeMap::new(), None, None);
-            }
-        }
-        RefOr::Item(schema_or_multi) => {
-            let schema_ref = format!("{message_ref}/payload");
-            let schema_value = serde_json::to_value(schema_or_multi).ok();
-            (schema_or_multi, Some(schema_ref), schema_value)
-        }
+    let Some((pointer, schema_or_multi)) = resolve_payload_schema(payload_ref, doc) else {
+        info!(
+            "Channel {} message payload reference does not resolve",
+            channel_ref.reference,
+        );
+        return (BTreeMap::new(), None, None);
     };
 
-    let fields = extract_fields_from_schema_or_multi(schema_or_multi, doc);
-
-    (fields, payload_schema_ref, payload_schema)
+    (
+        extract_fields_from_schema_or_multi(schema_or_multi, doc),
+        Some(pointer.unwrap_or(message_ref)),
+        serde_json::to_value(schema_or_multi).ok(),
+    )
 }
 
 /// All messages referenced by the channel, resolved against components.
@@ -465,7 +453,7 @@ fn channel_messages<'a>(
                     message_key.replace('~', "~0").replace('/', "~1")
                 ),
             };
-            resolve_message(message_ref, doc).map(|message| (message_reference, message))
+            resolve_message(message_ref, doc).map(|(_, message)| (message_reference, message))
         })
         .collect()
 }
@@ -507,7 +495,7 @@ pub(crate) fn resolve_ref_to_entry<'a, T: Debug>(
     entries_main: Option<&'a BTreeMap<String, RefOr<T>>>,
     entries_components: Option<&'a BTreeMap<String, RefOr<T>>>,
     mut traversed_keys: Vec<&'a str>,
-) -> Option<&'a T> {
+) -> Option<(Option<String>, &'a T)> {
     let pointer = reference.local_pointer()?;
     let key = reference.local_key()?;
 
@@ -529,7 +517,7 @@ pub(crate) fn resolve_ref_to_entry<'a, T: Debug>(
             traversed_keys.push(pointer);
             resolve_ref_to_entry(nested, entries_main, entries_components, traversed_keys)
         }
-        RefOr::Item(entry) => Some(entry),
+        RefOr::Item(entry) => Some((Some(reference.reference.clone()), entry)),
     }
 }
 
@@ -537,16 +525,19 @@ fn resolve_refor<'a, T: Debug>(
     reference: &'a RefOr<T>,
     entries_main: Option<&'a BTreeMap<String, RefOr<T>>>,
     entries_components: Option<&'a BTreeMap<String, RefOr<T>>>,
-) -> Option<&'a T> {
+) -> Option<(Option<String>, &'a T)> {
     match reference {
-        RefOr::Item(m) => Some(m),
+        RefOr::Item(m) => Some((None, m)),
         RefOr::Reference(reference) => {
             resolve_ref_to_entry(reference, entries_main, entries_components, vec![])
         }
     }
 }
 
-fn resolve_channel<'a>(r: &'a RefOr<Channel>, doc: &'a Document) -> Option<&'a Channel> {
+fn resolve_channel<'a>(
+    r: &'a RefOr<Channel>,
+    doc: &'a Document,
+) -> Option<(Option<String>, &'a Channel)> {
     resolve_refor(
         r,
         Some(&doc.channels),
@@ -556,7 +547,10 @@ fn resolve_channel<'a>(r: &'a RefOr<Channel>, doc: &'a Document) -> Option<&'a C
     )
 }
 
-fn resolve_operation<'a>(r: &'a RefOr<Operation>, doc: &'a Document) -> Option<&'a Operation> {
+fn resolve_operation<'a>(
+    r: &'a RefOr<Operation>,
+    doc: &'a Document,
+) -> Option<(Option<String>, &'a Operation)> {
     resolve_refor(
         r,
         Some(&doc.operations),
@@ -566,7 +560,10 @@ fn resolve_operation<'a>(r: &'a RefOr<Operation>, doc: &'a Document) -> Option<&
     )
 }
 
-fn resolve_message<'a>(r: &'a RefOr<Message>, doc: &'a Document) -> Option<&'a Message> {
+fn resolve_message<'a>(
+    r: &'a RefOr<Message>,
+    doc: &'a Document,
+) -> Option<(Option<String>, &'a Message)> {
     resolve_refor(
         r,
         None,
@@ -580,7 +577,7 @@ fn resolve_message<'a>(r: &'a RefOr<Message>, doc: &'a Document) -> Option<&'a M
 pub fn resolve_payload_schema<'a>(
     r: &'a RefOr<SchemaOrMultiFormat>,
     doc: &'a Document,
-) -> Option<&'a SchemaOrMultiFormat> {
+) -> Option<(Option<String>, &'a SchemaOrMultiFormat)> {
     resolve_refor(
         r,
         None,
@@ -594,12 +591,17 @@ fn extract_fields_from_schema_or_multi(
     schema_or_multi: &SchemaOrMultiFormat,
     doc: &Document,
 ) -> BTreeMap<String, GraphqlType> {
+    let schema_entries = doc
+        .components
+        .as_ref()
+        .map(|componentens| &componentens.schemas);
+
     match schema_or_multi {
-        SchemaOrMultiFormat::Schema(schema) => extract_fields_from_schema(schema, doc),
+        SchemaOrMultiFormat::Schema(schema) => extract_fields_from_schema(schema, schema_entries),
         SchemaOrMultiFormat::MultiFormat(mf) => {
             // Try to deserialize the raw schema value as a Schema
             if let Ok(schema) = serde_json::from_value::<Schema>(mf.schema.clone()) {
-                extract_fields_from_schema(&schema, doc)
+                extract_fields_from_schema(&schema, schema_entries)
             } else {
                 info!("Payload schema has no fields");
                 BTreeMap::new()
@@ -612,14 +614,17 @@ fn extract_fields_from_schema_or_multi(
     }
 }
 
-fn extract_fields_from_schema(schema: &Schema, doc: &Document) -> BTreeMap<String, GraphqlType> {
+fn extract_fields_from_schema(
+    schema: &Schema,
+    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
+) -> BTreeMap<String, GraphqlType> {
     // Fields colliding after lowerCamel sanitization are not tolerated here:
     // they surface as errors from `validate_topics` instead.
     schema
         .properties
         .iter()
         .filter_map(|(name, subschema)| {
-            let graphql_type = graphql_type_for_subschema(subschema, doc)?;
+            let graphql_type = graphql_type_for_subschema(name.clone(), subschema, schema_entries)?;
             let sanitized = sanitize_to_graphql_name(name);
             if sanitized.is_empty() {
                 warn!("Skipping field '{name}' sanitizes to empty GraphQL name");
@@ -631,25 +636,31 @@ fn extract_fields_from_schema(schema: &Schema, doc: &Document) -> BTreeMap<Strin
 }
 
 /// Derive a GraphQL scalar type name from a (possibly `$ref`'d) subschema.
-fn graphql_type_for_subschema(sub: &SubSchema, doc: &Document) -> Option<GraphqlType> {
+fn graphql_type_for_subschema(
+    name: String,
+    sub: &SubSchema,
+    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
+) -> Option<GraphqlType> {
     match sub {
         SubSchema::Bool(_) => None,
         SubSchema::Schema(boxed) => match boxed.as_ref() {
-            RefOr::Item(schema) => type_from_schema(schema, doc),
+            RefOr::Item(schema) => type_from_schema(name, schema, schema_entries),
             RefOr::Reference(r) => {
-                let resolved = resolve_ref_to_entry(
-                    r,
-                    None,
-                    doc.components
-                        .as_ref()
-                        .map(|componentens| &componentens.schemas),
-                    vec![],
-                )?;
+                let Some((reference, resolved)) =
+                    resolve_ref_to_entry(r, None, schema_entries, vec![])
+                else {
+                    warn!("Cannot resolve reference {r:?} while determining payload type");
+                    return None;
+                };
+                let name = reference
+                    .and_then(|r| r.rsplit('/').next().map(ToOwned::to_owned))
+                    .unwrap_or(name);
+
                 match resolved {
-                    SchemaOrMultiFormat::Schema(s) => type_from_schema(s, doc),
+                    SchemaOrMultiFormat::Schema(s) => type_from_schema(name, s, schema_entries),
                     SchemaOrMultiFormat::MultiFormat(mf) => {
                         let schema: Schema = serde_json::from_value(mf.schema.clone()).ok()?;
-                        type_from_schema(&schema, doc)
+                        type_from_schema(name, &schema, schema_entries)
                     }
                     SchemaOrMultiFormat::Bool(_) => None,
                 }
@@ -658,16 +669,25 @@ fn graphql_type_for_subschema(sub: &SubSchema, doc: &Document) -> Option<Graphql
     }
 }
 
-fn type_from_schema(schema: &Schema, doc: &Document) -> Option<GraphqlType> {
+fn type_from_schema(
+    name: String,
+    schema: &Schema,
+    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
+) -> Option<GraphqlType> {
     if let Some(schema_type) = &schema.schema_type {
         return match schema_type {
-            SchemaType::Single(t) => map_json_type_to_graphql(t, schema, doc),
+            SchemaType::Single(t) => map_json_type_to_graphql(name, t, schema, schema_entries),
             SchemaType::Multiple(types) => {
-                for t in types {
+                for (index, t) in types.iter().enumerate() {
                     if t == "null" {
                         continue;
                     }
-                    if let Some(gql) = map_json_type_to_graphql(t, schema, doc) {
+                    if let Some(gql) = map_json_type_to_graphql(
+                        format!("{name}{index}"),
+                        t,
+                        schema,
+                        schema_entries,
+                    ) {
                         // TODO: properly handle unions here
                         return Some(gql);
                     }
@@ -679,22 +699,28 @@ fn type_from_schema(schema: &Schema, doc: &Document) -> Option<GraphqlType> {
 
     // Handle nullable via anyOf / oneOf / allOf
     if let Some(any_of) = &schema.any_of {
-        for sub in any_of {
-            if let Some(t) = graphql_type_for_subschema(sub, doc) {
+        for (index, sub) in any_of.iter().enumerate() {
+            if let Some(t) =
+                graphql_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
+            {
                 return Some(t);
             }
         }
     }
     if let Some(one_of) = &schema.one_of {
-        for sub in one_of {
-            if let Some(t) = graphql_type_for_subschema(sub, doc) {
+        for (index, sub) in one_of.iter().enumerate() {
+            if let Some(t) =
+                graphql_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
+            {
                 return Some(t);
             }
         }
     }
     if let Some(all_of) = &schema.all_of {
-        for sub in all_of {
-            if let Some(t) = graphql_type_for_subschema(sub, doc) {
+        for (index, sub) in all_of.iter().enumerate() {
+            if let Some(t) =
+                graphql_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
+            {
                 return Some(t);
             }
         }
@@ -703,11 +729,16 @@ fn type_from_schema(schema: &Schema, doc: &Document) -> Option<GraphqlType> {
     None
 }
 
-fn map_json_type_to_graphql(t: &str, schema: &Schema, doc: &Document) -> Option<GraphqlType> {
+fn map_json_type_to_graphql(
+    name: String,
+    t: &str,
+    schema: &Schema,
+    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
+) -> Option<GraphqlType> {
     match t {
         "object" => {
-            let fields = extract_fields_from_schema(schema, doc);
-            (!fields.is_empty()).then(|| GraphqlType::Object(Box::new(fields)))
+            let fields = extract_fields_from_schema(schema, schema_entries);
+            (!fields.is_empty()).then(|| GraphqlType::Object(name, Box::new(fields)))
         }
         "number" => Some(GraphqlType::Float),
         "integer" => Some(GraphqlType::Int),
@@ -806,12 +837,22 @@ mod tests {
                 "nested".to_string(),
                 json!({"type": "object", "properties": {"x": {"type": "number"}}}),
             ),
+            ("reffed".to_string(), json!({"$ref": "#/components/nested"})),
             ("items".to_string(), json!({"type": "array"})),
         ]);
         let schema = schema_with_properties(props);
-        let doc = Document::default();
-        let fields = extract_fields_from_schema(&schema, &doc);
-        assert_eq!(fields.len(), 5);
+        let schema_entries = BTreeMap::from([(
+            "nested".to_string(),
+            RefOr::Item(
+                serde_json::from_value::<SchemaOrMultiFormat>(
+                    json!({"type": "object", "properties": {"x": {"type": "number"}}}),
+                )
+                .unwrap(),
+            ),
+        )]);
+
+        let fields = extract_fields_from_schema(&schema, Some(&schema_entries));
+        assert_eq!(fields.len(), 6);
         // BTreeMap ordering, so sorted by key
         let get = |name: &str| fields.get(name).unwrap();
         assert_eq!(get("celsius"), &GraphqlType::Float);
@@ -820,9 +861,17 @@ mod tests {
         assert_eq!(get("label"), &GraphqlType::String);
         assert_eq!(
             get("nested"),
-            &GraphqlType::Object(Box::new(BTreeMap::from(
-                [("x".to_owned(), GraphqlType::Float); 1]
-            )))
+            &GraphqlType::Object(
+                "nested".to_string(),
+                Box::new(BTreeMap::from([("x".to_string(), GraphqlType::Float); 1]))
+            )
+        );
+        assert_eq!(
+            get("reffed"),
+            &GraphqlType::Object(
+                "nested".to_string(),
+                Box::new(BTreeMap::from([("x".to_string(), GraphqlType::Float); 1]))
+            )
         );
     }
 
@@ -937,8 +986,7 @@ mod tests {
     #[test_log::test]
     fn test_empty_properties_returns_empty_fields() {
         let schema = Schema::default();
-        let doc = Document::default();
-        let fields = extract_fields_from_schema(&schema, &doc);
+        let fields = extract_fields_from_schema(&schema, None);
         assert_eq!(fields.len(), 0);
     }
 
@@ -1370,8 +1418,7 @@ mod tests {
             json!({"anyOf": [{"type": "number"}, {"type": "null"}]}),
         )]);
         let schema = schema_with_properties(props);
-        let doc = Document::default();
-        let fields = extract_fields_from_schema(&schema, &doc);
+        let fields = extract_fields_from_schema(&schema, None);
         assert_eq!(fields.len(), 1);
         assert_eq!(fields.get("current_a"), Some(&GraphqlType::Float));
     }

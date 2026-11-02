@@ -29,7 +29,7 @@ pub(super) fn build_schema_groups(
     let (query_fields, group_objects): (Vec<_>, Vec<_>) = api
         .groups
         .iter()
-        .map(|group| register_group_queries(group, cache))
+        .map(|group| register_group_queries(&api.name, group, cache))
         .collect::<anyhow::Result<Vec<_>>>()?
         .into_iter()
         .flatten()
@@ -81,14 +81,14 @@ fn group_metadata_fields(group: &TopicGroupDef) -> anyhow::Result<Option<Vec<(St
 
 /// A group's supporting object types, derived from its Pascal-case stem.
 fn build_group_objects(
-    pascal: &str,
+    name_prefix: &str,
     metadata_fields: &[(String, TypeRef)],
     group: &TopicGroupDef,
 ) -> Vec<Object> {
-    let item_type = format!("{pascal}Topic");
-    let meta_type = format!("{pascal}Metadata");
-    let values_type = format!("{pascal}Values");
-    let value_meta_type = format!("{pascal}ValueMeta");
+    let item_type = format!("{name_prefix}Topic");
+    let meta_type = format!("{name_prefix}Metadata");
+    let values_type = format!("{name_prefix}Values");
+    let value_meta_type = format!("{name_prefix}ValueMeta");
     let mut objects = vec![];
 
     let item_obj = [
@@ -115,7 +115,7 @@ fn build_group_objects(
         });
     objects.push(meta_obj);
 
-    let values_objects = payload_object(&values_type, &group.fields);
+    let values_objects = payload_object(name_prefix, "Values", &group.fields);
     objects.extend(values_objects);
 
     let value_meta_obj = value_meta_descriptor_fields(group)
@@ -199,15 +199,18 @@ fn bucket_rows_by(group: &TopicGroupDef) -> GroupedRows {
 }
 
 /// The bucket object (`<stem>Bucket`): bucket `id` plus the bucket's group rows.
-fn bucket_object(pascal: &str, rows_field: &str) -> Object {
+fn bucket_object(name_prefix: &str, rows_field: &str) -> Object {
     [
         ("id", TypeRef::named(TypeRef::STRING)),
-        (rows_field, TypeRef::named_list(format!("{pascal}Topic"))),
+        (
+            rows_field,
+            TypeRef::named_list(format!("{name_prefix}Topic")),
+        ),
     ]
     .into_iter()
     .map(|(name, type_ref)| row_projection_field(name, type_ref))
     .fold(
-        Object::new(format!("{pascal}Bucket").as_str()),
+        Object::new(format!("{name_prefix}Bucket").as_str()),
         Object::field,
     )
 }
@@ -218,6 +221,7 @@ fn bucket_object(pascal: &str, rows_field: &str) -> Object {
 /// bucket queries. Returns `None` when the group must be skipped entirely
 /// (no usable metadata);
 fn register_group_queries(
+    name_prefix: &str,
     group: &TopicGroupDef,
     cache: &Arc<TopicCache>,
 ) -> anyhow::Result<Option<(Vec<Field>, Vec<Object>)>> {
@@ -230,17 +234,17 @@ fn register_group_queries(
         return Ok(None);
     };
     let value_meta_json = value_metadata_json(group);
-    let pascal = pascal_case_graphql_name(&group.group);
+    let name_prefix = pascal_case_graphql_name(&format!("{name_prefix}-{}", group.group));
 
     let (bucket_object, bucket_fields) =
-        register_bucket_queries(group, value_meta_json.clone(), cache);
+        register_bucket_queries(&name_prefix, group, value_meta_json.clone(), cache);
 
-    let mut objects = build_group_objects(&pascal, &metadata_fields, group);
+    let mut objects = build_group_objects(&name_prefix, &metadata_fields, group);
     objects.push(bucket_object);
 
     let mut fields = vec![group_query_field(
         &query_field_name,
-        &format!("{pascal}Topic"),
+        &format!("{name_prefix}Topic"),
         group,
         value_meta_json,
         cache.clone(),
@@ -256,17 +260,17 @@ fn register_group_queries(
 /// declares no `group_by` or the derived query names collide.
 #[allow(clippy::similar_names)]
 fn register_bucket_queries(
+    name_prefix: &str,
     group: &TopicGroupDef,
     value_meta_json: JsonValue,
     cache: &Arc<TopicCache>,
 ) -> (Object, Vec<Field>) {
-    let group_stem = singular_group_stem(&group.group);
+    let group_stem = singular_group_stem(name_prefix);
     let buckets_field = format!("{group_stem}Buckets");
     let bucket_field = format!("{group_stem}Bucket");
 
-    let pascal = pascal_case_graphql_name(&group.group);
-    let rows_field = sanitize_to_graphql_name(&group.group);
-    let bucket_type = format!("{pascal}Bucket");
+    let rows_field = sanitize_to_graphql_name(name_prefix);
+    let bucket_type = format!("{name_prefix}Bucket");
     let buckets = bucket_rows_by(group);
 
     // `<stem>Buckets`: every bucket with its materialized group rows.
@@ -319,7 +323,7 @@ fn register_bucket_queries(
     .argument(InputValue::new("id", TypeRef::named(TypeRef::STRING)));
 
     (
-        bucket_object(&pascal, &rows_field),
+        bucket_object(name_prefix, &rows_field),
         vec![list_field, singleton_field],
     )
 }
