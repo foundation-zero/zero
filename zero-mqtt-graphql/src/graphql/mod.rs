@@ -7,7 +7,7 @@
 //! - **Group** (`TopicGroupDef`): a parametrized topic family declared by one
 //!   AsyncAPI channel whose address contains `{param}` placeholders, e.g.
 //!   `power-tags/{panel}/{slug}` with MQTT pattern `power-tags/+/+`. A group
-//!   is enumerated by a `*-metadata.json` file listing its concrete topics and
+//!   is enumerated by the x-group-topic-metadata extension listing its concrete topics and
 //!   static attributes; the schema exposes one list query `<group>: [<Group>Topic]`
 //!   (e.g. `powerTags: [PowerTagsTopic]`) whose rows merge that static metadata
 //!   with live values from the cache.
