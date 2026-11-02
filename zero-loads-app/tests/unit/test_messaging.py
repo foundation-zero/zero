@@ -50,9 +50,7 @@ def test_value_is_none_before_any_message(messaging: Messaging):
     assert messaging.get_variable_value(AWS_VARIABLE_ID) is None
 
 
-async def test_value_is_returned_within_max_age(
-    messaging: Messaging, clock: FakeClock
-):
+async def test_value_is_returned_within_max_age(messaging: Messaging, clock: FakeClock):
     await receive_aws(messaging, 12.0)
     clock.now = MAX_MESSAGE_AGE.total_seconds()
 
