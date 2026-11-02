@@ -118,7 +118,7 @@ mod tests {
             ]),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let cache = Arc::new(TopicCache::new());
@@ -135,14 +135,14 @@ mod tests {
                 fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
                 payload_schema_ref: None,
                 action: OperationAction::Send,
-                ttl_secs: 300,
+                ttl_secs: None,
             },
             TopicDef {
                 topic: "a-b".to_string(),
                 fields: BTreeMap::from_iter(vec![("y".to_string(), GraphqlType::Float)]),
                 payload_schema_ref: None,
                 action: OperationAction::Send,
-                ttl_secs: 300,
+                ttl_secs: None,
             },
         ];
 
@@ -160,7 +160,7 @@ mod tests {
             fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let err = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap_err();
@@ -174,7 +174,7 @@ mod tests {
             fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
@@ -191,7 +191,7 @@ mod tests {
             fields: BTreeMap::new(),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
@@ -211,7 +211,7 @@ mod tests {
             ]),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
@@ -233,7 +233,7 @@ mod tests {
             ]),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let cache = Arc::new(TopicCache::new());
@@ -258,7 +258,7 @@ mod tests {
             fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
@@ -276,7 +276,7 @@ mod tests {
             fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let cache = Arc::new(TopicCache::new());
@@ -296,7 +296,7 @@ mod tests {
             fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
@@ -313,14 +313,14 @@ mod tests {
                 fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
                 payload_schema_ref: None,
                 action: OperationAction::Send,
-                ttl_secs: 300,
+                ttl_secs: None,
             },
             TopicDef {
                 topic: "c/d".to_string(),
                 fields: BTreeMap::from_iter(vec![("y".to_string(), GraphqlType::Float)]),
                 payload_schema_ref: None,
                 action: OperationAction::Send,
-                ttl_secs: 300,
+                ttl_secs: None,
             },
         ];
 
@@ -343,7 +343,7 @@ mod tests {
             fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let cache = Arc::new(TopicCache::new());

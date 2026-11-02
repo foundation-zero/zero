@@ -14,7 +14,7 @@ pub struct TopicDef {
     /// TTL in seconds for cached values of this topic. Determined from
     /// `x-ttl` extensions on the AsyncAPI message or channel
     /// (per-schema override) or a global default.
-    pub ttl_secs: u64,
+    pub ttl_secs: Option<u64>,
     pub action: OperationAction,
 }
 
@@ -31,7 +31,7 @@ pub struct TopicGroupDef {
     pub payload_schema_ref: Option<String>,
     /// Extension attributes per payload field (`x-*` schema extensions
     /// minus the prefix), keyed by raw field name.
-    pub ttl_secs: u64,
+    pub ttl_secs: Option<u64>,
     pub action: OperationAction,
     pub value_extensions: BTreeMap<String, BTreeMap<String, String>>,
     pub topic_metadata: MetadataByTopic,
@@ -132,20 +132,18 @@ impl Api {
     /// keyed by topic, groups by their wildcard pattern so every concrete
     /// topic under them inherits the group's `x-ttl`.
     #[must_use]
-    pub fn ttl_map(&self, default_ttl: u64) -> TopicMap<u64> {
+    pub fn ttl_map(&self) -> TopicMap<u64> {
         let topic_overrides = self
             .models
             .iter()
             .flat_map(|model| &model.topics)
-            .filter(|t| t.ttl_secs != default_ttl)
-            .map(|t| (t.topic.clone(), t.ttl_secs));
+            .filter_map(|t| Some((t.topic.clone(), t.ttl_secs?)));
 
         let group_overrides = self
             .models
             .iter()
             .flat_map(|model| &model.groups)
-            .filter(|g| g.ttl_secs != default_ttl)
-            .map(|g| (g.pattern.clone(), g.ttl_secs));
+            .filter_map(|g| Some((g.pattern.clone(), g.ttl_secs?)));
         topic_overrides.chain(group_overrides).collect()
     }
 }
@@ -173,7 +171,7 @@ mod tests {
                 topic: "".to_owned(),
                 fields: BTreeMap::new(),
                 payload_schema_ref: None,
-                ttl_secs: 0,
+                ttl_secs: None,
                 action: OperationAction::Send,
             }],
             vec![],
