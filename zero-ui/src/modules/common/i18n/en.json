@@ -2,6 +2,9 @@
   "app": {
     "title": "ZERO"
   },
+  "messages": {
+    "noDescription": "No description available"
+  },
   "quantities": {
     "temperature": "Temperature",
     "liter": "Liter",

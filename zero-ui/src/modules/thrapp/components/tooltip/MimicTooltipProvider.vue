@@ -3,6 +3,7 @@ import { ResponsivePopup } from "@/modules/common/components/responsive-dialog";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { createTooltipContext, provideTooltipContext } from ".";
+import ResponsivePopupTitle from "@/modules/common/components/responsive-dialog/ResponsivePopupTitle.vue";
 
 const tooltipContext = createTooltipContext();
 provideTooltipContext(tooltipContext);
@@ -33,12 +34,12 @@ const isOpen = computed({
       v-if="!dialog"
       #title
     >
-      <h2
+      <ResponsivePopupTitle
         v-if="title"
         class="px-4 text-left text-3xl text-[2rem] font-semibold sm:px-6"
       >
         {{ title }}
-      </h2>
+      </ResponsivePopupTitle>
     </template>
 
     <div class="max-md:px-4">
