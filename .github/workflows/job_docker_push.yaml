@@ -25,6 +25,10 @@ on:
         description: "Artifact downloaded into <context>/<artifact-name> before building"
         type: string
         required: false
+      tag-latest-on-release:
+        description: "Also tag the image latest when built for a published release"
+        type: boolean
+        default: false
 env:
   IMAGE: "europe-west1-docker.pkg.dev/common-449414/common/${{ inputs.image }}"
   CACHE: "europe-west1-docker.pkg.dev/common-449414/buildcache/${{ inputs.image }}:main"
@@ -69,7 +73,9 @@ jobs:
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
         with:
           images: ${{ env.IMAGE }}
-          tags: type=raw,value=${{ steps.version.outputs.version }}
+          tags: |
+            type=raw,value=${{ steps.version.outputs.version }}
+            type=raw,value=latest,enable=${{ inputs.tag-latest-on-release && github.event_name == 'release' }}
       - name: Build and push
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:

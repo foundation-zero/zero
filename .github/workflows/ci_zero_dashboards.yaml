@@ -28,3 +28,4 @@ jobs:
       image: "grafana-zero-dashboards"
       context: "zero-dashboards"
       platforms: "linux/amd64"
+      tag-latest-on-release: true
