@@ -2164,7 +2164,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Solid: the torque each Aradex drive's winding set puts on the motor shaft (before the 1.478 gearbox), published as whole % of 10 000 Nm, so raw × 100 Nm in steps of 100 Nm. Dashed: the maximum and minimum torque the PLC sends each drive (setpoints 2 and 3, in Nm as sent, the most restrictive value in each interval), derived from the PMS power limits and clamped by the PLC at ±1163 Nm per drive. In torque mode the drive reads setpoints 2 and 3 as speed limits, so there they mean nothing on this axis. Setpoints are published since 8 Oct 2026.",
+      "description": "Solid: the torque each Aradex drive's winding set puts on the motor shaft (before the 1.478 gearbox), published as whole % of 10 000 Nm, so raw × 100 Nm in steps of 100 Nm. Dashed: the maximum and minimum torque the PLC sends each drive (setpoints 2 and 3, in Nm as sent, the most restrictive value in each interval), derived from the PMS power limits and clamped by the PLC at ±1163 Nm per drive. Above about 95 motor rpm the maximum torque sent stays at the propulsion limit × 95.5 Nm and no longer falls with speed. In torque mode the drive reads setpoints 2 and 3 as speed limits, so there they mean nothing on this axis. Setpoints are published since 8 Oct 2026.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -2421,7 +2421,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Solid: DC power per drive, raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS gives each drive, in kW as the PMS sends them, positive; the propulsion limit is drawn above zero, the regeneration limit negated below zero. The limits are the lowest value in each interval, so short drops show. In Sailing the PLC limits the drives to ±1 kW, and in hydrogeneration with the lever at or behind zero the propulsion limit is 0. Astern, the PLC applies the regeneration limit to propulsion and the other way round.",
+      "description": "Solid: DC power per drive, raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS gives each drive, in kW as the PMS sends them, positive; the propulsion limit is drawn above zero, the regeneration limit negated below zero. Dotted: the power the torque limit sent to the drive allows at its speed, in kW: maximum torque × motor rpm / 9550 ahead, minimum torque × motor rpm / 9550 astern. When the PMS limit is converted to torque correctly, this line lies on the propulsion limit; above it, the drive may take more than the PMS allows. All limits are the lowest value in each interval, so short drops show. The PLC caps the propulsion limit at 180 kW per drive, and sends at least 1 kW for both limits, also when the PMS sends 0. In Sailing the PLC limits the drives to ±1 kW, and in hydrogeneration with the lever at or behind zero the propulsion limit is 0. Astern the regeneration limit bounds propulsion and the propulsion limit bounds braking. The PMS's consumed power, from which it sets the propulsion limit, is in kW from 15 Oct 2026; it may return to 0.1 kW, and the PMS then sees ten times the load and its propulsion limit does not bind.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -2489,6 +2489,47 @@
           "rawQuery": true,
           "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-31-u101' THEN setpoint_power__value END) AS \"Propulsion limit d1\",\n  min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-31-u102' THEN setpoint_power__value END) AS \"Propulsion limit d2\",\n  -min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-31-u101' THEN produce_power_limit__value END) AS \"Regeneration limit d1\",\n  -min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-31-u102' THEN produce_power_limit__value END) AS \"Regeneration limit d2\"\nFROM public.marpower__150000_propulsion_ara\nWHERE $__timeFilter(timestamp) AND topic IN ('marpower/150000-propulsion-ara/13-31-u101', 'marpower/150000-propulsion-ara/13-31-u102')\nGROUP BY 1 ORDER BY 1",
           "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  min(CASE WHEN drive = 1 THEN allowed END) AS \"Torque limit as power d1\",\n  min(CASE WHEN drive = 2 THEN allowed END) AS \"Torque limit as power d2\"\nFROM (SELECT timestamp, drive, CASE WHEN speed >= 0 THEN max_torque ELSE min_torque END * speed / 9550.0 AS allowed\n  FROM (SELECT timestamp, 1 AS drive, speed__value AS speed, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp, 2 AS drive, speed__value AS speed, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) s) a\nGROUP BY 1 ORDER BY 1",
+          "refId": "C",
           "sql": {
             "columns": [
               {
@@ -2673,6 +2714,56 @@
                   "dash": [
                     10,
                     10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Torque limit as power d1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dot",
+                  "dash": [
+                    0,
+                    6
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Torque limit as power d2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dot",
+                  "dash": [
+                    0,
+                    6
                   ]
                 }
               }
@@ -3629,7 +3720,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Solid: the torque each Aradex drive's winding set puts on the motor shaft (before the 1.478 gearbox), published as whole % of 10 000 Nm, so raw × 100 Nm in steps of 100 Nm. Dashed: the maximum and minimum torque the PLC sends each drive (setpoints 2 and 3, in Nm as sent, the most restrictive value in each interval), derived from the PMS power limits and clamped by the PLC at ±3226 Nm per drive. In torque mode the drive reads setpoints 2 and 3 as speed limits, so there they mean nothing on this axis. Setpoints are published since 8 Oct 2026.",
+      "description": "Solid: the torque each Aradex drive's winding set puts on the motor shaft (before the 1.478 gearbox), published as whole % of 10 000 Nm, so raw × 100 Nm in steps of 100 Nm. Dashed: the maximum and minimum torque the PLC sends each drive (setpoints 2 and 3, in Nm as sent, the most restrictive value in each interval), derived from the PMS power limits and clamped by the PLC at ±3226 Nm per drive. Above about 95 motor rpm the maximum torque sent stays at the propulsion limit × 95.5 Nm and no longer falls with speed. Astern the maximum torque sent lies below the minimum; the panel takes the lowest maximum and the highest minimum per interval, so the dashed lines then cross. In torque mode the drive reads setpoints 2 and 3 as speed limits, so there they mean nothing on this axis. Setpoints are published since 8 Oct 2026.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -3886,7 +3977,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Solid: DC power per drive, raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS gives each drive, in kW as the PMS sends them, positive; the propulsion limit is drawn above zero, the regeneration limit negated below zero. The limits are the lowest value in each interval, so short drops show. In Sailing the PLC limits the drives to ±1 kW, and in hydrogeneration with the lever at or behind zero the propulsion limit is 0. Astern, the PLC applies the regeneration limit to propulsion and the other way round.",
+      "description": "Solid: DC power per drive, raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS gives each drive, in kW as the PMS sends them, positive; the propulsion limit is drawn above zero, the regeneration limit negated below zero. Dotted: the power the torque limit sent to the drive allows at its speed, in kW: maximum torque × motor rpm / 9550 ahead, minimum torque × motor rpm / 9550 astern. When the PMS limit is converted to torque correctly, this line lies on the propulsion limit; above it, the drive may take more than the PMS allows. All limits are the lowest value in each interval, so short drops show. The PLC caps the propulsion limit at 400 kW per drive, and sends at least 1 kW for both limits, also when the PMS sends 0. In Sailing the PLC limits the drives to ±1 kW, and in hydrogeneration with the lever at or behind zero the propulsion limit is 0. Astern the maximum torque sent lies below the minimum, and the dotted line turns negative. The PMS's consumed power, from which it sets the propulsion limit, is in kW from 15 Oct 2026; it may return to 0.1 kW, and the PMS then sees ten times the load and its propulsion limit does not bind.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -3954,6 +4045,47 @@
           "rawQuery": true,
           "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-11-u101' THEN setpoint_power__value END) AS \"Propulsion limit d1\",\n  min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-11-u102' THEN setpoint_power__value END) AS \"Propulsion limit d2\",\n  -min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-11-u101' THEN produce_power_limit__value END) AS \"Regeneration limit d1\",\n  -min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-11-u102' THEN produce_power_limit__value END) AS \"Regeneration limit d2\"\nFROM public.marpower__150000_propulsion_ara\nWHERE $__timeFilter(timestamp) AND topic IN ('marpower/150000-propulsion-ara/13-11-u101', 'marpower/150000-propulsion-ara/13-11-u102')\nGROUP BY 1 ORDER BY 1",
           "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "meta": {},
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  min(CASE WHEN drive = 1 THEN allowed END) AS \"Torque limit as power d1\",\n  min(CASE WHEN drive = 2 THEN allowed END) AS \"Torque limit as power d2\"\nFROM (SELECT timestamp, drive, CASE WHEN speed >= 0 THEN max_torque ELSE min_torque END * speed / 9550.0 AS allowed\n  FROM (SELECT timestamp, 1 AS drive, speed__value AS speed, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp, 2 AS drive, speed__value AS speed, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) s) a\nGROUP BY 1 ORDER BY 1",
+          "refId": "C",
           "sql": {
             "columns": [
               {
@@ -4138,6 +4270,56 @@
                   "dash": [
                     10,
                     10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Torque limit as power d1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dot",
+                  "dash": [
+                    0,
+                    6
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Torque limit as power d2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dot",
+                  "dash": [
+                    0,
+                    6
                   ]
                 }
               }
