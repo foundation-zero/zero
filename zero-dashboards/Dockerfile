@@ -1,13 +1,12 @@
 # Custom Grafana dockerfile from http://github.com/grafana/grafana/blob/main/packaging/docker/custom/Dockerfile
 # Documented here: https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/
-ARG GRAFANA_VERSION="12.4.14@sha256:ae509d9ae8c1021ca32ec370a9ca975d40165eda9fccd1e1102d317ff8787cd7"
+ARG GRAFANA_VERSION="13.2.4@sha256:dbbc38ea21103cefb50396340cd88afec779c7e070b0a7bf5a75b4ce46651d3f"
 
 FROM grafana/grafana:${GRAFANA_VERSION}
 
 ARG GF_GID="0"
 
 ENV GF_PATHS_PLUGINS="/var/lib/grafana-plugins"
-ENV GF_PLUGIN_RENDERING_CHROME_BIN="/usr/bin/chrome"
 
 USER root
 
@@ -16,7 +15,7 @@ RUN mkdir -p "$GF_PATHS_PLUGINS" && \
 
 USER grafana
 
-ARG GF_INSTALL_PLUGINS="grafana-metricsdrilldown-app,grafana-lokiexplore-app,grafana-polystat-panel,marcusolsson-treemap-panel,https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/download/v3.0.3/info8fcc-greptimedb-datasource.zip;greptimedb-datasource"
+ARG GF_INSTALL_PLUGINS="grafana-metricsdrilldown-app,grafana-lokiexplore-app,grafana-polystat-panel,marcusolsson-treemap-panel,https://github.com/GreptimeTeam/greptimedb-grafana-datasource/releases/download/v3.0.4/info8fcc-greptimedb-datasource.zip;greptimedb-datasource"
 
 RUN if [ ! -z "${GF_INSTALL_PLUGINS}" ]; then \
       OLDIFS=$IFS; \
