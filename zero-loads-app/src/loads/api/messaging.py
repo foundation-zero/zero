@@ -115,10 +115,10 @@ class Messaging:
         if variable := self._variable_definitions.get(variable_id):
             receiver = self._receivers[variable.topic]
 
-            if receiver.last is None:
+            if (last := receiver.last) is None:
                 return None
 
-            return variable.get_actual(receiver.last)
+            return variable.get_actual(last)
         else:
             raise ValueError(f"Variable {variable_id} is not defined.")
 
@@ -130,10 +130,10 @@ class Messaging:
         if alarm := self._alarm_definitions.get(alarm_id):
             receiver = self._receivers[alarm.topic]
 
-            if receiver.last is None:
+            if (last := receiver.last) is None:
                 return None
 
-            return value(alarm)(receiver.last)
+            return value(alarm)(last)
         else:
             raise ValueError(f"Alarm {alarm_id} is not defined.")
 

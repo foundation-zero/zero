@@ -64,6 +64,22 @@ async def test_value_is_none_after_max_age(messaging: Messaging, clock: FakeCloc
     assert messaging.get_variable_value(AWS_VARIABLE_ID) is None
 
 
+async def test_lookup_survives_expiry_between_reads():
+    times = iter([0.0, MAX_MESSAGE_AGE.total_seconds(), 100.0])
+    messaging = Messaging(
+        mqtt_client=MagicMock(),
+        modules=[at_sensors],
+        variable_definitions=VARIABLES,
+        alarm_definitions=ALARMS,
+        max_message_age=MAX_MESSAGE_AGE,
+        clock=lambda: next(times, 100.0),
+    )
+    await receive_aws(messaging, 12.0)
+
+    assert messaging.get_variable_value(AWS_VARIABLE_ID) == pytest.approx(12.0)
+    assert messaging.get_variable_value(AWS_VARIABLE_ID) is None
+
+
 async def test_new_message_restores_value(messaging: Messaging, clock: FakeClock):
     await receive_aws(messaging, 12.0)
     clock.now = 100.0
