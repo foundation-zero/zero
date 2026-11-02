@@ -40,7 +40,7 @@ pub struct TopicGroupDef {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum GraphqlType {
-    Object(Box<BTreeMap<String, GraphqlType>>),
+    Object(String, Box<BTreeMap<String, GraphqlType>>),
     String,
     Float,
     Int,

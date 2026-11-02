@@ -18,7 +18,7 @@
 //!   schema exposes `<stem>Buckets: [Bucket]` (all buckets) and
 //!   `<stem>Bucket(id: String): Bucket` (single bucket by id).
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::sync::Arc;
 
 use crate::api_model::GraphqlType;
@@ -27,7 +27,7 @@ use crate::graphql::topics::build_schema_topics;
 use anyhow::Context;
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
-use async_graphql::dynamic::{Field, FieldValue, Object, Schema, SchemaBuilder, TypeRef};
+use async_graphql::dynamic::{Field, FieldValue, Object, Schema, TypeRef};
 use log::warn;
 use serde_json::Value as JsonValue;
 
@@ -63,19 +63,43 @@ pub fn build_schema(api: &Api, cache: &Arc<TopicCache>) -> anyhow::Result<Schema
     let mut query = Object::new("Query");
     let mut schema_builder = Schema::build(query.type_name(), None, None);
 
+    let mut known_types: HashMap<String, String> = HashMap::new();
+
     for api_model in &api.models {
         let new_objects;
         (query, new_objects) = build_schema_topics(query, api_model, cache);
-        schema_builder = new_objects
-            .into_iter()
-            .fold(schema_builder, SchemaBuilder::register);
+        schema_builder = new_objects.into_iter().fold(schema_builder, |builder, t| {
+            let type_name = t.type_name().to_owned();
+            if known_types.contains_key(&type_name)
+                && known_types.get(&type_name) != Some(&format!("{t:?}"))
+            {
+                warn!(
+                    "Type name from {} is already used {type_name} \n\n This   : {:?}\nExisting: {:?}",
+                    api_model.name, Some(format!("{t:?}")), known_types.get(&type_name)
+                );
+            }
+            known_types.insert(type_name, format!("{t:?}"));
+            builder.register(t)
+        });
 
         let group_objects;
         (query, group_objects) = build_schema_groups(query, api_model, cache)
             .with_context(|| "Error while building group schema")?;
         schema_builder = group_objects
             .into_iter()
-            .fold(schema_builder, SchemaBuilder::register);
+            .fold(schema_builder, |builder, t| {
+                let type_name = t.type_name().to_owned();
+                if known_types.contains_key(&type_name)
+                    && known_types.get(&type_name) != Some(&format!("{t:?}"))
+                {
+                    warn!(
+                        "Type name from {} is already used {type_name} \n\n This   : {:?}\nExisting: {:?}",
+                        api_model.name, Some(format!("{t:?}")), known_types.get(&type_name)
+                    );
+                }
+                known_types.insert(type_name, format!("{t:?}"));
+                builder.register(t)
+            });
     }
 
     // Not really useful but prevents errors if no topics are defined
@@ -126,29 +150,40 @@ fn json_to_graphql_value(val: &JsonValue) -> GraphQlValue {
 }
 
 /// One concrete topic's `<Topic>` payload object
-fn payload_object(name: &str, fields: &BTreeMap<String, GraphqlType>) -> Vec<Object> {
+fn payload_object(
+    name_prefix: &str,
+    name: &str,
+    fields: &BTreeMap<String, GraphqlType>,
+) -> Vec<Object> {
     if fields.is_empty() {
         warn!("Object {name} can't have zero fields!");
     }
 
-    let type_name = pascal_case_graphql_name(name);
-    let (object, mut objects) = fields.iter().map(payload_field).fold(
-        (Object::new(type_name.as_str()), Vec::new()),
-        |(obj, mut objects): (Object, Vec<Object>), (field, new_objects)| {
-            objects.extend(new_objects);
-            (obj.field(field), objects)
-        },
-    );
+    let type_name = pascal_case_graphql_name(&format!("{name_prefix}-{name}"));
+    let (object, mut objects) = fields
+        .iter()
+        .map(|(name, graphql_type)| payload_field(name_prefix, name, graphql_type))
+        .fold(
+            (Object::new(type_name.as_str()), Vec::new()),
+            |(obj, mut objects): (Object, Vec<Object>), (field, new_objects)| {
+                objects.extend(new_objects);
+                (obj.field(field), objects)
+            },
+        );
     objects.insert(0, object);
     objects
 }
 
 /// One scalar payload field on a `<Topic>` object: projects the raw field
 /// name from the object value returned by [`topic_query_field`].
-fn payload_field(field: (&String, &GraphqlType)) -> (Field, Vec<Object>) {
-    let field_name = sanitize_to_graphql_name(field.0);
-    let raw_name = Name::new(field.0.clone());
-    let (graphql_type, objects) = graphql_type_ref(field.0, field.1);
+fn payload_field(
+    name_prefix: &str,
+    name: &str,
+    graphql_type: &GraphqlType,
+) -> (Field, Vec<Object>) {
+    let field_name = sanitize_to_graphql_name(name);
+    let raw_name = Name::new(name);
+    let (graphql_type, objects) = graphql_type_ref(name_prefix, graphql_type);
 
     let field = Field::new(field_name, graphql_type, move |ctx| {
         let raw_name = raw_name.clone();
@@ -168,15 +203,15 @@ fn payload_field(field: (&String, &GraphqlType)) -> (Field, Vec<Object>) {
 }
 
 /// Map a GraphQL type name to an async-graphql TypeRef.
-fn graphql_type_ref(name: &str, typ: &GraphqlType) -> (TypeRef, Vec<Object>) {
+fn graphql_type_ref(name_prefix: &str, typ: &GraphqlType) -> (TypeRef, Vec<Object>) {
     #[allow(clippy::match_same_arms)]
     match typ {
         GraphqlType::Float => (TypeRef::named(TypeRef::FLOAT), vec![]),
         GraphqlType::Int => (TypeRef::named(TypeRef::INT), vec![]),
         GraphqlType::Boolean => (TypeRef::named(TypeRef::BOOLEAN), vec![]),
         GraphqlType::String => (TypeRef::named(TypeRef::STRING), vec![]),
-        GraphqlType::Object(fields) => {
-            let objects = payload_object(name, fields);
+        GraphqlType::Object(name, fields) => {
+            let objects = payload_object(name_prefix, name, fields);
             (TypeRef::named(objects[0].type_name()), objects)
         }
     }

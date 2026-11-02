@@ -44,17 +44,9 @@ pub(super) fn build_schema_topics(
         info!("Building schema for topic {}", topic_def.topic);
         let name = &topic_def.payload_schema_ref.clone().map_or_else(
             || topic_def.topic.clone(),
-            |s| {
-                s.chars()
-                    .rev()
-                    .take_while(|c| *c != '/')
-                    .collect::<Vec<char>>()
-                    .iter()
-                    .rev()
-                    .collect::<String>()
-            },
+            |s| s.replace("#/components/schemas/", &api.name),
         );
-        let new_objects = payload_object(name, &topic_def.fields);
+        let new_objects = payload_object(&api.name, name, &topic_def.fields);
 
         let field_name = sanitize_to_graphql_name(&topic_def.topic);
         let field = payload_query_field(&field_name, &topic_def.topic, &new_objects[0], cache);
