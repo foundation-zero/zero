@@ -92,10 +92,7 @@ fn validate_command(api: &Api) -> Result<()> {
 /// values, until Ctrl-C or an unexpected MQTT subscriber death (an error, so
 /// the process exits non-zero and Kubernetes restarts it).
 async fn run_serve(config: AppConfig, api: &Api) -> Result<()> {
-    let cache = Arc::new(TopicCache::with_ttl(
-        config.default_ttl_secs,
-        api.ttl_map(config.default_ttl_secs),
-    ));
+    let cache = Arc::new(TopicCache::with_ttl(config.default_ttl_secs, api.ttl_map()));
     spawn_eviction(cache.clone());
 
     let mut mqtt = spawn_mqtt_subscriber(&config, api, &cache)?;
@@ -282,7 +279,7 @@ mod tests {
             fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         Api::new(vec![ApiModel::new(

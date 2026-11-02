@@ -430,7 +430,7 @@ fn message_fields(
 
     (
         extract_fields_from_schema_or_multi(schema_or_multi, doc),
-        Some(pointer.unwrap_or(message_ref)),
+        Some(pointer.unwrap_or(format!("{message_ref}/payload"))),
         serde_json::to_value(schema_or_multi).ok(),
     )
 }
@@ -751,13 +751,12 @@ fn map_json_type_to_graphql(
 /// Effective TTL for cached values of a channel: the maximum `x-ttl`
 /// across its messages (a channel may declare several), falling back to the
 /// channel's own extension, then the global default.
-fn ttl_for_channel(channel_ref: &Reference, channel: &Channel, doc: &Document) -> u64 {
+fn ttl_for_channel(channel_ref: &Reference, channel: &Channel, doc: &Document) -> Option<u64> {
     channel_messages(channel_ref, channel, doc)
         .into_values()
         .filter_map(|message| ttl_from_extensions(message.extensions.as_ref()))
         .max()
         .or_else(|| ttl_from_extensions(channel.extensions.as_ref()))
-        .unwrap_or(crate::config::DEFAULT_TTL_SECS)
 }
 
 fn ttl_from_extensions(ext: Option<&std::collections::BTreeMap<String, Value>>) -> Option<u64> {

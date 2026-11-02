@@ -111,7 +111,7 @@ mod tests {
             payload_schema_ref: schema,
             action: OperationAction::Send,
             value_extensions: BTreeMap::new(),
-            ttl_secs: 300,
+            ttl_secs: None,
             group_by: "".to_string(),
             topic_metadata: BTreeMap::new(),
         }
@@ -132,7 +132,7 @@ mod tests {
             )]),
             payload_schema_ref: Some("#/validator".to_string()),
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let validators = build_validators(&validator_builder, &topics, &[]).unwrap();
@@ -211,7 +211,7 @@ mod tests {
             )]),
             payload_schema_ref: Some("#/schemas/message".to_string()),
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let validators = build_validators(&validator_builder, &topics, &[]).unwrap();

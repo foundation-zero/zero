@@ -550,7 +550,7 @@ mod tests {
                     BTreeMap::from([("unit".to_string(), "A".to_string())]),
                 ),
             ]),
-            ttl_secs: 300,
+            ttl_secs: None,
             topic_metadata: metadata,
             group_by: "panel".to_string(),
         }]

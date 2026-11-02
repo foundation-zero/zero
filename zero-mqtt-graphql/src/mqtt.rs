@@ -2,7 +2,7 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use jsonschema::Validator;
-use log::{debug, error, info, warn};
+use log::{Level, debug, error, info, log_enabled, warn};
 use rumqttc::{
     AsyncClient, ConnectReturnCode, ConnectionError, Event, EventLoop, Incoming, MqttOptions, QoS,
 };
@@ -196,19 +196,22 @@ impl MqttSubscriber {
         // caches the payload regardless of validity.
         let _ = self.validate_payload(topic, &value);
 
-        let rendered = value.to_string();
-        let preview_len = rendered
-            .char_indices()
-            .nth(100)
-            .map_or(rendered.len(), |(idx, _)| idx);
-        if preview_len < rendered.len() {
-            debug!(
-                "Caching payload for topic '{topic}': {}...",
-                &rendered[..preview_len]
-            );
-        } else {
-            debug!("Caching payload for topic '{topic}': {rendered}");
+        if log_enabled!(Level::Debug) {
+            let rendered = value.to_string();
+            let preview_len = rendered
+                .char_indices()
+                .nth(100)
+                .map_or(rendered.len(), |(idx, _)| idx);
+            if preview_len < rendered.len() {
+                debug!(
+                    "Caching payload for topic '{topic}': {}...",
+                    &rendered[..preview_len]
+                );
+            } else {
+                debug!("Caching payload for topic '{topic}': {rendered}");
+            }
         }
+
         self.cache.insert(topic, flatten_payload(value));
     }
 
@@ -333,7 +336,7 @@ mod tests {
             )]),
             payload_schema_ref: Some(schema_ref.to_string()),
             value_extensions: BTreeMap::new(),
-            ttl_secs: 300,
+            ttl_secs: None,
             action: OperationAction::Send,
             group_by: "".to_string(),
             topic_metadata: BTreeMap::new(),
@@ -450,7 +453,7 @@ mod tests {
             )]),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         };
         let api = api(
             vec![topic],
