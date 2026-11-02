@@ -50,7 +50,7 @@
       "transparent": false,
       "options": {
         "mode": "markdown",
-        "content": "<center><h2>Thruster load test</h2></center>\n\nMonitoring of a thruster pod: propulsion, motor, drives, cooling water, hydraulics and mounts, with the batteries and DC switches. The **Pod** selector switches every panel between FWD and AFT, except the batteries and DC switches, which serve both pods.\n**Times are UTC.**\n**DC power** corrected: raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, corrected: raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** corrected: raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature corrected: raw × 0.1 °C; currents raw.\nWhere a published value disagrees with the unit its IO list declares, the dashboard shows the corrected value and the info icon says so. Values another device reads and acts on are shown as published: the power limits the PMS sends, the PMS's consumed power and the torque setpoints. The info icon of each panel states the source and any correction."
+        "content": "<center><h2>PCS testing</h2></center>\n\nMonitoring of a thruster pod: propulsion, motor, drives, cooling water, hydraulics and mounts, with the batteries and DC switches. The **Pod** selector switches every panel between FWD and AFT, except the batteries and DC switches, which serve both pods.\n**Times are UTC.**\n**DC power** corrected: raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, corrected: raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** corrected: raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature corrected: raw × 0.1 °C; currents raw.\nWhere a published value disagrees with the unit its IO list declares, the dashboard shows the corrected value and the info icon says so. Values another device reads and acts on are shown as published: the power limits the PMS sends, the PMS's consumed power and the torque setpoints. The info icon of each panel states the source and any correction."
       }
     },
     {
@@ -1034,7 +1034,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Solid: DC power per drive, declared in kW but published in 0.1 kW: shown corrected, raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS sends each drive, in kW as sent and not corrected, since the PCS reads them as they are; the propulsion limit above zero, the regeneration limit negated below zero, the lowest value in each interval.",
+      "description": "Solid: DC power per drive, declared in kW but published in 0.1 kW: shown corrected, raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS sends each drive, in kW as sent and not corrected, since the PCS reads them as they are; the propulsion limit above zero, the regeneration limit negated below zero, the lowest value in each interval. Dotted: the torque limit sent to each drive × motor speed / 9550, in kW: setpoint 2 (maximum torque) at a speed of zero or more, setpoint 3 (minimum torque) below; the lowest value in each interval.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1063,6 +1063,19 @@
           "rawQuery": true,
           "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  min(CASE WHEN right(topic, 4) = 'u101' THEN setpoint_power__value END) AS \"Propulsion limit d1\",\n  min(CASE WHEN right(topic, 4) = 'u102' THEN setpoint_power__value END) AS \"Propulsion limit d2\",\n  -min(CASE WHEN right(topic, 4) = 'u101' THEN produce_power_limit__value END) AS \"Regeneration limit d1\",\n  -min(CASE WHEN right(topic, 4) = 'u102' THEN produce_power_limit__value END) AS \"Regeneration limit d2\"\nFROM public.marpower__150000_propulsion_ara\nWHERE $__timeFilter(timestamp) AND topic IN ('marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u101' ELSE '13-11-u101' END, 'marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u102' ELSE '13-11-u102' END)\nGROUP BY 1 ORDER BY 1",
           "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  min(CASE WHEN drive = 1 THEN allowed END) AS \"Torque limit as power d1\",\n  min(CASE WHEN drive = 2 THEN allowed END) AS \"Torque limit as power d2\"\nFROM (SELECT timestamp, drive, CASE WHEN speed >= 0 THEN max_torque ELSE min_torque END * speed / 9550.0 AS allowed\n  FROM (SELECT timestamp, 1 AS drive, speed__value AS speed, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp, 2 AS drive, speed__value AS speed, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE $__timeFilter(timestamp)) s) a\nGROUP BY 1 ORDER BY 1",
+          "refId": "C"
         }
       ],
       "fieldConfig": {
@@ -1180,6 +1193,24 @@
                   "dash": [
                     10,
                     10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^Torque limit as power .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dot",
+                  "dash": [
+                    0,
+                    6
                   ]
                 }
               }
@@ -5303,7 +5334,7 @@
   },
   "timepicker": {},
   "timezone": "utc",
-  "title": "Thruster load test",
+  "title": "PCS testing",
   "uid": "commissioning-thruster-load-test",
   "version": 1
 }
