@@ -1302,7 +1302,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Motor bearing temperatures, drive end and non-drive end, in °C. The test plan asks for upper and lower; presumably the drive end is the upper bearing.",
+      "description": "Motor bearing temperatures, drive end and non-drive end, in °C. The drive end is the upper bearing of the test plan, the non-drive end the lower.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1631,7 +1631,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Power stage temperature of each Aradex drive, in °C; presumably the coldplate of the test plan. The drives publish 199 while off; those values are left out.",
+      "description": "Power stage temperature of each Aradex drive, in °C: the coldplate of the test plan. The drives publish 199 while off; those values are left out.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
