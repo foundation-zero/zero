@@ -100,7 +100,7 @@ mod tests {
 
     fn api(topics: Vec<TopicDef>) -> Api {
         Api::new(vec![ApiModel::new(
-            "".to_string(),
+            String::new(),
             TopicMap::new(),
             topics,
             vec![],
@@ -302,7 +302,7 @@ mod tests {
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
 
         let response = schema.execute("{ testChannel { nope } }").await;
-        assert!(!response.errors.is_empty());
+        assert_ne!(response.errors, []);
     }
 
     #[tokio::test]

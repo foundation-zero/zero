@@ -128,7 +128,10 @@ async fn shutdown_signal() {
     let ctrl_c = tokio::signal::ctrl_c();
 
     #[cfg(unix)]
-    let terminate = async { Ok(signal(SignalKind::terminate())?.recv().await.unwrap()) };
+    let terminate = async {
+        signal(SignalKind::terminate())?.recv().await;
+        Ok(())
+    };
     #[cfg(not(unix))]
     let terminate = future::pending();
 

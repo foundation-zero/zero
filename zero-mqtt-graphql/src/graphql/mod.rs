@@ -299,7 +299,7 @@ mod tests {
 
     fn api() -> Api {
         Api::new(vec![ApiModel::new(
-            "".to_string(),
+            String::new(),
             TopicMap::new(),
             vec![],
             vec![],

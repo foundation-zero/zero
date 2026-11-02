@@ -31,7 +31,7 @@ test *args:
     cargo llvm-cov report
 
 lint:
-    cargo clippy --all --all-features --locked
+    cargo clippy --all --all-features --all-targets --locked
 
 format:
     cargo fmt --check

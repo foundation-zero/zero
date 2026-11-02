@@ -182,8 +182,7 @@ mod tests {
                 "id",
             ]
             .iter()
-            .map(|n| is_reserved_name(n))
-            .all(|b| b)
+            .all(|n| is_reserved_name(n))
         );
     }
 }

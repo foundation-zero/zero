@@ -271,7 +271,7 @@ mod tests {
             value_extensions: BTreeMap::new(),
             ttl_secs: None,
             action: OperationAction::Send,
-            group_by: "".to_string(),
+            group_by: String::new(),
             topic_metadata: BTreeMap::new(),
         }]
     }
@@ -282,7 +282,7 @@ mod tests {
         validators: TopicMap<Validator>,
     ) -> Api {
         Api::new(vec![ApiModel::new(
-            "".to_string(),
+            String::new(),
             TopicMap::new(),
             topics,
             groups,
