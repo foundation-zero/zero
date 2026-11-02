@@ -202,7 +202,7 @@ fn bucket_rows_by(group: &TopicGroupDef) -> GroupedRows {
 /// The bucket object (`<stem>Bucket`): bucket `id` plus the bucket's group rows.
 fn bucket_object(name_prefix: &str, rows_field: &str) -> Object {
     [
-        ("id", TypeRef::named(TypeRef::STRING)),
+        ("id", TypeRef::named_nn(TypeRef::STRING)),
         (
             rows_field,
             TypeRef::named_list(format!("{name_prefix}Topic")),
@@ -321,7 +321,7 @@ fn register_bucket_queries(
             }
         })
     })
-    .argument(InputValue::new("id", TypeRef::named(TypeRef::STRING)));
+    .argument(InputValue::new("id", TypeRef::named_nn(TypeRef::STRING)));
 
     (
         bucket_object(name_prefix, &rows_field),
@@ -522,7 +522,7 @@ mod tests {
 
     fn api(groups: Vec<TopicGroupDef>) -> Api {
         Api::new(vec![ApiModel::new(
-            "".to_string(),
+            String::new(),
             TopicMap::new(),
             vec![],
             groups,

@@ -168,7 +168,7 @@ mod tests {
             "test".to_owned(),
             TopicMap::new(),
             vec![TopicDef {
-                topic: "".to_owned(),
+                topic: "some/topic".to_owned(),
                 fields: BTreeMap::new(),
                 payload_schema_ref: None,
                 ttl_secs: None,

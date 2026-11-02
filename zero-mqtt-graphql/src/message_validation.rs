@@ -112,7 +112,7 @@ mod tests {
             action: OperationAction::Send,
             value_extensions: BTreeMap::new(),
             ttl_secs: None,
-            group_by: "".to_string(),
+            group_by: String::new(),
             topic_metadata: BTreeMap::new(),
         }
     }

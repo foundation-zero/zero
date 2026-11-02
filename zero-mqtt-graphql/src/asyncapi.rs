@@ -808,8 +808,8 @@ mod tests {
     use std::collections::BTreeMap;
 
     /// Test convenience wrapper.
-    fn loaded_topics(spec: Value) -> anyhow::Result<Vec<TopicDef>> {
-        let api = load_spec(Path::new("test"), &spec)?;
+    fn loaded_topics(spec: &Value) -> anyhow::Result<Vec<TopicDef>> {
+        let api = load_spec(Path::new("test"), spec)?;
         Ok(api.topics)
     }
 
@@ -917,7 +917,7 @@ mod tests {
             }
         });
 
-        let topics = loaded_topics(spec).unwrap();
+        let topics = loaded_topics(&spec).unwrap();
 
         assert_eq!(topics.len(), 1);
         assert_eq!(
@@ -1019,7 +1019,7 @@ mod tests {
             }
         });
 
-        let topics = loaded_topics(spec).unwrap();
+        let topics = loaded_topics(&spec).unwrap();
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "test/channel:Publisher");
@@ -1034,7 +1034,7 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(dir.join("readme.txt"), "not a spec").unwrap();
 
-        let topics = load_specs(&dir.to_str().unwrap(), false).unwrap();
+        let topics = load_specs(dir.to_str().unwrap(), false).unwrap();
         let _ = std::fs::remove_dir_all(&dir);
 
         assert!(topics.is_empty());
@@ -1047,7 +1047,7 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(dir.join("broken.json"), "{ not json }").unwrap();
 
-        let err = load_specs(&dir.to_str().unwrap(), false).unwrap_err();
+        let err = load_specs(dir.to_str().unwrap(), false).unwrap_err();
         let _ = std::fs::remove_dir_all(&dir);
 
         assert!(err.to_string().contains("parsing JSON"), "{err}");
@@ -1069,7 +1069,7 @@ mod tests {
         )
         .unwrap();
 
-        let err = load_specs(&dir.to_str().unwrap(), false).unwrap_err();
+        let err = load_specs(dir.to_str().unwrap(), false).unwrap_err();
         let _ = std::fs::remove_dir_all(&dir);
 
         assert!(err.to_string().contains("no 'asyncapi' field"), "{err}");
@@ -1096,7 +1096,7 @@ mod tests {
         )
         .unwrap();
 
-        let err = load_specs(&dir.to_str().unwrap(), false).unwrap_err();
+        let err = load_specs(dir.to_str().unwrap(), false).unwrap_err();
         let _ = std::fs::remove_dir_all(&dir);
 
         assert!(err.to_string().contains("only 3.x is supported"), "{err}");
@@ -1147,7 +1147,7 @@ mod tests {
             }
         });
 
-        let topics = loaded_topics(spec).unwrap();
+        let topics = loaded_topics(&spec).unwrap();
 
         assert_eq!(topics.len(), 2);
         // BTreeMap ordering
@@ -1261,7 +1261,7 @@ mod tests {
             }
         });
 
-        let topics = loaded_topics(spec).unwrap();
+        let topics = loaded_topics(&spec).unwrap();
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "ref/channel");
@@ -1291,7 +1291,7 @@ mod tests {
             },
         });
 
-        let topics = loaded_topics(spec).unwrap();
+        let topics = loaded_topics(&spec).unwrap();
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "bare/channel");
@@ -1314,7 +1314,7 @@ mod tests {
             },
         });
 
-        let err = loaded_topics(spec).unwrap_err();
+        let err = loaded_topics(&spec).unwrap_err();
 
         assert_eq!(
             err.to_string(),
@@ -1336,7 +1336,7 @@ mod tests {
             },
         });
 
-        let err = loaded_topics(spec).unwrap_err();
+        let err = loaded_topics(&spec).unwrap_err();
 
         assert_eq!(
             err.to_string(),
@@ -1368,7 +1368,7 @@ mod tests {
             },
         });
 
-        let topics = loaded_topics(spec).unwrap();
+        let topics = loaded_topics(&spec).unwrap();
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "bare/channel");
