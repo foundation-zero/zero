@@ -53,7 +53,7 @@
             "version": "",
             "spec": {
               "options": {
-                "content": "<center><h2>PCS testing</h2></center>\n\nMonitoring of a thruster pod: propulsion, motor, drives, cooling water, hydraulics and mounts, with the batteries and DC switches. The **Pod** selector switches every panel between FWD and AFT, except the batteries and DC switches, which serve both pods.\n**Times are UTC.**\n**DC power** corrected: raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, corrected: raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** corrected: raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature corrected: raw × 0.1 °C; currents raw.\nWhere a published value disagrees with the unit its IO list declares, the dashboard shows the corrected value and the info icon says so. Values another device reads and acts on are shown as published: the power limits the PMS sends, the PMS's consumed power and the torque setpoints. The info icon of each panel states the source and any correction.",
+                "content": "<center><h2>PCS testing</h2></center>\n\nMonitoring of a thruster pod: propulsion, motor, drives, cooling water, hydraulics, shear beams and mounts, with the batteries and DC switches. The **Pod** selector switches every panel between FWD and AFT, except the batteries and DC switches, which serve both pods.\n**Times are UTC.**\n**DC power** corrected: raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, corrected: raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** corrected: raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **Load pins** corrected: raw / 1000 kN. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature corrected: raw × 0.1 °C; currents raw.\nWhere a published value disagrees with the unit its IO list declares, the dashboard shows the corrected value and the info icon says so. Values another device reads and acts on are shown as published: the power limits the PMS sends, the PMS's consumed power and the torque setpoints. The info icon of each panel states the source and any correction.",
                 "mode": "markdown"
               },
               "fieldConfig": {
@@ -1440,7 +1440,7 @@
         "spec": {
           "id": 24,
           "title": "Shear beams",
-          "description": "The four shear beams, the load cells in the pod's mounts, and the calculated shear beam value (dashed), as published, in the unit the IO list declares, Nm.",
+          "description": "The four shear beams and the calculated shear beam value (dashed), as published, in the unit the IO list declares, Nm.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -3918,7 +3918,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT last_value(shear_beam_1__value ORDER BY timestamp) AS \"Beam 1 [N]\",\n  last_value(shear_beam_2__value ORDER BY timestamp) AS \"Beam 2 [N]\",\n  last_value(shear_beam_3__value ORDER BY timestamp) AS \"Beam 3 [N]\",\n  last_value(shear_beam_4__value ORDER BY timestamp) AS \"Beam 4 [N]\",\n  last_value(shear_beam_calculated__value ORDER BY timestamp) AS \"Calculated [N]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '5 minutes'"
+                        "rawSql": "SELECT last_value(shear_beam_1__value ORDER BY timestamp) AS \"Beam 1 [Nm]\",\n  last_value(shear_beam_2__value ORDER BY timestamp) AS \"Beam 2 [Nm]\",\n  last_value(shear_beam_3__value ORDER BY timestamp) AS \"Beam 3 [Nm]\",\n  last_value(shear_beam_4__value ORDER BY timestamp) AS \"Beam 4 [Nm]\",\n  last_value(shear_beam_calculated__value ORDER BY timestamp) AS \"Calculated [Nm]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '5 minutes'"
                       }
                     },
                     "refId": "A",
@@ -5692,6 +5692,660 @@
             }
           }
         }
+      },
+      "panel-59": {
+        "kind": "Panel",
+        "spec": {
+          "id": 59,
+          "title": "Load pins",
+          "description": "The four load pins in the pod's mounts, horizontal (solid) and vertical (dashed), colour per pin. Declared in kN but published in N: shown corrected, raw / 1000 kN. The published int16 wraps beyond ±32.8 kN.",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "info8fcc-greptimedb-datasource",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "meta": {
+                          "builderOptions": {
+                            "columns": [],
+                            "database": "",
+                            "limit": 1000,
+                            "meta": {},
+                            "mode": "list",
+                            "queryType": "table",
+                            "table": ""
+                          }
+                        },
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(loadpin_1_horizontal__value) / 1000.0 AS \"Pin 1 H\",\n  avg(loadpin_1_vertical__value) / 1000.0 AS \"Pin 1 V\",\n  avg(loadpin_2_horizontal__value) / 1000.0 AS \"Pin 2 H\",\n  avg(loadpin_2_vertical__value) / 1000.0 AS \"Pin 2 V\",\n  avg(loadpin_3_horizontal__value) / 1000.0 AS \"Pin 3 H\",\n  avg(loadpin_3_vertical__value) / 1000.0 AS \"Pin 3 V\",\n  avg(loadpin_4_horizontal__value) / 1000.0 AS \"Pin 4 H\",\n  avg(loadpin_4_vertical__value) / 1000.0 AS \"Pin 4 V\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ],
+                          "limit": 50
+                        }
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [
+                {
+                  "kind": "renameByRegex",
+                  "spec": {
+                    "id": "renameByRegex",
+                    "options": {
+                      "regex": "^(.*) Result \\d+$",
+                      "renamePattern": "$1"
+                    }
+                  }
+                }
+              ],
+              "queryOptions": {
+                "maxDataPoints": 600,
+                "interval": "1s"
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "12.3.0",
+            "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "forcekN",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "spanNulls": 60000,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Pin 1 H"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "blue",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Pin 1 V"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "blue",
+                          "mode": "fixed"
+                        }
+                      },
+                      {
+                        "id": "custom.lineStyle",
+                        "value": {
+                          "dash": [
+                            10,
+                            10
+                          ],
+                          "fill": "dash"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Pin 2 H"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "green",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Pin 2 V"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "green",
+                          "mode": "fixed"
+                        }
+                      },
+                      {
+                        "id": "custom.lineStyle",
+                        "value": {
+                          "dash": [
+                            10,
+                            10
+                          ],
+                          "fill": "dash"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Pin 3 H"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "orange",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Pin 3 V"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "orange",
+                          "mode": "fixed"
+                        }
+                      },
+                      {
+                        "id": "custom.lineStyle",
+                        "value": {
+                          "dash": [
+                            10,
+                            10
+                          ],
+                          "fill": "dash"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Pin 4 H"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "purple",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Pin 4 V"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "purple",
+                          "mode": "fixed"
+                        }
+                      },
+                      {
+                        "id": "custom.lineStyle",
+                        "value": {
+                          "dash": [
+                            10,
+                            10
+                          ],
+                          "fill": "dash"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "panel-60": {
+        "kind": "Panel",
+        "spec": {
+          "id": 60,
+          "title": "Load pins, horizontal against vertical",
+          "description": "Horizontal against vertical force per pin, averaged per interval. Same source and correction as Load pins.",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "info8fcc-greptimedb-datasource",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "meta": {
+                          "builderOptions": {
+                            "columns": [],
+                            "database": "",
+                            "limit": 1000,
+                            "meta": {},
+                            "mode": "list",
+                            "queryType": "table",
+                            "table": ""
+                          }
+                        },
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(loadpin_1_horizontal__value) / 1000.0 AS h1,\n  avg(loadpin_1_vertical__value) / 1000.0 AS v1,\n  avg(loadpin_2_horizontal__value) / 1000.0 AS h2,\n  avg(loadpin_2_vertical__value) / 1000.0 AS v2,\n  avg(loadpin_3_horizontal__value) / 1000.0 AS h3,\n  avg(loadpin_3_vertical__value) / 1000.0 AS v3,\n  avg(loadpin_4_horizontal__value) / 1000.0 AS h4,\n  avg(loadpin_4_vertical__value) / 1000.0 AS v4\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ],
+                          "limit": 50
+                        }
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {
+                "maxDataPoints": 600,
+                "interval": "1s"
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "xychart",
+            "version": "12.3.0",
+            "spec": {
+              "options": {
+                "legend": {
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "mapping": "manual",
+                "series": [
+                  {
+                    "frame": {
+                      "matcher": {
+                        "id": "byIndex",
+                        "options": 0
+                      }
+                    },
+                    "name": {
+                      "fixed": "Pin 1"
+                    },
+                    "x": {
+                      "matcher": {
+                        "id": "byName",
+                        "options": "h1"
+                      }
+                    },
+                    "y": {
+                      "matcher": {
+                        "id": "byName",
+                        "options": "v1"
+                      }
+                    }
+                  },
+                  {
+                    "frame": {
+                      "matcher": {
+                        "id": "byIndex",
+                        "options": 0
+                      }
+                    },
+                    "name": {
+                      "fixed": "Pin 2"
+                    },
+                    "x": {
+                      "matcher": {
+                        "id": "byName",
+                        "options": "h2"
+                      }
+                    },
+                    "y": {
+                      "matcher": {
+                        "id": "byName",
+                        "options": "v2"
+                      }
+                    }
+                  },
+                  {
+                    "frame": {
+                      "matcher": {
+                        "id": "byIndex",
+                        "options": 0
+                      }
+                    },
+                    "name": {
+                      "fixed": "Pin 3"
+                    },
+                    "x": {
+                      "matcher": {
+                        "id": "byName",
+                        "options": "h3"
+                      }
+                    },
+                    "y": {
+                      "matcher": {
+                        "id": "byName",
+                        "options": "v3"
+                      }
+                    }
+                  },
+                  {
+                    "frame": {
+                      "matcher": {
+                        "id": "byIndex",
+                        "options": 0
+                      }
+                    },
+                    "name": {
+                      "fixed": "Pin 4"
+                    },
+                    "x": {
+                      "matcher": {
+                        "id": "byName",
+                        "options": "h4"
+                      }
+                    },
+                    "y": {
+                      "matcher": {
+                        "id": "byName",
+                        "options": "v4"
+                      }
+                    }
+                  }
+                ],
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "forcekN",
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisPlacement": "auto",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "pointSize": {
+                      "fixed": 5,
+                      "max": 18,
+                      "min": 4
+                    },
+                    "show": "points"
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "v1"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.axisLabel",
+                        "value": "Vertical"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "h1"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.axisLabel",
+                        "value": "Horizontal"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "panel-61": {
+        "kind": "Panel",
+        "spec": {
+          "id": 61,
+          "title": "Load pins",
+          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "info8fcc-greptimedb-datasource",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "meta": {
+                          "builderOptions": {
+                            "columns": [],
+                            "database": "",
+                            "limit": 1000,
+                            "meta": {},
+                            "mode": "list",
+                            "queryType": "table",
+                            "table": ""
+                          }
+                        },
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "WITH latest AS (\n  SELECT\n    last_value(loadpin_1_horizontal__value ORDER BY timestamp) AS h1,\n    last_value(loadpin_1_vertical__value ORDER BY timestamp) AS v1,\n    last_value(loadpin_2_horizontal__value ORDER BY timestamp) AS h2,\n    last_value(loadpin_2_vertical__value ORDER BY timestamp) AS v2,\n    last_value(loadpin_3_horizontal__value ORDER BY timestamp) AS h3,\n    last_value(loadpin_3_vertical__value ORDER BY timestamp) AS v3,\n    last_value(loadpin_4_horizontal__value ORDER BY timestamp) AS h4,\n    last_value(loadpin_4_vertical__value ORDER BY timestamp) AS v4,\n    max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}\n  WHERE timestamp > now() - INTERVAL '5 minutes'\n)\nSELECT 'Pin 1' AS \"Pin\", h1 / 1000.0 AS \"Horizontal [kN]\", v1 / 1000.0 AS \"Vertical [kN]\", updated AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'Pin 2' AS \"Pin\", h2 / 1000.0 AS \"Horizontal [kN]\", v2 / 1000.0 AS \"Vertical [kN]\", updated AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'Pin 3' AS \"Pin\", h3 / 1000.0 AS \"Horizontal [kN]\", v3 / 1000.0 AS \"Vertical [kN]\", updated AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'Pin 4' AS \"Pin\", h4 / 1000.0 AS \"Horizontal [kN]\", v4 / 1000.0 AS \"Vertical [kN]\", updated AS \"Updated\" FROM latest\nORDER BY 1",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ],
+                          "limit": 50
+                        }
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "table",
+            "version": "12.3.0",
+            "spec": {
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "show": false
+                },
+                "showHeader": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "inspect": false
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Updated"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "dateTimeFromNow"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     },
     "layout": {
@@ -6202,7 +6856,7 @@
           {
             "kind": "RowsLayoutRow",
             "spec": {
-              "title": "Mounts",
+              "title": "Shear beams",
               "collapse": false,
               "layout": {
                 "kind": "TabsLayout",
@@ -6252,6 +6906,85 @@
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-52"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "kind": "RowsLayoutRow",
+            "spec": {
+              "title": "Mounts",
+              "collapse": false,
+              "layout": {
+                "kind": "TabsLayout",
+                "spec": {
+                  "tabs": [
+                    {
+                      "kind": "TabsLayoutTab",
+                      "spec": {
+                        "title": "Trends",
+                        "layout": {
+                          "kind": "GridLayout",
+                          "spec": {
+                            "items": [
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 0,
+                                  "y": 0,
+                                  "width": 12,
+                                  "height": 9,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-59"
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 12,
+                                  "y": 0,
+                                  "width": 12,
+                                  "height": 9,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-60"
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "kind": "TabsLayoutTab",
+                      "spec": {
+                        "title": "Live",
+                        "layout": {
+                          "kind": "GridLayout",
+                          "spec": {
+                            "items": [
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 0,
+                                  "y": 0,
+                                  "width": 12,
+                                  "height": 6,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-61"
                                   }
                                 }
                               }
