@@ -1257,7 +1257,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Solid: the torque each Aradex drive's winding set puts on the motor shaft (before the 1.478 gearbox), published as whole % of 10 000 Nm, so raw × 100 Nm in steps of 100 Nm. Dashed: the maximum and minimum torque the PLC sends each drive (setpoints 2 and 3, in Nm as sent, the most restrictive value in each interval), derived from the PMS power limits and clamped by the PLC at ±1163 Nm per drive on FWD and ±3226 Nm on AFT. In torque mode the drive reads setpoints 2 and 3 as speed limits, so there they mean nothing on this axis.",
+      "description": "Solid: the torque each Aradex drive's winding set puts on the motor shaft (before the 1.478 gearbox), published as whole % of 10 000 Nm, so raw × 100 Nm in steps of 100 Nm. Dashed: the maximum and minimum torque the PLC sends each drive (setpoints 2 and 3, in Nm as sent, the most restrictive value in each interval), derived from the PMS power limits and clamped by the PLC at ±1163 Nm per drive on FWD and ±3226 Nm on AFT. Above about 95 motor rpm the maximum torque sent stays at the propulsion limit × 95.5 Nm and no longer falls with speed. Astern on AFT the maximum torque sent lies below the minimum; the panel takes the lowest maximum and the highest minimum per interval, so the dashed lines then cross. In torque mode the drive reads setpoints 2 and 3 as speed limits, so there they mean nothing on this axis.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -3542,7 +3542,7 @@
         "w": 24,
         "h": 7
       },
-      "description": "Hydraulic power pack tank temperature from the PLC, in °C as published.",
+      "description": "Hydraulic power pack tank temperature from the PLC, in °C as published; whether a sensor is fitted behind it is still to be confirmed.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
