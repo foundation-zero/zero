@@ -27,12 +27,12 @@ pub struct TopicGroupDef {
     /// Wildcard MQTT topic to subscribe to (`power-tags/+/+`).
     pub pattern: String,
     pub fields: BTreeMap<String, GraphqlType>,
-    /// Raw JSON Schema value for the payload.
+    /// Pointer to payload in json reference format (e.g. #/components/schemas/field)
     pub payload_schema_ref: Option<String>,
-    /// Extension attributes per payload field (`x-*` schema extensions
-    /// minus the prefix), keyed by raw field name.
     pub ttl_secs: Option<u64>,
     pub action: OperationAction,
+    /// Extension attributes per payload field (`x-*` schema extensions
+    /// minus the prefix), keyed by raw field name.
     pub value_extensions: BTreeMap<String, BTreeMap<String, String>>,
     pub topic_metadata: MetadataByTopic,
     pub group_by: String,

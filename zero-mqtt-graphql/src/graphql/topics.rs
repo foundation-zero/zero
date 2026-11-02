@@ -1,23 +1,3 @@
-//! GraphQL schema for MQTT topics, topic groups, and buckets.
-//!
-//! # Terminology
-//! - **Topic** (`TopicDef`): a single concrete MQTT topic with a fixed address
-//!   and no wildcards, e.g. `termodinamica/compressor/temperature`. Each topic
-//!   maps to one sanitized GraphQL query field returning its cached payload.
-//! - **Group** (`TopicGroupDef`): a parametrized topic family declared by one
-//!   AsyncAPI channel whose address contains `{param}` placeholders, e.g.
-//!   `power-tags/{panel}/{slug}` with MQTT pattern `power-tags/+/+`. A group
-//!   is enumerated by a `*-metadata.json` file listing its concrete topics and
-//!   static attributes; the schema exposes one list query `<group>: [<Group>Topic]`
-//!   (e.g. `powerTags: [PowerTagsTopic]`) whose rows merge that static metadata
-//!   with live values from the cache.
-//! - **Bucket**: a partition of a group's rows by the distinct value of the
-//!   `group_by` metadata attribute declared in the group's metadata file. For
-//!   example `group_by: "panel"` buckets `power-tags` rows into buckets `10P1`,
-//!   `10P2`, … Each bucket exposes `{ id, <group>: [GroupTopic] }` and the
-//!   schema exposes `<stem>Buckets: [Bucket]` (all buckets) and
-//!   `<stem>Bucket(id: String): Bucket` (single bucket by id).
-
 use std::sync::Arc;
 
 use crate::graphql::{json_to_graphql_value, payload_object};
