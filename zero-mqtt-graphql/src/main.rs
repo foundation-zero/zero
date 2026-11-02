@@ -4,10 +4,14 @@ use std::sync::Arc;
 use anyhow::{Context, Result, bail};
 use clap::Parser;
 use log::{error, info};
+#[cfg(unix)]
+use std::io::Error;
 use tokio::net::TcpListener;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
 
+#[cfg(unix)]
+use tokio::signal::unix::{SignalKind, signal};
 use zero_mqtt_graphql::api_model::Api;
 use zero_mqtt_graphql::asyncapi::load_specs;
 use zero_mqtt_graphql::cache::{TopicCache, spawn_eviction};
@@ -102,11 +106,7 @@ async fn run_serve(config: AppConfig, api: &Api) -> Result<()> {
     info!("Listening on http://{addr}");
     let listener = TcpListener::bind(addr).await?;
 
-    let sig = async {
-        _ = tokio::signal::ctrl_c().await;
-        info!("Received shutdown signal");
-    };
-    let server = axum::serve(listener, router(schema)).with_graceful_shutdown(sig);
+    let server = axum::serve(listener, router(schema)).with_graceful_shutdown(shutdown_signal());
 
     // `?` propagates a server error straight out of serve mode; otherwise
     // we only learn whether the MQTT subscriber died before the server.
@@ -126,6 +126,26 @@ async fn run_serve(config: AppConfig, api: &Api) -> Result<()> {
 
     info!("Shutdown complete");
     Ok(())
+}
+
+async fn shutdown_signal() {
+    let ctrl_c = tokio::signal::ctrl_c();
+
+    #[cfg(unix)]
+    let terminate = async { Ok(signal(SignalKind::terminate())?.recv().await.unwrap()) };
+    #[cfg(not(unix))]
+    let terminate = future::pending();
+
+    tokio::select! {
+        result = ctrl_c => match result {
+            Ok(()) => info!("Received SIGINT, shutting down"),
+            Err(e) => error!("Failed to listen for SIGINT: {e} — shutting down"),
+        },
+        result = terminate => match result {
+            Ok(()) => info!("Received SIGTERM, shutting down"),
+            Err(e@Error {..}) => error!("Failed to listen for SIGTERM: {e} — shutting down"),
+        },
+    }
 }
 
 /// Subscribe the MQTT subscriber to every concrete topic and group pattern.
@@ -220,13 +240,8 @@ async fn run_listen_only(api: &Api, config: AppConfig) -> Result<()> {
 
     let (handle, dead_rx) = spawn_subscriber(sub);
 
-    let sig = async {
-        _ = tokio::signal::ctrl_c().await;
-        info!("Received shutdown signal");
-    };
-
     let interrupted = tokio::select! {
-        () = sig => true,
+        () = shutdown_signal() => true,
         _ = dead_rx => false,
     };
 
