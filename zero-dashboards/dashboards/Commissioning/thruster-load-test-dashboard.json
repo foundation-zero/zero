@@ -1034,7 +1034,7 @@
         "w": 12,
         "h": 8
       },
-      "description": "Solid: DC power per drive, raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS gives each drive, in kW as the PMS sends them, positive; the propulsion limit is drawn above zero, the regeneration limit negated below zero. The limits are the lowest value in each interval, so short drops show. In Sailing the PLC limits the drives to ±1 kW, and in hydrogeneration with the lever at or behind zero the propulsion limit is 0. Astern, the PLC applies the regeneration limit to propulsion and the other way round. Until 15 Oct 2026 the PMS's consumed power was published in 0.1 kW and the propulsion limit followed the larger of 110 and that consumed power, so on 13 Oct the limits did not bind; since 15 Oct the consumed power is in kW.",
+      "description": "Solid: DC power per drive, raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS gives each drive, in kW as the PMS sends them, positive; the propulsion limit is drawn above zero, the regeneration limit negated below zero. Dotted: the power the torque limit sent to the drive allows at its speed, in kW: maximum torque × motor rpm / 9550 ahead, minimum torque × motor rpm / 9550 astern. When the PMS limit is converted to torque correctly, this line lies on the propulsion limit; above it, the drive may take more than the PMS allows. All limits are the lowest value in each interval, so short drops show. The PLC caps the propulsion limit at 180 kW per drive on FWD and 400 kW on AFT, and sends at least 1 kW for both limits, also when the PMS sends 0. In Sailing the PLC limits the drives to ±1 kW, and in hydrogeneration with the lever at or behind zero the propulsion limit is 0. Astern on FWD the regeneration limit bounds propulsion and the propulsion limit bounds braking; astern on AFT the maximum torque sent lies below the minimum, and the dotted line turns negative. The PMS's consumed power, from which it sets the propulsion limit, was published in 0.1 kW until 15 Oct 2026 (the propulsion limit then followed the larger of 110 and that consumed power, so on 13 Oct the limits did not bind) and in kW from 15 Oct; it may return to 0.1 kW: see the consumed power ratio panel.",
       "pluginVersion": "12.3.0",
       "transparent": false,
       "targets": [
@@ -1063,6 +1063,19 @@
           "rawQuery": true,
           "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  min(CASE WHEN right(topic, 4) = 'u101' THEN setpoint_power__value END) AS \"Propulsion limit d1\",\n  min(CASE WHEN right(topic, 4) = 'u102' THEN setpoint_power__value END) AS \"Propulsion limit d2\",\n  -min(CASE WHEN right(topic, 4) = 'u101' THEN produce_power_limit__value END) AS \"Regeneration limit d1\",\n  -min(CASE WHEN right(topic, 4) = 'u102' THEN produce_power_limit__value END) AS \"Regeneration limit d2\"\nFROM public.marpower__150000_propulsion_ara\nWHERE $__timeFilter(timestamp) AND topic IN ('marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u101' ELSE '13-11-u101' END, 'marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u102' ELSE '13-11-u102' END)\nGROUP BY 1 ORDER BY 1",
           "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  min(CASE WHEN drive = 1 THEN allowed END) AS \"Torque limit as power d1\",\n  min(CASE WHEN drive = 2 THEN allowed END) AS \"Torque limit as power d2\"\nFROM (SELECT timestamp, drive, CASE WHEN speed >= 0 THEN max_torque ELSE min_torque END * speed / 9550.0 AS allowed\n  FROM (SELECT timestamp, 1 AS drive, speed__value AS speed, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp, 2 AS drive, speed__value AS speed, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE $__timeFilter(timestamp)) s) a\nGROUP BY 1 ORDER BY 1",
+          "refId": "C"
         }
       ],
       "fieldConfig": {
@@ -1180,6 +1193,24 @@
                   "dash": [
                     10,
                     10
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^Torque limit as power .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dot",
+                  "dash": [
+                    0,
+                    6
                   ]
                 }
               }
@@ -1402,7 +1433,7 @@
       "gridPos": {
         "x": 0,
         "y": 32,
-        "w": 24,
+        "w": 12,
         "h": 8
       },
       "description": "Rate of change of the propeller speed from the PLC (raw / 10 rpm, without sign) between consecutive samples: positive = speeding up, negative = slowing down. Red: specified, zero to max in no less than 6 s: FWD 500 rpm = ±83.3 rpm/s, AFT 400 rpm = ±66.7 rpm/s. Blue: the drive ramps, 3 Hz/s both ways since 8 Oct 2026 = ±121.8 rpm/s. Samples are about 3 s apart and skip unchanged values, so this underestimates peaks: a value beyond a line is real, one inside is not proof.",
@@ -1661,6 +1692,144 @@
         }
       },
       "interval": "1s",
+      "maxDataPoints": 600,
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(.*) Result \\d+$",
+            "renamePattern": "$1"
+          }
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "title": "Consumed power ratio (PMS / drive)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "info8fcc-greptimedb-datasource",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 32,
+        "w": 12,
+        "h": 8
+      },
+      "description": "Per drive, the power the PMS believes the drive consumes (its consumed power, as published) divided by the drive's own DC power (raw × 0.1 kW). The PMS sets the drive's propulsion limit from its consumed power. A ratio of 1 means the PMS sees the real load. A ratio of 10 means it sees ten times the load: its consumed power is then in 0.1 kW, and its propulsion limit does not bind. The consumed power was in 0.1 kW until 15 Oct 2026, in kW from 15 Oct, and may return to 0.1 kW. Averages per interval; intervals where the drive draws less than 3 kW are left out, since the ratio means nothing near zero.",
+      "pluginVersion": "12.3.0",
+      "transparent": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "info8fcc-greptimedb-datasource",
+            "uid": "${datasource}"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "pluginVersion": "2.1.4",
+          "queryType": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT c.time,\n  max(CASE WHEN c.drive = 1 THEN c.consumed / d.dc END) AS \"Drive 1\",\n  max(CASE WHEN c.drive = 2 THEN c.consumed / d.dc END) AS \"Drive 2\"\nFROM (SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, CASE right(topic, 4) WHEN 'u101' THEN 1 ELSE 2 END AS drive, avg(consumed_power__value) AS consumed\n  FROM public.marpower__150000_propulsion_ara\n  WHERE $__timeFilter(timestamp) AND topic IN ('marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u101' ELSE '13-11-u101' END, 'marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u102' ELSE '13-11-u102' END)\n  GROUP BY 1, 2) c\nJOIN (SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, drive, avg(power) * 0.1 AS dc\n  FROM (SELECT timestamp, 1 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp, 2 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE $__timeFilter(timestamp)) a\n  GROUP BY 1, 2) d ON c.time = d.time AND c.drive = d.drive\nWHERE d.dc >= 3\nGROUP BY c.time ORDER BY 1",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": 60000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "none",
+          "decimals": 1
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Drive 1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "green"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Drive 2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none",
+          "hideZeros": false
+        }
+      },
+      "interval": "5s",
       "maxDataPoints": 600,
       "transformations": [
         {
