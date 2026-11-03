@@ -464,7 +464,9 @@
         "pumpFlowController": "Pump flow controller",
         "heatPumpTemperatureParameter": "Heatpump temperature parameter",
         "hvacController": "HVAC controller",
-        "hvacHeatFlow": "HVAC heatflow"
+        "hvacHeatFlow": "HVAC heatflow",
+        "freshWater": "Fresh water",
+        "glycolMix": "Glycol mix 20%"
       },
       "descriptions": {
         "pidError": "Target - Measure = Error",
@@ -531,6 +533,7 @@
         "heatExchange": "Heat exchange",
         "deltaTemperature": "Delta temperature",
         "flow": "Flow",
+        "heatCapacity": "Heat capacity",
         "empty": "Level",
         "pvt": "Pvt",
         "heat": "Heat",
