@@ -21,6 +21,10 @@ describe("INCLUDED_APPS", () => {
     ]);
   });
 
+  test("includes rig when it is listed in the environment", async () => {
+    expect(await loadIncludedApps("loads,rig")).toEqual(["loads", "rig"]);
+  });
+
   test("ignores whitespace, duplicates and unknown apps", async () => {
     expect(await loadIncludedApps(" thrs , unknown,thrs,grafana ")).toEqual(["thrs", "grafana"]);
   });
