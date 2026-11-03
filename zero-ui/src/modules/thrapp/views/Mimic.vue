@@ -13,7 +13,9 @@ import { MimicTooltipProvider } from "@/modules/thrapp/components/tooltip";
 import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltipProvider.vue";
 import GridPattern from "@/modules/thrapp/mimics/modules/GridPattern.vue";
 import { GraphQLProvider, MockProvider } from "@/modules/thrapp/mimics/providers";
-import { computed, ref } from "vue";
+import { useThrsHistory } from "@/modules/thrapp/stores/history";
+import { storeToRefs } from "pinia";
+import { computed, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import { MIMICS, MimicKey } from "../router/mimics";
 
@@ -25,6 +27,10 @@ const { currentRoute } = useRouter();
 const currentModule = computed(() => currentRoute.value.params.module as MimicKey);
 const currentMimic = computed(() => MIMICS[currentModule.value]);
 const currentLegend = computed(() => MIMIC_LEGEND_MAP[currentModule.value]);
+
+// Only query the data of the open mimic; demo mode uses mock data instead.
+const { activeQuery } = storeToRefs(useThrsHistory());
+watchEffect(() => (activeQuery.value = demoMode.value ? undefined : currentMimic.value?.query));
 </script>
 <template>
   <component :is="provider">

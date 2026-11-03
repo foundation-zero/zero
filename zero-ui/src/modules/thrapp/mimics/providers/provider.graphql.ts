@@ -42,6 +42,21 @@ const CONTROL_INPUT_TYPES: Partial<Record<ControlComponentType, string>> = {
 export const useGraphQLDataProvider = (): MimicDataProvider => {
   const { data } = toRefs(useThrsHistory());
   const { refresh, mutate } = useThrsHistory();
+  // Each view queries only the module parts it shows (see `queries.consts.ts`); flag missing parts.
+  const missingWarnings = new Set<string>();
+  const modulePart = <Module extends keyof ThrsDefinitions, Part extends keyof ThrsModules[Module]>(
+    module: Module,
+    part: Part,
+  ): ThrsModules[Module][Part] | undefined => {
+    const value = data.value?.modules?.[module]?.[part];
+    const key = `${module}.${String(part)}`;
+
+    if (import.meta.env.DEV && data.value && value === undefined && !missingWarnings.has(key)) {
+      missingWarnings.add(key);
+      console.warn(`"${key}" is shown, but the query of the view does not include it.`);
+    }
+    return value;
+  };
   const isAutomaticMode = useAutomaticMode();
   const isAdvisoryEnabled = useAdvisoryEnabled();
 
@@ -52,9 +67,7 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
   ]: ModuleField<Type, Module>): Ref<SensorDefinitionMap[Type] | undefined> =>
     computed(
       () =>
-        data.value?.modules?.[module]?.sensorValues?.[
-          field as keyof ThrsModules[Module]["sensorValues"]
-        ],
+        modulePart(module, "sensorValues")?.[field as keyof ThrsModules[Module]["sensorValues"]],
     );
 
   const getControlValue = <
@@ -65,9 +78,7 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
   > =>
     computed(
       () =>
-        data.value?.modules?.[module]?.controlValues?.[
-          field as keyof ThrsModules[Module]["controlValues"]
-        ],
+        modulePart(module, "controlValues")?.[field as keyof ThrsModules[Module]["controlValues"]],
     );
 
   const getParameterValue = <Type extends ParametersType, Module extends keyof ThrsDefinitions>([
@@ -76,10 +87,7 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
     field,
   ]: ModuleField<Type, Module>): Ref<ParameterDefinitionMap[Type] | undefined> =>
     computed(
-      () =>
-        data.value?.modules?.[module]?.parameters?.[
-          field as keyof ThrsModules[Module]["parameters"]
-        ],
+      () => modulePart(module, "parameters")?.[field as keyof ThrsModules[Module]["parameters"]],
     );
 
   const getControllerState = <
@@ -90,7 +98,7 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
   > =>
     computed(
       () =>
-        data.value?.modules?.[module]?.controllerState?.[
+        modulePart(module, "controllerState")?.[
           field as keyof ThrsModules[Module]["controllerState"]
         ],
     );

@@ -9,17 +9,15 @@ import NoopTooltipProvider from "@/modules/thrapp/components/tooltip/NoopTooltip
 import { SensorGraph } from "@/modules/thrapp/mimics/components/sensor-graph";
 import ControllerStateValue from "@/modules/thrapp/mimics/providers/ControllerStateValue.vue";
 import { FieldRenderer } from "@/modules/thrapp/mimics/renderers";
-import { useTranslations } from "@/modules/thrapp/mimics/tooltips";
 import { kebabCase } from "lodash";
 import { PidControllerTuning } from "../..";
 import * as Partials from "../../../mimics/tooltips/partials";
 import * as Parameters from "../../components/module-parameters";
 import PidTuningTable from "../../components/pid-tuning-table/PidTuningTable.vue";
+
 const t = tScoped("thrapp.parameters.pid");
 
 const props = defineProps<PidControllerTuning>();
-
-const { sources } = useTranslations();
 </script>
 
 <template>
@@ -27,7 +25,7 @@ const { sources } = useTranslations();
     <Parameters.Card>
       <hgroup class="flex items-baseline justify-between">
         <Parameters.CardTitle>
-          {{ sources(`${controller[0]}.${controller[2]}`) }}
+          {{ t(`${controller[2]}.title`) }}
         </Parameters.CardTitle>
         <ControllerStateValue
           :source="props.controller"
