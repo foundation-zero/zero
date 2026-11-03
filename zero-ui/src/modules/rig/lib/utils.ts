@@ -6,11 +6,11 @@ const UNIT_I18N_KEY: Record<string, string> = {
   m: "m",
 };
 
-export const formatUnit = (unit: string | null | undefined, t: (key: string) => string): string => {
+export function formatUnit(unit: string | null | undefined, t: (key: string) => string): string {
   if (!unit) return "";
   const key = UNIT_I18N_KEY[unit];
   return key ? t(`rig.units.${key}`) : unit;
-};
+}
 
 export function getDeflectionDisplayName(variableId: string): string | null {
   const height = /-(?:fa|sw)-deflection(\d{3})$/.exec(variableId);

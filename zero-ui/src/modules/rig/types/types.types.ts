@@ -15,7 +15,9 @@ export type QueryVariableActual = {
   }[];
 };
 
-export type RigColumn = { titleKey: string };
+export type Mast = "main" | "mizzen";
+
+export type RigTableColumn = { titleKey: string };
 
 export type RigRow = {
   label?: string;
@@ -24,11 +26,11 @@ export type RigRow = {
 
 export type RigCard = {
   titleKey: string;
-  columns: RigColumn[];
+  columns: RigTableColumn[];
   rows: RigRow[];
 };
 
-export type RigMastColumn = {
+export type RigMast = {
   titleKey: string;
   cards: RigCard[];
 };

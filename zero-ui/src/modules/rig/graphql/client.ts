@@ -3,7 +3,6 @@ import { ENV } from "@env";
 import { authExchange } from "@urql/exchange-auth";
 import { cacheExchange, Client, fetchExchange } from "@urql/vue";
 
-// Rig reads the fiber optics variables that the loads app serves.
 const getHeaders = () => {
   const authStore = useAuthStore();
   const token = authStore.token ?? ENV.VITE_GRAPHQL_TOKEN;
@@ -15,6 +14,7 @@ const getHeaders = () => {
 };
 
 const client = new Client({
+  // Rig reads the fiber optics variables that the loads app serves.
   url: ENV.VITE_LOADS_API_SERVER_URL,
   exchanges: [
     cacheExchange,

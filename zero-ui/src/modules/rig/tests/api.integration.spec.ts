@@ -1,8 +1,8 @@
-import { ENV } from "@/settings";
+import { ENV } from "@env";
 import { Client, fetchExchange, OperationResult } from "@urql/vue";
 import { describe, expect, test } from "vitest";
 import { VARIABLE_ACTUALS, VARIABLE_DEFINITIONS } from "../graphql/queries/variables";
-import { RIG_COLUMNS } from "../lib/consts";
+import { RIG_VARIABLE_IDS } from "../lib/consts.variables";
 import { QueryVariableActual, QueryVariableDefinition } from "../types";
 
 const client = new Client({
@@ -25,13 +25,7 @@ let _actuals: OperationResult<QueryVariableActual>;
 const getActuals = async (variables: string[]) =>
   (_actuals ??= await client.query<QueryVariableActual>(VARIABLE_ACTUALS, { variables }));
 
-const usedVariables = Array.from(
-  new Set(
-    RIG_COLUMNS.flatMap((column) =>
-      column.cards.flatMap((card) => card.rows.flatMap((row) => row.variableIds)),
-    ),
-  ),
-).sort();
+const usedVariables = [...RIG_VARIABLE_IDS].sort();
 
 describe("Rig API", () => {
   describe("Definitions", () => {

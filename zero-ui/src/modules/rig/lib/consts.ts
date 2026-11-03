@@ -1,4 +1,4 @@
-import { RigCard, RigColumn, RigMastColumn, RigRow } from "../types";
+import { Mast, RigCard, RigMast, RigRow, RigTableColumn } from "../types";
 import { RigVariableId } from "./consts.variables";
 import { getDeflectionDisplayName } from "./utils";
 
@@ -24,10 +24,10 @@ const SPREADER_DEFLECTION_ORDER = ["1", "2", "3", "4", "5"] as const;
 
 const STATIONS = [9, 8, 7, 6, 5, 4, 3, 2, 1] as const;
 
-const s9toS1 = (mast: "main" | "mizzen", type: string): RigVariableId[] =>
+const s9toS1 = (mast: Mast, type: string): RigVariableId[] =>
   Array.from({ length: 9 }, (_, i) => id(`fiber-optic-${mast}-mast-${type}-s${STATIONS[i]}`));
 
-const bendingRows = (mast: "main" | "mizzen"): RigRow[] => {
+const bendingRows = (mast: Mast): RigRow[] => {
   const momentSide = s9toS1(mast, "bending-moment-side-way");
   const momentForeAft = s9toS1(mast, "bending-moment-fore-aft");
   const strainSide = s9toS1(mast, "bending-strain-side-way");
@@ -38,7 +38,7 @@ const bendingRows = (mast: "main" | "mizzen"): RigRow[] => {
   }));
 };
 
-const sectionStrainRows = (mast: "main" | "mizzen"): RigRow[] =>
+const sectionStrainRows = (mast: Mast): RigRow[] =>
   STATIONS.map((station) => ({
     label: `S${station}`,
     variableIds: STRAIN_DIRECTIONS.map((direction) =>
@@ -46,7 +46,7 @@ const sectionStrainRows = (mast: "main" | "mizzen"): RigRow[] =>
     ),
   }));
 
-const longitudinalRows = (mast: "main" | "mizzen"): RigRow[] => {
+const longitudinalRows = (mast: Mast): RigRow[] => {
   const load = s9toS1(mast, "longitudinal-load");
   const strain = s9toS1(mast, "longitudinal-strain");
   return STATIONS.map((station, i) => ({
@@ -55,7 +55,7 @@ const longitudinalRows = (mast: "main" | "mizzen"): RigRow[] => {
   }));
 };
 
-const deflectionRow = (mast: "main" | "mizzen", token: string): RigRow => {
+const deflectionRow = (mast: Mast, token: string): RigRow => {
   const foreAft = id(`fiber-optic-${mast}-mast-fa-deflection${token}`);
   const sideWay = id(`fiber-optic-${mast}-mast-sw-deflection${token}`);
   return {
@@ -64,13 +64,13 @@ const deflectionRow = (mast: "main" | "mizzen", token: string): RigRow => {
   };
 };
 
-const mastDeflectionRows = (mast: "main" | "mizzen"): RigRow[] =>
+const mastDeflectionRows = (mast: Mast): RigRow[] =>
   MAST_DEFLECTION_ORDER.map((token) => deflectionRow(mast, token));
 
-const spreaderDeflectionRows = (mast: "main" | "mizzen"): RigRow[] =>
+const spreaderDeflectionRows = (mast: Mast): RigRow[] =>
   SPREADER_DEFLECTION_ORDER.map((n) => deflectionRow(mast, `-spr${n}`));
 
-const spreaderTempRows = (mast: "main" | "mizzen"): RigRow[] => [
+const spreaderTempRows = (mast: Mast): RigRow[] => [
   {
     label: "Spreader 0",
     variableIds: [id(`fiber-optic-${mast}-mast-temperature-spr0-port`)],
@@ -116,7 +116,7 @@ const spreaderTempRows = (mast: "main" | "mizzen"): RigRow[] => [
   },
 ];
 
-const riggingRows = (mast: "main" | "mizzen"): RigRow[] => [
+const riggingRows = (mast: Mast): RigRow[] => [
   {
     label: "D1",
     variableIds: [
@@ -146,7 +146,7 @@ const riggingRows = (mast: "main" | "mizzen"): RigRow[] => [
   },
 ];
 
-const riggingSumRows = (mast: "main" | "mizzen"): RigRow[] =>
+const riggingSumRows = (mast: Mast): RigRow[] =>
   [1, 2, 3, 4].map((v) => ({
     label: `V${v} Sum`,
     variableIds: [
@@ -155,7 +155,7 @@ const riggingSumRows = (mast: "main" | "mizzen"): RigRow[] =>
     ],
   }));
 
-const riggingTempRows = (mast: "main" | "mizzen"): RigRow[] => [
+const riggingTempRows = (mast: Mast): RigRow[] => [
   ...[1, 2, 3, 4, 5].map((d) => ({
     label: `D${d}`,
     variableIds: [
@@ -172,13 +172,13 @@ const riggingTempRows = (mast: "main" | "mizzen"): RigRow[] => [
   },
 ];
 
-const card = (titleKey: string, columns: RigColumn[], rows: RigRow[]): RigCard => ({
+const card = (titleKey: string, columns: RigTableColumn[], rows: RigRow[]): RigCard => ({
   titleKey,
   columns,
   rows,
 });
 
-const mastCards = (mast: "main" | "mizzen"): RigCard[] => [
+const mastCards = (mast: Mast): RigCard[] => [
   card(
     "rig.cards.bendingMomentStrain",
     [
@@ -246,7 +246,7 @@ const mastCards = (mast: "main" | "mizzen"): RigCard[] => [
   ),
 ];
 
-export const RIG_COLUMNS: RigMastColumn[] = [
+export const RIG_MASTS: RigMast[] = [
   { titleKey: "rig.columns.mizzenMast", cards: mastCards("mizzen") },
   { titleKey: "rig.columns.mainMast", cards: mastCards("main") },
 ];

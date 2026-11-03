@@ -13,15 +13,12 @@ import { useIntervalFn } from "@vueuse/core";
 import { computed, onMounted, onUnmounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { VARIABLE_ACTUALS, VARIABLE_DEFINITIONS } from "../graphql/queries/variables";
-import { RIG_COLUMNS } from "../lib/consts";
+import { RIG_MASTS } from "../lib/consts";
+import { RIG_VARIABLE_IDS } from "../lib/consts.variables";
 import { formatUnit } from "../lib/utils";
 import { QueryVariableActual, QueryVariableDefinition, RigCard } from "../types";
 
 const { t } = useI18n();
-
-const rigVariableIds = RIG_COLUMNS.flatMap((column) =>
-  column.cards.flatMap((card) => card.rows.flatMap((row) => row.variableIds)),
-);
 
 const { data: definitions } = useQuery<QueryVariableDefinition>({
   query: VARIABLE_DEFINITIONS,
@@ -29,7 +26,7 @@ const { data: definitions } = useQuery<QueryVariableDefinition>({
 
 const { data: actuals, executeQuery: refreshActuals } = useQuery<QueryVariableActual>({
   query: VARIABLE_ACTUALS,
-  variables: { variables: rigVariableIds },
+  variables: { variables: RIG_VARIABLE_IDS },
   requestPolicy: "network-only",
 });
 
@@ -76,7 +73,7 @@ const getColumnUnit = (card: RigCard, colIndex: number): string =>
 <template>
   <article class="grid grid-cols-1 gap-6 pb-4 lg:grid-cols-2 lg:gap-12">
     <div
-      v-for="column in RIG_COLUMNS"
+      v-for="column in RIG_MASTS"
       :key="column.titleKey"
       class="flex flex-col gap-4"
     >
