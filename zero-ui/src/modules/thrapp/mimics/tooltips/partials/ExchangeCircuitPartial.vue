@@ -13,7 +13,7 @@ const { items, sources, units } = useTranslations();
 // Fixed values: the DHW circuits use fresh water, all other circuits a 20% glycol mix.
 const HEAT_CAPACITY = {
   freshWater: 4.18,
-  glycolMix: 3.93,
+  glycolMix: 3.95,
 } as const;
 
 const props = withDefaults(
@@ -26,7 +26,13 @@ const props = withDefaults(
   },
 );
 
-const medium = computed(() => (props.source[1] === "dhw" ? "freshWater" : "glycolMix"));
+const medium = computed(() =>
+  props.source[1] === "dhw" ||
+  (props.source[1] === "pcm" &&
+    ["pcmFreshwaterHeat", "pcmHeatModule1Freshwater"].includes(props.source[2]))
+    ? "freshWater"
+    : "glycolMix",
+);
 </script>
 
 <template>
