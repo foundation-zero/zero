@@ -37,7 +37,17 @@ async fn graphql_handler(
 }
 
 async fn graphql_playground() -> Html<String> {
-    Html(GraphiQLSource::build().endpoint("/graphql").finish())
+    Html(
+        GraphiQLSource::build()
+            .endpoint("/graphql")
+            .finish()
+            // Workaround for missing pin
+            .replace("esm.sh/@graphiql/react?", "esm.sh/@graphiql/react@0.37.7?")
+            .replace(
+                "esm.sh/@graphiql/plugin-explorer?",
+                "esm.sh/@graphiql/plugin-explorer@5.1.3?",
+            ),
+    )
 }
 
 /// Liveness probe. Deliberately does not touch the MQTT connection: a
