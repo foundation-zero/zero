@@ -64,6 +64,7 @@ export const MIMICS: Partial<Record<MimicKey, MimicDefinition>> = {
     component: defineAsyncComponent(
       () => import("@/modules/thrapp/mimics/modules/adsorption/AdsorptionModule.vue"),
     ),
+    query: Queries.ADSORPTION_MIMIC_QUERY,
   },
   drives: {
     component: defineAsyncComponent(
