@@ -6,6 +6,7 @@ export const useTranslations = () => ({
   actions: tScoped("thrapp.tooltips.actions"),
   items: tScoped("thrapp.tooltips.items"),
   labels: tScoped("thrapp.tooltips.labels"),
+  descriptions: tScoped("thrapp.tooltips.descriptions"),
   sources: tScoped("thrapp.tooltips.sources"),
   t: useI18n().t,
 });

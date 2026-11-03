@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { SimpleInfoTooltip } from "@/modules/common/components/info-tooltip";
 import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { useTranslations } from "..";
 import { ModuleField, SensorValue } from "../../providers";
 import { FieldRenderer } from "../../renderers";
 import * as Partials from "./";
 
-const { items, sources } = useTranslations();
+const { descriptions, items, sources } = useTranslations();
 
 withDefaults(
   defineProps<{
@@ -27,7 +28,8 @@ withDefaults(
     <Partials.ListItem>
       {{ items("heatExchange") }}
       <template #source>
-        <FieldRenderer.Source no-link>({{ sources("calculated") }})</FieldRenderer.Source>
+        <FieldRenderer.Source no-link>{{ sources("calculated") }}</FieldRenderer.Source>
+        <SimpleInfoTooltip description="heatExchange" />
       </template>
     </Partials.ListItem>
   </SensorValue>

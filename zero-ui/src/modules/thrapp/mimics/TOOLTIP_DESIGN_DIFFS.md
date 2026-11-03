@@ -13,7 +13,7 @@ app. Items marked _verify_ depend on runtime data and need checking in the brows
 - [ ] `items.automatedControl` reads "Automated control"; the design says "Automatic control".
 - [ ] Most tooltips render a `SensorGraph` that does not appear in any design. Probably
       intentional; confirm with design.
-- [ ] `ExchangeCircuitPartial` renders the heat exchange source as "(Calculated)" with
+- [x] `ExchangeCircuitPartial` renders the heat exchange source as "(Calculated)" with
       parentheses. The design (and `HeatExchangerTooltip`) shows "Calculated" without them.
 
 ## PID controller partial
