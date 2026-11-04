@@ -27,6 +27,11 @@ const { t } = useI18n();
           {{ t("thrapp.views.mimics.title") }}
         </TabsTrigger>
       </RouterLink>
+      <RouterLink :to="{ name: 'thrs/documentation', params: { module: 'dhw' } }">
+        <TabsTrigger value="thrs/documentation">
+          {{ t("thrapp.views.documentation.title") }}
+        </TabsTrigger>
+      </RouterLink>
     </TabsList>
   </Tabs>
 </template>

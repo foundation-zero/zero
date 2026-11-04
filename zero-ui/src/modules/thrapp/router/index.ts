@@ -1,5 +1,6 @@
 import { defineAsyncComponent } from "vue";
 import { RouteRecordRaw } from "vue-router";
+import { DOCUMENTATION } from "./documentation";
 import { MIMICS } from "./mimics";
 import { PARAMETERS } from "./parameters";
 
@@ -39,6 +40,20 @@ export const thrappRoutes: RouteRecordRaw = {
           () => import("@/modules/thrapp/components/control-actions/ControlActions.vue"),
         ),
         views: PARAMETERS,
+      },
+    },
+    {
+      path: "documentation/:module",
+      name: "thrs/documentation",
+      component: () => import("@/modules/thrapp/views/Documentation.vue"),
+      meta: {
+        toolbarLeft: defineAsyncComponent(
+          () => import("@/modules/thrapp/components/navigation/ModuleTabs.vue"),
+        ),
+        toolbarRight: defineAsyncComponent(
+          () => import("@/modules/thrapp/components/control-actions/ControlActions.vue"),
+        ),
+        views: DOCUMENTATION,
       },
     },
   ],
