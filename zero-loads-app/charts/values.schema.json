@@ -15,6 +15,11 @@
         },
         "existingSecretPasswordKey": {
           "type": "string"
+        },
+        "maxMessageAgeSeconds": {
+          "description": "Values from a topic without a message for this long are reported as missing",
+          "type": "number",
+          "exclusiveMinimum": 0
         }
       },
       "required": ["host", "port", "existingSecret"],

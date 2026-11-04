@@ -83,6 +83,8 @@ spec:
               value: {{ .Values.mqtt.host | quote }}
             - name: MQTT_PORT
               value: {{ .Values.mqtt.port | quote }}
+            - name: MQTT_MAX_MESSAGE_AGE_S
+              value: {{ .Values.mqtt.maxMessageAgeSeconds | quote }}
             {{- if .Values.mqtt.existingSecret }}
             - name: MQTT_USERNAME
               valueFrom:
