@@ -21,12 +21,12 @@ The nested, read-only part of the GraphQL API built from Send operations.
 _Avoid_: Flat schema, topic fields
 
 **Topic**:
-A Send operation on a single, fixed MQTT topic, readable as one current value.
+An operation on a single, fixed MQTT topic: as a Send operation readable as one current value, as a Receive operation writable as one input.
 In code, Topics and Groups are both a `TopicDef`, told apart by its `TopicKind`.
 _Avoid_: Channel, field, leaf
 
 **Group**:
-A Send operation whose address is parametrized, standing for a large number of MQTT topics that share one payload format and are read together as a collection rather than one by one.
+An operation whose address is parametrized, standing for a large number of MQTT topics that share one payload format and are handled together as a collection rather than one by one.
 _Avoid_: Topic group, parametrized topic, wildcard topic
 
 **Member**:
@@ -48,6 +48,10 @@ _Avoid_: Prefix, namespace
 **Path conflict**:
 Two operations claiming the same GraphQL path, or one path being both a value and a parent of other paths.
 _Avoid_: Collision, duplicate
+
+**State topic**:
+The Send Topic at the same GraphQL path as a Receive Topic, through which the service reports the state that Receive Topic sets; a Receive Topic may have none.
+_Avoid_: Echo topic, feedback topic, status topic
 
 **Mutation tree**:
 The nested, write part of the GraphQL API built from Receive operations, laid out by the same rules as the Query tree.
