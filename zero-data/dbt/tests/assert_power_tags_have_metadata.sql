@@ -7,7 +7,7 @@
         select topic
         from {{ ref('stg_marpower__power_tags') }}
         where active_power_total is not null
-        order by ts
+        order by ts desc
         limit 10000
     )
 

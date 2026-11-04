@@ -1,13 +1,27 @@
 with power_tags as (
-    select * from {{ ref('stg_marpower__power_tags') }}
+    select 
+        ts,
+        topic,
+        panel,
+        consumer,
+        active_power_total
+    from {{ ref('stg_marpower__power_tags') }}
 ),
 
 metadata as (
-    select * from {{ source('metadata', 'power_tag_metadata') }}
+    select
+        topic,
+        main_group,
+        sub_group
+    from {{ source('metadata', 'power_tag_metadata') }}
 )
 
 select
-    pt.*,
+    pt.ts,
+    pt.topic,
+    pt.panel,
+    pt.consumer,
+    pt.active_power_total,
     meta.main_group,
     meta.sub_group
 from power_tags as pt

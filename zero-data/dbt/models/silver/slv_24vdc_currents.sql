@@ -1,9 +1,20 @@
 with dc_24v as (
-    select * from {{ ref('stg_marpower__24vdc') }}
+    select 
+        ts,
+        topic,
+        output_current__value,
+        output_current__has_value,
+        output_current__is_valid
+    from {{ ref('stg_marpower__24vdc') }}
 ),
 
 metadata as (
-    select * from {{ source('metadata', 'dc_24v_metadata') }}
+    select
+        topic,
+        converter,
+        main_group,
+        sub_group
+    from {{ source('metadata', 'dc_24v_metadata') }}
 )
 
 select
@@ -16,7 +27,8 @@ select
 from dc_24v as dc
 join metadata as meta
     on dc.topic = meta.topic
-where dc.output_current__value is not null
-and dc.output_current__has_value is true
+where dc.output_current__has_value is true
 and dc.output_current__is_valid is true
+and dc.output_current__value is not null
+and meta.converter is not null
 and meta.main_group is not null
