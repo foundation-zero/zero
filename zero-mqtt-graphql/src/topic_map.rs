@@ -14,6 +14,12 @@ impl<T> TopicMap<T> {
         self.get_with_key(topic).map(|(_, value)| value)
     }
 
+    /// The value of exactly `topic`, without matching wildcard patterns.
+    #[must_use]
+    pub fn get_exact(&self, topic: &str) -> Option<&T> {
+        self.0.get(topic)
+    }
+
     #[must_use]
     pub fn get_with_key<'a>(&'a self, topic: &'a str) -> Option<(&'a str, &'a T)> {
         if let Some((key, val)) = self.0.get_key_value(topic) {

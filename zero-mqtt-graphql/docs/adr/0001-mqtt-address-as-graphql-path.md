@@ -1,6 +1,6 @@
 # MQTT addresses define the GraphQL tree, with room for explicit paths later
 
-The GraphQL API is nested to mirror the structure of the published data. Each operation's position in that tree (its GraphQL path) is derived from its channel's MQTT address: split on `/`, segments sanitized to GraphQL names, `{param}` segments marking Group levels, and a trailing `set` segment dropped for Receive operations because it is MQTT plumbing, not API shape. This works with today's Specs without generator changes.
+The GraphQL API is nested to mirror the structure of the published data. Each operation's position in that tree (its GraphQL path) is derived from its channel's MQTT address: split on `/`, segments sanitized to GraphQL names, `{param}` segments marking Group levels, and the Spec's set suffix (`/set`) dropped for Receive operations because it is MQTT plumbing, not API shape. This works with today's Specs without generator changes.
 
 ## Considered Options
 

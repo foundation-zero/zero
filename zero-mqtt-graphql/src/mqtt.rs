@@ -8,6 +8,7 @@ use rumqttc::{
 };
 use serde_json::Value;
 
+use crate::graphql::{PublishFuture, Publisher};
 use crate::{cache::TopicCache, topic_map::TopicMap};
 
 /// MQTT keep-alive interval: how quickly a dead connection is noticed.
@@ -21,6 +22,17 @@ const MAX_BACKOFF: Duration = Duration::from_secs(30);
 /// Refusals such as bad credentials before giving up, in about 3 minutes of
 /// backoff. A booting broker refuses logins too, so the first is not final.
 const PERMANENT_ERROR_ATTEMPTS: u32 = 10;
+
+/// Publishes through the subscriber's connection. Resolves once the publish
+/// is queued; with QoS 1 the client retries until the broker acknowledges.
+impl Publisher for AsyncClient {
+    fn publish(&self, topic: String, payload: Vec<u8>) -> PublishFuture<'_> {
+        Box::pin(async move {
+            AsyncClient::publish(self, topic, QoS::AtLeastOnce, false, payload).await?;
+            Ok(())
+        })
+    }
+}
 
 pub struct MqttConnection<'a> {
     pub host: &'a str,
@@ -70,6 +82,13 @@ impl MqttSubscriber {
             validators,
             pending_subscriptions: Vec::new(),
         })
+    }
+
+    /// A client that publishes over this subscriber's connection, while
+    /// [`Self::run`] polls it.
+    #[must_use]
+    pub fn client(&self) -> AsyncClient {
+        self.client.clone()
     }
 
     /// Queue topics to subscribe to once the broker connection is up.
@@ -339,6 +358,7 @@ mod tests {
             }),
             ttl_secs: None,
             operation: Direction::Send,
+            setter: None,
             kind: TopicKind::Group(GroupDef {
                 field_attributes: BTreeMap::new(),
                 group_by: String::new(),
@@ -443,6 +463,7 @@ mod tests {
             payload: None,
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         };
         let api = api(vec![topic], group("power-tags/+/+"), validators);

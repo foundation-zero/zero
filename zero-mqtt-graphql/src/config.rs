@@ -4,6 +4,10 @@ use serde::Deserialize;
 /// config nor an AsyncAPI `x-ttl` extension specifies one.
 pub const DEFAULT_TTL_SECS: u64 = 300;
 
+/// Default time in seconds a Mutation waits for its State topic to confirm
+/// the input.
+pub const DEFAULT_MUTATION_TIMEOUT_SECS: u64 = 10;
+
 #[derive(Debug, Deserialize, Clone)]
 pub struct AppConfig {
     #[serde(default = "default_host")]
@@ -20,11 +24,22 @@ pub struct AppConfig {
     /// may override this with an `x-ttl` extension.
     #[serde(default = "default_ttl")]
     pub default_ttl_secs: u64,
+    /// Expose Receive Topics as Mutations. Off by default: the bridge has no
+    /// authorization, and these inputs actuate equipment.
+    #[serde(default)]
+    pub enable_mutations: bool,
+    /// How long a Mutation waits for its State topic to confirm the input.
+    #[serde(default = "default_mutation_timeout")]
+    pub mutation_timeout_secs: u64,
 }
 
 // function indirect needed by serde
 fn default_ttl() -> u64 {
     DEFAULT_TTL_SECS
+}
+
+fn default_mutation_timeout() -> u64 {
+    DEFAULT_MUTATION_TIMEOUT_SECS
 }
 
 fn default_host() -> String {
