@@ -1,45 +1,28 @@
 use std::sync::Arc;
 
-use crate::graphql::{json_to_graphql_value, payload_object};
-use crate::roas_asyncapi::OperationAction;
 use async_graphql::dynamic::{Field, Object, TypeRef};
-use log::info;
 
-use crate::naming::sanitize_to_graphql_name;
-use crate::{
-    api_model::{ApiModel, TopicDef},
-    cache::TopicCache,
-};
+use crate::api_model::TopicGroupDef;
+use crate::graphql::json_to_graphql_value;
+use crate::roas_asyncapi::OperationAction;
+use crate::{api_model::TopicDef, cache::TopicCache};
 
-pub(super) fn build_schema_topics(
-    mut schema_object: Object,
-    api: &ApiModel,
-    cache: &Arc<TopicCache>,
-) -> (Object, Vec<Object>) {
-    let topics = &api.topics;
-
-    let mut objects = Vec::with_capacity(topics.len());
-
-    for topic_def in topics.iter().filter(|t| queryable_topic(t)) {
-        info!("Building schema for topic {}", topic_def.topic);
-        let name = &topic_def.payload_schema_ref.clone().map_or_else(
-            || topic_def.topic.clone(),
-            |s| s.replace("#/components/schemas/", &api.name),
-        );
-        let new_objects = payload_object(&api.name, name, &topic_def.fields);
-
-        let field_name = sanitize_to_graphql_name(&topic_def.topic);
-        let field = payload_query_field(&field_name, &topic_def.topic, &new_objects[0], cache);
-
-        objects.extend(new_objects);
-        schema_object = schema_object.field(field);
-    }
-
-    (schema_object, objects)
+/// Topics that belong in the Query tree:
+/// Send operations with payload fields on a concrete address.
+/// Addresses with MQTT wildcards (`+`, `#`) cannot form a GraphQL path.
+pub(super) fn queryable_topic(topic_def: &TopicDef) -> bool {
+    !topic_def.fields.is_empty()
+        && topic_def.action == OperationAction::Send
+        && !topic_def
+            .topic
+            .split('/')
+            .any(|level| level == "+" || level == "#")
 }
 
-/// Topics eligible for a queryable payload object: those with fields.
-fn queryable_topic(topic_def: &TopicDef) -> bool {
+/// Groups that belong in the Query tree:
+/// Send operations with payload fields on a concrete address.
+/// Addresses with MQTT wildcards (`+`, `#`) cannot form a GraphQL path.
+pub(super) fn queryable_group(topic_def: &TopicGroupDef) -> bool {
     !topic_def.fields.is_empty() && topic_def.action == OperationAction::Send
 }
 
@@ -47,7 +30,7 @@ fn queryable_topic(topic_def: &TopicDef) -> bool {
 /// payload object. The object's scalar subfields project from this value
 /// (see [`payload_field`]), so the payload is read from the cache exactly
 /// once per query.
-fn payload_query_field(
+pub(super) fn payload_query_field(
     name: &str,
     topic: &str,
     graphql_type: &Object,
@@ -96,7 +79,7 @@ mod tests {
                 ("value".to_string(), GraphqlType::Float),
                 ("ok".to_string(), GraphqlType::Boolean),
             ]),
-            payload_schema_ref: None,
+            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             action: OperationAction::Send,
             ttl_secs: None,
         }];
@@ -107,59 +90,18 @@ mod tests {
     }
 
     #[test_log::test]
-    fn test_colliding_sanitized_topics_error() {
-        // "a/b" and "a-b" both sanitize to "a_b" — should error rather than suffix
-        let topics = vec![
-            TopicDef {
-                topic: "a/b".to_string(),
-                fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
-                payload_schema_ref: None,
-                action: OperationAction::Send,
-                ttl_secs: None,
-            },
-            TopicDef {
-                topic: "a-b".to_string(),
-                fields: BTreeMap::from_iter(vec![("y".to_string(), GraphqlType::Float)]),
-                payload_schema_ref: None,
-                action: OperationAction::Send,
-                ttl_secs: None,
-            },
-        ];
-
-        let err = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap_err();
-        assert!(
-            err.to_string().contains("duplicate sanitized topic name"),
-            "{err}"
-        );
-    }
-
-    #[test_log::test]
-    fn test_reserved_topic_name_errors() {
-        let topics = vec![TopicDef {
-            topic: "Query".to_string(),
-            fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
-            payload_schema_ref: None,
-            action: OperationAction::Send,
-            ttl_secs: None,
-        }];
-
-        let err = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap_err();
-        assert!(err.to_string().contains("reserved"), "{err}");
-    }
-
-    #[test_log::test]
     fn test_digit_prefixed_topic_is_valid() {
         let topics = vec![TopicDef {
             topic: "123/topic".to_string(),
             fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
-            payload_schema_ref: None,
+            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             action: OperationAction::Send,
             ttl_secs: None,
         }];
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
         let sdl = schema.sdl();
-        assert!(sdl.contains("_123Topic"), "{sdl}");
+        assert!(sdl.contains("Schema123"), "{sdl}");
     }
 
     #[test_log::test]
@@ -169,14 +111,13 @@ mod tests {
         let topics = vec![TopicDef {
             topic: "empty/topic".to_string(),
             fields: BTreeMap::new(),
-            payload_schema_ref: None,
+            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             action: OperationAction::Send,
             ttl_secs: None,
         }];
 
-        let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
-        let sdl = schema.sdl();
-        assert!(!sdl.contains("emptyTopic"), "{sdl}");
+        let err = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap_err();
+        assert!(err.to_string().contains("Query has no queryable children!"));
     }
 
     #[test_log::test]
@@ -189,7 +130,7 @@ mod tests {
                 ("f_bool".to_string(), GraphqlType::Boolean),
                 ("f_str".to_string(), GraphqlType::String),
             ]),
-            payload_schema_ref: None,
+            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             action: OperationAction::Send,
             ttl_secs: None,
         }];
@@ -203,6 +144,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[test_log::test]
     async fn test_query_returns_cached_values() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
@@ -211,7 +153,7 @@ mod tests {
                 ("ok".to_string(), GraphqlType::Boolean),
                 ("label".to_string(), GraphqlType::String),
             ]),
-            payload_schema_ref: None,
+            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             action: OperationAction::Send,
             ttl_secs: None,
         }];
@@ -223,38 +165,42 @@ mod tests {
         );
         let schema = build_schema(&api(topics), &cache).unwrap();
 
-        let response = schema.execute("{ testChannel { value ok label } }").await;
+        let response = schema
+            .execute("{ test { channel { value ok label } } }")
+            .await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
         let data: serde_json::Value = response.data.into_json().unwrap();
-        assert_eq!(data["testChannel"]["value"], json!(23.5));
-        assert_eq!(data["testChannel"]["ok"], json!(true));
-        assert_eq!(data["testChannel"]["label"], json!("hello"));
+        assert_eq!(data["test"]["channel"]["value"], json!(23.5));
+        assert_eq!(data["test"]["channel"]["ok"], json!(true));
+        assert_eq!(data["test"]["channel"]["label"], json!("hello"));
     }
 
     #[tokio::test]
+    #[test_log::test]
     async fn test_query_returns_null_for_missing_topic() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
             fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
-            payload_schema_ref: None,
+            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             action: OperationAction::Send,
             ttl_secs: None,
         }];
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
 
-        let response = schema.execute("{ testChannel { value } }").await;
+        let response = schema.execute("{ test { channel { value } } }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
         let data: serde_json::Value = response.data.into_json().unwrap();
-        assert_eq!(data["testChannel"], json!(null));
+        assert_eq!(data["test"]["channel"], json!(null));
     }
 
     #[tokio::test]
+    #[test_log::test]
     async fn test_query_returns_null_for_missing_field() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
             fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
-            payload_schema_ref: None,
+            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             action: OperationAction::Send,
             ttl_secs: None,
         }];
@@ -263,42 +209,44 @@ mod tests {
         cache.insert("test/channel", json!({"other": 1.0}));
         let schema = build_schema(&api(topics), &cache).unwrap();
 
-        let response = schema.execute("{ testChannel { value } }").await;
+        let response = schema.execute("{ test { channel { value } } }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
         let data: serde_json::Value = response.data.into_json().unwrap();
-        assert_eq!(data["testChannel"]["value"], json!(null));
+        assert_eq!(data["test"]["channel"]["value"], json!(null));
     }
 
     #[tokio::test]
+    #[test_log::test]
     async fn test_query_unknown_field_errors() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
             fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
-            payload_schema_ref: None,
+            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             action: OperationAction::Send,
             ttl_secs: None,
         }];
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
 
-        let response = schema.execute("{ testChannel { nope } }").await;
+        let response = schema.execute("{ test { channel { nope } } }").await;
         assert_ne!(response.errors, []);
     }
 
     #[tokio::test]
+    #[test_log::test]
     async fn test_query_multiple_topics() {
         let topics = vec![
             TopicDef {
                 topic: "a/b".to_string(),
                 fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
-                payload_schema_ref: None,
+                payload_schema_ref: Some("payload1".to_string()),
                 action: OperationAction::Send,
                 ttl_secs: None,
             },
             TopicDef {
-                topic: "c/d".to_string(),
+                topic: "a/c".to_string(),
                 fields: BTreeMap::from_iter(vec![("y".to_string(), GraphqlType::Float)]),
-                payload_schema_ref: None,
+                payload_schema_ref: Some("payload2".to_string()),
                 action: OperationAction::Send,
                 ttl_secs: None,
             },
@@ -306,22 +254,24 @@ mod tests {
 
         let cache = Arc::new(TopicCache::new());
         cache.insert("a/b", json!({"x": 1.5}));
-        cache.insert("c/d", json!({"y": 2.5}));
+        cache.insert("a/c", json!({"y": 2.5}));
         let schema = build_schema(&api(topics), &cache).unwrap();
 
-        let response = schema.execute("{ aB { x } cD { y } }").await;
+        // Topics sharing a prefix share one branch.
+        let response = schema.execute("{ a { b { x } c { y } } }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
         let data: serde_json::Value = response.data.into_json().unwrap();
-        assert_eq!(data["aB"]["x"], json!(1.5));
-        assert_eq!(data["cD"]["y"], json!(2.5));
+        assert_eq!(data["a"]["b"]["x"], json!(1.5));
+        assert_eq!(data["a"]["c"]["y"], json!(2.5));
     }
 
     #[tokio::test]
+    #[test_log::test]
     async fn test_graphql_endpoint_returns_cached_values() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
             fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
-            payload_schema_ref: None,
+            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             action: OperationAction::Send,
             ttl_secs: None,
         }];
@@ -335,7 +285,7 @@ mod tests {
             .uri("/graphql")
             .header("content-type", "application/json")
             .body(axum::body::Body::from(
-                r#"{"query": "{ testChannel { value } }"}"#,
+                r#"{"query": "{ test { channel { value } } }"}"#,
             ))
             .unwrap();
 
@@ -346,6 +296,6 @@ mod tests {
             .await
             .unwrap();
         let data: serde_json::Value = serde_json::from_slice(&body).unwrap();
-        assert_eq!(data["data"]["testChannel"]["value"], json!(42.0));
+        assert_eq!(data["data"]["test"]["channel"]["value"], json!(42.0));
     }
 }

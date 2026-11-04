@@ -10,38 +10,11 @@ use log::warn;
 use serde_json::Value as JsonValue;
 
 use crate::naming::{is_reserved_name, pascal_case_graphql_name, sanitize_to_graphql_name};
-use crate::{
-    api_model::{ApiModel, TopicGroupDef},
-    cache::TopicCache,
-};
+use crate::{api_model::TopicGroupDef, cache::TopicCache};
 
 /// A group's rows partitioned into buckets by the `group_by` metadata
 /// attribute: bucket id → `(topic, metadata)` pairs.
 type GroupedRows = BTreeMap<String, Vec<(String, BTreeMap<String, JsonValue>)>>;
-
-pub(super) fn build_schema_groups(
-    mut schema_object: Object,
-    api: &ApiModel,
-    cache: &Arc<TopicCache>,
-) -> anyhow::Result<(Object, Vec<Object>)> {
-    // Group list queries: one merged list per parametrized channel whose
-    // domain ships a metadata file (which enumerates the concrete topics).
-    let (query_fields, group_objects): (Vec<_>, Vec<_>) = api
-        .groups
-        .iter()
-        .map(|group| register_group_queries(&api.name, group, cache))
-        .collect::<anyhow::Result<Vec<_>>>()?
-        .into_iter()
-        .flatten()
-        .unzip();
-
-    schema_object = query_fields
-        .into_iter()
-        .flatten()
-        .fold(schema_object, Object::field);
-
-    Ok((schema_object, group_objects.into_iter().flatten().collect()))
-}
 
 /// Sanitize a group id into a fresh query field name, rejecting empty,
 /// reserved, or already-claimed names.
@@ -220,8 +193,7 @@ fn bucket_object(name_prefix: &str, rows_field: &str) -> Object {
 /// and — when the group's metadata declares `group_by` — grouped-by
 /// bucket queries. Returns `None` when the group must be skipped entirely
 /// (no usable metadata);
-fn register_group_queries(
-    name_prefix: &str,
+pub(super) fn register_group_queries(
     group: &TopicGroupDef,
     cache: &Arc<TopicCache>,
 ) -> anyhow::Result<Option<(Vec<Field>, Vec<Object>)>> {
@@ -234,7 +206,7 @@ fn register_group_queries(
         return Ok(None);
     };
     let value_meta_json = value_metadata_json(group);
-    let name_prefix = pascal_case_graphql_name(&format!("{name_prefix}-{}", group.group));
+    let name_prefix = pascal_case_graphql_name(&group.group);
 
     let (bucket_object, bucket_fields) =
         register_bucket_queries(&name_prefix, group, value_meta_json.clone(), cache);
@@ -537,7 +509,7 @@ mod tests {
                 ("active_power_total".to_string(), GraphqlType::Float),
                 ("current_a".to_string(), GraphqlType::Float),
             ]),
-            payload_schema_ref: None,
+            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             action: OperationAction::Send,
             value_extensions: BTreeMap::from([
                 (
@@ -571,6 +543,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[test_log::test]
     async fn test_group_list_returns_metadata_and_values() {
         let cache = Arc::new(TopicCache::new());
         cache.insert(
@@ -612,6 +585,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[test_log::test]
     async fn test_group_without_mqtt_data_serves_static() {
         let schema = build_schema(
             &api(power_tag_group(power_tag_metadata())),
@@ -631,19 +605,21 @@ mod tests {
     }
 
     #[tokio::test]
+    #[test_log::test]
     async fn test_group_without_metadata_omits_query_field() {
         // Without metadata there is no enumeration source, so no list field
         // (empty object types would be invalid GraphQL).
-        let schema = build_schema(
+        let err = build_schema(
             &api(power_tag_group(BTreeMap::new())),
             &Arc::new(TopicCache::new()),
         )
-        .unwrap();
-        let sdl = schema.sdl();
-        assert!(!sdl.contains("powerTags"), "{sdl}");
+        .unwrap_err();
+
+        assert!(err.to_string().contains("Query has no queryable children!"));
     }
 
     #[tokio::test]
+    #[test_log::test]
     async fn test_group_live_values_expire_to_null() {
         let per_topic = [("power-tags/10P1/test-consumer".to_string(), 0u64)]
             .into_iter()
@@ -668,6 +644,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[test_log::test]
     async fn test_power_tag_bucket_grouping() {
         // `group_by: "panel"` on the group's metadata file enables bucket queries.
         let metadata = power_tag_metadata();
@@ -721,6 +698,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[test_log::test]
     async fn test_grouped_by_queries_are_generic() {
         // Any group whose metadata file declares `group_by` gains grouped
         // queries — the names derive from group + attribute, not from a
