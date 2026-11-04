@@ -372,6 +372,10 @@
       },
       "control": {
         "title": "Control"
+      },
+      "documentation": {
+        "title": "Documentation",
+        "empty": "No documentation for this module yet."
       }
     },
     "dialogs": {

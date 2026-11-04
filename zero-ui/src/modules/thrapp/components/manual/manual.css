@@ -1,0 +1,230 @@
+@reference "@/assets/index.css";
+
+/* Manuals are generated HTML fragments, so their styling hangs off element and
+   class selectors here rather than utility classes in the fragment. */
+
+.manual {
+  @apply text-foreground font-ui text-[0.9375rem] leading-[1.6];
+}
+
+.manual h1,
+.manual h2,
+.manual h3 {
+  @apply font-headers break-after-avoid leading-tight font-semibold;
+}
+
+.manual h1 {
+  @apply mb-2 text-[1.75rem];
+}
+
+.manual h2 {
+  @apply border-border mt-8 mb-3 border-b pb-1.5 text-xl;
+}
+
+.manual h3 {
+  @apply mt-7 mb-1 text-[0.9375rem] tracking-widest uppercase;
+}
+
+.manual p,
+.manual ul,
+.manual dl {
+  @apply mb-3;
+}
+
+.manual ul {
+  @apply list-disc pl-5;
+}
+
+.manual .lede {
+  @apply text-muted-foreground text-[1.0625rem];
+}
+
+.manual code {
+  @apply font-mono text-[0.8125rem] whitespace-nowrap;
+}
+
+/* Mode values, colored from MODE_COLORS like the mimic ModeBadge. */
+.manual [data-mode] {
+  @apply text-inverse-foreground bg-muted-foreground inline-flex items-center rounded-md px-2.5 py-px text-xs/[inherit] font-medium whitespace-nowrap;
+}
+
+.manual dl.modes {
+  @apply grid grid-cols-[max-content_1fr] items-center gap-x-4 gap-y-2;
+}
+
+.manual dl.modes dt {
+  @apply font-semibold;
+}
+
+.manual dl.modes dd {
+  @apply flex flex-wrap gap-1.5;
+}
+
+.manual figure.diagram {
+  @apply border-border bg-background my-4 break-inside-avoid rounded-[2rem] border bg-[radial-gradient(circle,rgb(172_180_188/40%)_1px,transparent_1px)] bg-size-[24px_24px] p-6;
+}
+
+.manual figure.diagram pre.mermaid {
+  @apply font-ui m-0 flex justify-center whitespace-pre;
+}
+
+.manual figure.diagram figcaption {
+  @apply text-muted-foreground mt-3 text-center text-[0.8125rem];
+}
+
+.manual table {
+  @apply mb-4 w-full border-collapse text-sm/[inherit];
+}
+
+.manual th,
+.manual td {
+  @apply border-border-subtle border-b px-3 py-2 text-left align-top;
+}
+
+.manual th {
+  @apply font-headers border-border font-semibold;
+}
+
+.manual tr {
+  @apply break-inside-avoid;
+}
+
+.manual table.parameters {
+  @apply table-fixed;
+}
+
+.manual table.parameters ~ table.parameters thead {
+  @apply sr-only;
+}
+
+.manual table.parameters col.name {
+  @apply w-96;
+}
+
+.manual table.parameters col.default {
+  @apply w-52;
+}
+
+.manual table.parameters td {
+  @apply border-b-0;
+}
+
+.manual table.parameters tbody tr:has(> td:nth-child(3)) {
+  @apply border-border-subtle border-t;
+}
+
+.manual table.parameters tbody tr:first-child {
+  @apply border-t-0;
+}
+
+.manual table.parameters td:nth-child(1) {
+  @apply wrap-anywhere;
+}
+
+.manual table.parameters td:nth-child(1) code {
+  @apply whitespace-normal;
+}
+
+.manual table.parameters td:nth-child(2) {
+  @apply text-muted-foreground tabular-nums;
+}
+
+@media screen and (48rem <= width < 80rem) {
+  .manual table.parameters col.name {
+    @apply w-[38%];
+  }
+
+  .manual table.parameters col.default {
+    @apply w-[17%];
+  }
+}
+
+@media screen and (width < 48rem) {
+  .manual th,
+  .manual td {
+    @apply px-1.5;
+  }
+
+  .manual table.parameters,
+  .manual table.parameters tbody {
+    @apply block;
+  }
+
+  .manual table.parameters colgroup {
+    @apply hidden;
+  }
+
+  .manual table.parameters thead {
+    @apply sr-only;
+  }
+
+  .manual table.parameters tr {
+    @apply grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 py-1.5;
+  }
+
+  .manual table.parameters td {
+    @apply p-0;
+  }
+
+  .manual table.parameters td:nth-child(3) {
+    @apply col-span-full mt-1;
+  }
+}
+
+.manual .constraints {
+  @apply border-border-subtle text-muted-foreground rounded-md border px-3.5 py-2.5 text-sm/[inherit];
+}
+
+.manual [data-severity] {
+  @apply text-inverse-foreground inline-flex rounded-md px-2.5 py-px text-xs/[inherit] font-medium whitespace-nowrap;
+}
+
+.manual [data-severity="warning"] {
+  @apply bg-warning;
+}
+
+.manual [data-severity="alarm"] {
+  @apply bg-destructive;
+}
+
+.manual p.version {
+  @apply text-muted-foreground mt-8 text-xs/[inherit];
+}
+
+@media print {
+  .manual p.version {
+    @apply hidden;
+  }
+
+  .manual {
+    @apply text-[12.5px] leading-normal;
+  }
+
+  .manual h1 {
+    @apply text-2xl;
+  }
+
+  .manual h2 {
+    @apply mt-5 text-lg;
+  }
+
+  .manual figure.diagram {
+    @apply p-3;
+  }
+
+  .manual table.parameters {
+    @apply [zoom:0.8];
+  }
+
+  .manual table.parameters col.name {
+    @apply w-[38%];
+  }
+
+  .manual table.parameters col.default {
+    @apply w-[17%];
+  }
+
+  .manual h2:has(+ figure.diagram) {
+    @apply break-after-avoid;
+  }
+}

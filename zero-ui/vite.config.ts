@@ -53,6 +53,8 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    // scripts/manual-print imports a virtual module only render-manual provides.
+    optimizeDeps: { entries: ["index.html"] },
     plugins: [vue(), tailwindcss()],
     resolve: {
       alias: {

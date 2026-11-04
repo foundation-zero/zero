@@ -1,0 +1,265 @@
+<h1>Photovoltaic-thermal (PVT)</h1>
+<p class="lede">
+  Recovers heat from the PVT panel arrays into the high temperature circuit, maximising solar heat
+  capture while holding the panels and their glycol below their temperature limit.
+</p>
+
+<h2>What it does</h2>
+<p>
+  The panels are arranged in three groups by location — <strong>main forward</strong>,
+  <strong>main aft</strong> and <strong>owners</strong> — each with its own circulation pump, mix
+  valve and return temperature sensor on a shared header. Each group is controlled independently and
+  can circulate while the others stand idle.
+</p>
+<p>
+  A group starts circulating when the warmest of its string temperature sensors rises above
+  <code>recovery_activation_string_temperature</code>. From then on its mix valve modulates to hold
+  the return line at <code>warmup_temperature</code>, recirculating panel return into panel supply
+  until the loop is warm, so cold glycol is not pushed into the high temperature circuit. During
+  warm-up the pump runs at the group's minimum duty point. Once the mix valve has opened beyond 20
+  %, the pump takes over and modulates flow to hold the return at <code>recovery_temperature</code>;
+  when the mix valve closes below 5 % the group drops back to warm-up. Circulation stops when the
+  return falls below <code>minimum_return_temperature</code>.
+</p>
+<p>
+  Separately and at all times, a mix valve holds the common supply line at
+  <code>maximum_supply_temperature</code> by diverting through the seawater cooler, rejecting
+  surplus heat overboard. This protects the panels and the glycol from degrading on a bright day
+  with little demand, and runs regardless of what the groups are doing.
+</p>
+<p>
+  Each group also has a switch valve that isolates it from the header. The control opens it at
+  startup and does not operate it again.
+</p>
+
+<h2>Modes</h2>
+<p>The panel reports one mode per group, independently:</p>
+<dl class="modes">
+  <dt>Main forward</dt>
+  <dd>
+    <span data-mode="Idle">Idle</span><span data-mode="BoostingLow">Warmup</span>
+    <span data-mode="Using">Recovery</span>
+  </dd>
+  <dt>Main aft</dt>
+  <dd>
+    <span data-mode="Idle">Idle</span><span data-mode="BoostingLow">Warmup</span>
+    <span data-mode="Using">Recovery</span>
+  </dd>
+  <dt>Owners</dt>
+  <dd>
+    <span data-mode="Idle">Idle</span><span data-mode="BoostingLow">Warmup</span>
+    <span data-mode="Using">Recovery</span>
+  </dd>
+</dl>
+
+<h2>Operating states</h2>
+<figure class="diagram">
+  <pre class="mermaid">
+stateDiagram-v2
+  direction LR
+
+  state "Idle" as idle
+  idle : <b>On entry</b>
+  idle : • set the mix valve to 20 %
+  idle : • stop the pump
+  idle : • stop warm-up mixing control
+  idle : <b>On exit</b>
+  idle : • start the pump
+  idle : • hold the return at warmup_temperature with the mix valve
+
+  state "Warmup" as warmup
+  warmup : <b>On entry</b>
+  warmup : • run the pump at the group's minimum duty point
+
+  state "Recovery" as recovery
+  recovery : <b>On entry</b>
+  recovery : • hold the return at recovery_temperature with the pump
+  recovery : <b>On exit</b>
+  recovery : • disable pump flow control
+
+  [*] --> idle
+  idle --> warmup : the warmest string temperature rises<br/>above recovery_activation_string_temperature
+  warmup --> recovery : the mix valve<br/>opens beyond 20 %
+  recovery --> warmup : the mix valve<br/>closes below 5 %
+  warmup --> idle : the return falls below<br/>minimum_return_temperature
+  recovery --> idle : the return falls below<br/>minimum_return_temperature
+
+  class idle Idle
+  class warmup BoostingLow
+  class recovery Using
+</pre>
+  <figcaption>All three groups run this machine independently.</figcaption>
+</figure>
+
+<h2 id="tuning">Tuning</h2>
+
+<h3>Group circulation</h3>
+<table class="parameters">
+  <colgroup>
+    <col class="name" />
+    <col class="default" />
+    <col />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Default</th>
+      <th>Meaning and tuning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>recovery_activation_string_temperature</code></td>
+      <td>40 °C</td>
+      <td>
+        The string temperature above which a group starts circulating. Raise it to stop the pumps
+        short-cycling on a cold bright morning; lower it to start harvesting earlier on marginal
+        days.
+      </td>
+    </tr>
+    <tr>
+      <td><code>minimum_return_temperature</code></td>
+      <td>40 °C</td>
+      <td>
+        The return temperature below which a group stops circulating. Raise it to stop sooner once
+        the panels stop delivering; lower it to keep harvesting smaller gains. Must not exceed
+        <code>warmup_temperature</code>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>warmup_temperature</code></td>
+      <td>55 °C</td>
+      <td>
+        The return temperature the group mix valve holds by recirculating, before it opens to the
+        high temperature circuit. Raise it to keep colder glycol out of that circuit at the cost of
+        a longer warm-up; lower it to start delivering heat sooner. Must sit between
+        <code>minimum_return_temperature</code> and <code>recovery_temperature</code>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>recovery_temperature</code></td>
+      <td>70 °C</td>
+      <td>
+        The return temperature the pump holds in recovery, by modulating flow. Raise it for a
+        hotter, slower circuit; lower it for more flow at a smaller temperature rise. Must stay
+        above <code>warmup_temperature</code>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>main_fwd_minimum_pump_dutypoint</code></td>
+      <td>0.3</td>
+      <td rowspan="3">
+        The pump duty point during warm-up, and the floor under pump flow control in recovery. They
+        guarantee roughly 10 l/min through each group, so the return temperature sensor reads
+        circulating glycol rather than standing glycol.
+      </td>
+    </tr>
+    <tr>
+      <td><code>main_aft_minimum_pump_dutypoint</code></td>
+      <td>0.3</td>
+    </tr>
+    <tr>
+      <td><code>owners_minimum_pump_dutypoint</code></td>
+      <td>0.4</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Panel protection</h3>
+<table class="parameters">
+  <colgroup>
+    <col class="name" />
+    <col class="default" />
+    <col />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Default</th>
+      <th>Meaning and tuning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>maximum_supply_temperature</code></td>
+      <td>80 °C</td>
+      <td>
+        The common supply temperature the seawater cooler mix valve holds by diverting heat
+        overboard, protecting the panels and glycol. The accepted maximum is 90 °C, which is a
+        material limit rather than an operating setting.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Controller gains</h3>
+<table class="parameters">
+  <colgroup>
+    <col class="name" />
+    <col class="default" />
+    <col />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Default</th>
+      <th>Meaning and tuning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>heat_dump_tuning</code></td>
+      <td>0.05, 0.001, 0</td>
+      <td>Seawater cooler mix valve.</td>
+    </tr>
+    <tr>
+      <td><code>main_fwd_mix_tuning</code></td>
+      <td>−0.005, −0.001, 0</td>
+      <td rowspan="3">Mix valve of each group.</td>
+    </tr>
+    <tr>
+      <td><code>main_aft_mix_tuning</code></td>
+      <td>−0.005, −0.001, 0</td>
+    </tr>
+    <tr>
+      <td><code>owners_mix_tuning</code></td>
+      <td>−0.005, −0.001, 0</td>
+    </tr>
+    <tr>
+      <td><code>main_fwd_pump_tuning</code></td>
+      <td>−0.0005, −0.0001, −0.00001</td>
+      <td rowspan="3">Pump of each group.</td>
+    </tr>
+    <tr>
+      <td><code>main_aft_pump_tuning</code></td>
+      <td>−0.0005, −0.0001, −0.00001</td>
+    </tr>
+    <tr>
+      <td><code>owners_pump_tuning</code></td>
+      <td>−0.0005, −0.0001, −0.00001</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Gains are proportional, integral and derivative, tuned during commissioning.</p>
+
+<p class="constraints">
+  The module rejects a parameter set outright, with nothing applied, if
+  <code>recovery_temperature</code> is below <code>warmup_temperature</code>, or if
+  <code>warmup_temperature</code> is below <code>minimum_return_temperature</code>. If a change does
+  not take effect on the panel, check these first.
+</p>
+
+<h2>Alarms</h2>
+<p>
+  This module raises no alarms. Panel overheating is handled continuously by the seawater cooler mix
+  valve rather than annunciated.
+</p>
+
+<p
+  class="version"
+  data-module="pvt"
+  data-facts="1e42533"
+>
+  Control version 1e42533 · 2026-11-04
+</p>

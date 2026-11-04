@@ -1,0 +1,10 @@
+body,
+#app {
+  min-height: 0;
+  background: white;
+}
+
+@page {
+  size: A4;
+  margin: 18mm;
+}
