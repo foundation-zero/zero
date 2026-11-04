@@ -464,9 +464,16 @@
         "pumpFlowController": "Pump flow controller",
         "heatPumpTemperatureParameter": "Heatpump temperature parameter",
         "hvacController": "HVAC controller",
-        "hvacHeatFlow": "HVAC heatflow"
+        "hvacHeatFlow": "HVAC heatflow",
+        "freshWater": "Fresh water",
+        "glycolMix": "Glycol mix 20%"
       },
-      "descriptions": {},
+      "descriptions": {
+        "pidError": "Target - Measure = Error",
+        "heatExchange": "Heat exchange = Delta temperature * flow * heat capacity",
+        "thrustersSeawaterExchanger": "Temperature values depend on the position of the 3-way switch valves 1091-01 and 1091-02. When in position A the weighted average of 1038-01 and 1038-02 is used. When in position B, the value of 1038-30 is used.",
+        "minimumTankTemperature": "This is the minimum temperature of the tank"
+      },
       "items": {
         "mode": "Mode",
         "outputMinimum": "Output minimum",
@@ -526,6 +533,7 @@
         "heatExchange": "Heat exchange",
         "deltaTemperature": "Delta temperature",
         "flow": "Flow",
+        "heatCapacity": "Heat capacity",
         "empty": "Level",
         "pvt": "Pvt",
         "heat": "Heat",

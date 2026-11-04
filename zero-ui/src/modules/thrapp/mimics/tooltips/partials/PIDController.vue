@@ -19,6 +19,7 @@ import * as Partials from ".";
 import { useTranslations } from "..";
 import { ControllerStateValue, ModuleField, ParameterValue } from "../../providers";
 import { FieldRenderer } from "../../renderers";
+import { SimpleInfoTooltip } from "@/modules/common/components/info-tooltip";
 const { items, sources } = useTranslations();
 
 const props = defineProps<{
@@ -133,8 +134,9 @@ const tController = (fieldName: string) => t(`thrapp.parameters.pid.${fieldName}
       :renderer="fieldRenderer"
     >
       {{ items("error") }}
-      <template #sourceName>
-        {{ sources("calculated") }}
+      <template #source>
+        <FieldRenderer.Source no-link>{{ sources("calculated") }}</FieldRenderer.Source>
+        <SimpleInfoTooltip description="pidError" />
       </template>
     </Partials.ListItem>
   </ControllerStateValue>

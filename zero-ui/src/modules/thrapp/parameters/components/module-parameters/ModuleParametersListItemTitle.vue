@@ -6,7 +6,7 @@ const props = defineProps<{ class?: HTMLAttributes["class"] }>();
 </script>
 
 <template>
-  <h5 :class="cn('font-ui! text-foreground font-medium', props.class)">
+  <h5 :class="cn('font-ui! text-foreground flex items-center gap-2 font-medium', props.class)">
     <slot />
   </h5>
 </template>

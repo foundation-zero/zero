@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SimpleInfoTooltip } from "@/modules/common/components/info-tooltip";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
@@ -22,7 +23,7 @@ import Circuit from "./partials/ExchangeCircuitPartial.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.HeatExchanger>>();
 
-const { labels, actions, items, sources } = useTranslations();
+const { labels, actions, items, sources, descriptions } = useTranslations();
 </script>
 
 <template>
@@ -69,14 +70,20 @@ const { labels, actions, items, sources } = useTranslations();
           {{ items("heatExchange") }}
           <template #source>
             <FieldRenderer.Source no-link>{{ sources("calculated") }}</FieldRenderer.Source>
+            <SimpleInfoTooltip description="heatExchange" />
           </template>
         </Partials.ListItem>
       </TooltipList>
     </SensorValue>
 
     <TooltipList>
-      <TooltipListHeader>
+      <TooltipListHeader class="justify-start gap-2">
         {{ labels("thisCircuit") }}
+        <SimpleInfoTooltip
+          v-if="descriptions.exists(source[2])"
+          content-class="w-130"
+          >{{ descriptions(source[2]) }}</SimpleInfoTooltip
+        >
       </TooltipListHeader>
       <Circuit
         :source="source"

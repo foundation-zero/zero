@@ -40,6 +40,7 @@
     "degrees": "°",
     "hertz": "Hz",
     "irradiance": "W/m²",
+    "heatCapacity": "kJ/(kg⋅C)",
     "temp": "T"
   },
   "temperatureLabels": {
