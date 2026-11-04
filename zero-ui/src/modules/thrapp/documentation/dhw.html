@@ -1,0 +1,398 @@
+<h1>Domestic hot water (DHW)</h1>
+<p class="lede">
+  Supplies hot water to the taps from three buffer tanks, maximising the use of heat recovered from
+  the drives, DC and high-temperature circuits.
+</p>
+
+<h2>What it does</h2>
+<p>
+  Each tank is in exactly one state: <span data-mode="Using">in use</span>
+  <span data-mode="Filling">filling</span> <span data-mode="Boosting">boosting</span>
+  <span data-mode="FillingLow">needs fill</span> <span data-mode="BoostingLow">needs boost</span>
+  <span data-mode="Idle">standby</span> or <span data-mode="Disabled">disabled</span>. The module
+  reassesses all three once a second, keeping one tank in use, at most one filling and at most one
+  boosting.
+</p>
+<p>
+  Fresh water entering a filling tank is preheated on the way in: flow control valves on the drives
+  recovery and DC circuits modulate to hold their return lines at
+  <code>filling_temperature_setpoint</code>. The drives branch closes when the drives return no
+  recoverable heat.
+</p>
+<p>
+  Boosting circulates a full tank that has dropped below <code>minimum_tank_temperature</code>
+  through a loop fed by one of two heat sources, at fixed flow, until it reaches
+  <code>maximum_tank_temperature</code>. The pump starts only once the source valve and a tank
+  supply-and-return pair read open — they take about 90 seconds to travel — so it never runs against
+  a closed circuit. A source that stops delivering heat to a tank is locked out of that tank for a
+  while (see Operating states).
+</p>
+<p>
+  When no tank is full and at or above <code>minimum_tank_temperature</code>, supply continues at
+  reduced temperature: the tank in use stays in service while below temperature, and once it runs
+  empty the warmest tank still holding water takes over. A warning is raised while the tank in use
+  is below temperature. When neither heat source is available, the tanks cool until one returns.
+</p>
+
+<h2>Modes</h2>
+<p>The panel reports two modes for this module, independently:</p>
+<dl class="modes">
+  <dt>Filling</dt>
+  <dd><span data-mode="Idle">Not Filling</span><span data-mode="Filling">Filling</span></dd>
+  <dt>Boosting</dt>
+  <dd>
+    <span data-mode="Idle">Not Boosting</span>
+    <span data-mode="Boosting">Boosting HT</span>
+    <span data-mode="BoostingHigh">Boosting Heatpump</span>
+  </dd>
+</dl>
+
+<h2>Boosting</h2>
+<figure class="diagram">
+  <pre class="mermaid">
+stateDiagram-v2
+  direction LR
+
+  state "Not Boosting" as idle
+  idle : <b>On entry</b>
+  idle : • close the boosting valves
+  idle : • stop the pump
+  idle : • disable pump flow control
+  idle : <b>On exit</b>
+  idle : • start the pump
+
+  state "Boosting HT" as ht
+  ht : <b>On entry</b>
+  ht : • open the high-temperature source valve
+  ht : • hold pump flow at ht_boosting_flow_setpoint
+  ht : <b>On exit</b>
+  ht : • disable pump flow control
+
+  state "Boosting Heatpump" as hp
+  hp : <b>On entry</b>
+  hp : • open the heatpump source valve
+  hp : • start the heatpump at heatpump_temperature_setpoint
+  hp : • hold pump flow at heatpump_flow_setpoint
+  hp : <b>On exit</b>
+  hp : • stop the heatpump
+  hp : • disable pump flow control
+
+  [*] --> idle
+  idle --> ht : HT boosting is enabled,<br/>a tank needs boosting outside its HT stall lockout,<br/>DHW is flowing to the consumers, and their supply<br/>exceeds that tank by more than ht_boosting_minimum_delta
+  ht --> idle : no tank left that HT may boost,<br/>the supply margin is lost, or DHW flow stops
+  ht --> hp : high-temperature boosting becomes unavailable,<br/>heatpump boosting is enabled, and a tank needs<br/>boosting outside its heatpump stall lockout
+  hp --> ht : high-temperature boosting<br/>becomes available
+  idle --> hp : heatpump boosting is enabled,<br/>high-temperature boosting is unavailable,<br/>and a tank needs boosting outside its heatpump stall lockout
+  hp --> idle : no tank left that the heatpump may boost,<br/>or heatpump boosting is disabled
+
+  class idle Idle
+  class ht Boosting
+  class hp BoostingHigh
+</pre>
+  <figcaption>Boosting mode. Transitions are evaluated once a second.</figcaption>
+</figure>
+<p>
+  The high-temperature loop is the preferred source and the heatpump the fallback: heatpump boosting
+  is available only while high-temperature boosting is not, and the module moves directly between
+  the two without passing through idle. High-temperature boosting takes over from the heatpump once
+  its conditions hold for the tank the heatpump is boosting; other tanks count only once that tank
+  is done or locked out.
+</p>
+<p>
+  While boosting, the module compares heat transfer into the tank against
+  <code>boosting_minimum_heat</code>. When it stays below that threshold for longer than
+  <code>boosting_stall_window</code>, after an initial <code>boosting_startup_grace</code>, the
+  source in use is locked out of that tank for <code>boosting_stall_lockout</code>; the other source
+  may still boost it. In the same second the module boosts another tank from the same source,
+  switches to the other source, or goes idle. The locked-out tank still shows
+  <span data-mode="BoostingLow">needs boost</span>. The startup grace restarts whenever the source
+  or the tank changes.
+</p>
+
+<h2 id="tuning">Tuning</h2>
+
+<h3>Sources</h3>
+<table class="parameters">
+  <colgroup>
+    <col class="name" />
+    <col class="default" />
+    <col />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Default</th>
+      <th>Meaning and tuning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>ht_boosting_enabled</code></td>
+      <td>on</td>
+      <td rowspan="2">
+        Which sources may be selected. Enable the heatpump to continue boosting when the
+        high-temperature loop is cold; disable a source to exclude it entirely.
+      </td>
+    </tr>
+    <tr>
+      <td><code>heatpump_boosting_enabled</code></td>
+      <td>off</td>
+    </tr>
+    <tr>
+      <td><code>ht_boosting_minimum_delta</code></td>
+      <td>3 K</td>
+      <td>
+        How far the consumers' DHW supply must exceed the tank temperature before high-temperature
+        boosting starts or continues. Raise it if boosting starts on a marginal supply and stops on
+        the heat-transfer threshold; lower it to keep using the loop at smaller margins.
+      </td>
+    </tr>
+    <tr>
+      <td><code>ht_boosting_flow_setpoint</code></td>
+      <td>10 l/min</td>
+      <td>
+        Boosting loop flow from the high-temperature source, set by the rating of the DHW exchanger.
+      </td>
+    </tr>
+    <tr>
+      <td><code>heatpump_flow_setpoint</code></td>
+      <td>25 l/min</td>
+      <td>Boosting loop flow from the heatpump, set by the heatpump's rated flow.</td>
+    </tr>
+    <tr>
+      <td><code>heatpump_temperature_setpoint</code></td>
+      <td>65 °C</td>
+      <td>Supply temperature commanded from the heatpump while boosting.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Tank temperature and level</h3>
+<table class="parameters">
+  <colgroup>
+    <col class="name" />
+    <col class="default" />
+    <col />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Default</th>
+      <th>Meaning and tuning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>minimum_tank_temperature</code></td>
+      <td>45 °C</td>
+      <td>
+        Serves two purposes: a full tank below it is boosted, and a tank below it is too cold to be
+        selected for use. Raise it for hotter water at the taps and more frequent boosting; lower it
+        to boost less often.
+      </td>
+    </tr>
+    <tr>
+      <td><code>maximum_tank_temperature</code></td>
+      <td>60 °C</td>
+      <td>
+        Where boosting stops. Raise it to store more heat per tank and boost less often; lower it to
+        reduce standing losses and scalding risk. Must stay above
+        <code>minimum_tank_temperature</code>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>maximum_tank_level</code></td>
+      <td>230 L</td>
+      <td>
+        Where filling stops; the accepted maximum is 275 L and the high-level warning is at 265 L.
+      </td>
+    </tr>
+    <tr>
+      <td><code>full_level_lower_band</code></td>
+      <td>200 L</td>
+      <td>
+        The level above which a tank counts as full, and so the level at which filling restarts.
+        Widen the gap to <code>maximum_tank_level</code> to refill less often; narrow it to keep
+        tanks nearer full.
+      </td>
+    </tr>
+    <tr>
+      <td><code>minimum_tank_level</code></td>
+      <td>30 L</td>
+      <td>
+        The level at which a tank in use counts as empty and is swapped out. Raise it to swap
+        earlier; lower it to draw more from each tank.
+      </td>
+    </tr>
+    <tr>
+      <td><code>filling_temperature_setpoint</code></td>
+      <td>40 °C</td>
+      <td>
+        The return-line temperature the drives and DC preheat valves hold while a tank fills. The
+        valves open further while the return is above it, so lowering it recovers more heat into the
+        fresh water and cools the recovery circuits further; raise it if they are pulled down too
+        far.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Availability and guards</h3>
+<table class="parameters">
+  <colgroup>
+    <col class="name" />
+    <col class="default" />
+    <col />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Default</th>
+      <th>Meaning and tuning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>tank1_enabled</code></td>
+      <td>on</td>
+      <td rowspan="3">
+        Take a tank out of service. A disabled tank is released immediately, without waiting for its
+        valves to travel.
+      </td>
+    </tr>
+    <tr>
+      <td><code>tank2_enabled</code></td>
+      <td>on</td>
+    </tr>
+    <tr>
+      <td><code>tank3_enabled</code></td>
+      <td>on</td>
+    </tr>
+    <tr>
+      <td><code>boosting_minimum_heat</code></td>
+      <td>1000 W</td>
+      <td rowspan="4">
+        Stall guard, in the order listed: the heat transfer threshold below which a tank counts as
+        stalled, how long it must stay below, the delay after boosting starts on a source or tank
+        before checking starts, and how long the source is then locked out of that tank. Lengthen
+        the grace and window if boosting stalls during normal warm-up. Shorten the lockout to retry
+        a stalled tank sooner; lengthen it if a tank keeps stalling on the same source.
+      </td>
+    </tr>
+    <tr>
+      <td><code>boosting_stall_window</code></td>
+      <td>120 s</td>
+    </tr>
+    <tr>
+      <td><code>boosting_startup_grace</code></td>
+      <td>180 s</td>
+    </tr>
+    <tr>
+      <td><code>boosting_stall_lockout</code></td>
+      <td>900 s</td>
+    </tr>
+    <tr>
+      <td><code>minimum_pump_dutypoint</code></td>
+      <td>0.3</td>
+      <td rowspan="3">
+        Minimum valve and pump openings: floors that guarantee flow through the system, for example
+        so the temperature sensors read the circulating medium.
+      </td>
+    </tr>
+    <tr>
+      <td><code>drives_flowcontrol_minimum_setpoint</code></td>
+      <td>0.1</td>
+    </tr>
+    <tr>
+      <td><code>dc_flowcontrol_minimum_setpoint</code></td>
+      <td>0.1</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Controller gains</h3>
+<table class="parameters">
+  <colgroup>
+    <col class="name" />
+    <col class="default" />
+    <col />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Default</th>
+      <th>Meaning and tuning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>pump_flow_tuning</code></td>
+      <td>0.01, 0.001, 0</td>
+      <td rowspan="3">
+        Proportional, integral and derivative gains for the PID controllers, tuned during
+        commissioning.
+      </td>
+    </tr>
+    <tr>
+      <td><code>dc_flow_tuning</code></td>
+      <td>−0.01, −0.001, 0</td>
+    </tr>
+    <tr>
+      <td><code>drives_flow_tuning</code></td>
+      <td>−0.01, −0.001, 0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="constraints">
+  The module rejects a parameter set outright, with nothing applied, if the maximum tank temperature
+  is below the minimum, if the maximum level is below the minimum, or if
+  <code>full_level_lower_band</code> falls outside the level band. If a change does not take effect
+  on the panel, check these first.
+</p>
+
+<h2>Alarms</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Alarm</th>
+      <th>Severity</th>
+      <th>Raised when</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tank <em>n</em> high temperature warning / alarm</td>
+      <td><span data-severity="warning">warning</span> <span data-severity="alarm">alarm</span></td>
+      <td>
+        A tank reads more than 2 K (warning) or 5 K (alarm) above
+        <code>maximum_tank_temperature</code>. Boosting should have stopped; check the source valves
+        and the tank sensor.
+      </td>
+    </tr>
+    <tr>
+      <td>Tank <em>n</em> high level warning / alarm</td>
+      <td><span data-severity="warning">warning</span> <span data-severity="alarm">alarm</span></td>
+      <td>
+        A tank reads above 265 L (warning) or 270 L (alarm). Filling should have stopped; check the
+        inlet valve.
+      </td>
+    </tr>
+    <tr>
+      <td>Tank in use below minimum temperature</td>
+      <td><span data-severity="warning">warning</span></td>
+      <td>
+        The tank in use is below <code>minimum_tank_temperature</code>, because no full tank at
+        temperature was available to take over. Supply continues at reduced temperature.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<p
+  class="version"
+  data-module="dhw"
+  data-facts="ab95125"
+>
+  Control version ab95125 · 2026-11-04
+</p>
