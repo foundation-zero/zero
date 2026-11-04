@@ -53,7 +53,7 @@
             "version": "",
             "spec": {
               "options": {
-                "content": "<center><h2>PCS testing</h2></center>\n\nMonitoring of a thruster pod: propulsion, motor, drives, cooling water, hydraulics, shear beams and mounts, with the batteries and DC switches. The **Pod** selector switches every panel between FWD and AFT, except the batteries and DC switches, which serve both pods.\n**Times are UTC.**\n**DC power** corrected: raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, corrected: raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** corrected: raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **Load pins** corrected: raw / 1000 kN. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature corrected: raw × 0.1 °C; currents raw.\nWhere a published value disagrees with the unit its IO list declares, the dashboard shows the corrected value and the info icon says so. Values another device reads and acts on are shown as published: the power limits the PMS sends, the PMS's consumed power and the torque setpoints. The info icon of each panel states the source and any correction.",
+                "content": "<center><h2>PCS testing</h2></center>\n\nMonitoring of a thruster pod: propulsion, motor, drives, cooling water, hydraulics, shear beams and mounts, with the batteries and DC switches. The **Pod** selector switches every panel between FWD and AFT, except the batteries and DC switches, which serve both pods. Drives are named by their designation: FWD 13-31-U101/U102, AFT 13-11-U101/U102.\n**Times are UTC.**\n**DC power** corrected: raw × 0.1 kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, corrected: raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** corrected: raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **Load pins** corrected: raw / 1000 kN. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature corrected: raw × 0.1 °C; currents raw.\nWhere a published value disagrees with the unit its IO list declares, the dashboard shows the corrected value and the info icon says so. Values another device reads and acts on are shown as published: the power limits the PMS sends, the PMS's consumed power and the torque setpoints. The info icon of each panel states the source and any correction.",
                 "mode": "markdown"
               },
               "fieldConfig": {
@@ -68,7 +68,7 @@
         "kind": "Panel",
         "spec": {
           "id": 10,
-          "title": "Winding temperatures",
+          "title": "Winding temperatures · ${pod:text}",
           "description": "The six stator winding temperatures, U, V, W of winding sets 1 and 2, in °C as published by the PMS. The W1 column is named differently on FWD and AFT; the hidden variable picks the right one.",
           "links": [],
           "data": {
@@ -183,7 +183,7 @@
         "kind": "Panel",
         "spec": {
           "id": 11,
-          "title": "Bearing temperatures",
+          "title": "Bearing temperatures · ${pod:text}",
           "description": "Motor bearing temperatures, drive end (upper) and non-drive end (lower), in °C.",
           "links": [],
           "data": {
@@ -298,7 +298,7 @@
         "kind": "Panel",
         "spec": {
           "id": 13,
-          "title": "IGBT temperature",
+          "title": "IGBT temperature · ${pod:text}",
           "description": "IGBT temperature of each Aradex drive, in °C. Values of 199, published while the drive is off, are left out.",
           "links": [],
           "data": {
@@ -444,7 +444,7 @@
         "kind": "Panel",
         "spec": {
           "id": 14,
-          "title": "Power stage (coldplate) temperature",
+          "title": "Power stage (coldplate) temperature · ${pod:text}",
           "description": "Power stage temperature of each Aradex drive, in °C. Values of 199, published while the drive is off, are left out.",
           "links": [],
           "data": {
@@ -590,8 +590,8 @@
         "kind": "Panel",
         "spec": {
           "id": 16,
-          "title": "Thruster",
-          "description": "The pod's thruster cooling circuit: the common supply temperature, the pod's return temperature and flow. THRS sensors, temperatures in °C, flows in l/min (right axis).",
+          "title": "Thruster · ${pod:text}",
+          "description": "The pod's thruster cooling circuit: the supply temperature shared by both pods, the pod's return temperature and flow. The legend shows each sensor's technical name. THRS sensors, temperatures in °C, flows in l/min (right axis, dashed).",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -613,7 +613,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = '50001038-28' THEN temperature__value END) AS \"In\",\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'fwd' THEN '50001038-02' ELSE '50001038-01' END THEN temperature__value END) AS \"Out\"\nFROM public.marpower__thrs__temperatures\nWHERE $__timeFilter(timestamp) AND yard_tag IN ('50001038-28', CASE '${pod}' WHEN 'fwd' THEN '50001038-02' ELSE '50001038-01' END)\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  technical_name,\n  avg(temperature__value) AS \"temperature\"\nFROM public.marpower__thrs__temperatures\nWHERE $__timeFilter(timestamp) AND yard_tag IN ('50001038-28', CASE '${pod}' WHEN 'fwd' THEN '50001038-02' ELSE '50001038-01' END)\nGROUP BY 1, 2 ORDER BY 2, 1"
                       }
                     },
                     "refId": "A",
@@ -636,7 +636,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'fwd' THEN '50001057-22' ELSE '50001218-02' END THEN flow__value END) AS \"Flow\"\nFROM public.marpower__thrs__flows\nWHERE $__timeFilter(timestamp) AND yard_tag IN (CASE '${pod}' WHEN 'fwd' THEN '50001057-22' ELSE '50001218-02' END)\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  technical_name,\n  avg(flow__value) AS \"flow\"\nFROM public.marpower__thrs__flows\nWHERE $__timeFilter(timestamp) AND yard_tag IN (CASE '${pod}' WHEN 'fwd' THEN '50001057-22' ELSE '50001218-02' END)\nGROUP BY 1, 2 ORDER BY 2, 1"
                       }
                     },
                     "refId": "B",
@@ -646,12 +646,17 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "kind": "partitionByValues",
                   "spec": {
-                    "id": "renameByRegex",
+                    "id": "partitionByValues",
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "technical_name"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -716,13 +721,14 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.technical_name}"
                 },
                 "overrides": [
                   {
                     "matcher": {
                       "id": "byRegexp",
-                      "options": "^Flow.*"
+                      "options": ".*flow.*"
                     },
                     "properties": [
                       {
@@ -736,15 +742,7 @@
                       {
                         "id": "custom.axisLabel",
                         "value": "Flow"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byRegexp",
-                      "options": "^Flow.*"
-                    },
-                    "properties": [
+                      },
                       {
                         "id": "custom.lineStyle",
                         "value": {
@@ -767,8 +765,8 @@
         "kind": "Panel",
         "spec": {
           "id": 17,
-          "title": "Drive 1 (U101)",
-          "description": "Cooling of Aradex drive 1: the pod's drive supply temperature, the drive's return temperature and flow. THRS sensors, temperatures in °C, flows in l/min (right axis).",
+          "title": "Drive 1 (${pod_system}-U101)",
+          "description": "Cooling of Aradex drive 1: the supply temperature shared by the pod's two drives, the drive's return temperature and flow. The legend shows each sensor's technical name. THRS sensors, temperatures in °C, flows in l/min (right axis, dashed).",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -790,7 +788,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END THEN temperature__value END) AS \"In\",\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'fwd' THEN '50001038-61' ELSE '50001038-32' END THEN temperature__value END) AS \"Out\"\nFROM public.marpower__thrs__temperatures\nWHERE $__timeFilter(timestamp) AND yard_tag IN (CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-61' ELSE '50001038-32' END)\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  technical_name,\n  avg(temperature__value) AS \"temperature\"\nFROM public.marpower__thrs__temperatures\nWHERE $__timeFilter(timestamp) AND yard_tag IN (CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-61' ELSE '50001038-32' END)\nGROUP BY 1, 2 ORDER BY 2, 1"
                       }
                     },
                     "refId": "A",
@@ -813,7 +811,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'fwd' THEN '50001057-15' ELSE '50001057-13' END THEN flow__value END) AS \"Flow\"\nFROM public.marpower__thrs__flows\nWHERE $__timeFilter(timestamp) AND yard_tag IN (CASE '${pod}' WHEN 'fwd' THEN '50001057-15' ELSE '50001057-13' END)\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  technical_name,\n  avg(flow__value) AS \"flow\"\nFROM public.marpower__thrs__flows\nWHERE $__timeFilter(timestamp) AND yard_tag IN (CASE '${pod}' WHEN 'fwd' THEN '50001057-15' ELSE '50001057-13' END)\nGROUP BY 1, 2 ORDER BY 2, 1"
                       }
                     },
                     "refId": "B",
@@ -823,12 +821,17 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "kind": "partitionByValues",
                   "spec": {
-                    "id": "renameByRegex",
+                    "id": "partitionByValues",
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "technical_name"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -893,13 +896,14 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.technical_name}"
                 },
                 "overrides": [
                   {
                     "matcher": {
                       "id": "byRegexp",
-                      "options": "^Flow.*"
+                      "options": ".*flow.*"
                     },
                     "properties": [
                       {
@@ -913,15 +917,7 @@
                       {
                         "id": "custom.axisLabel",
                         "value": "Flow"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byRegexp",
-                      "options": "^Flow.*"
-                    },
-                    "properties": [
+                      },
                       {
                         "id": "custom.lineStyle",
                         "value": {
@@ -944,8 +940,8 @@
         "kind": "Panel",
         "spec": {
           "id": 18,
-          "title": "Drive 2 (U102)",
-          "description": "Cooling of Aradex drive 2: the pod's drive supply temperature, the drive's return temperature and flow. THRS sensors, temperatures in °C, flows in l/min (right axis).",
+          "title": "Drive 2 (${pod_system}-U102)",
+          "description": "Cooling of Aradex drive 2: the supply temperature shared by the pod's two drives, the drive's return temperature and flow. The legend shows each sensor's technical name. THRS sensors, temperatures in °C, flows in l/min (right axis, dashed).",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -967,7 +963,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END THEN temperature__value END) AS \"In\",\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'fwd' THEN '50001038-72' ELSE '50001038-64' END THEN temperature__value END) AS \"Out\"\nFROM public.marpower__thrs__temperatures\nWHERE $__timeFilter(timestamp) AND yard_tag IN (CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-72' ELSE '50001038-64' END)\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  technical_name,\n  avg(temperature__value) AS \"temperature\"\nFROM public.marpower__thrs__temperatures\nWHERE $__timeFilter(timestamp) AND yard_tag IN (CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-72' ELSE '50001038-64' END)\nGROUP BY 1, 2 ORDER BY 2, 1"
                       }
                     },
                     "refId": "A",
@@ -990,7 +986,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'fwd' THEN '50001057-14' ELSE '50001057-16' END THEN flow__value END) AS \"Flow\"\nFROM public.marpower__thrs__flows\nWHERE $__timeFilter(timestamp) AND yard_tag IN (CASE '${pod}' WHEN 'fwd' THEN '50001057-14' ELSE '50001057-16' END)\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  technical_name,\n  avg(flow__value) AS \"flow\"\nFROM public.marpower__thrs__flows\nWHERE $__timeFilter(timestamp) AND yard_tag IN (CASE '${pod}' WHEN 'fwd' THEN '50001057-14' ELSE '50001057-16' END)\nGROUP BY 1, 2 ORDER BY 2, 1"
                       }
                     },
                     "refId": "B",
@@ -1000,12 +996,17 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "kind": "partitionByValues",
                   "spec": {
-                    "id": "renameByRegex",
+                    "id": "partitionByValues",
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "technical_name"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -1070,13 +1071,14 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.technical_name}"
                 },
                 "overrides": [
                   {
                     "matcher": {
                       "id": "byRegexp",
-                      "options": "^Flow.*"
+                      "options": ".*flow.*"
                     },
                     "properties": [
                       {
@@ -1090,15 +1092,7 @@
                       {
                         "id": "custom.axisLabel",
                         "value": "Flow"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byRegexp",
-                      "options": "^Flow.*"
-                    },
-                    "properties": [
+                      },
                       {
                         "id": "custom.lineStyle",
                         "value": {
@@ -1121,8 +1115,8 @@
         "kind": "Panel",
         "spec": {
           "id": 19,
-          "title": "Brightloops FWD 1–2",
-          "description": "The battery DC/DC converters' cooling loops on the FWD side: supply temperature, return temperature and flow per loop. Both sides are shown for either pod. THRS sensors, temperatures in °C, flows in l/min (right axis).",
+          "title": "Brightloops · ${pod:text}",
+          "description": "The battery DC/DC converters' cooling loops on the selected pod's side (FWD loops 1–2, AFT loops 1–4): supply temperature, return temperature and flow per loop. The legend shows each sensor's technical name. THRS sensors, temperatures in °C, flows in l/min (right axis, dashed).",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -1144,7 +1138,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = '50001038-69' THEN temperature__value END) AS \"In\",\n  avg(CASE WHEN yard_tag = '50001038-13' THEN temperature__value END) AS \"Out 1\",\n  avg(CASE WHEN yard_tag = '50001038-12' THEN temperature__value END) AS \"Out 2\"\nFROM public.marpower__thrs__temperatures\nWHERE $__timeFilter(timestamp) AND yard_tag IN ('50001038-69', '50001038-13', '50001038-12')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  technical_name,\n  avg(temperature__value) AS \"temperature\"\nFROM public.marpower__thrs__temperatures\nWHERE $__timeFilter(timestamp) AND (yard_tag IN ('50001038-69', '50001038-13', '50001038-12') AND '${pod}' = 'fwd' OR yard_tag IN ('50001038-15', '50001038-08', '50001038-07', '50001038-06', '50001038-05') AND '${pod}' = 'aft')\nGROUP BY 1, 2 ORDER BY 2, 1"
                       }
                     },
                     "refId": "A",
@@ -1167,7 +1161,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = '50001057-12' THEN flow__value END) AS \"Flow 1\",\n  avg(CASE WHEN yard_tag = '50001057-11' THEN flow__value END) AS \"Flow 2\"\nFROM public.marpower__thrs__flows\nWHERE $__timeFilter(timestamp) AND yard_tag IN ('50001057-12', '50001057-11')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  technical_name,\n  avg(flow__value) AS \"flow\"\nFROM public.marpower__thrs__flows\nWHERE $__timeFilter(timestamp) AND (yard_tag IN ('50001057-12', '50001057-11') AND '${pod}' = 'fwd' OR yard_tag IN ('50001057-07', '50001057-06', '50001057-05', '50001057-04') AND '${pod}' = 'aft')\nGROUP BY 1, 2 ORDER BY 2, 1"
                       }
                     },
                     "refId": "B",
@@ -1177,12 +1171,17 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "kind": "partitionByValues",
                   "spec": {
-                    "id": "renameByRegex",
+                    "id": "partitionByValues",
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "technical_name"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -1247,13 +1246,14 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.technical_name}"
                 },
                 "overrides": [
                   {
                     "matcher": {
                       "id": "byRegexp",
-                      "options": "^Flow.*"
+                      "options": ".*flow.*"
                     },
                     "properties": [
                       {
@@ -1267,15 +1267,7 @@
                       {
                         "id": "custom.axisLabel",
                         "value": "Flow"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byRegexp",
-                      "options": "^Flow.*"
-                    },
-                    "properties": [
+                      },
                       {
                         "id": "custom.lineStyle",
                         "value": {
@@ -1298,7 +1290,7 @@
         "kind": "Panel",
         "spec": {
           "id": 22,
-          "title": "Hydraulic oil temperature",
+          "title": "Hydraulic oil temperature · ${pod:text}",
           "description": "Hydraulic power pack tank temperature from the PLC, in °C as published.",
           "links": [],
           "data": {
@@ -1413,7 +1405,7 @@
         "kind": "Panel",
         "spec": {
           "id": 24,
-          "title": "Shear beams",
+          "title": "Shear beams · ${pod:text}",
           "description": "The four shear beams and the calculated shear beam value (dashed), as published, in the unit the IO list declares, Nm.",
           "links": [],
           "data": {
@@ -3006,7 +2998,7 @@
         "kind": "Panel",
         "spec": {
           "id": 4,
-          "title": "Propeller speed and shaft power",
+          "title": "Propeller speed and shaft power · ${pod:text}",
           "description": "Propeller speed from the PLC, declared in rpm but published in 0.1 rpm: shown corrected, raw / 10 rpm, without sign. Shaft power: the propeller's mechanical power from the PLC, declared in kW but published in 0.1 kW: shown corrected, raw / 10 kW, with the published sign, negative when propelling.",
           "links": [],
           "data": {
@@ -3172,7 +3164,7 @@
         "kind": "Panel",
         "spec": {
           "id": 41,
-          "title": "Pod",
+          "title": "${pod:text} pod",
           "description": "Propeller speed and shaft power, pitch and azimuth from the PLC. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
@@ -3261,7 +3253,7 @@
         "kind": "Panel",
         "spec": {
           "id": 42,
-          "title": "Drive loads",
+          "title": "Drive loads · ${pod:text}",
           "description": "DC power, positive when consuming; torque at the motor shaft; the torque limits the PLC sends and the power limits the PMS gives each drive, both as sent. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
@@ -3284,7 +3276,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH drives AS (\n  SELECT 1 AS drive, last_value(power__value ORDER BY timestamp) * 0.1 AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE timestamp > now() - INTERVAL '5 minutes'\n  UNION ALL\n  SELECT 2 AS drive, last_value(power__value ORDER BY timestamp) * 0.1 AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE timestamp > now() - INTERVAL '5 minutes'),\nlimits AS (\n  SELECT CASE right(topic, 4) WHEN 'u101' THEN 1 ELSE 2 END AS drive,\n    last_value(setpoint_power__value ORDER BY timestamp) AS propulsion_limit, last_value(produce_power_limit__value ORDER BY timestamp) AS regeneration_limit\n  FROM public.marpower__150000_propulsion_ara\n  WHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u101' ELSE '13-11-u101' END, 'marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u102' ELSE '13-11-u102' END)\n  GROUP BY topic)\nSELECT 'Drive ' || CAST(d.drive AS VARCHAR) AS \"Drive\",\n  round(d.power, 1) AS \"DC power [kW]\",\n  d.torque AS \"Torque [Nm]\",\n  d.max_torque AS \"Max torque sent [Nm]\",\n  d.min_torque AS \"Min torque sent [Nm]\",\n  round(l.propulsion_limit, 1) AS \"Propulsion limit [kW]\",\n  round(l.regeneration_limit, 1) AS \"Regeneration limit [kW]\",\n  d.updated AS \"Updated\"\nFROM drives d LEFT JOIN limits l ON l.drive = d.drive\nORDER BY d.drive"
+                        "rawSql": "WITH drives AS (\n  SELECT 1 AS drive, last_value(power__value ORDER BY timestamp) * 0.1 AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE timestamp > now() - INTERVAL '5 minutes'\n  UNION ALL\n  SELECT 2 AS drive, last_value(power__value ORDER BY timestamp) * 0.1 AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE timestamp > now() - INTERVAL '5 minutes'),\nlimits AS (\n  SELECT CASE right(topic, 4) WHEN 'u101' THEN 1 ELSE 2 END AS drive,\n    last_value(setpoint_power__value ORDER BY timestamp) AS propulsion_limit, last_value(produce_power_limit__value ORDER BY timestamp) AS regeneration_limit\n  FROM public.marpower__150000_propulsion_ara\n  WHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u101' ELSE '13-11-u101' END, 'marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u102' ELSE '13-11-u102' END)\n  GROUP BY topic)\nSELECT 'Drive ' || CAST(d.drive AS VARCHAR) || ' (${pod_system}-U10' || CAST(d.drive AS VARCHAR) || ')' AS \"Drive\",\n  round(d.power, 1) AS \"DC power [kW]\",\n  d.torque AS \"Torque [Nm]\",\n  d.max_torque AS \"Max torque sent [Nm]\",\n  d.min_torque AS \"Min torque sent [Nm]\",\n  round(l.propulsion_limit, 1) AS \"Propulsion limit [kW]\",\n  round(l.regeneration_limit, 1) AS \"Regeneration limit [kW]\",\n  d.updated AS \"Updated\"\nFROM drives d LEFT JOIN limits l ON l.drive = d.drive\nORDER BY d.drive"
                       }
                     },
                     "refId": "A",
@@ -3350,7 +3342,7 @@
         "kind": "Panel",
         "spec": {
           "id": 44,
-          "title": "Motor temperatures",
+          "title": "Motor temperatures · ${pod:text}",
           "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
@@ -3439,7 +3431,7 @@
         "kind": "Panel",
         "spec": {
           "id": 46,
-          "title": "Drive temperatures",
+          "title": "Drive temperatures · ${pod:text}",
           "description": "Values of 199, published while the drive is off, are left out. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
@@ -3462,7 +3454,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT 'Drive 1' AS \"Drive\",\n  last_value(NULLIF(temp_igbt__value, 199) ORDER BY timestamp) AS \"IGBT [°C]\",\n  last_value(NULLIF(temp_power_stage__value, 199) ORDER BY timestamp) AS \"Power stage [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE timestamp > now() - INTERVAL '5 minutes'\nUNION ALL\nSELECT 'Drive 2' AS \"Drive\",\n  last_value(NULLIF(temp_igbt__value, 199) ORDER BY timestamp) AS \"IGBT [°C]\",\n  last_value(NULLIF(temp_power_stage__value, 199) ORDER BY timestamp) AS \"Power stage [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE timestamp > now() - INTERVAL '5 minutes'\nORDER BY 1"
+                        "rawSql": "SELECT 'Drive 1 (${pod_system}-U101)' AS \"Drive\",\n  last_value(NULLIF(temp_igbt__value, 199) ORDER BY timestamp) AS \"IGBT [°C]\",\n  last_value(NULLIF(temp_power_stage__value, 199) ORDER BY timestamp) AS \"Power stage [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE timestamp > now() - INTERVAL '5 minutes'\nUNION ALL\nSELECT 'Drive 2 (${pod_system}-U102)' AS \"Drive\",\n  last_value(NULLIF(temp_igbt__value, 199) ORDER BY timestamp) AS \"IGBT [°C]\",\n  last_value(NULLIF(temp_power_stage__value, 199) ORDER BY timestamp) AS \"Power stage [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE timestamp > now() - INTERVAL '5 minutes'\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -3528,8 +3520,8 @@
         "kind": "Panel",
         "spec": {
           "id": 48,
-          "title": "Cooling circuits",
-          "description": "Updated: the oldest of the circuit's three sensors. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "title": "Cooling circuits · ${pod:text}",
+          "description": "The selected pod's cooling circuits with the yard tags of their sensors. Updated: the oldest of the circuit's three sensors. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -3551,7 +3543,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH circuits AS (SELECT * FROM (VALUES\n    (1, 'Thruster', '50001038-28', CASE '${pod}' WHEN 'fwd' THEN '50001038-02' ELSE '50001038-01' END, CASE '${pod}' WHEN 'fwd' THEN '50001057-22' ELSE '50001218-02' END),\n    (2, 'Drive 1 (U101)', CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-61' ELSE '50001038-32' END, CASE '${pod}' WHEN 'fwd' THEN '50001057-15' ELSE '50001057-13' END),\n    (3, 'Drive 2 (U102)', CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-72' ELSE '50001038-64' END, CASE '${pod}' WHEN 'fwd' THEN '50001057-14' ELSE '50001057-16' END),\n    (4, 'Brightloop FWD 1', '50001038-69', '50001038-13', '50001057-12'),\n    (5, 'Brightloop FWD 2', '50001038-69', '50001038-12', '50001057-11'),\n    (6, 'Brightloop AFT 1', '50001038-15', '50001038-08', '50001057-07'),\n    (7, 'Brightloop AFT 2', '50001038-15', '50001038-07', '50001057-06'),\n    (8, 'Brightloop AFT 3', '50001038-15', '50001038-06', '50001057-05'),\n    (9, 'Brightloop AFT 4', '50001038-15', '50001038-05', '50001057-04')) v (sort, circuit, in_tag, out_tag, flow_tag)),\ntemperatures AS (\n  SELECT yard_tag, last_value(temperature__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__temperatures WHERE timestamp > now() - INTERVAL '5 minutes' GROUP BY yard_tag),\nflows AS (\n  SELECT yard_tag, last_value(flow__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__flows WHERE timestamp > now() - INTERVAL '5 minutes' GROUP BY yard_tag)\nSELECT c.circuit AS \"Circuit\",\n  round(t_in.value, 1) AS \"In [°C]\",\n  round(t_out.value, 1) AS \"Out [°C]\",\n  round(f.value, 1) AS \"Flow [l/min]\",\n  least(t_in.updated, t_out.updated, f.updated) AS \"Updated\"\nFROM circuits c\n  LEFT JOIN temperatures t_in ON t_in.yard_tag = c.in_tag\n  LEFT JOIN temperatures t_out ON t_out.yard_tag = c.out_tag\n  LEFT JOIN flows f ON f.yard_tag = c.flow_tag\nORDER BY c.sort"
+                        "rawSql": "WITH circuits AS (SELECT * FROM (VALUES\n    (1, 'fwd', 'Thruster', '50001038-28', '50001038-02', '50001057-22'),\n    (2, 'fwd', 'Drive 1 (13-31-U101)', '50001038-62', '50001038-61', '50001057-15'),\n    (3, 'fwd', 'Drive 2 (13-31-U102)', '50001038-62', '50001038-72', '50001057-14'),\n    (4, 'fwd', 'Brightloop 1', '50001038-69', '50001038-13', '50001057-12'),\n    (5, 'fwd', 'Brightloop 2', '50001038-69', '50001038-12', '50001057-11'),\n    (6, 'aft', 'Thruster', '50001038-28', '50001038-01', '50001218-02'),\n    (7, 'aft', 'Drive 1 (13-11-U101)', '50001038-63', '50001038-32', '50001057-13'),\n    (8, 'aft', 'Drive 2 (13-11-U102)', '50001038-63', '50001038-64', '50001057-16'),\n    (9, 'aft', 'Brightloop 1', '50001038-15', '50001038-08', '50001057-07'),\n    (10, 'aft', 'Brightloop 2', '50001038-15', '50001038-07', '50001057-06'),\n    (11, 'aft', 'Brightloop 3', '50001038-15', '50001038-06', '50001057-05'),\n    (12, 'aft', 'Brightloop 4', '50001038-15', '50001038-05', '50001057-04')) v (sort, pod, circuit, in_tag, out_tag, flow_tag) WHERE pod = '${pod}'),\ntemperatures AS (\n  SELECT yard_tag, last_value(temperature__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__temperatures WHERE timestamp > now() - INTERVAL '5 minutes' GROUP BY yard_tag),\nflows AS (\n  SELECT yard_tag, last_value(flow__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__flows WHERE timestamp > now() - INTERVAL '5 minutes' GROUP BY yard_tag)\nSELECT c.circuit AS \"Circuit\",\n  round(t_in.value, 1) AS \"In [°C]\",\n  round(t_out.value, 1) AS \"Out [°C]\",\n  round(f.value, 1) AS \"Flow [l/min]\",\n  c.in_tag AS \"In tag\",\n  c.out_tag AS \"Out tag\",\n  c.flow_tag AS \"Flow tag\",\n  least(t_in.updated, t_out.updated, f.updated) AS \"Updated\"\nFROM circuits c\n  LEFT JOIN temperatures t_in ON t_in.yard_tag = c.in_tag\n  LEFT JOIN temperatures t_out ON t_out.yard_tag = c.out_tag\n  LEFT JOIN flows f ON f.yard_tag = c.flow_tag\nORDER BY c.sort"
                       }
                     },
                     "refId": "A",
@@ -3617,7 +3609,7 @@
         "kind": "Panel",
         "spec": {
           "id": 5,
-          "title": "Pitch and azimuth",
+          "title": "Pitch and azimuth · ${pod:text}",
           "description": "Propeller pitch and azimuth from the PLC, in whole degrees as published. The pitch is the blade angle, not the pitch ratio P/D = 2.2 × tan(pitch).",
           "links": [],
           "data": {
@@ -3780,7 +3772,7 @@
         "kind": "Panel",
         "spec": {
           "id": 50,
-          "title": "Hydraulic oil temperature",
+          "title": "Hydraulic oil temperature · ${pod:text}",
           "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
@@ -3869,7 +3861,7 @@
         "kind": "Panel",
         "spec": {
           "id": 52,
-          "title": "Shear beams",
+          "title": "Shear beams · ${pod:text}",
           "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
@@ -4225,7 +4217,7 @@
         "kind": "Panel",
         "spec": {
           "id": 58,
-          "title": "Mode, station and drive enable",
+          "title": "Mode, station and drive enable · ${pod:text}",
           "description": "Transitions only, for the selected pod. Mode: R45 from the pod table (0 Off, 1 Sailing, 2 Propulsion, 3 Maneuvering, 4 Hydrogeneration). Pitch mode: R54 (1 Normal, 2 High thrust, 3 Motor sail, 4 Auto). Lever not in zero: from the pod table. Drive control mode: R30/31 per drive, as published; its values are not documented. Station selected: from the PS and SB helm tables. Drive enabled: from the Aradex tables.",
           "links": [],
           "data": {
@@ -4981,7 +4973,7 @@
         "kind": "Panel",
         "spec": {
           "id": 6,
-          "title": "Power and PMS limits",
+          "title": "Power and PMS limits · ${pod:text}",
           "description": "Solid: DC power per drive, declared in kW but published in 0.1 kW: shown corrected, raw × 0.1 kW, positive when consuming. Dashed: the power limits the PMS sends each drive, in kW as sent and not corrected, since the PCS reads them as they are; the propulsion limit above zero, the regeneration limit negated below zero, the lowest value in each interval. Dotted: the torque limit sent to each drive × motor speed / 9550, in kW: setpoint 2 (maximum torque) at a speed of zero or more, setpoint 3 (minimum torque) below; the lowest value in each interval.",
           "links": [],
           "data": {
@@ -5241,7 +5233,7 @@
         "kind": "Panel",
         "spec": {
           "id": 7,
-          "title": "Torque per drive and PLC limits",
+          "title": "Torque per drive and PLC limits · ${pod:text}",
           "description": "Solid: the torque of each Aradex drive at the motor shaft (before the 1.478 gearbox), declared in Nm but published as whole % of 10 000 Nm: shown corrected, raw × 100 Nm, in steps of 100 Nm. Dashed: setpoints 2 (maximum torque) and 3 (minimum torque) the PLC sends each drive, as sent, in Nm; the IO list declares no unit. The lowest maximum and the highest minimum in each interval.",
           "links": [],
           "data": {
@@ -5437,7 +5429,7 @@
         "kind": "Panel",
         "spec": {
           "id": 8,
-          "title": "Propeller speed rate of change",
+          "title": "Propeller speed rate of change · ${pod:text}",
           "description": "Rate of change of the propeller speed (corrected, raw / 10 rpm, without sign) between consecutive samples: positive when speeding up, negative when slowing down. Dashed: the drive ramps as configured in the drives, 3 Hz/s both ways = ±121.8 propeller rpm/s. Samples are about 3 s apart, and unchanged values are not published.",
           "links": [],
           "data": {
@@ -5671,7 +5663,7 @@
         "kind": "Panel",
         "spec": {
           "id": 59,
-          "title": "Load pins",
+          "title": "Load pins · ${pod:text}",
           "description": "The four load pins in the pod's mounts, horizontal (solid) and vertical (dashed), colour per pin. Declared in kN but published in N: shown corrected, raw / 1000 kN. The published int16 wraps beyond ±32.8 kN.",
           "links": [],
           "data": {
@@ -5975,7 +5967,7 @@
         "kind": "Panel",
         "spec": {
           "id": 60,
-          "title": "Load pins, horizontal against vertical",
+          "title": "Load pins, horizontal against vertical · ${pod:text}",
           "description": "Horizontal against vertical force per pin, averaged per interval. Same source and correction as Load pins.",
           "links": [],
           "data": {
@@ -6208,7 +6200,7 @@
         "kind": "Panel",
         "spec": {
           "id": 61,
-          "title": "Load pins",
+          "title": "Load pins · ${pod:text}",
           "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
@@ -6312,183 +6304,6 @@
                       {
                         "id": "unit",
                         "value": "dateTimeFromNow"
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
-        }
-      },
-      "panel-62": {
-        "kind": "Panel",
-        "spec": {
-          "id": 62,
-          "title": "Brightloops AFT 1–4",
-          "description": "The battery DC/DC converters' cooling loops on the AFT side: supply temperature, return temperature and flow per loop. Both sides are shown for either pod. THRS sensors, temperatures in °C, flows in l/min (right axis).",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "${datasource}"
-                      },
-                      "spec": {
-                        "editorType": "sql",
-                        "format": 1,
-                        "pluginVersion": "2.1.4",
-                        "queryType": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = '50001038-15' THEN temperature__value END) AS \"In\",\n  avg(CASE WHEN yard_tag = '50001038-08' THEN temperature__value END) AS \"Out 1\",\n  avg(CASE WHEN yard_tag = '50001038-07' THEN temperature__value END) AS \"Out 2\",\n  avg(CASE WHEN yard_tag = '50001038-06' THEN temperature__value END) AS \"Out 3\",\n  avg(CASE WHEN yard_tag = '50001038-05' THEN temperature__value END) AS \"Out 4\"\nFROM public.marpower__thrs__temperatures\nWHERE $__timeFilter(timestamp) AND yard_tag IN ('50001038-15', '50001038-08', '50001038-07', '50001038-06', '50001038-05')\nGROUP BY 1 ORDER BY 1"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "${datasource}"
-                      },
-                      "spec": {
-                        "editorType": "sql",
-                        "format": 1,
-                        "pluginVersion": "2.1.4",
-                        "queryType": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = '50001057-07' THEN flow__value END) AS \"Flow 1\",\n  avg(CASE WHEN yard_tag = '50001057-06' THEN flow__value END) AS \"Flow 2\",\n  avg(CASE WHEN yard_tag = '50001057-05' THEN flow__value END) AS \"Flow 3\",\n  avg(CASE WHEN yard_tag = '50001057-04' THEN flow__value END) AS \"Flow 4\"\nFROM public.marpower__thrs__flows\nWHERE $__timeFilter(timestamp) AND yard_tag IN ('50001057-07', '50001057-06', '50001057-05', '50001057-04')\nGROUP BY 1 ORDER BY 1"
-                      }
-                    },
-                    "refId": "B",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [
-                {
-                  "kind": "renameByRegex",
-                  "spec": {
-                    "id": "renameByRegex",
-                    "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
-                    }
-                  }
-                }
-              ],
-              "queryOptions": {
-                "maxDataPoints": 600,
-                "interval": "1s"
-              }
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "timeseries",
-            "version": "12.3.0",
-            "spec": {
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "hideZeros": false,
-                  "mode": "multi",
-                  "sort": "none"
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "celsius",
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": null,
-                        "color": "green"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": 60000,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  }
-                },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byRegexp",
-                      "options": "^Flow.*"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.axisPlacement",
-                        "value": "right"
-                      },
-                      {
-                        "id": "unit",
-                        "value": "flowlpm"
-                      },
-                      {
-                        "id": "custom.axisLabel",
-                        "value": "Flow"
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byRegexp",
-                      "options": "^Flow.*"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.lineStyle",
-                        "value": {
-                          "dash": [
-                            10,
-                            10
-                          ],
-                          "fill": "dash"
-                        }
                       }
                     ]
                   }
@@ -6901,19 +6716,6 @@
                                     "name": "panel-19"
                                   }
                                 }
-                              },
-                              {
-                                "kind": "GridLayoutItem",
-                                "spec": {
-                                  "x": 0,
-                                  "y": 24,
-                                  "width": 24,
-                                  "height": 8,
-                                  "element": {
-                                    "kind": "ElementReference",
-                                    "name": "panel-62"
-                                  }
-                                }
                               }
                             ]
                           }
@@ -6933,7 +6735,7 @@
                                 "spec": {
                                   "x": 0,
                                   "y": 0,
-                                  "width": 16,
+                                  "width": 24,
                                   "height": 12,
                                   "element": {
                                     "kind": "ElementReference",
@@ -7529,6 +7331,40 @@
           "label": "Pod",
           "hide": "dontHide",
           "skipUrlSync": false,
+          "allowCustomValue": true
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "pod_system",
+          "current": {
+            "text": "13-31",
+            "value": "13-31"
+          },
+          "hide": "hideVariable",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "description": "The pod's system number in the drive designations: 13-31 for FWD, 13-11 for AFT.",
+          "query": {
+            "kind": "DataQuery",
+            "group": "info8fcc-greptimedb-datasource",
+            "version": "v0",
+            "datasource": {
+              "name": "${datasource}"
+            },
+            "spec": {
+              "queryType": "sql",
+              "rawSql": "SELECT CASE '${pod}' WHEN 'fwd' THEN '13-31' ELSE '13-11' END",
+              "refId": "var"
+            }
+          },
+          "regex": "",
+          "sort": "disabled",
+          "definition": "",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
           "allowCustomValue": true
         }
       },
