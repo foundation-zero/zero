@@ -179,6 +179,31 @@ export const DC_MIMIC_QUERY = gql`
   }
 `;
 
+export const ADSORPTION_MIMIC_QUERY = gql`
+  query AdsorptionMimic {
+    modules {
+      adsorption {
+        sensorValues {
+          ${Queries.ADSORPTION_SENSOR_QUERY}
+        }
+        controlValues {
+          ${Queries.ADSORPTION_CONTROL_QUERY}
+        }
+      }
+      consumers {
+        sensorValues {
+          ${Queries.CONSUMERS_SENSOR_QUERY}
+        }
+      }
+      dhw {
+        sensorValues {
+          ${Queries.DHW_SENSOR_QUERY}
+        }
+      }
+    }
+  }
+`;
+
 export const DRIVES_MIMIC_QUERY = gql`
   query DrivesMimic {
     modules {
