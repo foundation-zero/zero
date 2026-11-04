@@ -2,27 +2,7 @@
   "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
-    "name": "commissioning-hull-temps",
-    "namespace": "default",
-    "uid": "9ad8dbce-9654-4d79-b0c0-9bb335279b14",
-    "resourceVersion": "1793788870088017",
-    "generation": 1,
-    "creationTimestamp": "2026-11-04T10:41:10Z",
-    "labels": {
-      "grafana.app/deprecatedInternalID": "1238318375067648"
-    },
-    "annotations": {
-      "grafana.app/createdBy": "access-policy:service",
-      "grafana.app/folder": "dg39zkjnr7f9cb",
-      "grafana.app/managedBy": "classic-file-provisioning",
-      "grafana.app/managerId": "embedded-dashboards",
-      "grafana.app/sourceChecksum": "ad882f2af781116ab7acb5077f996a5f",
-      "grafana.app/sourcePath": "/embedded-dashboards/Commissioning/hull-temperatures-dashboard.json",
-      "grafana.app/sourceTimestamp": "1787735491000",
-      "grafana.app/updatedBy": "access-policy:service",
-      "grafana.app/folderTitle": "Commissioning",
-      "grafana.app/folderUrl": "/dashboards/f/dg39zkjnr7f9cb/commissioning"
-    }
+    "name": "commissioning-hull-temps"
   },
   "spec": {
     "annotations": [

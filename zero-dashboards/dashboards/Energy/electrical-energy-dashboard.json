@@ -2,27 +2,7 @@
   "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
-    "name": "9a91cc40-a5b1-4b0e-a69e-c9530138fdda",
-    "namespace": "default",
-    "uid": "cca052b3-f062-4229-a0d2-50521f17a26d",
-    "resourceVersion": "1793788869798016",
-    "generation": 1,
-    "creationTimestamp": "2026-11-04T10:41:09Z",
-    "labels": {
-      "grafana.app/deprecatedInternalID": "1238317192273920"
-    },
-    "annotations": {
-      "grafana.app/createdBy": "access-policy:service",
-      "grafana.app/folder": "eg39zkr6hp8g0b",
-      "grafana.app/managedBy": "classic-file-provisioning",
-      "grafana.app/managerId": "embedded-dashboards",
-      "grafana.app/sourceChecksum": "af6ce6aa72392cc429ce747a40f7e856",
-      "grafana.app/sourcePath": "/embedded-dashboards/Energy/electrical-energy-dashboard.json",
-      "grafana.app/sourceTimestamp": "1793788238000",
-      "grafana.app/updatedBy": "access-policy:service",
-      "grafana.app/folderTitle": "Energy",
-      "grafana.app/folderUrl": "/dashboards/f/eg39zkr6hp8g0b/energy"
-    }
+    "name": "9a91cc40-a5b1-4b0e-a69e-c9530138fdda"
   },
   "spec": {
     "annotations": [
