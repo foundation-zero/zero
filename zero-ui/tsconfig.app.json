@@ -30,5 +30,11 @@
       "@modules/*": ["./src/modules/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "src/settings/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/settings/*.ts",
+    "scripts/manual-print/*.ts"
+  ]
 }
