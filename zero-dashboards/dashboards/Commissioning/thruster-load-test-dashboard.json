@@ -1121,8 +1121,8 @@
         "kind": "Panel",
         "spec": {
           "id": 19,
-          "title": "Brightloops",
-          "description": "The cooling loops of the battery DC/DC converters on the selected pod's side: FWD loops 1–2, AFT loops 1–4. Supply temperature, return temperature and flow per loop. THRS sensors, temperatures in °C, flows in l/min (right axis).",
+          "title": "Brightloops FWD 1–2",
+          "description": "The battery DC/DC converters' cooling loops on the FWD side: supply temperature, return temperature and flow per loop. Both sides are shown for either pod. THRS sensors, temperatures in °C, flows in l/min (right axis).",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -1144,7 +1144,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'fwd' THEN '50001038-69' ELSE '50001038-15' END THEN temperature__value END) AS \"In\",\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'fwd' THEN '50001038-13' ELSE '50001038-08' END THEN temperature__value END) AS \"Out 1\",\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'fwd' THEN '50001038-12' ELSE '50001038-07' END THEN temperature__value END) AS \"Out 2\",\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'aft' THEN '50001038-06' ELSE 'none-50001038-06' END THEN temperature__value END) AS \"Out 3 ${pod}\",\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'aft' THEN '50001038-05' ELSE 'none-50001038-05' END THEN temperature__value END) AS \"Out 4 ${pod}\"\nFROM public.marpower__thrs__temperatures\nWHERE $__timeFilter(timestamp) AND yard_tag IN (CASE '${pod}' WHEN 'fwd' THEN '50001038-69' ELSE '50001038-15' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-13' ELSE '50001038-08' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-12' ELSE '50001038-07' END, '50001038-06', '50001038-05')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = '50001038-69' THEN temperature__value END) AS \"In\",\n  avg(CASE WHEN yard_tag = '50001038-13' THEN temperature__value END) AS \"Out 1\",\n  avg(CASE WHEN yard_tag = '50001038-12' THEN temperature__value END) AS \"Out 2\"\nFROM public.marpower__thrs__temperatures\nWHERE $__timeFilter(timestamp) AND yard_tag IN ('50001038-69', '50001038-13', '50001038-12')\nGROUP BY 1 ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -1167,7 +1167,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'fwd' THEN '50001057-12' ELSE '50001057-07' END THEN flow__value END) AS \"Flow 1\",\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'fwd' THEN '50001057-11' ELSE '50001057-06' END THEN flow__value END) AS \"Flow 2\",\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'aft' THEN '50001057-05' ELSE 'none-50001057-05' END THEN flow__value END) AS \"Flow 3 ${pod}\",\n  avg(CASE WHEN yard_tag = CASE '${pod}' WHEN 'aft' THEN '50001057-04' ELSE 'none-50001057-04' END THEN flow__value END) AS \"Flow 4 ${pod}\"\nFROM public.marpower__thrs__flows\nWHERE $__timeFilter(timestamp) AND yard_tag IN (CASE '${pod}' WHEN 'fwd' THEN '50001057-12' ELSE '50001057-07' END, CASE '${pod}' WHEN 'fwd' THEN '50001057-11' ELSE '50001057-06' END, '50001057-05', '50001057-04')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = '50001057-12' THEN flow__value END) AS \"Flow 1\",\n  avg(CASE WHEN yard_tag = '50001057-11' THEN flow__value END) AS \"Flow 2\"\nFROM public.marpower__thrs__flows\nWHERE $__timeFilter(timestamp) AND yard_tag IN ('50001057-12', '50001057-11')\nGROUP BY 1 ORDER BY 1"
                       }
                     },
                     "refId": "B",
@@ -1182,16 +1182,6 @@
                     "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
-                    }
-                  }
-                },
-                {
-                  "kind": "renameByRegex",
-                  "spec": {
-                    "id": "renameByRegex",
-                    "options": {
-                      "regex": "^(.*) aft$",
                       "renamePattern": "$1"
                     }
                   }
@@ -1294,22 +1284,6 @@
                             10
                           ],
                           "fill": "dash"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byRegexp",
-                      "options": "^.* fwd$"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.hideFrom",
-                        "value": {
-                          "legend": true,
-                          "tooltip": true,
-                          "viz": true
                         }
                       }
                     ]
@@ -3577,7 +3551,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH circuits AS (SELECT * FROM (VALUES\n    (1, 'all', 'Thruster', '50001038-28', CASE '${pod}' WHEN 'fwd' THEN '50001038-02' ELSE '50001038-01' END, CASE '${pod}' WHEN 'fwd' THEN '50001057-22' ELSE '50001218-02' END),\n    (2, 'all', 'Drive 1 (U101)', CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-61' ELSE '50001038-32' END, CASE '${pod}' WHEN 'fwd' THEN '50001057-15' ELSE '50001057-13' END),\n    (3, 'all', 'Drive 2 (U102)', CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-72' ELSE '50001038-64' END, CASE '${pod}' WHEN 'fwd' THEN '50001057-14' ELSE '50001057-16' END),\n    (4, 'fwd', 'Brightloop 1', '50001038-69', '50001038-13', '50001057-12'),\n    (5, 'fwd', 'Brightloop 2', '50001038-69', '50001038-12', '50001057-11'),\n    (6, 'aft', 'Brightloop 1', '50001038-15', '50001038-08', '50001057-07'),\n    (7, 'aft', 'Brightloop 2', '50001038-15', '50001038-07', '50001057-06'),\n    (8, 'aft', 'Brightloop 3', '50001038-15', '50001038-06', '50001057-05'),\n    (9, 'aft', 'Brightloop 4', '50001038-15', '50001038-05', '50001057-04')) v (sort, pod, circuit, in_tag, out_tag, flow_tag)),\ntemperatures AS (\n  SELECT yard_tag, last_value(temperature__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__temperatures WHERE timestamp > now() - INTERVAL '5 minutes' GROUP BY yard_tag),\nflows AS (\n  SELECT yard_tag, last_value(flow__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__flows WHERE timestamp > now() - INTERVAL '5 minutes' GROUP BY yard_tag)\nSELECT c.circuit AS \"Circuit\",\n  round(t_in.value, 1) AS \"In [°C]\",\n  round(t_out.value, 1) AS \"Out [°C]\",\n  round(f.value, 1) AS \"Flow [l/min]\",\n  least(t_in.updated, t_out.updated, f.updated) AS \"Updated\"\nFROM circuits c\n  LEFT JOIN temperatures t_in ON t_in.yard_tag = c.in_tag\n  LEFT JOIN temperatures t_out ON t_out.yard_tag = c.out_tag\n  LEFT JOIN flows f ON f.yard_tag = c.flow_tag\nWHERE c.pod IN ('all', '${pod}')\nORDER BY c.sort"
+                        "rawSql": "WITH circuits AS (SELECT * FROM (VALUES\n    (1, 'Thruster', '50001038-28', CASE '${pod}' WHEN 'fwd' THEN '50001038-02' ELSE '50001038-01' END, CASE '${pod}' WHEN 'fwd' THEN '50001057-22' ELSE '50001218-02' END),\n    (2, 'Drive 1 (U101)', CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-61' ELSE '50001038-32' END, CASE '${pod}' WHEN 'fwd' THEN '50001057-15' ELSE '50001057-13' END),\n    (3, 'Drive 2 (U102)', CASE '${pod}' WHEN 'fwd' THEN '50001038-62' ELSE '50001038-63' END, CASE '${pod}' WHEN 'fwd' THEN '50001038-72' ELSE '50001038-64' END, CASE '${pod}' WHEN 'fwd' THEN '50001057-14' ELSE '50001057-16' END),\n    (4, 'Brightloop FWD 1', '50001038-69', '50001038-13', '50001057-12'),\n    (5, 'Brightloop FWD 2', '50001038-69', '50001038-12', '50001057-11'),\n    (6, 'Brightloop AFT 1', '50001038-15', '50001038-08', '50001057-07'),\n    (7, 'Brightloop AFT 2', '50001038-15', '50001038-07', '50001057-06'),\n    (8, 'Brightloop AFT 3', '50001038-15', '50001038-06', '50001057-05'),\n    (9, 'Brightloop AFT 4', '50001038-15', '50001038-05', '50001057-04')) v (sort, circuit, in_tag, out_tag, flow_tag)),\ntemperatures AS (\n  SELECT yard_tag, last_value(temperature__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__temperatures WHERE timestamp > now() - INTERVAL '5 minutes' GROUP BY yard_tag),\nflows AS (\n  SELECT yard_tag, last_value(flow__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__flows WHERE timestamp > now() - INTERVAL '5 minutes' GROUP BY yard_tag)\nSELECT c.circuit AS \"Circuit\",\n  round(t_in.value, 1) AS \"In [°C]\",\n  round(t_out.value, 1) AS \"Out [°C]\",\n  round(f.value, 1) AS \"Flow [l/min]\",\n  least(t_in.updated, t_out.updated, f.updated) AS \"Updated\"\nFROM circuits c\n  LEFT JOIN temperatures t_in ON t_in.yard_tag = c.in_tag\n  LEFT JOIN temperatures t_out ON t_out.yard_tag = c.out_tag\n  LEFT JOIN flows f ON f.yard_tag = c.flow_tag\nORDER BY c.sort"
                       }
                     },
                     "refId": "A",
@@ -6346,6 +6320,183 @@
             }
           }
         }
+      },
+      "panel-62": {
+        "kind": "Panel",
+        "spec": {
+          "id": 62,
+          "title": "Brightloops AFT 1–4",
+          "description": "The battery DC/DC converters' cooling loops on the AFT side: supply temperature, return temperature and flow per loop. Both sides are shown for either pod. THRS sensors, temperatures in °C, flows in l/min (right axis).",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "info8fcc-greptimedb-datasource",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = '50001038-15' THEN temperature__value END) AS \"In\",\n  avg(CASE WHEN yard_tag = '50001038-08' THEN temperature__value END) AS \"Out 1\",\n  avg(CASE WHEN yard_tag = '50001038-07' THEN temperature__value END) AS \"Out 2\",\n  avg(CASE WHEN yard_tag = '50001038-06' THEN temperature__value END) AS \"Out 3\",\n  avg(CASE WHEN yard_tag = '50001038-05' THEN temperature__value END) AS \"Out 4\"\nFROM public.marpower__thrs__temperatures\nWHERE $__timeFilter(timestamp) AND yard_tag IN ('50001038-15', '50001038-08', '50001038-07', '50001038-06', '50001038-05')\nGROUP BY 1 ORDER BY 1"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "info8fcc-greptimedb-datasource",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN yard_tag = '50001057-07' THEN flow__value END) AS \"Flow 1\",\n  avg(CASE WHEN yard_tag = '50001057-06' THEN flow__value END) AS \"Flow 2\",\n  avg(CASE WHEN yard_tag = '50001057-05' THEN flow__value END) AS \"Flow 3\",\n  avg(CASE WHEN yard_tag = '50001057-04' THEN flow__value END) AS \"Flow 4\"\nFROM public.marpower__thrs__flows\nWHERE $__timeFilter(timestamp) AND yard_tag IN ('50001057-07', '50001057-06', '50001057-05', '50001057-04')\nGROUP BY 1 ORDER BY 1"
+                      }
+                    },
+                    "refId": "B",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [
+                {
+                  "kind": "renameByRegex",
+                  "spec": {
+                    "id": "renameByRegex",
+                    "options": {
+                      "regex": "^(.*) Result \\d+$",
+                      "renamePattern": "$1"
+                    }
+                  }
+                }
+              ],
+              "queryOptions": {
+                "maxDataPoints": 600,
+                "interval": "1s"
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "12.3.0",
+            "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "celsius",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "spanNulls": 60000,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": "^Flow.*"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.axisPlacement",
+                        "value": "right"
+                      },
+                      {
+                        "id": "unit",
+                        "value": "flowlpm"
+                      },
+                      {
+                        "id": "custom.axisLabel",
+                        "value": "Flow"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": "^Flow.*"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.lineStyle",
+                        "value": {
+                          "dash": [
+                            10,
+                            10
+                          ],
+                          "fill": "dash"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     },
     "layout": {
@@ -6748,6 +6899,19 @@
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-19"
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 0,
+                                  "y": 24,
+                                  "width": 24,
+                                  "height": 8,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-62"
                                   }
                                 }
                               }
