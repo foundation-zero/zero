@@ -107,3 +107,19 @@ test_spec *args:
 
 export_schema:
     uv run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrapp/graphql/schema.graphql
+
+manual_scripts := "docs/skills/thrs-module-manual/scripts"
+manuals := "../zero-ui/src/modules/thrapp/documentation"
+
+manual_pdf module:
+    uv run python {{ manual_scripts }}/manual_version.py {{ module }} /tmp/thrs-manuals/{{ module }}.html
+    cd ../zero-ui && pnpm install --silent && pnpm exec playwright install chromium
+    cd ../zero-ui && pnpm render-manual /tmp/thrs-manuals/{{ module }}.html
+
+manual_publish module:
+    cp /tmp/thrs-manuals/{{ module }}.html {{ manuals }}/{{ module }}.html
+    cd ../zero-ui && pnpm exec prettier --write src/modules/thrapp/documentation/{{ module }}.html
+
+manual_stamp module:
+    uv run python {{ manual_scripts }}/manual_version.py {{ module }} {{ manuals }}/{{ module }}.html
+    cd ../zero-ui && pnpm exec prettier --write src/modules/thrapp/documentation/{{ module }}.html
