@@ -1326,7 +1326,7 @@ requires-dist = [
     { name = "pyjwt", specifier = ">=2.11.0,<3" },
     { name = "requests", specifier = ">=2.31.0,<3" },
     { name = "sqlalchemy", specifier = ">=2.0.43,<3.0.0" },
-    { name = "strawberry-graphql", extras = ["fastapi"], specifier = ">=0.338.0,<0.339.0" },
+    { name = "strawberry-graphql", extras = ["fastapi"], specifier = ">=0.339.1,<0.340.0" },
     { name = "uvicorn", specifier = ">=0.54.0,<0.55.0" },
 ]
 
@@ -2656,7 +2656,7 @@ wheels = [
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.338.0"
+version = "0.339.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cross-web" },
@@ -2665,9 +2665,9 @@ dependencies = [
     { name = "python-dateutil" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bd/95/a57f85804424128fb26dc56c7960c949dc6264493575b4637865c90ca190/strawberry_graphql-0.338.0.tar.gz", hash = "sha256:74396fa0d968286c839dcf24a54c6a799d83d72fe8ea8f653765d1407707e6a8", size = 292241, upload-time = "2026-10-26T12:30:43.151Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/17/75/78fda2622fcfc5bd3d028f540ab9d6e3838016b78549c0572a7cda442603/strawberry_graphql-0.339.1.tar.gz", hash = "sha256:16e8ac770dcbd6946b5725845e9b8b8c68aa3f811766627bda3902b00c928e23", size = 295649, upload-time = "2026-10-31T22:58:47.158Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8c/4e/16b7c2a3018cb31092a3fd90da6cda84503e10fe3cf63870c3b0e1c17ca3/strawberry_graphql-0.338.0-py3-none-any.whl", hash = "sha256:2be983dcaed17daa0501799cf524dafd53aab44ac178530aa3b6eb6d99b6943f", size = 387661, upload-time = "2026-10-26T12:30:40.97Z" },
+    { url = "https://files.pythonhosted.org/packages/2e/4e/e5dabb425560f3b1dafd5c48f878f720c955e8d7eaeb0dc0366344dbd648/strawberry_graphql-0.339.1-py3-none-any.whl", hash = "sha256:574b28acf609cc8ee150c47e290a7bf5aaf1274aa7c52242fca00aec2e1a8146", size = 391448, upload-time = "2026-10-31T22:58:44.858Z" },
 ]
 
 [package.optional-dependencies]
