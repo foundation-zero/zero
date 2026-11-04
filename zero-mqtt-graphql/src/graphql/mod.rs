@@ -18,27 +18,30 @@
 //!   schema exposes `<stem>Buckets: [Bucket]` (all buckets) and
 //!   `<stem>Bucket(id: String): Bucket` (single bucket by id).
 
-use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::collections::{BTreeMap, HashMap};
 use std::sync::Arc;
 
-use crate::api_model::GraphqlType;
-use crate::graphql::groups::build_schema_groups;
-use crate::graphql::topics::build_schema_topics;
-use anyhow::Context;
+use anyhow::{Context, bail};
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{Field, FieldValue, Object, Schema, TypeRef};
-use log::warn;
+use log::{info, warn};
 use serde_json::Value as JsonValue;
 
-use crate::naming::{is_reserved_name, pascal_case_graphql_name, sanitize_to_graphql_name};
+use crate::graphql::graphql_path::GraphqlPath;
+use crate::graphql::groups::register_group_queries;
+use crate::graphql::topics::{payload_query_field, queryable_topic};
+pub use crate::graphql::tree::{PathNode, graphql_tree};
+use crate::naming::{pascal_case_graphql_name, sanitize_to_graphql_name};
 use crate::{
-    api_model::{Api, TopicDef},
+    api_model::{Api, GraphqlType},
     cache::TopicCache,
 };
 
+mod graphql_path;
 mod groups;
 mod topics;
+mod tree;
 
 /// Build a dynamic GraphQL schema from topic definitions and the cache.
 ///
@@ -46,7 +49,7 @@ mod topics;
 /// two topics collide after sanitization. Returns an error if any sanitized
 /// name is empty, duplicates another topic, or collides with a reserved
 /// GraphQL name. Topics without scalar fields are not registered as query
-/// types but stay visible through the `topics` introspection field.
+/// types.
 ///
 /// Each topic group (a parametrized channel such as `power-tags/{panel}/{slug}`)
 /// with at least one metadata entry gains a `<group>: [<Group>Topic]` list
@@ -58,52 +61,23 @@ mod topics;
 /// annotated in the metadata store gain an additive `metadata { … }` field on
 /// their own object type.
 pub fn build_schema(api: &Api, cache: &Arc<TopicCache>) -> anyhow::Result<Schema> {
-    validate_topics(api)?;
+    let query = Object::new("Query");
 
-    let mut query = Object::new("Query");
     let mut schema_builder = Schema::build(query.type_name(), None, None);
 
-    let mut known_types: HashMap<String, String> = HashMap::new();
+    let mut known_types: HashMap<String, Object> = HashMap::new();
 
-    for api_model in &api.models {
-        let new_objects;
-        (query, new_objects) = build_schema_topics(query, api_model, cache);
-        schema_builder = new_objects.into_iter().fold(schema_builder, |builder, t| {
-            let type_name = t.type_name().to_owned();
-            if known_types.contains_key(&type_name)
-                && known_types.get(&type_name) != Some(&format!("{t:?}"))
-            {
-                warn!(
-                    "Type name from {} is already used {type_name} \n\n This   : {:?}\nExisting: {:?}",
-                    api_model.name, Some(format!("{t:?}")), known_types.get(&type_name)
-                );
-            }
-            known_types.insert(type_name, format!("{t:?}"));
-            builder.register(t)
-        });
+    let tree = graphql_tree(api)?;
 
-        let group_objects;
-        (query, group_objects) = build_schema_groups(query, api_model, cache)
-            .with_context(|| "Error while building group schema")?;
-        schema_builder = group_objects
-            .into_iter()
-            .fold(schema_builder, |builder, t| {
-                let type_name = t.type_name().to_owned();
-                if known_types.contains_key(&type_name)
-                    && known_types.get(&type_name) != Some(&format!("{t:?}"))
-                {
-                    warn!(
-                        "Type name from {} is already used {type_name} \n\n This   : {:?}\nExisting: {:?}",
-                        api_model.name, Some(format!("{t:?}")), known_types.get(&type_name)
-                    );
-                }
-                known_types.insert(type_name, format!("{t:?}"));
-                builder.register(t)
-            });
+    let query_fields = tree_fields(&GraphqlPath::default(), &tree, cache, &mut known_types)?;
+    if query_fields.is_empty() {
+        bail!("Query has no queryable children!");
     }
+    schema_builder = known_types
+        .into_iter()
+        .fold(schema_builder, |builder, (_, t)| builder.register(t));
 
-    // Not really useful but prevents errors if no topics are defined
-    query = query.field(topics_introspection_field(&api.topics()));
+    let query = query_fields.into_iter().fold(query, Object::field);
 
     schema_builder
         .register(query)
@@ -111,14 +85,99 @@ pub fn build_schema(api: &Api, cache: &Arc<TopicCache>) -> anyhow::Result<Schema
         .with_context(|| "Schema building failed")
 }
 
-/// The read-only `topics: [String]` introspection field listing every topic.
-fn topics_introspection_field(topics: &[TopicDef]) -> Field {
-    let topic_list: Vec<String> = topics.iter().map(|t| t.topic.clone()).collect();
-    Field::new("topics", TypeRef::named_list("String"), move |_ctx| {
-        let names = topic_list.clone();
-        async_graphql::dynamic::FieldFuture::new(async move {
-            let values: Vec<GraphQlValue> = names.into_iter().map(GraphQlValue::String).collect();
-            Ok(Some(GraphQlValue::List(values)))
+/// The fields for one level of the tree, collecting the object types they
+/// need into `known_types`.
+fn tree_fields(
+    parent_path: &GraphqlPath,
+    children: &BTreeMap<String, PathNode<'_>>,
+    cache: &Arc<TopicCache>,
+    known_types: &mut HashMap<String, Object>,
+) -> anyhow::Result<Vec<Field>> {
+    let fields: Vec<Field> = children
+        .iter()
+        .map(|(segment, node)| {
+            let (fields, mut objects) = match node {
+                PathNode::Branch(grandchildren) => {
+                    let path = parent_path.child(segment);
+                    let type_name = path.type_name();
+                    let fields = tree_fields(&path, grandchildren, cache, known_types)?;
+                    if fields.is_empty() {
+                        warn!("Branch '{path}' has no queryable children, leaving it out");
+                        return Ok(vec![]);
+                    }
+                    let branch = fields
+                        .into_iter()
+                        .fold(Object::new(type_name.as_str()), Object::field);
+
+                    let field = branch_field(segment, &type_name);
+                    (vec![field], vec![branch])
+                }
+                PathNode::Topic { spec, topic } => {
+                    info!("Building schema for topic {}", topic.topic);
+                    let Some(payload_schema_ref) = topic.payload_schema_ref.as_ref() else {
+                        warn!("Topic {} without payload, ignoring", topic.topic);
+                        return Ok(vec![]);
+                    };
+
+                    let name = payload_schema_ref.replace("#/components/schemas/", "");
+                    if name.is_empty() {
+                        warn!(
+                            "Topic {} would create an invalid payload type, ignoring",
+                            topic.topic
+                        );
+                        return Ok(vec![]);
+                    }
+
+                    let payload_objects = payload_object(spec, &name, &topic.fields);
+                    let field =
+                        payload_query_field(segment, &topic.topic, &payload_objects[0], cache);
+                    (vec![field], payload_objects)
+                }
+                PathNode::Group { spec: _, group } => {
+                    info!("Building schema for group {}", group.pattern);
+                    let Some(payload_schema_ref) = group.payload_schema_ref.as_ref() else {
+                        warn!("Group {} without payload, ignoring", group.pattern);
+                        return Ok(vec![]);
+                    };
+
+                    let name = payload_schema_ref.replace("#/components/schemas/", "");
+                    if name.is_empty() {
+                        warn!("Group {} would create an invalid payload type, ignoring", group.pattern);
+                        return Ok(vec![]);
+                    }
+                    let (fields, objects) = register_group_queries( group, cache)?.unwrap_or_else(|| (vec![], vec![])) ;
+                    (fields, objects)
+                }
+            };
+
+            for object in objects.drain(..) {
+                let name = object.type_name().to_string();
+                let object_string = format!("{object:?}" );
+                if let Some(other) = known_types.insert(name.clone(), object) {
+                    let other_string = format!("{other:?}" );
+
+                    if object_string != other_string  {
+                        bail!(
+                            "GraphQL type name clash: '{name}' is used by both '{other_string}' and '{object_string}'"
+                        );
+                    }
+                }
+            }
+
+            Ok(fields)
+        })
+        .collect::<anyhow::Result<Vec<_>>>()?.into_iter().flatten().collect();
+
+    Ok(fields)
+}
+
+/// A branch field: resolves to an empty object so its children resolve.
+fn branch_field(name: &str, type_name: &str) -> Field {
+    Field::new(name, TypeRef::named(type_name), |_ctx| {
+        async_graphql::dynamic::FieldFuture::new(async {
+            Ok(Some(FieldValue::value(GraphQlValue::Object(
+                async_graphql::indexmap::IndexMap::default(),
+            ))))
         })
     })
 }
@@ -162,10 +221,10 @@ fn payload_object(
     let type_name = pascal_case_graphql_name(&format!("{name_prefix}-{name}"));
     let (object, mut objects) = fields
         .iter()
-        .map(|(name, graphql_type)| payload_field(name_prefix, name, graphql_type))
+        .filter_map(|(name, graphql_type)| payload_field(name_prefix, name, graphql_type))
         .fold(
             (Object::new(type_name.as_str()), Vec::new()),
-            |(obj, mut objects): (Object, Vec<Object>), (field, new_objects)| {
+            |(obj, mut objects), (field, new_objects)| {
                 objects.extend(new_objects);
                 (obj.field(field), objects)
             },
@@ -180,8 +239,14 @@ fn payload_field(
     name_prefix: &str,
     name: &str,
     graphql_type: &GraphqlType,
-) -> (Field, Vec<Object>) {
+) -> Option<(Field, Vec<Object>)> {
     let field_name = sanitize_to_graphql_name(name);
+
+    if field_name.is_empty() {
+        warn!("Skipping field '{name}' sanitizes to empty GraphQL name");
+        return None;
+    }
+
     let raw_name = Name::new(name);
     let (graphql_type, objects) = graphql_type_ref(name_prefix, graphql_type);
 
@@ -199,7 +264,7 @@ fn payload_field(
         })
     });
 
-    (field, objects)
+    Some((field, objects))
 }
 
 /// Map a GraphQL type name to an async-graphql TypeRef.
@@ -217,110 +282,183 @@ fn graphql_type_ref(name_prefix: &str, typ: &GraphqlType) -> (TypeRef, Vec<Objec
     }
 }
 
-/// Validate that sanitized topic and field names are unique and not reserved.
-///
-/// Returns an error if:
-/// - any topic sanitizes to an empty name
-/// - any topic sanitizes to a reserved GraphQL name
-/// - two topics sanitize to the same GraphQL name
-/// - any field sanitizes to an empty name
-/// - two fields within the same topic sanitize to the same name
-///
-pub fn validate_topics(api: &Api) -> anyhow::Result<()> {
-    let topics = api.topics();
-
-    let mut seen_topics: BTreeMap<String, String> = BTreeMap::new();
-
-    for td in topics {
-        let sanitized = sanitize_to_graphql_name(&td.topic);
-        if sanitized.is_empty() {
-            anyhow::bail!("topic '{}' sanitizes to an empty GraphQL name", td.topic);
-        }
-        if is_reserved_name(&sanitized) {
-            anyhow::bail!(
-                "topic '{}' sanitizes to reserved GraphQL name '{}'",
-                td.topic,
-                sanitized
-            );
-        }
-        if let Some(prev) = seen_topics.get(&sanitized) {
-            anyhow::bail!(
-                "duplicate sanitized topic name '{}' from topics '{}' and '{}'",
-                sanitized,
-                prev,
-                td.topic
-            );
-        }
-        seen_topics.insert(sanitized.clone(), td.topic.clone());
-
-        validate_topic_fields(&td.topic, &td.fields)?;
-    }
-
-    Ok(())
-}
-
-/// Validate one topic's payload fields: unique raw names, plus non-empty
-/// and unique sanitized GraphQL names.
-fn validate_topic_fields(
-    topic: &str,
-    fields: &BTreeMap<String, GraphqlType>,
-) -> anyhow::Result<()> {
-    let mut seen_fields: BTreeMap<String, String> = BTreeMap::new();
-    let mut seen_raw_fields: BTreeSet<String> = BTreeSet::new();
-    for field_name in fields.keys() {
-        // Raw duplicate (should also be caught by sanitized check, but give clearer error)
-        if !seen_raw_fields.insert(field_name.clone()) {
-            anyhow::bail!("duplicate field name '{field_name}' in topic '{topic}'");
-        }
-        let sanitized_field = sanitize_to_graphql_name(field_name);
-        if sanitized_field.is_empty() {
-            anyhow::bail!(
-                "field '{field_name}' in topic '{topic}' sanitizes to an empty GraphQL name"
-            );
-        }
-        if let Some(prev) = seen_fields.get(&sanitized_field) {
-            anyhow::bail!(
-                "duplicate sanitized field name '{sanitized_field}' in topic '{topic}' from fields '{prev}' and '{field_name}'"
-            );
-        }
-        seen_fields.insert(sanitized_field, field_name.clone());
-    }
-    Ok(())
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::ApiModel;
-    use crate::http::router;
+    use crate::api_model::{ApiModel, TopicDef};
+    use crate::roas_asyncapi::OperationAction;
     use crate::topic_map::TopicMap;
-    use axum::http::StatusCode;
-    use tower::ServiceExt;
+    use serde_json::json;
 
-    fn api() -> Api {
+    fn mock_api(topics: Vec<TopicDef>) -> Api {
         Api::new(vec![ApiModel::new(
             String::new(),
             TopicMap::new(),
-            vec![],
+            topics,
             vec![],
             TopicMap::new(),
         )])
     }
 
+    /// Helper for a Send Topic with one Float field.
+    fn mock_topic(topic: &str, field: &str) -> TopicDef {
+        TopicDef {
+            topic: topic.to_string(),
+            fields: BTreeMap::from_iter(vec![(field.to_string(), GraphqlType::Float)]),
+            payload_schema_ref: Some(format!("#/components/schemas/{field}payload")),
+            action: OperationAction::Send,
+            ttl_secs: None,
+        }
+    }
+
+    #[test_log::test]
+    fn test_topics_on_the_same_graphql_path_conflict() {
+        // `b-c` and `b_c` both sanitize to `bC`.
+        let topics = vec![mock_topic("a/b-c", "x"), mock_topic("a/b_c", "y")];
+
+        let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "GraphQL path conflict: topic 'a/b_c' conflicts with topic 'a/b-c'"
+        );
+    }
+
+    #[test_log::test]
+    fn test_topic_that_is_also_a_parent_conflicts_in_either_order() {
+        for topics in [
+            vec![mock_topic("a/b", "x"), mock_topic("a/b/c", "y")],
+            vec![mock_topic("a/b/c", "y"), mock_topic("a/b", "x")],
+        ] {
+            let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap_err();
+            assert_eq!(
+                err.to_string(),
+                "GraphQL path conflict: topic 'a/b' conflicts with topic 'a/b/c'"
+            );
+        }
+    }
+
+    #[test_log::test]
+    fn test_branch_types_are_named_after_their_full_graphql_path() {
+        let topics = vec![mock_topic(
+            "marpower/250000-fresh-water/cold/cold-flow",
+            "x",
+        )];
+
+        let sdl = build_schema(&mock_api(topics), &Arc::new(TopicCache::new()))
+            .unwrap()
+            .sdl();
+        assert!(sdl.contains("marpower: SchemaMarpower\n"), "{sdl}");
+        assert!(
+            sdl.contains("_250000FreshWater: SchemaMarpower250000FreshWater\n"),
+            "{sdl}"
+        );
+        assert!(
+            sdl.contains("cold: SchemaMarpower250000FreshWaterCold\n"),
+            "{sdl}"
+        );
+    }
+
+    #[test_log::test]
+    fn test_wildcard_addresses_are_left_out_of_the_tree() {
+        let topics = vec![
+            mock_topic("logs/#", "x"),
+            mock_topic("sensors/+/temp", "x"),
+            mock_topic("a/b", "y"),
+        ];
+
+        let schema = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap();
+        let sdl = schema.sdl();
+        assert!(!sdl.contains("logs"), "{sdl}");
+        assert!(!sdl.contains("sensors"), "{sdl}");
+        assert!(sdl.contains("a: SchemaA"), "{sdl}");
+    }
+
+    #[test_log::test]
+    fn test_branch_type_name_clashing_with_a_payload_type_errors() {
+        // Payload type of `aB/c` is `SchemaA`; the branch at `a/b` is also `SchemaA`.
+        let topics = vec![
+            mock_topic("a/b", "x"),
+            TopicDef {
+                topic: "aB/c".to_string(),
+                fields: BTreeMap::from_iter(vec![("field".to_string(), GraphqlType::Float)]),
+                payload_schema_ref: Some("#/components/schemas/schema-a".to_string()),
+                action: OperationAction::Send,
+                ttl_secs: None,
+            },
+        ];
+
+        let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap_err();
+        assert!(
+            err.to_string()
+                .contains("GraphQL type name clash: 'SchemaA' is used by both"),
+        );
+    }
+
+    #[test_log::test]
+    fn test_two_branches_with_the_same_type_name_error() {
+        // The branch at `aB` and the branch at `a/b` are both named `SchemaAB`.
+        let topics = vec![mock_topic("aB/x/y", "v"), mock_topic("a/b/y/z", "v")];
+
+        let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap_err();
+        assert!(
+            err.to_string()
+                .contains("GraphQL type name clash: 'SchemaAB' is used by both"),
+        );
+    }
+
+    #[test_log::test]
+    fn test_address_level_without_a_graphql_name_ok() {
+        for address in ["/a/b", "a//b", "a/-/b"] {
+            let topics = vec![mock_topic(address, "v")];
+
+            let schema = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap();
+            let sdl = schema.sdl();
+            assert!(sdl.contains("a: SchemaA"), "{sdl}");
+            assert!(sdl.contains("b: Vpayload"), "{sdl}");
+        }
+    }
+
+    #[test_log::test]
+    fn test_address_empty_errors() {
+        for address in ["//", ""] {
+            let topics = vec![mock_topic(address, "v")];
+
+            let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap_err();
+            assert_eq!(
+                err.to_string(),
+                format!("topic '{address}' would result in an empty GraphQL name")
+            );
+        }
+    }
+
+    fn spec(name: &str, topics: Vec<TopicDef>) -> ApiModel {
+        ApiModel::new(
+            name.to_string(),
+            TopicMap::new(),
+            topics,
+            vec![],
+            TopicMap::new(),
+        )
+    }
+
     #[tokio::test]
-    async fn test_health_endpoint() {
-        let app = router(build_schema(&api(), &Arc::new(TopicCache::new())).unwrap());
+    #[test_log::test]
+    async fn test_specs_sharing_a_prefix_merge_into_one_branch() {
+        let api = Api::new(vec![
+            spec("one", vec![mock_topic("thrs/controller/pcm", "x")]),
+            spec("two", vec![mock_topic("thrs/simulator/step", "y")]),
+        ]);
+        let cache = Arc::new(TopicCache::new());
+        cache.insert("thrs/controller/pcm", json!({"x": 1.0}));
+        cache.insert("thrs/simulator/step", json!({"y": 2.0}));
+        let schema = build_schema(&api, &cache).unwrap();
 
-        let response = app
-            .oneshot(
-                axum::http::Request::builder()
-                    .uri("/health")
-                    .body(axum::body::Body::empty())
-                    .unwrap(),
-            )
-            .await
-            .unwrap();
-
-        assert_eq!(response.status(), StatusCode::OK);
+        let response = schema
+            .execute("{ thrs { controller { pcm { x } } simulator { step { y } } } }")
+            .await;
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        let data: serde_json::Value = response.data.into_json().unwrap();
+        assert_eq!(data["thrs"]["controller"]["pcm"]["x"], json!(1.0));
+        assert_eq!(data["thrs"]["simulator"]["step"]["y"], json!(2.0));
     }
 }
