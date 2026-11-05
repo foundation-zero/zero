@@ -6,10 +6,12 @@ import { LayerFilterOption } from "../../../components/layer-filter/layer-filter
 <template>
   <LayerFilter :filter="LayerFilterOption.DirectionArrows">
     <svg
+      width="1414"
+      height="804"
       viewBox="0 0 1414 804"
       fill="none"
-      x="-84"
-      y="-185"
+      x="-83"
+      y="-132"
       xmlns="http://www.w3.org/2000/svg"
     >
       <g>
@@ -187,9 +189,9 @@ import { LayerFilterOption } from "../../../components/layer-filter/layer-filter
             y2="770"
           />
           <line
-            x1="1227"
+            x1="1225"
             y1="674"
-            x2="1227"
+            x2="1225"
             y2="634"
           />
           <line
@@ -219,9 +221,9 @@ import { LayerFilterOption } from "../../../components/layer-filter/layer-filter
             y2="616"
           />
           <line
-            x1="260"
+            x1="265"
             y1="732"
-            x2="260"
+            x2="265"
             y2="772"
           />
           <line
@@ -231,89 +233,89 @@ import { LayerFilterOption } from "../../../components/layer-filter/layer-filter
             y2="556"
           />
           <line
-            x1="235"
+            x1="230"
             y1="772"
-            x2="235"
+            x2="230"
             y2="732"
           />
 
           <!-- Boiler tank 3 arrows -->
           <line
             x1="1302"
-            y1="273"
+            y1="264"
             x2="1302"
-            y2="280"
+            y2="284"
           />
           <line
             x1="1248"
-            y1="284"
+            y1="287"
             x2="1248"
-            y2="275"
+            y2="277"
           />
           <line
             x1="1197"
-            y1="273"
+            y1="264"
             x2="1197"
-            y2="280"
+            y2="284"
           />
           <line
             x1="1137"
-            y1="284"
+            y1="287"
             x2="1137"
-            y2="275"
+            y2="277"
           />
 
           <!-- Boiler tank 2 arrows -->
           <line
             x1="966"
-            y1="273"
+            y1="265"
             x2="966"
-            y2="280"
+            y2="285"
           />
           <line
             x1="912"
-            y1="284"
+            y1="287"
             x2="912"
-            y2="275"
+            y2="277"
           />
           <line
-            x1="859"
-            y1="273"
-            x2="859"
-            y2="280"
+            x1="861"
+            y1="265"
+            x2="861"
+            y2="285"
           />
 
           <line
-            x1="798"
-            y1="284"
-            x2="798"
-            y2="275"
+            x1="801"
+            y1="287"
+            x2="801"
+            y2="277"
           />
 
           <!-- Boiler tank 1 arrows -->
           <line
             x1="613"
-            y1="273"
+            y1="264"
             x2="613"
-            y2="280"
+            y2="284"
           />
           <line
             x1="559"
-            y1="284"
+            y1="287"
             x2="559"
-            y2="275"
+            y2="277"
           />
           <line
             x1="508"
-            y1="273"
+            y1="264"
             x2="508"
-            y2="280"
+            y2="284"
           />
           <line
-            x1="447"
-            y1="284"
-            x2="447"
-            y2="275"
+            x1="448"
+            y1="287"
+            x2="448"
+            y2="277"
           />
         </g>
       </g>

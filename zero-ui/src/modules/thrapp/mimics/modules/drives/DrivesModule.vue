@@ -38,8 +38,8 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
     <PressureGauges />
     <TemperatureSensors />
     <DirectionArrows
-      x="395"
-      y="92"
+      x="393"
+      y="93"
     />
     <Assets />
     <CircuitBoxes />
