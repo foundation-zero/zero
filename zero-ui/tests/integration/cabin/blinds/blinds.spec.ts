@@ -15,10 +15,8 @@ const test = testBase.extend<{ blindsPage: BlindsPage }>({
       await auth.asUser();
 
       blindsPage.setBlindLevels([0, 0], dutchCabin);
-      await page.waitForTimeout(500);
       await blindsPage.open();
-
-      await page.waitForTimeout(1000);
+      await expect(blindsPage.listItems.first()).toBeVisible();
 
       await page.screenshot({ path: "screenshots/blinds.png" });
 
@@ -34,13 +32,11 @@ test.describe("Blinds", () => {
   test.describe("with 2 blinds", () => {
     const targetLevels = [0.51, 0.75];
 
-    test.beforeEach(async ({ page, blindsPage }) => {
+    test.beforeEach(async ({ blindsPage }) => {
       blindsPage.setBlindLevels(targetLevels, {
         ...dutchCabin,
         blinds: roomWithTwoBlinds.blinds,
       });
-
-      await page.waitForTimeout(500);
     });
 
     test("shows two controls", async ({ blindsPage }) => {
@@ -50,9 +46,9 @@ test.describe("Blinds", () => {
     test("shows the correct values", async ({ blindsPage }) => {
       await expect(blindsPage.listItems).toHaveCount(2);
 
-      expect(await blindsPage.textValues()).toEqual(
-        targetLevels.map((level) => 100 - (level * 100).toString()),
-      );
+      await expect
+        .poll(() => blindsPage.textValues())
+        .toEqual(targetLevels.map((level) => 100 - (level * 100).toString()));
     });
   });
 
@@ -64,6 +60,8 @@ test.describe("Blinds", () => {
         ...dutchCabin,
         blinds: roomWithMoreThanTwoBlinds.blinds,
       });
+
+      await expect(blindsPage.listItems).toHaveCount(roomWithMoreThanTwoBlinds.blinds.length);
     });
 
     test("shows the correct amount of controls", async ({ blindsPage }) => {
@@ -71,14 +69,13 @@ test.describe("Blinds", () => {
     });
 
     test("does not show numeral values", async ({ blindsPage }) => {
-      expect(await blindsPage.textValues()).toEqual([]);
+      await expect.poll(() => blindsPage.textValues()).toEqual([]);
     });
 
-    test("shows a modal with controls", async ({ blindsPage, page }) => {
+    test("shows a modal with controls", async ({ blindsPage }) => {
       await blindsPage.listItems.first().click();
-      await page.waitForTimeout(500);
 
-      expect(await blindsPage.textValues()).toEqual([100, 100]);
+      await expect.poll(() => blindsPage.textValues()).toEqual([100, 100]);
     });
   });
 });
