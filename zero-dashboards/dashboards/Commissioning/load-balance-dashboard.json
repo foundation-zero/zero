@@ -5847,7 +5847,7 @@
       "timezone": "utc",
       "from": "now-24h",
       "to": "now",
-      "autoRefresh": "5s",
+      "autoRefresh": "30s",
       "autoRefreshIntervals": [
         "5s",
         "10s",
