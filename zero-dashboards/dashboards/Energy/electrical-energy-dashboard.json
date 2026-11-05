@@ -46,8 +46,9 @@
                       },
                       "group": "info8fcc-greptimedb-datasource",
                       "kind": "DataQuery",
-                      "spec": {
-                        "editorMode": "code",
+                        "spec": {
+                          "dataset": "dev",
+                          "editorMode": "code",
                         "editorType": "sql",
                         "format": 1,
                         "meta": {
