@@ -60,24 +60,22 @@ const manualPumps = getTooltipContexts(MimicComponentType.ManualPump, ["1182"]);
         :pump="pumps['1021'].controls.pump"
       />
     </PumpInstance>
-    <LayerFilter :filter="LayerFilterOption.ManualComponents">
-      <LayerFilter :filter="LayerFilterOption.Bypasses">
-        <ManualPumpInstance
-          x="885"
-          y="519"
-          :width="28"
-          :height="28"
-          :orientation="ComponentOrientation.Left"
-          v-bind="manualPumps['1182']"
-        >
-          <TagLabelInstance
-            :target-x="885"
-            :target-width="28"
-            y="550"
-            :tag-id="manualPumps['1182'].tooltip?.yardTag"
-          />
-        </ManualPumpInstance>
-      </LayerFilter>
+    <LayerFilter :filter="LayerFilterOption.Bypasses">
+      <ManualPumpInstance
+        x="885"
+        y="519"
+        :width="28"
+        :height="28"
+        :orientation="ComponentOrientation.Left"
+        v-bind="manualPumps['1182']"
+      >
+        <TagLabelInstance
+          :target-x="885"
+          :target-width="28"
+          y="550"
+          :tag-id="manualPumps['1182'].tooltip?.yardTag"
+        />
+      </ManualPumpInstance>
     </LayerFilter>
   </g>
 </template>

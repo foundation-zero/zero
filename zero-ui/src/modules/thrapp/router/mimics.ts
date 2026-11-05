@@ -6,27 +6,30 @@ import { Component, defineAsyncComponent } from "vue";
 
 export type MimicKey = keyof ThrsModules | "pvt-main" | "pvt-owners" | "pvt-main-heat";
 
+type LayerFilters = Partial<Record<LayerFilterOption, true>>;
+
 export type MimicDefinition = {
   component: Component;
   /** Query for the data the mimic shows, polled while it is open. */
   query: TypedDocumentNode;
-  /** Layers the viewer can show or hide, in display order. */
-  layerFilters?: LayerFilterOption[];
+  /** Layers the viewer can show or hide; `LAYER_FILTER_OPTIONS` sets their order. */
+  layerFilters?: LayerFilters;
 };
 
-const BASE_FILTERS = [LayerFilterOption.ManualComponents, LayerFilterOption.DirectionArrows];
-const SUPPORT_FILTERS = [
-  LayerFilterOption.ManualComponents,
-  LayerFilterOption.SupportComponents,
-  LayerFilterOption.DirectionArrows,
-];
-
-const BYPASS_FILTERS = [
-  LayerFilterOption.ManualComponents,
-  LayerFilterOption.Bypasses,
-  LayerFilterOption.SupportComponents,
-  LayerFilterOption.DirectionArrows,
-];
+const BASE_FILTERS: LayerFilters = {
+  [LayerFilterOption.SensorValues]: true,
+  [LayerFilterOption.YardTags]: true,
+  [LayerFilterOption.ManualComponents]: true,
+  [LayerFilterOption.DirectionArrows]: true,
+};
+const SUPPORT_FILTERS: LayerFilters = {
+  ...BASE_FILTERS,
+  [LayerFilterOption.SupportComponents]: true,
+};
+const BYPASS_FILTERS: LayerFilters = {
+  ...SUPPORT_FILTERS,
+  [LayerFilterOption.Bypasses]: true,
+};
 
 export const MIMICS: Partial<Record<MimicKey, MimicDefinition>> = {
   dhw: {
@@ -34,12 +37,11 @@ export const MIMICS: Partial<Record<MimicKey, MimicDefinition>> = {
       () => import("@/modules/thrapp/mimics/modules/dhw/DhwModule.vue"),
     ),
     query: Queries.DHW_MIMIC_QUERY,
-    layerFilters: [
-      LayerFilterOption.ManualComponents,
-      LayerFilterOption.Bypasses,
-      LayerFilterOption.Flows,
-      LayerFilterOption.DirectionArrows,
-    ],
+    layerFilters: {
+      ...BASE_FILTERS,
+      [LayerFilterOption.Flows]: true,
+      [LayerFilterOption.Bypasses]: true,
+    },
   },
   thrusters: {
     component: defineAsyncComponent(

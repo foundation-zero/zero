@@ -29,48 +29,6 @@ const manualValves = getTooltipContexts(MimicComponentType.ManualValve, [
 
 <template>
   <LayerFilter :filter="LayerFilterOption.ManualComponents">
-    <LayerFilter :filter="LayerFilterOption.Bypasses">
-      <ManualValveInstance
-        x="292"
-        y="250"
-        :valve-type="ManualValveType.Switch"
-        :orientation="ComponentOrientation.Left"
-        v-bind="manualValves['1168-27']"
-      >
-        <TagLabelInstance
-          x="328"
-          y="253.146"
-          :tag-id="manualValves['1168-27'].tooltip?.yardTag"
-        />
-      </ManualValveInstance>
-      <ManualValveInstance
-        x="276"
-        y="420"
-        :valve-type="ManualValveType.Switch"
-        :orientation="ComponentOrientation.Left"
-        v-bind="manualValves['1168-28']"
-      >
-        <TagLabelInstance
-          x="233"
-          y="424.146"
-          :tag-id="manualValves['1168-28'].tooltip?.yardTag"
-        />
-      </ManualValveInstance>
-      <ManualValveInstance
-        x="292"
-        y="505"
-        :valve-type="ManualValveType.Switch"
-        :orientation="ComponentOrientation.Left"
-        v-bind="manualValves['1168-29']"
-      >
-        <TagLabelInstance
-          x="325"
-          y="509"
-          :tag-id="manualValves['1168-29'].tooltip?.yardTag"
-        />
-      </ManualValveInstance>
-    </LayerFilter>
-
     <ManualValveInstance
       x="413"
       y="179.1458"
@@ -212,34 +170,74 @@ const manualValves = getTooltipContexts(MimicComponentType.ManualValve, [
         :tag-id="manualValves['1170-03'].tooltip?.yardTag"
       />
     </ManualValveInstance>
-
-    <LayerFilter :filter="LayerFilterOption.SupportComponents">
-      <ManualValveInstance
-        x="408"
-        y="249.7"
-        :valve-type="ManualValveType.Switch"
-        :orientation="ComponentOrientation.Left"
-        v-bind="manualValves['1167-13']"
-      >
-        <TagLabelInstance
-          x="436"
-          y="253"
-          :tag-id="manualValves['1167-13'].tooltip?.yardTag"
-        />
-      </ManualValveInstance>
-      <ManualValveInstance
-        x="1172.1406"
-        y="627.6458"
-        :valve-type="ManualValveType.Switch"
-        :orientation="ComponentOrientation.Up"
-        v-bind="manualValves['1068-22']"
-      >
-        <TagLabelInstance
-          x="1121.1406"
-          y="631.146"
-          :tag-id="manualValves['1068-22'].tooltip?.yardTag"
-        />
-      </ManualValveInstance>
-    </LayerFilter>
+  </LayerFilter>
+  <LayerFilter :filter="LayerFilterOption.Bypasses">
+    <ManualValveInstance
+      x="292"
+      y="250"
+      :valve-type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Left"
+      v-bind="manualValves['1168-27']"
+    >
+      <TagLabelInstance
+        x="328"
+        y="253.146"
+        :tag-id="manualValves['1168-27'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="276"
+      y="420"
+      :valve-type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Left"
+      v-bind="manualValves['1168-28']"
+    >
+      <TagLabelInstance
+        x="233"
+        y="424.146"
+        :tag-id="manualValves['1168-28'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="292"
+      y="505"
+      :valve-type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Left"
+      v-bind="manualValves['1168-29']"
+    >
+      <TagLabelInstance
+        x="325"
+        y="509"
+        :tag-id="manualValves['1168-29'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+  </LayerFilter>
+  <LayerFilter :filter="LayerFilterOption.SupportComponents">
+    <ManualValveInstance
+      x="408"
+      y="249.7"
+      :valve-type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Left"
+      v-bind="manualValves['1167-13']"
+    >
+      <TagLabelInstance
+        x="436"
+        y="253"
+        :tag-id="manualValves['1167-13'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
+    <ManualValveInstance
+      x="1172.1406"
+      y="627.6458"
+      :valve-type="ManualValveType.Switch"
+      :orientation="ComponentOrientation.Up"
+      v-bind="manualValves['1068-22']"
+    >
+      <TagLabelInstance
+        x="1121.1406"
+        y="631.146"
+        :tag-id="manualValves['1068-22'].tooltip?.yardTag"
+      />
+    </ManualValveInstance>
   </LayerFilter>
 </template>

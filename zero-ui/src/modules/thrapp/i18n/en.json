@@ -408,7 +408,9 @@
         "Bypasses": "Bypasses",
         "SupportComponents": "Support components",
         "Flows": "Flows",
-        "DirectionArrows": "Direction arrows"
+        "DirectionArrows": "Direction arrows",
+        "YardTags": "Yard tags",
+        "SensorValues": "Sensor values"
       },
       "on": "On",
       "off": "Off",

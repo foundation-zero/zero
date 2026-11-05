@@ -18,29 +18,6 @@ const expansionValves = getTooltipContexts(MimicComponentType.ExpansionValve, [
 
 <template>
   <LayerFilter :filter="LayerFilterOption.ManualComponents">
-    <LayerFilter :filter="LayerFilterOption.SupportComponents">
-      <ExpansionTankInstance
-        x="1220"
-        y="167"
-        v-bind="expansionTanks['1040-01']"
-      />
-      <TagLabelInstance
-        :target-x="1226"
-        :target-width="36"
-        y="224"
-        tag-id="1040-01"
-      />
-      <ExpansionValveInstance
-        x="1145"
-        y="145"
-        v-bind="expansionValves['1041-01']"
-      />
-      <TagLabelInstance
-        x="1168"
-        y="143"
-        tag-id="1041-01"
-      />
-    </LayerFilter>
     <ExpansionValveInstance
       x="837.5"
       y="172"
@@ -50,6 +27,29 @@ const expansionValves = getTooltipContexts(MimicComponentType.ExpansionValve, [
       x="828"
       y="197"
       tag-id="1039-01"
+    />
+  </LayerFilter>
+  <LayerFilter :filter="LayerFilterOption.SupportComponents">
+    <ExpansionTankInstance
+      x="1220"
+      y="167"
+      v-bind="expansionTanks['1040-01']"
+    />
+    <TagLabelInstance
+      :target-x="1226"
+      :target-width="36"
+      y="224"
+      tag-id="1040-01"
+    />
+    <ExpansionValveInstance
+      x="1145"
+      y="145"
+      v-bind="expansionValves['1041-01']"
+    />
+    <TagLabelInstance
+      x="1168"
+      y="143"
+      tag-id="1041-01"
     />
   </LayerFilter>
 </template>

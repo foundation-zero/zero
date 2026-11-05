@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { cn } from "@/modules/common/lib/utils";
-import { HTMLAttributes } from "vue";
+import { HTMLAttributes, useSlots } from "vue";
 import { LabelProps } from ".";
+import { useLabelVisibility } from "./label.utils";
 
 const props = withDefaults(
   defineProps<
@@ -18,10 +19,17 @@ const props = withDefaults(
     minWidth: 35,
   },
 );
+
+const slots = useSlots();
+const { showTag, showValue, isVisible } = useLabelVisibility({
+  hasValue: () => !!slots.value,
+  unfiltered: () => props.unfiltered,
+});
 </script>
 
 <template>
   <svg
+    v-show="isVisible"
     :width="width"
     :height="height"
     :x="Number(x) > 0 ? x : Number(targetX) + Number(targetWidth) / 2 - Number(width) / 2"
@@ -41,13 +49,17 @@ const props = withDefaults(
           :class="
             cn('bg-background inline-flex min-w-8 flex-col rounded-[0.125rem] px-1', props.class)
           "
-          :style="{ minWidth: minWidth + 'px' }"
+          :style="{ minWidth: showValue ? minWidth + 'px' : undefined }"
         >
-          <header class="text-muted-foreground text-3xs">
+          <header
+            v-show="showTag"
+            class="text-muted-foreground text-3xs"
+          >
             <slot />
           </header>
           <p
             v-if="$slots['value']"
+            v-show="showValue"
             class="text-foreground text-xs font-medium"
           >
             <slot name="value" />

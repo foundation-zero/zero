@@ -6,4 +6,6 @@ export type LabelProps = Readonly<{
   targetX?: number | string;
   targetWidth?: number | string;
   minWidth?: number | string;
+  /** Ignores the layer filters, for labels outside the mimic such as the legend examples. */
+  unfiltered?: boolean;
 }>;

@@ -20,6 +20,7 @@ import { useRouter } from "vue-router";
 import { MIMICS, MimicKey } from "../router/mimics";
 import {
   createLayerFilterContext,
+  LAYER_FILTER_OPTIONS,
   LayerFilterBox,
   LayerFilterTrigger,
   provideLayerFilterContext,
@@ -33,7 +34,9 @@ const { currentRoute } = useRouter();
 const currentModule = computed(() => currentRoute.value.params.module as MimicKey);
 const currentMimic = computed(() => MIMICS[currentModule.value]);
 const currentLegend = computed(() => MIMIC_LEGEND_MAP[currentModule.value]);
-const layerFilters = computed(() => currentMimic.value?.layerFilters ?? []);
+const layerFilters = computed(() =>
+  LAYER_FILTER_OPTIONS.filter((option) => currentMimic.value?.layerFilters?.[option]),
+);
 
 provideLayerFilterContext(createLayerFilterContext());
 

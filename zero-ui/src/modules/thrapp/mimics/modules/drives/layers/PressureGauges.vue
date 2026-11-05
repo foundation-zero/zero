@@ -12,20 +12,6 @@ const pressureGauges = getTooltipContexts(MimicComponentType.PressureGauge, ["10
 
 <template>
   <LayerFilter :filter="LayerFilterOption.ManualComponents">
-    <LayerFilter :filter="LayerFilterOption.SupportComponents">
-      <PressureGaugeInstance
-        x="1671"
-        y="158.5"
-        :orientation="ComponentOrientation.Right"
-        v-bind="pressureGauges['1096-05']"
-      >
-        <TagLabelInstance
-          x="1621"
-          y="160"
-          :tag-id="pressureGauges['1096-05'].tooltip?.yardTag"
-        />
-      </PressureGaugeInstance>
-    </LayerFilter>
     <PressureGaugeInstance
       x="1232"
       y="579.916"
@@ -37,6 +23,20 @@ const pressureGauges = getTooltipContexts(MimicComponentType.PressureGauge, ["10
         :target-width="PRESSURE_GAUGE_WIDTH"
         y="618"
         :tag-id="pressureGauges['1095-13'].tooltip?.yardTag"
+      />
+    </PressureGaugeInstance>
+  </LayerFilter>
+  <LayerFilter :filter="LayerFilterOption.SupportComponents">
+    <PressureGaugeInstance
+      x="1671"
+      y="158.5"
+      :orientation="ComponentOrientation.Right"
+      v-bind="pressureGauges['1096-05']"
+    >
+      <TagLabelInstance
+        x="1621"
+        y="160"
+        :tag-id="pressureGauges['1096-05'].tooltip?.yardTag"
       />
     </PressureGaugeInstance>
   </LayerFilter>

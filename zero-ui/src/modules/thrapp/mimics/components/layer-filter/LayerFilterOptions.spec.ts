@@ -1,16 +1,9 @@
 import i18n from "@/i18n";
 import { mount } from "@vue/test-utils";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+import { LAYER_FILTER_OPTIONS } from "./layer-filter.consts";
 import { createLayerFilterContext, LayerFilterOption } from "./layer-filter.provider";
 import LayerFilterOptions from "./LayerFilterOptions.vue";
-
-const ALL_OPTIONS = [
-  LayerFilterOption.ManualComponents,
-  LayerFilterOption.Bypasses,
-  LayerFilterOption.SupportComponents,
-  LayerFilterOption.Flows,
-  LayerFilterOption.DirectionArrows,
-];
 
 const mountOptions = (options: LayerFilterOption[]) => {
   const context = createLayerFilterContext();
@@ -22,23 +15,27 @@ const mountOptions = (options: LayerFilterOption[]) => {
 };
 
 describe("LayerFilterOptions", () => {
-  it("labels every option from the translations, in the given order", () => {
-    const { wrapper } = mountOptions(ALL_OPTIONS);
+  beforeEach(() => localStorage.clear());
+
+  it("labels every option from the translations, in the fixed order", () => {
+    const { wrapper } = mountOptions([...LAYER_FILTER_OPTIONS]);
 
     expect(wrapper.findAll("label").map((label) => label.text())).toEqual([
-      "Manual components",
+      "Sensor values",
+      "Flows",
+      "Yard tags",
       "Bypasses",
       "Support components",
-      "Flows",
+      "Manual components",
       "Direction arrows",
     ]);
   });
 
   it("activates every filter by default", () => {
-    const { wrapper } = mountOptions(ALL_OPTIONS);
+    const { wrapper } = mountOptions([...LAYER_FILTER_OPTIONS]);
 
     expect(wrapper.findAll("[role=switch]").map((item) => item.attributes("data-state"))).toEqual(
-      ALL_OPTIONS.map(() => "checked"),
+      LAYER_FILTER_OPTIONS.map(() => "checked"),
     );
   });
 

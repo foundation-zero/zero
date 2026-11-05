@@ -7,6 +7,8 @@ export const enum LayerFilterOption {
   SupportComponents = "SupportComponents",
   Flows = "Flows",
   DirectionArrows = "DirectionArrows",
+  YardTags = "YardTags",
+  SensorValues = "SensorValues",
 }
 
 export interface LayerFilterContext {
@@ -18,13 +20,20 @@ export interface LayerFilterContext {
 }
 
 export const createLayerFilterContext = (): LayerFilterContext => {
-  const activeFilters = useLocalStorage<Record<LayerFilterOption, boolean>>("layerFilterContext", {
-    [LayerFilterOption.ManualComponents]: true,
-    [LayerFilterOption.Bypasses]: true,
-    [LayerFilterOption.SupportComponents]: true,
-    [LayerFilterOption.Flows]: true,
-    [LayerFilterOption.DirectionArrows]: true,
-  });
+  const activeFilters = useLocalStorage<Record<LayerFilterOption, boolean>>(
+    "layerFilterContext",
+    {
+      [LayerFilterOption.ManualComponents]: true,
+      [LayerFilterOption.Bypasses]: true,
+      [LayerFilterOption.SupportComponents]: true,
+      [LayerFilterOption.Flows]: true,
+      [LayerFilterOption.DirectionArrows]: true,
+      [LayerFilterOption.YardTags]: true,
+      [LayerFilterOption.SensorValues]: true,
+    },
+    // Selections stored before an option existed still need its default.
+    { mergeDefaults: true },
+  );
 
   const toggleFilter = (option: LayerFilterOption) => {
     activeFilters.value[option] = !activeFilters.value[option];

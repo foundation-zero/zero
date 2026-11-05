@@ -12,6 +12,7 @@ const t = tScoped("thrapp.legends.labelTag");
       <Label
         class="bg-[#BDBDBD]/10"
         height="28"
+        unfiltered
         :offset-y="0"
         >{{ t("labelValue") }}</Label
       >
