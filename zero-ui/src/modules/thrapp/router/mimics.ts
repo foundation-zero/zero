@@ -1,5 +1,6 @@
 import { ThrsModules } from "@/modules/thrapp/lib/consts";
 import * as Queries from "@/modules/thrapp/lib/queries.consts";
+import { LayerFilterOption } from "@/modules/thrapp/mimics/components/layer-filter/layer-filter.provider";
 import { TypedDocumentNode } from "@urql/vue";
 import { Component, defineAsyncComponent } from "vue";
 
@@ -9,6 +10,8 @@ export type MimicDefinition = {
   component: Component;
   /** Query for the data the mimic shows, polled while it is open. */
   query: TypedDocumentNode;
+  /** Layers the viewer can show or hide, in display order. */
+  layerFilters?: LayerFilterOption[];
 };
 
 export const MIMICS: Partial<Record<MimicKey, MimicDefinition>> = {
@@ -17,6 +20,13 @@ export const MIMICS: Partial<Record<MimicKey, MimicDefinition>> = {
       () => import("@/modules/thrapp/mimics/modules/dhw/DhwModule.vue"),
     ),
     query: Queries.DHW_MIMIC_QUERY,
+    layerFilters: [
+      LayerFilterOption.ManualComponents,
+      LayerFilterOption.Bypasses,
+      LayerFilterOption.Flows,
+      LayerFilterOption.Pipes,
+      LayerFilterOption.DirectionArrows,
+    ],
   },
   thrusters: {
     component: defineAsyncComponent(

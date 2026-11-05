@@ -402,6 +402,14 @@
       "demoMode": "Demo mode",
       "showLegend": "Show legend",
       "legend": "Legend",
+      "view": "View",
+      "layerFilters": {
+        "ManualComponent": "Manual components",
+        "Bypasses": "Bypasses",
+        "Flows": "Flows",
+        "Pipes": "Pipes",
+        "DirectionArrows": "Direction arrows"
+      },
       "on": "On",
       "off": "Off",
       "zoom": {

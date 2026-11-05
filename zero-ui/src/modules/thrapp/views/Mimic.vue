@@ -18,6 +18,12 @@ import { storeToRefs } from "pinia";
 import { computed, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import { MIMICS, MimicKey } from "../router/mimics";
+import {
+  createLayerFilterContext,
+  LayerFilterBox,
+  LayerFilterTrigger,
+  provideLayerFilterContext,
+} from "../mimics/components/layer-filter";
 
 const demoMode = ref(false);
 const provider = computed(() => (demoMode.value ? MockProvider : GraphQLProvider));
@@ -27,6 +33,9 @@ const { currentRoute } = useRouter();
 const currentModule = computed(() => currentRoute.value.params.module as MimicKey);
 const currentMimic = computed(() => MIMICS[currentModule.value]);
 const currentLegend = computed(() => MIMIC_LEGEND_MAP[currentModule.value]);
+const layerFilters = computed(() => currentMimic.value?.layerFilters ?? []);
+
+provideLayerFilterContext(createLayerFilterContext());
 
 // Only query the data of the open mimic; demo mode uses mock data instead.
 const { activeQuery } = storeToRefs(useThrsHistory());
@@ -41,8 +50,15 @@ watchEffect(() => (activeQuery.value = demoMode.value ? undefined : currentMimic
         <MimicTooltipProvider v-if="currentMimic">
           <!-- Keyed by module, so switching mimics starts again at fit-to-screen. -->
 
-          <div class="relative z-1 min-h-0 min-w-0 flex-1">
-            <MimicViewport class="size-full">
+          <div class="relative z-1 flex min-h-0 min-w-0 flex-1">
+            <aside
+              v-if="layerFilters.length"
+              class="hidden shrink-0 py-11 pr-4 pl-10.5 xl:block"
+            >
+              <LayerFilterBox :options="layerFilters" />
+            </aside>
+
+            <MimicViewport class="min-w-0 flex-1">
               <component :is="currentMimic.component" />
             </MimicViewport>
           </div>
@@ -51,11 +67,20 @@ watchEffect(() => (activeQuery.value = demoMode.value ? undefined : currentMimic
         <footer
           class="absolute bottom-3 left-0 z-10 flex w-full items-center justify-between px-3 md:bottom-4 md:px-4"
         >
-          <LegendTrigger v-if="currentLegend">
-            <NoopTooltipProvider>
-              <DynamicLegend :legend="currentLegend" />
-            </NoopTooltipProvider>
-          </LegendTrigger>
+          <div class="flex items-center gap-4">
+            <LegendTrigger v-if="currentLegend">
+              <NoopTooltipProvider>
+                <DynamicLegend :legend="currentLegend" />
+              </NoopTooltipProvider>
+            </LegendTrigger>
+
+            <div
+              v-if="layerFilters.length"
+              class="xl:hidden"
+            >
+              <LayerFilterTrigger :options="layerFilters" />
+            </div>
+          </div>
 
           &nbsp;
 
