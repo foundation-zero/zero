@@ -1,5 +1,5 @@
--- Positive HVDC power is assumed to be production; negative readings (standby draw) count as zero.
--- Revisit once the solar converters report real production data.
+-- Power is production delivered to the DC bus (sign flipped in slv_solar_converters);
+-- draw from the bus (e.g. standby) counts as zero.
 select
     date_bin('1 minute'::interval, ts)              as time,
     topic,

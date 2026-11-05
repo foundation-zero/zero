@@ -161,6 +161,6 @@ models:
               arguments:
                 values: ["Main bimini", "Owners bimini"]
       - name: power
-        description: "HVDC (bus side) power of the converter in W."
+        description: "Power the converter delivers to the main DC bus in W: the HVDC (bus side) power with its sign flipped, so production is positive and draw from the bus negative."
         tests:
           - not_null

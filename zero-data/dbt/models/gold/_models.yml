@@ -197,7 +197,7 @@ models:
               arguments:
                 values: ["Main bimini", "Owners bimini"]
       - name: power
-        description: "Solar power delivered to the main DC bus in W, aggregated per minute. Negative readings count as zero."
+        description: "Solar power delivered to the main DC bus in W, aggregated per minute. Draw from the bus (e.g. standby) counts as zero."
         tests:
           - not_null
   - name: gld_solar_power_per_minute_per_main_group
@@ -222,6 +222,6 @@ models:
         tests:
           - not_null
       - name: power
-        description: "Solar power delivered to the main DC bus in W, aggregated per minute. Negative readings count as zero."
+        description: "Solar power delivered to the main DC bus in W, aggregated per minute. Draw from the bus (e.g. standby) counts as zero."
         tests:
           - not_null

@@ -49,7 +49,9 @@ select
         when converter = 'epc-32-t102' then 'Owners bimini'
         else 'Main bimini'
     end                                    as bimini,
-    hvdc_power__value                      as power
+    -- Marpower reports HVDC power negative when it flows from the panels to the DC bus;
+    -- flip it so power is the production delivered to the bus (positive).
+    -hvdc_power__value                     as power
 from converters
 where converter is not null
 and hvdc_power__has_value is true
