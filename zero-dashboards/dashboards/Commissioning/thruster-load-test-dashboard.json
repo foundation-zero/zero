@@ -2309,7 +2309,7 @@
         "spec": {
           "id": 34,
           "title": "Heat sink temperature",
-          "description": "DC switch heat sink temperatures Hs-0 and Hs-1, declared in ℃ but published in 0.1 °C: shown corrected, raw × 0.1 °C. One series per heat sink per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+          "description": "DC switch heat sink temperatures Hs-0 and Hs-1, declared in °C but published in 0.1 °C: shown corrected, raw × 0.1 °C. One series per heat sink per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -3521,7 +3521,7 @@
         "spec": {
           "id": 48,
           "title": "Cooling circuits · ${pod:text}",
-          "description": "The selected pod's cooling circuits with the yard tags of their sensors. Updated: the oldest of the circuit's three sensors. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "The selected pod's cooling circuits with the yard tags of their sensors. The latest value of each sensor within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the oldest of the circuit's three latest samples. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -4040,7 +4040,7 @@
         "spec": {
           "id": 55,
           "title": "Available battery energy and SoC",
-          "description": "As the PMS sends them to the PCS of the selected pod. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "The energy and SoC as the PMS sends them to the PCS of the selected pod. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -5664,7 +5664,7 @@
         "spec": {
           "id": 59,
           "title": "Load pins · ${pod:text}",
-          "description": "The four load pins in the pod's mounts, horizontal (solid) and vertical (dashed), colour per pin. Declared in kN but published in N: shown corrected, raw / 1000 kN. The published int16 wraps beyond ±32.8 kN.",
+          "description": "The four load pins in the pod's mounts, horizontal (solid) and vertical (dashed), color per pin. Declared in kN but published in N: shown corrected, raw / 1000 kN. The published int16 wraps beyond ±32.8 kN.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -6736,7 +6736,7 @@
                                   "x": 0,
                                   "y": 0,
                                   "width": 24,
-                                  "height": 12,
+                                  "height": 9,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-48"
