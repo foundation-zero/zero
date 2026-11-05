@@ -22,13 +22,13 @@
                 "args": [
                     "run",
                     "--bin=zero-mqtt-graphql",
-                    "--",
-                    "--spec-dir",
-                    "../specs",
-                    "serve"
                 ]
             },
-            "args": []
+            "args": [
+                "--spec-dir",
+                "../specs",
+                "serve"
+            ]
         },
         {
             "name": "Debug unit tests in executable 'zero-mqtt-graphql'",

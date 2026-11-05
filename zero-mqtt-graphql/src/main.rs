@@ -1,10 +1,10 @@
+use std::future;
 use std::net::SocketAddr;
 use std::sync::Arc;
 
 use anyhow::{Context, Result, bail};
 use clap::Parser;
 use log::{error, info};
-#[cfg(unix)]
 use std::io::Error;
 use tokio::net::TcpListener;
 use tokio::sync::oneshot;
@@ -196,7 +196,7 @@ async fn mqtt_exit(mqtt: &mut Option<MqttTask>) {
         Some((_, dead_rx)) => {
             let _ = dead_rx.await;
         }
-        None => std::future::pending().await,
+        None => future::pending().await,
     }
 }
 
