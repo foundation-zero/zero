@@ -406,8 +406,8 @@
       "layerFilters": {
         "ManualComponent": "Manual components",
         "Bypasses": "Bypasses",
+        "SupportComponents": "Support components",
         "Flows": "Flows",
-        "Pipes": "Pipes",
         "DirectionArrows": "Direction arrows"
       },
       "on": "On",

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
+import LayerFilter from "../../../components/layer-filter/LayerFilter.vue";
+import { LayerFilterOption } from "../../../components/layer-filter/layer-filter.provider";
 
 const { t } = useI18n();
 </script>
@@ -155,66 +157,68 @@ const { t } = useI18n();
         {{ t("thrapp.mimics.drives.assets.shorepower") }}
       </tspan>
     </text>
-    <mask
-      id="path-23-inside-4_10505_8968"
-      fill="white"
-    >
+    <LayerFilter :filter="LayerFilterOption.SupportComponents">
+      <mask
+        id="path-23-inside-4_10505_8968"
+        fill="white"
+      >
+        <path
+          d="M1543.93 56.916C1543.93 48.0795 1551.1 40.916 1559.93 40.916H1701.48C1710.32 40.916 1717.48 48.0795 1717.48 56.916V216.473C1717.48 225.31 1710.32 232.473 1701.48 232.473H1559.93C1551.1 232.473 1543.93 225.31 1543.93 216.473V56.916Z"
+        />
+      </mask>
       <path
         d="M1543.93 56.916C1543.93 48.0795 1551.1 40.916 1559.93 40.916H1701.48C1710.32 40.916 1717.48 48.0795 1717.48 56.916V216.473C1717.48 225.31 1710.32 232.473 1701.48 232.473H1559.93C1551.1 232.473 1543.93 225.31 1543.93 216.473V56.916Z"
+        fill="#F4F9FE"
+        fill-opacity="0.05"
+        stroke="#EE44DD"
+        stroke-opacity="0.55"
+        stroke-width="2"
+        stroke-dasharray="2 2"
+        mask="url(#path-23-inside-4_10505_8968)"
       />
-    </mask>
-    <path
-      d="M1543.93 56.916C1543.93 48.0795 1551.1 40.916 1559.93 40.916H1701.48C1710.32 40.916 1717.48 48.0795 1717.48 56.916V216.473C1717.48 225.31 1710.32 232.473 1701.48 232.473H1559.93C1551.1 232.473 1543.93 225.31 1543.93 216.473V56.916Z"
-      fill="#F4F9FE"
-      fill-opacity="0.05"
-      stroke="#EE44DD"
-      stroke-opacity="0.55"
-      stroke-width="2"
-      stroke-dasharray="2 2"
-      mask="url(#path-23-inside-4_10505_8968)"
-    />
-    <path
-      d="M1702.49 209.932L1651.59 209.932"
-      class="stroke-flows-pipe"
-    />
-    <path
-      d="M1702.49 129.542H1648.19"
-      class="stroke-flows-pipe"
-    />
-    <path
-      d="M1702.49 84.6742H1648.19"
-      class="stroke-flows-pipe"
-    />
-    <path
-      d="M1670.96 70.3589L1670.96 84.6742"
-      class="stroke-flows-pipe"
-    />
-    <text
-      class="fill-muted-foreground"
-      style="white-space: pre"
-      xml:space="preserve"
-      font-family="Inter"
-      font-size="10"
-      letter-spacing="0em"
-    >
-      <tspan
-        x="1580.54"
-        y="55.7213"
+      <path
+        d="M1702.49 209.932L1651.59 209.932"
+        class="stroke-flows-pipe"
+      />
+      <path
+        d="M1702.49 129.542H1648.19"
+        class="stroke-flows-pipe"
+      />
+      <path
+        d="M1702.49 84.6742H1648.19"
+        class="stroke-flows-pipe"
+      />
+      <path
+        d="M1670.96 70.3589L1670.96 84.6742"
+        class="stroke-flows-pipe"
+      />
+      <text
+        class="fill-muted-foreground"
+        style="white-space: pre"
+        xml:space="preserve"
+        font-family="Inter"
+        font-size="10"
+        letter-spacing="0em"
       >
-        {{ t("thrapp.mimics.sections.supportComponents") }}
-      </tspan>
-    </text>
-    <path
-      d="M1702.03 84.3724V308.082L1702.03 518.789H1666.87"
-      class="stroke-flows-pipe"
-      stroke-linejoin="round"
-    />
-    <circle
-      cx="1667.05"
-      cy="518.768"
-      r="2.5"
-      class="fill-flows-pipe"
-    />
+        <tspan
+          x="1580.54"
+          y="55.7213"
+        >
+          {{ t("thrapp.mimics.sections.supportComponents") }}
+        </tspan>
+      </text>
+      <path
+        d="M1702.03 84.3724V308.082L1702.03 518.789H1666.87"
+        class="stroke-flows-pipe"
+        stroke-linejoin="round"
+      />
+      <circle
+        cx="1667.05"
+        cy="518.768"
+        r="2.5"
+        class="fill-flows-pipe"
+      />
+    </LayerFilter>
     <text
       class="fill-muted-foreground"
       style="white-space: pre"
@@ -293,56 +297,6 @@ const { t } = useI18n();
       r="2.5"
       class="fill-flows-pipe"
     />
-    <path
-      d="M555.178 521.788V844.774"
-      class="stroke-flows-pipe"
-    />
-    <mask
-      id="path-42-inside-5_10505_8968"
-      fill="white"
-    >
-      <path
-        d="M529.49 560.272C529.49 551.435 536.654 544.272 545.49 544.272H561.49C570.327 544.272 577.49 551.435 577.49 560.272V801.681C577.49 810.518 570.327 817.681 561.49 817.681H545.49C536.654 817.681 529.49 810.518 529.49 801.681V560.272Z"
-      />
-    </mask>
-    <path
-      d="M529.49 560.272C529.49 551.435 536.654 544.272 545.49 544.272H561.49C570.327 544.272 577.49 551.435 577.49 560.272V801.681C577.49 810.518 570.327 817.681 561.49 817.681H545.49C536.654 817.681 529.49 810.518 529.49 801.681V560.272Z"
-      fill="#F4F9FE"
-      fill-opacity="0.05"
-      stroke="#EE44DD"
-      stroke-opacity="0.55"
-      stroke-width="2"
-      stroke-dasharray="2 2"
-      mask="url(#path-42-inside-5_10505_8968)"
-    />
-    <text
-      transform="translate(533.76 813.95) rotate(-90)"
-      class="fill-muted-foreground"
-      style="white-space: pre"
-      xml:space="preserve"
-      font-family="Inter"
-      font-size="12"
-      letter-spacing="0em"
-    >
-      <tspan
-        x="83.9969"
-        y="10.3636"
-      >
-        {{ t("thrapp.mimics.drives.sections.aftManualFlowBypass") }}
-      </tspan>
-    </text>
-    <circle
-      cx="555.121"
-      cy="844.673"
-      r="2.5"
-      class="fill-flows-pipe"
-    />
-    <circle
-      cx="555.121"
-      cy="521.78"
-      r="2.5"
-      class="fill-flows-pipe"
-    />
     <circle
       cx="497.923"
       cy="521.78"
@@ -355,55 +309,107 @@ const { t } = useI18n();
       r="2.5"
       class="fill-flows-pipe"
     />
-    <path
-      d="M555.178 403.733V87.0127"
-      class="stroke-flows-pipe"
-    />
-    <mask
-      id="path-49-inside-6_10505_8968"
-      fill="white"
-    >
+    <LayerFilter :filter="LayerFilterOption.Bypasses">
+      <path
+        d="M555.178 521.788V844.774"
+        class="stroke-flows-pipe"
+      />
+      <mask
+        id="path-42-inside-5_10505_8968"
+        fill="white"
+      >
+        <path
+          d="M529.49 560.272C529.49 551.435 536.654 544.272 545.49 544.272H561.49C570.327 544.272 577.49 551.435 577.49 560.272V801.681C577.49 810.518 570.327 817.681 561.49 817.681H545.49C536.654 817.681 529.49 810.518 529.49 801.681V560.272Z"
+        />
+      </mask>
+      <path
+        d="M529.49 560.272C529.49 551.435 536.654 544.272 545.49 544.272H561.49C570.327 544.272 577.49 551.435 577.49 560.272V801.681C577.49 810.518 570.327 817.681 561.49 817.681H545.49C536.654 817.681 529.49 810.518 529.49 801.681V560.272Z"
+        fill="#F4F9FE"
+        fill-opacity="0.05"
+        stroke="#EE44DD"
+        stroke-opacity="0.55"
+        stroke-width="2"
+        stroke-dasharray="2 2"
+        mask="url(#path-42-inside-5_10505_8968)"
+      />
+      <text
+        transform="translate(533.76 813.95) rotate(-90)"
+        class="fill-muted-foreground"
+        style="white-space: pre"
+        xml:space="preserve"
+        font-family="Inter"
+        font-size="12"
+        letter-spacing="0em"
+      >
+        <tspan
+          x="83.9969"
+          y="10.3636"
+        >
+          {{ t("thrapp.mimics.drives.sections.aftManualFlowBypass") }}
+        </tspan>
+      </text>
+      <circle
+        cx="555.121"
+        cy="844.673"
+        r="2.5"
+        class="fill-flows-pipe"
+      />
+      <circle
+        cx="555.121"
+        cy="521.78"
+        r="2.5"
+        class="fill-flows-pipe"
+      />
+      <path
+        d="M555.178 403.733V87.0127"
+        class="stroke-flows-pipe"
+      />
+      <mask
+        id="path-49-inside-6_10505_8968"
+        fill="white"
+      >
+        <path
+          d="M529.49 128.516C529.49 119.68 536.654 112.516 545.49 112.516H561.49C570.327 112.516 577.49 119.68 577.49 128.516V369.925C577.49 378.762 570.327 385.925 561.49 385.925H545.49C536.654 385.925 529.49 378.762 529.49 369.925V128.516Z"
+        />
+      </mask>
       <path
         d="M529.49 128.516C529.49 119.68 536.654 112.516 545.49 112.516H561.49C570.327 112.516 577.49 119.68 577.49 128.516V369.925C577.49 378.762 570.327 385.925 561.49 385.925H545.49C536.654 385.925 529.49 378.762 529.49 369.925V128.516Z"
+        fill="#F4F9FE"
+        fill-opacity="0.05"
+        stroke="#EE44DD"
+        stroke-opacity="0.55"
+        stroke-width="2"
+        stroke-dasharray="2 2"
+        mask="url(#path-49-inside-6_10505_8968)"
       />
-    </mask>
-    <path
-      d="M529.49 128.516C529.49 119.68 536.654 112.516 545.49 112.516H561.49C570.327 112.516 577.49 119.68 577.49 128.516V369.925C577.49 378.762 570.327 385.925 561.49 385.925H545.49C536.654 385.925 529.49 378.762 529.49 369.925V128.516Z"
-      fill="#F4F9FE"
-      fill-opacity="0.05"
-      stroke="#EE44DD"
-      stroke-opacity="0.55"
-      stroke-width="2"
-      stroke-dasharray="2 2"
-      mask="url(#path-49-inside-6_10505_8968)"
-    />
-    <text
-      transform="translate(533.76 382.194) rotate(-90)"
-      class="fill-muted-foreground"
-      style="white-space: pre"
-      xml:space="preserve"
-      font-family="Inter"
-      font-size="12"
-      letter-spacing="0em"
-    >
-      <tspan
-        x="81.8934"
-        y="10.3636"
+      <text
+        transform="translate(533.76 382.194) rotate(-90)"
+        class="fill-muted-foreground"
+        style="white-space: pre"
+        xml:space="preserve"
+        font-family="Inter"
+        font-size="12"
+        letter-spacing="0em"
       >
-        {{ t("thrapp.mimics.drives.sections.fwdManualFlowBypass") }}
-      </tspan>
-    </text>
-    <circle
-      cx="555.179"
-      cy="403.311"
-      r="2.5"
-      class="fill-flows-pipe"
-    />
-    <circle
-      cx="555.185"
-      cy="86.5513"
-      r="2.5"
-      class="fill-flows-pipe"
-    />
+        <tspan
+          x="81.8934"
+          y="10.3636"
+        >
+          {{ t("thrapp.mimics.drives.sections.fwdManualFlowBypass") }}
+        </tspan>
+      </text>
+      <circle
+        cx="555.179"
+        cy="403.311"
+        r="2.5"
+        class="fill-flows-pipe"
+      />
+      <circle
+        cx="555.185"
+        cy="86.5513"
+        r="2.5"
+        class="fill-flows-pipe"
+      />
+    </LayerFilter>
   </g>
 </template>

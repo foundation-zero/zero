@@ -5,12 +5,14 @@ import { PRESSURE_GAUGE_WIDTH } from "../../../components/pressure-gauge";
 import { getTooltipContexts } from "../../../data";
 import { PressureGaugeInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
+import LayerFilter from "../../../components/layer-filter/LayerFilter.vue";
+import { LayerFilterOption } from "../../../components/layer-filter/layer-filter.provider";
 
 const manualPressureSensors = getTooltipContexts(MimicComponentType.PressureGauge, ["1095-01"]);
 </script>
 
 <template>
-  <g>
+  <LayerFilter :filter="LayerFilterOption.ManualComponents">
     <PressureGaugeInstance
       x="518"
       y="229"
@@ -23,5 +25,5 @@ const manualPressureSensors = getTooltipContexts(MimicComponentType.PressureGaug
         :tag-id="manualPressureSensors['1095-01'].tooltip?.yardTag"
       />
     </PressureGaugeInstance>
-  </g>
+  </LayerFilter>
 </template>

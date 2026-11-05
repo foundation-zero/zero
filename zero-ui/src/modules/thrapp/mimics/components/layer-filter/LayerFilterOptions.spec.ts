@@ -7,8 +7,8 @@ import LayerFilterOptions from "./LayerFilterOptions.vue";
 const ALL_OPTIONS = [
   LayerFilterOption.ManualComponents,
   LayerFilterOption.Bypasses,
+  LayerFilterOption.SupportComponents,
   LayerFilterOption.Flows,
-  LayerFilterOption.Pipes,
   LayerFilterOption.DirectionArrows,
 ];
 
@@ -28,19 +28,18 @@ describe("LayerFilterOptions", () => {
     expect(wrapper.findAll("label").map((label) => label.text())).toEqual([
       "Manual components",
       "Bypasses",
+      "Support components",
       "Flows",
-      "Pipes",
       "Direction arrows",
     ]);
   });
 
-  it("reflects the active filters", () => {
-    const { wrapper } = mountOptions([LayerFilterOption.Bypasses, LayerFilterOption.Flows]);
+  it("activates every filter by default", () => {
+    const { wrapper } = mountOptions(ALL_OPTIONS);
 
-    expect(wrapper.findAll("[role=switch]").map((item) => item.attributes("data-state"))).toEqual([
-      "unchecked",
-      "checked",
-    ]);
+    expect(wrapper.findAll("[role=switch]").map((item) => item.attributes("data-state"))).toEqual(
+      ALL_OPTIONS.map(() => "checked"),
+    );
   });
 
   it("toggles a filter", async () => {
@@ -48,6 +47,6 @@ describe("LayerFilterOptions", () => {
 
     await wrapper.get("[role=switch]").trigger("click");
 
-    expect(context.isFilterActive(LayerFilterOption.Bypasses)).toBe(true);
+    expect(context.isFilterActive(LayerFilterOption.Bypasses)).toBe(false);
   });
 });

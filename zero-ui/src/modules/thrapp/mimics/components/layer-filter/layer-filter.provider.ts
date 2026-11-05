@@ -1,10 +1,11 @@
-import { computed, inject, provide, ref, Ref } from "vue";
+import { useLocalStorage } from "@vueuse/core";
+import { computed, inject, provide, Ref } from "vue";
 
 export const enum LayerFilterOption {
   ManualComponents = "ManualComponent",
   Bypasses = "Bypasses",
+  SupportComponents = "SupportComponents",
   Flows = "Flows",
-  Pipes = "Pipes",
   DirectionArrows = "DirectionArrows",
 }
 
@@ -17,12 +18,12 @@ export interface LayerFilterContext {
 }
 
 export const createLayerFilterContext = (): LayerFilterContext => {
-  const activeFilters: Ref<Record<LayerFilterOption, boolean>> = ref({
-    [LayerFilterOption.ManualComponents]: false,
-    [LayerFilterOption.Bypasses]: false,
+  const activeFilters = useLocalStorage<Record<LayerFilterOption, boolean>>("layerFilterContext", {
+    [LayerFilterOption.ManualComponents]: true,
+    [LayerFilterOption.Bypasses]: true,
+    [LayerFilterOption.SupportComponents]: true,
     [LayerFilterOption.Flows]: true,
-    [LayerFilterOption.Pipes]: true,
-    [LayerFilterOption.DirectionArrows]: false,
+    [LayerFilterOption.DirectionArrows]: true,
   });
 
   const toggleFilter = (option: LayerFilterOption) => {

@@ -6,30 +6,36 @@ import {
   ExpansionValveInstance,
   TagLabelInstance,
 } from "../../../instances";
+import LayerFilter from "../../../components/layer-filter/LayerFilter.vue";
+import { LayerFilterOption } from "../../../components/layer-filter/layer-filter.provider";
 
 const expansionTanks = getTooltipContexts(MimicComponentType.ExpansionTank, ["1040-05"]);
 const expansionValves = getTooltipContexts(MimicComponentType.ExpansionValve, ["1041-06"]);
 </script>
 
 <template>
-  <ExpansionTankInstance
-    x="1209.1406"
-    y="619.1458"
-    v-bind="expansionTanks['1040-05']"
-  />
-  <TagLabelInstance
-    x="1247.1406"
-    y="628.146"
-    tag-id="1040-05"
-  />
-  <ExpansionValveInstance
-    x="1175.1406"
-    y="675.6458"
-    v-bind="expansionValves['1041-06']"
-  />
-  <TagLabelInstance
-    x="1216.1406"
-    y="671.146"
-    tag-id="1041-06"
-  />
+  <LayerFilter :filter="LayerFilterOption.ManualComponents">
+    <LayerFilter :filter="LayerFilterOption.SupportComponents">
+      <ExpansionTankInstance
+        x="1209.1406"
+        y="619.1458"
+        v-bind="expansionTanks['1040-05']"
+      />
+      <TagLabelInstance
+        x="1247.1406"
+        y="628.146"
+        tag-id="1040-05"
+      />
+      <ExpansionValveInstance
+        x="1175.1406"
+        y="675.6458"
+        v-bind="expansionValves['1041-06']"
+      />
+      <TagLabelInstance
+        x="1216.1406"
+        y="671.146"
+        tag-id="1041-06"
+      />
+    </LayerFilter>
+  </LayerFilter>
 </template>

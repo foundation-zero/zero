@@ -1,5 +1,13 @@
+<script setup lang="ts">
+import LayerFilter from "../../../components/layer-filter/LayerFilter.vue";
+import { LayerFilterOption } from "../../../components/layer-filter/layer-filter.provider";
+</script>
+
 <template>
-  <g class="fill-flows-pipe">
+  <LayerFilter
+    :filter="LayerFilterOption.DirectionArrows"
+    class="fill-flows-pipe"
+  >
     <defs>
       <marker
         id="flows-dir-arrow"
@@ -156,5 +164,5 @@
         y2="548"
       />
     </g>
-  </g>
+  </LayerFilter>
 </template>
