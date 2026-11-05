@@ -2,27 +2,7 @@
   "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
-    "name": "commissioning-seawater",
-    "namespace": "default",
-    "uid": "9c6d56d3-427f-4775-bf63-95b51b33743b",
-    "resourceVersion": "1793864330717982",
-    "generation": 1,
-    "creationTimestamp": "2026-11-05T07:38:50Z",
-    "labels": {
-      "grafana.app/deprecatedInternalID": "1554823373697024"
-    },
-    "annotations": {
-      "grafana.app/createdBy": "access-policy:service",
-      "grafana.app/folder": "ag3d3rh4tsq2oa",
-      "grafana.app/managedBy": "classic-file-provisioning",
-      "grafana.app/managerId": "embedded-dashboards",
-      "grafana.app/sourceChecksum": "82f2182052a5ba2d99dd0318a7162d67",
-      "grafana.app/sourcePath": "/embedded-dashboards/Commissioning/seawater-dashboard.json",
-      "grafana.app/sourceTimestamp": "1793864258000",
-      "grafana.app/updatedBy": "access-policy:service",
-      "grafana.app/folderTitle": "Commissioning",
-      "grafana.app/folderUrl": "/dashboards/f/ag3d3rh4tsq2oa/commissioning"
-    }
+    "name": "commissioning-seawater"
   },
   "spec": {
     "annotations": [

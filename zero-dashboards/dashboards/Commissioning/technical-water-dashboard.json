@@ -2,27 +2,7 @@
   "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
-    "name": "commissioning-tech-water",
-    "namespace": "default",
-    "uid": "3f6111e1-c8b7-4dd3-8160-60336db1e3f4",
-    "resourceVersion": "1793864328486009",
-    "generation": 1,
-    "creationTimestamp": "2026-11-05T07:38:48Z",
-    "labels": {
-      "grafana.app/deprecatedInternalID": "1554814012010496"
-    },
-    "annotations": {
-      "grafana.app/createdBy": "access-policy:service",
-      "grafana.app/folder": "ag3d3rh4tsq2oa",
-      "grafana.app/managedBy": "classic-file-provisioning",
-      "grafana.app/managerId": "embedded-dashboards",
-      "grafana.app/sourceChecksum": "9dc49d3f1f3adf7ac869e4e8b19f43f2",
-      "grafana.app/sourcePath": "/embedded-dashboards/Commissioning/technical-water-dashboard.json",
-      "grafana.app/sourceTimestamp": "1793864258000",
-      "grafana.app/updatedBy": "access-policy:service",
-      "grafana.app/folderTitle": "Commissioning",
-      "grafana.app/folderUrl": "/dashboards/f/ag3d3rh4tsq2oa/commissioning"
-    }
+    "name": "commissioning-tech-water"
   },
   "spec": {
     "annotations": [

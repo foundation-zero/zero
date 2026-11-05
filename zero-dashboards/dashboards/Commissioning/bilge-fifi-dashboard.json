@@ -2,27 +2,7 @@
   "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
-    "name": "commissioning-bilge-fifi",
-    "namespace": "default",
-    "uid": "c5b352b1-c420-45b5-a7ae-1b43e13664c5",
-    "resourceVersion": "1793864328211981",
-    "generation": 1,
-    "creationTimestamp": "2026-11-05T07:38:48Z",
-    "labels": {
-      "grafana.app/deprecatedInternalID": "1554812845993984"
-    },
-    "annotations": {
-      "grafana.app/createdBy": "access-policy:service",
-      "grafana.app/folder": "ag3d3rh4tsq2oa",
-      "grafana.app/managedBy": "classic-file-provisioning",
-      "grafana.app/managerId": "embedded-dashboards",
-      "grafana.app/sourceChecksum": "c92bd853b5a4b620f2dd34d2e1f9aead",
-      "grafana.app/sourcePath": "/embedded-dashboards/Commissioning/bilge-fifi-dashboard.json",
-      "grafana.app/sourceTimestamp": "1793864258000",
-      "grafana.app/updatedBy": "access-policy:service",
-      "grafana.app/folderTitle": "Commissioning",
-      "grafana.app/folderUrl": "/dashboards/f/ag3d3rh4tsq2oa/commissioning"
-    }
+    "name": "commissioning-bilge-fifi"
   },
   "spec": {
     "annotations": [
