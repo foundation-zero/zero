@@ -35,8 +35,10 @@ pv_converters as (
 
 converters as (
     select * from busbar
+    where ts < TIMESTAMP '2026-11-05 06:07:00'
     union all
     select * from pv_converters
+    where ts >= TIMESTAMP '2026-11-05 06:07:00'
 )
 
 select
