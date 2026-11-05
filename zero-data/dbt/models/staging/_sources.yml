@@ -4404,3 +4404,150 @@ sources:
             description: "Timestamp of the watchdog counter reading."
           - name: watchdog_counter__value
             description: "Watchdog counter."
+      - name: marpower__450000_dc_distribution__pv_converter_main_1
+        description: "Solar (PV) EPC converter telemetry from Marpower for the main bimini converter 1 (04.31-T101), published since 5 Nov 2026 06:07 UTC. Only the columns we model are listed."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: topic
+            description: "MQTT topic associated with the raw message."
+          - name: hvdc_current__has_value
+            description: "Indicates whether a value is present for the HVDC (high side) current in A."
+          - name: hvdc_current__is_valid
+            description: "Indicates whether the HVDC (high side) current in A value is valid."
+          - name: hvdc_current__timestamp
+            description: "Timestamp of the HVDC (high side) current in A reading."
+          - name: hvdc_current__value
+            description: "HVDC (high side) current in A."
+          - name: hvdc_power__has_value
+            description: "Indicates whether a value is present for the HVDC (high side) power in W."
+          - name: hvdc_power__is_valid
+            description: "Indicates whether the HVDC (high side) power in W value is valid."
+          - name: hvdc_power__timestamp
+            description: "Timestamp of the HVDC (high side) power in W reading."
+          - name: hvdc_power__value
+            description: "HVDC (high side) power in W."
+          - name: hvdc_voltage__has_value
+            description: "Indicates whether a value is present for the HVDC (high side) voltage in V."
+          - name: hvdc_voltage__is_valid
+            description: "Indicates whether the HVDC (high side) voltage in V value is valid."
+          - name: hvdc_voltage__timestamp
+            description: "Timestamp of the HVDC (high side) voltage in V reading."
+          - name: hvdc_voltage__value
+            description: "HVDC (high side) voltage in V."
+          - name: lvdc_current__has_value
+            description: "Indicates whether a value is present for the LVDC (low side) current in A."
+          - name: lvdc_current__is_valid
+            description: "Indicates whether the LVDC (low side) current in A value is valid."
+          - name: lvdc_current__timestamp
+            description: "Timestamp of the LVDC (low side) current in A reading."
+          - name: lvdc_current__value
+            description: "LVDC (low side) current in A."
+          - name: lvdc_voltage__has_value
+            description: "Indicates whether a value is present for the LVDC (low side) voltage in V."
+          - name: lvdc_voltage__is_valid
+            description: "Indicates whether the LVDC (low side) voltage in V value is valid."
+          - name: lvdc_voltage__timestamp
+            description: "Timestamp of the LVDC (low side) voltage in V reading."
+          - name: lvdc_voltage__value
+            description: "LVDC (low side) voltage in V."
+      - name: marpower__450000_dc_distribution__pv_converter_main_2
+        description: "Solar (PV) EPC converter telemetry from Marpower for the main bimini converter 2 (04.32-T101), published since 5 Nov 2026 06:07 UTC. Only the columns we model are listed."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: topic
+            description: "MQTT topic associated with the raw message."
+          - name: hvdc_current__has_value
+            description: "Indicates whether a value is present for the HVDC (high side) current in A."
+          - name: hvdc_current__is_valid
+            description: "Indicates whether the HVDC (high side) current in A value is valid."
+          - name: hvdc_current__timestamp
+            description: "Timestamp of the HVDC (high side) current in A reading."
+          - name: hvdc_current__value
+            description: "HVDC (high side) current in A."
+          - name: hvdc_power__has_value
+            description: "Indicates whether a value is present for the HVDC (high side) power in W."
+          - name: hvdc_power__is_valid
+            description: "Indicates whether the HVDC (high side) power in W value is valid."
+          - name: hvdc_power__timestamp
+            description: "Timestamp of the HVDC (high side) power in W reading."
+          - name: hvdc_power__value
+            description: "HVDC (high side) power in W."
+          - name: hvdc_voltage__has_value
+            description: "Indicates whether a value is present for the HVDC (high side) voltage in V."
+          - name: hvdc_voltage__is_valid
+            description: "Indicates whether the HVDC (high side) voltage in V value is valid."
+          - name: hvdc_voltage__timestamp
+            description: "Timestamp of the HVDC (high side) voltage in V reading."
+          - name: hvdc_voltage__value
+            description: "HVDC (high side) voltage in V."
+          - name: lvdc_current__has_value
+            description: "Indicates whether a value is present for the LVDC (low side) current in A."
+          - name: lvdc_current__is_valid
+            description: "Indicates whether the LVDC (low side) current in A value is valid."
+          - name: lvdc_current__timestamp
+            description: "Timestamp of the LVDC (low side) current in A reading."
+          - name: lvdc_current__value
+            description: "LVDC (low side) current in A."
+          - name: lvdc_voltage__has_value
+            description: "Indicates whether a value is present for the LVDC (low side) voltage in V."
+          - name: lvdc_voltage__is_valid
+            description: "Indicates whether the LVDC (low side) voltage in V value is valid."
+          - name: lvdc_voltage__timestamp
+            description: "Timestamp of the LVDC (low side) voltage in V reading."
+          - name: lvdc_voltage__value
+            description: "LVDC (low side) voltage in V."
+      - name: marpower__450000_dc_distribution__pv_converter_owner
+        description: "Solar (PV) EPC converter telemetry from Marpower for the owners bimini converter (04.32-T102), published since 5 Nov 2026 06:07 UTC. Only the columns we model are listed."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: topic
+            description: "MQTT topic associated with the raw message."
+          - name: hvdc_current__has_value
+            description: "Indicates whether a value is present for the HVDC (high side) current in A."
+          - name: hvdc_current__is_valid
+            description: "Indicates whether the HVDC (high side) current in A value is valid."
+          - name: hvdc_current__timestamp
+            description: "Timestamp of the HVDC (high side) current in A reading."
+          - name: hvdc_current__value
+            description: "HVDC (high side) current in A."
+          - name: hvdc_power__has_value
+            description: "Indicates whether a value is present for the HVDC (high side) power in W."
+          - name: hvdc_power__is_valid
+            description: "Indicates whether the HVDC (high side) power in W value is valid."
+          - name: hvdc_power__timestamp
+            description: "Timestamp of the HVDC (high side) power in W reading."
+          - name: hvdc_power__value
+            description: "HVDC (high side) power in W."
+          - name: hvdc_voltage__has_value
+            description: "Indicates whether a value is present for the HVDC (high side) voltage in V."
+          - name: hvdc_voltage__is_valid
+            description: "Indicates whether the HVDC (high side) voltage in V value is valid."
+          - name: hvdc_voltage__timestamp
+            description: "Timestamp of the HVDC (high side) voltage in V reading."
+          - name: hvdc_voltage__value
+            description: "HVDC (high side) voltage in V."
+          - name: lvdc_current__has_value
+            description: "Indicates whether a value is present for the LVDC (low side) current in A."
+          - name: lvdc_current__is_valid
+            description: "Indicates whether the LVDC (low side) current in A value is valid."
+          - name: lvdc_current__timestamp
+            description: "Timestamp of the LVDC (low side) current in A reading."
+          - name: lvdc_current__value
+            description: "LVDC (low side) current in A."
+          - name: lvdc_voltage__has_value
+            description: "Indicates whether a value is present for the LVDC (low side) voltage in V."
+          - name: lvdc_voltage__is_valid
+            description: "Indicates whether the LVDC (low side) voltage in V value is valid."
+          - name: lvdc_voltage__timestamp
+            description: "Timestamp of the LVDC (low side) voltage in V reading."
+          - name: lvdc_voltage__value
+            description: "LVDC (low side) voltage in V."

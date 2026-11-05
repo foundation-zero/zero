@@ -134,7 +134,8 @@ models:
           - not_null
   - name: slv_solar_converters
     description: >
-      Power the solar EPC converters on the main and owners biminis deliver to the main DC bus.
+      Power the solar EPC converters on the main and owners biminis deliver to the main DC bus,
+      combined from the busbar table (until 5 Nov 2026 06:07 UTC) and the per-converter PV tables (since then).
       Materialized as a view in the `views` database.
     columns:
       - name: ts
@@ -146,9 +147,12 @@ models:
         tests:
           - not_null
       - name: converter
-        description: "The solar EPC converter, e.g. epc-31-t101."
+        description: "The solar EPC converter, e.g. epc-31-t101, the same for the busbar and the per-converter PV topic."
         tests:
           - not_null
+          - accepted_values:
+              arguments:
+                values: ["epc-31-t101", "epc-32-t101", "epc-32-t102"]
       - name: bimini
         description: "The bimini whose solar panels feed the converter."
         tests:

@@ -4359,3 +4359,62 @@ models:
         description: "Timestamp of the watchdog counter reading."
       - name: watchdog_counter__value
         description: "Watchdog counter."
+  - name: stg_marpower__pv_converters
+    description: >
+      Staging view for the Marpower solar (PV) EPC converters on the main and owners biminis,
+      one topic per converter, unioned from their per-converter tables (published since 5 Nov 2026 06:07 UTC).
+    columns:
+      - name: ts
+        description: "Time index of the measurement record (renamed from timestamp)."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message, one per PV converter."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - "marpower/450000-dc-distribution/pv-converter-main-1"
+                  - "marpower/450000-dc-distribution/pv-converter-main-2"
+                  - "marpower/450000-dc-distribution/pv-converter-owner"
+      - name: hvdc_current__has_value
+        description: "Indicates whether a value is present for the HVDC (high side) current in A."
+      - name: hvdc_current__is_valid
+        description: "Indicates whether the HVDC (high side) current in A value is valid."
+      - name: hvdc_current__timestamp
+        description: "Timestamp of the HVDC (high side) current in A reading."
+      - name: hvdc_current__value
+        description: "HVDC (high side) current in A."
+      - name: hvdc_power__has_value
+        description: "Indicates whether a value is present for the HVDC (high side) power in W."
+      - name: hvdc_power__is_valid
+        description: "Indicates whether the HVDC (high side) power in W value is valid."
+      - name: hvdc_power__timestamp
+        description: "Timestamp of the HVDC (high side) power in W reading."
+      - name: hvdc_power__value
+        description: "HVDC (high side) power in W."
+      - name: hvdc_voltage__has_value
+        description: "Indicates whether a value is present for the HVDC (high side) voltage in V."
+      - name: hvdc_voltage__is_valid
+        description: "Indicates whether the HVDC (high side) voltage in V value is valid."
+      - name: hvdc_voltage__timestamp
+        description: "Timestamp of the HVDC (high side) voltage in V reading."
+      - name: hvdc_voltage__value
+        description: "HVDC (high side) voltage in V."
+      - name: lvdc_current__has_value
+        description: "Indicates whether a value is present for the LVDC (low side) current in A."
+      - name: lvdc_current__is_valid
+        description: "Indicates whether the LVDC (low side) current in A value is valid."
+      - name: lvdc_current__timestamp
+        description: "Timestamp of the LVDC (low side) current in A reading."
+      - name: lvdc_current__value
+        description: "LVDC (low side) current in A."
+      - name: lvdc_voltage__has_value
+        description: "Indicates whether a value is present for the LVDC (low side) voltage in V."
+      - name: lvdc_voltage__is_valid
+        description: "Indicates whether the LVDC (low side) voltage in V value is valid."
+      - name: lvdc_voltage__timestamp
+        description: "Timestamp of the LVDC (low side) voltage in V reading."
+      - name: lvdc_voltage__value
+        description: "LVDC (low side) voltage in V."
