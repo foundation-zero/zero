@@ -1362,7 +1362,7 @@
       "timezone": "browser",
       "from": "now-1h",
       "to": "now",
-      "autoRefresh": "",
+      "autoRefresh": "5s",
       "autoRefreshIntervals": [
         "5s",
         "10s",
