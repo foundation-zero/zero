@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v2beta1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "commissioning-thruster-load-test"
@@ -101,9 +101,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -216,9 +216,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -331,9 +331,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -477,9 +477,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -646,9 +646,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "technical_name"
@@ -821,9 +821,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "technical_name"
@@ -996,9 +996,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "technical_name"
@@ -1171,9 +1171,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "technical_name"
@@ -1323,9 +1323,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -1438,9 +1438,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -1639,9 +1639,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -1754,9 +1754,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -1869,9 +1869,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -1984,9 +1984,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -2175,9 +2175,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -2341,9 +2341,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -2456,9 +2456,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -2571,9 +2571,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -2686,9 +2686,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -2801,9 +2801,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -2916,9 +2916,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -3031,9 +3031,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -3165,7 +3165,7 @@
         "spec": {
           "id": 41,
           "title": "${pod:text} pod",
-          "description": "Propeller speed and shaft power, pitch and azimuth from the PLC. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "Propeller speed and shaft power, pitch and azimuth from the PLC. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -3187,7 +3187,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT round(last_value(azimuth_prop_speed__value ORDER BY timestamp) / 10.0, 1) AS \"Propeller speed [rpm]\",\n  round(last_value(azimuth_prop_mech_power__value ORDER BY timestamp) / 10.0, 1) AS \"Shaft power [kW]\",\n  last_value(propellor_pitch__value ORDER BY timestamp) AS \"Pitch [°]\",\n  last_value(propellor_azimuth__value ORDER BY timestamp) AS \"Azimuth [°]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '5 minutes'"
+                        "rawSql": "SELECT round(last_value(azimuth_prop_speed__value ORDER BY timestamp) / 10.0, 1) AS \"Propeller speed [rpm]\",\n  round(last_value(azimuth_prop_mech_power__value ORDER BY timestamp) / 10.0, 1) AS \"Shaft power [kW]\",\n  last_value(propellor_pitch__value ORDER BY timestamp) AS \"Pitch [°]\",\n  last_value(propellor_azimuth__value ORDER BY timestamp) AS \"Azimuth [°]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '$live_window'"
                       }
                     },
                     "refId": "A",
@@ -3228,7 +3228,8 @@
                       "type": "auto"
                     },
                     "inspect": false
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -3239,7 +3240,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -3254,7 +3297,7 @@
         "spec": {
           "id": 42,
           "title": "Drive loads · ${pod:text}",
-          "description": "DC power, positive when consuming; torque at the motor shaft; the torque limits the PLC sends and the power limits the PMS gives each drive, both as sent. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "DC power, positive when consuming; torque at the motor shaft; the torque limits the PLC sends and the power limits the PMS gives each drive, both as sent. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -3276,7 +3319,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH drives AS (\n  SELECT 1 AS drive, last_value(power__value ORDER BY timestamp) * 0.1 AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE timestamp > now() - INTERVAL '5 minutes'\n  UNION ALL\n  SELECT 2 AS drive, last_value(power__value ORDER BY timestamp) * 0.1 AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE timestamp > now() - INTERVAL '5 minutes'),\nlimits AS (\n  SELECT CASE right(topic, 4) WHEN 'u101' THEN 1 ELSE 2 END AS drive,\n    last_value(setpoint_power__value ORDER BY timestamp) AS propulsion_limit, last_value(produce_power_limit__value ORDER BY timestamp) AS regeneration_limit\n  FROM public.marpower__150000_propulsion_ara\n  WHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u101' ELSE '13-11-u101' END, 'marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u102' ELSE '13-11-u102' END)\n  GROUP BY topic)\nSELECT 'Drive ' || CAST(d.drive AS VARCHAR) || ' (${pod_system}-U10' || CAST(d.drive AS VARCHAR) || ')' AS \"Drive\",\n  round(d.power, 1) AS \"DC power [kW]\",\n  d.torque AS \"Torque [Nm]\",\n  d.max_torque AS \"Max torque sent [Nm]\",\n  d.min_torque AS \"Min torque sent [Nm]\",\n  round(l.propulsion_limit, 1) AS \"Propulsion limit [kW]\",\n  round(l.regeneration_limit, 1) AS \"Regeneration limit [kW]\",\n  d.updated AS \"Updated\"\nFROM drives d LEFT JOIN limits l ON l.drive = d.drive\nORDER BY d.drive"
+                        "rawSql": "WITH drives AS (\n  SELECT 1 AS drive, last_value(power__value ORDER BY timestamp) * 0.1 AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE timestamp > now() - INTERVAL '$live_window'\n  UNION ALL\n  SELECT 2 AS drive, last_value(power__value ORDER BY timestamp) * 0.1 AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE timestamp > now() - INTERVAL '$live_window'),\nlimits AS (\n  SELECT CASE right(topic, 4) WHEN 'u101' THEN 1 ELSE 2 END AS drive,\n    last_value(setpoint_power__value ORDER BY timestamp) AS propulsion_limit, last_value(produce_power_limit__value ORDER BY timestamp) AS regeneration_limit\n  FROM public.marpower__150000_propulsion_ara\n  WHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u101' ELSE '13-11-u101' END, 'marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u102' ELSE '13-11-u102' END)\n  GROUP BY topic)\nSELECT 'Drive ' || CAST(d.drive AS VARCHAR) || ' (${pod_system}-U10' || CAST(d.drive AS VARCHAR) || ')' AS \"Drive\",\n  round(d.power, 1) AS \"DC power [kW]\",\n  d.torque AS \"Torque [Nm]\",\n  d.max_torque AS \"Max torque sent [Nm]\",\n  d.min_torque AS \"Min torque sent [Nm]\",\n  round(l.propulsion_limit, 1) AS \"Propulsion limit [kW]\",\n  round(l.regeneration_limit, 1) AS \"Regeneration limit [kW]\",\n  to_unixtime(now()) - to_unixtime(d.updated) AS \"Updated\"\nFROM drives d LEFT JOIN limits l ON l.drive = d.drive\nORDER BY d.drive"
                       }
                     },
                     "refId": "A",
@@ -3317,7 +3360,8 @@
                       "type": "auto"
                     },
                     "inspect": false
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -3328,7 +3372,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -3343,7 +3429,7 @@
         "spec": {
           "id": 44,
           "title": "Motor temperatures · ${pod:text}",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -3365,7 +3451,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT last_value(windingtempu_1__value ORDER BY timestamp) AS \"U1 [°C]\",\n  last_value(windingtempv_1__value ORDER BY timestamp) AS \"V1 [°C]\",\n  last_value(${winding_w1}__value ORDER BY timestamp) AS \"W1 [°C]\",\n  last_value(windingtempu_2__value ORDER BY timestamp) AS \"U2 [°C]\",\n  last_value(windingtempv_2__value ORDER BY timestamp) AS \"V2 [°C]\",\n  last_value(windingtempw_2__value ORDER BY timestamp) AS \"W2 [°C]\",\n  last_value(bearing_de_temp__value ORDER BY timestamp) AS \"Bearing DE [°C]\",\n  last_value(bearing_nde_temp__value ORDER BY timestamp) AS \"Bearing NDE [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '5 minutes'"
+                        "rawSql": "SELECT last_value(windingtempu_1__value ORDER BY timestamp) AS \"U1 [°C]\",\n  last_value(windingtempv_1__value ORDER BY timestamp) AS \"V1 [°C]\",\n  last_value(${winding_w1}__value ORDER BY timestamp) AS \"W1 [°C]\",\n  last_value(windingtempu_2__value ORDER BY timestamp) AS \"U2 [°C]\",\n  last_value(windingtempv_2__value ORDER BY timestamp) AS \"V2 [°C]\",\n  last_value(windingtempw_2__value ORDER BY timestamp) AS \"W2 [°C]\",\n  last_value(bearing_de_temp__value ORDER BY timestamp) AS \"Bearing DE [°C]\",\n  last_value(bearing_nde_temp__value ORDER BY timestamp) AS \"Bearing NDE [°C]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '$live_window'"
                       }
                     },
                     "refId": "A",
@@ -3406,7 +3492,8 @@
                       "type": "auto"
                     },
                     "inspect": false
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -3417,7 +3504,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -3432,7 +3561,7 @@
         "spec": {
           "id": 46,
           "title": "Drive temperatures · ${pod:text}",
-          "description": "Values of 199, published while the drive is off, are left out. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "Values of 199, published while the drive is off, are left out. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -3454,7 +3583,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT 'Drive 1 (${pod_system}-U101)' AS \"Drive\",\n  last_value(NULLIF(temp_igbt__value, 199) ORDER BY timestamp) AS \"IGBT [°C]\",\n  last_value(NULLIF(temp_power_stage__value, 199) ORDER BY timestamp) AS \"Power stage [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE timestamp > now() - INTERVAL '5 minutes'\nUNION ALL\nSELECT 'Drive 2 (${pod_system}-U102)' AS \"Drive\",\n  last_value(NULLIF(temp_igbt__value, 199) ORDER BY timestamp) AS \"IGBT [°C]\",\n  last_value(NULLIF(temp_power_stage__value, 199) ORDER BY timestamp) AS \"Power stage [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE timestamp > now() - INTERVAL '5 minutes'\nORDER BY 1"
+                        "rawSql": "SELECT 'Drive 1 (${pod_system}-U101)' AS \"Drive\",\n  last_value(NULLIF(temp_igbt__value, 199) ORDER BY timestamp) AS \"IGBT [°C]\",\n  last_value(NULLIF(temp_power_stage__value, 199) ORDER BY timestamp) AS \"Power stage [°C]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE timestamp > now() - INTERVAL '$live_window'\nUNION ALL\nSELECT 'Drive 2 (${pod_system}-U102)' AS \"Drive\",\n  last_value(NULLIF(temp_igbt__value, 199) ORDER BY timestamp) AS \"IGBT [°C]\",\n  last_value(NULLIF(temp_power_stage__value, 199) ORDER BY timestamp) AS \"Power stage [°C]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE timestamp > now() - INTERVAL '$live_window'\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -3495,7 +3624,8 @@
                       "type": "auto"
                     },
                     "inspect": false
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -3506,7 +3636,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -3543,7 +3715,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH circuits AS (SELECT * FROM (VALUES\n    (1, 'fwd', 'Thruster', '50001038-28', '50001038-02', '50001057-22'),\n    (2, 'fwd', 'Drive 1 (13-31-U101)', '50001038-62', '50001038-61', '50001057-15'),\n    (3, 'fwd', 'Drive 2 (13-31-U102)', '50001038-62', '50001038-72', '50001057-14'),\n    (4, 'fwd', 'Brightloop 1', '50001038-69', '50001038-13', '50001057-12'),\n    (5, 'fwd', 'Brightloop 2', '50001038-69', '50001038-12', '50001057-11'),\n    (6, 'aft', 'Thruster', '50001038-28', '50001038-01', '50001218-02'),\n    (7, 'aft', 'Drive 1 (13-11-U101)', '50001038-63', '50001038-32', '50001057-13'),\n    (8, 'aft', 'Drive 2 (13-11-U102)', '50001038-63', '50001038-64', '50001057-16'),\n    (9, 'aft', 'Brightloop 1', '50001038-15', '50001038-08', '50001057-07'),\n    (10, 'aft', 'Brightloop 2', '50001038-15', '50001038-07', '50001057-06'),\n    (11, 'aft', 'Brightloop 3', '50001038-15', '50001038-06', '50001057-05'),\n    (12, 'aft', 'Brightloop 4', '50001038-15', '50001038-05', '50001057-04')) v (sort, pod, circuit, in_tag, out_tag, flow_tag) WHERE pod = '${pod}'),\ntemperatures AS (\n  SELECT yard_tag, last_value(temperature__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__temperatures WHERE timestamp > now() - INTERVAL '5 minutes' GROUP BY yard_tag),\nflows AS (\n  SELECT yard_tag, last_value(flow__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__flows WHERE timestamp > now() - INTERVAL '5 minutes' GROUP BY yard_tag)\nSELECT c.circuit AS \"Circuit\",\n  round(t_in.value, 1) AS \"In [°C]\",\n  round(t_out.value, 1) AS \"Out [°C]\",\n  round(f.value, 1) AS \"Flow [l/min]\",\n  c.in_tag AS \"In tag\",\n  c.out_tag AS \"Out tag\",\n  c.flow_tag AS \"Flow tag\",\n  least(t_in.updated, t_out.updated, f.updated) AS \"Updated\"\nFROM circuits c\n  LEFT JOIN temperatures t_in ON t_in.yard_tag = c.in_tag\n  LEFT JOIN temperatures t_out ON t_out.yard_tag = c.out_tag\n  LEFT JOIN flows f ON f.yard_tag = c.flow_tag\nORDER BY c.sort"
+                        "rawSql": "WITH circuits AS (SELECT * FROM (VALUES\n    (1, 'fwd', 'Thruster', '50001038-28', '50001038-02', '50001057-22'),\n    (2, 'fwd', 'Drive 1 (13-31-U101)', '50001038-62', '50001038-61', '50001057-15'),\n    (3, 'fwd', 'Drive 2 (13-31-U102)', '50001038-62', '50001038-72', '50001057-14'),\n    (4, 'fwd', 'Brightloop 1', '50001038-69', '50001038-13', '50001057-12'),\n    (5, 'fwd', 'Brightloop 2', '50001038-69', '50001038-12', '50001057-11'),\n    (6, 'aft', 'Thruster', '50001038-28', '50001038-01', '50001218-02'),\n    (7, 'aft', 'Drive 1 (13-11-U101)', '50001038-63', '50001038-32', '50001057-13'),\n    (8, 'aft', 'Drive 2 (13-11-U102)', '50001038-63', '50001038-64', '50001057-16'),\n    (9, 'aft', 'Brightloop 1', '50001038-15', '50001038-08', '50001057-07'),\n    (10, 'aft', 'Brightloop 2', '50001038-15', '50001038-07', '50001057-06'),\n    (11, 'aft', 'Brightloop 3', '50001038-15', '50001038-06', '50001057-05'),\n    (12, 'aft', 'Brightloop 4', '50001038-15', '50001038-05', '50001057-04')) v (sort, pod, circuit, in_tag, out_tag, flow_tag) WHERE pod = '${pod}'),\ntemperatures AS (\n  SELECT yard_tag, last_value(temperature__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__temperatures WHERE timestamp > now() - INTERVAL '$live_window' GROUP BY yard_tag),\nflows AS (\n  SELECT yard_tag, last_value(flow__value ORDER BY timestamp) AS value, max(timestamp) AS updated\n  FROM public.marpower__thrs__flows WHERE timestamp > now() - INTERVAL '$live_window' GROUP BY yard_tag)\nSELECT c.circuit AS \"Circuit\",\n  round(t_in.value, 1) AS \"In [°C]\",\n  round(t_out.value, 1) AS \"Out [°C]\",\n  round(f.value, 1) AS \"Flow [l/min]\",\n  c.in_tag AS \"In tag\",\n  c.out_tag AS \"Out tag\",\n  c.flow_tag AS \"Flow tag\",\n  to_unixtime(now()) - to_unixtime(least(t_in.updated, t_out.updated, f.updated)) AS \"Updated\"\nFROM circuits c\n  LEFT JOIN temperatures t_in ON t_in.yard_tag = c.in_tag\n  LEFT JOIN temperatures t_out ON t_out.yard_tag = c.out_tag\n  LEFT JOIN flows f ON f.yard_tag = c.flow_tag\nORDER BY c.sort"
                       }
                     },
                     "refId": "A",
@@ -3584,7 +3756,8 @@
                       "type": "auto"
                     },
                     "inspect": false
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -3595,7 +3768,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -3642,9 +3857,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -3773,7 +3988,7 @@
         "spec": {
           "id": 50,
           "title": "Hydraulic oil temperature · ${pod:text}",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -3795,7 +4010,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT last_value(hydr_tank_temp__value ORDER BY timestamp) AS \"Oil temperature [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '5 minutes'"
+                        "rawSql": "SELECT last_value(hydr_tank_temp__value ORDER BY timestamp) AS \"Oil temperature [°C]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '$live_window'"
                       }
                     },
                     "refId": "A",
@@ -3836,7 +4051,8 @@
                       "type": "auto"
                     },
                     "inspect": false
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -3847,7 +4063,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -3862,7 +4120,7 @@
         "spec": {
           "id": 52,
           "title": "Shear beams · ${pod:text}",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -3884,7 +4142,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT last_value(shear_beam_1__value ORDER BY timestamp) AS \"Beam 1 [Nm]\",\n  last_value(shear_beam_2__value ORDER BY timestamp) AS \"Beam 2 [Nm]\",\n  last_value(shear_beam_3__value ORDER BY timestamp) AS \"Beam 3 [Nm]\",\n  last_value(shear_beam_4__value ORDER BY timestamp) AS \"Beam 4 [Nm]\",\n  last_value(shear_beam_calculated__value ORDER BY timestamp) AS \"Calculated [Nm]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '5 minutes'"
+                        "rawSql": "SELECT last_value(shear_beam_1__value ORDER BY timestamp) AS \"Beam 1 [Nm]\",\n  last_value(shear_beam_2__value ORDER BY timestamp) AS \"Beam 2 [Nm]\",\n  last_value(shear_beam_3__value ORDER BY timestamp) AS \"Beam 3 [Nm]\",\n  last_value(shear_beam_4__value ORDER BY timestamp) AS \"Beam 4 [Nm]\",\n  last_value(shear_beam_calculated__value ORDER BY timestamp) AS \"Calculated [Nm]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '$live_window'"
                       }
                     },
                     "refId": "A",
@@ -3925,7 +4183,8 @@
                       "type": "auto"
                     },
                     "inspect": false
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -3936,7 +4195,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -3951,7 +4252,7 @@
         "spec": {
           "id": 54,
           "title": "Packs",
-          "description": "SoC is the minimum of the pack's strings; DC:DC max is the highest of the four channel temperatures of the pack's brightloop converter. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "SoC is the minimum of the pack's strings; DC:DC max is the highest of the four channel temperatures of the pack's brightloop converter. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -3973,7 +4274,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT '05_' || split_part(split_part(topic, '/', 3), '-', 2) AS \"System\",\n  '05_' || split_part(split_part(topic, '/', 3), '-', 2) || '_' || split_part(split_part(topic, '/', 3), '-', 3) AS \"Pack\",\n  last_value(minimum_soc__value ORDER BY timestamp) AS \"SoC [%]\",\n  last_value(maximum_cell_temperature__value ORDER BY timestamp) AS \"Max temp [°C]\",\n  round(last_value(battery_power__value ORDER BY timestamp), 1) AS \"Power [kW]\",\n  last_value(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value) ORDER BY timestamp) AS \"DC:DC max [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_main_power_storage_errors\nWHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-main-power-storage-errors/5-41-1', 'marpower/450000-main-power-storage-errors/5-41-2', 'marpower/450000-main-power-storage-errors/5-41-3', 'marpower/450000-main-power-storage-errors/5-41-4', 'marpower/450000-main-power-storage-errors/5-42-1', 'marpower/450000-main-power-storage-errors/5-42-2', 'marpower/450000-main-power-storage-errors/5-42-3', 'marpower/450000-main-power-storage-errors/5-43-1', 'marpower/450000-main-power-storage-errors/5-43-2', 'marpower/450000-main-power-storage-errors/5-43-3', 'marpower/450000-main-power-storage-errors/5-44-1', 'marpower/450000-main-power-storage-errors/5-44-2', 'marpower/450000-main-power-storage-errors/5-44-3', 'marpower/450000-main-power-storage-errors/5-44-4', 'marpower/450000-main-power-storage-errors/5-45-1', 'marpower/450000-main-power-storage-errors/5-45-2', 'marpower/450000-main-power-storage-errors/5-45-3', 'marpower/450000-main-power-storage-errors/5-45-4', 'marpower/450000-main-power-storage-errors/5-46-1', 'marpower/450000-main-power-storage-errors/5-46-2', 'marpower/450000-main-power-storage-errors/5-46-3', 'marpower/450000-main-power-storage-errors/5-46-4')\nGROUP BY topic ORDER BY 2"
+                        "rawSql": "SELECT '05_' || split_part(split_part(topic, '/', 3), '-', 2) AS \"System\",\n  '05_' || split_part(split_part(topic, '/', 3), '-', 2) || '_' || split_part(split_part(topic, '/', 3), '-', 3) AS \"Pack\",\n  last_value(minimum_soc__value ORDER BY timestamp) AS \"SoC [%]\",\n  last_value(maximum_cell_temperature__value ORDER BY timestamp) AS \"Max temp [°C]\",\n  round(last_value(battery_power__value ORDER BY timestamp), 1) AS \"Power [kW]\",\n  last_value(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value) ORDER BY timestamp) AS \"DC:DC max [°C]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_main_power_storage_errors\nWHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/450000-main-power-storage-errors/5-41-1', 'marpower/450000-main-power-storage-errors/5-41-2', 'marpower/450000-main-power-storage-errors/5-41-3', 'marpower/450000-main-power-storage-errors/5-41-4', 'marpower/450000-main-power-storage-errors/5-42-1', 'marpower/450000-main-power-storage-errors/5-42-2', 'marpower/450000-main-power-storage-errors/5-42-3', 'marpower/450000-main-power-storage-errors/5-43-1', 'marpower/450000-main-power-storage-errors/5-43-2', 'marpower/450000-main-power-storage-errors/5-43-3', 'marpower/450000-main-power-storage-errors/5-44-1', 'marpower/450000-main-power-storage-errors/5-44-2', 'marpower/450000-main-power-storage-errors/5-44-3', 'marpower/450000-main-power-storage-errors/5-44-4', 'marpower/450000-main-power-storage-errors/5-45-1', 'marpower/450000-main-power-storage-errors/5-45-2', 'marpower/450000-main-power-storage-errors/5-45-3', 'marpower/450000-main-power-storage-errors/5-45-4', 'marpower/450000-main-power-storage-errors/5-46-1', 'marpower/450000-main-power-storage-errors/5-46-2', 'marpower/450000-main-power-storage-errors/5-46-3', 'marpower/450000-main-power-storage-errors/5-46-4')\nGROUP BY topic ORDER BY 2"
                       }
                     },
                     "refId": "A",
@@ -4014,7 +4315,8 @@
                       "type": "auto"
                     },
                     "inspect": false
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -4025,7 +4327,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -4040,7 +4384,7 @@
         "spec": {
           "id": 55,
           "title": "Available battery energy and SoC",
-          "description": "The energy and SoC as the PMS sends them to the PCS of the selected pod. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "The energy and SoC as the PMS sends them to the PCS of the selected pod. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -4062,7 +4406,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT last_value(total_energy_avail_batteries__value ORDER BY timestamp) AS \"Energy [kWh]\",\n  last_value(total_so_c_avail_batteries__value ORDER BY timestamp) AS \"SoC [%]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '5 minutes'"
+                        "rawSql": "SELECT last_value(total_energy_avail_batteries__value ORDER BY timestamp) AS \"Energy [kWh]\",\n  last_value(total_so_c_avail_batteries__value ORDER BY timestamp) AS \"SoC [%]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__150000_propulsion__pcs_${pod}\nWHERE timestamp > now() - INTERVAL '$live_window'"
                       }
                     },
                     "refId": "A",
@@ -4103,7 +4447,8 @@
                       "type": "auto"
                     },
                     "inspect": false
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -4114,7 +4459,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -4129,7 +4516,7 @@
         "spec": {
           "id": 57,
           "title": "DC switches",
-          "description": "Currents raw as published; their scale is not declared. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "Currents raw as published; their scale is not declared. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -4151,7 +4538,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT CASE right(topic, 2) WHEN '71' THEN 'SB.01.P01' WHEN '72' THEN 'SB.01.P01' WHEN '73' THEN 'SB.01.P02' WHEN '74' THEN 'SB.01.P03' WHEN '75' THEN 'SB.01.P04' ELSE 'SB.02' END AS \"Switchboard\",\n  '05.' || right(topic, 2) AS \"DC switch\",\n  round(last_value(\"hs-0__value\" ORDER BY timestamp) * 0.1, 1) AS \"Heat sink Hs-0 [°C]\",\n  round(last_value(\"hs-1__value\" ORDER BY timestamp) * 0.1, 1) AS \"Heat sink Hs-1 [°C]\",\n  last_value(dcv_s_0__value ORDER BY timestamp) AS \"Voltage left [V]\",\n  last_value(dcv_s_1__value ORDER BY timestamp) AS \"Voltage right [V]\",\n  last_value(dcv_ext__value ORDER BY timestamp) AS \"Voltage external [V]\",\n  last_value(dcc_s_0__value ORDER BY timestamp) AS \"Current left (raw)\",\n  last_value(dcc_s_1__value ORDER BY timestamp) AS \"Current right (raw)\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__dc_switch\nWHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-dc-distribution/dc-switch/keb6-0571', 'marpower/450000-dc-distribution/dc-switch/keb6-0572', 'marpower/450000-dc-distribution/dc-switch/keb6-0573', 'marpower/450000-dc-distribution/dc-switch/keb7-0574', 'marpower/450000-dc-distribution/dc-switch/keb7-0575', 'marpower/450000-dc-distribution/dc-switch/keb8-0576', 'marpower/450000-dc-distribution/dc-switch/keb8-0577', 'marpower/450000-dc-distribution/dc-switch/keb9-0578')\nGROUP BY topic ORDER BY 2"
+                        "rawSql": "SELECT CASE right(topic, 2) WHEN '71' THEN 'SB.01.P01' WHEN '72' THEN 'SB.01.P01' WHEN '73' THEN 'SB.01.P02' WHEN '74' THEN 'SB.01.P03' WHEN '75' THEN 'SB.01.P04' ELSE 'SB.02' END AS \"Switchboard\",\n  '05.' || right(topic, 2) AS \"DC switch\",\n  round(last_value(\"hs-0__value\" ORDER BY timestamp) * 0.1, 1) AS \"Heat sink Hs-0 [°C]\",\n  round(last_value(\"hs-1__value\" ORDER BY timestamp) * 0.1, 1) AS \"Heat sink Hs-1 [°C]\",\n  last_value(dcv_s_0__value ORDER BY timestamp) AS \"Voltage left [V]\",\n  last_value(dcv_s_1__value ORDER BY timestamp) AS \"Voltage right [V]\",\n  last_value(dcv_ext__value ORDER BY timestamp) AS \"Voltage external [V]\",\n  last_value(dcc_s_0__value ORDER BY timestamp) AS \"Current left (raw)\",\n  last_value(dcc_s_1__value ORDER BY timestamp) AS \"Current right (raw)\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__dc_switch\nWHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/450000-dc-distribution/dc-switch/keb6-0571', 'marpower/450000-dc-distribution/dc-switch/keb6-0572', 'marpower/450000-dc-distribution/dc-switch/keb6-0573', 'marpower/450000-dc-distribution/dc-switch/keb7-0574', 'marpower/450000-dc-distribution/dc-switch/keb7-0575', 'marpower/450000-dc-distribution/dc-switch/keb8-0576', 'marpower/450000-dc-distribution/dc-switch/keb8-0577', 'marpower/450000-dc-distribution/dc-switch/keb9-0578')\nGROUP BY topic ORDER BY 2"
                       }
                     },
                     "refId": "A",
@@ -4192,7 +4579,8 @@
                       "type": "auto"
                     },
                     "inspect": false
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -4203,7 +4591,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -4686,9 +5116,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -5052,9 +5482,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -5266,9 +5696,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -5485,9 +5915,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -5724,9 +6154,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -6201,7 +6631,7 @@
         "spec": {
           "id": 61,
           "title": "Load pins · ${pod:text}",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -6234,7 +6664,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH latest AS (\n  SELECT\n    last_value(loadpin_1_horizontal__value ORDER BY timestamp) AS h1,\n    last_value(loadpin_1_vertical__value ORDER BY timestamp) AS v1,\n    last_value(loadpin_2_horizontal__value ORDER BY timestamp) AS h2,\n    last_value(loadpin_2_vertical__value ORDER BY timestamp) AS v2,\n    last_value(loadpin_3_horizontal__value ORDER BY timestamp) AS h3,\n    last_value(loadpin_3_vertical__value ORDER BY timestamp) AS v3,\n    last_value(loadpin_4_horizontal__value ORDER BY timestamp) AS h4,\n    last_value(loadpin_4_vertical__value ORDER BY timestamp) AS v4,\n    max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}\n  WHERE timestamp > now() - INTERVAL '5 minutes'\n)\nSELECT 'Pin 1' AS \"Pin\", h1 / 1000.0 AS \"Horizontal [kN]\", v1 / 1000.0 AS \"Vertical [kN]\", updated AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'Pin 2' AS \"Pin\", h2 / 1000.0 AS \"Horizontal [kN]\", v2 / 1000.0 AS \"Vertical [kN]\", updated AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'Pin 3' AS \"Pin\", h3 / 1000.0 AS \"Horizontal [kN]\", v3 / 1000.0 AS \"Vertical [kN]\", updated AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'Pin 4' AS \"Pin\", h4 / 1000.0 AS \"Horizontal [kN]\", v4 / 1000.0 AS \"Vertical [kN]\", updated AS \"Updated\" FROM latest\nORDER BY 1",
+                        "rawSql": "WITH latest AS (\n  SELECT\n    last_value(loadpin_1_horizontal__value ORDER BY timestamp) AS h1,\n    last_value(loadpin_1_vertical__value ORDER BY timestamp) AS v1,\n    last_value(loadpin_2_horizontal__value ORDER BY timestamp) AS h2,\n    last_value(loadpin_2_vertical__value ORDER BY timestamp) AS v2,\n    last_value(loadpin_3_horizontal__value ORDER BY timestamp) AS h3,\n    last_value(loadpin_3_vertical__value ORDER BY timestamp) AS v3,\n    last_value(loadpin_4_horizontal__value ORDER BY timestamp) AS h4,\n    last_value(loadpin_4_vertical__value ORDER BY timestamp) AS v4,\n    max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}\n  WHERE timestamp > now() - INTERVAL '$live_window'\n)\nSELECT 'Pin 1' AS \"Pin\", h1 / 1000.0 AS \"Horizontal [kN]\", v1 / 1000.0 AS \"Vertical [kN]\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'Pin 2' AS \"Pin\", h2 / 1000.0 AS \"Horizontal [kN]\", v2 / 1000.0 AS \"Vertical [kN]\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'Pin 3' AS \"Pin\", h3 / 1000.0 AS \"Horizontal [kN]\", v3 / 1000.0 AS \"Vertical [kN]\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'Pin 4' AS \"Pin\", h4 / 1000.0 AS \"Horizontal [kN]\", v4 / 1000.0 AS \"Vertical [kN]\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -6292,7 +6722,8 @@
                       "type": "auto"
                     },
                     "inspect": false
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -6303,7 +6734,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -7400,6 +7873,20 @@
           "multi": false,
           "includeAll": false,
           "allowCustomValue": true
+        }
+      },
+      {
+        "kind": "ConstantVariable",
+        "spec": {
+          "name": "live_window",
+          "query": "5 minutes",
+          "current": {
+            "text": "5 minutes",
+            "value": "5 minutes"
+          },
+          "hide": "hideVariable",
+          "skipUrlSync": true,
+          "description": "How far back the Live tabs look for the latest message, independent of the time picker. The Live tables' no-data text ('No data in the last 5 minutes') repeats this value."
         }
       }
     ]
