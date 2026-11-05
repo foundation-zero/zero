@@ -72,6 +72,9 @@ services:
   hasura:
     build:
       context: ./hasura
+      # Layer cache written on main by job_docker_push.yaml; needs a login to the registry to hit.
+      cache_from:
+        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/hasura-graphql-engine:main
     ports:
       - 8080:8080
     restart: always
@@ -324,6 +327,8 @@ services:
     build:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
+      cache_from:
+        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-loads-app:main
     ports:
       - 5101:5101
     profiles:
@@ -339,6 +344,8 @@ services:
     build:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
+      cache_from:
+        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-loads-app:main
     profiles:
       - loads-dev
     environment:
@@ -352,6 +359,8 @@ services:
     build:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
+      cache_from:
+        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-loads-app:main
     profiles:
       - loads
     environment:
@@ -365,6 +374,8 @@ services:
     build:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
+      cache_from:
+        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-loads-app:main
     profiles:
       - loads
     environment:
@@ -378,6 +389,8 @@ services:
     build:
       context: .
       dockerfile: ./zero-loads-app/Dockerfile
+      cache_from:
+        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-loads-app:main
     profiles:
       - loads
     environment:
@@ -392,6 +405,10 @@ services:
       context: ./zero-thrs-control
       dockerfile: Dockerfile
       target: api
+      # Both targets share the builder stage, so either cache serves both.
+      cache_from: &thrs_cache_from
+        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-thrs-api:main
+        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-thrs-control:main
     profiles:
       - thrs
     ports:
@@ -425,6 +442,7 @@ services:
       context: ./zero-thrs-control
       dockerfile: Dockerfile
       target: control
+      cache_from: *thrs_cache_from
     profiles:
       - thrs
     environment:
