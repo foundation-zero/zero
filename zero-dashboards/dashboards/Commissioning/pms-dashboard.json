@@ -520,7 +520,7 @@
           "id": 4,
           "links": [],
           "title": "Thruster main breakers",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -541,7 +541,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH latest AS (\n  SELECT last_value(keb_6_aft_thrust_main_break_of_1_f_105_fault__value ORDER BY timestamp) AS r0_0,\n    last_value(keb_6_aft_thrust_main_break_of_1_f_105_open__value ORDER BY timestamp) AS r0_1,\n    last_value(keb_6_aft_thrust_main_break_of_2_f_105_open__value ORDER BY timestamp) AS r0_2,\n    last_value(keb_6_aft_thrust_mainbreakof_1_f_105_opencmd__value ORDER BY timestamp) AS r0_3,\n    last_value(keb_7_aft_thrust_mainbreakof_1_f_110_fault__value ORDER BY timestamp) AS r1_0,\n    last_value(keb_7_aft_thrust_mainbreakof_1_f_110_open__value ORDER BY timestamp) AS r1_1,\n    last_value(keb_7_aft_thrust_mainbreakof_2_f_110_open__value ORDER BY timestamp) AS r1_2,\n    last_value(keb_7_aft_thrust_mainbreakof_1_f_110_opencmd__value ORDER BY timestamp) AS r1_3,\n    last_value(keb_8_bow_thrust_mainbreakof_1_f_105_fault__value ORDER BY timestamp) AS r2_0,\n    last_value(keb_8_bow_thrust_mainbreakof_1_f_105_open__value ORDER BY timestamp) AS r2_1,\n    last_value(keb_8_bow_thrust_mainbreakof_2_f_105_open__value ORDER BY timestamp) AS r2_2,\n    last_value(keb_8_bow_thrust_mainbreakof_1_f_105_opencmd__value ORDER BY timestamp) AS r2_3,\n    last_value(keb_9_bow_thrust_mainbreakof_1_f_110_fault__value ORDER BY timestamp) AS r3_0,\n    last_value(keb_9_bow_thrust_mainbreakof_1_f_110_open__value ORDER BY timestamp) AS r3_1,\n    last_value(keb_9_bow_thrust_mainbreakof_2_f_110_open__value ORDER BY timestamp) AS r3_2,\n    last_value(keb_9_bow_thrust_mainbreakof_1_f_110_opencmd__value ORDER BY timestamp) AS r3_3,\n    max(timestamp) AS updated\n  FROM public.marpower__450000_dc_distribution_general WHERE timestamp > now() - INTERVAL '5 minutes')\nSELECT 'AFT F105' AS \"Breaker\", CAST(r0_0 AS INT) AS \"Fault/trip\", CAST(r0_1 AS INT) AS \"Open 1 (OF1)\", CAST(r0_2 AS INT) AS \"Open 2 (OF2)\", CAST(r0_3 AS INT) AS \"Open command\", updated AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'AFT F110' AS \"Breaker\", CAST(r1_0 AS INT) AS \"Fault/trip\", CAST(r1_1 AS INT) AS \"Open 1 (OF1)\", CAST(r1_2 AS INT) AS \"Open 2 (OF2)\", CAST(r1_3 AS INT) AS \"Open command\", updated AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'FWD F105' AS \"Breaker\", CAST(r2_0 AS INT) AS \"Fault/trip\", CAST(r2_1 AS INT) AS \"Open 1 (OF1)\", CAST(r2_2 AS INT) AS \"Open 2 (OF2)\", CAST(r2_3 AS INT) AS \"Open command\", updated AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'FWD F110' AS \"Breaker\", CAST(r3_0 AS INT) AS \"Fault/trip\", CAST(r3_1 AS INT) AS \"Open 1 (OF1)\", CAST(r3_2 AS INT) AS \"Open 2 (OF2)\", CAST(r3_3 AS INT) AS \"Open command\", updated AS \"Updated\" FROM latest\nORDER BY 1"
+                        "rawSql": "WITH latest AS (\n  SELECT last_value(keb_6_aft_thrust_main_break_of_1_f_105_fault__value ORDER BY timestamp) AS r0_0,\n    last_value(keb_6_aft_thrust_main_break_of_1_f_105_open__value ORDER BY timestamp) AS r0_1,\n    last_value(keb_6_aft_thrust_main_break_of_2_f_105_open__value ORDER BY timestamp) AS r0_2,\n    last_value(keb_6_aft_thrust_mainbreakof_1_f_105_opencmd__value ORDER BY timestamp) AS r0_3,\n    last_value(keb_7_aft_thrust_mainbreakof_1_f_110_fault__value ORDER BY timestamp) AS r1_0,\n    last_value(keb_7_aft_thrust_mainbreakof_1_f_110_open__value ORDER BY timestamp) AS r1_1,\n    last_value(keb_7_aft_thrust_mainbreakof_2_f_110_open__value ORDER BY timestamp) AS r1_2,\n    last_value(keb_7_aft_thrust_mainbreakof_1_f_110_opencmd__value ORDER BY timestamp) AS r1_3,\n    last_value(keb_8_bow_thrust_mainbreakof_1_f_105_fault__value ORDER BY timestamp) AS r2_0,\n    last_value(keb_8_bow_thrust_mainbreakof_1_f_105_open__value ORDER BY timestamp) AS r2_1,\n    last_value(keb_8_bow_thrust_mainbreakof_2_f_105_open__value ORDER BY timestamp) AS r2_2,\n    last_value(keb_8_bow_thrust_mainbreakof_1_f_105_opencmd__value ORDER BY timestamp) AS r2_3,\n    last_value(keb_9_bow_thrust_mainbreakof_1_f_110_fault__value ORDER BY timestamp) AS r3_0,\n    last_value(keb_9_bow_thrust_mainbreakof_1_f_110_open__value ORDER BY timestamp) AS r3_1,\n    last_value(keb_9_bow_thrust_mainbreakof_2_f_110_open__value ORDER BY timestamp) AS r3_2,\n    last_value(keb_9_bow_thrust_mainbreakof_1_f_110_opencmd__value ORDER BY timestamp) AS r3_3,\n    max(timestamp) AS updated\n  FROM public.marpower__450000_dc_distribution_general WHERE timestamp > now() - INTERVAL '$live_window')\nSELECT 'AFT F105' AS \"Breaker\", CAST(r0_0 AS INT) AS \"Fault/trip\", CAST(r0_1 AS INT) AS \"Open 1 (OF1)\", CAST(r0_2 AS INT) AS \"Open 2 (OF2)\", CAST(r0_3 AS INT) AS \"Open command\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'AFT F110' AS \"Breaker\", CAST(r1_0 AS INT) AS \"Fault/trip\", CAST(r1_1 AS INT) AS \"Open 1 (OF1)\", CAST(r1_2 AS INT) AS \"Open 2 (OF2)\", CAST(r1_3 AS INT) AS \"Open command\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'FWD F105' AS \"Breaker\", CAST(r2_0 AS INT) AS \"Fault/trip\", CAST(r2_1 AS INT) AS \"Open 1 (OF1)\", CAST(r2_2 AS INT) AS \"Open 2 (OF2)\", CAST(r2_3 AS INT) AS \"Open command\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'FWD F110' AS \"Breaker\", CAST(r3_0 AS INT) AS \"Fault/trip\", CAST(r3_1 AS INT) AS \"Open 1 (OF1)\", CAST(r3_2 AS INT) AS \"Open 2 (OF2)\", CAST(r3_3 AS INT) AS \"Open command\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -584,7 +584,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -713,7 +714,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -1253,7 +1296,7 @@
           "id": 7,
           "links": [],
           "title": "Solar converters",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1274,7 +1317,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT CASE topic WHEN 'marpower/450000-dc-distribution/conv/keb7-sol1' THEN 'Solar 1' WHEN 'marpower/450000-dc-distribution/conv/keb6-sol2-1' THEN 'Solar 2.1' WHEN 'marpower/450000-dc-distribution/conv/keb6-sol2-2' THEN 'Solar 2.2' END AS \"Converter\",\n  CAST(last_value(tempwarn_1__value ORDER BY timestamp) AS INT) AS \"Temp. warning 1\",\n  CAST(last_value(tempwarn_2__value ORDER BY timestamp) AS INT) AS \"Temp. warning 2\",\n  CAST(last_value(statusok__value ORDER BY timestamp) AS INT) AS \"Status OK\",\n  CAST(last_value(enabledisable__value ORDER BY timestamp) AS INT) AS \"Enable\",\n  CAST(last_value(safetydisconnect__value ORDER BY timestamp) AS INT) AS \"Safety disconnect\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__conv\nWHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-dc-distribution/conv/keb7-sol1', 'marpower/450000-dc-distribution/conv/keb6-sol2-1', 'marpower/450000-dc-distribution/conv/keb6-sol2-2')\nGROUP BY topic ORDER BY 1"
+                        "rawSql": "SELECT CASE topic WHEN 'marpower/450000-dc-distribution/conv/keb7-sol1' THEN 'Solar 1' WHEN 'marpower/450000-dc-distribution/conv/keb6-sol2-1' THEN 'Solar 2.1' WHEN 'marpower/450000-dc-distribution/conv/keb6-sol2-2' THEN 'Solar 2.2' END AS \"Converter\",\n  CAST(last_value(tempwarn_1__value ORDER BY timestamp) AS INT) AS \"Temp. warning 1\",\n  CAST(last_value(tempwarn_2__value ORDER BY timestamp) AS INT) AS \"Temp. warning 2\",\n  CAST(last_value(statusok__value ORDER BY timestamp) AS INT) AS \"Status OK\",\n  CAST(last_value(enabledisable__value ORDER BY timestamp) AS INT) AS \"Enable\",\n  CAST(last_value(safetydisconnect__value ORDER BY timestamp) AS INT) AS \"Safety disconnect\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__conv\nWHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/450000-dc-distribution/conv/keb7-sol1', 'marpower/450000-dc-distribution/conv/keb6-sol2-1', 'marpower/450000-dc-distribution/conv/keb6-sol2-2')\nGROUP BY topic ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -1317,7 +1360,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -1447,7 +1491,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -1463,7 +1549,7 @@
           "id": 8,
           "links": [],
           "title": "Bender isolation monitors",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1484,7 +1570,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH latest AS (\n  SELECT last_value(keb_7_sol_1_bend_mplus__value ORDER BY timestamp) AS r0_0,\n    last_value(keb_7_sol_1_bend_q__value ORDER BY timestamp) AS r0_1,\n    last_value(keb_7_sol_1_bendi__value ORDER BY timestamp) AS r0_2,\n    last_value(keb_6_sol_2_bendmplus__value ORDER BY timestamp) AS r1_0,\n    last_value(keb_6_sol_2_bendq__value ORDER BY timestamp) AS r1_1,\n    last_value(keb_6_sol_2_bendi__value ORDER BY timestamp) AS r1_2,\n    max(timestamp) AS updated\n  FROM public.marpower__450000_dc_distribution_general WHERE timestamp > now() - INTERVAL '5 minutes')\nSELECT 'Solar 1' AS \"System\", CAST(r0_0 AS INT) AS \"MF-DO output (M+)\", CAST(r0_1 AS INT) AS \"DI/O output (Q)\", CAST(r0_2 AS INT) AS \"Digital input (I)\", updated AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'Solar 2' AS \"System\", CAST(r1_0 AS INT) AS \"MF-DO output (M+)\", CAST(r1_1 AS INT) AS \"DI/O output (Q)\", CAST(r1_2 AS INT) AS \"Digital input (I)\", updated AS \"Updated\" FROM latest\nORDER BY 1"
+                        "rawSql": "WITH latest AS (\n  SELECT last_value(keb_7_sol_1_bend_mplus__value ORDER BY timestamp) AS r0_0,\n    last_value(keb_7_sol_1_bend_q__value ORDER BY timestamp) AS r0_1,\n    last_value(keb_7_sol_1_bendi__value ORDER BY timestamp) AS r0_2,\n    last_value(keb_6_sol_2_bendmplus__value ORDER BY timestamp) AS r1_0,\n    last_value(keb_6_sol_2_bendq__value ORDER BY timestamp) AS r1_1,\n    last_value(keb_6_sol_2_bendi__value ORDER BY timestamp) AS r1_2,\n    max(timestamp) AS updated\n  FROM public.marpower__450000_dc_distribution_general WHERE timestamp > now() - INTERVAL '$live_window')\nSELECT 'Solar 1' AS \"System\", CAST(r0_0 AS INT) AS \"MF-DO output (M+)\", CAST(r0_1 AS INT) AS \"DI/O output (Q)\", CAST(r0_2 AS INT) AS \"Digital input (I)\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'Solar 2' AS \"System\", CAST(r1_0 AS INT) AS \"MF-DO output (M+)\", CAST(r1_1 AS INT) AS \"DI/O output (Q)\", CAST(r1_2 AS INT) AS \"Digital input (I)\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -1527,7 +1613,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -1617,7 +1704,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -1792,7 +1921,7 @@
           "id": 10,
           "links": [],
           "title": "HVIL",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1813,7 +1942,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT CAST(last_value(keb_6_batt_conv_01_hvil__value ORDER BY timestamp) AS INT) AS \"Battery converter 1\",\n  CAST(last_value(keb_6_batt_conv_02_hvil__value ORDER BY timestamp) AS INT) AS \"Battery converter 2\",\n  CAST(last_value(keb_7_batt_conv_03_hvil__value ORDER BY timestamp) AS INT) AS \"Battery converter 3\",\n  CAST(last_value(keb_7_batt_conv_04_hvil__value ORDER BY timestamp) AS INT) AS \"Battery converter 4\",\n  CAST(last_value(keb_8_batt_conv_05_hvil__value ORDER BY timestamp) AS INT) AS \"Battery converter 5\",\n  CAST(last_value(keb_9_batt_conv_06_hvil__value ORDER BY timestamp) AS INT) AS \"Battery converter 6\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution_general\nWHERE timestamp > now() - INTERVAL '5 minutes'"
+                        "rawSql": "SELECT CAST(last_value(keb_6_batt_conv_01_hvil__value ORDER BY timestamp) AS INT) AS \"Battery converter 1\",\n  CAST(last_value(keb_6_batt_conv_02_hvil__value ORDER BY timestamp) AS INT) AS \"Battery converter 2\",\n  CAST(last_value(keb_7_batt_conv_03_hvil__value ORDER BY timestamp) AS INT) AS \"Battery converter 3\",\n  CAST(last_value(keb_7_batt_conv_04_hvil__value ORDER BY timestamp) AS INT) AS \"Battery converter 4\",\n  CAST(last_value(keb_8_batt_conv_05_hvil__value ORDER BY timestamp) AS INT) AS \"Battery converter 5\",\n  CAST(last_value(keb_9_batt_conv_06_hvil__value ORDER BY timestamp) AS INT) AS \"Battery converter 6\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution_general\nWHERE timestamp > now() - INTERVAL '$live_window'"
                       }
                     },
                     "refId": "A",
@@ -1856,7 +1985,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -1911,7 +2041,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -3271,7 +3443,7 @@
           "id": 17,
           "links": [],
           "title": "DC switches",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -3292,7 +3464,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT CASE topic WHEN 'marpower/450000-dc-distribution/dc-switch/keb6-0571' THEN '05.71' WHEN 'marpower/450000-dc-distribution/dc-switch/keb6-0572' THEN '05.72' WHEN 'marpower/450000-dc-distribution/dc-switch/keb7-0573' THEN '05.73' WHEN 'marpower/450000-dc-distribution/dc-switch/keb7-0574' THEN '05.74' WHEN 'marpower/450000-dc-distribution/dc-switch/keb7-0575' THEN '05.75' WHEN 'marpower/450000-dc-distribution/dc-switch/keb8-0577' THEN '05.77' END AS \"DC switch\",\n  CAST(last_value(tripped__value ORDER BY timestamp) AS INT) AS \"Tripped\",\n  CAST(last_value(opened__value ORDER BY timestamp) AS INT) AS \"Opened\",\n  CAST(last_value(closed__value ORDER BY timestamp) AS INT) AS \"Closed\",\n  CAST(last_value(running__value ORDER BY timestamp) AS INT) AS \"Running\",\n  CAST(last_value(open__value ORDER BY timestamp) AS INT) AS \"Open cmd\",\n  CAST(last_value(close__value ORDER BY timestamp) AS INT) AS \"Close cmd\",\n  CAST(last_value(reset__value ORDER BY timestamp) AS INT) AS \"Reset cmd\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__dc_switch\nWHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-dc-distribution/dc-switch/keb6-0571', 'marpower/450000-dc-distribution/dc-switch/keb6-0572', 'marpower/450000-dc-distribution/dc-switch/keb7-0573', 'marpower/450000-dc-distribution/dc-switch/keb7-0574', 'marpower/450000-dc-distribution/dc-switch/keb7-0575', 'marpower/450000-dc-distribution/dc-switch/keb8-0577')\nGROUP BY topic ORDER BY 1"
+                        "rawSql": "SELECT CASE topic WHEN 'marpower/450000-dc-distribution/dc-switch/keb6-0571' THEN '05.71' WHEN 'marpower/450000-dc-distribution/dc-switch/keb6-0572' THEN '05.72' WHEN 'marpower/450000-dc-distribution/dc-switch/keb7-0573' THEN '05.73' WHEN 'marpower/450000-dc-distribution/dc-switch/keb7-0574' THEN '05.74' WHEN 'marpower/450000-dc-distribution/dc-switch/keb7-0575' THEN '05.75' WHEN 'marpower/450000-dc-distribution/dc-switch/keb8-0577' THEN '05.77' END AS \"DC switch\",\n  CAST(last_value(tripped__value ORDER BY timestamp) AS INT) AS \"Tripped\",\n  CAST(last_value(opened__value ORDER BY timestamp) AS INT) AS \"Opened\",\n  CAST(last_value(closed__value ORDER BY timestamp) AS INT) AS \"Closed\",\n  CAST(last_value(running__value ORDER BY timestamp) AS INT) AS \"Running\",\n  CAST(last_value(open__value ORDER BY timestamp) AS INT) AS \"Open cmd\",\n  CAST(last_value(close__value ORDER BY timestamp) AS INT) AS \"Close cmd\",\n  CAST(last_value(reset__value ORDER BY timestamp) AS INT) AS \"Reset cmd\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__dc_switch\nWHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/450000-dc-distribution/dc-switch/keb6-0571', 'marpower/450000-dc-distribution/dc-switch/keb6-0572', 'marpower/450000-dc-distribution/dc-switch/keb7-0573', 'marpower/450000-dc-distribution/dc-switch/keb7-0574', 'marpower/450000-dc-distribution/dc-switch/keb7-0575', 'marpower/450000-dc-distribution/dc-switch/keb8-0577')\nGROUP BY topic ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -3335,7 +3507,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -3467,7 +3640,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -6938,7 +7153,7 @@
           "id": 41,
           "links": [],
           "title": "Status",
-          "description": "Breaker and synchronization status, and the uGrid's digital inputs. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "Breaker and synchronization status, and the uGrid's digital inputs. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -6959,7 +7174,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT 'AFT' AS \"uGrid\",\n  CAST(s0.c0 AS INT) AS \"Auto mode\",\n  CAST(s0.c1 AS INT) AS \"Breaker opened\",\n  CAST(s0.c2 AS INT) AS \"Breaker closed\",\n  CAST(s0.c3 AS INT) AS \"Sync device status\",\n  CAST(s0.c4 AS INT) AS \"Sync speed up\",\n  CAST(s0.c5 AS INT) AS \"Sync speed down\",\n  CAST(s0.c6 AS INT) AS \"Rotating field\",\n  CAST(s1.c0 AS INT) AS \"Digital input 1\",\n  CAST(s1.c1 AS INT) AS \"Digital input 2\",\n  least(s0.updated, s1.updated) AS \"Updated\"\nFROM (SELECT last_value(automode__value ORDER BY timestamp) AS c0, last_value(breakeropened__value ORDER BY timestamp) AS c1, last_value(breakerclosed__value ORDER BY timestamp) AS c2, last_value(syncrodevicestatus__value ORDER BY timestamp) AS c3, last_value(syncrospeedup__value ORDER BY timestamp) AS c4, last_value(syncrospeeddown__value ORDER BY timestamp) AS c5, last_value(rotatingfield__value ORDER BY timestamp) AS c6, max(timestamp) AS updated FROM public.marpower__450000_dynamic_conv_ps_general WHERE timestamp > now() - INTERVAL '5 minutes') s0\n  CROSS JOIN (SELECT last_value(keb_7_ugrid_aft_digin_1__value ORDER BY timestamp) AS c0, last_value(keb_7_ugrid_aft_digin_2__value ORDER BY timestamp) AS c1, max(timestamp) AS updated FROM public.marpower__450000_dc_distribution_general WHERE timestamp > now() - INTERVAL '5 minutes') s1\nUNION ALL\nSELECT 'FWD' AS \"uGrid\",\n  CAST(s0.c0 AS INT) AS \"Auto mode\",\n  CAST(s0.c1 AS INT) AS \"Breaker opened\",\n  CAST(s0.c2 AS INT) AS \"Breaker closed\",\n  CAST(s0.c3 AS INT) AS \"Sync device status\",\n  CAST(s0.c4 AS INT) AS \"Sync speed up\",\n  CAST(s0.c5 AS INT) AS \"Sync speed down\",\n  CAST(s0.c6 AS INT) AS \"Rotating field\",\n  CAST(s1.c0 AS INT) AS \"Digital input 1\",\n  CAST(s1.c1 AS INT) AS \"Digital input 2\",\n  least(s0.updated, s1.updated) AS \"Updated\"\nFROM (SELECT last_value(automode__value ORDER BY timestamp) AS c0, last_value(breakeropened__value ORDER BY timestamp) AS c1, last_value(breakerclosed__value ORDER BY timestamp) AS c2, last_value(syncrodevicestatus__value ORDER BY timestamp) AS c3, last_value(syncrospeedup__value ORDER BY timestamp) AS c4, last_value(syncrospeeddown__value ORDER BY timestamp) AS c5, last_value(rotatingfield__value ORDER BY timestamp) AS c6, max(timestamp) AS updated FROM public.marpower__450000_dynamic_conv_sb_general WHERE timestamp > now() - INTERVAL '5 minutes') s0\n  CROSS JOIN (SELECT last_value(keb_9_ugrid_fwd_digin_1__value ORDER BY timestamp) AS c0, last_value(keb_9_ugrid_fwd_digin_2__value ORDER BY timestamp) AS c1, max(timestamp) AS updated FROM public.marpower__450000_dc_distribution_general WHERE timestamp > now() - INTERVAL '5 minutes') s1\nORDER BY 1"
+                        "rawSql": "SELECT 'AFT' AS \"uGrid\",\n  CAST(s0.c0 AS INT) AS \"Auto mode\",\n  CAST(s0.c1 AS INT) AS \"Breaker opened\",\n  CAST(s0.c2 AS INT) AS \"Breaker closed\",\n  CAST(s0.c3 AS INT) AS \"Sync device status\",\n  CAST(s0.c4 AS INT) AS \"Sync speed up\",\n  CAST(s0.c5 AS INT) AS \"Sync speed down\",\n  CAST(s0.c6 AS INT) AS \"Rotating field\",\n  CAST(s1.c0 AS INT) AS \"Digital input 1\",\n  CAST(s1.c1 AS INT) AS \"Digital input 2\",\n  to_unixtime(now()) - to_unixtime(least(s0.updated, s1.updated)) AS \"Updated\"\nFROM (SELECT last_value(automode__value ORDER BY timestamp) AS c0, last_value(breakeropened__value ORDER BY timestamp) AS c1, last_value(breakerclosed__value ORDER BY timestamp) AS c2, last_value(syncrodevicestatus__value ORDER BY timestamp) AS c3, last_value(syncrospeedup__value ORDER BY timestamp) AS c4, last_value(syncrospeeddown__value ORDER BY timestamp) AS c5, last_value(rotatingfield__value ORDER BY timestamp) AS c6, max(timestamp) AS updated FROM public.marpower__450000_dynamic_conv_ps_general WHERE timestamp > now() - INTERVAL '$live_window') s0\n  CROSS JOIN (SELECT last_value(keb_7_ugrid_aft_digin_1__value ORDER BY timestamp) AS c0, last_value(keb_7_ugrid_aft_digin_2__value ORDER BY timestamp) AS c1, max(timestamp) AS updated FROM public.marpower__450000_dc_distribution_general WHERE timestamp > now() - INTERVAL '$live_window') s1\nUNION ALL\nSELECT 'FWD' AS \"uGrid\",\n  CAST(s0.c0 AS INT) AS \"Auto mode\",\n  CAST(s0.c1 AS INT) AS \"Breaker opened\",\n  CAST(s0.c2 AS INT) AS \"Breaker closed\",\n  CAST(s0.c3 AS INT) AS \"Sync device status\",\n  CAST(s0.c4 AS INT) AS \"Sync speed up\",\n  CAST(s0.c5 AS INT) AS \"Sync speed down\",\n  CAST(s0.c6 AS INT) AS \"Rotating field\",\n  CAST(s1.c0 AS INT) AS \"Digital input 1\",\n  CAST(s1.c1 AS INT) AS \"Digital input 2\",\n  to_unixtime(now()) - to_unixtime(least(s0.updated, s1.updated)) AS \"Updated\"\nFROM (SELECT last_value(automode__value ORDER BY timestamp) AS c0, last_value(breakeropened__value ORDER BY timestamp) AS c1, last_value(breakerclosed__value ORDER BY timestamp) AS c2, last_value(syncrodevicestatus__value ORDER BY timestamp) AS c3, last_value(syncrospeedup__value ORDER BY timestamp) AS c4, last_value(syncrospeeddown__value ORDER BY timestamp) AS c5, last_value(rotatingfield__value ORDER BY timestamp) AS c6, max(timestamp) AS updated FROM public.marpower__450000_dynamic_conv_sb_general WHERE timestamp > now() - INTERVAL '$live_window') s0\n  CROSS JOIN (SELECT last_value(keb_9_ugrid_fwd_digin_1__value ORDER BY timestamp) AS c0, last_value(keb_9_ugrid_fwd_digin_2__value ORDER BY timestamp) AS c1, max(timestamp) AS updated FROM public.marpower__450000_dc_distribution_general WHERE timestamp > now() - INTERVAL '$live_window') s1\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -7002,7 +7217,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -7060,7 +7276,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -7076,7 +7334,7 @@
           "id": 42,
           "links": [],
           "title": "Commands",
-          "description": "Non pref trips 1 to 3 are AFT, 4 to 6 FWD. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "Non pref trips 1 to 3 are AFT, 4 to 6 FWD. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -7097,7 +7355,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT 'AFT' AS \"uGrid\",\n  CAST(s0.c0 AS INT) AS \"Sync cmd\",\n  CAST(s0.c1 AS INT) AS \"Open breaker cmd\",\n  CAST(s0.c2 AS INT) AS \"Non pref trip 1/4\",\n  CAST(s0.c3 AS INT) AS \"Non pref trip 2/5\",\n  CAST(s0.c4 AS INT) AS \"Non pref trip 3/6\",\n  CAST(s2.c0 AS INT) AS \"Enable\",\n  CAST(s2.c1 AS INT) AS \"Enable firmware update\",\n  least(s0.updated, s2.updated) AS \"Updated\"\nFROM (SELECT last_value(synccomm__value ORDER BY timestamp) AS c0, last_value(opencbcomm__value ORDER BY timestamp) AS c1, last_value(nonpreftrip_1__value ORDER BY timestamp) AS c2, last_value(nonpreftrip_2__value ORDER BY timestamp) AS c3, last_value(nonpreftrip_3__value ORDER BY timestamp) AS c4, max(timestamp) AS updated FROM public.marpower__450000_dynamic_conv_ps_general WHERE timestamp > now() - INTERVAL '5 minutes') s0\n  CROSS JOIN (SELECT last_value(enable__value ORDER BY timestamp) AS c0, last_value(enablefirmware__value ORDER BY timestamp) AS c1, max(timestamp) AS updated FROM public.marpower__450000_ugrid WHERE timestamp > now() - INTERVAL '5 minutes' AND topic = 'marpower/450000-ugrid/aft') s2\nUNION ALL\nSELECT 'FWD' AS \"uGrid\",\n  CAST(s0.c0 AS INT) AS \"Sync cmd\",\n  CAST(s0.c1 AS INT) AS \"Open breaker cmd\",\n  CAST(s0.c2 AS INT) AS \"Non pref trip 1/4\",\n  CAST(s0.c3 AS INT) AS \"Non pref trip 2/5\",\n  CAST(s0.c4 AS INT) AS \"Non pref trip 3/6\",\n  CAST(s2.c0 AS INT) AS \"Enable\",\n  CAST(s2.c1 AS INT) AS \"Enable firmware update\",\n  least(s0.updated, s2.updated) AS \"Updated\"\nFROM (SELECT last_value(synccomm__value ORDER BY timestamp) AS c0, last_value(opencbcomm__value ORDER BY timestamp) AS c1, last_value(nonpreftrip_4__value ORDER BY timestamp) AS c2, last_value(nonpreftrip_5__value ORDER BY timestamp) AS c3, last_value(nonpreftrip_6__value ORDER BY timestamp) AS c4, max(timestamp) AS updated FROM public.marpower__450000_dynamic_conv_sb_general WHERE timestamp > now() - INTERVAL '5 minutes') s0\n  CROSS JOIN (SELECT last_value(enable__value ORDER BY timestamp) AS c0, last_value(enablefirmware__value ORDER BY timestamp) AS c1, max(timestamp) AS updated FROM public.marpower__450000_ugrid WHERE timestamp > now() - INTERVAL '5 minutes' AND topic = 'marpower/450000-ugrid/fwd') s2\nORDER BY 1"
+                        "rawSql": "SELECT 'AFT' AS \"uGrid\",\n  CAST(s0.c0 AS INT) AS \"Sync cmd\",\n  CAST(s0.c1 AS INT) AS \"Open breaker cmd\",\n  CAST(s0.c2 AS INT) AS \"Non pref trip 1/4\",\n  CAST(s0.c3 AS INT) AS \"Non pref trip 2/5\",\n  CAST(s0.c4 AS INT) AS \"Non pref trip 3/6\",\n  CAST(s2.c0 AS INT) AS \"Enable\",\n  CAST(s2.c1 AS INT) AS \"Enable firmware update\",\n  to_unixtime(now()) - to_unixtime(least(s0.updated, s2.updated)) AS \"Updated\"\nFROM (SELECT last_value(synccomm__value ORDER BY timestamp) AS c0, last_value(opencbcomm__value ORDER BY timestamp) AS c1, last_value(nonpreftrip_1__value ORDER BY timestamp) AS c2, last_value(nonpreftrip_2__value ORDER BY timestamp) AS c3, last_value(nonpreftrip_3__value ORDER BY timestamp) AS c4, max(timestamp) AS updated FROM public.marpower__450000_dynamic_conv_ps_general WHERE timestamp > now() - INTERVAL '$live_window') s0\n  CROSS JOIN (SELECT last_value(enable__value ORDER BY timestamp) AS c0, last_value(enablefirmware__value ORDER BY timestamp) AS c1, max(timestamp) AS updated FROM public.marpower__450000_ugrid WHERE timestamp > now() - INTERVAL '$live_window' AND topic = 'marpower/450000-ugrid/aft') s2\nUNION ALL\nSELECT 'FWD' AS \"uGrid\",\n  CAST(s0.c0 AS INT) AS \"Sync cmd\",\n  CAST(s0.c1 AS INT) AS \"Open breaker cmd\",\n  CAST(s0.c2 AS INT) AS \"Non pref trip 1/4\",\n  CAST(s0.c3 AS INT) AS \"Non pref trip 2/5\",\n  CAST(s0.c4 AS INT) AS \"Non pref trip 3/6\",\n  CAST(s2.c0 AS INT) AS \"Enable\",\n  CAST(s2.c1 AS INT) AS \"Enable firmware update\",\n  to_unixtime(now()) - to_unixtime(least(s0.updated, s2.updated)) AS \"Updated\"\nFROM (SELECT last_value(synccomm__value ORDER BY timestamp) AS c0, last_value(opencbcomm__value ORDER BY timestamp) AS c1, last_value(nonpreftrip_4__value ORDER BY timestamp) AS c2, last_value(nonpreftrip_5__value ORDER BY timestamp) AS c3, last_value(nonpreftrip_6__value ORDER BY timestamp) AS c4, max(timestamp) AS updated FROM public.marpower__450000_dynamic_conv_sb_general WHERE timestamp > now() - INTERVAL '$live_window') s0\n  CROSS JOIN (SELECT last_value(enable__value ORDER BY timestamp) AS c0, last_value(enablefirmware__value ORDER BY timestamp) AS c1, max(timestamp) AS updated FROM public.marpower__450000_ugrid WHERE timestamp > now() - INTERVAL '$live_window' AND topic = 'marpower/450000-ugrid/fwd') s2\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -7140,7 +7398,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -7196,7 +7455,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -7212,7 +7513,7 @@
           "id": 43,
           "links": [],
           "title": "Alarms",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -7233,7 +7534,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT 'AFT' AS \"uGrid\",\n  CAST(s0.c0 AS INT) AS \"Breaker tripped\",\n  CAST(s0.c1 AS INT) AS \"Control failure\",\n  s0.updated AS \"Updated\"\nFROM (SELECT last_value(breakertripped__value ORDER BY timestamp) AS c0, last_value(controlfailure__value ORDER BY timestamp) AS c1, max(timestamp) AS updated FROM public.marpower__450000_dynamic_conv_ps_general WHERE timestamp > now() - INTERVAL '5 minutes') s0\nUNION ALL\nSELECT 'FWD' AS \"uGrid\",\n  CAST(s0.c0 AS INT) AS \"Breaker tripped\",\n  CAST(s0.c1 AS INT) AS \"Control failure\",\n  s0.updated AS \"Updated\"\nFROM (SELECT last_value(breakertripped__value ORDER BY timestamp) AS c0, last_value(controlfailure__value ORDER BY timestamp) AS c1, max(timestamp) AS updated FROM public.marpower__450000_dynamic_conv_sb_general WHERE timestamp > now() - INTERVAL '5 minutes') s0\nORDER BY 1"
+                        "rawSql": "SELECT 'AFT' AS \"uGrid\",\n  CAST(s0.c0 AS INT) AS \"Breaker tripped\",\n  CAST(s0.c1 AS INT) AS \"Control failure\",\n  to_unixtime(now()) - to_unixtime(s0.updated) AS \"Updated\"\nFROM (SELECT last_value(breakertripped__value ORDER BY timestamp) AS c0, last_value(controlfailure__value ORDER BY timestamp) AS c1, max(timestamp) AS updated FROM public.marpower__450000_dynamic_conv_ps_general WHERE timestamp > now() - INTERVAL '$live_window') s0\nUNION ALL\nSELECT 'FWD' AS \"uGrid\",\n  CAST(s0.c0 AS INT) AS \"Breaker tripped\",\n  CAST(s0.c1 AS INT) AS \"Control failure\",\n  to_unixtime(now()) - to_unixtime(s0.updated) AS \"Updated\"\nFROM (SELECT last_value(breakertripped__value ORDER BY timestamp) AS c0, last_value(controlfailure__value ORDER BY timestamp) AS c1, max(timestamp) AS updated FROM public.marpower__450000_dynamic_conv_sb_general WHERE timestamp > now() - INTERVAL '$live_window') s0\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -7276,7 +7577,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -7327,7 +7629,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -7343,7 +7687,7 @@
           "id": 44,
           "links": [],
           "title": "Totals",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -7364,7 +7708,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT 'AFT' AS \"uGrid\",\n  round(last_value(totalactivepower__value ORDER BY timestamp) * 0.001, 1) AS \"Active power [kW]\",\n  round(last_value(totalreactivepower__value ORDER BY timestamp) * 0.001, 1) AS \"Reactive power [kvar]\",\n  round(last_value(totalapparentpower__value ORDER BY timestamp) * 0.001, 1) AS \"Apparent power [kVA]\",\n  round(last_value(totalpowerfactor__value ORDER BY timestamp), 2) AS \"Power factor\",\n  round(last_value(totalactiveenergy__value ORDER BY timestamp) * 0.001, 1) AS \"Active energy [kWh]\",\n  round(last_value(totalreactiveenergy__value ORDER BY timestamp) * 0.001, 1) AS \"Reactive energy [kvarh]\",\n  round(last_value(totalapparentenergy__value ORDER BY timestamp) * 0.001, 1) AS \"Apparent energy [kVAh]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_ps_general WHERE timestamp > now() - INTERVAL '5 minutes'\nUNION ALL\nSELECT 'FWD' AS \"uGrid\",\n  round(last_value(totalactivepower__value ORDER BY timestamp) * 0.001, 1) AS \"Active power [kW]\",\n  round(last_value(totalreactivepower__value ORDER BY timestamp) * 0.001, 1) AS \"Reactive power [kvar]\",\n  round(last_value(totalapparentpower__value ORDER BY timestamp) * 0.001, 1) AS \"Apparent power [kVA]\",\n  round(last_value(totalpowerfactor__value ORDER BY timestamp), 2) AS \"Power factor\",\n  round(last_value(totalactiveenergy__value ORDER BY timestamp) * 0.001, 1) AS \"Active energy [kWh]\",\n  round(last_value(totalreactiveenergy__value ORDER BY timestamp) * 0.001, 1) AS \"Reactive energy [kvarh]\",\n  round(last_value(totalapparentenergy__value ORDER BY timestamp) * 0.001, 1) AS \"Apparent energy [kVAh]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_sb_general WHERE timestamp > now() - INTERVAL '5 minutes'\nORDER BY 1"
+                        "rawSql": "SELECT 'AFT' AS \"uGrid\",\n  round(last_value(totalactivepower__value ORDER BY timestamp) * 0.001, 1) AS \"Active power [kW]\",\n  round(last_value(totalreactivepower__value ORDER BY timestamp) * 0.001, 1) AS \"Reactive power [kvar]\",\n  round(last_value(totalapparentpower__value ORDER BY timestamp) * 0.001, 1) AS \"Apparent power [kVA]\",\n  round(last_value(totalpowerfactor__value ORDER BY timestamp), 2) AS \"Power factor\",\n  round(last_value(totalactiveenergy__value ORDER BY timestamp) * 0.001, 1) AS \"Active energy [kWh]\",\n  round(last_value(totalreactiveenergy__value ORDER BY timestamp) * 0.001, 1) AS \"Reactive energy [kvarh]\",\n  round(last_value(totalapparentenergy__value ORDER BY timestamp) * 0.001, 1) AS \"Apparent energy [kVAh]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_ps_general WHERE timestamp > now() - INTERVAL '$live_window'\nUNION ALL\nSELECT 'FWD' AS \"uGrid\",\n  round(last_value(totalactivepower__value ORDER BY timestamp) * 0.001, 1) AS \"Active power [kW]\",\n  round(last_value(totalreactivepower__value ORDER BY timestamp) * 0.001, 1) AS \"Reactive power [kvar]\",\n  round(last_value(totalapparentpower__value ORDER BY timestamp) * 0.001, 1) AS \"Apparent power [kVA]\",\n  round(last_value(totalpowerfactor__value ORDER BY timestamp), 2) AS \"Power factor\",\n  round(last_value(totalactiveenergy__value ORDER BY timestamp) * 0.001, 1) AS \"Active energy [kWh]\",\n  round(last_value(totalreactiveenergy__value ORDER BY timestamp) * 0.001, 1) AS \"Reactive energy [kvarh]\",\n  round(last_value(totalapparentenergy__value ORDER BY timestamp) * 0.001, 1) AS \"Apparent energy [kVAh]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_sb_general WHERE timestamp > now() - INTERVAL '$live_window'\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -7407,7 +7751,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -7418,7 +7763,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -7434,7 +7821,7 @@
           "id": 45,
           "links": [],
           "title": "Channels",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -7455,7 +7842,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT CASE topic WHEN 'marpower/450000-dynamic-conv-ps/ch1' THEN 'AFT ch 1' WHEN 'marpower/450000-dynamic-conv-ps/ch2' THEN 'AFT ch 2' WHEN 'marpower/450000-dynamic-conv-ps/ch3' THEN 'AFT ch 3' END AS \"Channel\",\n  round(last_value(voltage__value ORDER BY timestamp), 1) AS \"Voltage [V]\",\n  round(last_value(current__value ORDER BY timestamp), 1) AS \"Current [A]\",\n  round(last_value(frequency__value ORDER BY timestamp), 2) AS \"Frequency [Hz]\",\n  round(last_value(activepower__value ORDER BY timestamp) * 0.001, 2) AS \"Active power [kW]\",\n  round(last_value(reactivepower__value ORDER BY timestamp) * 0.001, 2) AS \"Reactive power [kvar]\",\n  round(last_value(apparentpower__value ORDER BY timestamp) * 0.001, 2) AS \"Apparent power [kVA]\",\n  round(last_value(cosphi__value ORDER BY timestamp), 2) AS \"cos φ\",\n  round(last_value(powerfactor__value ORDER BY timestamp), 2) AS \"Power factor\",\n  round(last_value(\"4_quadrant__value\" ORDER BY timestamp), 0) AS \"4 quadrant\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_ps WHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-dynamic-conv-ps/ch1', 'marpower/450000-dynamic-conv-ps/ch2', 'marpower/450000-dynamic-conv-ps/ch3')\nGROUP BY topic\nUNION ALL\nSELECT CASE topic WHEN 'marpower/450000-dynamic-conv-sb/ch1' THEN 'FWD ch 1' WHEN 'marpower/450000-dynamic-conv-sb/ch2' THEN 'FWD ch 2' WHEN 'marpower/450000-dynamic-conv-sb/ch3' THEN 'FWD ch 3' END AS \"Channel\",\n  round(last_value(voltage__value ORDER BY timestamp), 1) AS \"Voltage [V]\",\n  round(last_value(current__value ORDER BY timestamp), 1) AS \"Current [A]\",\n  round(last_value(frequency__value ORDER BY timestamp), 2) AS \"Frequency [Hz]\",\n  round(last_value(activepower__value ORDER BY timestamp) * 0.001, 2) AS \"Active power [kW]\",\n  round(last_value(reactivepower__value ORDER BY timestamp) * 0.001, 2) AS \"Reactive power [kvar]\",\n  round(last_value(apparentpower__value ORDER BY timestamp) * 0.001, 2) AS \"Apparent power [kVA]\",\n  round(last_value(cosphi__value ORDER BY timestamp), 2) AS \"cos φ\",\n  round(last_value(powerfactor__value ORDER BY timestamp), 2) AS \"Power factor\",\n  round(last_value(\"4_quadrant__value\" ORDER BY timestamp), 0) AS \"4 quadrant\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_sb WHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-dynamic-conv-sb/ch1', 'marpower/450000-dynamic-conv-sb/ch2', 'marpower/450000-dynamic-conv-sb/ch3')\nGROUP BY topic\nORDER BY 1"
+                        "rawSql": "SELECT CASE topic WHEN 'marpower/450000-dynamic-conv-ps/ch1' THEN 'AFT ch 1' WHEN 'marpower/450000-dynamic-conv-ps/ch2' THEN 'AFT ch 2' WHEN 'marpower/450000-dynamic-conv-ps/ch3' THEN 'AFT ch 3' END AS \"Channel\",\n  round(last_value(voltage__value ORDER BY timestamp), 1) AS \"Voltage [V]\",\n  round(last_value(current__value ORDER BY timestamp), 1) AS \"Current [A]\",\n  round(last_value(frequency__value ORDER BY timestamp), 2) AS \"Frequency [Hz]\",\n  round(last_value(activepower__value ORDER BY timestamp) * 0.001, 2) AS \"Active power [kW]\",\n  round(last_value(reactivepower__value ORDER BY timestamp) * 0.001, 2) AS \"Reactive power [kvar]\",\n  round(last_value(apparentpower__value ORDER BY timestamp) * 0.001, 2) AS \"Apparent power [kVA]\",\n  round(last_value(cosphi__value ORDER BY timestamp), 2) AS \"cos φ\",\n  round(last_value(powerfactor__value ORDER BY timestamp), 2) AS \"Power factor\",\n  round(last_value(\"4_quadrant__value\" ORDER BY timestamp), 0) AS \"4 quadrant\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_ps WHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/450000-dynamic-conv-ps/ch1', 'marpower/450000-dynamic-conv-ps/ch2', 'marpower/450000-dynamic-conv-ps/ch3')\nGROUP BY topic\nUNION ALL\nSELECT CASE topic WHEN 'marpower/450000-dynamic-conv-sb/ch1' THEN 'FWD ch 1' WHEN 'marpower/450000-dynamic-conv-sb/ch2' THEN 'FWD ch 2' WHEN 'marpower/450000-dynamic-conv-sb/ch3' THEN 'FWD ch 3' END AS \"Channel\",\n  round(last_value(voltage__value ORDER BY timestamp), 1) AS \"Voltage [V]\",\n  round(last_value(current__value ORDER BY timestamp), 1) AS \"Current [A]\",\n  round(last_value(frequency__value ORDER BY timestamp), 2) AS \"Frequency [Hz]\",\n  round(last_value(activepower__value ORDER BY timestamp) * 0.001, 2) AS \"Active power [kW]\",\n  round(last_value(reactivepower__value ORDER BY timestamp) * 0.001, 2) AS \"Reactive power [kvar]\",\n  round(last_value(apparentpower__value ORDER BY timestamp) * 0.001, 2) AS \"Apparent power [kVA]\",\n  round(last_value(cosphi__value ORDER BY timestamp), 2) AS \"cos φ\",\n  round(last_value(powerfactor__value ORDER BY timestamp), 2) AS \"Power factor\",\n  round(last_value(\"4_quadrant__value\" ORDER BY timestamp), 0) AS \"4 quadrant\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_sb WHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/450000-dynamic-conv-sb/ch1', 'marpower/450000-dynamic-conv-sb/ch2', 'marpower/450000-dynamic-conv-sb/ch3')\nGROUP BY topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -7498,7 +7885,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -7509,7 +7897,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -7525,7 +7955,7 @@
           "id": 46,
           "links": [],
           "title": "Channel alarms",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -7546,7 +7976,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT CASE topic WHEN 'marpower/450000-dynamic-conv-ps/ch1' THEN 'AFT ch 1' WHEN 'marpower/450000-dynamic-conv-ps/ch2' THEN 'AFT ch 2' WHEN 'marpower/450000-dynamic-conv-ps/ch3' THEN 'AFT ch 3' END AS \"Channel\",\n  CAST(last_value(overcurrent__value ORDER BY timestamp) AS INT) AS \"Over current\",\n  CAST(last_value(undervoltage__value ORDER BY timestamp) AS INT) AS \"Under voltage\",\n  CAST(last_value(overvoltage__value ORDER BY timestamp) AS INT) AS \"Over voltage\",\n  CAST(last_value(voltagesag__value ORDER BY timestamp) AS INT) AS \"Voltage sag\",\n  CAST(last_value(nozero__value ORDER BY timestamp) AS INT) AS \"No zero\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_ps WHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-dynamic-conv-ps/ch1', 'marpower/450000-dynamic-conv-ps/ch2', 'marpower/450000-dynamic-conv-ps/ch3')\nGROUP BY topic\nUNION ALL\nSELECT CASE topic WHEN 'marpower/450000-dynamic-conv-sb/ch1' THEN 'FWD ch 1' WHEN 'marpower/450000-dynamic-conv-sb/ch2' THEN 'FWD ch 2' WHEN 'marpower/450000-dynamic-conv-sb/ch3' THEN 'FWD ch 3' END AS \"Channel\",\n  CAST(last_value(overcurrent__value ORDER BY timestamp) AS INT) AS \"Over current\",\n  CAST(last_value(undervoltage__value ORDER BY timestamp) AS INT) AS \"Under voltage\",\n  CAST(last_value(overvoltage__value ORDER BY timestamp) AS INT) AS \"Over voltage\",\n  CAST(last_value(voltagesag__value ORDER BY timestamp) AS INT) AS \"Voltage sag\",\n  CAST(last_value(nozero__value ORDER BY timestamp) AS INT) AS \"No zero\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_sb WHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-dynamic-conv-sb/ch1', 'marpower/450000-dynamic-conv-sb/ch2', 'marpower/450000-dynamic-conv-sb/ch3')\nGROUP BY topic\nORDER BY 1"
+                        "rawSql": "SELECT CASE topic WHEN 'marpower/450000-dynamic-conv-ps/ch1' THEN 'AFT ch 1' WHEN 'marpower/450000-dynamic-conv-ps/ch2' THEN 'AFT ch 2' WHEN 'marpower/450000-dynamic-conv-ps/ch3' THEN 'AFT ch 3' END AS \"Channel\",\n  CAST(last_value(overcurrent__value ORDER BY timestamp) AS INT) AS \"Over current\",\n  CAST(last_value(undervoltage__value ORDER BY timestamp) AS INT) AS \"Under voltage\",\n  CAST(last_value(overvoltage__value ORDER BY timestamp) AS INT) AS \"Over voltage\",\n  CAST(last_value(voltagesag__value ORDER BY timestamp) AS INT) AS \"Voltage sag\",\n  CAST(last_value(nozero__value ORDER BY timestamp) AS INT) AS \"No zero\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_ps WHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/450000-dynamic-conv-ps/ch1', 'marpower/450000-dynamic-conv-ps/ch2', 'marpower/450000-dynamic-conv-ps/ch3')\nGROUP BY topic\nUNION ALL\nSELECT CASE topic WHEN 'marpower/450000-dynamic-conv-sb/ch1' THEN 'FWD ch 1' WHEN 'marpower/450000-dynamic-conv-sb/ch2' THEN 'FWD ch 2' WHEN 'marpower/450000-dynamic-conv-sb/ch3' THEN 'FWD ch 3' END AS \"Channel\",\n  CAST(last_value(overcurrent__value ORDER BY timestamp) AS INT) AS \"Over current\",\n  CAST(last_value(undervoltage__value ORDER BY timestamp) AS INT) AS \"Under voltage\",\n  CAST(last_value(overvoltage__value ORDER BY timestamp) AS INT) AS \"Over voltage\",\n  CAST(last_value(voltagesag__value ORDER BY timestamp) AS INT) AS \"Voltage sag\",\n  CAST(last_value(nozero__value ORDER BY timestamp) AS INT) AS \"No zero\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_sb WHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/450000-dynamic-conv-sb/ch1', 'marpower/450000-dynamic-conv-sb/ch2', 'marpower/450000-dynamic-conv-sb/ch3')\nGROUP BY topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -7589,7 +8019,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -7643,7 +8074,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -7659,7 +8132,7 @@
           "id": 47,
           "links": [],
           "title": "Bus tie breaker",
-          "description": "AC 400V bus tie breaker 10P0.2. The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "AC 400V bus tie breaker 10P0.2. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -7680,7 +8153,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT CAST(last_value(acgrid_bustieopened__value ORDER BY timestamp) AS INT) AS \"Opened\",\n  CAST(last_value(acgrid_bustieclosed__value ORDER BY timestamp) AS INT) AS \"Closed\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv\nWHERE timestamp > now() - INTERVAL '5 minutes'"
+                        "rawSql": "SELECT CAST(last_value(acgrid_bustieopened__value ORDER BY timestamp) AS INT) AS \"Opened\",\n  CAST(last_value(acgrid_bustieclosed__value ORDER BY timestamp) AS INT) AS \"Closed\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv\nWHERE timestamp > now() - INTERVAL '$live_window'"
                       }
                     },
                     "refId": "A",
@@ -7723,7 +8196,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -7774,7 +8248,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -7790,7 +8306,7 @@
           "id": 48,
           "links": [],
           "title": "Transformer temperatures",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -7811,7 +8327,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT 'AFT' AS \"uGrid\",\n  round(last_value(windingtempu_1__value ORDER BY timestamp), 1) AS \"Winding U1 [°C]\",\n  round(last_value(windingtempv_1__value ORDER BY timestamp), 1) AS \"Winding V1 [°C]\",\n  round(last_value(windingtempw_1__value ORDER BY timestamp), 1) AS \"Winding W1 [°C]\",\n  round(last_value(windingtempu_2__value ORDER BY timestamp), 1) AS \"Winding U2 [°C]\",\n  round(last_value(windingtempv_2__value ORDER BY timestamp), 1) AS \"Winding V2 [°C]\",\n  round(last_value(windingtempw_2__value ORDER BY timestamp), 1) AS \"Winding W2 [°C]\",\n  round(last_value(lcfilttempu__value ORDER BY timestamp), 1) AS \"LC filter U [°C]\",\n  round(last_value(lcfilttempv__value ORDER BY timestamp), 1) AS \"LC filter V [°C]\",\n  round(last_value(lcfilttempw__value ORDER BY timestamp), 1) AS \"LC filter W [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_ps_general WHERE timestamp > now() - INTERVAL '5 minutes'\nUNION ALL\nSELECT 'FWD' AS \"uGrid\",\n  round(last_value(windingtempu_1__value ORDER BY timestamp), 1) AS \"Winding U1 [°C]\",\n  round(last_value(windingtempv_1__value ORDER BY timestamp), 1) AS \"Winding V1 [°C]\",\n  round(last_value(windingtempw_1__value ORDER BY timestamp), 1) AS \"Winding W1 [°C]\",\n  round(last_value(windingtempu_2__value ORDER BY timestamp), 1) AS \"Winding U2 [°C]\",\n  round(last_value(windingtempv_2__value ORDER BY timestamp), 1) AS \"Winding V2 [°C]\",\n  round(last_value(windingtempw_2__value ORDER BY timestamp), 1) AS \"Winding W2 [°C]\",\n  round(last_value(lcfilttempu__value ORDER BY timestamp), 1) AS \"LC filter U [°C]\",\n  round(last_value(lcfilttempv__value ORDER BY timestamp), 1) AS \"LC filter V [°C]\",\n  round(last_value(lcfilttempw__value ORDER BY timestamp), 1) AS \"LC filter W [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_sb_general WHERE timestamp > now() - INTERVAL '5 minutes'\nORDER BY 1"
+                        "rawSql": "SELECT 'AFT' AS \"uGrid\",\n  round(last_value(windingtempu_1__value ORDER BY timestamp), 1) AS \"Winding U1 [°C]\",\n  round(last_value(windingtempv_1__value ORDER BY timestamp), 1) AS \"Winding V1 [°C]\",\n  round(last_value(windingtempw_1__value ORDER BY timestamp), 1) AS \"Winding W1 [°C]\",\n  round(last_value(windingtempu_2__value ORDER BY timestamp), 1) AS \"Winding U2 [°C]\",\n  round(last_value(windingtempv_2__value ORDER BY timestamp), 1) AS \"Winding V2 [°C]\",\n  round(last_value(windingtempw_2__value ORDER BY timestamp), 1) AS \"Winding W2 [°C]\",\n  round(last_value(lcfilttempu__value ORDER BY timestamp), 1) AS \"LC filter U [°C]\",\n  round(last_value(lcfilttempv__value ORDER BY timestamp), 1) AS \"LC filter V [°C]\",\n  round(last_value(lcfilttempw__value ORDER BY timestamp), 1) AS \"LC filter W [°C]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_ps_general WHERE timestamp > now() - INTERVAL '$live_window'\nUNION ALL\nSELECT 'FWD' AS \"uGrid\",\n  round(last_value(windingtempu_1__value ORDER BY timestamp), 1) AS \"Winding U1 [°C]\",\n  round(last_value(windingtempv_1__value ORDER BY timestamp), 1) AS \"Winding V1 [°C]\",\n  round(last_value(windingtempw_1__value ORDER BY timestamp), 1) AS \"Winding W1 [°C]\",\n  round(last_value(windingtempu_2__value ORDER BY timestamp), 1) AS \"Winding U2 [°C]\",\n  round(last_value(windingtempv_2__value ORDER BY timestamp), 1) AS \"Winding V2 [°C]\",\n  round(last_value(windingtempw_2__value ORDER BY timestamp), 1) AS \"Winding W2 [°C]\",\n  round(last_value(lcfilttempu__value ORDER BY timestamp), 1) AS \"LC filter U [°C]\",\n  round(last_value(lcfilttempv__value ORDER BY timestamp), 1) AS \"LC filter V [°C]\",\n  round(last_value(lcfilttempw__value ORDER BY timestamp), 1) AS \"LC filter W [°C]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dynamic_conv_sb_general WHERE timestamp > now() - INTERVAL '$live_window'\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -7854,7 +8370,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -7865,7 +8382,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -8885,7 +9444,7 @@
           "id": 53,
           "links": [],
           "title": "Converters",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -8906,7 +9465,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT CASE topic WHEN 'marpower/450000-dc-distribution/350v-conv/keb7' THEN 'AFT' WHEN 'marpower/450000-dc-distribution/350v-conv/keb8' THEN 'FWD' END AS \"Converter\",\n  CAST(last_value(isolationwarning__value ORDER BY timestamp) AS INT) AS \"Isolation warning\",\n  CAST(last_value(isolationfault__value ORDER BY timestamp) AS INT) AS \"Isolation fault\",\n  CAST(last_value(auxpower_700_to_24_vdcfailure__value ORDER BY timestamp) AS INT) AS \"Aux power 700/24V failure\",\n  CAST(last_value(auxpower_24_to_24_vdcfailure__value ORDER BY timestamp) AS INT) AS \"Aux power 24/24V failure\",\n  CAST(last_value(busvoltpresent__value ORDER BY timestamp) AS INT) AS \"Bus voltage present\",\n  CAST(last_value(operatingvoltpresent__value ORDER BY timestamp) AS INT) AS \"Operating voltage present\",\n  CAST(last_value(isolationdisabled__value ORDER BY timestamp) AS INT) AS \"Isolation monitoring disabled\",\n  CAST(last_value(disableisolation__value ORDER BY timestamp) AS INT) AS \"Disable isolation monitoring\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__350v_conv\nWHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-dc-distribution/350v-conv/keb7', 'marpower/450000-dc-distribution/350v-conv/keb8')\nGROUP BY topic ORDER BY 1"
+                        "rawSql": "SELECT CASE topic WHEN 'marpower/450000-dc-distribution/350v-conv/keb7' THEN 'AFT' WHEN 'marpower/450000-dc-distribution/350v-conv/keb8' THEN 'FWD' END AS \"Converter\",\n  CAST(last_value(isolationwarning__value ORDER BY timestamp) AS INT) AS \"Isolation warning\",\n  CAST(last_value(isolationfault__value ORDER BY timestamp) AS INT) AS \"Isolation fault\",\n  CAST(last_value(auxpower_700_to_24_vdcfailure__value ORDER BY timestamp) AS INT) AS \"Aux power 700/24V failure\",\n  CAST(last_value(auxpower_24_to_24_vdcfailure__value ORDER BY timestamp) AS INT) AS \"Aux power 24/24V failure\",\n  CAST(last_value(busvoltpresent__value ORDER BY timestamp) AS INT) AS \"Bus voltage present\",\n  CAST(last_value(operatingvoltpresent__value ORDER BY timestamp) AS INT) AS \"Operating voltage present\",\n  CAST(last_value(isolationdisabled__value ORDER BY timestamp) AS INT) AS \"Isolation monitoring disabled\",\n  CAST(last_value(disableisolation__value ORDER BY timestamp) AS INT) AS \"Disable isolation monitoring\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__350v_conv\nWHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/450000-dc-distribution/350v-conv/keb7', 'marpower/450000-dc-distribution/350v-conv/keb8')\nGROUP BY topic ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -8949,7 +9508,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -9082,7 +9642,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -9098,7 +9700,7 @@
           "id": 54,
           "links": [],
           "title": "LDC isolation monitoring",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -9119,7 +9721,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH latest AS (\n  SELECT last_value(keb_7_ldc_01_isolationwarning__value ORDER BY timestamp) AS r0_0,\n    last_value(keb_7_ldc_01_isolationfault__value ORDER BY timestamp) AS r0_1,\n    last_value(keb_7_ldc_01_isolationdisabled__value ORDER BY timestamp) AS r0_2,\n    last_value(keb_7_ldc_01_isolationdisable__value ORDER BY timestamp) AS r0_3,\n    last_value(keb_9_ldc_02_isolationwarning__value ORDER BY timestamp) AS r1_0,\n    last_value(keb_9_ldc_02_isolationfault__value ORDER BY timestamp) AS r1_1,\n    last_value(keb_9_ldc_02_isolationdisabled__value ORDER BY timestamp) AS r1_2,\n    last_value(keb_9_ldc_02_isolationdisable__value ORDER BY timestamp) AS r1_3,\n    max(timestamp) AS updated\n  FROM public.marpower__450000_dc_distribution_general WHERE timestamp > now() - INTERVAL '5 minutes')\nSELECT 'LDC 1' AS \"LDC\", CAST(r0_0 AS INT) AS \"Isolation warning\", CAST(r0_1 AS INT) AS \"Isolation fault\", CAST(r0_2 AS INT) AS \"Isolation monitoring disabled\", CAST(r0_3 AS INT) AS \"Disable isolation monitoring\", updated AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'LDC 2' AS \"LDC\", CAST(r1_0 AS INT) AS \"Isolation warning\", CAST(r1_1 AS INT) AS \"Isolation fault\", CAST(r1_2 AS INT) AS \"Isolation monitoring disabled\", CAST(r1_3 AS INT) AS \"Disable isolation monitoring\", updated AS \"Updated\" FROM latest\nORDER BY 1"
+                        "rawSql": "WITH latest AS (\n  SELECT last_value(keb_7_ldc_01_isolationwarning__value ORDER BY timestamp) AS r0_0,\n    last_value(keb_7_ldc_01_isolationfault__value ORDER BY timestamp) AS r0_1,\n    last_value(keb_7_ldc_01_isolationdisabled__value ORDER BY timestamp) AS r0_2,\n    last_value(keb_7_ldc_01_isolationdisable__value ORDER BY timestamp) AS r0_3,\n    last_value(keb_9_ldc_02_isolationwarning__value ORDER BY timestamp) AS r1_0,\n    last_value(keb_9_ldc_02_isolationfault__value ORDER BY timestamp) AS r1_1,\n    last_value(keb_9_ldc_02_isolationdisabled__value ORDER BY timestamp) AS r1_2,\n    last_value(keb_9_ldc_02_isolationdisable__value ORDER BY timestamp) AS r1_3,\n    max(timestamp) AS updated\n  FROM public.marpower__450000_dc_distribution_general WHERE timestamp > now() - INTERVAL '$live_window')\nSELECT 'LDC 1' AS \"LDC\", CAST(r0_0 AS INT) AS \"Isolation warning\", CAST(r0_1 AS INT) AS \"Isolation fault\", CAST(r0_2 AS INT) AS \"Isolation monitoring disabled\", CAST(r0_3 AS INT) AS \"Disable isolation monitoring\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'LDC 2' AS \"LDC\", CAST(r1_0 AS INT) AS \"Isolation warning\", CAST(r1_1 AS INT) AS \"Isolation fault\", CAST(r1_2 AS INT) AS \"Isolation monitoring disabled\", CAST(r1_3 AS INT) AS \"Disable isolation monitoring\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -9162,7 +9764,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -9291,7 +9894,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -9307,7 +9952,7 @@
           "id": 55,
           "links": [],
           "title": "LDC converters",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -9328,7 +9973,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT CASE topic WHEN 'marpower/450000-dc-distribution/conv/keb7-ldc1-1' THEN 'LDC 1.1' WHEN 'marpower/450000-dc-distribution/conv/keb7-ldc1-2' THEN 'LDC 1.2' WHEN 'marpower/450000-dc-distribution/conv/keb9-ldc2-1' THEN 'LDC 2.1' WHEN 'marpower/450000-dc-distribution/conv/keb9-ldc2-2' THEN 'LDC 2.2' END AS \"Converter\",\n  CAST(last_value(tempwarn_1__value ORDER BY timestamp) AS INT) AS \"Temp. warning 1\",\n  CAST(last_value(tempwarn_2__value ORDER BY timestamp) AS INT) AS \"Temp. warning 2\",\n  CAST(last_value(statusok__value ORDER BY timestamp) AS INT) AS \"Status OK\",\n  CAST(last_value(enabledisable__value ORDER BY timestamp) AS INT) AS \"Enable\",\n  CAST(last_value(safetydisconnect__value ORDER BY timestamp) AS INT) AS \"Safety disconnect\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__conv\nWHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-dc-distribution/conv/keb7-ldc1-1', 'marpower/450000-dc-distribution/conv/keb7-ldc1-2', 'marpower/450000-dc-distribution/conv/keb9-ldc2-1', 'marpower/450000-dc-distribution/conv/keb9-ldc2-2')\nGROUP BY topic ORDER BY 1"
+                        "rawSql": "SELECT CASE topic WHEN 'marpower/450000-dc-distribution/conv/keb7-ldc1-1' THEN 'LDC 1.1' WHEN 'marpower/450000-dc-distribution/conv/keb7-ldc1-2' THEN 'LDC 1.2' WHEN 'marpower/450000-dc-distribution/conv/keb9-ldc2-1' THEN 'LDC 2.1' WHEN 'marpower/450000-dc-distribution/conv/keb9-ldc2-2' THEN 'LDC 2.2' END AS \"Converter\",\n  CAST(last_value(tempwarn_1__value ORDER BY timestamp) AS INT) AS \"Temp. warning 1\",\n  CAST(last_value(tempwarn_2__value ORDER BY timestamp) AS INT) AS \"Temp. warning 2\",\n  CAST(last_value(statusok__value ORDER BY timestamp) AS INT) AS \"Status OK\",\n  CAST(last_value(enabledisable__value ORDER BY timestamp) AS INT) AS \"Enable\",\n  CAST(last_value(safetydisconnect__value ORDER BY timestamp) AS INT) AS \"Safety disconnect\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__conv\nWHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/450000-dc-distribution/conv/keb7-ldc1-1', 'marpower/450000-dc-distribution/conv/keb7-ldc1-2', 'marpower/450000-dc-distribution/conv/keb9-ldc2-1', 'marpower/450000-dc-distribution/conv/keb9-ldc2-2')\nGROUP BY topic ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -9371,7 +10016,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -9501,7 +10147,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -10663,7 +11351,7 @@
           "id": 62,
           "links": [],
           "title": "KEBs",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -10684,7 +11372,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH latest AS (\n  SELECT last_value(keb_1_pa_0_v__value ORDER BY timestamp) AS r0_0,\n    last_value(keb_1_ma_0_v__value ORDER BY timestamp) AS r0_1,\n    last_value(keb_1_pa_24_v__value ORDER BY timestamp) AS r0_2,\n    last_value(keb_1_ma_24_v__value ORDER BY timestamp) AS r0_3,\n    last_value(keb_1_gfd_enabled__value ORDER BY timestamp) AS r0_4,\n    last_value(keb_1_field_voltage_available__value ORDER BY timestamp) AS r0_5,\n    last_value(keb_2_pa_0_v__value ORDER BY timestamp) AS r1_0,\n    last_value(keb_2_ma_0_v__value ORDER BY timestamp) AS r1_1,\n    last_value(keb_2_pa_24_v__value ORDER BY timestamp) AS r1_2,\n    last_value(keb_2_ma_24_v__value ORDER BY timestamp) AS r1_3,\n    last_value(keb_2_gfd_enabled__value ORDER BY timestamp) AS r1_4,\n    last_value(keb_2_field_voltage_available__value ORDER BY timestamp) AS r1_5,\n    max(timestamp) AS updated\n  FROM public.marpower__450000_amcs WHERE timestamp > now() - INTERVAL '5 minutes')\nSELECT 'KEB1 - MTS' AS \"KEB\", CAST(r0_0 AS INT) AS \"0V pre alarm\", CAST(r0_1 AS INT) AS \"0V main alarm\", CAST(r0_2 AS INT) AS \"24V pre alarm\", CAST(r0_3 AS INT) AS \"24V main alarm\", CAST(r0_4 AS INT) AS \"GFD enabled\", CAST(r0_5 AS INT) AS \"Field voltage available\", updated AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'KEB2 - Crew mess' AS \"KEB\", CAST(r1_0 AS INT) AS \"0V pre alarm\", CAST(r1_1 AS INT) AS \"0V main alarm\", CAST(r1_2 AS INT) AS \"24V pre alarm\", CAST(r1_3 AS INT) AS \"24V main alarm\", CAST(r1_4 AS INT) AS \"GFD enabled\", CAST(r1_5 AS INT) AS \"Field voltage available\", updated AS \"Updated\" FROM latest\nUNION ALL\nSELECT CASE topic WHEN 'marpower/450000-dc-distribution/pwr/keb6' THEN 'KEB6' WHEN 'marpower/450000-dc-distribution/pwr/keb7' THEN 'KEB7' WHEN 'marpower/450000-dc-distribution/pwr/keb8' THEN 'KEB8' WHEN 'marpower/450000-dc-distribution/pwr/keb9' THEN 'KEB9' END AS \"KEB\",\n  CAST(last_value(pa_0_v__value ORDER BY timestamp) AS INT) AS \"0V pre alarm\",\n  CAST(last_value(ma_0_v__value ORDER BY timestamp) AS INT) AS \"0V main alarm\",\n  CAST(last_value(pa_24_v__value ORDER BY timestamp) AS INT) AS \"24V pre alarm\",\n  CAST(last_value(ma_24_v__value ORDER BY timestamp) AS INT) AS \"24V main alarm\",\n  CAST(last_value(gfd_enabled__value ORDER BY timestamp) AS INT) AS \"GFD enabled\",\n  CAST(last_value(field_voltage_available__value ORDER BY timestamp) AS INT) AS \"Field voltage available\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__pwr\nWHERE timestamp > now() - INTERVAL '5 minutes' AND topic IN ('marpower/450000-dc-distribution/pwr/keb6', 'marpower/450000-dc-distribution/pwr/keb7', 'marpower/450000-dc-distribution/pwr/keb8', 'marpower/450000-dc-distribution/pwr/keb9')\nGROUP BY topic\nORDER BY 1"
+                        "rawSql": "WITH latest AS (\n  SELECT last_value(keb_1_pa_0_v__value ORDER BY timestamp) AS r0_0,\n    last_value(keb_1_ma_0_v__value ORDER BY timestamp) AS r0_1,\n    last_value(keb_1_pa_24_v__value ORDER BY timestamp) AS r0_2,\n    last_value(keb_1_ma_24_v__value ORDER BY timestamp) AS r0_3,\n    last_value(keb_1_gfd_enabled__value ORDER BY timestamp) AS r0_4,\n    last_value(keb_1_field_voltage_available__value ORDER BY timestamp) AS r0_5,\n    last_value(keb_2_pa_0_v__value ORDER BY timestamp) AS r1_0,\n    last_value(keb_2_ma_0_v__value ORDER BY timestamp) AS r1_1,\n    last_value(keb_2_pa_24_v__value ORDER BY timestamp) AS r1_2,\n    last_value(keb_2_ma_24_v__value ORDER BY timestamp) AS r1_3,\n    last_value(keb_2_gfd_enabled__value ORDER BY timestamp) AS r1_4,\n    last_value(keb_2_field_voltage_available__value ORDER BY timestamp) AS r1_5,\n    max(timestamp) AS updated\n  FROM public.marpower__450000_amcs WHERE timestamp > now() - INTERVAL '$live_window')\nSELECT 'KEB1 - MTS' AS \"KEB\", CAST(r0_0 AS INT) AS \"0V pre alarm\", CAST(r0_1 AS INT) AS \"0V main alarm\", CAST(r0_2 AS INT) AS \"24V pre alarm\", CAST(r0_3 AS INT) AS \"24V main alarm\", CAST(r0_4 AS INT) AS \"GFD enabled\", CAST(r0_5 AS INT) AS \"Field voltage available\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nUNION ALL\nSELECT 'KEB2 - Crew mess' AS \"KEB\", CAST(r1_0 AS INT) AS \"0V pre alarm\", CAST(r1_1 AS INT) AS \"0V main alarm\", CAST(r1_2 AS INT) AS \"24V pre alarm\", CAST(r1_3 AS INT) AS \"24V main alarm\", CAST(r1_4 AS INT) AS \"GFD enabled\", CAST(r1_5 AS INT) AS \"Field voltage available\", to_unixtime(now()) - to_unixtime(updated) AS \"Updated\" FROM latest\nUNION ALL\nSELECT CASE topic WHEN 'marpower/450000-dc-distribution/pwr/keb6' THEN 'KEB6' WHEN 'marpower/450000-dc-distribution/pwr/keb7' THEN 'KEB7' WHEN 'marpower/450000-dc-distribution/pwr/keb8' THEN 'KEB8' WHEN 'marpower/450000-dc-distribution/pwr/keb9' THEN 'KEB9' END AS \"KEB\",\n  CAST(last_value(pa_0_v__value ORDER BY timestamp) AS INT) AS \"0V pre alarm\",\n  CAST(last_value(ma_0_v__value ORDER BY timestamp) AS INT) AS \"0V main alarm\",\n  CAST(last_value(pa_24_v__value ORDER BY timestamp) AS INT) AS \"24V pre alarm\",\n  CAST(last_value(ma_24_v__value ORDER BY timestamp) AS INT) AS \"24V main alarm\",\n  CAST(last_value(gfd_enabled__value ORDER BY timestamp) AS INT) AS \"GFD enabled\",\n  CAST(last_value(field_voltage_available__value ORDER BY timestamp) AS INT) AS \"Field voltage available\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution__pwr\nWHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/450000-dc-distribution/pwr/keb6', 'marpower/450000-dc-distribution/pwr/keb7', 'marpower/450000-dc-distribution/pwr/keb8', 'marpower/450000-dc-distribution/pwr/keb9')\nGROUP BY topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -10727,7 +11415,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -10820,7 +11509,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -10951,7 +11682,7 @@
           "id": 64,
           "links": [],
           "title": "Switchboard temperatures",
-          "description": "The latest value within the last 5 minutes, independent of the selected time range; empty when nothing was published in that window. Updated: the time of the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -10972,7 +11703,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT round(last_value(keb_6_sb_08_temp__value ORDER BY timestamp), 1) AS \"SB08 [°C]\",\n  round(last_value(keb_6_msb_aft_tempp_01__value ORDER BY timestamp), 1) AS \"MSB AFT 1 [°C]\",\n  round(last_value(keb_6_msb_aft_tempp_02__value ORDER BY timestamp), 1) AS \"MSB AFT 2 [°C]\",\n  round(last_value(keb_7_msb_aft_p_03_temp__value ORDER BY timestamp), 1) AS \"MSB AFT 3 [°C]\",\n  round(last_value(keb_7_msb_aft_p_04_temp__value ORDER BY timestamp), 1) AS \"MSB AFT 4 [°C]\",\n  round(last_value(keb_8_fwd_sb_02_tempp_01__value ORDER BY timestamp), 1) AS \"SB02 FWD 1 [°C]\",\n  round(last_value(keb_8_fwd_sb_02_tempp_02__value ORDER BY timestamp), 1) AS \"SB02 FWD 2 [°C]\",\n  max(timestamp) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution_general\nWHERE timestamp > now() - INTERVAL '5 minutes'"
+                        "rawSql": "SELECT round(last_value(keb_6_sb_08_temp__value ORDER BY timestamp), 1) AS \"SB08 [°C]\",\n  round(last_value(keb_6_msb_aft_tempp_01__value ORDER BY timestamp), 1) AS \"MSB AFT 1 [°C]\",\n  round(last_value(keb_6_msb_aft_tempp_02__value ORDER BY timestamp), 1) AS \"MSB AFT 2 [°C]\",\n  round(last_value(keb_7_msb_aft_p_03_temp__value ORDER BY timestamp), 1) AS \"MSB AFT 3 [°C]\",\n  round(last_value(keb_7_msb_aft_p_04_temp__value ORDER BY timestamp), 1) AS \"MSB AFT 4 [°C]\",\n  round(last_value(keb_8_fwd_sb_02_tempp_01__value ORDER BY timestamp), 1) AS \"SB02 FWD 1 [°C]\",\n  round(last_value(keb_8_fwd_sb_02_tempp_02__value ORDER BY timestamp), 1) AS \"SB02 FWD 2 [°C]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__450000_dc_distribution_general\nWHERE timestamp > now() - INTERVAL '$live_window'"
                       }
                     },
                     "refId": "A",
@@ -11015,7 +11746,8 @@
                     "inspect": false,
                     "minWidth": 80,
                     "wrapHeaderText": true
-                  }
+                  },
+                  "noValue": "No data in the last 5 minutes"
                 },
                 "overrides": [
                   {
@@ -11026,7 +11758,49 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "dateTimeFromNow"
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "value": null,
+                              "color": "text"
+                            },
+                            {
+                              "value": 60,
+                              "color": "orange"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".*"
+                    },
+                    "properties": [
+                      {
+                        "id": "noValue",
+                        "value": "–"
                       }
                     ]
                   }
@@ -12347,6 +13121,20 @@
           "hide": "dontHide",
           "skipUrlSync": false,
           "allowCustomValue": true
+        }
+      },
+      {
+        "kind": "ConstantVariable",
+        "spec": {
+          "name": "live_window",
+          "query": "5 minutes",
+          "current": {
+            "text": "5 minutes",
+            "value": "5 minutes"
+          },
+          "hide": "hideVariable",
+          "skipUrlSync": true,
+          "description": "How far back the Live tabs look for the latest message, independent of the time picker. The Live tables' no-data text ('No data in the last 5 minutes') repeats this value."
         }
       }
     ]
