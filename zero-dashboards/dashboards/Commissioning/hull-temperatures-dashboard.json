@@ -130,7 +130,7 @@
                       "fixed": "transparent"
                     },
                     "image": {
-                      "fixed": "../extra/boat_outline.png"
+                      "fixed": "../../extra/boat_outline.png"
                     },
                     "size": "original"
                   },
@@ -3226,7 +3226,7 @@
                       "fixed": "transparent"
                     },
                     "image": {
-                      "fixed": "../extra/boat_outline.png"
+                      "fixed": "../../extra/boat_outline.png"
                     },
                     "size": "original"
                   },
@@ -5669,7 +5669,7 @@
                       "fixed": "transparent"
                     },
                     "image": {
-                      "fixed": "../extra/boat_outline.png"
+                      "fixed": "../../extra/boat_outline.png"
                     },
                     "size": "original"
                   },

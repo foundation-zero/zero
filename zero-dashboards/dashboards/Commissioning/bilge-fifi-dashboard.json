@@ -1,30 +1,47 @@
 {
-  "apiVersion": "dashboard.grafana.app/v2beta1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
-    "name": "commissioning-bilge-fifi"
+    "name": "commissioning-bilge-fifi",
+    "namespace": "default",
+    "uid": "c5b352b1-c420-45b5-a7ae-1b43e13664c5",
+    "resourceVersion": "1793864328211981",
+    "generation": 1,
+    "creationTimestamp": "2026-11-05T07:38:48Z",
+    "labels": {
+      "grafana.app/deprecatedInternalID": "1554812845993984"
+    },
+    "annotations": {
+      "grafana.app/createdBy": "access-policy:service",
+      "grafana.app/folder": "ag3d3rh4tsq2oa",
+      "grafana.app/managedBy": "classic-file-provisioning",
+      "grafana.app/managerId": "embedded-dashboards",
+      "grafana.app/sourceChecksum": "c92bd853b5a4b620f2dd34d2e1f9aead",
+      "grafana.app/sourcePath": "/embedded-dashboards/Commissioning/bilge-fifi-dashboard.json",
+      "grafana.app/sourceTimestamp": "1793864258000",
+      "grafana.app/updatedBy": "access-policy:service",
+      "grafana.app/folderTitle": "Commissioning",
+      "grafana.app/folderUrl": "/dashboards/f/ag3d3rh4tsq2oa/commissioning"
+    }
   },
   "spec": {
     "annotations": [
       {
         "kind": "AnnotationQuery",
         "spec": {
-          "query": {
-            "kind": "DataQuery",
-            "group": "grafana",
-            "version": "v0",
-            "datasource": {
-              "name": "-- Grafana --"
-            },
-            "spec": {}
-          },
+          "builtIn": true,
           "enable": true,
           "hide": true,
           "iconColor": "rgba(0, 211, 255, 1)",
           "name": "Annotations & Alerts",
-          "builtIn": true,
-          "legacyOptions": {
-            "type": "dashboard"
+          "query": {
+            "datasource": {
+              "name": "-- Grafana --"
+            },
+            "group": "grafana",
+            "kind": "DataQuery",
+            "spec": {},
+            "version": "v0"
           }
         }
       }
@@ -35,22 +52,27 @@
       "panel-1": {
         "kind": "Panel",
         "spec": {
-          "id": 1,
-          "title": "",
-          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
               "queries": [],
-              "transformations": [],
-              "queryOptions": {}
+              "queryOptions": {},
+              "transformations": []
             }
           },
+          "description": "",
+          "id": 1,
+          "links": [],
+          "title": "",
+          "transparent": true,
           "vizConfig": {
-            "kind": "VizConfig",
             "group": "text",
-            "version": "12.3.0",
+            "kind": "VizConfig",
             "spec": {
+              "fieldConfig": {
+                "defaults": {},
+                "overrides": []
+              },
               "options": {
                 "code": {
                   "language": "plaintext",
@@ -59,1049 +81,15 @@
                 },
                 "content": "<center>\r\n  <h1>Bilge & Fifi</h1>\r\n</center>\r\n",
                 "mode": "html"
-              },
-              "fieldConfig": {
-                "defaults": {},
-                "overrides": []
               }
-            }
-          },
-          "transparent": true
-        }
-      },
-      "panel-2": {
-        "kind": "Panel",
-        "spec": {
-          "title": "Alarms",
-          "description": "Per time bucket: true when the signal was true at any moment in that bucket.",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "${datasource}"
-                      },
-                      "spec": {
-                        "editorType": "sql",
-                        "format": 1,
-                        "pluginVersion": "2.1.4",
-                        "queryType": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  max(level_sub_pump_1_alarm__value) AS \"Subm. pump 1\",\n  max(level_sub_pump_2_alarm__value) AS \"Subm. pump 2\",\n  max(level_sub_pump_3_alarm__value) AS \"Subm. pump 3\",\n  max(batt_comp_5_alarm__value) AS \"Battery comp 5\",\n  max(batt_comp_6_alarm__value) AS \"Battery comp 6\",\n  max(frame_13_alarm__value) AS \"Frame 13\",\n  max(frame_15_alarm__value) AS \"Frame 15\",\n  max(frame_30_alarm__value) AS \"Frame 30\",\n  max(frame_38_alarm__value) AS \"Frame 38\",\n  max(frame_38_ps_alarm__value) AS \"Frame 38 PS\",\n  max(frame_38_sb_alarm__value) AS \"Frame 38 SB\",\n  max(frame_46_alarm__value) AS \"Frame 46\",\n  max(frame_47_sb_alarm__value) AS \"Frame 47 SB\",\n  max(frame_48_alarm__value) AS \"Frame 48\",\n  max(frame_53_alarm__value) AS \"Frame 53\",\n  max(frame_68_alarm__value) AS \"Frame 68\",\n  max(water_separator_ppm_alarm__value) AS \"Water separator PPM\"\nFROM marpower__210000_bilge_fifi_general\nWHERE $__timeFilter(timestamp) \nGROUP BY 1 ORDER BY 1"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {
-                "maxDataPoints": 1000
-              }
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "state-timeline",
-            "version": "13.3.0",
-            "spec": {
-              "options": {
-                "showValue": "never",
-                "mergeValues": true,
-                "alignValue": "left",
-                "rowHeight": 0.8,
-                "legend": {
-                  "showLegend": false,
-                  "displayMode": "list",
-                  "placement": "bottom"
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none",
-                  "hideZeros": false
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": null,
-                        "color": "transparent"
-                      }
-                    ]
-                  },
-                  "mappings": [
-                    {
-                      "type": "value",
-                      "options": {
-                        "true": {
-                          "index": 0,
-                          "text": "Yes",
-                          "color": "red"
-                        },
-                        "false": {
-                          "index": 1,
-                          "text": "No",
-                          "color": "transparent"
-                        }
-                      }
-                    }
-                  ],
-                  "custom": {
-                    "fillOpacity": 80,
-                    "lineWidth": 0,
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    }
-                  }
-                },
-                "overrides": []
-              }
-            }
-          },
-          "id": 2
-        }
-      },
-      "panel-3": {
-        "kind": "Panel",
-        "spec": {
-          "title": "Alarms",
-          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest message.",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "${datasource}"
-                      },
-                      "spec": {
-                        "editorType": "sql",
-                        "format": 1,
-                        "pluginVersion": "2.1.4",
-                        "queryType": "table",
-                        "rawQuery": true,
-                        "rawSql": "WITH l AS (\n  SELECT * FROM marpower__210000_bilge_fifi_general\n  WHERE timestamp > now() - INTERVAL '$live_window' \n  ORDER BY timestamp DESC LIMIT 1\n),\nm AS (\n  SELECT mqtt_json_path, max(yard_tag) AS yard_tag FROM public.marpower__io_metadata\n  WHERE mqtt_topic = 'marpower/210000-bilge-fifi-general' GROUP BY mqtt_json_path\n)\nSELECT s.signal AS \"Signal\",\n  coalesce(m.yard_tag, s.tag) AS \"Tag\",\n  CASE s.n\n    WHEN 1 THEN CASE l.level_sub_pump_1_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 2 THEN CASE l.level_sub_pump_2_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 3 THEN CASE l.level_sub_pump_3_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 4 THEN CASE l.batt_comp_5_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 5 THEN CASE l.batt_comp_6_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 6 THEN CASE l.frame_13_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 7 THEN CASE l.frame_15_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 8 THEN CASE l.frame_30_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 9 THEN CASE l.frame_38_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 10 THEN CASE l.frame_38_ps_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 11 THEN CASE l.frame_38_sb_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 12 THEN CASE l.frame_46_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 13 THEN CASE l.frame_47_sb_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 14 THEN CASE l.frame_48_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 15 THEN CASE l.frame_53_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 16 THEN CASE l.frame_68_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 17 THEN CASE l.water_separator_ppm_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n  END AS \"State\",\n  to_unixtime(now()) - to_unixtime(l.timestamp) AS \"Updated\"\nFROM (VALUES\n  (1, 'Subm. pump 1', 'level_sub_pump1_alarm', arrow_cast(NULL, 'Utf8')),\n  (2, 'Subm. pump 2', 'level_sub_pump2_alarm', arrow_cast(NULL, 'Utf8')),\n  (3, 'Subm. pump 3', 'level_sub_pump3_alarm', arrow_cast(NULL, 'Utf8')),\n  (4, 'Battery comp 5', 'batt_comp_5_alarm', arrow_cast(NULL, 'Utf8')),\n  (5, 'Battery comp 6', 'batt_comp_6_alarm', arrow_cast(NULL, 'Utf8')),\n  (6, 'Frame 13', 'frame13_alarm', arrow_cast(NULL, 'Utf8')),\n  (7, 'Frame 15', 'frame15_alarm', arrow_cast(NULL, 'Utf8')),\n  (8, 'Frame 30', 'frame30_alarm', arrow_cast(NULL, 'Utf8')),\n  (9, 'Frame 38', 'frame38_alarm', arrow_cast(NULL, 'Utf8')),\n  (10, 'Frame 38 PS', 'frame38ps_alarm', arrow_cast(NULL, 'Utf8')),\n  (11, 'Frame 38 SB', 'frame38sb_alarm', arrow_cast(NULL, 'Utf8')),\n  (12, 'Frame 46', 'frame46_alarm', arrow_cast(NULL, 'Utf8')),\n  (13, 'Frame 47 SB', 'frame47sb_alarm', arrow_cast(NULL, 'Utf8')),\n  (14, 'Frame 48', 'frame48_alarm', arrow_cast(NULL, 'Utf8')),\n  (15, 'Frame 53', 'frame53_alarm', arrow_cast(NULL, 'Utf8')),\n  (16, 'Frame 68', 'frame68_alarm', arrow_cast(NULL, 'Utf8')),\n  (17, 'Water separator PPM', 'water_separator_ppm_alarm', arrow_cast(NULL, 'Utf8'))\n) AS s(n, signal, path, tag)\nLEFT JOIN l ON true\nLEFT JOIN m ON m.mqtt_json_path = s.path\nORDER BY s.n"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "table",
-            "version": "13.3.0",
-            "spec": {
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true,
-                "footer": {
-                  "show": false
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "mappings": [
-                    {
-                      "type": "value",
-                      "options": {
-                        "Active": {
-                          "index": 0,
-                          "text": "Active",
-                          "color": "red"
-                        },
-                        "Yes": {
-                          "index": 1,
-                          "text": "Yes",
-                          "color": "green"
-                        },
-                        "No": {
-                          "index": 2,
-                          "text": "No",
-                          "color": "text"
-                        }
-                      }
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": null,
-                        "color": "text"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "custom": {
-                    "align": "auto",
-                    "cellOptions": {
-                      "type": "auto"
-                    },
-                    "inspect": false
-                  }
-                },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Updated"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "suffix: sec ago"
-                      },
-                      {
-                        "id": "decimals",
-                        "value": 0
-                      },
-                      {
-                        "id": "thresholds",
-                        "value": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                              "value": null,
-                              "color": "text"
-                            },
-                            {
-                              "value": 60,
-                              "color": "orange"
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "id": "custom.cellOptions",
-                        "value": {
-                          "type": "color-text"
-                        }
-                      },
-                      {
-                        "id": "custom.width",
-                        "value": 110
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "State"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.cellOptions",
-                        "value": {
-                          "type": "color-text"
-                        }
-                      },
-                      {
-                        "id": "custom.width",
-                        "value": 110
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Tag"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.width",
-                        "value": 150
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          },
-          "id": 3
-        }
-      },
-      "panel-4": {
-        "kind": "Panel",
-        "spec": {
-          "title": "Status",
-          "description": "Per time bucket: true when the signal was true at any moment in that bucket.",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "${datasource}"
-                      },
-                      "spec": {
-                        "editorType": "sql",
-                        "format": 1,
-                        "pluginVersion": "2.1.4",
-                        "queryType": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  max(submers_pump_1_remavail__value) AS \"Submersible pump 1 - Remote avail.\",\n  max(submers_pump_1_running__value) AS \"Submersible pump 1 - Running\",\n  max(submers_pump_2_remavail__value) AS \"Submersible pump 2 - Remote avail.\",\n  max(submers_pump_2_running__value) AS \"Submersible pump 2 - Running\",\n  max(submers_pump_3_remavail__value) AS \"Submersible pump 3 - Remote avail.\",\n  max(submers_pump_3_running__value) AS \"Submersible pump 3 - Running\",\n  max(bckup_gen_serv_pump_remavail__value) AS \"Backup gen. serv. pump - Remote avail.\",\n  max(gen_serv_pump_1_remavail__value) AS \"Gen. serv. pump 1 - Remote avail.\",\n  max(gen_serv_pump_2_remavail__value) AS \"Gen. serv. pump 2 - Remote avail.\",\n  max(gen_serv_pump_2_field_start__value) AS \"Gen. serv. pump 2 - Field start\",\n  max(gen_serv_pump_2_field_stop__value) AS \"Gen. serv. pump 2 - Field stop\",\n  max(strip_pump_remavail__value) AS \"Stripping pump - Remote avail.\",\n  max(strip_pump_running__value) AS \"Stripping pump - Running\",\n  max(chain_lock_pump_remavail__value) AS \"Chain locker pump - Remote avail.\",\n  max(chain_lock_pump_running__value) AS \"Chain locker pump - Running\"\nFROM marpower__210000_bilge_fifi_general\nWHERE $__timeFilter(timestamp) \nGROUP BY 1 ORDER BY 1"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {
-                "maxDataPoints": 1000
-              }
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "state-timeline",
-            "version": "13.3.0",
-            "spec": {
-              "options": {
-                "showValue": "never",
-                "mergeValues": true,
-                "alignValue": "left",
-                "rowHeight": 0.8,
-                "legend": {
-                  "showLegend": false,
-                  "displayMode": "list",
-                  "placement": "bottom"
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none",
-                  "hideZeros": false
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": null,
-                        "color": "transparent"
-                      }
-                    ]
-                  },
-                  "mappings": [
-                    {
-                      "type": "value",
-                      "options": {
-                        "true": {
-                          "index": 0,
-                          "text": "Yes",
-                          "color": "green"
-                        },
-                        "false": {
-                          "index": 1,
-                          "text": "No",
-                          "color": "transparent"
-                        }
-                      }
-                    }
-                  ],
-                  "custom": {
-                    "fillOpacity": 80,
-                    "lineWidth": 0,
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    }
-                  }
-                },
-                "overrides": []
-              }
-            }
-          },
-          "id": 4
-        }
-      },
-      "panel-5": {
-        "kind": "Panel",
-        "spec": {
-          "title": "Status",
-          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest message.",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "${datasource}"
-                      },
-                      "spec": {
-                        "editorType": "sql",
-                        "format": 1,
-                        "pluginVersion": "2.1.4",
-                        "queryType": "table",
-                        "rawQuery": true,
-                        "rawSql": "WITH l AS (\n  SELECT * FROM marpower__210000_bilge_fifi_general\n  WHERE timestamp > now() - INTERVAL '$live_window' \n  ORDER BY timestamp DESC LIMIT 1\n),\nm AS (\n  SELECT mqtt_json_path, max(yard_tag) AS yard_tag FROM public.marpower__io_metadata\n  WHERE mqtt_topic = 'marpower/210000-bilge-fifi-general' GROUP BY mqtt_json_path\n)\nSELECT s.signal AS \"Signal\",\n  coalesce(m.yard_tag, s.tag) AS \"Tag\",\n  CASE s.n\n    WHEN 1 THEN CASE l.submers_pump_1_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 2 THEN CASE l.submers_pump_1_running__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 3 THEN CASE l.submers_pump_2_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 4 THEN CASE l.submers_pump_2_running__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 5 THEN CASE l.submers_pump_3_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 6 THEN CASE l.submers_pump_3_running__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 7 THEN CASE l.bckup_gen_serv_pump_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 8 THEN CASE l.gen_serv_pump_1_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 9 THEN CASE l.gen_serv_pump_2_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 10 THEN CASE l.gen_serv_pump_2_field_start__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 11 THEN CASE l.gen_serv_pump_2_field_stop__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 12 THEN CASE l.strip_pump_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 13 THEN CASE l.strip_pump_running__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 14 THEN CASE l.chain_lock_pump_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 15 THEN CASE l.chain_lock_pump_running__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n  END AS \"State\",\n  to_unixtime(now()) - to_unixtime(l.timestamp) AS \"Updated\"\nFROM (VALUES\n  (1, 'Submersible pump 1 - Remote avail.', 'submers_pump1_remavail', arrow_cast(NULL, 'Utf8')),\n  (2, 'Submersible pump 1 - Running', 'submers_pump1_running', arrow_cast(NULL, 'Utf8')),\n  (3, 'Submersible pump 2 - Remote avail.', 'submers_pump2_remavail', arrow_cast(NULL, 'Utf8')),\n  (4, 'Submersible pump 2 - Running', 'submers_pump2_running', arrow_cast(NULL, 'Utf8')),\n  (5, 'Submersible pump 3 - Remote avail.', 'submers_pump3_remavail', arrow_cast(NULL, 'Utf8')),\n  (6, 'Submersible pump 3 - Running', 'submers_pump3_running', arrow_cast(NULL, 'Utf8')),\n  (7, 'Backup gen. serv. pump - Remote avail.', 'bckup_gen_serv_pump_remavail', arrow_cast(NULL, 'Utf8')),\n  (8, 'Gen. serv. pump 1 - Remote avail.', 'gen_serv_pump1_remavail', arrow_cast(NULL, 'Utf8')),\n  (9, 'Gen. serv. pump 2 - Remote avail.', 'gen_serv_pump2_remavail', arrow_cast(NULL, 'Utf8')),\n  (10, 'Gen. serv. pump 2 - Field start', 'gen_serv_pump2_field_start', arrow_cast(NULL, 'Utf8')),\n  (11, 'Gen. serv. pump 2 - Field stop', 'gen_serv_pump2_field_stop', arrow_cast(NULL, 'Utf8')),\n  (12, 'Stripping pump - Remote avail.', 'strip_pump_remavail', arrow_cast(NULL, 'Utf8')),\n  (13, 'Stripping pump - Running', 'strip_pump_running', arrow_cast(NULL, 'Utf8')),\n  (14, 'Chain locker pump - Remote avail.', 'chain_lock_pump_remavail', arrow_cast(NULL, 'Utf8')),\n  (15, 'Chain locker pump - Running', 'chain_lock_pump_running', arrow_cast(NULL, 'Utf8'))\n) AS s(n, signal, path, tag)\nLEFT JOIN l ON true\nLEFT JOIN m ON m.mqtt_json_path = s.path\nORDER BY s.n"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "table",
-            "version": "13.3.0",
-            "spec": {
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true,
-                "footer": {
-                  "show": false
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "mappings": [
-                    {
-                      "type": "value",
-                      "options": {
-                        "Active": {
-                          "index": 0,
-                          "text": "Active",
-                          "color": "red"
-                        },
-                        "Yes": {
-                          "index": 1,
-                          "text": "Yes",
-                          "color": "green"
-                        },
-                        "No": {
-                          "index": 2,
-                          "text": "No",
-                          "color": "text"
-                        }
-                      }
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": null,
-                        "color": "text"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "custom": {
-                    "align": "auto",
-                    "cellOptions": {
-                      "type": "auto"
-                    },
-                    "inspect": false
-                  }
-                },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Updated"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "suffix: sec ago"
-                      },
-                      {
-                        "id": "decimals",
-                        "value": 0
-                      },
-                      {
-                        "id": "thresholds",
-                        "value": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                              "value": null,
-                              "color": "text"
-                            },
-                            {
-                              "value": 60,
-                              "color": "orange"
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "id": "custom.cellOptions",
-                        "value": {
-                          "type": "color-text"
-                        }
-                      },
-                      {
-                        "id": "custom.width",
-                        "value": 110
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "State"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.cellOptions",
-                        "value": {
-                          "type": "color-text"
-                        }
-                      },
-                      {
-                        "id": "custom.width",
-                        "value": 110
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Tag"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.width",
-                        "value": 150
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          },
-          "id": 5
-        }
-      },
-      "panel-6": {
-        "kind": "Panel",
-        "spec": {
-          "title": "Control signals",
-          "description": "Per time bucket: true when the signal was true at any moment in that bucket.",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "${datasource}"
-                      },
-                      "spec": {
-                        "editorType": "sql",
-                        "format": 1,
-                        "pluginVersion": "2.1.4",
-                        "queryType": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  max(submers_pump_1_startstop__value) AS \"Submersible pump 1 - Start\",\n  max(submers_pump_2_startstop__value) AS \"Submersible pump 2 - Start\",\n  max(submers_pump_3_startstop__value) AS \"Submersible pump 3 - Start\",\n  max(strip_pump_startstop__value) AS \"Stripping pump - Start\",\n  max(chain_lock_pump_startstop__value) AS \"Chain locker pump - Start\",\n  max(separator_start__value) AS \"Separator - Start\",\n  max(gen_serv_pump_1_fdbck_fault__value) AS \"Gen. serv. pump 1 - Fault feedback\"\nFROM marpower__210000_bilge_fifi_general\nWHERE $__timeFilter(timestamp) \nGROUP BY 1 ORDER BY 1"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {
-                "maxDataPoints": 1000
-              }
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "state-timeline",
-            "version": "13.3.0",
-            "spec": {
-              "options": {
-                "showValue": "never",
-                "mergeValues": true,
-                "alignValue": "left",
-                "rowHeight": 0.8,
-                "legend": {
-                  "showLegend": false,
-                  "displayMode": "list",
-                  "placement": "bottom"
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none",
-                  "hideZeros": false
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": null,
-                        "color": "transparent"
-                      }
-                    ]
-                  },
-                  "mappings": [
-                    {
-                      "type": "value",
-                      "options": {
-                        "true": {
-                          "index": 0,
-                          "text": "Yes",
-                          "color": "blue"
-                        },
-                        "false": {
-                          "index": 1,
-                          "text": "No",
-                          "color": "transparent"
-                        }
-                      }
-                    }
-                  ],
-                  "custom": {
-                    "fillOpacity": 80,
-                    "lineWidth": 0,
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    }
-                  }
-                },
-                "overrides": []
-              }
-            }
-          },
-          "id": 6
-        }
-      },
-      "panel-7": {
-        "kind": "Panel",
-        "spec": {
-          "title": "Control signals",
-          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest message.",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "${datasource}"
-                      },
-                      "spec": {
-                        "editorType": "sql",
-                        "format": 1,
-                        "pluginVersion": "2.1.4",
-                        "queryType": "table",
-                        "rawQuery": true,
-                        "rawSql": "WITH l AS (\n  SELECT * FROM marpower__210000_bilge_fifi_general\n  WHERE timestamp > now() - INTERVAL '$live_window' \n  ORDER BY timestamp DESC LIMIT 1\n),\nm AS (\n  SELECT mqtt_json_path, max(yard_tag) AS yard_tag FROM public.marpower__io_metadata\n  WHERE mqtt_topic = 'marpower/210000-bilge-fifi-general' GROUP BY mqtt_json_path\n)\nSELECT s.signal AS \"Signal\",\n  coalesce(m.yard_tag, s.tag) AS \"Tag\",\n  CASE s.n\n    WHEN 1 THEN CASE l.submers_pump_1_startstop__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 2 THEN CASE l.submers_pump_2_startstop__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 3 THEN CASE l.submers_pump_3_startstop__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 4 THEN CASE l.strip_pump_startstop__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 5 THEN CASE l.chain_lock_pump_startstop__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 6 THEN CASE l.separator_start__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 7 THEN CASE l.gen_serv_pump_1_fdbck_fault__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n  END AS \"State\",\n  to_unixtime(now()) - to_unixtime(l.timestamp) AS \"Updated\"\nFROM (VALUES\n  (1, 'Submersible pump 1 - Start', 'submers_pump1_startstop', arrow_cast(NULL, 'Utf8')),\n  (2, 'Submersible pump 2 - Start', 'submers_pump2_startstop', arrow_cast(NULL, 'Utf8')),\n  (3, 'Submersible pump 3 - Start', 'submers_pump3_startstop', arrow_cast(NULL, 'Utf8')),\n  (4, 'Stripping pump - Start', 'strip_pump_startstop', arrow_cast(NULL, 'Utf8')),\n  (5, 'Chain locker pump - Start', 'chain_lock_pump_startstop', arrow_cast(NULL, 'Utf8')),\n  (6, 'Separator - Start', 'separator_start', arrow_cast(NULL, 'Utf8')),\n  (7, 'Gen. serv. pump 1 - Fault feedback', 'gen_serv_pump1_fdbck_fault', arrow_cast(NULL, 'Utf8'))\n) AS s(n, signal, path, tag)\nLEFT JOIN l ON true\nLEFT JOIN m ON m.mqtt_json_path = s.path\nORDER BY s.n"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {}
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "table",
-            "version": "13.3.0",
-            "spec": {
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true,
-                "footer": {
-                  "show": false
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "mappings": [
-                    {
-                      "type": "value",
-                      "options": {
-                        "Active": {
-                          "index": 0,
-                          "text": "Active",
-                          "color": "red"
-                        },
-                        "Yes": {
-                          "index": 1,
-                          "text": "Yes",
-                          "color": "blue"
-                        },
-                        "No": {
-                          "index": 2,
-                          "text": "No",
-                          "color": "text"
-                        }
-                      }
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": null,
-                        "color": "text"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "mode": "thresholds"
-                  },
-                  "custom": {
-                    "align": "auto",
-                    "cellOptions": {
-                      "type": "auto"
-                    },
-                    "inspect": false
-                  }
-                },
-                "overrides": [
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Updated"
-                    },
-                    "properties": [
-                      {
-                        "id": "unit",
-                        "value": "suffix: sec ago"
-                      },
-                      {
-                        "id": "decimals",
-                        "value": 0
-                      },
-                      {
-                        "id": "thresholds",
-                        "value": {
-                          "mode": "absolute",
-                          "steps": [
-                            {
-                              "value": null,
-                              "color": "text"
-                            },
-                            {
-                              "value": 60,
-                              "color": "orange"
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "id": "custom.cellOptions",
-                        "value": {
-                          "type": "color-text"
-                        }
-                      },
-                      {
-                        "id": "custom.width",
-                        "value": 110
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "State"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.cellOptions",
-                        "value": {
-                          "type": "color-text"
-                        }
-                      },
-                      {
-                        "id": "custom.width",
-                        "value": 110
-                      }
-                    ]
-                  },
-                  {
-                    "matcher": {
-                      "id": "byName",
-                      "options": "Tag"
-                    },
-                    "properties": [
-                      {
-                        "id": "custom.width",
-                        "value": 150
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          },
-          "id": 7
-        }
-      },
-      "panel-8": {
-        "kind": "Panel",
-        "spec": {
-          "title": "Sensors, pressure",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "${datasource}"
-                      },
-                      "spec": {
-                        "editorType": "sql",
-                        "format": 1,
-                        "pluginVersion": "2.1.4",
-                        "queryType": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(press_sensor_fwd_ps_battery__value) AS \"FWD PS battery pressure [bar]\",\n  avg(press_sensor_fwd_sb_battery__value) AS \"FWD SB battery pressure [bar]\",\n  avg(press_sensor_aft_ps_battery__value) AS \"AFT PS battery pressure [bar]\",\n  avg(press_sensor_aft_sb_battery__value) AS \"AFT SB battery pressure [bar]\",\n  avg(chain_lock_presssensor__value) AS \"Chain locker pressure [bar]\",\n  avg(pressure_sensor_210010691__value) AS \"21001069_1 pressure [bar]\",\n  avg(pressure_sensor_210010692__value) AS \"21001069_2 pressure [bar]\",\n  avg(pressure_sensor_210010693__value) AS \"21001069_3 pressure [bar]\"\nFROM marpower__210000_bilge_fifi_general\nWHERE $__timeFilter(timestamp) \nGROUP BY 1 ORDER BY 1"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {
-                "maxDataPoints": 1000
-              }
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "timeseries",
-            "version": "13.3.0",
-            "spec": {
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "multi",
-                  "sort": "none",
-                  "hideZeros": false
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "pressurebar",
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": null,
-                        "color": "green"
-                      }
-                    ]
-                  },
-                  "custom": {
-                    "drawStyle": "line",
-                    "lineWidth": 1,
-                    "fillOpacity": 0,
-                    "showPoints": "auto",
-                    "spanNulls": 60000,
-                    "axisPlacement": "auto"
-                  }
-                },
-                "overrides": []
-              }
-            }
-          },
-          "id": 8
-        }
-      },
-      "panel-9": {
-        "kind": "Panel",
-        "spec": {
-          "title": "Sensors, current",
-          "description": "",
-          "links": [],
-          "data": {
-            "kind": "QueryGroup",
-            "spec": {
-              "queries": [
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "${datasource}"
-                      },
-                      "spec": {
-                        "editorType": "sql",
-                        "format": 1,
-                        "pluginVersion": "2.1.4",
-                        "queryType": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(tank_level__value) AS \"Tank level [mA]\"\nFROM marpower__210000_bilge_fifi_general\nWHERE $__timeFilter(timestamp) \nGROUP BY 1 ORDER BY 1"
-                      }
-                    },
-                    "refId": "A",
-                    "hidden": false
-                  }
-                }
-              ],
-              "transformations": [],
-              "queryOptions": {
-                "maxDataPoints": 1000
-              }
-            }
-          },
-          "vizConfig": {
-            "kind": "VizConfig",
-            "group": "timeseries",
-            "version": "13.3.0",
-            "spec": {
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom",
-                  "showLegend": true
-                },
-                "tooltip": {
-                  "mode": "multi",
-                  "sort": "none",
-                  "hideZeros": false
-                }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "mamp",
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": null,
-                        "color": "green"
-                      }
-                    ]
-                  },
-                  "custom": {
-                    "drawStyle": "line",
-                    "lineWidth": 1,
-                    "fillOpacity": 0,
-                    "showPoints": "auto",
-                    "spanNulls": 60000,
-                    "axisPlacement": "auto"
-                  }
-                },
-                "overrides": []
-              }
-            }
-          },
-          "id": 9
+            },
+            "version": "13.3.0"
+          }
         }
       },
       "panel-10": {
         "kind": "Panel",
         "spec": {
-          "title": "Sensors, temperature",
-          "description": "",
-          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1109,13 +97,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
+                    "hidden": false,
                     "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
                       "datasource": {
                         "name": "${datasource}"
                       },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
                       "spec": {
                         "editorType": "sql",
                         "format": 1,
@@ -1123,24 +111,79 @@
                         "queryType": "table",
                         "rawQuery": true,
                         "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(forepeak_tempsensor__value) AS \"Forepeak temperature [°C]\"\nFROM marpower__210000_bilge_fifi_general\nWHERE $__timeFilter(timestamp) \nGROUP BY 1 ORDER BY 1"
-                      }
+                      },
+                      "version": "v0"
                     },
-                    "refId": "A",
-                    "hidden": false
+                    "refId": "A"
                   }
                 }
               ],
-              "transformations": [],
               "queryOptions": {
                 "maxDataPoints": 1000
-              }
+              },
+              "transformations": []
             }
           },
+          "description": "",
+          "id": 10,
+          "links": [],
+          "title": "Temperature",
           "vizConfig": {
-            "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.3.0",
+            "kind": "VizConfig",
             "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": 60000,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": 0
+                      }
+                    ]
+                  },
+                  "unit": "celsius"
+                },
+                "overrides": []
+              },
               "options": {
                 "legend": {
                   "calcs": [],
@@ -1149,48 +192,19 @@
                   "showLegend": true
                 },
                 "tooltip": {
+                  "hideZeros": false,
                   "mode": "multi",
-                  "sort": "none",
-                  "hideZeros": false
+                  "sort": "none"
                 }
-              },
-              "fieldConfig": {
-                "defaults": {
-                  "unit": "celsius",
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": null,
-                        "color": "green"
-                      }
-                    ]
-                  },
-                  "custom": {
-                    "drawStyle": "line",
-                    "lineWidth": 1,
-                    "fillOpacity": 0,
-                    "showPoints": "auto",
-                    "spanNulls": 60000,
-                    "axisPlacement": "auto"
-                  }
-                },
-                "overrides": []
               }
-            }
-          },
-          "id": 10
+            },
+            "version": "13.3.0"
+          }
         }
       },
       "panel-11": {
         "kind": "Panel",
         "spec": {
-          "title": "Sensors",
-          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest message. Analog values are rounded to 2 decimals; units are in the signal name.",
-          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1198,76 +212,41 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
+                    "hidden": false,
                     "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
                       "datasource": {
                         "name": "${datasource}"
                       },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
                       "spec": {
                         "editorType": "sql",
                         "format": 1,
-                        "pluginVersion": "2.1.4",
+                        "pluginVersion": "3.0.2",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH l AS (\n  SELECT * FROM marpower__210000_bilge_fifi_general\n  WHERE timestamp > now() - INTERVAL '$live_window' \n  ORDER BY timestamp DESC LIMIT 1\n),\nm AS (\n  SELECT mqtt_json_path, max(yard_tag) AS yard_tag FROM public.marpower__io_metadata\n  WHERE mqtt_topic = 'marpower/210000-bilge-fifi-general' GROUP BY mqtt_json_path\n)\nSELECT s.signal AS \"Signal\",\n  coalesce(m.yard_tag, s.tag) AS \"Tag\",\n  CASE s.n\n    WHEN 1 THEN arrow_cast(round(l.press_sensor_fwd_ps_battery__value, 2), 'Utf8')\n    WHEN 2 THEN arrow_cast(round(l.press_sensor_fwd_sb_battery__value, 2), 'Utf8')\n    WHEN 3 THEN arrow_cast(round(l.press_sensor_aft_ps_battery__value, 2), 'Utf8')\n    WHEN 4 THEN arrow_cast(round(l.press_sensor_aft_sb_battery__value, 2), 'Utf8')\n    WHEN 5 THEN arrow_cast(round(l.chain_lock_presssensor__value, 2), 'Utf8')\n    WHEN 6 THEN arrow_cast(round(l.pressure_sensor_210010691__value, 2), 'Utf8')\n    WHEN 7 THEN arrow_cast(round(l.pressure_sensor_210010692__value, 2), 'Utf8')\n    WHEN 8 THEN arrow_cast(round(l.pressure_sensor_210010693__value, 2), 'Utf8')\n    WHEN 9 THEN arrow_cast(round(l.tank_level__value, 2), 'Utf8')\n    WHEN 10 THEN arrow_cast(round(l.forepeak_tempsensor__value, 2), 'Utf8')\n  END AS \"State\",\n  to_unixtime(now()) - to_unixtime(l.timestamp) AS \"Updated\"\nFROM (VALUES\n  (1, 'FWD PS battery pressure [bar]', 'press_sensor_fwd_ps_battery', arrow_cast(NULL, 'Utf8')),\n  (2, 'FWD SB battery pressure [bar]', 'press_sensor_fwd_sb_battery', arrow_cast(NULL, 'Utf8')),\n  (3, 'AFT PS battery pressure [bar]', 'press_sensor_aft_ps_battery', arrow_cast(NULL, 'Utf8')),\n  (4, 'AFT SB battery pressure [bar]', 'press_sensor_aft_sb_battery', arrow_cast(NULL, 'Utf8')),\n  (5, 'Chain locker pressure [bar]', 'chain_lock_presssensor', arrow_cast(NULL, 'Utf8')),\n  (6, '21001069_1 pressure [bar]', 'pressure_sensor_210010691', arrow_cast(NULL, 'Utf8')),\n  (7, '21001069_2 pressure [bar]', 'pressure_sensor_210010692', arrow_cast(NULL, 'Utf8')),\n  (8, '21001069_3 pressure [bar]', 'pressure_sensor_210010693', arrow_cast(NULL, 'Utf8')),\n  (9, 'Tank level [mA]', 'tank_level', arrow_cast(NULL, 'Utf8')),\n  (10, 'Forepeak temperature [°C]', 'forepeak_tempsensor', arrow_cast(NULL, 'Utf8'))\n) AS s(n, signal, path, tag)\nLEFT JOIN l ON true\nLEFT JOIN m ON m.mqtt_json_path = s.path\nORDER BY s.n"
-                      }
+                        "rawSql": "WITH l AS (\n  SELECT * FROM marpower__210000_bilge_fifi_general\n  WHERE timestamp > now() - INTERVAL '$live_window' \n  ORDER BY timestamp DESC LIMIT 1\n),\nm AS (\n  SELECT mqtt_json_path, max(yard_tag) AS yard_tag FROM public.marpower__io_metadata\n  WHERE mqtt_topic = 'marpower/210000-bilge-fifi-general' GROUP BY mqtt_json_path\n)\nSELECT s.signal AS \"Signal\",\n  coalesce(m.yard_tag, s.tag) AS \"Tag\",\n  CASE s.n\n    WHEN 1 THEN arrow_cast(round(l.press_sensor_fwd_ps_battery__value, 2), 'Utf8')\n    WHEN 2 THEN arrow_cast(round(l.press_sensor_fwd_sb_battery__value, 2), 'Utf8')\n    WHEN 3 THEN arrow_cast(round(l.press_sensor_aft_ps_battery__value, 2), 'Utf8')\n    WHEN 4 THEN arrow_cast(round(l.press_sensor_aft_sb_battery__value, 2), 'Utf8')\n    WHEN 5 THEN arrow_cast(round(l.chain_lock_presssensor__value, 2), 'Utf8')\n    WHEN 6 THEN arrow_cast(round(l.pressure_sensor_210010691__value, 2), 'Utf8')\n    WHEN 7 THEN arrow_cast(round(l.pressure_sensor_210010692__value, 2), 'Utf8')\n    WHEN 8 THEN arrow_cast(round(l.pressure_sensor_210010693__value, 2), 'Utf8')\n    WHEN 9 THEN arrow_cast(round(l.tank_level__value, 2), 'Utf8')\n    WHEN 10 THEN arrow_cast(round(l.forepeak_tempsensor__value, 2), 'Utf8')\n  END AS \"State\",\n  to_unixtime(now()) - to_unixtime(l.timestamp) AS \"Updated\"\nFROM (VALUES\n  (1, 'FWD PS battery pressure [bar]', 'press_sensor_fwd_ps_battery', arrow_cast(NULL, 'Utf8')),\n  (2, 'FWD SB battery pressure [bar]', 'press_sensor_fwd_sb_battery', arrow_cast(NULL, 'Utf8')),\n  (3, 'AFT PS battery pressure [bar]', 'press_sensor_aft_ps_battery', arrow_cast(NULL, 'Utf8')),\n  (4, 'AFT SB battery pressure [bar]', 'press_sensor_aft_sb_battery', arrow_cast(NULL, 'Utf8')),\n  (5, 'Chain locker pressure [bar]', 'chain_lock_presssensor', arrow_cast(NULL, 'Utf8')),\n  (6, '21001069_1 pressure [bar]', 'pressure_sensor_210010691', arrow_cast(NULL, 'Utf8')),\n  (7, '21001069_2 pressure [bar]', 'pressure_sensor_210010692', arrow_cast(NULL, 'Utf8')),\n  (8, '21001069_3 pressure [bar]', 'pressure_sensor_210010693', arrow_cast(NULL, 'Utf8')),\n  (9, 'Tank level [L]', 'tank_level', arrow_cast(NULL, 'Utf8')),\n  (10, 'Forepeak temperature [°C]', 'forepeak_tempsensor', arrow_cast(NULL, 'Utf8'))\n) AS s(n, signal, path, tag)\nLEFT JOIN l ON true\nLEFT JOIN m ON m.mqtt_json_path = s.path\nORDER BY s.n"
+                      },
+                      "version": "v0"
                     },
-                    "refId": "A",
-                    "hidden": false
+                    "refId": "A"
                   }
                 }
               ],
-              "transformations": [],
-              "queryOptions": {}
+              "queryOptions": {},
+              "transformations": []
             }
           },
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest message. Analog values are rounded to 2 decimals; units are in the signal name.",
+          "id": 11,
+          "links": [],
+          "title": "Sensors",
           "vizConfig": {
-            "kind": "VizConfig",
             "group": "table",
-            "version": "13.3.0",
+            "kind": "VizConfig",
             "spec": {
-              "options": {
-                "cellHeight": "sm",
-                "showHeader": true,
-                "footer": {
-                  "show": false
-                }
-              },
               "fieldConfig": {
                 "defaults": {
-                  "mappings": [
-                    {
-                      "type": "value",
-                      "options": {
-                        "Active": {
-                          "index": 0,
-                          "text": "Active",
-                          "color": "red"
-                        },
-                        "Yes": {
-                          "index": 1,
-                          "text": "Yes",
-                          "color": "green"
-                        },
-                        "No": {
-                          "index": 2,
-                          "text": "No",
-                          "color": "text"
-                        }
-                      }
-                    }
-                  ],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "value": null,
-                        "color": "text"
-                      }
-                    ]
-                  },
                   "color": {
                     "mode": "thresholds"
                   },
@@ -1276,7 +255,41 @@
                     "cellOptions": {
                       "type": "auto"
                     },
+                    "footer": {
+                      "reducers": []
+                    },
                     "inspect": false
+                  },
+                  "mappings": [
+                    {
+                      "options": {
+                        "Active": {
+                          "color": "red",
+                          "index": 0,
+                          "text": "Active"
+                        },
+                        "No": {
+                          "color": "text",
+                          "index": 2,
+                          "text": "No"
+                        },
+                        "Yes": {
+                          "color": "green",
+                          "index": 1,
+                          "text": "Yes"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "text",
+                        "value": 0
+                      }
+                    ]
                   }
                 },
                 "overrides": [
@@ -1300,12 +313,12 @@
                           "mode": "absolute",
                           "steps": [
                             {
-                              "value": null,
-                              "color": "text"
+                              "color": "text",
+                              "value": 0
                             },
                             {
-                              "value": 60,
-                              "color": "orange"
+                              "color": "orange",
+                              "value": 60
                             }
                           ]
                         }
@@ -1353,18 +366,23 @@
                     ]
                   }
                 ]
+              },
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "show": false
+                },
+                "showHeader": true,
+                "zebraStriping": false
               }
-            }
-          },
-          "id": 11
+            },
+            "version": "13.3.0"
+          }
         }
       },
       "panel-12": {
         "kind": "Panel",
         "spec": {
-          "title": "Valve positions",
-          "description": "Per valve and time bucket: alarm (any alarm flag), opened, closed, or neither (travelling or no feedback).",
-          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1372,13 +390,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
+                    "hidden": false,
                     "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
                       "datasource": {
                         "name": "${datasource}"
                       },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
                       "spec": {
                         "editorType": "sql",
                         "format": 1,
@@ -1386,18 +404,21 @@
                         "queryType": "table",
                         "rawQuery": true,
                         "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  CASE\n    WHEN topic LIKE '%xv21001010' THEN 'Frame 48 (XV21001010)'\n    WHEN topic LIKE '%xv21001011_1' THEN 'Frame 30 (XV21001011_1)'\n    WHEN topic LIKE '%xv21001011_2' THEN 'Frame 53 (XV21001011_2)'\n    WHEN topic LIKE '%xv21001012_1' THEN 'Frame 38 (XV21001012_1)'\n    WHEN topic LIKE '%xv21001012_2' THEN 'Frame 46 (XV21001012_2)'\n    WHEN topic LIKE '%xv21001012_3' THEN 'Frame 68 (XV21001012_3)'\n    WHEN topic LIKE '%xv21001012_4' THEN 'Frame 48 (XV21001012_4)'\n    WHEN topic LIKE '%xv21001012_5' THEN 'Frame 15 (XV21001012_5)'\n    WHEN topic LIKE '%xv21001013_1' THEN 'Frame 13 (XV21001013_1)'\n    WHEN topic LIKE '%xv21001013_2' THEN 'Frame 13 (XV21001013_2)'\n    ELSE upper(split_part(topic, '/', 3)) END AS valve,\n  max(CASE\n      WHEN alarm__value OR multi_state_alarm__value THEN 3\n      WHEN opened__value THEN 2\n      WHEN closed__value THEN 1\n      ELSE 0 END) AS state\nFROM marpower__210000_bilge_fifi\nWHERE $__timeFilter(timestamp)\nGROUP BY 1, 2 ORDER BY 1, 2"
-                      }
+                      },
+                      "version": "v0"
                     },
-                    "refId": "A",
-                    "hidden": false
+                    "refId": "A"
                   }
                 }
               ],
+              "queryOptions": {
+                "maxDataPoints": 500
+              },
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "valve"
@@ -1409,94 +430,99 @@
                     }
                   }
                 }
-              ],
-              "queryOptions": {
-                "maxDataPoints": 500
-              }
+              ]
             }
           },
+          "description": "Per valve and time bucket: alarm (any alarm flag), opened, closed, or neither (travelling or no feedback).",
+          "id": 12,
+          "links": [],
+          "title": "Valve positions",
           "vizConfig": {
-            "kind": "VizConfig",
             "group": "state-timeline",
-            "version": "13.3.0",
+            "kind": "VizConfig",
             "spec": {
-              "options": {
-                "showValue": "never",
-                "mergeValues": true,
-                "alignValue": "left",
-                "rowHeight": 0.8,
-                "legend": {
-                  "showLegend": true,
-                  "displayMode": "list",
-                  "placement": "bottom"
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none",
-                  "hideZeros": false
-                }
-              },
               "fieldConfig": {
                 "defaults": {
                   "color": {
-                    "mode": "fixed",
-                    "fixedColor": "transparent"
+                    "fixedColor": "transparent",
+                    "mode": "fixed"
                   },
+                  "custom": {
+                    "axisPlacement": "auto",
+                    "fillOpacity": 80,
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineWidth": 0,
+                    "spanNulls": false
+                  },
+                  "displayName": "${__field.labels.valve}",
+                  "mappings": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "yellow",
+                          "index": 3,
+                          "text": "Between / unknown"
+                        },
+                        "1": {
+                          "color": "blue",
+                          "index": 2,
+                          "text": "Closed"
+                        },
+                        "2": {
+                          "color": "green",
+                          "index": 1,
+                          "text": "Opened"
+                        },
+                        "3": {
+                          "color": "red",
+                          "index": 0,
+                          "text": "Alarm"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ],
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
                       {
-                        "value": null,
-                        "color": "transparent"
+                        "color": "transparent",
+                        "value": 0
                       }
                     ]
-                  },
-                  "mappings": [
-                    {
-                      "type": "value",
-                      "options": {
-                        "3": {
-                          "index": 0,
-                          "text": "Alarm",
-                          "color": "red"
-                        },
-                        "2": {
-                          "index": 1,
-                          "text": "Opened",
-                          "color": "green"
-                        },
-                        "1": {
-                          "index": 2,
-                          "text": "Closed",
-                          "color": "blue"
-                        },
-                        "0": {
-                          "index": 3,
-                          "text": "Between / unknown",
-                          "color": "yellow"
-                        }
-                      }
-                    }
-                  ],
-                  "displayName": "${__field.labels.valve}",
-                  "custom": {
-                    "fillOpacity": 80,
-                    "lineWidth": 0
                   }
                 },
                 "overrides": []
+              },
+              "options": {
+                "alignValue": "left",
+                "legend": {
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "mergeValues": true,
+                "rowHeight": 0.8,
+                "showValue": "never",
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
               }
-            }
-          },
-          "id": 12
+            },
+            "version": "13.3.0"
+          }
         }
       },
       "panel-13": {
         "kind": "Panel",
         "spec": {
-          "title": "Valves",
-          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest message. Every valve published in the IO metadata is listed; its values are empty when it published nothing in the live window.",
-          "links": [],
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -1504,13 +530,13 @@
                 {
                   "kind": "PanelQuery",
                   "spec": {
+                    "hidden": false,
                     "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
                       "datasource": {
                         "name": "${datasource}"
                       },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
                       "spec": {
                         "editorType": "sql",
                         "format": 1,
@@ -1518,18 +544,19 @@
                         "queryType": "table",
                         "rawQuery": true,
                         "rawSql": "WITH d AS (\n  SELECT DISTINCT mqtt_topic AS topic FROM public.marpower__io_metadata\n  WHERE mqtt_topic LIKE 'marpower/210000-bilge-fifi/%'\n),\nf AS (\n  SELECT topic,\n    last_value(alarm__value ORDER BY timestamp) AS alarm,\n    last_value(close__value ORDER BY timestamp) AS close,\n    last_value(closed__value ORDER BY timestamp) AS closed,\n    last_value(hmi_cmd_close__value ORDER BY timestamp) AS hmi_cmd_close,\n    last_value(hmi_cmd_open__value ORDER BY timestamp) AS hmi_cmd_open,\n    last_value(hmi_control_available__value ORDER BY timestamp) AS hmi_control_available,\n    last_value(open__value ORDER BY timestamp) AS open,\n    last_value(opened__value ORDER BY timestamp) AS opened,\n    last_value(should_be_open__value ORDER BY timestamp) AS should_be_open,\n    last_value(multi_state_alarm__value ORDER BY timestamp) AS multi_state_alarm,\n    last_value(power_detected__value ORDER BY timestamp) AS power_detected,\n    max(timestamp) AS ts\n  FROM marpower__210000_bilge_fifi\n  WHERE timestamp > now() - INTERVAL '$live_window'\n  GROUP BY topic\n)\nSELECT d.topic AS topic,\n  f.alarm AS alarm,\n  f.close AS close,\n  f.closed AS closed,\n  f.hmi_cmd_close AS hmi_cmd_close,\n  f.hmi_cmd_open AS hmi_cmd_open,\n  f.hmi_control_available AS hmi_control_available,\n  f.open AS open,\n  f.opened AS opened,\n  f.should_be_open AS should_be_open,\n  f.multi_state_alarm AS multi_state_alarm,\n  f.power_detected AS power_detected,\n  to_unixtime(now()) - to_unixtime(f.ts) AS \"Updated\"\nFROM d\nLEFT JOIN f ON f.topic = d.topic\nORDER BY d.topic"
-                      }
+                      },
+                      "version": "v0"
                     },
-                    "refId": "A",
-                    "hidden": false
+                    "refId": "A"
                   }
                 }
               ],
+              "queryOptions": {},
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -1553,29 +580,17 @@
                     }
                   }
                 }
-              ],
-              "queryOptions": {}
+              ]
             }
           },
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest message. Every valve published in the IO metadata is listed; its values are empty when it published nothing in the live window.",
+          "id": 13,
+          "links": [],
+          "title": "Valves",
           "vizConfig": {
-            "kind": "VizConfig",
             "group": "table",
-            "version": "13.3.0",
+            "kind": "VizConfig",
             "spec": {
-              "options": {
-                "cellHeight": "sm",
-                "enablePagination": false,
-                "frozenColumns": {
-                  "left": 1
-                },
-                "showHeader": true,
-                "sortBy": [
-                  {
-                    "desc": true,
-                    "displayName": "Name"
-                  }
-                ]
-              },
               "fieldConfig": {
                 "defaults": {
                   "color": {
@@ -1716,15 +731,15 @@
                       "type": "regex"
                     },
                     {
-                      "type": "special",
                       "options": {
                         "match": "null",
                         "result": {
+                          "color": "#5a5a5a",
                           "index": 99,
-                          "text": "–",
-                          "color": "#5a5a5a"
+                          "text": "–"
                         }
-                      }
+                      },
+                      "type": "special"
                     }
                   ],
                   "thresholds": {
@@ -1800,12 +815,11 @@
                           "mode": "absolute",
                           "steps": [
                             {
-                              "value": null,
                               "color": "text"
                             },
                             {
-                              "value": 60,
-                              "color": "orange"
+                              "color": "orange",
+                              "value": 60
                             }
                           ]
                         }
@@ -1823,10 +837,1124 @@
                     ]
                   }
                 ]
+              },
+              "options": {
+                "cellHeight": "sm",
+                "enablePagination": false,
+                "frozenColumns": {
+                  "left": 1
+                },
+                "showHeader": true,
+                "sortBy": [
+                  {
+                    "desc": true,
+                    "displayName": "Name"
+                  }
+                ]
               }
+            },
+            "version": "13.3.0"
+          }
+        }
+      },
+      "panel-2": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  max(level_sub_pump_1_alarm__value) AS \"Subm. pump 1\",\n  max(level_sub_pump_2_alarm__value) AS \"Subm. pump 2\",\n  max(level_sub_pump_3_alarm__value) AS \"Subm. pump 3\",\n  max(batt_comp_5_alarm__value) AS \"Battery comp 5\",\n  max(batt_comp_6_alarm__value) AS \"Battery comp 6\",\n  max(frame_13_alarm__value) AS \"Frame 13\",\n  max(frame_15_alarm__value) AS \"Frame 15\",\n  max(frame_30_alarm__value) AS \"Frame 30\",\n  max(frame_38_alarm__value) AS \"Frame 38\",\n  max(frame_38_ps_alarm__value) AS \"Frame 38 PS\",\n  max(frame_38_sb_alarm__value) AS \"Frame 38 SB\",\n  max(frame_46_alarm__value) AS \"Frame 46\",\n  max(frame_47_sb_alarm__value) AS \"Frame 47 SB\",\n  max(frame_48_alarm__value) AS \"Frame 48\",\n  max(frame_53_alarm__value) AS \"Frame 53\",\n  max(frame_68_alarm__value) AS \"Frame 68\",\n  max(water_separator_ppm_alarm__value) AS \"Water separator PPM\"\nFROM marpower__210000_bilge_fifi_general\nWHERE $__timeFilter(timestamp) \nGROUP BY 1 ORDER BY 1"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
+              "transformations": []
             }
           },
-          "id": 13
+          "description": "Per time bucket: true when the signal was true at any moment in that bucket.",
+          "id": 2,
+          "links": [],
+          "title": "Alarms",
+          "vizConfig": {
+            "group": "state-timeline",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "axisPlacement": "auto",
+                    "fillOpacity": 80,
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineWidth": 0,
+                    "spanNulls": false
+                  },
+                  "mappings": [
+                    {
+                      "options": {
+                        "false": {
+                          "color": "transparent",
+                          "index": 1,
+                          "text": "No"
+                        },
+                        "true": {
+                          "color": "red",
+                          "index": 0,
+                          "text": "Yes"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "transparent",
+                        "value": 0
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "alignValue": "left",
+                "legend": {
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "mergeValues": true,
+                "rowHeight": 0.8,
+                "showValue": "never",
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              }
+            },
+            "version": "13.3.0"
+          }
+        }
+      },
+      "panel-3": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "WITH l AS (\n  SELECT * FROM marpower__210000_bilge_fifi_general\n  WHERE timestamp > now() - INTERVAL '$live_window' \n  ORDER BY timestamp DESC LIMIT 1\n),\nm AS (\n  SELECT mqtt_json_path, max(yard_tag) AS yard_tag FROM public.marpower__io_metadata\n  WHERE mqtt_topic = 'marpower/210000-bilge-fifi-general' GROUP BY mqtt_json_path\n)\nSELECT s.signal AS \"Signal\",\n  coalesce(m.yard_tag, s.tag) AS \"Tag\",\n  CASE s.n\n    WHEN 1 THEN CASE l.level_sub_pump_1_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 2 THEN CASE l.level_sub_pump_2_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 3 THEN CASE l.level_sub_pump_3_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 4 THEN CASE l.batt_comp_5_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 5 THEN CASE l.batt_comp_6_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 6 THEN CASE l.frame_13_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 7 THEN CASE l.frame_15_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 8 THEN CASE l.frame_30_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 9 THEN CASE l.frame_38_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 10 THEN CASE l.frame_38_ps_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 11 THEN CASE l.frame_38_sb_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 12 THEN CASE l.frame_46_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 13 THEN CASE l.frame_47_sb_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 14 THEN CASE l.frame_48_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 15 THEN CASE l.frame_53_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 16 THEN CASE l.frame_68_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n    WHEN 17 THEN CASE l.water_separator_ppm_alarm__value WHEN true THEN 'Active' WHEN false THEN 'No' END\n  END AS \"State\",\n  to_unixtime(now()) - to_unixtime(l.timestamp) AS \"Updated\"\nFROM (VALUES\n  (1, 'Subm. pump 1', 'level_sub_pump1_alarm', arrow_cast(NULL, 'Utf8')),\n  (2, 'Subm. pump 2', 'level_sub_pump2_alarm', arrow_cast(NULL, 'Utf8')),\n  (3, 'Subm. pump 3', 'level_sub_pump3_alarm', arrow_cast(NULL, 'Utf8')),\n  (4, 'Battery comp 5', 'batt_comp_5_alarm', arrow_cast(NULL, 'Utf8')),\n  (5, 'Battery comp 6', 'batt_comp_6_alarm', arrow_cast(NULL, 'Utf8')),\n  (6, 'Frame 13', 'frame13_alarm', arrow_cast(NULL, 'Utf8')),\n  (7, 'Frame 15', 'frame15_alarm', arrow_cast(NULL, 'Utf8')),\n  (8, 'Frame 30', 'frame30_alarm', arrow_cast(NULL, 'Utf8')),\n  (9, 'Frame 38', 'frame38_alarm', arrow_cast(NULL, 'Utf8')),\n  (10, 'Frame 38 PS', 'frame38ps_alarm', arrow_cast(NULL, 'Utf8')),\n  (11, 'Frame 38 SB', 'frame38sb_alarm', arrow_cast(NULL, 'Utf8')),\n  (12, 'Frame 46', 'frame46_alarm', arrow_cast(NULL, 'Utf8')),\n  (13, 'Frame 47 SB', 'frame47sb_alarm', arrow_cast(NULL, 'Utf8')),\n  (14, 'Frame 48', 'frame48_alarm', arrow_cast(NULL, 'Utf8')),\n  (15, 'Frame 53', 'frame53_alarm', arrow_cast(NULL, 'Utf8')),\n  (16, 'Frame 68', 'frame68_alarm', arrow_cast(NULL, 'Utf8')),\n  (17, 'Water separator PPM', 'water_separator_ppm_alarm', arrow_cast(NULL, 'Utf8'))\n) AS s(n, signal, path, tag)\nLEFT JOIN l ON true\nLEFT JOIN m ON m.mqtt_json_path = s.path\nORDER BY s.n"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest message.",
+          "id": 3,
+          "links": [],
+          "title": "Alarms",
+          "vizConfig": {
+            "group": "table",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "footer": {
+                      "reducers": []
+                    },
+                    "inspect": false
+                  },
+                  "mappings": [
+                    {
+                      "options": {
+                        "Active": {
+                          "color": "red",
+                          "index": 0,
+                          "text": "Active"
+                        },
+                        "No": {
+                          "color": "text",
+                          "index": 2,
+                          "text": "No"
+                        },
+                        "Yes": {
+                          "color": "green",
+                          "index": 1,
+                          "text": "Yes"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "text",
+                        "value": 0
+                      }
+                    ]
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Updated"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "color": "text",
+                              "value": 0
+                            },
+                            {
+                              "color": "orange",
+                              "value": 60
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "State"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Tag"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 150
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "show": false
+                },
+                "showHeader": true,
+                "zebraStriping": false
+              }
+            },
+            "version": "13.3.0"
+          }
+        }
+      },
+      "panel-4": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  max(submers_pump_1_remavail__value) AS \"Submersible pump 1 - Remote avail.\",\n  max(submers_pump_1_running__value) AS \"Submersible pump 1 - Running\",\n  max(submers_pump_2_remavail__value) AS \"Submersible pump 2 - Remote avail.\",\n  max(submers_pump_2_running__value) AS \"Submersible pump 2 - Running\",\n  max(submers_pump_3_remavail__value) AS \"Submersible pump 3 - Remote avail.\",\n  max(submers_pump_3_running__value) AS \"Submersible pump 3 - Running\",\n  max(bckup_gen_serv_pump_remavail__value) AS \"Backup gen. serv. pump - Remote avail.\",\n  max(gen_serv_pump_1_remavail__value) AS \"Gen. serv. pump 1 - Remote avail.\",\n  max(gen_serv_pump_2_remavail__value) AS \"Gen. serv. pump 2 - Remote avail.\",\n  max(gen_serv_pump_2_field_start__value) AS \"Gen. serv. pump 2 - Field start\",\n  max(gen_serv_pump_2_field_stop__value) AS \"Gen. serv. pump 2 - Field stop\",\n  max(strip_pump_remavail__value) AS \"Stripping pump - Remote avail.\",\n  max(strip_pump_running__value) AS \"Stripping pump - Running\",\n  max(chain_lock_pump_remavail__value) AS \"Chain locker pump - Remote avail.\",\n  max(chain_lock_pump_running__value) AS \"Chain locker pump - Running\"\nFROM marpower__210000_bilge_fifi_general\nWHERE $__timeFilter(timestamp) \nGROUP BY 1 ORDER BY 1"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
+              "transformations": []
+            }
+          },
+          "description": "Per time bucket: true when the signal was true at any moment in that bucket.",
+          "id": 4,
+          "links": [],
+          "title": "Status",
+          "vizConfig": {
+            "group": "state-timeline",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "axisPlacement": "auto",
+                    "fillOpacity": 80,
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineWidth": 0,
+                    "spanNulls": false
+                  },
+                  "mappings": [
+                    {
+                      "options": {
+                        "false": {
+                          "color": "transparent",
+                          "index": 1,
+                          "text": "No"
+                        },
+                        "true": {
+                          "color": "green",
+                          "index": 0,
+                          "text": "Yes"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "transparent",
+                        "value": 0
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "alignValue": "left",
+                "legend": {
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "mergeValues": true,
+                "rowHeight": 0.8,
+                "showValue": "never",
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              }
+            },
+            "version": "13.3.0"
+          }
+        }
+      },
+      "panel-5": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "WITH l AS (\n  SELECT * FROM marpower__210000_bilge_fifi_general\n  WHERE timestamp > now() - INTERVAL '$live_window' \n  ORDER BY timestamp DESC LIMIT 1\n),\nm AS (\n  SELECT mqtt_json_path, max(yard_tag) AS yard_tag FROM public.marpower__io_metadata\n  WHERE mqtt_topic = 'marpower/210000-bilge-fifi-general' GROUP BY mqtt_json_path\n)\nSELECT s.signal AS \"Signal\",\n  coalesce(m.yard_tag, s.tag) AS \"Tag\",\n  CASE s.n\n    WHEN 1 THEN CASE l.submers_pump_1_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 2 THEN CASE l.submers_pump_1_running__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 3 THEN CASE l.submers_pump_2_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 4 THEN CASE l.submers_pump_2_running__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 5 THEN CASE l.submers_pump_3_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 6 THEN CASE l.submers_pump_3_running__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 7 THEN CASE l.bckup_gen_serv_pump_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 8 THEN CASE l.gen_serv_pump_1_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 9 THEN CASE l.gen_serv_pump_2_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 10 THEN CASE l.gen_serv_pump_2_field_start__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 11 THEN CASE l.gen_serv_pump_2_field_stop__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 12 THEN CASE l.strip_pump_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 13 THEN CASE l.strip_pump_running__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 14 THEN CASE l.chain_lock_pump_remavail__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 15 THEN CASE l.chain_lock_pump_running__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n  END AS \"State\",\n  to_unixtime(now()) - to_unixtime(l.timestamp) AS \"Updated\"\nFROM (VALUES\n  (1, 'Submersible pump 1 - Remote avail.', 'submers_pump1_remavail', arrow_cast(NULL, 'Utf8')),\n  (2, 'Submersible pump 1 - Running', 'submers_pump1_running', arrow_cast(NULL, 'Utf8')),\n  (3, 'Submersible pump 2 - Remote avail.', 'submers_pump2_remavail', arrow_cast(NULL, 'Utf8')),\n  (4, 'Submersible pump 2 - Running', 'submers_pump2_running', arrow_cast(NULL, 'Utf8')),\n  (5, 'Submersible pump 3 - Remote avail.', 'submers_pump3_remavail', arrow_cast(NULL, 'Utf8')),\n  (6, 'Submersible pump 3 - Running', 'submers_pump3_running', arrow_cast(NULL, 'Utf8')),\n  (7, 'Backup gen. serv. pump - Remote avail.', 'bckup_gen_serv_pump_remavail', arrow_cast(NULL, 'Utf8')),\n  (8, 'Gen. serv. pump 1 - Remote avail.', 'gen_serv_pump1_remavail', arrow_cast(NULL, 'Utf8')),\n  (9, 'Gen. serv. pump 2 - Remote avail.', 'gen_serv_pump2_remavail', arrow_cast(NULL, 'Utf8')),\n  (10, 'Gen. serv. pump 2 - Field start', 'gen_serv_pump2_field_start', arrow_cast(NULL, 'Utf8')),\n  (11, 'Gen. serv. pump 2 - Field stop', 'gen_serv_pump2_field_stop', arrow_cast(NULL, 'Utf8')),\n  (12, 'Stripping pump - Remote avail.', 'strip_pump_remavail', arrow_cast(NULL, 'Utf8')),\n  (13, 'Stripping pump - Running', 'strip_pump_running', arrow_cast(NULL, 'Utf8')),\n  (14, 'Chain locker pump - Remote avail.', 'chain_lock_pump_remavail', arrow_cast(NULL, 'Utf8')),\n  (15, 'Chain locker pump - Running', 'chain_lock_pump_running', arrow_cast(NULL, 'Utf8'))\n) AS s(n, signal, path, tag)\nLEFT JOIN l ON true\nLEFT JOIN m ON m.mqtt_json_path = s.path\nORDER BY s.n"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest message.",
+          "id": 5,
+          "links": [],
+          "title": "Status",
+          "vizConfig": {
+            "group": "table",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "footer": {
+                      "reducers": []
+                    },
+                    "inspect": false
+                  },
+                  "mappings": [
+                    {
+                      "options": {
+                        "Active": {
+                          "color": "red",
+                          "index": 0,
+                          "text": "Active"
+                        },
+                        "No": {
+                          "color": "text",
+                          "index": 2,
+                          "text": "No"
+                        },
+                        "Yes": {
+                          "color": "green",
+                          "index": 1,
+                          "text": "Yes"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "text",
+                        "value": 0
+                      }
+                    ]
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Updated"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "color": "text",
+                              "value": 0
+                            },
+                            {
+                              "color": "orange",
+                              "value": 60
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "State"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Tag"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 150
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "show": false
+                },
+                "showHeader": true,
+                "zebraStriping": false
+              }
+            },
+            "version": "13.3.0"
+          }
+        }
+      },
+      "panel-6": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  max(submers_pump_1_startstop__value) AS \"Submersible pump 1 - Start\",\n  max(submers_pump_2_startstop__value) AS \"Submersible pump 2 - Start\",\n  max(submers_pump_3_startstop__value) AS \"Submersible pump 3 - Start\",\n  max(strip_pump_startstop__value) AS \"Stripping pump - Start\",\n  max(chain_lock_pump_startstop__value) AS \"Chain locker pump - Start\",\n  max(separator_start__value) AS \"Separator - Start\",\n  max(gen_serv_pump_1_fdbck_fault__value) AS \"Gen. serv. pump 1 - Fault feedback\"\nFROM marpower__210000_bilge_fifi_general\nWHERE $__timeFilter(timestamp) \nGROUP BY 1 ORDER BY 1"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
+              "transformations": []
+            }
+          },
+          "description": "Per time bucket: true when the signal was true at any moment in that bucket.",
+          "id": 6,
+          "links": [],
+          "title": "Control signals",
+          "vizConfig": {
+            "group": "state-timeline",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "axisPlacement": "auto",
+                    "fillOpacity": 80,
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineWidth": 0,
+                    "spanNulls": false
+                  },
+                  "mappings": [
+                    {
+                      "options": {
+                        "false": {
+                          "color": "transparent",
+                          "index": 1,
+                          "text": "No"
+                        },
+                        "true": {
+                          "color": "blue",
+                          "index": 0,
+                          "text": "Yes"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "transparent",
+                        "value": 0
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "options": {
+                "alignValue": "left",
+                "legend": {
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": false
+                },
+                "mergeValues": true,
+                "rowHeight": 0.8,
+                "showValue": "never",
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              }
+            },
+            "version": "13.3.0"
+          }
+        }
+      },
+      "panel-7": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "WITH l AS (\n  SELECT * FROM marpower__210000_bilge_fifi_general\n  WHERE timestamp > now() - INTERVAL '$live_window' \n  ORDER BY timestamp DESC LIMIT 1\n),\nm AS (\n  SELECT mqtt_json_path, max(yard_tag) AS yard_tag FROM public.marpower__io_metadata\n  WHERE mqtt_topic = 'marpower/210000-bilge-fifi-general' GROUP BY mqtt_json_path\n)\nSELECT s.signal AS \"Signal\",\n  coalesce(m.yard_tag, s.tag) AS \"Tag\",\n  CASE s.n\n    WHEN 1 THEN CASE l.submers_pump_1_startstop__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 2 THEN CASE l.submers_pump_2_startstop__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 3 THEN CASE l.submers_pump_3_startstop__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 4 THEN CASE l.strip_pump_startstop__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 5 THEN CASE l.chain_lock_pump_startstop__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 6 THEN CASE l.separator_start__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n    WHEN 7 THEN CASE l.gen_serv_pump_1_fdbck_fault__value WHEN true THEN 'Yes' WHEN false THEN 'No' END\n  END AS \"State\",\n  to_unixtime(now()) - to_unixtime(l.timestamp) AS \"Updated\"\nFROM (VALUES\n  (1, 'Submersible pump 1 - Start', 'submers_pump1_startstop', arrow_cast(NULL, 'Utf8')),\n  (2, 'Submersible pump 2 - Start', 'submers_pump2_startstop', arrow_cast(NULL, 'Utf8')),\n  (3, 'Submersible pump 3 - Start', 'submers_pump3_startstop', arrow_cast(NULL, 'Utf8')),\n  (4, 'Stripping pump - Start', 'strip_pump_startstop', arrow_cast(NULL, 'Utf8')),\n  (5, 'Chain locker pump - Start', 'chain_lock_pump_startstop', arrow_cast(NULL, 'Utf8')),\n  (6, 'Separator - Start', 'separator_start', arrow_cast(NULL, 'Utf8')),\n  (7, 'Gen. serv. pump 1 - Fault feedback', 'gen_serv_pump1_fdbck_fault', arrow_cast(NULL, 'Utf8'))\n) AS s(n, signal, path, tag)\nLEFT JOIN l ON true\nLEFT JOIN m ON m.mqtt_json_path = s.path\nORDER BY s.n"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest message.",
+          "id": 7,
+          "links": [],
+          "title": "Control signals",
+          "vizConfig": {
+            "group": "table",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "custom": {
+                    "align": "auto",
+                    "cellOptions": {
+                      "type": "auto"
+                    },
+                    "footer": {
+                      "reducers": []
+                    },
+                    "inspect": false
+                  },
+                  "mappings": [
+                    {
+                      "options": {
+                        "Active": {
+                          "color": "red",
+                          "index": 0,
+                          "text": "Active"
+                        },
+                        "No": {
+                          "color": "text",
+                          "index": 2,
+                          "text": "No"
+                        },
+                        "Yes": {
+                          "color": "blue",
+                          "index": 1,
+                          "text": "Yes"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "text",
+                        "value": 0
+                      }
+                    ]
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Updated"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "suffix: sec ago"
+                      },
+                      {
+                        "id": "decimals",
+                        "value": 0
+                      },
+                      {
+                        "id": "thresholds",
+                        "value": {
+                          "mode": "absolute",
+                          "steps": [
+                            {
+                              "color": "text",
+                              "value": 0
+                            },
+                            {
+                              "color": "orange",
+                              "value": 60
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "State"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.cellOptions",
+                        "value": {
+                          "type": "color-text"
+                        }
+                      },
+                      {
+                        "id": "custom.width",
+                        "value": 110
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Tag"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 150
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "cellHeight": "sm",
+                "footer": {
+                  "show": false
+                },
+                "showHeader": true,
+                "zebraStriping": false
+              }
+            },
+            "version": "13.3.0"
+          }
+        }
+      },
+      "panel-8": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(press_sensor_fwd_ps_battery__value) AS \"FWD PS battery pressure [bar]\",\n  avg(press_sensor_fwd_sb_battery__value) AS \"FWD SB battery pressure [bar]\",\n  avg(press_sensor_aft_ps_battery__value) AS \"AFT PS battery pressure [bar]\",\n  avg(press_sensor_aft_sb_battery__value) AS \"AFT SB battery pressure [bar]\",\n  avg(chain_lock_presssensor__value) AS \"Chain locker pressure [bar]\",\n  avg(pressure_sensor_210010691__value) AS \"21001069_1 pressure [bar]\",\n  avg(pressure_sensor_210010692__value) AS \"21001069_2 pressure [bar]\",\n  avg(pressure_sensor_210010693__value) AS \"21001069_3 pressure [bar]\"\nFROM marpower__210000_bilge_fifi_general\nWHERE $__timeFilter(timestamp) \nGROUP BY 1 ORDER BY 1"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 8,
+          "links": [],
+          "title": "Pressure",
+          "vizConfig": {
+            "group": "timeseries",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": 60000,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": 0
+                      }
+                    ]
+                  },
+                  "unit": "pressurebar"
+                },
+                "overrides": []
+              },
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              }
+            },
+            "version": "13.3.0"
+          }
+        }
+      },
+      "panel-9": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(tank_level__value) AS \"Tank level [mA]\"\nFROM marpower__210000_bilge_fifi_general\nWHERE $__timeFilter(timestamp) \nGROUP BY 1 ORDER BY 1"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {
+                "maxDataPoints": 1000
+              },
+              "transformations": []
+            }
+          },
+          "description": "",
+          "id": 9,
+          "links": [],
+          "title": "Tank level",
+          "vizConfig": {
+            "group": "timeseries",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": 60000,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": 0
+                      }
+                    ]
+                  },
+                  "unit": "L"
+                },
+                "overrides": []
+              },
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              }
+            },
+            "version": "13.3.0"
+          }
         }
       }
     },
@@ -1837,8 +1965,8 @@
           {
             "kind": "RowsLayoutRow",
             "spec": {
-              "title": "",
               "collapse": false,
+              "hideHeader": true,
               "layout": {
                 "kind": "GridLayout",
                 "spec": {
@@ -1846,26 +1974,25 @@
                     {
                       "kind": "GridLayoutItem",
                       "spec": {
-                        "x": 0,
-                        "y": 0,
-                        "width": 24,
-                        "height": 2,
                         "element": {
                           "kind": "ElementReference",
                           "name": "panel-1"
-                        }
+                        },
+                        "height": 2,
+                        "width": 24,
+                        "x": 0,
+                        "y": 0
                       }
                     }
                   ]
                 }
               },
-              "hideHeader": true
+              "title": ""
             }
           },
           {
             "kind": "RowsLayoutRow",
             "spec": {
-              "title": "General",
               "collapse": false,
               "layout": {
                 "kind": "TabsLayout",
@@ -1874,7 +2001,6 @@
                     {
                       "kind": "TabsLayoutTab",
                       "spec": {
-                        "title": "Trends",
                         "layout": {
                           "kind": "GridLayout",
                           "spec": {
@@ -1882,90 +2008,90 @@
                               {
                                 "kind": "GridLayoutItem",
                                 "spec": {
-                                  "x": 0,
-                                  "y": 0,
-                                  "width": 24,
-                                  "height": 18,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-2"
-                                  }
+                                  },
+                                  "height": 18,
+                                  "width": 24,
+                                  "x": 0,
+                                  "y": 0
                                 }
                               },
                               {
                                 "kind": "GridLayoutItem",
                                 "spec": {
-                                  "x": 0,
-                                  "y": 18,
-                                  "width": 24,
-                                  "height": 17,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-4"
-                                  }
+                                  },
+                                  "height": 17,
+                                  "width": 24,
+                                  "x": 0,
+                                  "y": 18
                                 }
                               },
                               {
                                 "kind": "GridLayoutItem",
                                 "spec": {
-                                  "x": 0,
-                                  "y": 35,
-                                  "width": 24,
-                                  "height": 9,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-6"
-                                  }
+                                  },
+                                  "height": 9,
+                                  "width": 24,
+                                  "x": 0,
+                                  "y": 35
                                 }
                               },
                               {
                                 "kind": "GridLayoutItem",
                                 "spec": {
-                                  "x": 0,
-                                  "y": 44,
-                                  "width": 12,
-                                  "height": 8,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-8"
-                                  }
+                                  },
+                                  "height": 9,
+                                  "width": 24,
+                                  "x": 0,
+                                  "y": 44
                                 }
                               },
                               {
                                 "kind": "GridLayoutItem",
                                 "spec": {
-                                  "x": 12,
-                                  "y": 44,
-                                  "width": 12,
-                                  "height": 8,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-9"
-                                  }
+                                  },
+                                  "height": 9,
+                                  "width": 24,
+                                  "x": 0,
+                                  "y": 53
                                 }
                               },
                               {
                                 "kind": "GridLayoutItem",
                                 "spec": {
-                                  "x": 0,
-                                  "y": 52,
-                                  "width": 12,
-                                  "height": 8,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-10"
-                                  }
+                                  },
+                                  "height": 8,
+                                  "width": 24,
+                                  "x": 0,
+                                  "y": 62
                                 }
                               }
                             ]
                           }
-                        }
+                        },
+                        "title": "Trends"
                       }
                     },
                     {
                       "kind": "TabsLayoutTab",
                       "spec": {
-                        "title": "Live",
                         "layout": {
                           "kind": "GridLayout",
                           "spec": {
@@ -1973,69 +2099,70 @@
                               {
                                 "kind": "GridLayoutItem",
                                 "spec": {
-                                  "x": 0,
-                                  "y": 0,
-                                  "width": 12,
-                                  "height": 19,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-3"
-                                  }
+                                  },
+                                  "height": 19,
+                                  "width": 12,
+                                  "x": 0,
+                                  "y": 0
                                 }
                               },
                               {
                                 "kind": "GridLayoutItem",
                                 "spec": {
-                                  "x": 12,
-                                  "y": 0,
-                                  "width": 12,
-                                  "height": 17,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-5"
-                                  }
-                                }
-                              },
-                              {
-                                "kind": "GridLayoutItem",
-                                "spec": {
-                                  "x": 0,
-                                  "y": 19,
+                                  },
+                                  "height": 17,
                                   "width": 12,
-                                  "height": 10,
-                                  "element": {
-                                    "kind": "ElementReference",
-                                    "name": "panel-7"
-                                  }
-                                }
-                              },
-                              {
-                                "kind": "GridLayoutItem",
-                                "spec": {
                                   "x": 12,
-                                  "y": 19,
-                                  "width": 12,
-                                  "height": 13,
+                                  "y": 0
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-11"
-                                  }
+                                  },
+                                  "height": 13,
+                                  "width": 12,
+                                  "x": 12,
+                                  "y": 17
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-7"
+                                  },
+                                  "height": 10,
+                                  "width": 12,
+                                  "x": 0,
+                                  "y": 19
                                 }
                               }
                             ]
                           }
-                        }
+                        },
+                        "title": "Live"
                       }
                     }
                   ]
                 }
-              }
+              },
+              "title": "General"
             }
           },
           {
             "kind": "RowsLayoutRow",
             "spec": {
-              "title": "Valves",
               "collapse": false,
               "layout": {
                 "kind": "TabsLayout",
@@ -2044,7 +2171,6 @@
                     {
                       "kind": "TabsLayoutTab",
                       "spec": {
-                        "title": "Trends",
                         "layout": {
                           "kind": "GridLayout",
                           "spec": {
@@ -2052,25 +2178,25 @@
                               {
                                 "kind": "GridLayoutItem",
                                 "spec": {
-                                  "x": 0,
-                                  "y": 0,
-                                  "width": 24,
-                                  "height": 12,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-12"
-                                  }
+                                  },
+                                  "height": 12,
+                                  "width": 24,
+                                  "x": 0,
+                                  "y": 0
                                 }
                               }
                             ]
                           }
-                        }
+                        },
+                        "title": "Trends"
                       }
                     },
                     {
                       "kind": "TabsLayoutTab",
                       "spec": {
-                        "title": "Live",
                         "layout": {
                           "kind": "GridLayout",
                           "spec": {
@@ -2078,24 +2204,26 @@
                               {
                                 "kind": "GridLayoutItem",
                                 "spec": {
-                                  "x": 0,
-                                  "y": 0,
-                                  "width": 24,
-                                  "height": 13,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-13"
-                                  }
+                                  },
+                                  "height": 13,
+                                  "width": 24,
+                                  "x": 0,
+                                  "y": 0
                                 }
                               }
                             ]
                           }
-                        }
+                        },
+                        "title": "Live"
                       }
                     }
                   ]
                 }
-              }
+              },
+              "title": "Valves"
             }
           }
         ]
@@ -2103,18 +2231,18 @@
     },
     "links": [
       {
-        "title": "Dashboards",
-        "type": "dashboards",
+        "asDropdown": true,
         "icon": "external link",
-        "tooltip": "",
-        "url": "",
+        "includeVars": false,
+        "keepTime": true,
         "tags": [
           "commissioning"
         ],
-        "asDropdown": true,
         "targetBlank": false,
-        "includeVars": false,
-        "keepTime": true
+        "title": "Dashboards",
+        "tooltip": "",
+        "type": "dashboards",
+        "url": ""
       }
     ],
     "liveNow": false,
@@ -2123,9 +2251,6 @@
       "commissioning"
     ],
     "timeSettings": {
-      "timezone": "browser",
-      "from": "now-1h",
-      "to": "now",
       "autoRefresh": "5s",
       "autoRefreshIntervals": [
         "5s",
@@ -2139,42 +2264,45 @@
         "2h",
         "1d"
       ],
+      "fiscalYearStartMonth": 0,
+      "from": "now-1h",
       "hideTimepicker": false,
-      "fiscalYearStartMonth": 0
+      "timezone": "browser",
+      "to": "now"
     },
     "title": "Bilge/Fifi",
     "variables": [
       {
         "kind": "DatasourceVariable",
         "spec": {
-          "name": "datasource",
-          "pluginId": "info8fcc-greptimedb-datasource",
-          "refresh": "onDashboardLoad",
-          "regex": "",
+          "allowCustomValue": true,
           "current": {
             "text": "greptimedb-zero",
             "value": "PBAD09CF7391C3C43"
           },
-          "options": [],
-          "multi": false,
-          "includeAll": false,
           "hide": "dontHide",
-          "skipUrlSync": false,
-          "allowCustomValue": true
+          "includeAll": false,
+          "multi": false,
+          "name": "datasource",
+          "options": [],
+          "pluginId": "info8fcc-greptimedb-datasource",
+          "refresh": "onDashboardLoad",
+          "regex": "",
+          "skipUrlSync": false
         }
       },
       {
         "kind": "ConstantVariable",
         "spec": {
-          "name": "live_window",
-          "query": "5 minutes",
           "current": {
             "text": "5 minutes",
             "value": "5 minutes"
           },
+          "description": "How far back the Live tabs look for the latest message, independent of the time picker. The Live tables' no-data text ('No data in the last 5 minutes') repeats this value.",
           "hide": "hideVariable",
-          "skipUrlSync": true,
-          "description": "How far back the Live tabs look for the latest message, independent of the time picker. The Live tables' no-data text ('No data in the last 5 minutes') repeats this value."
+          "name": "live_window",
+          "query": "5 minutes",
+          "skipUrlSync": true
         }
       }
     ]
