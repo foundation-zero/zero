@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v2beta1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "commissioning-pms"
@@ -101,9 +101,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -326,9 +326,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -783,9 +783,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -1054,9 +1054,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -1664,9 +1664,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -1958,9 +1958,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -2182,9 +2182,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -2406,9 +2406,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -2630,9 +2630,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -2854,9 +2854,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -3078,9 +3078,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -3560,9 +3560,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -3841,9 +3841,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -4076,9 +4076,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -4254,9 +4254,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -4392,9 +4392,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -4530,9 +4530,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -4668,9 +4668,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -4806,9 +4806,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -4944,9 +4944,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -5059,9 +5059,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -5174,9 +5174,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -5289,9 +5289,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -5404,9 +5404,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -5519,9 +5519,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -5635,9 +5635,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -5774,9 +5774,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -5913,9 +5913,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -6029,9 +6029,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -6170,9 +6170,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -6311,9 +6311,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -6426,9 +6426,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -6587,9 +6587,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -6801,9 +6801,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -7912,9 +7912,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -8137,9 +8137,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -8408,9 +8408,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -8685,9 +8685,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -9548,9 +9548,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -9739,9 +9739,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -9930,9 +9930,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -10121,9 +10121,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -10312,9 +10312,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -10503,9 +10503,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
@@ -10867,9 +10867,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "^(.*) Result \\d+$",
                       "renamePattern": "$1"
