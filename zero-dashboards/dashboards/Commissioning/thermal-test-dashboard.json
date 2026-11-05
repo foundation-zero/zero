@@ -105,7 +105,7 @@
                         },
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
-                        "rawSql": "SELECT\r\n  timestamp            AS time,\r\n  watt_ac_compressor_1 AS watt_compressor_1,\r\n  watt_ac_compressor_2 AS watt_compressor_2,\r\n  watt_sea_water_pump  AS watt_sea_water_pump\r\nFROM public.termodinamica__ac_misc\r\nWHERE $__timeFilter(timestamp)\r\n"
+                        "rawSql": "SELECT\n  timestamp            AS time,\n  watt_ac_compressor_1 AS watt_compressor_1,\n  watt_ac_compressor_2 AS watt_compressor_2,\n  watt_sea_water_pump  AS watt_sea_water_pump,\n  watt_ac_compressor_1 +\n  watt_ac_compressor_2 +\n  watt_sea_water_pump  AS watt_total\nFROM public.termodinamica__ac_misc\nWHERE $__timeFilter(timestamp)\n"
                       }
                     },
                     "refId": "A",
