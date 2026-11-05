@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v2beta1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "commissioning-firedetection"
@@ -1064,9 +1064,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "description"
@@ -1205,9 +1205,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -1426,9 +1426,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "description"
@@ -1567,9 +1567,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -1788,9 +1788,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "description"
@@ -1929,9 +1929,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -2138,9 +2138,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "description"
@@ -2279,9 +2279,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -2488,9 +2488,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "description"
@@ -2629,9 +2629,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -2838,9 +2838,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "description"
@@ -2979,9 +2979,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -3188,9 +3188,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "description"
@@ -3329,9 +3329,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -3538,9 +3538,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "description"
@@ -3679,9 +3679,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -3888,9 +3888,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "description"
@@ -4029,9 +4029,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -4238,9 +4238,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "description"
@@ -4379,9 +4379,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -4588,9 +4588,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "description"
@@ -4729,9 +4729,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},

@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v2beta1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "commissioning-thermal-test"
@@ -115,9 +115,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -247,9 +247,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -428,9 +428,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -442,9 +442,9 @@
                   }
                 },
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "room"
@@ -591,9 +591,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -606,9 +606,9 @@
                   }
                 },
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "room"
@@ -741,9 +741,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},
@@ -755,9 +755,9 @@
                   }
                 },
                 {
-                  "kind": "partitionByValues",
+                  "group": "partitionByValues",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "partitionByValues",
                     "options": {
                       "fields": [
                         "room"
@@ -882,9 +882,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "organize",
+                  "group": "organize",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "organize",
                     "options": {
                       "excludeByName": {},
                       "includeByName": {},

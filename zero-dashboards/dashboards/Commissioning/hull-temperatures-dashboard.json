@@ -1,5 +1,5 @@
 {
-  "apiVersion": "dashboard.grafana.app/v2beta1",
+  "apiVersion": "dashboard.grafana.app/v2",
   "kind": "Dashboard",
   "metadata": {
     "name": "commissioning-hull-temps"
@@ -2737,9 +2737,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "temp_in_(.*)",
                       "renamePattern": "94455001-$1 (IN)"
@@ -2747,9 +2747,9 @@
                   }
                 },
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "temp_out_(.*)",
                       "renamePattern": "94455001-$1 (OUT)"
@@ -2757,9 +2757,9 @@
                   }
                 },
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "temp_(.*)",
                       "renamePattern": "94455001-$1"
@@ -5265,9 +5265,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "temp_in_(.*)",
                       "renamePattern": "94455001-$1 (IN)"
@@ -5275,9 +5275,9 @@
                   }
                 },
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "temp_out_(.*)",
                       "renamePattern": "94455001-$1 (OUT)"
@@ -6912,9 +6912,9 @@
               ],
               "transformations": [
                 {
-                  "kind": "renameByRegex",
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
                   "spec": {
-                    "id": "renameByRegex",
                     "options": {
                       "regex": "temp_(.*)",
                       "renamePattern": "94455001-$1"
