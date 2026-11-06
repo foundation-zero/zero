@@ -183,6 +183,11 @@ class SimulationTestRunner[
         self._simulation_inputs = simulation_inputs
 
     def tick(self, collector: Collector | None = None) -> tuple[S, C, CS]:
+        sensor_values, control_values, controller_state = self._tick(collector)
+        # Controls return their internal values; a copy keeps test mutations out of them.
+        return sensor_values, deepcopy(control_values), deepcopy(controller_state)
+
+    def _tick(self, collector: Collector | None) -> tuple[S, C, CS]:
         if isinstance(self._simulation_inputs, SimulationValues):
             simulation_inputs = self._simulation_inputs.get_values_at_time(
                 self._simulation.time()
@@ -219,20 +224,20 @@ class SimulationTestRunner[
         )
         self._modes.append(cast(M, self._control.mode))
 
-        # Controls return their internal values; a copy keeps test mutations out of them.
-        return (
-            result.sensor_values,
-            deepcopy(self._control_values),
-            deepcopy(self._controller_state),
-        )
+        return result.sensor_values, self._control_values, self._controller_state
 
     def run(
         self, n_ticks: int, collector: Collector | None = None
     ) -> tuple[S | None, C, CS]:
-        result = (None, self._control_values, self._controller_state)
+        sensor_values = None
         for _ in range(n_ticks):
-            result = self.tick(collector)
-        return result
+            sensor_values, *_ = self._tick(collector)
+        # Only the last tick is returned, so copy once instead of on every tick.
+        return (
+            sensor_values,
+            deepcopy(self._control_values),
+            deepcopy(self._controller_state),
+        )
 
     def ticks_for(
         self, duration: timedelta, collector: Collector | None = None
