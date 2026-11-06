@@ -39,6 +39,7 @@ class ReportingClient(zmqtt.MQTTClient):
     async def _connect_with_retry(
         self, *, wait_before_first_attempt: bool = False
     ) -> None:
+        # TODO(ZERO-2532): revisit along with the CONNACK override below.
         # zmqtt waits before the first attempt only after losing a live
         # connection; report that now rather than after the first failed attempt.
         if wait_before_first_attempt:
@@ -60,8 +61,9 @@ class ReportingClient(zmqtt.MQTTClient):
         self._readiness.ready(self._dependency, "connected")
 
     def _on_refused(self, exc: MQTTConnectError) -> None:
-        # TODO: drop this once zmqtt retries CONNACK refusals itself; today a
-        # refusal ends its reconnect task even with max_attempts=None.
+        # TODO(ZERO-2532): remove once zMQTT#129 is released. Today a refusal
+        # ends zmqtt's reconnect task even with max_attempts=None; replace this with
+        # ReconnectConfig(retry_refusal=lambda e: e.is_transient or e.return_code in {0x05, 0x87}).
         # https://github.com/faststream-community/zMQTT/issues/128
         reason = f"CONNACK refused (return code {exc.return_code})"
         self._readiness.not_ready(self._dependency, reason)
