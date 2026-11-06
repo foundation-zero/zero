@@ -110,6 +110,23 @@ def test_without_status_file(clock: FakeClock):
     assert readiness.status.startswith("ready: mqtt since ")
 
 
+def test_unwritable_status_file_is_logged(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+):
+    readiness = Readiness(tmp_path / "missing" / "ready", {"mqtt": "connecting"})
+    assert "Failed to write readiness" in caplog.text
+    assert readiness.status.startswith("not ready: mqtt: connecting since ")
+
+
+def test_failed_write_is_retried_on_the_next_report(tmp_path: Path):
+    status_file = tmp_path / "missing" / "ready"
+    readiness = Readiness(status_file, {"mqtt": "connecting"})
+    status_file.parent.mkdir()
+
+    readiness.not_ready("mqtt", "connecting")
+    assert status_file.read_text().startswith("not ready: mqtt: connecting since ")
+
+
 @pytest.fixture
 def exit_code(monkeypatch: pytest.MonkeyPatch) -> list[int]:
     codes: list[int] = []

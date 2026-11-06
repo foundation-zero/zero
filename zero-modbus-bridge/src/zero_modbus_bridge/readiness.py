@@ -68,6 +68,7 @@ class Readiness:
         self._since_at = clock()
         self._since = _utc_clock()
         self._status = ""
+        self._written = False
         self._write()
 
     @property
@@ -105,16 +106,25 @@ class Readiness:
             status = f"not ready: {details} since {self._since} UTC"
         else:
             status = f"ready: {', '.join(self._dependencies)} since {self._since} UTC"
-        if status == self._status:
+        if status == self._status and self._written:
             return
-        logger.info("Readiness: %s", status)
-        self._status = status
+        if status != self._status:
+            logger.info("Readiness: %s", status)
+            self._status = status
         if self._status_file is None:
+            self._written = True
             return
         # Write and rename, so the probe never reads a half-written file.
-        staging = self._status_file.with_name(f".{self._status_file.name}.tmp")
-        staging.write_text(f"{status}\n")
-        staging.replace(self._status_file)
+        partial = self._status_file.with_name(f".{self._status_file.name}.partial")
+        try:
+            partial.write_text(f"{status}\n")
+            partial.replace(self._status_file)
+        except OSError as exc:
+            # Retried on the next report, so the probe doesn't keep a stale status.
+            self._written = False
+            logger.error("Failed to write readiness to %s: %s", self._status_file, exc)
+        else:
+            self._written = True
 
 
 def _utc_clock() -> str:
