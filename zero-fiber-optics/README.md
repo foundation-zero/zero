@@ -45,7 +45,7 @@ At `info` it also emits a counter summary every 60 seconds:
 
 ```
 port 50000 counters: received=0 enqueued=0 parse_errors=0 length_mismatches=0 queue_dropped=0 publish_errors=0 publish_timeouts=0
-mqtt counters: connects=1 reconnects=0 enqueued=0 acked=0 puback_denied=0 publish_errors=0 publish_timeouts=0 server_disconnects=0
+mqtt counters: connects=1 reconnects=0 enqueued=0 acked=0 publish_errors=0 publish_timeouts=0
 ```
 
 `enqueued` counts packets handed to the MQTT client and `acked` counts PUBACKs
@@ -57,6 +57,24 @@ is the signal that the pipeline has stalled:
 ```
 port 50000: no UDP packets received in the last 10s (total received 12345)
 ```
+
+## Broker outages
+
+Follows `docs/adr/0001-dependency-outages.md`; MQTT is a required dependency.
+
+- Uses the MQTT 3.1.1 client with a clean session. rumqttc's MQTT 5 client
+  flushes the socket without a timeout, so a broker that vanished without a
+  TCP reset left it hung with nothing logged (bytebeamio/rumqtt#1078); the
+  3.1.1 client gives up a flush after 5 s and reconnects.
+- Reconnects with backoff 1 s doubling to 30 s; keepalive 15 s.
+- Ready while connected, whether or not anything is being published:
+  `/tmp/ready` holds one line such as
+  `not ready: mqtt: Flush timeout since 13:02:05 UTC`, which the chart's exec
+  readiness probe prints. A not-ready pod drops out of the UDP Service, so
+  datagrams are not delivered to it during an outage.
+- Exits, with the reason in `/dev/termination-log`, after 15 min not ready, or
+  after 10 refusals in a row that retrying will not fix (bad credentials, not
+  authorised, bad client id or protocol).
 
 ## Running
 
