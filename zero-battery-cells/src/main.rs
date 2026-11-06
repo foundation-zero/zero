@@ -5,6 +5,7 @@ mod mapping;
 mod mqtt;
 mod netvar;
 mod nvl;
+mod readiness;
 mod reassembly;
 mod throttle;
 mod udp;
@@ -13,6 +14,7 @@ use crate::cells::ModuleFrame;
 use crate::config::PipelineConfig;
 use crate::decoder::Decoder;
 use crate::mqtt::{MqttGone, MqttPublisher, PublishError};
+use crate::readiness::{write_termination_message, Readiness, NOT_READY_DEADLINE, STATUS_FILE};
 use crate::throttle::log_event;
 use anyhow::{bail, Context, Result};
 use clap::{Parser, Subcommand};
@@ -74,13 +76,19 @@ async fn main() -> Result<()> {
 async fn run() -> Result<()> {
     let config = PipelineConfig::load().context("Failed to load configuration")?;
     let decoder = Decoder::load(&config)?;
-    let publisher = MqttPublisher::new(&config.app, &mqtt_client_id())
-        .await
-        .context("Failed to start MQTT publisher")?;
+    let (publisher, connection) = MqttPublisher::new(&config.app, &mqtt_client_id());
+    let readiness = Readiness::new(STATUS_FILE, "mqtt: connecting");
 
     let (frame_tx, frame_rx) = tokio::sync::mpsc::channel(FRAME_QUEUE);
 
     let mut tasks = JoinSet::new();
+    tasks.spawn(connection.run(readiness.clone()));
+    tasks.spawn(async move {
+        let status = readiness.deadline(NOT_READY_DEADLINE).await;
+        let message = format!("{status}; exiting after {NOT_READY_DEADLINE:?} not ready");
+        error!("{message}");
+        write_termination_message(&message);
+    });
     tasks.spawn(udp::run(config.app.udp_port, decoder, frame_tx));
     tasks.spawn(publish_task(publisher, frame_rx));
     await_tasks(&mut tasks).await

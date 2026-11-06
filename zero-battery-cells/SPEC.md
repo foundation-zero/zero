@@ -95,6 +95,19 @@ published in **volts**; temperatures are published as sent (whole degrees C).
 - Shorter declarations are accepted: the undeclared tail is zero-padded so every
   module still gets a frame.
 
+## Broker outages
+
+Follows `docs/adr/0001-dependency-outages.md`; MQTT is a required dependency.
+
+- Reconnects with backoff 1 s doubling to 30 s; keepalive 15 s.
+- Ready while connected: `/tmp/ready` holds one line such as
+  `not ready: mqtt: <error> since 13:02:05 UTC`, which the chart's exec
+  readiness probe prints. A not-ready pod drops out of the UDP Service, so PLC
+  datagrams are not delivered to it during an outage.
+- Exits, with the reason in `/dev/termination-log`, after 15 min not ready, or
+  after 10 refusals in a row that retrying will not fix (bad credentials, not
+  authorised, bad client id or protocol).
+
 ## Configuration (environment)
 
 | Variable                    | Default     | Notes                                            |

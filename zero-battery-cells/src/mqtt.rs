@@ -1,13 +1,15 @@
 use crate::cells::ModuleFrame;
 use crate::config::AppConfig;
-use anyhow::Result;
+use crate::readiness::{write_termination_message, Readiness};
 use log::{error, info, warn};
-use rumqttc::{AsyncClient, Event, Incoming, MqttOptions, QoS};
+use rumqttc::{
+    AsyncClient, ConnectReturnCode, ConnectionError, Event, EventLoop, Incoming, MqttOptions, QoS,
+};
 use std::time::Duration;
 use tokio::time::timeout;
 
-/// MQTT keep-alive interval.
-const KEEP_ALIVE: Duration = Duration::from_secs(5);
+/// MQTT keep-alive interval: how quickly a dead connection is noticed.
+const KEEP_ALIVE: Duration = Duration::from_secs(15);
 
 /// Capacity of the channel between publishers and the event loop.
 const REQUEST_CHANNEL_CAPACITY: usize = 10;
@@ -22,8 +24,12 @@ const PUBLISH_TIMEOUT: Duration = Duration::from_secs(5);
 
 /// First reconnect delay before the event loop backs off.
 const INITIAL_BACKOFF: Duration = Duration::from_secs(1);
-/// Reconnect delay ceiling.
-const MAX_BACKOFF: Duration = Duration::from_secs(60);
+/// Reconnect delay ceiling: the client reconnects within this long after the broker is back.
+const MAX_BACKOFF: Duration = Duration::from_secs(30);
+
+/// Refusals such as bad credentials before giving up, in about 3 minutes of
+/// backoff. A booting broker can refuse logins too, so the first is not final.
+const PERMANENT_ERROR_ATTEMPTS: u32 = 10;
 
 /// Why a message did not reach the broker.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -56,43 +62,32 @@ pub struct MqttPublisher {
     prefix: String,
 }
 
+/// The rumqttc event loop, which connects, reconnects and sends what
+/// [`MqttPublisher`] queues.
+pub struct MqttConnection {
+    event_loop: EventLoop,
+    host: String,
+}
+
 impl MqttPublisher {
-    /// Build the client and drive its event loop in a background task.
-    ///
-    /// rumqttc reconnects internally; the loop only resets a backoff that never
-    /// grows past [`MAX_BACKOFF`].
-    pub async fn new(app: &AppConfig, client_id: &str) -> Result<Self> {
+    /// Build the client; nothing is sent until [`MqttConnection::run`] drives it.
+    pub fn new(app: &AppConfig, client_id: &str) -> (Self, MqttConnection) {
         let mut options = MqttOptions::new(client_id, &app.mqtt_host, app.mqtt_port);
         options.set_keep_alive(KEEP_ALIVE);
         if let Some((username, password)) = app.credentials() {
             options.set_credentials(username, password);
         }
 
-        let (client, mut event_loop) = AsyncClient::new(options, REQUEST_CHANNEL_CAPACITY);
-        let host = app.mqtt_host.clone();
-        let mut backoff = INITIAL_BACKOFF;
-
-        tokio::spawn(async move {
-            loop {
-                match event_loop.poll().await {
-                    Ok(Event::Incoming(Incoming::ConnAck(_))) => {
-                        info!("MQTT connected to {}", host);
-                        backoff = INITIAL_BACKOFF;
-                    }
-                    Ok(_) => {}
-                    Err(e) => {
-                        warn!("MQTT connection error: {}. Retrying in {:?}...", e, backoff);
-                        tokio::time::sleep(backoff).await;
-                        backoff = (backoff * 2).min(MAX_BACKOFF);
-                    }
-                }
-            }
-        });
-
-        Ok(Self {
+        let (client, event_loop) = AsyncClient::new(options, REQUEST_CHANNEL_CAPACITY);
+        let publisher = Self {
             client,
             prefix: app.mqtt_prefix.clone(),
-        })
+        };
+        let connection = MqttConnection {
+            event_loop,
+            host: app.mqtt_host.clone(),
+        };
+        (publisher, connection)
     }
 
     /// Publish one module frame on its topic.
@@ -126,5 +121,70 @@ impl MqttPublisher {
             }
             Err(_elapsed) => Err(PublishError::Timeout),
         }
+    }
+}
+
+impl MqttConnection {
+    /// Keep the connection up, reporting it in `readiness`; ready means connected.
+    ///
+    /// rumqttc reconnects on the next poll after an error; this loop only adds
+    /// a backoff capped at [`MAX_BACKOFF`]. Returns, after writing the
+    /// termination message, once [`PERMANENT_ERROR_ATTEMPTS`] refusals in a row
+    /// show the broker will not accept this client.
+    pub async fn run(mut self, readiness: Readiness) {
+        let mut backoff = INITIAL_BACKOFF;
+        let mut refusals = 0;
+        loop {
+            match self.event_loop.poll().await {
+                Ok(Event::Incoming(Incoming::ConnAck(_))) => {
+                    info!("MQTT connected to {}", self.host);
+                    readiness.ready("mqtt connected");
+                    backoff = INITIAL_BACKOFF;
+                    refusals = 0;
+                }
+                Ok(_) => {}
+                Err(e) => {
+                    readiness.not_ready(format!("mqtt: {e}"));
+                    if is_permanent(&e) {
+                        refusals += 1;
+                        if refusals >= PERMANENT_ERROR_ATTEMPTS {
+                            let message = format!("mqtt: giving up after {refusals} refusals: {e}");
+                            error!("{message}");
+                            write_termination_message(&message);
+                            return;
+                        }
+                    }
+                    warn!("MQTT connection error: {}. Retrying in {:?}...", e, backoff);
+                    tokio::time::sleep(backoff).await;
+                    backoff = (backoff * 2).min(MAX_BACKOFF);
+                }
+            }
+        }
+    }
+}
+
+/// A refusal that retrying is unlikely to fix: bad credentials, client id or protocol.
+fn is_permanent(error: &ConnectionError) -> bool {
+    matches!(
+        error,
+        ConnectionError::ConnectionRefused(code) if *code != ConnectReturnCode::ServiceUnavailable
+    )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn refusals_other_than_unavailable_are_permanent() {
+        let refused = ConnectionError::ConnectionRefused;
+        assert!(is_permanent(&refused(
+            ConnectReturnCode::BadUserNamePassword
+        )));
+        assert!(is_permanent(&refused(ConnectReturnCode::NotAuthorized)));
+        assert!(!is_permanent(&refused(
+            ConnectReturnCode::ServiceUnavailable
+        )));
+        assert!(!is_permanent(&ConnectionError::NetworkTimeout));
     }
 }
