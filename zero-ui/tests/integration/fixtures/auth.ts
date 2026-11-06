@@ -1,5 +1,7 @@
-import { PlaywrightTestArgs, TestFixture } from "@playwright/test";
+import { SubscriptionInterceptor } from "@foundation-zero/graphql-subscriptions-mock";
+import { expect, PlaywrightTestArgs, TestFixture } from "@playwright/test";
 import { Roles } from "../../../src/modules/common/types";
+import type { ZeroSubscriptions } from "../../mocks/playwright";
 
 export interface AuthFixture {
   asAdmin(): Promise<void>;
@@ -14,21 +16,29 @@ const tokens: Record<Roles, string> = {
 };
 
 export const createAuthFixture = (): [
-  TestFixture<AuthFixture, PlaywrightTestArgs>,
+  TestFixture<
+    AuthFixture,
+    PlaywrightTestArgs & { subscriptions: SubscriptionInterceptor<ZeroSubscriptions> }
+  >,
   {
     auto: boolean;
   },
 ] => [
-  async ({ page }, use) => {
+  async ({ page, subscriptions }, use) => {
     const asRole = (role: Roles) => async () => {
       await page.goto(`/domestic/auth?token=${tokens[role]}`);
-      await page.waitForTimeout(2000);
+      // The auth route redirects once the token is verified; the app then subscribes to the
+      // rooms, after which tests can dispatch room data.
+      await page.waitForURL((url) => !url.pathname.endsWith("/auth"));
+      await expect
+        .poll(() => subscriptions.subscribe("SubscribeToRooms").subscribers.length)
+        .toBeGreaterThan(0);
     };
 
     const asAdmin = asRole(Roles.Admin);
     const asUser = asRole(Roles.User);
 
-    use({ asAdmin, asUser });
+    await use({ asAdmin, asUser });
   },
   {
     auto: true,

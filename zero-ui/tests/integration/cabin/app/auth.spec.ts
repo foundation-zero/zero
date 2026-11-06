@@ -10,9 +10,7 @@ test.describe("Auth", () => {
     test("uses the new token for authentication", async ({ worker, subscriptions, page }) => {
       worker.use(getAllRooms, getVersion);
       await page.goto(`/domestic/auth?token=${tokens[Roles.User]}`);
-      await page.waitForTimeout(3000);
-
-      expect(subscriptions.incoming).toHaveLength(2);
+      await expect.poll(() => subscriptions.incoming.length).toBe(2);
 
       const message = subscriptions.incoming[0] as ConnectionInitMessage;
       expect(message.type).toBe("connection_init");
