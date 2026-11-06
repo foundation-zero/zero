@@ -165,7 +165,9 @@ class RunCmd(MqttSettings):
     async def cli_cmd(self) -> None:
         # Gateways are optional: with one down the others still report, so
         # only MQTT counts for readiness.
-        broker = self.make_broker(Readiness(self.readiness_file))
+        broker = self.make_broker(
+            Readiness(self.readiness_file, {"mqtt": "connecting"})
+        )
         specs = read_modbus_bridge_specs()
         endpoints = resolve_bridge_endpoints(
             PowerTagsSettings(), specs, self.modbus_port

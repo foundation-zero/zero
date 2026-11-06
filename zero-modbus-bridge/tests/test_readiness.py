@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 from typing import NoReturn
 
@@ -28,72 +29,85 @@ def clock() -> FakeClock:
     return FakeClock()
 
 
+SINCE = r"since \d\d:\d\d:\d\d UTC"
+
+
 @pytest.fixture
 def status_file(tmp_path: Path) -> Path:
-    return tmp_path / "readiness"
+    return tmp_path / "ready"
 
 
 @pytest.fixture
 def readiness(status_file: Path, clock: FakeClock) -> Readiness:
-    return Readiness(status_file, 900, clock=clock, exit_process=_exit)
+    return Readiness(
+        status_file,
+        {"mqtt": "connecting", "modbus": "not probed yet"},
+        900,
+        clock=clock,
+        exit_process=_exit,
+    )
 
 
-def test_no_status_file_until_first_report(readiness: Readiness, status_file: Path):
-    assert not status_file.exists()
+def test_starts_not_ready(readiness: Readiness, status_file: Path):
+    assert re.fullmatch(
+        f"not ready: mqtt: connecting; modbus: not probed yet {SINCE}\n",
+        status_file.read_text(),
+    )
 
 
-def test_ready(readiness: Readiness, status_file: Path):
+def test_replaces_a_stale_status_file(status_file: Path, clock: FakeClock):
+    status_file.write_text("ready: mqtt since 12:00:00 UTC\n")
+    Readiness(status_file, {"mqtt": "connecting"}, clock=clock, exit_process=_exit)
+    assert status_file.read_text().startswith("not ready: mqtt: connecting")
+
+
+def test_ready_once_every_dependency_is(readiness: Readiness, status_file: Path):
     readiness.ready("mqtt")
-    assert status_file.read_text() == "ready\n"
+    assert re.fullmatch(
+        f"not ready: modbus: not probed yet {SINCE}\n", status_file.read_text()
+    )
+
+    readiness.ready("modbus")
+    assert re.fullmatch(f"ready: mqtt, modbus {SINCE}\n", status_file.read_text())
 
 
 def test_not_ready_names_each_dependency(readiness: Readiness, status_file: Path):
     readiness.not_ready("mqtt", "CONNACK refused (return code 135)")
     readiness.not_ready("modbus", "gateway unreachable")
 
-    status = status_file.read_text()
-    assert status.startswith("not ready since ")
-    assert status.endswith(
-        ": mqtt: CONNACK refused (return code 135); modbus: gateway unreachable\n"
+    assert re.fullmatch(
+        "not ready: mqtt: CONNACK refused \\(return code 135\\); "
+        f"modbus: gateway unreachable {SINCE}\n",
+        status_file.read_text(),
     )
 
 
-def test_ready_only_when_every_dependency_is(readiness: Readiness, status_file: Path):
-    readiness.not_ready("mqtt", "down")
-    readiness.not_ready("modbus", "down")
-    readiness.ready("mqtt")
-    assert status_file.read_text().endswith(": modbus: down\n")
-
-    readiness.ready("modbus")
-    assert status_file.read_text() == "ready\n"
-
-
 def test_exits_after_deadline(readiness: Readiness, clock: FakeClock):
-    readiness.not_ready("mqtt", "down")
     clock.now = 899
-    readiness.not_ready("mqtt", "still down")
+    readiness.not_ready("mqtt", "down")
 
     clock.now = 900
     with pytest.raises(
-        Exited, match=r"^not ready for 15 min \(not ready since .*: mqtt: still down\)$"
+        Exited,
+        match=r"^not ready for 15 min \(not ready: mqtt: down; modbus: .* UTC\)$",
     ):
-        readiness.not_ready("mqtt", "still down")
+        readiness.not_ready("mqtt", "down")
 
 
 def test_deadline_restarts_after_being_ready(readiness: Readiness, clock: FakeClock):
-    readiness.not_ready("mqtt", "down")
     clock.now = 800
     readiness.ready("mqtt")
-    readiness.not_ready("mqtt", "down again")
+    readiness.ready("modbus")
+    readiness.not_ready("mqtt", "down")
 
     clock.now = 1600
-    readiness.not_ready("mqtt", "down again")  # 800 s since it went down again
+    readiness.not_ready("mqtt", "down")  # 800 s since it went down again
 
 
 def test_without_status_file(clock: FakeClock):
-    readiness = Readiness(None, clock=clock, exit_process=_exit)
-    readiness.not_ready("mqtt", "down")
-    assert readiness.status.endswith(": mqtt: down")
+    readiness = Readiness(None, {"mqtt": "connecting"}, clock=clock, exit_process=_exit)
+    readiness.ready("mqtt")
+    assert readiness.status.startswith("ready: mqtt since ")
 
 
 @pytest.fixture

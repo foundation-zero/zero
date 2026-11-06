@@ -27,7 +27,7 @@ def clock() -> FakeClock:
 
 @pytest.fixture
 def readiness(clock: FakeClock) -> Readiness:
-    return Readiness(None, clock=clock, exit_process=_exit)
+    return Readiness(None, {"mqtt": "connecting"}, clock=clock, exit_process=_exit)
 
 
 @pytest.fixture
@@ -52,7 +52,7 @@ async def test_connected_is_ready(
     client: ReportingClient, readiness: Readiness, attempt: AsyncMock
 ):
     await client._connect_with_retry()
-    assert readiness.status == "ready"
+    assert readiness.status.startswith("ready: mqtt since ")
 
 
 async def test_unreachable_broker_is_not_ready(
@@ -61,8 +61,8 @@ async def test_unreachable_broker_is_not_ready(
     attempt.side_effect = ConnectionRefusedError(111, "Connect call failed")
     with pytest.raises(ConnectionRefusedError):
         await client._connect()
-    assert readiness.status.endswith(
-        ": mqtt: ConnectionRefusedError: [Errno 111] Connect call failed"
+    assert readiness.status.startswith(
+        "not ready: mqtt: ConnectionRefusedError: [Errno 111] Connect call failed since "
     )
 
 
@@ -73,7 +73,7 @@ async def test_refusal_is_retried(
     attempt.side_effect = [MQTTConnectError(NOT_AUTHORIZED), None]
     await client._connect_with_retry()
     assert attempt.await_count == 2
-    assert readiness.status == "ready"
+    assert readiness.status.startswith("ready: mqtt since ")
 
 
 async def test_refusal_reported_as_not_ready(
@@ -82,7 +82,9 @@ async def test_refusal_reported_as_not_ready(
     attempt.side_effect = MQTTConnectError(NOT_AUTHORIZED)
     with pytest.raises(ConnectionRefusedError):
         await client._connect()
-    assert readiness.status.endswith(": mqtt: CONNACK refused (return code 135)")
+    assert readiness.status.startswith(
+        "not ready: mqtt: CONNACK refused (return code 135) since "
+    )
 
 
 async def test_exits_when_still_refused_after_grace(

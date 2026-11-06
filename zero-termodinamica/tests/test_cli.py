@@ -116,7 +116,7 @@ def test_stub_cmd_serves_termodinamica_topics():
     mock_stub.from_settings.return_value.run.assert_called_once_with()
 
 
-async def test_run_makes_the_gateway_count_for_readiness(monkeypatch):
+async def test_run_makes_the_gateway_count_for_readiness(monkeypatch, tmp_path):
     make_broker = MagicMock()
     from_settings = MagicMock()
     app = MagicMock()
@@ -130,8 +130,14 @@ async def test_run_makes_the_gateway_count_for_readiness(monkeypatch):
     monkeypatch.setenv("MODBUS_PORT", "502")
     monkeypatch.setenv("MQTT_HOST", "broker")
     monkeypatch.setenv("MQTT_PORT", "1883")
+    status_file = tmp_path / "ready"
+    monkeypatch.setenv("READINESS_FILE", str(status_file))
 
     await RunCmd().cli_cmd()  # pyright: ignore
+
+    assert status_file.read_text().startswith(
+        "not ready: mqtt: connecting; modbus: not probed yet since "
+    )
 
     readiness = make_broker.call_args.args[0]
     assert isinstance(readiness, Readiness)

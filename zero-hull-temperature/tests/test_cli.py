@@ -123,8 +123,14 @@ def from_settings(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 
 
 async def test_run_makes_the_gateway_count_for_readiness(
-    required_env, monkeypatch, make_broker: MagicMock, from_settings: MagicMock
+    required_env,
+    monkeypatch,
+    tmp_path,
+    make_broker: MagicMock,
+    from_settings: MagicMock,
 ):
+    status_file = tmp_path / "ready"
+    monkeypatch.setenv("READINESS_FILE", str(status_file))
     app = MagicMock()
     app.return_value.run = AsyncMock()
     monkeypatch.setattr("zero_hull_temperature.cli.FastStream", app)
@@ -134,6 +140,9 @@ async def test_run_makes_the_gateway_count_for_readiness(
     readiness = make_broker.call_args.args[0]
     assert isinstance(readiness, Readiness)
     assert from_settings.call_args.kwargs["readiness"] is readiness
+    assert status_file.read_text().startswith(
+        "not ready: mqtt: connecting; modbus: not probed yet since "
+    )
 
 
 async def test_read_with_mqtt_reads_once(

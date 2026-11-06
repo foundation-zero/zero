@@ -49,8 +49,6 @@ spec:
               value: {{ .Values.mqtt.host | quote }}
             - name: MQTT_PORT
               value: {{ .Values.mqtt.port | quote }}
-            - name: READINESS_FILE
-              value: /tmp/readiness
             {{- if .Values.mqtt.existingSecret }}
             - name: MQTT_USERNAME
               valueFrom:
@@ -78,16 +76,13 @@ spec:
               value: {{ .Values.hullTemperature.activateTopic | quote }}
             - name: ACTIVATE_JSON_PATH
               value: {{ .Values.hullTemperature.activateJsonPath | quote }}
-          # Prints the app's status file, so the reason it is not ready shows
-          # up in the pod events.
+          # Ready while MQTT and its required gateways are up; the app writes the status line.
           readinessProbe:
             exec:
               command:
                 - sh
                 - -c
-                - cat /tmp/readiness && grep -qx ready /tmp/readiness
-            periodSeconds: 10
-            failureThreshold: 2
+                - status=$(cat /tmp/ready) && echo "$status" && test "${status#ready:}" != "$status"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

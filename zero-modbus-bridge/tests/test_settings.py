@@ -31,7 +31,7 @@ def test_make_broker_reconnects_indefinitely_and_quickly(
 ):
     broker = MagicMock()
     monkeypatch.setattr("zero_modbus_bridge.settings.ReportingBroker", broker)
-    MqttSettings(_env_file=None).make_broker(Readiness(None))  # type: ignore[call-arg]
+    MqttSettings(_env_file=None).make_broker(Readiness(None, {"mqtt": "connecting"}))  # type: ignore[call-arg]
 
     options = broker.call_args.kwargs
     assert options["reconnect"].max_attempts is None
@@ -53,4 +53,6 @@ async def test_make_broker_exits_when_client_gives_up(
 
 def test_make_broker_builds_a_real_broker():
     settings = MqttSettings(_env_file=None, mqtt_username="u", mqtt_password="p")  # type: ignore[call-arg]
-    assert isinstance(settings.make_broker(Readiness(None)), ReportingBroker)
+    assert isinstance(
+        settings.make_broker(Readiness(None, {"mqtt": "connecting"})), ReportingBroker
+    )

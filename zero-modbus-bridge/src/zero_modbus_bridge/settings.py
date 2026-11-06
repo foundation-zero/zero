@@ -10,7 +10,7 @@ from pyModbusTCP.client import ModbusClient
 from pyModbusTCP.server import ModbusServer
 
 from zero_modbus_bridge.mqtt import ReportingBroker
-from zero_modbus_bridge.readiness import Readiness
+from zero_modbus_bridge.readiness import STATUS_FILE, Readiness
 
 model_config = SettingsConfigDict(
     env_file=".env",
@@ -30,7 +30,7 @@ class MqttSettings(BaseSettings):
     mqtt_password: str | None = None
     mqtt_client_id: str = Field(default_factory=lambda: f"modbus-bridge-{token_hex(4)}")
     # On the emptyDir the chart mounts at /tmp; its readiness probe reads it.
-    readiness_file: Path = Path("/tmp/readiness")
+    readiness_file: Path = STATUS_FILE
 
     def make_broker(self, readiness: Readiness) -> ReportingBroker:
         kwargs: dict[str, Any] = {}

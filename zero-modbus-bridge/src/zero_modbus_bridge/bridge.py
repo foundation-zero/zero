@@ -141,14 +141,23 @@ class ModbusBridge:
         drained = await self._flush()
         if readings is None:
             logger.warning("Modbus connection not available - skipping probe")
-            if self._readiness is not None:
-                self._readiness.not_ready("modbus", "gateway unreachable")
         else:
-            if self._readiness is not None:
-                self._readiness.ready("modbus")
             self._enqueue(readings)
+        self._report_gateway(readings)
         if drained:
             await self._flush()
+
+    def _report_gateway(self, readings: list[_Reading] | None) -> None:
+        if self._readiness is None:
+            return
+        if readings is None:
+            self._readiness.not_ready("modbus", "gateway unreachable")
+        elif not readings:
+            # The reader logs and skips each topic that fails, so a gateway
+            # that accepts connections but answers nothing yields no readings.
+            self._readiness.not_ready("modbus", "no topic could be read")
+        else:
+            self._readiness.ready("modbus")
 
     def _enqueue(self, readings: list[_Reading]) -> None:
         dropped = 0

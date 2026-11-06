@@ -159,11 +159,11 @@ async def test_run_reports_only_mqtt_readiness(
         "zero_power_tags.cli.resolve_bridge_endpoints",
         lambda *_: [BridgeEndpoint(spec=_spec("10P1"), host="gateway", port=502)],
     )
-    status_file = tmp_path / "readiness"
+    status_file = tmp_path / "ready"
     monkeypatch.setenv("READINESS_FILE", str(status_file))
 
     await RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883).cli_cmd()  # type: ignore[call-arg]
 
     make_broker.call_args.args[0].ready("mqtt")
-    assert status_file.read_text() == "ready\n"
+    assert status_file.read_text().startswith("ready: mqtt since ")
     assert "readiness" not in from_address.call_args.kwargs

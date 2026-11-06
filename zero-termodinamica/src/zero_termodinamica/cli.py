@@ -25,13 +25,15 @@ logging.basicConfig(
 
 
 BUFFER_SECONDS = 300
+# The single gateway is required: without it there is nothing to publish.
+STARTING = {"mqtt": "connecting", "modbus": "not probed yet"}
 
 
 class RunCmd(ModbusSettings, MqttSettings):
     mqtt_client_id: str = Field(default_factory=lambda: f"termodinamica-{token_hex(4)}")
 
     async def cli_cmd(self) -> None:
-        readiness = Readiness(self.readiness_file)
+        readiness = Readiness(self.readiness_file, STARTING)
         broker = self.make_broker(readiness)
         topics = read_modbus_topics()
         bridge = ModbusBridge.from_settings(

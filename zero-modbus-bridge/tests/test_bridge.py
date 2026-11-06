@@ -421,19 +421,49 @@ def test_from_address_accepts_timeout_on_real_client():
     assert isinstance(bridge, ModbusBridge)
 
 
-@pytest.mark.asyncio
-async def test_required_gateway_reports_readiness():
-    readiness = Readiness(None)
-    reader = MagicMock()
-    reader.read_all.return_value = []
-    bridge = ModbusBridge(
-        reader, RecordingPublisher(), [], buffer_size=10, readiness=readiness
-    )
+@pytest.fixture
+def gateway_readiness() -> Readiness:
+    return Readiness(None, {"modbus": "not probed yet"})
 
+
+@pytest.fixture
+def required_gateway(gateway_readiness: Readiness) -> tuple[ModbusBridge, MagicMock]:
+    reader = MagicMock()
+    reader.ensure_open.return_value = True
+    bridge = ModbusBridge(
+        reader, RecordingPublisher(), [], buffer_size=10, readiness=gateway_readiness
+    )
+    return bridge, reader
+
+
+@pytest.mark.asyncio
+async def test_required_gateway_ready_on_readings(
+    required_gateway: tuple[ModbusBridge, MagicMock], gateway_readiness: Readiness
+):
+    bridge, reader = required_gateway
+    _probe_yields(reader, 1)
+    await bridge.run_once()
+    assert gateway_readiness.status.startswith("ready: modbus since ")
+
+
+@pytest.mark.asyncio
+async def test_unreachable_required_gateway_is_not_ready(
+    required_gateway: tuple[ModbusBridge, MagicMock], gateway_readiness: Readiness
+):
+    bridge, reader = required_gateway
     reader.ensure_open.return_value = False
     await bridge.run_once()
-    assert readiness.status.endswith(": modbus: gateway unreachable")
+    assert gateway_readiness.status.startswith("not ready: modbus: gateway unreachable")
 
-    reader.ensure_open.return_value = True
+
+@pytest.mark.asyncio
+async def test_required_gateway_without_readings_is_not_ready(
+    required_gateway: tuple[ModbusBridge, MagicMock], gateway_readiness: Readiness
+):
+    """Connected, but every topic read failed."""
+    bridge, reader = required_gateway
+    reader.read_all.return_value = []
     await bridge.run_once()
-    assert readiness.status == "ready"
+    assert gateway_readiness.status.startswith(
+        "not ready: modbus: no topic could be read"
+    )

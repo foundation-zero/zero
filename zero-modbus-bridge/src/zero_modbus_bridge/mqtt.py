@@ -43,9 +43,10 @@ class ReportingClient(zmqtt.MQTTClient):
         self._readiness.ready("mqtt")
 
     def _on_refused(self, exc: MQTTConnectError) -> None:
-        # TODO: drop this once zmqtt retries CONNACK refusals itself; today a
-        # refusal ends its reconnect task even with max_attempts=None.
-        # https://github.com/faststream-community/zMQTT/issues
+        # TODO: today a refusal ends zmqtt's reconnect task even with
+        # max_attempts=None. Once zMQTT#128 is released, replace this with
+        # ReconnectConfig(retry_refusal=lambda e: e.is_transient or e.return_code in {0x05, 0x87}).
+        # https://github.com/faststream-community/zMQTT/issues/128
         reason = f"CONNACK refused (return code {exc.return_code})"
         self._readiness.not_ready("mqtt", reason)
         now = self._clock()
