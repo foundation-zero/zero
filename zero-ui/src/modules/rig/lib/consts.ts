@@ -1,34 +1,8 @@
-import { VariableId } from "./consts.variables";
+import { Mast, RigCard, RigMast, RigRow, RigTableColumn } from "../types";
+import { RigVariableId } from "./consts.variables";
+import { getDeflectionDisplayName } from "./utils";
 
-export type FiberOpticColumn = { titleKey: string };
-
-export type FiberOpticRow = {
-  label?: string;
-  variableIds: VariableId[];
-};
-
-export type FiberOpticCard = {
-  titleKey: string;
-  columns: FiberOpticColumn[];
-  rows: FiberOpticRow[];
-};
-
-export type FiberOpticMastColumn = {
-  titleKey: string;
-  cards: FiberOpticCard[];
-};
-
-export function getDeflectionDisplayName(variableId: string): string | null {
-  const height = /-(?:fa|sw)-deflection(\d{3})$/.exec(variableId);
-  if (height) return `${Number(height[1])}% Height`;
-
-  const spreader = /-(?:fa|sw)-deflection-spr(\d)$/.exec(variableId);
-  if (spreader) return `Spreader ${spreader[1]}`;
-
-  return null;
-}
-
-const id = (value: string): VariableId => value as VariableId;
+const id = (value: string): RigVariableId => value as RigVariableId;
 
 const STRAIN_DIRECTIONS = ["fore", "side-port", "side-stbd", "aft-port", "aft-stbd"] as const;
 
@@ -50,10 +24,10 @@ const SPREADER_DEFLECTION_ORDER = ["1", "2", "3", "4", "5"] as const;
 
 const STATIONS = [9, 8, 7, 6, 5, 4, 3, 2, 1] as const;
 
-const s9toS1 = (mast: "main" | "mizzen", type: string): VariableId[] =>
+const s9toS1 = (mast: Mast, type: string): RigVariableId[] =>
   Array.from({ length: 9 }, (_, i) => id(`fiber-optic-${mast}-mast-${type}-s${STATIONS[i]}`));
 
-const bendingRows = (mast: "main" | "mizzen"): FiberOpticRow[] => {
+const bendingRows = (mast: Mast): RigRow[] => {
   const momentSide = s9toS1(mast, "bending-moment-side-way");
   const momentForeAft = s9toS1(mast, "bending-moment-fore-aft");
   const strainSide = s9toS1(mast, "bending-strain-side-way");
@@ -64,7 +38,7 @@ const bendingRows = (mast: "main" | "mizzen"): FiberOpticRow[] => {
   }));
 };
 
-const sectionStrainRows = (mast: "main" | "mizzen"): FiberOpticRow[] =>
+const sectionStrainRows = (mast: Mast): RigRow[] =>
   STATIONS.map((station) => ({
     label: `S${station}`,
     variableIds: STRAIN_DIRECTIONS.map((direction) =>
@@ -72,7 +46,7 @@ const sectionStrainRows = (mast: "main" | "mizzen"): FiberOpticRow[] =>
     ),
   }));
 
-const longitudinalRows = (mast: "main" | "mizzen"): FiberOpticRow[] => {
+const longitudinalRows = (mast: Mast): RigRow[] => {
   const load = s9toS1(mast, "longitudinal-load");
   const strain = s9toS1(mast, "longitudinal-strain");
   return STATIONS.map((station, i) => ({
@@ -81,7 +55,7 @@ const longitudinalRows = (mast: "main" | "mizzen"): FiberOpticRow[] => {
   }));
 };
 
-const deflectionRow = (mast: "main" | "mizzen", token: string): FiberOpticRow => {
+const deflectionRow = (mast: Mast, token: string): RigRow => {
   const foreAft = id(`fiber-optic-${mast}-mast-fa-deflection${token}`);
   const sideWay = id(`fiber-optic-${mast}-mast-sw-deflection${token}`);
   return {
@@ -90,13 +64,13 @@ const deflectionRow = (mast: "main" | "mizzen", token: string): FiberOpticRow =>
   };
 };
 
-const mastDeflectionRows = (mast: "main" | "mizzen"): FiberOpticRow[] =>
+const mastDeflectionRows = (mast: Mast): RigRow[] =>
   MAST_DEFLECTION_ORDER.map((token) => deflectionRow(mast, token));
 
-const spreaderDeflectionRows = (mast: "main" | "mizzen"): FiberOpticRow[] =>
+const spreaderDeflectionRows = (mast: Mast): RigRow[] =>
   SPREADER_DEFLECTION_ORDER.map((n) => deflectionRow(mast, `-spr${n}`));
 
-const spreaderTempRows = (mast: "main" | "mizzen"): FiberOpticRow[] => [
+const spreaderTempRows = (mast: Mast): RigRow[] => [
   {
     label: "Spreader 0",
     variableIds: [id(`fiber-optic-${mast}-mast-temperature-spr0-port`)],
@@ -142,7 +116,7 @@ const spreaderTempRows = (mast: "main" | "mizzen"): FiberOpticRow[] => [
   },
 ];
 
-const riggingRows = (mast: "main" | "mizzen"): FiberOpticRow[] => [
+const riggingRows = (mast: Mast): RigRow[] => [
   {
     label: "D1",
     variableIds: [
@@ -172,7 +146,7 @@ const riggingRows = (mast: "main" | "mizzen"): FiberOpticRow[] => [
   },
 ];
 
-const riggingSumRows = (mast: "main" | "mizzen"): FiberOpticRow[] =>
+const riggingSumRows = (mast: Mast): RigRow[] =>
   [1, 2, 3, 4].map((v) => ({
     label: `V${v} Sum`,
     variableIds: [
@@ -181,7 +155,7 @@ const riggingSumRows = (mast: "main" | "mizzen"): FiberOpticRow[] =>
     ],
   }));
 
-const riggingTempRows = (mast: "main" | "mizzen"): FiberOpticRow[] => [
+const riggingTempRows = (mast: Mast): RigRow[] => [
   ...[1, 2, 3, 4, 5].map((d) => ({
     label: `D${d}`,
     variableIds: [
@@ -198,94 +172,81 @@ const riggingTempRows = (mast: "main" | "mizzen"): FiberOpticRow[] => [
   },
 ];
 
-const card = (
-  titleKey: string,
-  columns: FiberOpticColumn[],
-  rows: FiberOpticRow[],
-): FiberOpticCard => ({ titleKey, columns, rows });
+const card = (titleKey: string, columns: RigTableColumn[], rows: RigRow[]): RigCard => ({
+  titleKey,
+  columns,
+  rows,
+});
 
-const fiberCards = (mast: "main" | "mizzen"): FiberOpticCard[] => [
+const mastCards = (mast: Mast): RigCard[] => [
   card(
-    "loads.fiberOptics.cards.bendingMomentStrain",
+    "rig.cards.bendingMomentStrain",
     [
-      { titleKey: "loads.fiberOptics.columns.bendingMomentSideways" },
-      { titleKey: "loads.fiberOptics.columns.bendingMomentForeAft" },
-      { titleKey: "loads.fiberOptics.columns.bendingStrainSideways" },
-      { titleKey: "loads.fiberOptics.columns.bendingStrainForeAft" },
+      { titleKey: "rig.columns.bendingMomentSideways" },
+      { titleKey: "rig.columns.bendingMomentForeAft" },
+      { titleKey: "rig.columns.bendingStrainSideways" },
+      { titleKey: "rig.columns.bendingStrainForeAft" },
     ],
     bendingRows(mast),
   ),
   card(
-    "loads.fiberOptics.cards.sectionStrain",
+    "rig.cards.sectionStrain",
     [
-      { titleKey: "loads.fiberOptics.columns.fore" },
-      { titleKey: "loads.fiberOptics.columns.pt" },
-      { titleKey: "loads.fiberOptics.columns.sb" },
-      { titleKey: "loads.fiberOptics.columns.ptAft" },
-      { titleKey: "loads.fiberOptics.columns.sbAft" },
+      { titleKey: "rig.columns.fore" },
+      { titleKey: "rig.columns.pt" },
+      { titleKey: "rig.columns.sb" },
+      { titleKey: "rig.columns.ptAft" },
+      { titleKey: "rig.columns.sbAft" },
     ],
     sectionStrainRows(mast),
   ),
   card(
-    "loads.fiberOptics.cards.longitudinalLoadStrain",
-    [
-      { titleKey: "loads.fiberOptics.columns.longitudinalLoad" },
-      { titleKey: "loads.fiberOptics.columns.longitudinalStrain" },
-    ],
+    "rig.cards.longitudinalLoadStrain",
+    [{ titleKey: "rig.columns.longitudinalLoad" }, { titleKey: "rig.columns.longitudinalStrain" }],
     longitudinalRows(mast),
   ),
   card(
-    "loads.fiberOptics.cards.mastDeflection",
-    [
-      { titleKey: "loads.fiberOptics.columns.sideways" },
-      { titleKey: "loads.fiberOptics.columns.foreAft" },
-    ],
+    "rig.cards.mastDeflection",
+    [{ titleKey: "rig.columns.sideways" }, { titleKey: "rig.columns.foreAft" }],
     mastDeflectionRows(mast),
   ),
   card(
-    "loads.fiberOptics.cards.spreaderDeflection",
-    [
-      { titleKey: "loads.fiberOptics.columns.sideways" },
-      { titleKey: "loads.fiberOptics.columns.foreAft" },
-    ],
+    "rig.cards.spreaderDeflection",
+    [{ titleKey: "rig.columns.sideways" }, { titleKey: "rig.columns.foreAft" }],
     spreaderDeflectionRows(mast),
   ),
   card(
-    "loads.fiberOptics.cards.riggingLoadStrain",
+    "rig.cards.riggingLoadStrain",
     [
-      { titleKey: "loads.fiberOptics.columns.loadPt" },
-      { titleKey: "loads.fiberOptics.columns.loadSb" },
-      { titleKey: "loads.fiberOptics.columns.strainPt" },
-      { titleKey: "loads.fiberOptics.columns.strainSb" },
+      { titleKey: "rig.columns.loadPt" },
+      { titleKey: "rig.columns.loadSb" },
+      { titleKey: "rig.columns.strainPt" },
+      { titleKey: "rig.columns.strainSb" },
     ],
     riggingRows(mast),
   ),
   card(
-    "loads.fiberOptics.cards.riggingSumLoad",
-    [{ titleKey: "loads.fiberOptics.columns.pt" }, { titleKey: "loads.fiberOptics.columns.sb" }],
+    "rig.cards.riggingSumLoad",
+    [{ titleKey: "rig.columns.pt" }, { titleKey: "rig.columns.sb" }],
     riggingSumRows(mast),
   ),
   card(
-    "loads.fiberOptics.cards.spreaderTemperature",
+    "rig.cards.spreaderTemperature",
     [
-      { titleKey: "loads.fiberOptics.columns.fore" },
-      { titleKey: "loads.fiberOptics.columns.pt" },
-      { titleKey: "loads.fiberOptics.columns.sb" },
+      { titleKey: "rig.columns.fore" },
+      { titleKey: "rig.columns.pt" },
+      { titleKey: "rig.columns.sb" },
     ],
     spreaderTempRows(mast),
   ),
   card(
-    "loads.fiberOptics.cards.riggingTemperature",
-    [{ titleKey: "loads.fiberOptics.columns.pt" }, { titleKey: "loads.fiberOptics.columns.sb" }],
+    "rig.cards.riggingTemperature",
+    [{ titleKey: "rig.columns.pt" }, { titleKey: "rig.columns.sb" }],
     riggingTempRows(mast),
   ),
 ];
 
-export const FIBER_MAIN_CARDS: FiberOpticCard[] = fiberCards("main");
-
-export const FIBER_MIZZEN_CARDS: FiberOpticCard[] = fiberCards("mizzen");
-
-export const FIBER_OPTICS_COLUMNS: FiberOpticMastColumn[] = [
-  { titleKey: "loads.fiberOptics.columns.mizzenMast", cards: FIBER_MIZZEN_CARDS },
-  { titleKey: "loads.fiberOptics.columns.mainMast", cards: FIBER_MAIN_CARDS },
+export const RIG_MASTS: RigMast[] = [
+  { titleKey: "rig.columns.mizzenMast", cards: mastCards("mizzen") },
+  { titleKey: "rig.columns.mainMast", cards: mastCards("main") },
 ];

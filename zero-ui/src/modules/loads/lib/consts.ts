@@ -15,20 +15,6 @@ export const LOAD_UNIT: Record<VariableUnit, string> = {
   [VariableUnit.Percent]: "%",
 };
 
-const UNIT_I18N_KEY: Record<string, string> = {
-  tonne: "tonne",
-  t_m: "t_m",
-  um_m: "um_m",
-  deg_c: "degC",
-  m: "m",
-};
-
-export const formatUnit = (unit: string | null | undefined, t: (key: string) => string): string => {
-  if (!unit) return "";
-  const key = UNIT_I18N_KEY[unit];
-  return key ? t(`loads.units.${key}`) : unit;
-};
-
 const AWAS = [AWA.Upwind, AWA.Reaching, AWA.Downwind];
 export const AWA_VALUES: Range<AWA>[] = toRange((_from, _to, index) => AWAS[index], 0, 40, 80, 180);
 export const AWS_VALUES: Range[] = toRange(

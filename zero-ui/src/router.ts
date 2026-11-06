@@ -4,6 +4,7 @@ import { grafanaRoute, sailSystemRoute, sharedRoutes } from "./modules/common/ro
 import { domesticRoutes } from "./modules/domestic/router";
 import { loadsRoutes } from "./modules/loads/router";
 import { powerRoutes } from "./modules/power-tags/router";
+import { rigRoutes } from "./modules/rig/router";
 import { thrappRoutes } from "./modules/thrapp/router";
 import { thrsimRoutes } from "./modules/thrsim/router";
 
@@ -15,6 +16,7 @@ const appRoutes: Record<ZeroApps, RouteRecordRaw> = {
   [ZeroApps.loads]: loadsRoutes,
   [ZeroApps.thrs]: thrappRoutes,
   [ZeroApps.powerTags]: powerRoutes,
+  [ZeroApps.rig]: rigRoutes,
 };
 
 const includedRoutes = INCLUDED_APPS.map((app) => appRoutes[app]);
