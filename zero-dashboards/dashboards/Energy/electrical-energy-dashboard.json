@@ -1,1056 +1,1192 @@
 {
-  "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
-        },
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "type": "dashboard"
-      }
-    ]
+  "apiVersion": "dashboard.grafana.app/v2",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "9a91cc40-a5b1-4b0e-a69e-c9530138fdda"
   },
-  "editable": true,
-  "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
-  "id": 0,
-  "links": [],
-  "liveNow": true,
-  "panels": [
-    {
-      "datasource": {
-        "type": "info8fcc-greptimedb-datasource",
-        "uid": "${datasource}"
+  "spec": {
+    "annotations": [
+      {
+        "kind": "AnnotationQuery",
+        "spec": {
+          "builtIn": true,
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "query": {
+            "datasource": {
+              "name": "-- Grafana --"
+            },
+            "group": "grafana",
+            "kind": "DataQuery",
+            "spec": {},
+            "version": "v0"
+          }
+        }
+      }
+    ],
+    "cursorSync": "Off",
+    "editable": true,
+    "elements": {
+      "panel-2": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
+                        "spec": {
+                          "dataset": "dev",
+                          "editorMode": "code",
+                        "editorType": "sql",
+                        "format": 1,
+                        "meta": {
+                          "builderOptions": {
+                            "columns": [],
+                            "database": "",
+                            "limit": 1000,
+                            "meta": {},
+                            "mode": "list",
+                            "queryType": "table",
+                            "table": ""
+                          }
+                        },
+                        "pluginVersion": "3.0.2",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "WITH consumption_data AS (\r\n\tSELECT\r\n    date_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tpower\r\n\tFROM views.gld_power_tags_power_per_minute_per_main_group\r\n\tWHERE $__timeFilter(time)\r\n\t\r\n\tUNION ALL \r\n\t\r\n\tSELECT \r\n\t\tdate_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tpower\r\n\tFROM views.gld_24vdc_power_per_minute_per_main_group\r\n\tWHERE $__timeFilter(time)\r\n\t\r\n\tUNION ALL \r\n\t\r\n\tSELECT \r\n\t\tdate_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tpower\r\n\tFROM views.gld_aradex_power_per_minute_per_main_group\r\n\tWHERE $__timeFilter(time)\r\n\t\r\n\tUNION ALL \r\n\t\r\n\tSELECT \r\n\t\tdate_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tpower\r\n\tFROM views.gld_solar_power_per_minute_per_main_group\r\n\tWHERE $__timeFilter(time)\r\n)\r\n\r\nSELECT\r\n  hour                                                                     AS time,\r\n\t-- Producers\r\n  SUM(CASE WHEN main_group = 'Solar' THEN power ELSE 0 END) / 60           AS solar,\r\n  SUM(CASE WHEN main_group = 'Shore' THEN power ELSE 0 END) / 60           AS shore,\r\n  SUM(CASE WHEN main_group = 'Hydrogeneration' THEN power ELSE 0 END) / 60 AS hydrogeneration,\r\n\t-- Consumers\r\n  SUM(CASE WHEN main_group = 'Domestic' THEN -power ELSE 0 END) / 60       AS domestic,\r\n  SUM(CASE WHEN main_group = 'Technical' THEN -power ELSE 0 END) / 60      AS technical,\r\n  SUM(CASE WHEN main_group = 'HVAC' THEN -power ELSE 0 END) / 60           AS hvac,\r\n  SUM(CASE WHEN main_group = 'Propulsion' THEN -power ELSE 0 END) / 60     AS propulsion\r\nFROM consumption_data\r\nGROUP BY hour\r\nORDER BY hour",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ],
+                          "limit": 50
+                        }
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "Electrical hourly"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": [
+                {
+                  "group": "organize",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "excludeByName": {},
+                      "includeByName": {},
+                      "indexByName": {},
+                      "orderByMode": "manual",
+                      "renameByName": {
+                        "Domestic": "",
+                        "domestic": "Domestic",
+                        "hvac": "HVAC",
+                        "hydrogeneration": "Hydrogeneration",
+                        "propulsion": "Propulsion",
+                        "shore": "Shore",
+                        "solar": "Solar",
+                        "technical": "Technical",
+                        "time": "Time",
+                        "time\\group_name": "Time"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "description": "",
+          "id": 2,
+          "links": [],
+          "title": "Electrical energy production and consumption",
+          "vizConfig": {
+            "group": "timeseries",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": true,
+                    "axisCenteredZero": true,
+                    "axisColorMode": "text",
+                    "axisGridShow": true,
+                    "axisLabel": "",
+                    "axisPlacement": "left",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.9,
+                    "drawStyle": "bars",
+                    "fillOpacity": 100,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineWidth": 3,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "never",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "normal"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "decimals": 2,
+                  "fieldMinMax": false,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": 0
+                      }
+                    ]
+                  },
+                  "unit": "watth"
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Time"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "time:  HH:mm"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Hydrogeneration"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "dark-blue",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Solar power"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "dark-yellow",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Shore power"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "dark-green",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Domestic"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "dark-orange",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "HVAC"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "#28b4b4",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Technical"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "dark-purple",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Propulsion"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "dark-red",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "options": {
+                "legend": {
+                  "calcs": [
+                    "median"
+                  ],
+                  "displayMode": "table",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              }
+            },
+            "version": "13.3.0"
+          }
+        }
       },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
+      "panel-3": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "dataset": "dev",
+                        "editorMode": "code",
+                        "editorType": "sql",
+                        "format": 1,
+                        "meta": {
+                          "builderOptions": {
+                            "columns": [],
+                            "database": "",
+                            "limit": 1000,
+                            "meta": {},
+                            "mode": "list",
+                            "queryType": "table",
+                            "table": ""
+                          }
+                        },
+                        "pluginVersion": "3.0.2",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "WITH consumption_data AS (\r\n  SELECT time, main_group, power\r\n  FROM views.gld_power_tags_power_per_minute_per_main_group\r\n  WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n\r\n  UNION ALL\r\n     \r\n  SELECT time, main_group, power\r\n  FROM views.gld_24vdc_power_per_minute_per_main_group\r\n  WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n\r\n  UNION ALL\r\n     \r\n  SELECT time, main_group, power\r\n  FROM views.gld_aradex_power_per_minute_per_main_group\r\n  WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n\r\n  UNION ALL\r\n     \r\n  SELECT time, main_group, power\r\n  FROM views.gld_solar_power_per_minute_per_main_group\r\n  WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n)\r\n\r\nSELECT\r\n  MAX(time) AS time,\r\n\r\n\t-- Producers\r\n  MAX(CASE WHEN main_group = 'Solar' THEN power_value ELSE 0 END)                AS solar,\r\n  NULL                                                                           AS shore_power,\r\n  MAX(CASE WHEN main_group = 'Hydrogeneration' THEN power_value ELSE 0 END)      AS hydro,\r\n  -- Consumers\r\n  MAX(CASE WHEN main_group = 'Domestic' THEN power_value ELSE 0 END)             AS domestic,\r\n  MAX(CASE WHEN main_group = 'HVAC' THEN power_value ELSE 0 END)                 AS hvac,\r\n  MAX(CASE WHEN main_group = 'Technical' THEN power_value ELSE 0 END)            AS technical,\r\n  MAX(CASE WHEN main_group = 'Propulsion' THEN power_value ELSE 0 END)           AS propulsion\r\nFROM (\r\n  SELECT\r\n    MAX(time) AS time,\r\n    main_group,\r\n    AVG(power_value) AS power_value\r\n  FROM (\r\n    SELECT time, main_group, SUM(power) AS power_value\r\n    FROM consumption_data\r\n    GROUP BY time, main_group\r\n  )\r\n  GROUP BY main_group\r\n)",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ],
+                          "limit": 50
+                        }
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "meta": {
+                          "builderOptions": {
+                            "columns": [],
+                            "database": "",
+                            "limit": 1000,
+                            "meta": {},
+                            "mode": "list",
+                            "queryType": "table",
+                            "table": ""
+                          }
+                        },
+                        "pluginVersion": "3.0.2",
+                        "queryType": "table",
+                        "rawSql": "SELECT\r\n  MAX(time)                                                                                                  AS time,\r\n  SUM(avg_energy_per_pack)                                                                                   AS energy,\r\n  (SUM(avg_energy_per_pack) / NULLIF(SUM(avg_energy_per_pack / NULLIF(avg_soc_per_pack, 0) * 100), 0)) * 100 AS soc,\r\n  SUM(avg_charging_power_per_pack)                                                                           AS charging_power,\r\n  SUM(avg_discharging_power_per_pack)                                                                        AS discharging_power\r\nFROM (\r\n  SELECT\r\n    MAX(time)                                                              AS time,\r\n    topic,\r\n    AVG(avg_energy)                                                        AS avg_energy_per_pack,\r\n    AVG(avg_soc)                                                           AS avg_soc_per_pack,\r\n    CASE WHEN MAX(is_charging) THEN AVG(ABS(avg_battery_power)) ELSE 0 END AS avg_charging_power_per_pack,\r\n    CASE WHEN MAX(is_discharging) THEN AVG(avg_battery_power) ELSE 0 END   AS avg_discharging_power_per_pack\r\n  FROM views.gld_batteries_per_minute\r\n  WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n  GROUP BY topic\r\n)"
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "B"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
           },
-          "decimals": 2,
-          "mappings": [],
-          "noValue": "-",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#646464",
-                "value": 0
+          "description": "",
+          "id": 3,
+          "links": [],
+          "title": "Electrical flow",
+          "vizConfig": {
+            "group": "canvas",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "decimals": 2,
+                  "noValue": "-",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "#646464",
+                        "value": 0
+                      },
+                      {
+                        "color": "#646464",
+                        "value": 0
+                      },
+                      {
+                        "color": "text",
+                        "value": 2
+                      }
+                    ]
+                  },
+                  "unit": "watt"
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "soc"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "percent"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "energy"
+                    },
+                    "properties": [
+                      {
+                        "id": "unit",
+                        "value": "watth"
+                      }
+                    ]
+                  }
+                ]
               },
-              {
-                "color": "#646464",
-                "value": 0
+              "options": {
+                "infinitePan": false,
+                "inlineEditing": false,
+                "panZoom": false,
+                "root": {
+                  "background": {
+                    "color": {
+                      "fixed": "transparent"
+                    },
+                    "image": {
+                      "field": "",
+                      "fixed": "../../extra/electrical_flow_boxed.png",
+                      "mode": "fixed"
+                    },
+                    "size": "original"
+                  },
+                  "border": {
+                    "color": {
+                      "fixed": "dark-green"
+                    },
+                    "width": 0
+                  },
+                  "constraint": {
+                    "horizontal": "left",
+                    "vertical": "top"
+                  },
+                  "elements": [
+                    {
+                      "background": {
+                        "color": {
+                          "fixed": "transparent"
+                        }
+                      },
+                      "border": {
+                        "color": {
+                          "fixed": "#313131"
+                        },
+                        "radius": 0,
+                        "width": 0
+                      },
+                      "config": {
+                        "align": "center",
+                        "color": {
+                          "fixed": "#000000"
+                        },
+                        "size": 12,
+                        "text": {
+                          "field": "propulsion",
+                          "fixed": "",
+                          "mode": "field"
+                        },
+                        "valign": "middle"
+                      },
+                      "constraint": {
+                        "horizontal": "left",
+                        "vertical": "top"
+                      },
+                      "links": [],
+                      "name": "Propulsion",
+                      "placement": {
+                        "height": 30,
+                        "left": 550,
+                        "rotation": 0,
+                        "top": 339,
+                        "width": 80
+                      },
+                      "type": "metric-value"
+                    },
+                    {
+                      "background": {
+                        "color": {
+                          "fixed": "transparent"
+                        },
+                        "size": "cover"
+                      },
+                      "border": {
+                        "color": {
+                          "fixed": "#333333"
+                        },
+                        "width": 0
+                      },
+                      "config": {
+                        "align": "center",
+                        "color": {
+                          "fixed": "#000000"
+                        },
+                        "size": 12,
+                        "text": {
+                          "field": "domestic",
+                          "fixed": "",
+                          "mode": "field"
+                        },
+                        "valign": "middle"
+                      },
+                      "connections": [],
+                      "constraint": {
+                        "horizontal": "left",
+                        "vertical": "top"
+                      },
+                      "links": [],
+                      "name": "Domestic",
+                      "placement": {
+                        "height": 30,
+                        "left": 550,
+                        "rotation": 0,
+                        "top": 154,
+                        "width": 78
+                      },
+                      "type": "metric-value"
+                    },
+                    {
+                      "background": {
+                        "color": {
+                          "fixed": "transparent"
+                        }
+                      },
+                      "border": {
+                        "color": {
+                          "fixed": "#313131"
+                        },
+                        "width": 0
+                      },
+                      "config": {
+                        "align": "center",
+                        "color": {
+                          "fixed": "#000000"
+                        },
+                        "size": 12,
+                        "text": {
+                          "field": "technical",
+                          "fixed": "",
+                          "mode": "field"
+                        },
+                        "valign": "middle"
+                      },
+                      "constraint": {
+                        "horizontal": "left",
+                        "vertical": "top"
+                      },
+                      "links": [],
+                      "name": "Technical",
+                      "placement": {
+                        "height": 30,
+                        "left": 550,
+                        "rotation": 0,
+                        "top": 250,
+                        "width": 78
+                      },
+                      "type": "metric-value"
+                    },
+                    {
+                      "background": {
+                        "color": {
+                          "fixed": "transparent"
+                        },
+                        "image": {
+                          "fixed": ""
+                        }
+                      },
+                      "border": {
+                        "color": {
+                          "fixed": "#313131"
+                        },
+                        "width": 0
+                      },
+                      "config": {
+                        "align": "center",
+                        "color": {
+                          "fixed": "#000000"
+                        },
+                        "size": 12,
+                        "text": {
+                          "field": "hvac",
+                          "fixed": "",
+                          "mode": "field"
+                        },
+                        "valign": "middle"
+                      },
+                      "connections": [],
+                      "constraint": {
+                        "horizontal": "left",
+                        "vertical": "top"
+                      },
+                      "links": [],
+                      "name": "HVAC",
+                      "placement": {
+                        "height": 30,
+                        "left": 550,
+                        "rotation": 0,
+                        "top": 59,
+                        "width": 78
+                      },
+                      "type": "metric-value"
+                    },
+                    {
+                      "background": {
+                        "color": {
+                          "fixed": "transparent"
+                        }
+                      },
+                      "border": {
+                        "color": {
+                          "fixed": "#333333"
+                        },
+                        "width": 0
+                      },
+                      "config": {
+                        "align": "center",
+                        "color": {
+                          "fixed": "#000000"
+                        },
+                        "size": 12,
+                        "text": {
+                          "field": "hydro",
+                          "fixed": "",
+                          "mode": "field"
+                        },
+                        "valign": "middle"
+                      },
+                      "constraint": {
+                        "horizontal": "left",
+                        "vertical": "top"
+                      },
+                      "links": [],
+                      "name": "Hydro",
+                      "placement": {
+                        "height": 30,
+                        "left": 157,
+                        "rotation": 0,
+                        "top": 339,
+                        "width": 78
+                      },
+                      "type": "metric-value"
+                    },
+                    {
+                      "background": {
+                        "color": {
+                          "fixed": "transparent"
+                        }
+                      },
+                      "border": {
+                        "color": {
+                          "fixed": "#313131"
+                        },
+                        "width": 0
+                      },
+                      "config": {
+                        "align": "center",
+                        "color": {
+                          "fixed": "#000000"
+                        },
+                        "size": 12,
+                        "text": {
+                          "field": "shore_power",
+                          "fixed": "",
+                          "mode": "field"
+                        },
+                        "valign": "middle"
+                      },
+                      "constraint": {
+                        "horizontal": "left",
+                        "vertical": "top"
+                      },
+                      "links": [],
+                      "name": "Shore",
+                      "placement": {
+                        "height": 30,
+                        "left": 157,
+                        "rotation": 0,
+                        "top": 199,
+                        "width": 78
+                      },
+                      "type": "metric-value"
+                    },
+                    {
+                      "background": {
+                        "color": {
+                          "fixed": "transparent"
+                        }
+                      },
+                      "border": {
+                        "color": {
+                          "fixed": "#313131"
+                        },
+                        "width": 0
+                      },
+                      "config": {
+                        "align": "center",
+                        "color": {
+                          "fixed": "#000000"
+                        },
+                        "size": 12,
+                        "text": {
+                          "field": "solar",
+                          "fixed": "",
+                          "mode": "field"
+                        },
+                        "valign": "middle"
+                      },
+                      "constraint": {
+                        "horizontal": "left",
+                        "vertical": "top"
+                      },
+                      "links": [],
+                      "name": "Solar",
+                      "placement": {
+                        "height": 30,
+                        "left": 157,
+                        "rotation": 0,
+                        "top": 60,
+                        "width": 78
+                      },
+                      "type": "metric-value"
+                    },
+                    {
+                      "background": {
+                        "color": {
+                          "fixed": "transparent"
+                        }
+                      },
+                      "border": {
+                        "color": {
+                          "fixed": "#313131"
+                        },
+                        "width": 0
+                      },
+                      "config": {
+                        "align": "center",
+                        "color": {
+                          "fixed": "#000000"
+                        },
+                        "size": 12,
+                        "text": {
+                          "field": "charging_power",
+                          "fixed": "",
+                          "mode": "field"
+                        },
+                        "valign": "middle"
+                      },
+                      "connections": [],
+                      "constraint": {
+                        "horizontal": "left",
+                        "vertical": "top"
+                      },
+                      "links": [],
+                      "name": "Charging",
+                      "placement": {
+                        "height": 31,
+                        "left": 427,
+                        "rotation": 0,
+                        "top": 152,
+                        "width": 78
+                      },
+                      "type": "metric-value"
+                    },
+                    {
+                      "background": {
+                        "color": {
+                          "fixed": "transparent"
+                        }
+                      },
+                      "border": {
+                        "color": {
+                          "fixed": "#313131"
+                        },
+                        "width": 0
+                      },
+                      "config": {
+                        "align": "center",
+                        "color": {
+                          "fixed": "#000000"
+                        },
+                        "size": 12,
+                        "text": {
+                          "field": "discharging_power",
+                          "fixed": "",
+                          "mode": "field"
+                        },
+                        "valign": "middle"
+                      },
+                      "connections": [],
+                      "constraint": {
+                        "horizontal": "left",
+                        "vertical": "top"
+                      },
+                      "links": [],
+                      "name": "Discharging",
+                      "placement": {
+                        "height": 31,
+                        "left": 286,
+                        "rotation": 0,
+                        "top": 152,
+                        "width": 78
+                      },
+                      "type": "metric-value"
+                    },
+                    {
+                      "background": {
+                        "color": {
+                          "fixed": "#00000000"
+                        }
+                      },
+                      "border": {
+                        "color": {
+                          "fixed": "dark-green"
+                        }
+                      },
+                      "config": {
+                        "align": "center",
+                        "color": {
+                          "fixed": "text"
+                        },
+                        "size": 24,
+                        "text": {
+                          "field": "soc",
+                          "fixed": "",
+                          "mode": "field"
+                        },
+                        "valign": "middle"
+                      },
+                      "constraint": {
+                        "horizontal": "left",
+                        "vertical": "top"
+                      },
+                      "links": [],
+                      "name": "SoC",
+                      "placement": {
+                        "height": 40,
+                        "left": 437,
+                        "rotation": 0,
+                        "top": 10,
+                        "width": 127
+                      },
+                      "type": "metric-value"
+                    },
+                    {
+                      "background": {
+                        "color": {
+                          "fixed": "transparent"
+                        },
+                        "image": {
+                          "field": "soc",
+                          "mode": "fixed"
+                        }
+                      },
+                      "border": {
+                        "color": {
+                          "fixed": "#313131"
+                        },
+                        "width": 0
+                      },
+                      "config": {
+                        "align": "center",
+                        "color": {
+                          "fixed": "#000000"
+                        },
+                        "size": 12,
+                        "text": {
+                          "field": "energy",
+                          "fixed": "",
+                          "mode": "field"
+                        },
+                        "valign": "middle"
+                      },
+                      "constraint": {
+                        "horizontal": "left",
+                        "vertical": "top"
+                      },
+                      "links": [],
+                      "name": "Energy",
+                      "placement": {
+                        "height": 30,
+                        "left": 350,
+                        "rotation": 0,
+                        "top": 14,
+                        "width": 79
+                      },
+                      "type": "metric-value"
+                    }
+                  ],
+                  "name": "Element 1758614155197",
+                  "placement": {
+                    "height": 100,
+                    "left": 0,
+                    "rotation": 0,
+                    "top": 0,
+                    "width": 100
+                  },
+                  "type": "frame"
+                },
+                "showAdvancedTypes": false,
+                "tooltip": {
+                  "disableForOneClick": false,
+                  "mode": "none"
+                },
+                "zoomToContent": false
+              }
+            },
+            "version": "13.4.0"
+          }
+        }
+      },
+      "panel-4": {
+        "kind": "Panel",
+        "spec": {
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "hidden": false,
+                    "query": {
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "group": "info8fcc-greptimedb-datasource",
+                      "kind": "DataQuery",
+                      "spec": {
+                        "dataset": "dev",
+                        "editorMode": "code",
+                        "editorType": "sql",
+                        "format": 1,
+                        "meta": {
+                          "builderOptions": {
+                            "columns": [],
+                            "database": "",
+                            "limit": 1000,
+                            "meta": {},
+                            "mode": "list",
+                            "queryType": "table",
+                            "table": ""
+                          }
+                        },
+                        "pluginVersion": "3.0.2",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "WITH consumption_data AS (\r\n\tSELECT\r\n    date_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tsub_group,\r\n\t\tpower\r\n\tFROM views.gld_power_tags_power_per_minute_per_sub_group\r\n\tWHERE $__timeFilter(time)\r\n\t\r\n\tUNION ALL \r\n\t\r\n\tSELECT \r\n\t\tdate_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tsub_group,\r\n\t\tpower\r\n\tFROM views.gld_24vdc_power_per_minute_per_sub_group\r\n\tWHERE $__timeFilter(time)\r\n\t\r\n\tUNION ALL \r\n\t\r\n\tSELECT \r\n\t\tdate_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tNULL AS sub_group,\r\n\t\tpower\r\n\tFROM views.gld_aradex_power_per_minute_per_main_group\r\n\tWHERE $__timeFilter(time)\r\n)\r\n\r\nSELECT\r\n\tmain_group                                          AS group_name,\r\n\tCOALESCE(sub_group, main_group) \t\t\t\t\t\t    \t\tAS sub_group_name,\r\n\tSUM(power) / 60                                    AS energy,\r\n  SUM(SUM(power) / 60) OVER (PARTITION BY main_group) AS group_energy\r\nFROM consumption_data\r\nWHERE main_group in ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\nGROUP BY main_group, sub_group",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ],
+                          "limit": 50
+                        }
+                      },
+                      "version": "v0"
+                    },
+                    "refId": "A"
+                  }
+                }
+              ],
+              "queryOptions": {},
+              "transformations": []
+            }
+          },
+          "description": "Energy consumption per group and subgroup",
+          "id": 4,
+          "links": [],
+          "title": "Electrical energy consumption",
+          "vizConfig": {
+            "group": "marcusolsson-treemap-panel",
+            "kind": "VizConfig",
+            "spec": {
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "continuous-YlRd"
+                  },
+                  "decimals": 1,
+                  "fieldMinMax": false,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "text",
+                        "value": 0
+                      }
+                    ]
+                  },
+                  "unit": "watth"
+                },
+                "overrides": []
               },
-              {
-                "color": "text",
-                "value": 2
+              "options": {
+                "colorByField": "group_energy",
+                "groupByField": "group_name",
+                "labelFields": [],
+                "sizeField": "energy",
+                "textField": "sub_group_name",
+                "tiling": "treemapSquarify"
               }
-            ]
-          },
-          "unit": "watt"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "soc"
             },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
+            "version": "2.1.1"
+          }
+        }
+      }
+    },
+    "layout": {
+      "kind": "GridLayout",
+      "spec": {
+        "items": [
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-3"
+              },
+              "height": 12,
+              "width": 11,
+              "x": 0,
+              "y": 0
+            }
           },
           {
-            "matcher": {
-              "id": "byName",
-              "options": "energy"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "watth"
-              }
-            ]
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-4"
+              },
+              "height": 12,
+              "width": 13,
+              "x": 11,
+              "y": 0
+            }
+          },
+          {
+            "kind": "GridLayoutItem",
+            "spec": {
+              "element": {
+                "kind": "ElementReference",
+                "name": "panel-2"
+              },
+              "height": 12,
+              "width": 24,
+              "x": 0,
+              "y": 12
+            }
           }
         ]
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 11,
-        "x": 0,
-        "y": 0
-      },
-      "id": 3,
-      "options": {
-        "infinitePan": false,
-        "inlineEditing": false,
-        "panZoom": false,
-        "root": {
-          "background": {
-            "color": {
-              "fixed": "transparent"
-            },
-            "image": {
-              "field": "",
-              "fixed": "../extra/electrical_flow_boxed.png",
-              "mode": "fixed"
-            },
-            "size": "original"
-          },
-          "border": {
-            "color": {
-              "fixed": "dark-green"
-            },
-            "width": 0
-          },
-          "constraint": {
-            "horizontal": "left",
-            "vertical": "top"
-          },
-          "elements": [
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "#313131"
-                },
-                "radius": 0,
-                "width": 0
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 12,
-                "text": {
-                  "field": "propulsion",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Propulsion",
-              "placement": {
-                "height": 30,
-                "left": 550,
-                "rotation": 0,
-                "top": 339,
-                "width": 80
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                },
-                "size": "cover"
-              },
-              "border": {
-                "color": {
-                  "fixed": "#333333"
-                },
-                "width": 0
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 12,
-                "text": {
-                  "field": "domestic",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Domestic",
-              "placement": {
-                "height": 30,
-                "left": 550,
-                "rotation": 0,
-                "top": 154,
-                "width": 78
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "#313131"
-                },
-                "width": 0
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 12,
-                "text": {
-                  "field": "technical",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Technical",
-              "placement": {
-                "height": 30,
-                "left": 550,
-                "rotation": 0,
-                "top": 250,
-                "width": 78
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                },
-                "image": {
-                  "fixed": ""
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "#313131"
-                },
-                "width": 0
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 12,
-                "text": {
-                  "field": "hvac",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "HVAC",
-              "placement": {
-                "height": 30,
-                "left": 550,
-                "rotation": 0,
-                "top": 59,
-                "width": 78
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "#333333"
-                },
-                "width": 0
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 12,
-                "text": {
-                  "field": "hydro",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Hydro",
-              "placement": {
-                "height": 30,
-                "left": 157,
-                "rotation": 0,
-                "top": 339,
-                "width": 78
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "#313131"
-                },
-                "width": 0
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 12,
-                "text": {
-                  "field": "shore_power",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Shore",
-              "placement": {
-                "height": 30,
-                "left": 157,
-                "rotation": 0,
-                "top": 199,
-                "width": 78
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "#313131"
-                },
-                "width": 0
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 12,
-                "text": {
-                  "field": "solar",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Solar",
-              "placement": {
-                "height": 30,
-                "left": 157,
-                "rotation": 0,
-                "top": 60,
-                "width": 78
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "#313131"
-                },
-                "width": 0
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 12,
-                "text": {
-                  "field": "charging_power",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Charging",
-              "placement": {
-                "height": 31,
-                "left": 427,
-                "rotation": 0,
-                "top": 152,
-                "width": 78
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "#313131"
-                },
-                "width": 0
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 12,
-                "text": {
-                  "field": "discharging_power",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "connections": [],
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Discharging",
-              "placement": {
-                "height": 31,
-                "left": 286,
-                "rotation": 0,
-                "top": 152,
-                "width": 78
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "#00000000"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "dark-green"
-                }
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "text"
-                },
-                "size": 24,
-                "text": {
-                  "field": "soc",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "SoC",
-              "placement": {
-                "height": 40,
-                "left": 437,
-                "rotation": 0,
-                "top": 10,
-                "width": 127
-              },
-              "type": "metric-value"
-            },
-            {
-              "background": {
-                "color": {
-                  "fixed": "transparent"
-                },
-                "image": {
-                  "field": "soc",
-                  "mode": "fixed"
-                }
-              },
-              "border": {
-                "color": {
-                  "fixed": "#313131"
-                },
-                "width": 0
-              },
-              "config": {
-                "align": "center",
-                "color": {
-                  "fixed": "#000000"
-                },
-                "size": 12,
-                "text": {
-                  "field": "energy",
-                  "fixed": "",
-                  "mode": "field"
-                },
-                "valign": "middle"
-              },
-              "constraint": {
-                "horizontal": "left",
-                "vertical": "top"
-              },
-              "links": [],
-              "name": "Energy",
-              "placement": {
-                "height": 30,
-                "left": 350,
-                "rotation": 0,
-                "top": 14,
-                "width": 79
-              },
-              "type": "metric-value"
-            }
-          ],
-          "name": "Element 1758614155197",
-          "placement": {
-            "height": 100,
-            "left": 0,
-            "rotation": 0,
-            "top": 0,
-            "width": 100
-          },
-          "type": "frame"
-        },
-        "showAdvancedTypes": false,
-        "tooltip": {
-          "disableForOneClick": false,
-          "mode": "none"
-        },
-        "zoomToContent": false
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "3.0.2",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "WITH consumption_data AS (\r\n  SELECT time, main_group, power\r\n  FROM views.gld_power_tags_power_per_minute_per_main_group\r\n  WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n\r\n  UNION ALL\r\n     \r\n  SELECT time, main_group, power\r\n  FROM views.gld_24vdc_power_per_minute_per_main_group\r\n  WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n\r\n  UNION ALL\r\n     \r\n  SELECT time, main_group, power\r\n  FROM views.gld_aradex_power_per_minute_per_main_group\r\n  WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n)\r\n\r\nSELECT\r\n  MAX(time) AS time,\r\n\r\n\t-- Producers\r\n  NULL                                                                           AS solar,\r\n  NULL                                                                           AS shore_power,\r\n  MAX(CASE WHEN main_group = 'Hydrogeneration' THEN power_value ELSE 0 END)      AS hydro,\r\n  -- Consumers\r\n  MAX(CASE WHEN main_group = 'Domestic' THEN power_value ELSE 0 END)             AS domestic,\r\n  MAX(CASE WHEN main_group = 'HVAC' THEN power_value ELSE 0 END)                 AS hvac,\r\n  MAX(CASE WHEN main_group = 'Technical' THEN power_value ELSE 0 END)            AS technical,\r\n  MAX(CASE WHEN main_group = 'Propulsion' THEN power_value ELSE 0 END)           AS propulsion\r\nFROM (\r\n  SELECT\r\n    MAX(time) AS time,\r\n    main_group,\r\n    AVG(power_value) AS power_value\r\n  FROM (\r\n    SELECT time, main_group, SUM(power) AS power_value\r\n    FROM consumption_data\r\n    GROUP BY time, main_group\r\n  )\r\n  GROUP BY main_group\r\n)",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        },
-        {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "3.0.2",
-          "queryType": "table",
-          "rawSql": "SELECT\r\n  MAX(time)                                                                                                  AS time,\r\n  SUM(avg_energy_per_pack)                                                                                   AS energy,\r\n  (SUM(avg_energy_per_pack) / NULLIF(SUM(avg_energy_per_pack / NULLIF(avg_soc_per_pack, 0) * 100), 0)) * 100 AS soc,\r\n  SUM(avg_charging_power_per_pack)                                                                           AS charging_power,\r\n  SUM(avg_discharging_power_per_pack)                                                                        AS discharging_power\r\nFROM (\r\n  SELECT\r\n    MAX(time)                                                              AS time,\r\n    topic,\r\n    AVG(avg_energy)                                                        AS avg_energy_per_pack,\r\n    AVG(avg_soc)                                                           AS avg_soc_per_pack,\r\n    CASE WHEN MAX(is_charging) THEN AVG(ABS(avg_battery_power)) ELSE 0 END AS avg_charging_power_per_pack,\r\n    CASE WHEN MAX(is_discharging) THEN AVG(avg_battery_power) ELSE 0 END   AS avg_discharging_power_per_pack\r\n  FROM views.gld_batteries_per_minute\r\n  WHERE time >= date_sub($__toTime, '5 minutes'::INTERVAL) AND time < $__toTime\r\n  GROUP BY topic\r\n)",
-          "refId": "B"
-        }
-      ],
-      "title": "Electrical flow",
-      "type": "canvas"
+      }
     },
-    {
-      "datasource": {
-        "type": "info8fcc-greptimedb-datasource",
-        "uid": "${datasource}"
-      },
-      "description": "Energy consumption per group and subgroup",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-YlRd"
-          },
-          "decimals": 1,
-          "fieldMinMax": false,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "text",
-                "value": 0
-              }
-            ]
-          },
-          "unit": "watth"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 13,
-        "x": 11,
-        "y": 0
-      },
-      "id": 4,
-      "options": {
-        "colorByField": "group_energy",
-        "groupByField": "group_name",
-        "labelFields": [],
-        "sizeField": "energy",
-        "textField": "sub_group_name",
-        "tiling": "treemapSquarify"
-      },
-      "pluginVersion": "2.1.1",
-      "targets": [
-        {
-          "dataset": "dev",
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "hide": false,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "3.0.2",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "WITH consumption_data AS (\r\n\tSELECT\r\n    date_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tsub_group,\r\n\t\tpower\r\n\tFROM views.gld_power_tags_power_per_minute_per_sub_group\r\n\tWHERE $__timeFilter(time)\r\n\t\r\n\tUNION ALL \r\n\t\r\n\tSELECT \r\n\t\tdate_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tsub_group,\r\n\t\tpower\r\n\tFROM views.gld_24vdc_power_per_minute_per_sub_group\r\n\tWHERE $__timeFilter(time)\r\n\t\r\n\tUNION ALL \r\n\t\r\n\tSELECT \r\n\t\tdate_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tNULL AS sub_group,\r\n\t\tpower\r\n\tFROM views.gld_aradex_power_per_minute_per_main_group\r\n\tWHERE $__timeFilter(time)\r\n)\r\n\r\nSELECT\r\n\tmain_group                                          AS group_name,\r\n\tCOALESCE(sub_group, main_group) \t\t\t\t\t\t    \t\tAS sub_group_name,\r\n\tSUM(power) / 60                                    AS energy,\r\n  SUM(SUM(power) / 60) OVER (PARTITION BY main_group) AS group_energy\r\nFROM consumption_data\r\nWHERE main_group in ('Domestic', 'HVAC', 'Technical', 'Propulsion')\r\nGROUP BY main_group, sub_group",
-          "refId": "A",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
+    "links": [],
+    "liveNow": true,
+    "preferences": {
+      "layout": {
+        "kind": "GridLayout",
+        "spec": {
+          "items": []
         }
-      ],
-      "title": "Electrical energy consumption",
-      "type": "marcusolsson-treemap-panel"
+      }
     },
-    {
-      "datasource": {
-        "type": "info8fcc-greptimedb-datasource",
-        "uid": "${datasource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": true,
-            "axisCenteredZero": true,
-            "axisColorMode": "text",
-            "axisGridShow": true,
-            "axisLabel": "",
-            "axisPlacement": "left",
-            "barAlignment": 0,
-            "barWidthFactor": 0.9,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 3,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "decimals": 2,
-          "fieldMinMax": false,
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              }
-            ]
-          },
-          "unit": "watth"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Time"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "time:  HH:mm"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Hydrogeneration"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Solar power"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-yellow",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Shore power"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Domestic"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-orange",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "HVAC"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "#28b4b4",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Technical"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-purple",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Propulsion"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "dark-red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 24,
-        "x": 0,
-        "y": 12
-      },
-      "id": 2,
-      "options": {
-        "legend": {
-          "calcs": [
-            "median"
-          ],
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.3.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "info8fcc-greptimedb-datasource",
-            "uid": "${datasource}"
-          },
-          "editorMode": "code",
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "meta": {},
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "3.0.2",
-          "queryType": "table",
-          "rawQuery": true,
-          "rawSql": "WITH consumption_data AS (\r\n\tSELECT\r\n    date_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tpower\r\n\tFROM views.gld_power_tags_power_per_minute_per_main_group\r\n\tWHERE $__timeFilter(time)\r\n\t\r\n\tUNION ALL \r\n\t\r\n\tSELECT \r\n\t\tdate_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tpower\r\n\tFROM views.gld_24vdc_power_per_minute_per_main_group\r\n\tWHERE $__timeFilter(time)\r\n\t\r\n\tUNION ALL \r\n\t\r\n\tSELECT \r\n\t\tdate_trunc('hour', time) AS hour,\r\n\t\tmain_group,\r\n\t\tpower\r\n\tFROM views.gld_aradex_power_per_minute_per_main_group\r\n\tWHERE $__timeFilter(time)\r\n)\r\n\r\nSELECT\r\n  hour                                                                     AS time,\r\n\t-- Producers\r\n  SUM(CASE WHEN main_group = 'Solar' THEN power ELSE 0 END) / 60           AS solar,\r\n  SUM(CASE WHEN main_group = 'Shore' THEN power ELSE 0 END) / 60           AS shore,\r\n  SUM(CASE WHEN main_group = 'Hydrogeneration' THEN power ELSE 0 END) / 60 AS hydrogeneration,\r\n\t-- Consumers\r\n  SUM(CASE WHEN main_group = 'Domestic' THEN -power ELSE 0 END) / 60       AS domestic,\r\n  SUM(CASE WHEN main_group = 'Technical' THEN -power ELSE 0 END) / 60      AS technical,\r\n  SUM(CASE WHEN main_group = 'HVAC' THEN -power ELSE 0 END) / 60           AS hvac,\r\n  SUM(CASE WHEN main_group = 'Propulsion' THEN -power ELSE 0 END) / 60     AS propulsion\r\nFROM consumption_data\r\nGROUP BY hour\r\nORDER BY hour",
-          "refId": "Electrical hourly",
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          }
-        }
+    "preload": false,
+    "tags": [],
+    "timeSettings": {
+      "autoRefresh": "1m",
+      "autoRefreshIntervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
       ],
-      "title": "Electrical energy production and consumption",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "includeByName": {},
-            "indexByName": {},
-            "orderByMode": "manual",
-            "renameByName": {
-              "Domestic": "",
-              "domestic": "Domestic",
-              "hvac": "HVAC",
-              "hydrogeneration": "Hydrogeneration",
-              "propulsion": "Propulsion",
-              "shore": "Shore",
-              "solar": "Solar",
-              "technical": "Technical",
-              "time": "Time",
-              "time\\group_name": "Time"
-            }
-          }
-        }
-      ],
-      "type": "timeseries"
-    }
-  ],
-  "preload": false,
-  "refresh": "1m",
-  "schemaVersion": 42,
-  "tags": [],
-  "templating": {
-    "list": [
+      "fiscalYearStartMonth": 0,
+      "from": "now-12h",
+      "hideTimepicker": false,
+      "timezone": "browser",
+      "to": "now"
+    },
+    "title": "Electrical energy",
+    "variables": [
       {
-        "current": {
-          "text": "greptimedb-zero",
-          "value": "PBAD09CF7391C3C43"
-        },
-        "name": "datasource",
-        "options": [],
-        "query": "info8fcc-greptimedb-datasource",
-        "refresh": 1,
-        "regex": "",
-        "type": "datasource"
+        "kind": "DatasourceVariable",
+        "spec": {
+          "allowCustomValue": true,
+          "current": {
+            "text": "greptimedb-zero",
+            "value": "PBAD09CF7391C3C43"
+          },
+          "hide": "dontHide",
+          "includeAll": false,
+          "multi": false,
+          "name": "datasource",
+          "options": [],
+          "pluginId": "info8fcc-greptimedb-datasource",
+          "refresh": "onDashboardLoad",
+          "regex": "",
+          "skipUrlSync": false
+        }
       }
     ]
-  },
-  "time": {
-    "from": "now-12h",
-    "to": "now"
-  },
-  "timepicker": {},
-  "timezone": "browser",
-  "title": "Electrical energy",
-  "uid": "9a91cc40-a5b1-4b0e-a69e-c9530138fdda",
-  "version": 1
+  }
 }
