@@ -28,30 +28,30 @@ dynamic = ["version"]
 license-files = ["LICENSE"]
 
 [dependency-groups]
-dev = ["ruff==0.17.3", "pygraphviz==2.0.4"]
+dev = ["ruff==0.17.3", "pygraphviz~=2.0.4", "pyright~=1.1.414"]
 
 # Notebooks and plotting for the analysis/ folder; not installed in the images.
 analysis = [
-  "jupyter>=1.1.1,<2.0.0",
-  "ipympl>=0.10,<0.11",
-  "matplotlib>=3.10.0,<4.0.0",
-  "pandas>=3.0.6,<4.0.0",
-  "plotly>=7.1.0,<7.2.0",
-  "polars>=2.0.0,<3.0.0",
-  "pyarrow>=26.0.0,<27.0.0",
-  "pyqtgraph>=0.13.7,<1.0.0",
-  "pyside6>=6.8.1.1,<7.0.0",
-  "seaborn>=0.13.2,<1.0.0",
+  "jupyter~=1.1.1",
+  "ipympl~=0.10",
+  "matplotlib~=3.11.2",
+  "pandas~=3.1.1",
+  "plotly~=7.1.0",
+  "polars==2.1.0",
+  "pyarrow~=26.0.1",
+  "pyqtgraph~=0.14.0",
+  "pyside6~=6.12.0",
+  "seaborn~=0.13.2",
 ]
 test = [
-  "polars>=2.0.0,<3.0.0",
-  "pyright>=1.1.392.post0,<2",
-  "pytest>=9.1.1,<10",
-  "pytest-asyncio>=1.4,<1.5",
-  "pytest-timeout>=2.4.0,<3",
-  "pytest-xdist>=3.6.1,<4.0.0",
-  "httpx>=0.28.1,<0.29",
-  "pytest-cov>=7.1.0,<8",
+  "polars~=2.1.0",
+  "pytest~=9.2.0",
+  "pytest-asyncio~=1.4.1",
+  "pytest-timeout~=2.4.0,<3",
+  "pytest-xdist~=3.8.0",
+  "httpx~=0.28.1",
+  "pytest-cov~=7.1.0,<8",
+  "pytest-sugar~=1.1.1",
 ]
 
 [tool.pytest.ini_options]
