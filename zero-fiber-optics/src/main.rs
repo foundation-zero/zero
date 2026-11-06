@@ -5,12 +5,14 @@ mod layout;
 mod metrics;
 mod mqtt;
 mod parser;
+mod readiness;
 
 use crate::app_config::AppConfig;
 use crate::config::{load_config, Port, UdpChannels};
 use crate::layout::{Layout, TopicMap};
 use crate::metrics::{should_log_repeated, MqttMetrics, PortMetrics};
-use crate::mqtt::{MqttHandler, PublishError};
+use crate::mqtt::{MqttConnection, MqttHandler, PublishError};
+use crate::readiness::{write_termination_message, Readiness, NOT_READY_DEADLINE, STATUS_FILE};
 use anyhow::{bail, Context, Result};
 use clap::{Parser, Subcommand};
 use log::{debug, error, info, warn};
@@ -71,11 +73,13 @@ async fn main() -> Result<()> {
             println!("{}", serde_json::to_string_pretty(&schema)?);
         }
         Commands::Run => {
+            // First, so a restarted container does not inherit the previous run's `ready:` line.
+            let readiness = Readiness::new(STATUS_FILE, "mqtt: connecting");
             let app_config =
                 AppConfig::load().context("Failed to load application configuration")?;
             let client_id = mqtt_client_id();
             log_startup_config(&config, &app_config, &client_id);
-            let mqtt_handler = create_mqtt_handler(&app_config, &client_id).await?;
+            let (mqtt_handler, connection) = create_mqtt_handler(&app_config, &client_id);
             let mqtt_metrics = mqtt_handler.metrics();
             let topic_map = Arc::new(TopicMap::new());
             let (handles, port_metrics) = spawn_port_tasks(config.ports, mqtt_handler, topic_map);
@@ -84,7 +88,20 @@ async fn main() -> Result<()> {
             // bind would leave a running-but-idle pod instead of one Kubernetes
             // restarts. Detached, it only runs as long as the port tasks do.
             let _watchdog = spawn_watchdog_task(port_metrics, mqtt_metrics);
-            await_tasks(handles).await;
+
+            let mut mqtt_tasks = JoinSet::new();
+            mqtt_tasks.spawn(connection.run(readiness.clone()));
+            mqtt_tasks.spawn(async move {
+                let status = readiness.deadline(NOT_READY_DEADLINE).await;
+                let message = format!("{status}; exiting after {NOT_READY_DEADLINE:?} not ready");
+                error!("{message}");
+                write_termination_message(&message);
+            });
+            tokio::select! {
+                () = await_tasks(handles) => {}
+                // Either task has logged why it stopped.
+                _ = mqtt_tasks.join_next() => bail!("MQTT connection given up"),
+            }
         }
         Commands::SendExample => {
             send_example_packet(&config).await?;
@@ -205,20 +222,22 @@ fn log_startup_config(config: &UdpChannels, app_config: &AppConfig, client_id: &
     }
 }
 
-async fn create_mqtt_handler(app_config: &AppConfig, client_id: &str) -> Result<Arc<MqttHandler>> {
+fn create_mqtt_handler(
+    app_config: &AppConfig,
+    client_id: &str,
+) -> (Arc<MqttHandler>, MqttConnection) {
     info!(
         "Connecting to MQTT at {}:{}",
         app_config.mqtt_host, app_config.mqtt_port
     );
-    let mqtt_handler = MqttHandler::new(
+    let (mqtt_handler, connection) = MqttHandler::new(
         &app_config.mqtt_host,
         app_config.mqtt_port,
         client_id,
         &app_config.mqtt_prefix,
         app_config.credentials(),
-    )
-    .await?;
-    Ok(Arc::new(mqtt_handler))
+    );
+    (Arc::new(mqtt_handler), connection)
 }
 
 fn spawn_udp_listener_task(
@@ -433,16 +452,13 @@ fn spawn_watchdog_task(ports: PortMetricsByPort, mqtt_metrics: Arc<MqttMetrics>)
                 let snapshot = mqtt_metrics.snapshot();
                 info!(
                     "mqtt counters: connects={} reconnects={} enqueued={} acked={} \
-                     puback_denied={} publish_errors={} publish_timeouts={} \
-                     server_disconnects={}",
+                     publish_errors={} publish_timeouts={}",
                     snapshot.connects,
                     snapshot.reconnects,
                     snapshot.enqueued,
                     snapshot.acked,
-                    snapshot.puback_denied,
                     snapshot.publish_errors,
                     snapshot.publish_timeouts,
-                    snapshot.server_disconnects,
                 );
             }
         }
