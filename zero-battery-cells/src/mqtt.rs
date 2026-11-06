@@ -142,6 +142,11 @@ impl MqttConnection {
                     backoff = INITIAL_BACKOFF;
                     refusals = 0;
                 }
+                // rumqttc reconnects on the next poll, as after an error.
+                Ok(Event::Incoming(Incoming::Disconnect)) => {
+                    warn!("MQTT broker {} disconnected this client", self.host);
+                    readiness.not_ready("mqtt: disconnected by the broker");
+                }
                 Ok(_) => {}
                 Err(e) => {
                     readiness.not_ready(format!("mqtt: {e}"));
@@ -176,6 +181,65 @@ fn is_permanent(error: &ConnectionError) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use tokio::io::{AsyncReadExt, AsyncWriteExt};
+    use tokio::net::TcpListener;
+
+    /// CONNACK packets (MQTT 3.1.1): no session, then the return code.
+    const CONNACK_NOT_AUTHORIZED: [u8; 4] = [0x20, 0x02, 0x00, 0x05];
+    const CONNACK_ACCEPTED: [u8; 4] = [0x20, 0x02, 0x00, 0x00];
+
+    /// Accept one connection per reply: read its CONNECT, answer, keep it open.
+    async fn broker(replies: Vec<[u8; 4]>) -> (u16, tokio::task::JoinHandle<()>) {
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = listener.local_addr().unwrap().port();
+        let server = tokio::spawn(async move {
+            let mut open = Vec::new();
+            for reply in replies {
+                let (mut socket, _) = listener.accept().await.unwrap();
+                let mut connect = [0u8; 256];
+                let _ = socket.read(&mut connect).await.unwrap();
+                socket.write_all(&reply).await.unwrap();
+                open.push(socket);
+            }
+            std::future::pending::<()>().await;
+        });
+        (port, server)
+    }
+
+    async fn wait_for_status(path: &std::path::Path, prefix: &str) -> String {
+        for _ in 0..100 {
+            let status = std::fs::read_to_string(path).unwrap_or_default();
+            if status.starts_with(prefix) {
+                return status;
+            }
+            tokio::time::sleep(Duration::from_millis(50)).await;
+        }
+        panic!("status never started with {prefix:?}");
+    }
+
+    #[tokio::test]
+    async fn readiness_follows_refusal_then_connection() {
+        let (port, server) = broker(vec![CONNACK_NOT_AUTHORIZED, CONNACK_ACCEPTED]).await;
+        let app = AppConfig {
+            mqtt_host: "127.0.0.1".to_string(),
+            mqtt_port: port,
+            mqtt_prefix: "battery".to_string(),
+            udp_port: 0,
+            mqtt_username: None,
+            mqtt_password: None,
+        };
+        let path = std::env::temp_dir().join(format!("mqtt-ready-{}", std::process::id()));
+        let readiness = Readiness::new(&path, "mqtt: connecting");
+        let (_publisher, connection) = MqttPublisher::new(&app, "test");
+        let running = tokio::spawn(connection.run(readiness));
+
+        let refused = wait_for_status(&path, "not ready: mqtt: Connection refused").await;
+        assert!(refused.contains("NotAuthorized"));
+        wait_for_status(&path, "ready: mqtt connected").await;
+
+        running.abort();
+        server.abort();
+    }
 
     #[test]
     fn refusals_other_than_unavailable_are_permanent() {

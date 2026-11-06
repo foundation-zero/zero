@@ -157,7 +157,7 @@ mod tests {
         directory.join(name)
     }
 
-    fn read(path: &PathBuf) -> String {
+    fn read(path: &std::path::Path) -> String {
         std::fs::read_to_string(path).unwrap()
     }
 
