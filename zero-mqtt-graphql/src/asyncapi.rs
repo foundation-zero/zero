@@ -2,7 +2,6 @@ use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::path::{Path, PathBuf};
 
-use crate::metadata::MetadataByTopic;
 use crate::roas_asyncapi::{
     Channel, Document, Message, Operation, OperationAction, Schema, SchemaOrMultiFormat,
     SchemaType, SubSchema,
@@ -13,14 +12,16 @@ use log::{debug, info, warn};
 use roas_asyncapi::common::reference::{RefOr, Reference};
 use serde_json::Value;
 
-use crate::api_model::{Api, Direction, FieldType, GroupDef, Payload, Spec, TopicDef, TopicKind};
+use crate::api_model::{
+    Api, Direction, FieldType, GroupDef, MetadataByTopic, Payload, Spec, TopicDef, TopicKind,
+};
 use crate::message_validation::ValidatorBuilder;
 use crate::topic_map::TopicMap;
 
-/// Read and parse every AsyncAPI document in `spec_dir` once, returning
-/// `(file name, path, document)` for each. Non-JSON files and topic-metadata
-/// files are skipped; unreadable or invalid `.json` files are an error —
-/// see [`read_asyncapi_document`].
+/// The paths of the AsyncAPI documents in `spec_dir`: every `.json` file,
+/// sorted. A spec directory holds only AsyncAPI documents, so a `.json`
+/// file that is not one fails when it is read — see
+/// [`read_asyncapi_document`].
 fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<PathBuf>> {
     let dir = Path::new(spec_dir);
     if !dir.is_dir() {
@@ -38,7 +39,6 @@ fn spec_documents(spec_dir: &str) -> anyhow::Result<Vec<PathBuf>> {
     Ok(files
         .into_iter()
         .filter(|path| path.extension().and_then(|e| e.to_str()) == Some("json"))
-        .filter(|path| !crate::metadata::is_metadata_file(path))
         .collect())
 }
 

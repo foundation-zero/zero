@@ -481,9 +481,8 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, Direction, FieldType, Spec, TopicDef, TopicKind};
+    use crate::api_model::{Api, Direction, FieldType, MetadataByTopic, Spec, TopicDef, TopicKind};
     use crate::graphql::build_schema;
-    use crate::metadata::MetadataByTopic;
     use crate::topic_map::TopicMap;
     use serde_json::json;
 

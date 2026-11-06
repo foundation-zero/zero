@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
-use crate::metadata::MetadataByTopic;
 use jsonschema::Validator;
+use serde_json::Value;
 
 use crate::topic_map::TopicMap;
 
@@ -57,6 +57,9 @@ pub enum TopicKind {
     /// A parametrized family of Members read together as a collection.
     Group(GroupDef),
 }
+
+/// Static attributes per Member, keyed by its concrete topic.
+pub type MetadataByTopic = BTreeMap<String, BTreeMap<String, Value>>;
 
 /// What only a Group has: its Members' static metadata and how to bucket them.
 #[derive(Debug, Clone)]

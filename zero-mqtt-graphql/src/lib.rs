@@ -5,7 +5,6 @@ pub mod config;
 pub mod graphql;
 pub mod http;
 pub mod message_validation;
-pub mod metadata;
 pub mod mqtt;
 pub mod naming;
 pub mod topic_map;
