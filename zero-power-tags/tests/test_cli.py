@@ -1,11 +1,8 @@
 import logging
 import os
 import re
-from unittest.mock import MagicMock
 
 import pytest
-from faststream.mqtt import MQTTBroker
-from zero_modbus_bridge.settings import MqttSettings
 
 from zero_power_tags.cli import (
     PowerTagsSettings,
@@ -118,34 +115,6 @@ class TestStubPorts:
             "10P0-1": 5020,
             "10P1": 16000,
         }
-
-
-def test_run_cmd_broker_reconnects_indefinitely(monkeypatch):
-    """RunCmd asks the base broker for indefinite reconnect and a 15s keepalive."""
-    captured: dict = {}
-
-    def fake_make_broker(self, **kwargs):
-        captured.update(kwargs)
-        return MagicMock()
-
-    monkeypatch.setattr(MqttSettings, "make_broker", fake_make_broker)
-    cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
-    cmd.make_broker()
-
-    assert captured["reconnect"].max_attempts is None
-    assert captured["keepalive"] == 15
-
-
-def test_make_broker_accepts_kwargs_on_real_broker():
-    """The real MQTTBroker accepts our security + reconnect + keepalive kwargs."""
-    cmd = RunCmd(
-        _env_file=None,  # type: ignore[call-arg]
-        mqtt_host="broker",
-        mqtt_port=1883,
-        mqtt_username="u",
-        mqtt_password="p",
-    )
-    assert isinstance(cmd.make_broker(), MQTTBroker)
 
 
 def test_buffer_size_covers_five_minutes_of_one_bridge():

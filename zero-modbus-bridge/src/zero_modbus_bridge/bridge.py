@@ -14,6 +14,7 @@ from zmqtt import MQTTDisconnectedError, MQTTPublishError, MQTTTimeoutError
 from zero_modbus_bridge.io import ModbusTopic
 from zero_modbus_bridge.publisher import MqttPublisher, TopicPublisher
 from zero_modbus_bridge.reader import ModbusReader
+from zero_modbus_bridge.readiness import Readiness
 from zero_modbus_bridge.settings import ModbusSettings
 
 logger = logging.getLogger(__name__)
@@ -40,11 +41,15 @@ class ModbusBridge:
         probe_interval: float = 10.0,
         *,
         buffer_size: int,
+        readiness: Readiness | None = None,
     ):
         """``buffer_size`` bounds the in-memory queue of readings whose publish
         failed with a transient broker error (see ``TRANSIENT_PUBLISH_ERRORS``).
         They are replayed in order, with their original read time, once the
-        broker accepts again; when the queue is full the oldest is dropped."""
+        broker accepts again; when the queue is full the oldest is dropped.
+
+        Pass ``readiness`` when the pod can't do its job without this gateway;
+        without it an unreachable gateway is only logged."""
         if buffer_size <= 0:
             raise ValueError("buffer_size must be > 0")
         self._buffer_size = buffer_size
@@ -53,6 +58,7 @@ class ModbusBridge:
         self._failing = False
         self._reader = reader
         self._publisher = publisher
+        self._readiness = readiness
         if probe_interval <= 0:
             raise ValueError("probe_interval must be > 0")
         self._probe_interval = probe_interval
@@ -74,6 +80,7 @@ class ModbusBridge:
         topics: list[ModbusTopic],
         *,
         buffer_size: int,
+        readiness: Readiness | None = None,
     ) -> "ModbusBridge":
         reader = ModbusReader(modbus_settings.modbus_client(), topics)
         publisher = MqttPublisher(broker, topics)
@@ -83,6 +90,7 @@ class ModbusBridge:
             topics,
             modbus_settings.modbus_probe_interval,
             buffer_size=buffer_size,
+            readiness=readiness,
         )
 
     @classmethod
@@ -133,7 +141,11 @@ class ModbusBridge:
         drained = await self._flush()
         if readings is None:
             logger.warning("Modbus connection not available - skipping probe")
+            if self._readiness is not None:
+                self._readiness.not_ready("modbus", "gateway unreachable")
         else:
+            if self._readiness is not None:
+                self._readiness.ready("modbus")
             self._enqueue(readings)
         if drained:
             await self._flush()

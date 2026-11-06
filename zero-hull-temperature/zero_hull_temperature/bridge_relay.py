@@ -9,6 +9,7 @@ from zero_modbus_bridge.bridge import TRANSIENT_PUBLISH_ERRORS, ModbusBridge
 from zero_modbus_bridge.io import ModbusTopic
 from zero_modbus_bridge.publisher import TopicPublisher
 from zero_modbus_bridge.reader import ModbusReader
+from zero_modbus_bridge.readiness import Readiness
 from zero_modbus_bridge.settings import ModbusSettings
 
 from zero_hull_temperature.addresses import (
@@ -43,9 +44,15 @@ class RelaySwitchingBridge(ModbusBridge):
         activate_topic: str = TOPIC,
         activate_json_path: str = PATH,
         buffer_size: int,
+        readiness: Readiness | None = None,
     ):
         super().__init__(
-            reader, publisher, topics, probe_interval, buffer_size=buffer_size
+            reader,
+            publisher,
+            topics,
+            probe_interval,
+            buffer_size=buffer_size,
+            readiness=readiness,
         )
         self._relay_broker = broker
         self._activate_topic = activate_topic
@@ -57,6 +64,8 @@ class RelaySwitchingBridge(ModbusBridge):
         broker: MQTTBroker,
         activate_topic: str = TOPIC,
         activate_json_path: str = PATH,
+        *,
+        readiness: Readiness | None = None,
     ) -> "RelaySwitchingBridge":
         topics: list[ModbusTopic] = [HULL_TEMPERATURE_TOPIC]
         return RelaySwitchingBridge(
@@ -70,6 +79,7 @@ class RelaySwitchingBridge(ModbusBridge):
             buffer_size=buffer_size_for(
                 modbus_settings.modbus_probe_interval, len(topics)
             ),
+            readiness=readiness,
         )
 
     async def run_once(self) -> None:

@@ -4,10 +4,9 @@ import logging
 import re
 from pathlib import Path
 from secrets import token_hex
-from typing import Annotated, Any, Literal
+from typing import Annotated, Literal
 
 from faststream import FastStream
-from faststream.mqtt import MQTTBroker, ReconnectConfig
 from pydantic import BaseModel, Field
 from pydantic_settings import (
     BaseSettings,
@@ -18,6 +17,7 @@ from pydantic_settings import (
 )
 from zero_modbus_bridge.bridge import ModbusBridge
 from zero_modbus_bridge.io import ModbusTopic
+from zero_modbus_bridge.readiness import Readiness
 from zero_modbus_bridge.settings import MqttSettings
 from zero_modbus_bridge.stub import Stub
 
@@ -162,16 +162,10 @@ class RunCmd(MqttSettings):
     modbus_port: int = 502
     modbus_probe_interval: int = 1
 
-    def make_broker(self, **extra: Any) -> MQTTBroker:
-        # Reconnect indefinitely (the default 5 attempts leaves us dark after a
-        # blip); ping every 15s, since 60s races RabbitMQ's keepalive window.
-        kwargs: dict[str, Any] = dict(extra)
-        kwargs.setdefault("reconnect", ReconnectConfig(max_attempts=None))
-        kwargs.setdefault("keepalive", 15)
-        return super().make_broker(**kwargs)
-
     async def cli_cmd(self) -> None:
-        broker = self.make_broker()
+        # Gateways are optional: with one down the others still report, so
+        # only MQTT counts for readiness.
+        broker = self.make_broker(Readiness(self.readiness_file))
         specs = read_modbus_bridge_specs()
         endpoints = resolve_bridge_endpoints(
             PowerTagsSettings(), specs, self.modbus_port

@@ -15,6 +15,7 @@ from zero_modbus_bridge.bridge import ModbusBridge
 from zero_modbus_bridge.io import AnnotationModbusTopic
 from zero_modbus_bridge.publisher import MqttPublisher
 from zero_modbus_bridge.reader import ModbusReader
+from zero_modbus_bridge.readiness import Readiness
 from zero_modbus_bridge.settings import ModbusSettings
 
 
@@ -418,3 +419,21 @@ def test_from_address_accepts_timeout_on_real_client():
         "10.0.0.1", 502, MagicMock(), [], modbus_timeout=0.5, buffer_size=10
     )
     assert isinstance(bridge, ModbusBridge)
+
+
+@pytest.mark.asyncio
+async def test_required_gateway_reports_readiness():
+    readiness = Readiness(None)
+    reader = MagicMock()
+    reader.read_all.return_value = []
+    bridge = ModbusBridge(
+        reader, RecordingPublisher(), [], buffer_size=10, readiness=readiness
+    )
+
+    reader.ensure_open.return_value = False
+    await bridge.run_once()
+    assert readiness.status.endswith(": modbus: gateway unreachable")
+
+    reader.ensure_open.return_value = True
+    await bridge.run_once()
+    assert readiness.status == "ready"
