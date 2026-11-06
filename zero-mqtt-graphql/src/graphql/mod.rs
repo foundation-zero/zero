@@ -1,12 +1,13 @@
 //! GraphQL schema for MQTT topics, topic groups, and buckets.
 //!
 //! # Terminology
-//! - **Topic** (`TopicDef`): a single concrete MQTT topic with a fixed address
-//!   and no wildcards, e.g. `termodinamica/compressor/temperature`. Each topic
+//! Both kinds below are a `TopicDef`, told apart by its `TopicKind`.
+//! - **Topic** (`TopicKind::Single`): a single concrete MQTT topic with no
+//!   wildcards, e.g. `termodinamica/compressor/temperature`. Each topic
 //!   maps to one sanitized GraphQL query field returning its cached payload.
-//! - **Group** (`TopicGroupDef`): a parametrized topic family declared by one
+//! - **Group** (`TopicKind::Group`): a parametrized topic family declared by one
 //!   AsyncAPI channel whose address contains `{param}` placeholders, e.g.
-//!   `power-tags/{panel}/{slug}` with MQTT pattern `power-tags/+/+`. A group
+//!   `power-tags/{panel}/{slug}` with MQTT topic filter `power-tags/+/+`. A group
 //!   is enumerated by the x-group-topic-metadata extension listing its concrete topics and
 //!   static attributes; the schema exposes one list query `<group>: [<Group>Topic]`
 //!   (e.g. `powerTags: [PowerTagsTopic]`) whose rows merge that static metadata
@@ -34,7 +35,7 @@ use crate::graphql::topics::{payload_query_field, queryable_topic};
 pub use crate::graphql::tree::{PathNode, graphql_tree};
 use crate::naming::{pascal_case_graphql_name, sanitize_to_graphql_name};
 use crate::{
-    api_model::{Api, GraphqlType},
+    api_model::{Api, GraphqlType, TopicKind},
     cache::TopicCache,
 };
 
@@ -128,25 +129,20 @@ fn tree_fields(
                         return Ok(vec![]);
                     }
 
-                    let payload_objects = payload_object(spec, &name, &topic.fields);
-                    let field =
-                        payload_query_field(segment, &topic.topic, &payload_objects[0], cache);
-                    (vec![field], payload_objects)
-                }
-                PathNode::Group { spec: _, group } => {
-                    info!("Building schema for group {}", group.pattern);
-                    let Some(payload_schema_ref) = group.payload_schema_ref.as_ref() else {
-                        warn!("Group {} without payload, ignoring", group.pattern);
-                        return Ok(vec![]);
-                    };
-
-                    let name = payload_schema_ref.replace("#/components/schemas/", "");
-                    if name.is_empty() {
-                        warn!("Group {} would create an invalid payload type, ignoring", group.pattern);
-                        return Ok(vec![]);
+                    match &topic.kind {
+                        TopicKind::Single => {
+                            let payload_objects = payload_object(spec, &name, &topic.fields);
+                            let field = payload_query_field(
+                                segment,
+                                &topic.topic,
+                                &payload_objects[0],
+                                cache,
+                            );
+                            (vec![field], payload_objects)
+                        }
+                        TopicKind::Group(group) => register_group_queries(topic, group, cache)?
+                            .unwrap_or_else(|| (vec![], vec![])),
                     }
-                    let (fields, objects) = register_group_queries( group, cache)?.unwrap_or_else(|| (vec![], vec![])) ;
-                    (fields, objects)
                 }
             };
 
@@ -295,7 +291,6 @@ mod tests {
             String::new(),
             TopicMap::new(),
             topics,
-            vec![],
             TopicMap::new(),
         )])
     }
@@ -308,6 +303,7 @@ mod tests {
             payload_schema_ref: Some(format!("#/components/schemas/{field}payload")),
             action: OperationAction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         }
     }
 
@@ -384,6 +380,7 @@ mod tests {
                 payload_schema_ref: Some("#/components/schemas/schema-a".to_string()),
                 action: OperationAction::Send,
                 ttl_secs: None,
+                kind: TopicKind::Single,
             },
         ];
 
@@ -432,13 +429,7 @@ mod tests {
     }
 
     fn spec(name: &str, topics: Vec<TopicDef>) -> ApiModel {
-        ApiModel::new(
-            name.to_string(),
-            TopicMap::new(),
-            topics,
-            vec![],
-            TopicMap::new(),
-        )
+        ApiModel::new(name.to_string(), TopicMap::new(), topics, TopicMap::new())
     }
 
     #[tokio::test]

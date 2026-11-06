@@ -9,45 +9,39 @@ use async_graphql::dynamic::{Field, FieldValue, InputValue, Object, TypeRef};
 use log::warn;
 use serde_json::Value as JsonValue;
 
+use crate::api_model::{GroupDef, TopicDef};
+use crate::cache::TopicCache;
 use crate::naming::{is_reserved_name, pascal_case_graphql_name, sanitize_to_graphql_name};
-use crate::{api_model::TopicGroupDef, cache::TopicCache};
 
 /// A group's rows partitioned into buckets by the `group_by` metadata
 /// attribute: bucket id → `(topic, metadata)` pairs.
 type GroupedRows = BTreeMap<String, Vec<(String, BTreeMap<String, JsonValue>)>>;
 
-/// Sanitize a group id into a fresh query field name, rejecting empty,
-/// reserved, or already-claimed names.
-fn claim_group_query_name(group: &TopicGroupDef) -> anyhow::Result<String> {
-    let query_field_name = sanitize_to_graphql_name(&group.group);
-    if query_field_name.is_empty() || is_reserved_name(&query_field_name) {
-        anyhow::bail!(
-            "topic group '{}' resolves to a reserved or duplicate query name '{}'",
-            group.group,
-            query_field_name
-        );
-    }
-    Ok(query_field_name)
+/// A Group's name: the levels of its topic before the first wildcard
+/// (`power-tags/+/+` → `power-tags`); seeds its GraphQL names.
+fn group_name(topic: &str) -> String {
+    topic
+        .split('/')
+        .take_while(|level| *level != "+")
+        .collect::<Vec<_>>()
+        .join("/")
 }
 
 /// Union of a group's sanitized metadata keys minus the reserved `values`
 /// key — occupied by the live-field descriptors, so a static attribute of
 /// that name would panic on duplicate field registration. Returns `None`
 /// when the group has no metadata to project.
-fn group_metadata_fields(group: &TopicGroupDef) -> anyhow::Result<Option<Vec<(String, TypeRef)>>> {
+fn group_metadata_fields(
+    topic: &str,
+    group: &GroupDef,
+) -> anyhow::Result<Option<Vec<(String, TypeRef)>>> {
     let fields = union_metadata_fields(&group.topic_metadata);
     if fields.is_empty() {
-        warn!(
-            "Topic group '{}' metadata is empty — no list query exposed",
-            group.group
-        );
+        warn!("Topic group '{topic}' metadata is empty — no list query exposed");
         return Ok(None);
     }
     if fields.iter().any(|(name, _)| name == "values") {
-        anyhow::bail!(
-            "topic group '{}' metadata key 'values' is reserved",
-            group.group
-        );
+        anyhow::bail!("topic group '{topic}' metadata key 'values' is reserved");
     }
     Ok(Some(fields))
 }
@@ -56,7 +50,8 @@ fn group_metadata_fields(group: &TopicGroupDef) -> anyhow::Result<Option<Vec<(St
 fn build_group_objects(
     name_prefix: &str,
     metadata_fields: &[(String, TypeRef)],
-    group: &TopicGroupDef,
+    topic: &TopicDef,
+    group: &GroupDef,
 ) -> Vec<Object> {
     let item_type = format!("{name_prefix}Topic");
     let meta_type = format!("{name_prefix}Metadata");
@@ -86,9 +81,9 @@ fn build_group_objects(
             obj.field(field)
         });
 
-    let values_objects = payload_object(name_prefix, "Values", &group.fields);
+    let values_objects = payload_object(name_prefix, "Values", &topic.fields);
 
-    let value_meta_obj = value_meta_descriptor_fields(group)
+    let value_meta_obj = value_meta_descriptor_fields(&topic.topic, group)
         .fold(Object::new(value_meta_type.as_str()), |obj, field| {
             obj.field(field)
         });
@@ -101,7 +96,7 @@ fn build_group_objects(
 
 /// Union of a group's collected `x-*` extension keys across all its payload
 /// fields, in stable order.
-fn extension_keys(group: &TopicGroupDef) -> Vec<String> {
+fn extension_keys(group: &GroupDef) -> Vec<String> {
     group
         .value_extensions
         .values()
@@ -114,8 +109,8 @@ fn extension_keys(group: &TopicGroupDef) -> Vec<String> {
 /// Descriptor fields for the `<Group>ValueMeta` object: the reserved `name`
 /// plus every collected `x-*` schema extension (e.g. `unit`) as a string
 /// field.
-fn value_meta_descriptor_fields(group: &TopicGroupDef) -> impl Iterator<Item = Field> + '_ {
-    let group_id = group.group.clone();
+fn value_meta_descriptor_fields(topic: &str, group: &GroupDef) -> impl Iterator<Item = Field> {
+    let group_id = topic.to_string();
     once(row_projection_field("name", TypeRef::named(TypeRef::STRING))).chain(
         extension_keys(group)
             .into_iter()
@@ -151,7 +146,7 @@ fn bucket_attribute<'a>(meta: &'a BTreeMap<String, JsonValue>, group_by: &'a str
 
 /// Bucket a group's rows by their `group_by` attribute value; rows without
 /// it land in the `"unknown"` bucket.
-fn bucket_rows_by(group: &TopicGroupDef) -> GroupedRows {
+fn bucket_rows_by(group: &GroupDef) -> GroupedRows {
     group
         .topic_metadata
         .values()
@@ -193,24 +188,32 @@ fn bucket_object(name_prefix: &str, rows_field: &str) -> Object {
 /// bucket queries. Returns `None` when the group must be skipped entirely
 /// (no usable metadata);
 pub(super) fn register_group_queries(
-    group: &TopicGroupDef,
+    topic: &TopicDef,
+    group: &GroupDef,
     cache: &Arc<TopicCache>,
 ) -> anyhow::Result<Option<(Vec<Field>, Vec<Object>)>> {
-    if group.fields.is_empty() {
-        anyhow::bail!("topic group '{}' has no payload fields", group.group);
+    if topic.fields.is_empty() {
+        anyhow::bail!("topic group '{}' has no payload fields", topic.topic);
     }
-    let query_field_name = claim_group_query_name(group)?;
-    let Some(metadata_fields) = group_metadata_fields(group)? else {
+    let name = group_name(&topic.topic);
+    let query_field_name = sanitize_to_graphql_name(&name);
+    if query_field_name.is_empty() || is_reserved_name(&query_field_name) {
+        anyhow::bail!(
+            "topic group '{}' resolves to a reserved query name '{query_field_name}'",
+            topic.topic
+        );
+    }
+    let Some(metadata_fields) = group_metadata_fields(&topic.topic, group)? else {
         warn!("No metadata for this group, ignoring");
         return Ok(None);
     };
-    let value_meta_json = value_metadata_json(group);
-    let name_prefix = pascal_case_graphql_name(&group.group);
+    let value_meta_json = value_metadata_json(topic, group);
+    let name_prefix = pascal_case_graphql_name(&name);
 
     let (bucket_object, bucket_fields) =
         register_bucket_queries(&name_prefix, group, value_meta_json.clone(), cache);
 
-    let mut objects = build_group_objects(&name_prefix, &metadata_fields, group);
+    let mut objects = build_group_objects(&name_prefix, &metadata_fields, topic, group);
     objects.push(bucket_object);
 
     let mut fields = vec![group_query_field(
@@ -232,7 +235,7 @@ pub(super) fn register_group_queries(
 #[allow(clippy::similar_names)]
 fn register_bucket_queries(
     name_prefix: &str,
-    group: &TopicGroupDef,
+    group: &GroupDef,
     value_meta_json: JsonValue,
     cache: &Arc<TopicCache>,
 ) -> (Object, Vec<Field>) {
@@ -323,7 +326,7 @@ fn row_projection_field(name: &str, type_ref: TypeRef) -> Field {
 fn group_query_field(
     query_field_name: &str,
     item_type: &str,
-    group: &TopicGroupDef,
+    group: &GroupDef,
     value_meta_json: JsonValue,
     cache: Arc<TopicCache>,
 ) -> Field {
@@ -377,9 +380,9 @@ fn bucket_rows_json(
 
 /// Per-field descriptors for a group: camelCase GraphQL name plus every
 /// collected `x-*` schema extension (e.g. `unit`), keyed by sanitized name.
-fn value_metadata_json(group: &TopicGroupDef) -> JsonValue {
+fn value_metadata_json(topic: &TopicDef, group: &GroupDef) -> JsonValue {
     JsonValue::Array(
-        group
+        topic
             .fields
             .keys()
             .map(|field_name| {
@@ -483,46 +486,53 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, ApiModel, GraphqlType};
+    use crate::api_model::{Api, ApiModel, GraphqlType, TopicKind};
     use crate::graphql::build_schema;
     use crate::metadata::MetadataByTopic;
     use crate::roas_asyncapi::OperationAction;
     use crate::topic_map::TopicMap;
     use serde_json::json;
 
-    fn api(groups: Vec<TopicGroupDef>) -> Api {
+    #[test_log::test]
+    fn test_group_name_is_the_topic_before_the_first_wildcard() {
+        assert_eq!(group_name("power-tags/+/+"), "power-tags");
+        assert_eq!(group_name("marpower/fuel/+/middle/+"), "marpower/fuel");
+        assert_eq!(group_name("+/+"), "");
+    }
+
+    fn api(topics: Vec<TopicDef>) -> Api {
         Api::new(vec![ApiModel::new(
             String::new(),
             TopicMap::new(),
-            vec![],
-            groups,
+            topics,
             TopicMap::new(),
         )])
     }
 
-    fn power_tag_group(metadata: MetadataByTopic) -> Vec<TopicGroupDef> {
-        vec![TopicGroupDef {
-            group: "power-tags".to_string(),
-            pattern: "power-tags/+/+".to_string(),
+    fn power_tag_group(metadata: MetadataByTopic) -> Vec<TopicDef> {
+        vec![TopicDef {
+            topic: "power-tags/+/+".to_string(),
             fields: BTreeMap::from_iter(vec![
                 ("active_power_total".to_string(), GraphqlType::Float),
                 ("current_a".to_string(), GraphqlType::Float),
             ]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             action: OperationAction::Send,
-            value_extensions: BTreeMap::from([
-                (
-                    "active_power_total".to_string(),
-                    BTreeMap::from([("unit".to_string(), "W".to_string())]),
-                ),
-                (
-                    "current_a".to_string(),
-                    BTreeMap::from([("unit".to_string(), "A".to_string())]),
-                ),
-            ]),
             ttl_secs: None,
-            topic_metadata: metadata,
-            group_by: "panel".to_string(),
+            kind: TopicKind::Group(GroupDef {
+                value_extensions: BTreeMap::from([
+                    (
+                        "active_power_total".to_string(),
+                        BTreeMap::from([("unit".to_string(), "W".to_string())]),
+                    ),
+                    (
+                        "current_a".to_string(),
+                        BTreeMap::from([("unit".to_string(), "A".to_string())]),
+                    ),
+                ]),
+                topic_metadata: metadata,
+                group_by: "panel".to_string(),
+            }),
         }]
     }
 
@@ -715,12 +725,15 @@ mod tests {
         }))
         .unwrap();
 
-        let mut group = power_tag_group(metadata)[0].clone();
-        group.group = "fuel-tags".to_string();
+        let mut topic = power_tag_group(metadata)[0].clone();
+        topic.topic = "fuel-tags/+/+".to_string();
+        let TopicKind::Group(group) = &mut topic.kind else {
+            unreachable!()
+        };
         group.group_by = "tank".to_string();
 
         let cache = Arc::new(TopicCache::new());
-        let schema = build_schema(&api(vec![group]), &cache).unwrap();
+        let schema = build_schema(&api(vec![topic]), &cache).unwrap();
 
         let response = schema
             .execute(
