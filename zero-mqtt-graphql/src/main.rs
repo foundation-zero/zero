@@ -284,7 +284,7 @@ mod tests {
     use zero_mqtt_graphql::api_model::GraphqlType;
     use zero_mqtt_graphql::roas_asyncapi::OperationAction;
     use zero_mqtt_graphql::{
-        api_model::{ApiModel, TopicDef},
+        api_model::{ApiModel, TopicDef, TopicKind},
         topic_map::TopicMap,
     };
 
@@ -295,13 +295,13 @@ mod tests {
             payload_schema_ref: Some("#/componentes/schemas/payload".to_string()),
             action: OperationAction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         }];
 
         Api::new(vec![ApiModel::new(
             "test".to_string(),
             TopicMap::new(),
             topics,
-            vec![],
             TopicMap::new(),
         )])
     }

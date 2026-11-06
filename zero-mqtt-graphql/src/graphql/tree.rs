@@ -3,22 +3,15 @@ use std::collections::BTreeMap;
 use anyhow::bail;
 
 use crate::{
-    api_model::{Api, TopicDef, TopicGroupDef},
-    graphql::{GraphqlPath, queryable_topic, topics::queryable_group},
+    api_model::{Api, TopicDef},
+    graphql::{GraphqlPath, queryable_topic},
 };
 
 /// A node in the Query tree of Topics
 #[derive(Debug, Clone)]
 pub enum PathNode<'a> {
     Branch(BTreeMap<String, PathNode<'a>>),
-    Topic {
-        spec: &'a str,
-        topic: &'a TopicDef,
-    },
-    Group {
-        spec: &'a str,
-        group: &'a TopicGroupDef,
-    },
+    Topic { spec: &'a str, topic: &'a TopicDef },
 }
 
 impl PathNode<'_> {
@@ -27,7 +20,6 @@ impl PathNode<'_> {
     pub fn first_topic(&self) -> &str {
         match self {
             PathNode::Topic { topic, .. } => topic.topic.as_str(),
-            PathNode::Group { group, .. } => group.pattern.as_str(),
             PathNode::Branch(children) => children
                 .values()
                 .next()
@@ -45,10 +37,6 @@ pub fn graphql_tree(api: &Api) -> anyhow::Result<BTreeMap<String, PathNode<'_>>>
         for topic in model.topics.iter().filter(|&t| queryable_topic(t)) {
             let path = GraphqlPath::from_address(&topic.topic)?;
             insert_topic(&mut root, path.segments(), &model.name, topic)?;
-        }
-        for group in model.groups.iter().filter(|&g| queryable_group(g)) {
-            let path = GraphqlPath::from_address(&group.pattern)?;
-            insert_group(&mut root, path.segments(), &model.name, group)?;
         }
     }
     Ok(root)
@@ -79,34 +67,7 @@ fn insert_topic<'a>(
 
     match child {
         PathNode::Branch(children) => insert_topic(children, rest, spec, topic),
-        existing => tree_conflict(existing.first_topic(), &topic.topic),
-    }
-}
-
-/// Insert a Group at the `remaining` part of its GraphQL path.
-fn insert_group<'a>(
-    node: &mut BTreeMap<String, PathNode<'a>>,
-    remaining: &[String],
-    spec: &'a str,
-    group: &'a TopicGroupDef,
-) -> anyhow::Result<()> {
-    let Some((segment, rest)) = remaining.split_first() else {
-        return Ok(());
-    };
-
-    if rest.is_empty() {
-        if let Some(branch) = node.get(segment) {
-            return tree_conflict(&group.pattern, branch.first_topic());
-        }
-        node.insert(segment.clone(), PathNode::Group { spec, group });
-        return Ok(());
-    }
-    let child = node
-        .entry(segment.clone())
-        .or_insert_with(|| PathNode::Branch(BTreeMap::new()));
-    match child {
-        PathNode::Branch(children) => insert_group(children, rest, spec, group),
-        existing => tree_conflict(existing.first_topic(), &group.pattern),
+        existing @ PathNode::Topic { .. } => tree_conflict(existing.first_topic(), &topic.topic),
     }
 }
 

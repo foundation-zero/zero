@@ -12,7 +12,7 @@ use log::{debug, info, warn};
 use roas_asyncapi::common::reference::{RefOr, Reference};
 use serde_json::Value;
 
-use crate::api_model::{Api, ApiModel, GraphqlType, TopicDef, TopicGroupDef};
+use crate::api_model::{Api, ApiModel, GraphqlType, GroupDef, TopicDef, TopicKind};
 use crate::message_validation::{ValidatorBuilder, build_validators};
 use crate::topic_map::TopicMap;
 
@@ -78,7 +78,6 @@ fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<ApiModel> {
         .with_context(|| format!("parsing AsyncAPI document {}", path.display()))?;
 
     let topics: Vec<TopicDef> = channels_from_document(&document, path, topic_from_channel)?;
-    let groups: Vec<TopicGroupDef> = channels_from_document(&document, path, group_from_channel)?;
     let subscribe_topics = channels_from_document(&document, path, channel_addresses_from_channel)?
         .into_iter()
         .fold(TopicMap::new(), |mut acc, topic| {
@@ -88,12 +87,11 @@ fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<ApiModel> {
             acc
         });
 
-    let validators = build_validators(&validator_builder, &topics, &groups)?;
+    let validators = build_validators(&validator_builder, &topics)?;
 
     info!(
-        "Parsed: {} topic(s), {} group(s) from '{}'.",
+        "Parsed: {} topic(s) from '{}'.",
         topics.len(),
-        groups.len(),
         path.display()
     );
 
@@ -104,7 +102,6 @@ fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<ApiModel> {
             .into_owned(),
         subscribe_topics,
         topics,
-        groups,
         validators,
     ))
 }
@@ -228,9 +225,9 @@ fn channel_addresses_from_channel(
     Ok(Some(wildcard_from_address(address)))
 }
 
-/// Convert one concrete (non-parametrized) channel into a [`TopicDef`];
-/// returns `None` for parametrized channels or channels without a topic.
-#[allow(clippy::unnecessary_wraps)]
+/// Convert one channel into a [`TopicDef`]: a Group when its address is
+/// parametrized, a single topic otherwise. Returns `None` for channels
+/// without an address.
 fn topic_from_channel(
     channel_ref: &Reference,
     channel_name: &str,
@@ -239,13 +236,7 @@ fn topic_from_channel(
     doc: &Document,
     path: &Path,
 ) -> anyhow::Result<Option<TopicDef>> {
-    // Parametrized channels are handled by groups_from_document.
-    if is_parametrized_channel(channel.address()) {
-        return Ok(None);
-    }
-
-    let mqtt_topic = channel.address().map(ToString::to_string);
-    let Some(mqtt_topic) = mqtt_topic else {
+    let Some(address) = channel.address() else {
         warn!(
             "Channel '{}' in {} has no address, skipping",
             channel_name,
@@ -255,10 +246,10 @@ fn topic_from_channel(
     };
 
     if channel.messages.is_empty() {
-        info!("Channel '{channel_name}' (topic: '{mqtt_topic}') has no messages");
+        info!("Channel '{channel_name}' (address: '{address}') has no messages");
     }
 
-    let (fields, payload_schema_ref, _) = message_fields(channel_ref, channel, doc);
+    let (fields, payload_schema_ref, payload_schema) = message_fields(channel_ref, channel, doc);
     debug!(
         "Parsed channel {} with payload {:?} with {} fields",
         channel_name,
@@ -266,43 +257,33 @@ fn topic_from_channel(
         fields.len()
     );
 
+    let kind = if is_parametrized_channel(Some(address)) {
+        let group = group_from_channel(channel_name, channel, payload_schema.as_ref(), path)?;
+        info!("Loaded topic group '{address}' from {}", path.display());
+        TopicKind::Group(group)
+    } else {
+        TopicKind::Single
+    };
+
     Ok(Some(TopicDef {
-        topic: mqtt_topic,
+        topic: wildcard_from_address(address),
         action,
         fields,
         payload_schema_ref,
         ttl_secs: ttl_for_channel(channel_ref, channel, doc),
+        kind,
     }))
 }
 
-/// Convert one parametrized channel into a [`TopicGroupDef`]; returns
-/// `None` for concrete channels. A parametrized channel without an address
-/// is an error: neither the group name nor the wildcard pattern can be
-/// derived without it.
+/// The Group part of a parametrized channel, read from its
+/// `x-group-topic-metadata` and `x-group-by` extensions.
 fn group_from_channel(
-    channel_ref: &Reference,
     channel_name: &str,
-    action: OperationAction,
     channel: &Channel,
-    doc: &Document,
+    payload_schema: Option<&Value>,
     path: &Path,
-) -> anyhow::Result<Option<TopicGroupDef>> {
-    if !is_parametrized_channel(channel.address()) {
-        return Ok(None);
-    }
-    let Some(address) = channel.address().map(str::to_string) else {
-        anyhow::bail!(
-            "parametrized channel '{}' in {} has no address",
-            channel_name,
-            path.display()
-        );
-    };
-    let group = static_prefix(&address).unwrap_or_else(|| address.clone());
-    let pattern = wildcard_from_address(&address);
-
-    let (fields, payload_schema_ref, payload_schema) = message_fields(channel_ref, channel, doc);
+) -> anyhow::Result<GroupDef> {
     let value_extensions = payload_schema
-        .as_ref()
         .map(extensions_from_payload_schema)
         .unwrap_or_default();
 
@@ -336,23 +317,11 @@ fn group_from_channel(
             .clone(),
     )?;
 
-    info!(
-        "Loaded topic group '{}' ({}) from {}",
-        group,
-        pattern,
-        path.display()
-    );
-    Ok(Some(TopicGroupDef {
-        group,
-        pattern,
-        fields,
-        payload_schema_ref,
+    Ok(GroupDef {
         value_extensions,
-        ttl_secs: ttl_for_channel(channel_ref, channel, doc),
-        action,
         topic_metadata,
         group_by,
-    }))
+    })
 }
 
 /// Whether a channel describes a parametrized topic family rather than one
@@ -369,17 +338,6 @@ fn is_parametrized_channel(address: Option<&str>) -> bool {
 /// `None`: `{panel}` → `panel`.
 fn param_name(segment: &str) -> Option<&str> {
     segment.strip_prefix('{')?.strip_suffix('}')
-}
-
-/// Static leading segments of the address: `power-tags/{panel}/{slug}` →
-/// `power-tags`.
-fn static_prefix(address: &str) -> Option<String> {
-    let prefix = address
-        .split('/')
-        .take_while(|segment| param_name(segment).is_none() && !segment.is_empty())
-        .collect::<Vec<_>>()
-        .join("/");
-    (!prefix.is_empty()).then_some(prefix)
 }
 
 /// MQTT subscription pattern derived from the address.
@@ -969,10 +927,14 @@ mod tests {
         });
 
         let api_model = load_spec(Path::new("test"), &spec).unwrap();
-        let groups = api_model.groups;
+        let groups: Vec<_> = api_model
+            .topics
+            .into_iter()
+            .filter(|t| t.as_group().is_some())
+            .collect();
 
         assert_eq!(groups.len(), 1);
-        assert_eq!(groups[0].pattern, "power-tags/+/+");
+        assert_eq!(groups[0].topic, "power-tags/+/+");
         assert_eq!(groups[0].fields.len(), 3);
         assert_eq!(groups[0].fields.get("celsius"), Some(&GraphqlType::Float));
     }
@@ -1436,21 +1398,5 @@ mod tests {
         assert_eq!(ttl_from_value(Some(&json!(-1.5))), None);
         assert_eq!(ttl_from_value(Some(&json!(true))), None);
         assert_eq!(ttl_from_value(None), None);
-    }
-
-    #[test_log::test]
-    fn test_static_prefix() {
-        assert_eq!(
-            static_prefix("powertags/{aa}/{bb}"),
-            Some("powertags".to_string())
-        );
-        assert_eq!(
-            static_prefix("powertags/{aa}/middle/{bb}"),
-            Some("powertags".to_string())
-        );
-        assert_eq!(static_prefix("{aa}/middle/{bb}"), None);
-        assert_eq!(static_prefix("{aa}/{bb}"), None);
-        assert_eq!(static_prefix("/"), None);
-        assert_eq!(static_prefix(""), None);
     }
 }
