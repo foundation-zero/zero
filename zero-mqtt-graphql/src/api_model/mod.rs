@@ -19,16 +19,24 @@ pub struct TopicDef {
     /// `thrs/compressor/temperature` or `power-tags/+/+`.
     /// Used for subscribing, TTL, validator lookup and the GraphQL path.
     pub topic: String,
-    pub fields: BTreeMap<String, FieldType>,
-    /// Pointer to payload in json reference format (e.g. #/components/schemas/field)
-    /// None means there is no payload
-    pub payload_schema_ref: Option<String>,
+    /// What is published on the topic; `None` when it carries no payload.
+    pub payload: Option<Payload>,
     /// TTL in seconds for cached values of this topic; `None` uses the
     /// cache's default.
     pub ttl_secs: Option<u64>,
     /// Whether the topic comes from a Send or a Receive operation.
     pub operation: Direction,
     pub kind: TopicKind,
+}
+
+/// The format of a topic's payload.
+#[derive(Debug, Clone)]
+pub struct Payload {
+    /// The name of the payload format, shared by topics that publish the
+    /// same format.
+    pub name: String,
+    /// Payload fields by raw field name.
+    pub fields: BTreeMap<String, FieldType>,
 }
 
 /// Which way data flows through a topic, seen from the service whose Spec
@@ -82,7 +90,9 @@ impl TopicDef {
                 .any(|level| level == "+" || level == "#"),
             TopicKind::Group(_) => true,
         };
-        concrete && !self.fields.is_empty() && self.operation == Direction::Send
+        concrete
+            && self.payload.as_ref().is_some_and(|p| !p.fields.is_empty())
+            && self.operation == Direction::Send
     }
 }
 
@@ -192,8 +202,10 @@ mod tests {
     fn topic(topic: &str, ttl_secs: Option<u64>) -> TopicDef {
         TopicDef {
             topic: topic.to_owned(),
-            fields: BTreeMap::from([("x".to_owned(), FieldType::Float)]),
-            payload_schema_ref: None,
+            payload: Some(Payload {
+                name: "payload".to_owned(),
+                fields: BTreeMap::from([("x".to_owned(), FieldType::Float)]),
+            }),
             ttl_secs,
             operation: Direction::Send,
             kind: TopicKind::Single,

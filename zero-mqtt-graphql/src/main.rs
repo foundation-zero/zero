@@ -285,18 +285,18 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use zero_mqtt_graphql::api_model::Direction;
-    use zero_mqtt_graphql::api_model::FieldType;
     use zero_mqtt_graphql::{
-        api_model::{Spec, TopicDef, TopicKind},
+        api_model::{Direction, FieldType, Payload, Spec, TopicDef, TopicKind},
         topic_map::TopicMap,
     };
 
     fn sample_api() -> Api {
         let topics = vec![TopicDef {
             topic: "test/topic".to_string(),
-            fields: BTreeMap::from_iter(vec![("x".to_string(), FieldType::Float)]),
-            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![("x".to_string(), FieldType::Float)]),
+            }),
             operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,

@@ -132,23 +132,19 @@ fn tree_fields(
                 }
                 PathNode::Topic(topic) => {
                     info!("Building schema for topic {}", topic.topic);
-                    let Some(payload_schema_ref) = topic.payload_schema_ref.as_ref() else {
+                    let Some(payload) = topic.payload.as_ref() else {
                         warn!("Topic {} without payload, ignoring", topic.topic);
                         return Ok(vec![]);
                     };
 
-                    let name = payload_schema_ref.replace("#/components/schemas/", "");
-                    if name.is_empty() {
-                        warn!(
-                            "Topic {} would create an invalid payload type, ignoring",
-                            topic.topic
-                        );
+                    if payload.name.is_empty() {
+                        warn!("Topic {} would create an invalid payload type, ignoring", topic.topic);
                         return Ok(vec![]);
                     }
 
                     match &topic.kind {
                         TopicKind::Single => {
-                            let payload_objects = payload_object(spec, &name, &topic.fields);
+                            let payload_objects = payload_object(spec, &payload.name, &payload.fields);
                             let field = payload_query_field(
                                 segment,
                                 &topic.topic,
@@ -160,7 +156,8 @@ fn tree_fields(
                         TopicKind::Group(group) => register_group_queries(
                             segment,
                             &parent_path.child(segment),
-                            topic,
+                            &topic.topic,
+                            payload,
                             group,
                             cache,
                         )?
@@ -319,8 +316,7 @@ fn graphql_type_ref(name_prefix: &str, typ: &FieldType) -> (TypeRef, Vec<Object>
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::Direction;
-    use crate::api_model::{Spec, TopicDef};
+    use crate::api_model::{Direction, Payload, Spec, TopicDef};
     use crate::topic_map::TopicMap;
     use serde_json::json;
 
@@ -336,8 +332,10 @@ mod tests {
     fn mock_topic(topic: &str, field: &str) -> TopicDef {
         TopicDef {
             topic: topic.to_string(),
-            fields: BTreeMap::from_iter(vec![(field.to_string(), FieldType::Float)]),
-            payload_schema_ref: Some(format!("#/components/schemas/{field}payload")),
+            payload: Some(Payload {
+                name: format!("{field}payload"),
+                fields: BTreeMap::from_iter(vec![(field.to_string(), FieldType::Float)]),
+            }),
             operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
@@ -387,8 +385,10 @@ mod tests {
             mock_topic("a/b", "x"),
             TopicDef {
                 topic: "aB/c".to_string(),
-                fields: BTreeMap::from_iter(vec![("field".to_string(), FieldType::Float)]),
-                payload_schema_ref: Some("#/components/schemas/schema-a".to_string()),
+                payload: Some(Payload {
+                    name: "schema-a".to_string(),
+                    fields: BTreeMap::from_iter(vec![("field".to_string(), FieldType::Float)]),
+                }),
                 operation: Direction::Send,
                 ttl_secs: None,
                 kind: TopicKind::Single,

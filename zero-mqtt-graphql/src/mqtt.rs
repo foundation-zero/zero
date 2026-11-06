@@ -321,15 +321,22 @@ fn flatten_payload(value: Value) -> Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{Api, Direction, FieldType, GroupDef, Spec, TopicDef, TopicKind};
+    use crate::api_model::{
+        Api, Direction, FieldType, GroupDef, Payload, Spec, TopicDef, TopicKind,
+    };
     use serde_json::json;
     use std::collections::BTreeMap;
 
-    fn groups_with_schema(topic: &str, schema_ref: &str) -> Vec<TopicDef> {
+    fn group(topic: &str) -> Vec<TopicDef> {
         vec![TopicDef {
             topic: topic.to_string(),
-            fields: BTreeMap::from_iter(vec![("active_power_total".to_string(), FieldType::Float)]),
-            payload_schema_ref: Some(schema_ref.to_string()),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![(
+                    "active_power_total".to_string(),
+                    FieldType::Float,
+                )]),
+            }),
             ttl_secs: None,
             operation: Direction::Send,
             kind: TopicKind::Group(GroupDef {
@@ -365,11 +372,7 @@ mod tests {
         .unwrap();
         let mut validators = TopicMap::new();
         validators.insert("power-tags/+/+".to_string(), validator);
-        let api = api(
-            vec![],
-            groups_with_schema("power-tags/+/+", "/"),
-            validators,
-        );
+        let api = api(vec![], group("power-tags/+/+"), validators);
         let sub = test_subscriber(&api);
 
         // Matches: concrete topic under the group's wildcard pattern.
@@ -401,11 +404,7 @@ mod tests {
         let mut validators = TopicMap::new();
         validators.insert("power-tags/+/+".to_string(), validator);
 
-        let api = api(
-            vec![],
-            groups_with_schema("power-tags/+/+", "/"),
-            validators,
-        );
+        let api = api(vec![], group("power-tags/+/+"), validators);
         let sub = test_subscriber(&api);
 
         assert_eq!(
@@ -442,30 +441,12 @@ mod tests {
 
         let topic = TopicDef {
             topic: "power-tags/10P1/breaker3".to_string(),
-            fields: BTreeMap::from_iter(vec![("active_power_total".to_string(), FieldType::Float)]),
-            payload_schema_ref: None,
+            payload: None,
             operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         };
-        // Two Specs: within one Spec the topic and the Group would be a Path
-        // conflict.
-        let api = Api::new(vec![
-            Spec::new(
-                "exact".to_string(),
-                TopicMap::new(),
-                vec![topic],
-                validators,
-            )
-            .unwrap(),
-            Spec::new(
-                "group".to_string(),
-                TopicMap::new(),
-                groups_with_schema("power-tags/+/+", "/"),
-                TopicMap::new(),
-            )
-            .unwrap(),
-        ]);
+        let api = api(vec![topic], group("power-tags/+/+"), validators);
         let sub = test_subscriber(&api);
 
         // Fails the exact-topic schema (missing required field) even though
@@ -486,7 +467,7 @@ mod tests {
         let mut validators = TopicMap::new();
         validators.insert("logs/#".to_string(), validator);
 
-        let api = api(vec![], groups_with_schema("logs/#", "/"), validators);
+        let api = api(vec![], group("logs/#"), validators);
         let sub = test_subscriber(&api);
 
         assert_eq!(

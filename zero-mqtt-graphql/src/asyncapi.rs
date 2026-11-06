@@ -8,12 +8,13 @@ use crate::roas_asyncapi::{
     SchemaType, SubSchema,
 };
 use anyhow::Context;
+use jsonschema::Validator;
 use log::{debug, info, warn};
 use roas_asyncapi::common::reference::{RefOr, Reference};
 use serde_json::Value;
 
-use crate::api_model::{Api, Direction, FieldType, GroupDef, Spec, TopicDef, TopicKind};
-use crate::message_validation::{ValidatorBuilder, build_validators};
+use crate::api_model::{Api, Direction, FieldType, GroupDef, Payload, Spec, TopicDef, TopicKind};
+use crate::message_validation::ValidatorBuilder;
 use crate::topic_map::TopicMap;
 
 /// Read and parse every AsyncAPI document in `spec_dir` once, returning
@@ -77,7 +78,7 @@ fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<Spec> {
     let document = serde_json::from_value::<Document>(document_json.clone())
         .with_context(|| format!("parsing AsyncAPI document {}", path.display()))?;
 
-    let topics: Vec<TopicDef> = channels_from_document(&document, path, topic_from_channel)?;
+    let topics = channels_from_document(&document, path, topic_from_channel)?;
     let subscribe_topics = channels_from_document(&document, path, channel_addresses_from_channel)?
         .into_iter()
         .fold(TopicMap::new(), |mut acc, topic| {
@@ -87,11 +88,20 @@ fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<Spec> {
             acc
         });
 
-    let validators = build_validators(&validator_builder, &topics)?;
+    let validators: Vec<(String, Validator)> =
+        channels_from_document(&document, path, |channel_ref, _, _, channel, doc, _| {
+            Ok(validator_from_channel(
+                &validator_builder,
+                channel_ref,
+                channel,
+                doc,
+            ))
+        })?;
 
     info!(
-        "Parsed: {} topic(s) from '{}'.",
+        "Parsed: {} topic(s) and {} validator(s) from '{}'.",
         topics.len(),
+        validators.len(),
         path.display()
     );
 
@@ -102,7 +112,7 @@ fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<Spec> {
             .into_owned(),
         subscribe_topics,
         topics,
-        validators,
+        validators.into_iter().collect(),
     )
     .with_context(|| format!("building the Query tree of {}", path.display()))
 }
@@ -226,6 +236,29 @@ fn channel_addresses_from_channel(
     Ok(Some(wildcard_from_address(address)))
 }
 
+/// The JSON Schema validator of a channel's payload, keyed by its topic: an
+/// exact topic, or a wildcard filter for a Group (e.g. `power-tags/+/+`).
+/// `None` for a channel without an address or payload, or whose schema does
+/// not compile.
+fn validator_from_channel(
+    validator_builder: &ValidatorBuilder,
+    channel_ref: &Reference,
+    channel: &Channel,
+    doc: &Document,
+) -> Option<(String, Validator)> {
+    let topic = wildcard_from_address(channel.address()?);
+    let schema_ref = message_payload(channel_ref, channel, doc)?.schema_ref;
+    match validator_builder.build_validator(&schema_ref) {
+        Ok(validator) => Some((topic, validator)),
+        Err(e) => {
+            warn!(
+                "Failed to compile JSON Schema for topic '{topic}': {e} — skipping validation for this topic"
+            );
+            None
+        }
+    }
+}
+
 /// Convert one channel into a [`TopicDef`]: a Group when its address is
 /// parametrized, a single topic otherwise. Returns `None` for channels
 /// without an address.
@@ -250,16 +283,15 @@ fn topic_from_channel(
         info!("Channel '{channel_name}' (address: '{address}') has no messages");
     }
 
-    let (fields, payload_schema_ref, payload_schema) = message_fields(channel_ref, channel, doc);
-    debug!(
-        "Parsed channel {} with payload {:?} with {} fields",
-        channel_name,
-        payload_schema_ref,
-        fields.len()
-    );
+    let message_payload = message_payload(channel_ref, channel, doc);
+    debug!("Parsed channel {channel_name} with payload {message_payload:?}");
 
     let kind = if is_parametrized_channel(Some(address)) {
-        let group = group_from_channel(channel_name, channel, payload_schema.as_ref(), path)?;
+        let field_attributes = message_payload
+            .as_ref()
+            .map(|m| m.field_attributes.clone())
+            .unwrap_or_default();
+        let group = group_from_channel(channel_name, channel, field_attributes, path)?;
         info!("Loaded topic group '{address}' from {}", path.display());
         TopicKind::Group(group)
     } else {
@@ -272,8 +304,7 @@ fn topic_from_channel(
             OperationAction::Send => Direction::Send,
             OperationAction::Receive => Direction::Receive,
         },
-        fields,
-        payload_schema_ref,
+        payload: message_payload.map(|m| m.payload),
         ttl_secs: ttl_for_channel(channel_ref, channel, doc),
         kind,
     }))
@@ -284,13 +315,9 @@ fn topic_from_channel(
 fn group_from_channel(
     channel_name: &str,
     channel: &Channel,
-    payload_schema: Option<&Value>,
+    field_attributes: BTreeMap<String, BTreeMap<String, String>>,
     path: &Path,
 ) -> anyhow::Result<GroupDef> {
-    let field_attributes = payload_schema
-        .map(extensions_from_payload_schema)
-        .unwrap_or_default();
-
     let topic_metadata = serde_json::from_value::<MetadataByTopic>(
         channel
             .extensions
@@ -359,26 +386,39 @@ fn wildcard_from_address(address: &str) -> String {
         .join("/")
 }
 
-/// Extract scalar fields + payload schema from the channel's first message.
+/// The payload of a channel's message, with what else is read from its
+/// schema.
+#[derive(Debug)]
+struct MessagePayload {
+    payload: Payload,
+    /// JSON pointer to the payload schema in the document, which its
+    /// validator is built from.
+    schema_ref: String,
+    /// Attributes per payload field, from the schema's `x-*` extensions.
+    field_attributes: BTreeMap<String, BTreeMap<String, String>>,
+}
+
+/// The payload of the channel's first message; `None` when there is no
+/// message, no payload, or the payload reference does not resolve.
 ///
 /// Channels with multiple messages are not yet union-typed; only the first
-/// message contributes fields and schema.
-fn message_fields(
+/// message contributes a payload.
+fn message_payload(
     channel_ref: &Reference,
     channel: &Channel,
     doc: &Document,
-) -> (BTreeMap<String, FieldType>, Option<String>, Option<Value>) {
+) -> Option<MessagePayload> {
     let Some((message_ref, message)) = channel_messages(channel_ref, channel, doc)
         .into_iter()
         .next()
     else {
         info!("Channel {} has no message", channel_ref.reference);
-        return (BTreeMap::new(), None, None);
+        return None;
     };
     // The message payload may be inline or a `$ref` into components
     let Some(payload_ref) = &message.payload else {
         info!("Channel {} message has no payload", channel_ref.reference);
-        return (BTreeMap::new(), None, None);
+        return None;
     };
 
     let Some((pointer, schema_or_multi)) = resolve_payload_schema(payload_ref, doc) else {
@@ -386,14 +426,25 @@ fn message_fields(
             "Channel {} message payload reference does not resolve",
             channel_ref.reference,
         );
-        return (BTreeMap::new(), None, None);
+        return None;
     };
 
-    (
-        extract_fields_from_schema_or_multi(schema_or_multi, doc),
-        Some(pointer.unwrap_or(format!("{message_ref}/payload"))),
-        serde_json::to_value(schema_or_multi).ok(),
-    )
+    let schema_ref = pointer.unwrap_or(format!("{message_ref}/payload"));
+    Some(MessagePayload {
+        payload: Payload {
+            // Named after its schema component; an inline payload after its
+            // full pointer.
+            name: schema_ref
+                .strip_prefix("#/components/schemas/")
+                .unwrap_or(&schema_ref)
+                .to_string(),
+            fields: extract_fields_from_schema_or_multi(schema_or_multi, doc),
+        },
+        field_attributes: serde_json::to_value(schema_or_multi)
+            .map(|schema| extensions_from_payload_schema(&schema))
+            .unwrap_or_default(),
+        schema_ref,
+    })
 }
 
 /// All messages referenced by the channel, resolved against components.
@@ -768,6 +819,11 @@ mod tests {
         channels_from_document(&document, Path::new("test"), topic_from_channel)
     }
 
+    /// The payload fields of a topic that must have a payload.
+    fn fields(topic: &TopicDef) -> &BTreeMap<String, FieldType> {
+        &topic.payload.as_ref().unwrap().fields
+    }
+
     fn schema_with_properties(props: BTreeMap<String, Value>) -> Schema {
         let mut properties = BTreeMap::new();
         for (k, v) in props {
@@ -879,8 +935,8 @@ mod tests {
             topics[0].topic,
             "termodinamica/compressor/temperature:Publisher"
         );
-        assert_eq!(topics[0].fields.len(), 3);
-        assert_eq!(topics[0].fields.get("celsius"), Some(&FieldType::Float));
+        assert_eq!(fields(&topics[0]).len(), 3);
+        assert_eq!(fields(&topics[0]).get("celsius"), Some(&FieldType::Float));
     }
 
     #[test_log::test]
@@ -936,8 +992,8 @@ mod tests {
 
         assert_eq!(groups.len(), 1);
         assert_eq!(groups[0].topic, "power-tags/+/+");
-        assert_eq!(groups[0].fields.len(), 3);
-        assert_eq!(groups[0].fields.get("celsius"), Some(&FieldType::Float));
+        assert_eq!(fields(&groups[0]).len(), 3);
+        assert_eq!(fields(&groups[0]).get("celsius"), Some(&FieldType::Float));
     }
 
     #[test_log::test]
@@ -981,8 +1037,8 @@ mod tests {
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "test/channel:Publisher");
-        assert_eq!(topics[0].fields.len(), 1);
-        assert_eq!(topics[0].fields.get("value"), Some(&FieldType::Float));
+        assert_eq!(fields(&topics[0]).len(), 1);
+        assert_eq!(fields(&topics[0]).get("value"), Some(&FieldType::Float));
     }
 
     #[test_log::test]
@@ -1185,6 +1241,44 @@ mod tests {
     }
 
     #[test_log::test]
+    fn test_validators_are_keyed_by_topic_and_skip_channels_without_payload() {
+        let spec = json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "Test", "version": "1.0.0"},
+            "channels": {
+                "power": {
+                    "address": "power/{panel}",
+                    "messages": {"Message": {"payload": {"type": "object"}}}
+                },
+                "bare": {"address": "bare/channel"}
+            },
+            "operations": {
+                "power": {"action": "send", "channel": {"$ref": "#/channels/power"}},
+                "bare": {"action": "send", "channel": {"$ref": "#/channels/bare"}}
+            }
+        });
+        let document = serde_json::from_value::<Document>(spec.clone()).unwrap();
+        let validator_builder = ValidatorBuilder::new(spec).unwrap();
+
+        let validators = channels_from_document(
+            &document,
+            Path::new("test"),
+            |channel_ref, _, _, channel, doc, _| {
+                Ok(validator_from_channel(
+                    &validator_builder,
+                    channel_ref,
+                    channel,
+                    doc,
+                ))
+            },
+        )
+        .unwrap();
+
+        let topics: Vec<&str> = validators.iter().map(|(topic, _)| topic.as_str()).collect();
+        assert_eq!(topics, ["power/+"]);
+    }
+
+    #[test_log::test]
     fn test_channel_ref_is_resolved() {
         let spec = json!({
             "asyncapi": "3.0.0",
@@ -1223,7 +1317,7 @@ mod tests {
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "ref/channel");
-        assert_eq!(topics[0].fields.get("x"), Some(&FieldType::Int));
+        assert_eq!(fields(&topics[0]).get("x"), Some(&FieldType::Int));
     }
 
     #[test_log::test]
@@ -1253,7 +1347,7 @@ mod tests {
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "bare/channel");
-        assert!(topics[0].fields.is_empty());
+        assert!(topics[0].payload.is_none());
     }
 
     #[test_log::test]
@@ -1330,7 +1424,7 @@ mod tests {
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "bare/channel");
-        assert!(topics[0].fields.is_empty());
+        assert!(topics[0].payload.is_none());
     }
 
     #[test_log::test]

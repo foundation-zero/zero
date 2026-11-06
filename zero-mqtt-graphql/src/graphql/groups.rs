@@ -9,7 +9,7 @@ use async_graphql::dynamic::{Field, FieldValue, InputValue, Object, TypeRef};
 use log::warn;
 use serde_json::Value as JsonValue;
 
-use crate::api_model::{GraphqlPath, GroupDef, TopicDef};
+use crate::api_model::{GraphqlPath, GroupDef, Payload};
 use crate::cache::TopicCache;
 use crate::naming::{is_reserved_name, pascal_case_graphql_name, sanitize_to_graphql_name};
 
@@ -40,7 +40,8 @@ fn group_metadata_fields(
 fn build_group_objects(
     name_prefix: &str,
     metadata_fields: &[(String, TypeRef)],
-    topic: &TopicDef,
+    topic: &str,
+    payload: &Payload,
     group: &GroupDef,
 ) -> Vec<Object> {
     let item_type = format!("{name_prefix}Topic");
@@ -71,9 +72,9 @@ fn build_group_objects(
             obj.field(field)
         });
 
-    let values_objects = payload_object(name_prefix, "Values", &topic.fields);
+    let values_objects = payload_object(name_prefix, "Values", &payload.fields);
 
-    let value_meta_obj = value_meta_descriptor_fields(&topic.topic, group)
+    let value_meta_obj = value_meta_descriptor_fields(topic, group)
         .fold(Object::new(value_meta_type.as_str()), |obj, field| {
             obj.field(field)
         });
@@ -179,24 +180,24 @@ fn bucket_object(name_prefix: &str, rows_field: &str) -> Object {
 pub(super) fn register_group_queries(
     query_field_name: &str,
     path: &GraphqlPath,
-    topic: &TopicDef,
+    topic: &str,
+    payload: &Payload,
     group: &GroupDef,
     cache: &Arc<TopicCache>,
 ) -> anyhow::Result<Option<(Vec<Field>, Vec<Object>)>> {
-    if topic.fields.is_empty() {
-        anyhow::bail!("topic group '{}' has no payload fields", topic.topic);
+    if payload.fields.is_empty() {
+        anyhow::bail!("topic group '{topic}' has no payload fields");
     }
     if is_reserved_name(query_field_name) {
         anyhow::bail!(
-            "topic group '{}' resolves to a reserved query name '{query_field_name}'",
-            topic.topic
+            "topic group '{topic}' resolves to a reserved query name '{query_field_name}'"
         );
     }
-    let Some(metadata_fields) = group_metadata_fields(&topic.topic, group)? else {
+    let Some(metadata_fields) = group_metadata_fields(topic, group)? else {
         warn!("No metadata for this group, ignoring");
         return Ok(None);
     };
-    let value_meta_json = value_metadata_json(topic, group);
+    let value_meta_json = value_metadata_json(payload, group);
     let name_prefix = path_type_name(path);
 
     let (bucket_object, bucket_fields) = register_bucket_queries(
@@ -207,7 +208,7 @@ pub(super) fn register_group_queries(
         cache,
     );
 
-    let mut objects = build_group_objects(&name_prefix, &metadata_fields, topic, group);
+    let mut objects = build_group_objects(&name_prefix, &metadata_fields, topic, payload, group);
     objects.push(bucket_object);
 
     let mut fields = vec![group_query_field(
@@ -375,9 +376,9 @@ fn bucket_rows_json(
 
 /// Per-field descriptors for a group: camelCase GraphQL name plus every
 /// field attribute (e.g. `unit`), keyed by sanitized name.
-fn value_metadata_json(topic: &TopicDef, group: &GroupDef) -> JsonValue {
+fn value_metadata_json(payload: &Payload, group: &GroupDef) -> JsonValue {
     JsonValue::Array(
-        topic
+        payload
             .fields
             .keys()
             .map(|field_name| {
@@ -480,7 +481,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, Direction, FieldType, Spec, TopicKind};
+    use crate::api_model::{Api, Direction, FieldType, Spec, TopicDef, TopicKind};
     use crate::graphql::build_schema;
     use crate::metadata::MetadataByTopic;
     use crate::topic_map::TopicMap;
@@ -495,11 +496,13 @@ mod tests {
     fn power_tag_group(metadata: MetadataByTopic) -> Vec<TopicDef> {
         vec![TopicDef {
             topic: "power-tags/+/+".to_string(),
-            fields: BTreeMap::from_iter(vec![
-                ("active_power_total".to_string(), FieldType::Float),
-                ("current_a".to_string(), FieldType::Float),
-            ]),
-            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![
+                    ("active_power_total".to_string(), FieldType::Float),
+                    ("current_a".to_string(), FieldType::Float),
+                ]),
+            }),
             operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Group(GroupDef {
