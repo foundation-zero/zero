@@ -2,30 +2,20 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::iter::once;
 use std::sync::Arc;
 
-use crate::graphql::{json_to_graphql_value, payload_object};
+use crate::graphql::{json_to_graphql_value, path_type_name, payload_object};
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{Field, FieldValue, InputValue, Object, TypeRef};
 use log::warn;
 use serde_json::Value as JsonValue;
 
-use crate::api_model::{GroupDef, TopicDef};
+use crate::api_model::{GraphqlPath, GroupDef, TopicDef};
 use crate::cache::TopicCache;
 use crate::naming::{is_reserved_name, pascal_case_graphql_name, sanitize_to_graphql_name};
 
 /// A group's rows partitioned into buckets by the `group_by` metadata
 /// attribute: bucket id → `(topic, metadata)` pairs.
 type GroupedRows = BTreeMap<String, Vec<(String, BTreeMap<String, JsonValue>)>>;
-
-/// A Group's name: the levels of its topic before the first wildcard
-/// (`power-tags/+/+` → `power-tags`); seeds its GraphQL names.
-fn group_name(topic: &str) -> String {
-    topic
-        .split('/')
-        .take_while(|level| *level != "+")
-        .collect::<Vec<_>>()
-        .join("/")
-}
 
 /// Union of a group's sanitized metadata keys minus the reserved `values`
 /// key — occupied by the live-field descriptors, so a static attribute of
@@ -182,12 +172,14 @@ fn bucket_object(name_prefix: &str, rows_field: &str) -> Object {
     )
 }
 
-/// Build one topic group's schema parts: the merged
-/// `<group>: [<Group>Topic]` list query with its supporting object types,
-/// and — when the group's metadata declares `group_by` — grouped-by
-/// bucket queries. Returns `None` when the group must be skipped entirely
-/// (no usable metadata);
+/// Build one topic group's schema parts at its GraphQL `path`, whose last
+/// segment is `query_field_name`: the merged `<group>: [<Group>Topic]` list
+/// query with its supporting object types, and — when the group's metadata
+/// declares `group_by` — grouped-by bucket queries. Returns `None` when the
+/// group must be skipped entirely (no usable metadata);
 pub(super) fn register_group_queries(
+    query_field_name: &str,
+    path: &GraphqlPath,
     topic: &TopicDef,
     group: &GroupDef,
     cache: &Arc<TopicCache>,
@@ -195,9 +187,7 @@ pub(super) fn register_group_queries(
     if topic.fields.is_empty() {
         anyhow::bail!("topic group '{}' has no payload fields", topic.topic);
     }
-    let name = group_name(&topic.topic);
-    let query_field_name = sanitize_to_graphql_name(&name);
-    if query_field_name.is_empty() || is_reserved_name(&query_field_name) {
+    if is_reserved_name(query_field_name) {
         anyhow::bail!(
             "topic group '{}' resolves to a reserved query name '{query_field_name}'",
             topic.topic
@@ -208,16 +198,21 @@ pub(super) fn register_group_queries(
         return Ok(None);
     };
     let value_meta_json = value_metadata_json(topic, group);
-    let name_prefix = pascal_case_graphql_name(&name);
+    let name_prefix = path_type_name(path);
 
-    let (bucket_object, bucket_fields) =
-        register_bucket_queries(&name_prefix, group, value_meta_json.clone(), cache);
+    let (bucket_object, bucket_fields) = register_bucket_queries(
+        query_field_name,
+        &name_prefix,
+        group,
+        value_meta_json.clone(),
+        cache,
+    );
 
     let mut objects = build_group_objects(&name_prefix, &metadata_fields, topic, group);
     objects.push(bucket_object);
 
     let mut fields = vec![group_query_field(
-        &query_field_name,
+        query_field_name,
         &format!("{name_prefix}Topic"),
         group,
         value_meta_json,
@@ -230,20 +225,21 @@ pub(super) fn register_group_queries(
 
 /// Build the grouped-by bucket schema parts: a `<stem>Buckets` list of
 /// buckets plus a `<stem>Bucket(id)` singleton, enabled by a `group_by`
-/// attribute in the group's metadata file. Returns `None` when the group
-/// declares no `group_by` or the derived query names collide.
+/// attribute in the group's metadata file. Field names derive from the
+/// group's query field `rows_field`, type names from `name_prefix`.
 #[allow(clippy::similar_names)]
 fn register_bucket_queries(
+    rows_field: &str,
     name_prefix: &str,
     group: &GroupDef,
     value_meta_json: JsonValue,
     cache: &Arc<TopicCache>,
 ) -> (Object, Vec<Field>) {
-    let group_stem = singular_group_stem(name_prefix);
+    let group_stem = singular_group_stem(rows_field);
     let buckets_field = format!("{group_stem}Buckets");
     let bucket_field = format!("{group_stem}Bucket");
 
-    let rows_field = sanitize_to_graphql_name(name_prefix);
+    let rows_field = rows_field.to_string();
     let bucket_type = format!("{name_prefix}Bucket");
     let buckets = bucket_rows_by(group);
 
@@ -470,15 +466,14 @@ fn graphql_scalar_for_value(value: &JsonValue) -> TypeRef {
     }
 }
 
-/// Query-name stem for grouped-by (bucket) queries: camelCase group name
-/// with the plural "s" of its final word dropped (`power-tags` → `powerTag`),
-/// so bucket queries are exposed as `<stem>Buckets` / `<stem>Bucket`.
-fn singular_group_stem(group_id: &str) -> String {
-    let camel = sanitize_to_graphql_name(group_id);
-    match camel.strip_suffix('s') {
-        Some(stem) => stem.to_string(),
-        None => camel,
-    }
+/// Query-name stem for grouped-by (bucket) queries: the group's query field
+/// name with the plural "s" of its final word dropped (`powerTags` →
+/// `powerTag`), so bucket queries are exposed as `<stem>Buckets` /
+/// `<stem>Bucket`.
+fn singular_group_stem(query_field_name: &str) -> &str {
+    query_field_name
+        .strip_suffix('s')
+        .unwrap_or(query_field_name)
 }
 
 #[cfg(test)]
@@ -492,13 +487,6 @@ mod tests {
     use crate::roas_asyncapi::OperationAction;
     use crate::topic_map::TopicMap;
     use serde_json::json;
-
-    #[test_log::test]
-    fn test_group_name_is_the_topic_before_the_first_wildcard() {
-        assert_eq!(group_name("power-tags/+/+"), "power-tags");
-        assert_eq!(group_name("marpower/fuel/+/middle/+"), "marpower/fuel");
-        assert_eq!(group_name("+/+"), "");
-    }
 
     fn api(topics: Vec<TopicDef>) -> Api {
         Api::new(vec![
@@ -588,6 +576,31 @@ mod tests {
         assert_eq!(rows[1]["metadata"]["panel"], json!(null));
         assert_eq!(rows[1]["metadata"]["component"], json!("151F01"));
         assert_eq!(rows[1]["values"]["activePowerTotal"], json!(null));
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_group_below_a_branch_is_named_by_its_last_path_segment() {
+        let mut topics = power_tag_group(
+            serde_json::from_value(json!({
+                "marpower/fuel/a/middle/b": { "panel": "10P1" }
+            }))
+            .unwrap(),
+        );
+        topics[0].topic = "marpower/fuel/+/middle/+".to_string();
+        let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
+
+        let response = schema
+            .execute("{ marpower { fuel { topic } fuelBuckets { id fuel { topic } } } }")
+            .await;
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        let data: serde_json::Value = response.data.into_json().unwrap();
+        assert_eq!(
+            data["marpower"]["fuel"][0]["topic"],
+            json!("marpower/fuel/a/middle/b")
+        );
+        assert_eq!(data["marpower"]["fuelBuckets"][0]["id"], json!("10P1"));
+        assert!(schema.sdl().contains("type SchemaMarpowerFuelTopic"));
     }
 
     #[tokio::test]
@@ -758,13 +771,12 @@ mod tests {
         // `x-y` gives the prefix `XY`, which pascal-casing again would turn
         // into `Xy`: the `values` field must name the type as registered.
         let metadata = serde_json::from_value(json!({"x-y/1": {"panel": "10P1"}})).unwrap();
-        let mut group = power_tag_group(metadata)[0].clone();
-        group.group = "x-y".to_string();
-        group.pattern = "x-y/+".to_string();
+        let mut topics = power_tag_group(metadata);
+        topics[0].topic = "x-y/+".to_string();
 
         let cache = Arc::new(TopicCache::new());
         cache.insert("x-y/1", json!({"current_a": 1.5}));
-        let schema = build_schema(&api(vec![group]), &cache).unwrap();
+        let schema = build_schema(&api(topics), &cache).unwrap();
 
         let response = schema.execute("{ xY { values { currentA } } }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);

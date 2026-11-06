@@ -10,7 +10,7 @@
 //!   `power-tags/{panel}/{slug}` with MQTT topic filter `power-tags/+/+`. A group
 //!   is enumerated by the x-group-topic-metadata extension listing its concrete topics and
 //!   static attributes; the schema exposes one list query `<group>: [<Group>Topic]`
-//!   (e.g. `powerTags: [PowerTagsTopic]`) whose rows merge that static metadata
+//!   (e.g. `powerTags: [SchemaPowerTagsTopic]`) whose rows merge that static metadata
 //!   with live values from the cache.
 //! - **Bucket**: a partition of a group's rows by the distinct value of the
 //!   `group_by` metadata attribute declared in the group's metadata file. For
@@ -117,7 +117,7 @@ fn tree_fields(
             let (fields, mut objects) = match node {
                 PathNode::Branch(grandchildren) => {
                     let path = parent_path.child(segment);
-                    let type_name = branch_type_name(&path);
+                    let type_name = path_type_name(&path);
                     let fields = tree_fields(spec, &path, grandchildren, cache, known_types)?;
                     if fields.is_empty() {
                         warn!("Branch '{path}' has no queryable children, leaving it out");
@@ -157,8 +157,14 @@ fn tree_fields(
                             );
                             (vec![field], payload_objects)
                         }
-                        TopicKind::Group(group) => register_group_queries(topic, group, cache)?
-                            .unwrap_or_else(|| (vec![], vec![])),
+                        TopicKind::Group(group) => register_group_queries(
+                            segment,
+                            &parent_path.child(segment),
+                            topic,
+                            group,
+                            cache,
+                        )?
+                        .unwrap_or_else(|| (vec![], vec![])),
                     }
                 }
             };
@@ -184,9 +190,10 @@ fn tree_fields(
     Ok(fields)
 }
 
-/// Type name of the branch at `path`: the full path in PascalCase
-/// (`marpower.freshWater` → `SchemaMarpowerFreshWater`).
-fn branch_type_name(path: &GraphqlPath) -> String {
+/// Type name of what sits at `path`: `Schema` plus the full path in
+/// PascalCase (`marpower.freshWater` → `SchemaMarpowerFreshWater`). A
+/// branch is named exactly this; a Group's types use it as a prefix.
+fn path_type_name(path: &GraphqlPath) -> String {
     let base = pascal_case_graphql_name(
         &path
             .segments()
