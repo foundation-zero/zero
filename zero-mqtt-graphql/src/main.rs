@@ -1,7 +1,7 @@
 use std::net::SocketAddr;
 use std::sync::Arc;
 
-use anyhow::{Context, Result};
+use anyhow::{Context, Result, bail};
 use clap::Parser;
 use log::{error, info};
 use tokio::net::TcpListener;
@@ -89,7 +89,8 @@ fn validate_command(api: &Api) -> Result<()> {
 }
 
 /// Serve mode: expose the loaded specs as a GraphQL API backed by live MQTT
-/// values, until Ctrl-C or an unexpected MQTT subscriber death.
+/// values, until Ctrl-C or an unexpected MQTT subscriber death (an error, so
+/// the process exits non-zero and Kubernetes restarts it).
 async fn run_serve(config: AppConfig, api: &Api) -> Result<()> {
     let cache = Arc::new(TopicCache::with_ttl(
         config.default_ttl_secs,
@@ -118,7 +119,10 @@ async fn run_serve(config: AppConfig, api: &Api) -> Result<()> {
     };
 
     match mqtt {
-        Some((handle, _)) if mqtt_died => report_mqtt_subscriber_death(handle).await,
+        Some((handle, _)) if mqtt_died => {
+            report_mqtt_subscriber_death(handle).await;
+            bail!("MQTT subscriber stopped");
+        }
         Some((handle, _)) => reap_mqtt_subscriber(handle).await,
         None => {}
     }
@@ -229,13 +233,12 @@ async fn run_listen_only(api: &Api, config: AppConfig) -> Result<()> {
         _ = dead_rx => false,
     };
 
-    if interrupted {
-        info!("Shutting down listen-only mode");
-        reap_mqtt_subscriber(handle).await;
-    } else {
-        error!("MQTT subscriber task exited unexpectedly — shutting down");
+    if !interrupted {
         report_mqtt_subscriber_death(handle).await;
+        bail!("MQTT subscriber stopped");
     }
+    info!("Shutting down listen-only mode");
+    reap_mqtt_subscriber(handle).await;
 
     info!("Shutdown complete");
     Ok(())

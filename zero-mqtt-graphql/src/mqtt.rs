@@ -3,10 +3,24 @@ use std::time::Duration;
 
 use jsonschema::Validator;
 use log::{debug, error, info, warn};
-use rumqttc::{AsyncClient, Event, EventLoop, Incoming, MqttOptions, QoS};
+use rumqttc::{
+    AsyncClient, ConnectReturnCode, ConnectionError, Event, EventLoop, Incoming, MqttOptions, QoS,
+};
 use serde_json::Value;
 
 use crate::{cache::TopicCache, topic_map::TopicMap};
+
+/// MQTT keep-alive interval: how quickly a dead connection is noticed.
+const KEEP_ALIVE: Duration = Duration::from_secs(15);
+
+/// First reconnect delay before the event loop backs off.
+const INITIAL_BACKOFF: Duration = Duration::from_secs(1);
+/// Reconnect delay ceiling: the client reconnects within this long after the broker is back.
+const MAX_BACKOFF: Duration = Duration::from_secs(30);
+
+/// Refusals such as bad credentials before giving up, in about 3 minutes of
+/// backoff. A booting broker refuses logins too, so the first is not final.
+const PERMANENT_ERROR_ATTEMPTS: u32 = 10;
 
 pub struct MqttConnection<'a> {
     pub host: &'a str,
@@ -37,7 +51,7 @@ impl MqttSubscriber {
         let client_id = format!("zero-mqtt-graphql-{:012x}", rand_u64());
 
         let mut mqttoptions = MqttOptions::new(&client_id, connection.host, connection.port);
-        mqttoptions.set_keep_alive(Duration::from_secs(15));
+        mqttoptions.set_keep_alive(KEEP_ALIVE);
 
         if let (Some(user), Some(pass)) = (connection.username, connection.password) {
             mqttoptions.set_credentials(user, pass);
@@ -71,30 +85,39 @@ impl MqttSubscriber {
     /// level; valid payloads are logged at INFO. Nothing is cached and no
     /// HTTP server is involved in that mode. In serve mode, mismatches are
     /// logged but the payload is still cached.
+    ///
+    /// rumqttc reconnects on the next poll after an error; this loop only adds
+    /// a backoff capped at [`MAX_BACKOFF`]. Returns once
+    /// [`PERMANENT_ERROR_ATTEMPTS`] refusals in a row show the broker will not
+    /// accept this client; the caller then exits.
     pub async fn run(mut self) {
-        const INITIAL_BACKOFF: Duration = Duration::from_secs(1);
-        const MAX_BACKOFF: Duration = Duration::from_secs(60);
-        let mut backoff = INITIAL_BACKOFF;
-
+        let mut reconnect = Reconnect::new();
         loop {
             match self.event_loop.poll().await {
                 Ok(Event::Incoming(Incoming::Publish(publish))) => {
                     self.handle_publish(&publish.topic, &publish.payload);
                 }
                 Ok(Event::Incoming(Incoming::ConnAck(_))) => {
-                    backoff = INITIAL_BACKOFF;
+                    reconnect.connected();
                     info!("MQTT connected");
                     self.spawn_pending_subscriptions();
+                }
+                // rumqttc reconnects on the next poll, as after an error.
+                Ok(Event::Incoming(Incoming::Disconnect)) => {
+                    warn!("MQTT broker disconnected this client");
                 }
                 Ok(_) => {
                     // Other events — ignore
                 }
                 Err(e) => {
-                    error!("MQTT event loop error: {e}. Reconnecting in {backoff:?}...");
-                    // rumqttc auto-reconnects; back off exponentially to avoid
-                    // hammering the broker on persistent failures.
+                    let Some(backoff) = reconnect.failed(&e) else {
+                        error!(
+                            "MQTT giving up after {PERMANENT_ERROR_ATTEMPTS} refusals in a row: {e}"
+                        );
+                        return;
+                    };
+                    error!("MQTT connection error: {e}. Reconnecting in {backoff:?}...");
                     tokio::time::sleep(backoff).await;
-                    backoff = (backoff * 2).min(MAX_BACKOFF);
                 }
             }
         }
@@ -211,6 +234,50 @@ impl MqttSubscriber {
         }
         Some(valid)
     }
+}
+
+/// Reconnect policy: exponential backoff, and a limit on consecutive refusals.
+struct Reconnect {
+    backoff: Duration,
+    refusals: u32,
+}
+
+impl Reconnect {
+    fn new() -> Self {
+        Self {
+            backoff: INITIAL_BACKOFF,
+            refusals: 0,
+        }
+    }
+
+    /// The broker accepted the connection: start over.
+    fn connected(&mut self) {
+        *self = Self::new();
+    }
+
+    /// How long to wait before reconnecting after `error`, or `None` once the
+    /// broker has refused this client [`PERMANENT_ERROR_ATTEMPTS`] times in a row.
+    fn failed(&mut self, error: &ConnectionError) -> Option<Duration> {
+        if is_permanent(error) {
+            self.refusals += 1;
+            if self.refusals >= PERMANENT_ERROR_ATTEMPTS {
+                return None;
+            }
+        } else {
+            self.refusals = 0;
+        }
+        let backoff = self.backoff;
+        self.backoff = (self.backoff * 2).min(MAX_BACKOFF);
+        Some(backoff)
+    }
+}
+
+/// A refusal that retrying is unlikely to fix: bad credentials, client id or protocol.
+fn is_permanent(error: &ConnectionError) -> bool {
+    matches!(
+        error,
+        ConnectionError::ConnectionRefused(code) if *code != ConnectReturnCode::ServiceUnavailable
+    )
 }
 
 /// Generate a unique suffix for the MQTT client ID from full-precision
@@ -445,6 +512,60 @@ mod tests {
             api.validators(),
         )
         .unwrap()
+    }
+
+    #[test_log::test]
+    fn test_reconnect_backoff_doubles_up_to_cap_and_resets() {
+        let mut reconnect = Reconnect::new();
+        let delays: Vec<u64> = (0..7)
+            .map(|_| {
+                reconnect
+                    .failed(&ConnectionError::NetworkTimeout)
+                    .unwrap()
+                    .as_secs()
+            })
+            .collect();
+        assert_eq!(delays, [1, 2, 4, 8, 16, 30, 30]);
+
+        reconnect.connected();
+        assert_eq!(
+            reconnect.failed(&ConnectionError::NetworkTimeout),
+            Some(INITIAL_BACKOFF)
+        );
+    }
+
+    #[test_log::test]
+    fn test_reconnect_gives_up_after_consecutive_refusals() {
+        let refused = ConnectionError::ConnectionRefused(ConnectReturnCode::NotAuthorized);
+        let mut reconnect = Reconnect::new();
+        for _ in 1..PERMANENT_ERROR_ATTEMPTS {
+            assert!(reconnect.failed(&refused).is_some());
+        }
+        assert_eq!(reconnect.failed(&refused), None);
+    }
+
+    #[test_log::test]
+    fn test_reconnect_other_errors_reset_the_refusal_count() {
+        let refused = ConnectionError::ConnectionRefused(ConnectReturnCode::NotAuthorized);
+        let mut reconnect = Reconnect::new();
+        for _ in 1..PERMANENT_ERROR_ATTEMPTS {
+            reconnect.failed(&refused);
+        }
+        reconnect.failed(&ConnectionError::NetworkTimeout);
+        assert!(reconnect.failed(&refused).is_some());
+    }
+
+    #[test_log::test]
+    fn test_refusals_other_than_unavailable_are_permanent() {
+        let refused = ConnectionError::ConnectionRefused;
+        assert!(is_permanent(&refused(
+            ConnectReturnCode::BadUserNamePassword
+        )));
+        assert!(is_permanent(&refused(ConnectReturnCode::NotAuthorized)));
+        assert!(!is_permanent(&refused(
+            ConnectReturnCode::ServiceUnavailable
+        )));
+        assert!(!is_permanent(&ConnectionError::NetworkTimeout));
     }
 
     #[test_log::test]
