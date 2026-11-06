@@ -69,6 +69,13 @@ spec:
             - name: MODBUS_PROBE_INTERVAL
               value: {{ .Values.modbus.probe_interval | quote }}
             {{- include "zero-power-tags.panelEnv" . | trim | nindent 12 }}
+          # Ready while MQTT and its required gateways are up; the app writes the status line.
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - status=$(cat /tmp/ready) && echo "$status" && test "${status#ready:}" != "$status"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

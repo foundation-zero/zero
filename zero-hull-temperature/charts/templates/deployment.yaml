@@ -76,6 +76,13 @@ spec:
               value: {{ .Values.hullTemperature.activateTopic | quote }}
             - name: ACTIVATE_JSON_PATH
               value: {{ .Values.hullTemperature.activateJsonPath | quote }}
+          # Ready while MQTT and its required gateways are up; the app writes the status line.
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - status=$(cat /tmp/ready) && echo "$status" && test "${status#ready:}" != "$status"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

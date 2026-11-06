@@ -15,6 +15,7 @@ from zero_modbus_bridge.bridge import ModbusBridge
 from zero_modbus_bridge.io import AnnotationModbusTopic
 from zero_modbus_bridge.publisher import MqttPublisher
 from zero_modbus_bridge.reader import ModbusReader
+from zero_modbus_bridge.readiness import Readiness
 from zero_modbus_bridge.settings import ModbusSettings
 
 
@@ -418,3 +419,58 @@ def test_from_address_accepts_timeout_on_real_client():
         "10.0.0.1", 502, MagicMock(), [], modbus_timeout=0.5, buffer_size=10
     )
     assert isinstance(bridge, ModbusBridge)
+
+
+@pytest.fixture
+def gateway_readiness() -> Readiness:
+    return Readiness(None, {"modbus": "not probed yet"})
+
+
+@pytest.fixture
+def gateway() -> MagicMock:
+    """An open Modbus connection to a gateway that answers every read."""
+    gateway = MagicMock(is_open=True)
+    gateway.read_holding_registers.return_value = [0x4248, 0x0000]
+    return gateway
+
+
+@pytest.fixture
+def required_gateway(gateway: MagicMock, gateway_readiness: Readiness) -> ModbusBridge:
+    topic = AnnotationModbusTopic(topic="test/g", model=FloatModel, start_register=3000)
+    return ModbusBridge(
+        ModbusReader(gateway, [topic]),
+        RecordingPublisher(),
+        [topic],
+        buffer_size=10,
+        readiness=gateway_readiness,
+    )
+
+
+@pytest.mark.asyncio
+async def test_answering_required_gateway_is_ready(
+    required_gateway: ModbusBridge, gateway_readiness: Readiness
+):
+    await required_gateway.run_once()
+    assert gateway_readiness.status.startswith("ready: modbus since ")
+
+
+@pytest.mark.asyncio
+async def test_unreachable_required_gateway_is_not_ready(
+    required_gateway: ModbusBridge, gateway: MagicMock, gateway_readiness: Readiness
+):
+    gateway.is_open = False
+    gateway.open.return_value = False
+    await required_gateway.run_once()
+    assert gateway_readiness.status.startswith("not ready: modbus: gateway unreachable")
+
+
+@pytest.mark.asyncio
+async def test_silent_required_gateway_is_not_ready(
+    required_gateway: ModbusBridge, gateway: MagicMock, gateway_readiness: Readiness
+):
+    """Connected, but no read is answered: the reader still yields all-None payloads."""
+    gateway.read_holding_registers.return_value = None
+    await required_gateway.run_once()
+    assert gateway_readiness.status.startswith(
+        "not ready: modbus: gateway does not answer"
+    )

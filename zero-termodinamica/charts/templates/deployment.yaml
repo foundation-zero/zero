@@ -76,6 +76,13 @@ spec:
               value: {{ .Values.modbus.probe_interval | quote }}
             - name: MODBUS_BRIDGES_PATH
               value: {{ .Values.modbus.bridgesPath | quote }}
+          # Ready while MQTT and its required gateways are up; the app writes the status line.
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - status=$(cat /tmp/ready) && echo "$status" && test "${status#ready:}" != "$status"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

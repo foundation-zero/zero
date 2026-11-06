@@ -13,6 +13,7 @@ from pydantic_settings import (
 )
 from zero_modbus_bridge.bridge import ModbusBridge
 from zero_modbus_bridge.publisher import MqttPublisher
+from zero_modbus_bridge.readiness import Readiness
 from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
 from zero_modbus_bridge.stub import Stub
 
@@ -24,13 +25,16 @@ logging.basicConfig(
 
 
 BUFFER_SECONDS = 300
+# The single gateway is required: without it there is nothing to publish.
+STARTING = {"mqtt": "connecting", "modbus": "not probed yet"}
 
 
 class RunCmd(ModbusSettings, MqttSettings):
     mqtt_client_id: str = Field(default_factory=lambda: f"termodinamica-{token_hex(4)}")
 
     async def cli_cmd(self) -> None:
-        broker = self.make_broker()
+        readiness = Readiness(self.readiness_file, STARTING)
+        broker = self.make_broker(readiness)
         topics = read_modbus_topics()
         bridge = ModbusBridge.from_settings(
             self,
@@ -38,6 +42,7 @@ class RunCmd(ModbusSettings, MqttSettings):
             topics,
             buffer_size=max(1, round(BUFFER_SECONDS / self.modbus_probe_interval))
             * len(topics),
+            readiness=readiness,
         )
         app = FastStream(broker)
         app.after_startup(bridge.run)

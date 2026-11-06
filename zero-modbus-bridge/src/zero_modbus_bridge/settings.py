@@ -1,12 +1,16 @@
+from pathlib import Path
 from secrets import token_hex
 from typing import Any
 
-from faststream.mqtt import MQTTBroker
+from faststream.mqtt import ReconnectConfig
 from faststream.security import SASLPlaintext
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pyModbusTCP.client import ModbusClient
 from pyModbusTCP.server import ModbusServer
+
+from zero_modbus_bridge.mqtt import ReportingBroker
+from zero_modbus_bridge.readiness import STATUS_FILE, Readiness
 
 model_config = SettingsConfigDict(
     env_file=".env",
@@ -25,13 +29,30 @@ class MqttSettings(BaseSettings):
     mqtt_username: str | None = None
     mqtt_password: str | None = None
     mqtt_client_id: str = Field(default_factory=lambda: f"modbus-bridge-{token_hex(4)}")
+    # On the emptyDir the chart mounts at /tmp; its readiness probe reads it.
+    readiness_file: Path = STATUS_FILE
 
-    def make_broker(self, **extra: Any) -> MQTTBroker:
-        kwargs: dict[str, Any] = dict(extra)
-        kwargs["client_id"] = self.mqtt_client_id
+    def make_broker(self, readiness: Readiness) -> ReportingBroker:
+        kwargs: dict[str, Any] = {}
         if self.mqtt_username and self.mqtt_password:
             kwargs["security"] = SASLPlaintext(self.mqtt_username, self.mqtt_password)
-        return MQTTBroker(f"{self.mqtt_host}:{self.mqtt_port}", **kwargs)
+
+        async def exit_on_give_up() -> None:
+            readiness.exit("mqtt: client gave up reconnecting")
+
+        return ReportingBroker(
+            f"{self.mqtt_host}:{self.mqtt_port}",
+            readiness,
+            client_id=self.mqtt_client_id,
+            # Retry for as long as it takes, and at most 30 s apart, so we are
+            # back within about 30 s of the broker; the readiness deadline
+            # bounds the total.
+            reconnect=ReconnectConfig(max_attempts=None, max_delay=30.0),
+            # 60 s races RabbitMQ's keepalive window.
+            keepalive=15,
+            on_connection_recovery_failed=exit_on_give_up,
+            **kwargs,
+        )
 
 
 class ModbusSettings(BaseSettings):

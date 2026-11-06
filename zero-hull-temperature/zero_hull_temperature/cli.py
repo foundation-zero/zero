@@ -17,6 +17,7 @@ from pydantic_settings import (
 )
 from zero_modbus_bridge.io import ModbusTopic
 from zero_modbus_bridge.reader import ModbusReader
+from zero_modbus_bridge.readiness import Readiness
 from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
 
 from zero_hull_temperature.addresses import (
@@ -32,6 +33,9 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s"
 )
 
+# The single gateway is required: without it there is nothing to publish.
+STARTING = {"mqtt": "connecting", "modbus": "not probed yet"}
+
 
 class MqttSend(CliMutuallyExclusiveGroup):
     mqtt: MqttSettings | None = None
@@ -46,7 +50,7 @@ class ReadWithMqttCmd(ModbusSettings, MqttSettings):
     activate_json_path: str = PATH
 
     async def cli_cmd(self) -> None:
-        async with self.make_broker() as broker:
+        async with self.make_broker(Readiness(None, {"mqtt": "connecting"})) as broker:
             bridge = RelaySwitchingBridge.from_settings(
                 self,
                 broker,
@@ -115,12 +119,14 @@ class RunCmd(ModbusSettings, MqttSettings):
     activate_json_path: str = PATH
 
     async def cli_cmd(self) -> None:
-        broker = self.make_broker()
+        readiness = Readiness(self.readiness_file, STARTING)
+        broker = self.make_broker(readiness)
         bridge = RelaySwitchingBridge.from_settings(
             self,
             broker,
             self.activate_topic,
             self.activate_json_path,
+            readiness=readiness,
         )
         app = FastStream(broker)
         app.after_startup(bridge.run)

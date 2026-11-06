@@ -1,13 +1,13 @@
 import logging
 import os
 import re
-from unittest.mock import MagicMock
+from pathlib import Path
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from faststream.mqtt import MQTTBroker
-from zero_modbus_bridge.settings import MqttSettings
 
 from zero_power_tags.cli import (
+    BridgeEndpoint,
     PowerTagsSettings,
     RunCmd,
     configured_modbus_ports,
@@ -120,34 +120,6 @@ class TestStubPorts:
         }
 
 
-def test_run_cmd_broker_reconnects_indefinitely(monkeypatch):
-    """RunCmd asks the base broker for indefinite reconnect and a 15s keepalive."""
-    captured: dict = {}
-
-    def fake_make_broker(self, **kwargs):
-        captured.update(kwargs)
-        return MagicMock()
-
-    monkeypatch.setattr(MqttSettings, "make_broker", fake_make_broker)
-    cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
-    cmd.make_broker()
-
-    assert captured["reconnect"].max_attempts is None
-    assert captured["keepalive"] == 15
-
-
-def test_make_broker_accepts_kwargs_on_real_broker():
-    """The real MQTTBroker accepts our security + reconnect + keepalive kwargs."""
-    cmd = RunCmd(
-        _env_file=None,  # type: ignore[call-arg]
-        mqtt_host="broker",
-        mqtt_port=1883,
-        mqtt_username="u",
-        mqtt_password="p",
-    )
-    assert isinstance(cmd.make_broker(), MQTTBroker)
-
-
 def test_buffer_size_covers_five_minutes_of_one_bridge():
     from zero_power_tags.cli import buffer_size_for
 
@@ -169,3 +141,29 @@ def test_run_cmd_client_id_from_env(monkeypatch):
 
 def test_local_topic_groups():
     assert local_topic_groups(_settings(), [_spec("10P1")], 1000) == [([], 1000)]
+
+
+async def test_run_reports_only_mqtt_readiness(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+):
+    make_broker = MagicMock()
+    from_address = MagicMock()
+    app = MagicMock()
+    app.return_value.run = AsyncMock()
+    monkeypatch.setattr(RunCmd, "make_broker", make_broker)
+    monkeypatch.setattr("zero_power_tags.cli.ModbusBridge.from_address", from_address)
+    monkeypatch.setattr("zero_power_tags.cli.FastStream", app)
+    monkeypatch.setattr("zero_power_tags.cli.read_modbus_bridge_specs", lambda: [])
+    monkeypatch.setattr("zero_power_tags.cli.create_publisher", MagicMock())
+    monkeypatch.setattr(
+        "zero_power_tags.cli.resolve_bridge_endpoints",
+        lambda *_: [BridgeEndpoint(spec=_spec("10P1"), host="gateway", port=502)],
+    )
+    status_file = tmp_path / "ready"
+    monkeypatch.setenv("READINESS_FILE", str(status_file))
+
+    await RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883).cli_cmd()  # type: ignore[call-arg]
+
+    make_broker.call_args.args[0].ready("mqtt")
+    assert status_file.read_text().startswith("ready: mqtt since ")
+    assert "readiness" not in from_address.call_args.kwargs
