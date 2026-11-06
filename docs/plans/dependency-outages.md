@@ -88,7 +88,7 @@ Requirements:
 
 ## F4: loads-app, thrs-control, domestic-control, data-gen
 
-**Decided: a follow-up ticket.** These apps recover today, just slowly and noisily. aiomqtt has no automatic reconnect: the apps use `async with Client(...)`, and an `MqttError` ends the process. loads-app and thrs-control exit on purpose with `sys.exit(1)` (`loads/api/dependencies.py`, `thrs/graphql/strawberry.py`).
+**Decided: a follow-up ticket, [ZERO-2531](https://foundationzero-team.atlassian.net/browse/ZERO-2531).** These apps recover today, just slowly and noisily. aiomqtt has no automatic reconnect: the apps use `async with Client(...)`, and an `MqttError` ends the process. loads-app and thrs-control exit on purpose with `sys.exit(1)` (`loads/api/dependencies.py`, `thrs/graphql/strawberry.py`).
 
 For that ticket:
 - **A reconnect loop** around the client, with the 30 s backoff cap and 15 s keepalive. Subscriptions are set up again after each reconnect.
@@ -117,7 +117,7 @@ These are outside the ADR's scope, but the work above touches them:
 1. **F1 bridge and charts, and battery-cells:** they set the Python and Rust patterns.
 2. **atpx-nmea, mqtt-graphql and fiber-optics:** they copy those patterns once reviewed.
 3. **Upstream:** the zmqtt refusal fix, then drop the bridge wrapper once it is released; follow rumqtt#1078; get vector#26731 merged, then upgrade Vector.
-4. **F4:** in its follow-up ticket.
+4. **F4:** in ZERO-2531.
 
 **Verification for each step:** the test from ZERO-2406. On singel, delete all RabbitMQ pods and check that every converted app:
 - shows `0/1 Running` with the reason in `kubectl describe`,
