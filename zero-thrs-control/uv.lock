@@ -2871,7 +2871,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 analysis = [
-    { name = "ipympl", specifier = "~=0.10" },
+    { name = "ipympl", specifier = "~=0.10.0" },
     { name = "jupyter", specifier = "~=1.1.1" },
     { name = "matplotlib", specifier = "~=3.11.2" },
     { name = "pandas", specifier = "~=3.1.1" },

@@ -33,7 +33,7 @@ dev = ["ruff==0.17.3", "pygraphviz~=2.0.4", "pyright~=1.1.414"]
 # Notebooks and plotting for the analysis/ folder; not installed in the images.
 analysis = [
   "jupyter~=1.1.1",
-  "ipympl~=0.10",
+  "ipympl~=0.10.0",
   "matplotlib~=3.11.2",
   "pandas~=3.1.1",
   "plotly~=7.1.0",
