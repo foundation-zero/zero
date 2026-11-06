@@ -16,7 +16,7 @@ No app reports MQTT connectivity through readiness, and none has the 15 min dead
 | Flavour | Apps | Today | Main work |
 | --- | --- | --- | --- |
 | **F1** FastStream/zmqtt through `zero-modbus-bridge` | power-tags, termodinamica, hull-temperature | Stuck (hull-temperature: expected since #716, not observed) | Fix zmqtt give-up handling once, in the bridge |
-| **F2** FastStream/zmqtt, standalone | atpx-nmea | Stuck | Same as F1, plus a second broker and a zmqtt upgrade |
+| **F2** FastStream/zmqtt, standalone | atpx-nmea | Stuck | Same as F1, plus a second broker and a zmqtt/FastStream upgrade |
 | **F3** rumqttc (Rust) | fiber-optics, battery-cells, mqtt-graphql | fiber-optics stuck; the other two reconnect | Readiness and deadline; diagnose fiber-optics |
 | **F4** aiomqtt, exits on error | loads-app (api, control), thrs-control (control, simulation, api), domestic-control, data-gen | Crash | Replace "exit on error" with a reconnect loop |
 | **F5** third party | vector | Stuck (doesn't re-subscribe) | We can't change the client |
@@ -57,14 +57,14 @@ Requirements:
 - **Defaults** in `MqttSettings.make_broker`: `ReconnectConfig(max_attempts=None)` and a 15 s keepalive. Today only power-tags sets them.
 
 Choices:
-- **How to fix CONNACK refusals:** fix zmqtt upstream and wait for a release, wrap the client in the bridge, or treat every refusal as a give-up and exit. Exiting is the simplest, but it means a broker boot can still cause a few restarts.
+- **How to fix CONNACK refusals:** fix zmqtt upstream and wait for a release, or wrap the client in the bridge so it retries refusals a few times before exiting. Exiting on the first refusal is not an option: the ADR requires retrying first, because a booting broker refuses connections.
 - **Modbus gateways, required or optional?** power-tags reads many gateways. If one gateway is down, the pod is still doing most of its job, so that gateway is probably optional and only logged. termodinamica and hull-temperature each read a single gateway, so it is probably required.
 - **Replay buffer (#716):** the ADR leaves replay out of scope. hull-temperature also publishes a relay command, which should not be replayed after an outage. Does that need its own ticket?
 
 ## F2: atpx-nmea
 
 Requirements:
-- **zmqtt upgrade** from 0.1.1 to ≥0.2.2, to get `on_connection_recovery_failed`.
+- **zmqtt and FastStream upgrade:** zmqtt from 0.1.1 to ≥0.2.2 and FastStream from 0.7.4 to ≥0.7.5 (raise the minimum in `pyproject.toml` and update `uv.lock`), to get `on_connection_recovery_failed`.
 - **Both brokers:** the same handling as F1 for the A+T input broker and the RabbitMQ output broker.
 
 Choice:
