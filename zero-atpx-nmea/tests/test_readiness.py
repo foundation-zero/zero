@@ -100,6 +100,15 @@ def test_unwritable_status_file_is_logged(
     assert readiness.status.startswith("not ready: mqtt: connecting since ")
 
 
+def test_failed_write_is_retried_on_the_next_report(tmp_path: Path):
+    status_file = tmp_path / "missing" / "ready"
+    readiness = Readiness(status_file, ["mqtt"])
+    status_file.parent.mkdir()
+
+    readiness.not_ready("mqtt", "connecting")
+    assert status_file.read_text().startswith("not ready: mqtt: connecting since ")
+
+
 @pytest.fixture
 def exit_code(monkeypatch: pytest.MonkeyPatch) -> list[int]:
     codes: list[int] = []
