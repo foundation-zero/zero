@@ -63,7 +63,8 @@ services:
       - data
     container_name: grafana
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/api/health"]
+      test:
+        ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/api/health"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -405,10 +406,8 @@ services:
       context: ./zero-thrs-control
       dockerfile: Dockerfile
       target: api
-      # Both targets share the builder stage, so either cache serves both.
-      cache_from: &thrs_cache_from
+      cache_from:
         - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-thrs-api:main
-        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-thrs-control:main
     profiles:
       - thrs
     ports:
@@ -442,7 +441,8 @@ services:
       context: ./zero-thrs-control
       dockerfile: Dockerfile
       target: control
-      cache_from: *thrs_cache_from
+      cache_from:
+        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-thrs-control:main
     profiles:
       - thrs
     environment:
