@@ -5,8 +5,13 @@ use jsonschema::Validator;
 
 use crate::topic_map::TopicMap;
 
+/// One MQTT topic, or a parametrized family of them, declared by one channel
+/// of a Spec.
 #[derive(Debug, Clone)]
 pub struct TopicDef {
+    /// MQTT topic, or topic filter for a Group:
+    /// `thrs/compressor/temperature` or `power-tags/+/+`.
+    /// Used for subscribing, TTL, validator lookup and the GraphQL path.
     pub topic: String,
     pub fields: BTreeMap<String, GraphqlType>,
     /// Pointer to payload in json reference format (e.g. #/components/schemas/field)
@@ -17,26 +22,37 @@ pub struct TopicDef {
     /// (per-schema override) or a global default.
     pub ttl_secs: Option<u64>,
     pub action: OperationAction,
+    pub kind: TopicKind,
 }
 
-/// A parametrized topic family declared by a single channel, e.g.
-/// address `power-tags/{panel}/{slug}`.
+/// Whether a [`TopicDef`] is one fixed topic or a Group of Members.
 #[derive(Debug, Clone)]
-pub struct TopicGroupDef {
-    /// Static prefix of the address (`power-tags`); seeds the GraphQL names.
-    pub group: String,
-    /// Wildcard MQTT topic to subscribe to (`power-tags/+/+`).
-    pub pattern: String,
-    pub fields: BTreeMap<String, GraphqlType>,
-    /// Pointer to payload in json reference format (e.g. #/components/schemas/field)
-    pub payload_schema_ref: Option<String>,
-    pub ttl_secs: Option<u64>,
-    pub action: OperationAction,
+pub enum TopicKind {
+    /// One fixed topic, readable as one current value.
+    Single,
+    /// A parametrized family of Members read together as a collection.
+    Group(GroupDef),
+}
+
+/// What only a Group has: its Members' static metadata and how to bucket them.
+#[derive(Debug, Clone)]
+pub struct GroupDef {
     /// Extension attributes per payload field (`x-*` schema extensions
     /// minus the prefix), keyed by raw field name.
     pub value_extensions: BTreeMap<String, BTreeMap<String, String>>,
     pub topic_metadata: MetadataByTopic,
     pub group_by: String,
+}
+
+impl TopicDef {
+    /// The Group part of this topic, if it is a Group.
+    #[must_use]
+    pub fn as_group(&self) -> Option<&GroupDef> {
+        match &self.kind {
+            TopicKind::Single => None,
+            TopicKind::Group(group) => Some(group),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -53,7 +69,6 @@ pub struct ApiModel {
     pub name: String,
     subscribe_topics: TopicMap<()>,
     pub topics: Vec<TopicDef>,
-    pub groups: Vec<TopicGroupDef>,
     pub validators: TopicMap<Validator>,
 }
 
@@ -63,21 +78,19 @@ impl ApiModel {
         name: String,
         subscribe_topics: TopicMap<()>,
         topics: Vec<TopicDef>,
-        groups: Vec<TopicGroupDef>,
         validators: TopicMap<Validator>,
     ) -> Self {
         Self {
             name,
             subscribe_topics,
             topics,
-            groups,
             validators,
         }
     }
 
     #[must_use]
     pub fn is_empty(&self) -> bool {
-        self.topics.is_empty() && self.groups.is_empty()
+        self.topics.is_empty()
     }
 }
 #[derive(Debug)]
@@ -130,22 +143,15 @@ impl Api {
 
     /// Build a cache whose TTL table is derived from the AsyncAPI
     /// definitions: topics whose `ttl_secs` differs from `default_ttl` are
-    /// keyed by topic, groups by their wildcard pattern so every concrete
-    /// topic under them inherits the group's `x-ttl`.
+    /// keyed by topic; a group's topic is a wildcard filter, so every Member
+    /// inherits the group's `x-ttl`.
     #[must_use]
     pub fn ttl_map(&self) -> TopicMap<u64> {
-        let topic_overrides = self
-            .models
+        self.models
             .iter()
             .flat_map(|model| &model.topics)
-            .filter_map(|t| Some((t.topic.clone(), t.ttl_secs?)));
-
-        let group_overrides = self
-            .models
-            .iter()
-            .flat_map(|model| &model.groups)
-            .filter_map(|g| Some((g.pattern.clone(), g.ttl_secs?)));
-        topic_overrides.chain(group_overrides).collect()
+            .filter_map(|t| Some((t.topic.clone(), t.ttl_secs?)))
+            .collect()
     }
 }
 
@@ -158,7 +164,6 @@ mod tests {
         let api = Api::new(vec![ApiModel::new(
             "test".to_owned(),
             TopicMap::new(),
-            vec![],
             vec![],
             TopicMap::new(),
         )]);
@@ -174,8 +179,8 @@ mod tests {
                 payload_schema_ref: None,
                 ttl_secs: None,
                 action: OperationAction::Send,
+                kind: TopicKind::Single,
             }],
-            vec![],
             TopicMap::new(),
         )]);
 

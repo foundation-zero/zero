@@ -2,10 +2,7 @@ use jsonschema::{Registry, Resource, Validator};
 use log::{info, warn};
 use serde_json::{Value, json};
 
-use crate::{
-    api_model::{TopicDef, TopicGroupDef},
-    topic_map::TopicMap,
-};
+use crate::{api_model::TopicDef, topic_map::TopicMap};
 
 #[derive(Debug, Clone)]
 pub struct ValidatorBuilder<'a> {
@@ -32,15 +29,13 @@ impl ValidatorBuilder<'_> {
     }
 }
 
-/// Compile one validator per topic and one per topic group, into a single
-/// map keyed by exact topic (`TopicDef`) or wildcard pattern (`TopicGroupDef`,
-/// e.g. `power-tags/+/+`)
+/// Compile one validator per topic into a map keyed by its topic: an exact
+/// topic, or a wildcard filter for a Group (e.g. `power-tags/+/+`).
 pub fn build_validators(
     validator_builder: &ValidatorBuilder,
     topics: &[TopicDef],
-    groups: &[TopicGroupDef],
 ) -> anyhow::Result<TopicMap<Validator>> {
-    let topic_validators: Vec<(String, Validator)> = topics
+    let validators: Vec<(String, Validator)> = topics
         .iter()
         .filter_map(|td| {
             let payload_schema_ref = td.payload_schema_ref.clone()?;
@@ -56,64 +51,39 @@ pub fn build_validators(
             }
         })
         .collect();
-    if !topic_validators.is_empty() {
+    if !validators.is_empty() {
         info!(
             "Compiled JSON Schema validators for {} topic(s)",
-            topic_validators.len()
+            validators.len()
         );
     }
 
-    let group_validators: Vec<(String, Validator)> = groups
-        .iter()
-        .filter_map(|group| {
-            let payload_schema_ref = group.payload_schema_ref.clone()?;
-            match validator_builder.build_validator(&payload_schema_ref) {
-                Ok(validator) => Some((group.pattern.clone(), validator)),
-                Err(e) => {
-                    warn!(
-                        "Failed to compile JSON Schema for topic group '{}': {e} — skipping validation for this group",
-                        group.group
-                    );
-                    None
-                }
-            }
-        })
-        .collect();
-    if !group_validators.is_empty() {
-        info!(
-            "Compiled JSON Schema validators for {} topic group(s)",
-            group_validators.len()
-        );
-    }
-
-    Ok(topic_validators
-        .into_iter()
-        .chain(group_validators)
-        .collect())
+    Ok(validators.into_iter().collect())
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{GraphqlType, TopicGroupDef};
+    use crate::api_model::{GraphqlType, GroupDef, TopicKind};
     use crate::roas_asyncapi::OperationAction;
     use serde_json::json;
     use std::collections::BTreeMap;
 
-    fn group_with_schema(pattern: &str, schema: Option<String>) -> TopicGroupDef {
-        TopicGroupDef {
-            group: "power-tags".to_string(),
-            pattern: pattern.to_string(),
+    fn group_with_schema(topic: &str, schema: Option<String>) -> TopicDef {
+        TopicDef {
+            topic: topic.to_string(),
             fields: BTreeMap::from_iter(vec![(
                 "active_power_total".to_string(),
                 GraphqlType::Float,
             )]),
             payload_schema_ref: schema,
             action: OperationAction::Send,
-            value_extensions: BTreeMap::new(),
             ttl_secs: None,
-            group_by: String::new(),
-            topic_metadata: BTreeMap::new(),
+            kind: TopicKind::Group(GroupDef {
+                value_extensions: BTreeMap::new(),
+                group_by: String::new(),
+                topic_metadata: BTreeMap::new(),
+            }),
         }
     }
 
@@ -133,9 +103,10 @@ mod tests {
             payload_schema_ref: Some("#/validator".to_string()),
             action: OperationAction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         }];
 
-        let validators = build_validators(&validator_builder, &topics, &[]).unwrap();
+        let validators = build_validators(&validator_builder, &topics).unwrap();
 
         let validator = validators.get("power-tags");
         assert!(validator.is_some());
@@ -162,7 +133,7 @@ mod tests {
             Some("#/validator".to_string()),
         )];
 
-        let validators = build_validators(&validator_builder, &[], &groups).unwrap();
+        let validators = build_validators(&validator_builder, &groups).unwrap();
 
         let validator = &validators.get("power-tags/+/+");
         assert!(validator.is_some());
@@ -183,7 +154,7 @@ mod tests {
 
         let groups = vec![group_with_schema("power-tags/+/+", None)];
 
-        let validators = build_validators(&validator_builder, &[], &groups).unwrap();
+        let validators = build_validators(&validator_builder, &groups).unwrap();
         assert!(validators.is_empty());
     }
 
@@ -212,9 +183,10 @@ mod tests {
             payload_schema_ref: Some("#/schemas/message".to_string()),
             action: OperationAction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         }];
 
-        let validators = build_validators(&validator_builder, &topics, &[]).unwrap();
+        let validators = build_validators(&validator_builder, &topics).unwrap();
         let validator = validators.get("power-tags");
         assert!(validator.is_some());
 
