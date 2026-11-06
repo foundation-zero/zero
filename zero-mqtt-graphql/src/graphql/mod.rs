@@ -29,28 +29,24 @@ use async_graphql::dynamic::{Field, FieldValue, Object, Schema, TypeRef};
 use log::{info, warn};
 use serde_json::Value as JsonValue;
 
-use crate::graphql::graphql_path::GraphqlPath;
 use crate::graphql::groups::register_group_queries;
-use crate::graphql::topics::{payload_query_field, queryable_topic};
-pub use crate::graphql::tree::{PathNode, graphql_tree};
+use crate::graphql::topics::payload_query_field;
 use crate::naming::{pascal_case_graphql_name, sanitize_to_graphql_name};
 use crate::{
-    api_model::{Api, GraphqlType, TopicKind},
+    api_model::{Api, GraphqlPath, GraphqlType, PathNode, QueryTree, TopicKind},
     cache::TopicCache,
 };
 
-mod graphql_path;
 mod groups;
 mod topics;
-mod tree;
 
-/// Build a dynamic GraphQL schema from topic definitions and the cache.
+/// Build a dynamic GraphQL schema from the Specs' Query trees and the cache.
 ///
-/// Sanitizes topic names to valid GraphQL identifiers and validates that no
-/// two topics collide after sanitization. Returns an error if any sanitized
-/// name is empty, duplicates another topic, or collides with a reserved
-/// GraphQL name. Topics without scalar fields are not registered as query
-/// types.
+/// Each Topic is a field at the GraphQL path its MQTT address gives, with a
+/// payload object type named after its Spec. Errors when two Specs share a
+/// root field or two different types get the same name; Path conflicts
+/// within a Spec are found when it is loaded. Topics without payload fields
+/// are left out.
 ///
 /// Each topic group (a parametrized channel such as `power-tags/{panel}/{slug}`)
 /// with at least one metadata entry gains a `<group>: [<Group>Topic]` list
@@ -61,6 +57,10 @@ mod tree;
 /// attribute. Concrete topics
 /// annotated in the metadata store gain an additive `metadata { … }` field on
 /// their own object type.
+///
+/// Each Spec builds its own fields; `Query` combines their root fields. For
+/// now Specs are assumed not to overlap: two Specs with the same root field
+/// are a Path conflict. A Mount by Spec name at the root may lift this later.
 pub fn build_schema(api: &Api, cache: &Arc<TopicCache>) -> anyhow::Result<Schema> {
     let query = Object::new("Query");
 
@@ -68,9 +68,25 @@ pub fn build_schema(api: &Api, cache: &Arc<TopicCache>) -> anyhow::Result<Schema
 
     let mut known_types: HashMap<String, Object> = HashMap::new();
 
-    let tree = graphql_tree(api)?;
-
-    let query_fields = tree_fields(&GraphqlPath::default(), &tree, cache, &mut known_types)?;
+    let mut root_specs: HashMap<&str, &str> = HashMap::new();
+    let mut query_fields = Vec::new();
+    for spec in &api.specs {
+        for root in spec.query_tree.keys() {
+            if let Some(other) = root_specs.insert(root, &spec.name) {
+                bail!(
+                    "GraphQL path conflict: Specs '{other}' and '{}' both have root field '{root}'",
+                    spec.name
+                );
+            }
+        }
+        query_fields.extend(tree_fields(
+            &spec.name,
+            &GraphqlPath::default(),
+            &spec.query_tree,
+            cache,
+            &mut known_types,
+        )?);
+    }
     if query_fields.is_empty() {
         bail!("Query has no queryable children!");
     }
@@ -86,11 +102,12 @@ pub fn build_schema(api: &Api, cache: &Arc<TopicCache>) -> anyhow::Result<Schema
         .with_context(|| "Schema building failed")
 }
 
-/// The fields for one level of the tree, collecting the object types they
-/// need into `known_types`.
+/// The fields for one level of a Spec's tree, collecting the object types
+/// they need into `known_types`. Payload types are named after `spec`.
 fn tree_fields(
+    spec: &str,
     parent_path: &GraphqlPath,
-    children: &BTreeMap<String, PathNode<'_>>,
+    children: &QueryTree,
     cache: &Arc<TopicCache>,
     known_types: &mut HashMap<String, Object>,
 ) -> anyhow::Result<Vec<Field>> {
@@ -100,8 +117,8 @@ fn tree_fields(
             let (fields, mut objects) = match node {
                 PathNode::Branch(grandchildren) => {
                     let path = parent_path.child(segment);
-                    let type_name = path.type_name();
-                    let fields = tree_fields(&path, grandchildren, cache, known_types)?;
+                    let type_name = branch_type_name(&path);
+                    let fields = tree_fields(spec, &path, grandchildren, cache, known_types)?;
                     if fields.is_empty() {
                         warn!("Branch '{path}' has no queryable children, leaving it out");
                         return Ok(vec![]);
@@ -113,7 +130,7 @@ fn tree_fields(
                     let field = branch_field(segment, &type_name);
                     (vec![field], vec![branch])
                 }
-                PathNode::Topic { spec, topic } => {
+                PathNode::Topic(topic) => {
                     info!("Building schema for topic {}", topic.topic);
                     let Some(payload_schema_ref) = topic.payload_schema_ref.as_ref() else {
                         warn!("Topic {} without payload, ignoring", topic.topic);
@@ -165,6 +182,20 @@ fn tree_fields(
         .collect::<anyhow::Result<Vec<_>>>()?.into_iter().flatten().collect();
 
     Ok(fields)
+}
+
+/// Type name of the branch at `path`: the full path in PascalCase
+/// (`marpower.freshWater` → `SchemaMarpowerFreshWater`).
+fn branch_type_name(path: &GraphqlPath) -> String {
+    let base = pascal_case_graphql_name(
+        &path
+            .segments()
+            .iter()
+            .map(|s| s.trim_start_matches('_'))
+            .collect::<Vec<&str>>()
+            .join("-"),
+    );
+    format!("Schema{}", base.trim_start_matches('_'))
 }
 
 /// A branch field: resolves to an empty object so its children resolve.
@@ -281,18 +312,17 @@ fn graphql_type_ref(name_prefix: &str, typ: &GraphqlType) -> (TypeRef, Vec<Objec
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{ApiModel, TopicDef};
+    use crate::api_model::{Spec, TopicDef};
     use crate::roas_asyncapi::OperationAction;
     use crate::topic_map::TopicMap;
     use serde_json::json;
 
+    fn spec(name: &str, topics: Vec<TopicDef>) -> Spec {
+        Spec::new(name.to_string(), TopicMap::new(), topics, TopicMap::new()).unwrap()
+    }
+
     fn mock_api(topics: Vec<TopicDef>) -> Api {
-        Api::new(vec![ApiModel::new(
-            String::new(),
-            TopicMap::new(),
-            topics,
-            TopicMap::new(),
-        )])
+        Api::new(vec![spec("", topics)])
     }
 
     /// Helper for a Send Topic with one Float field.
@@ -304,32 +334,6 @@ mod tests {
             action: OperationAction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
-        }
-    }
-
-    #[test_log::test]
-    fn test_topics_on_the_same_graphql_path_conflict() {
-        // `b-c` and `b_c` both sanitize to `bC`.
-        let topics = vec![mock_topic("a/b-c", "x"), mock_topic("a/b_c", "y")];
-
-        let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap_err();
-        assert_eq!(
-            err.to_string(),
-            "GraphQL path conflict: topic 'a/b_c' conflicts with topic 'a/b-c'"
-        );
-    }
-
-    #[test_log::test]
-    fn test_topic_that_is_also_a_parent_conflicts_in_either_order() {
-        for topics in [
-            vec![mock_topic("a/b", "x"), mock_topic("a/b/c", "y")],
-            vec![mock_topic("a/b/c", "y"), mock_topic("a/b", "x")],
-        ] {
-            let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap_err();
-            assert_eq!(
-                err.to_string(),
-                "GraphQL path conflict: topic 'a/b' conflicts with topic 'a/b/c'"
-            );
         }
     }
 
@@ -416,40 +420,37 @@ mod tests {
     }
 
     #[test_log::test]
-    fn test_address_empty_errors() {
-        for address in ["//", ""] {
-            let topics = vec![mock_topic(address, "v")];
-
-            let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap_err();
-            assert_eq!(
-                err.to_string(),
-                format!("topic '{address}' would result in an empty GraphQL name")
-            );
-        }
-    }
-
-    fn spec(name: &str, topics: Vec<TopicDef>) -> ApiModel {
-        ApiModel::new(name.to_string(), TopicMap::new(), topics, TopicMap::new())
-    }
-
-    #[tokio::test]
-    #[test_log::test]
-    async fn test_specs_sharing_a_prefix_merge_into_one_branch() {
+    fn test_specs_sharing_a_root_field_conflict() {
         let api = Api::new(vec![
             spec("one", vec![mock_topic("thrs/controller/pcm", "x")]),
             spec("two", vec![mock_topic("thrs/simulator/step", "y")]),
         ]);
+
+        let err = build_schema(&api, &Arc::new(TopicCache::new())).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "GraphQL path conflict: Specs 'one' and 'two' both have root field 'thrs'"
+        );
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_specs_combine_into_one_query() {
+        let api = Api::new(vec![
+            spec("one", vec![mock_topic("thrs/controller/pcm", "x")]),
+            spec("two", vec![mock_topic("simulator/step", "y")]),
+        ]);
         let cache = Arc::new(TopicCache::new());
         cache.insert("thrs/controller/pcm", json!({"x": 1.0}));
-        cache.insert("thrs/simulator/step", json!({"y": 2.0}));
+        cache.insert("simulator/step", json!({"y": 2.0}));
         let schema = build_schema(&api, &cache).unwrap();
 
         let response = schema
-            .execute("{ thrs { controller { pcm { x } } simulator { step { y } } } }")
+            .execute("{ thrs { controller { pcm { x } } } simulator { step { y } } }")
             .await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
         let data: serde_json::Value = response.data.into_json().unwrap();
         assert_eq!(data["thrs"]["controller"]["pcm"]["x"], json!(1.0));
-        assert_eq!(data["thrs"]["simulator"]["step"]["y"], json!(2.0));
+        assert_eq!(data["simulator"]["step"]["y"], json!(2.0));
     }
 }

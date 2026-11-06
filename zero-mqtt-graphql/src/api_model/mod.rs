@@ -5,6 +5,12 @@ use jsonschema::Validator;
 
 use crate::topic_map::TopicMap;
 
+pub use graphql_path::GraphqlPath;
+pub use tree::{PathNode, QueryTree};
+
+mod graphql_path;
+mod tree;
+
 /// One MQTT topic, or a parametrized family of them, declared by one channel
 /// of a Spec.
 #[derive(Debug, Clone)]
@@ -53,6 +59,21 @@ impl TopicDef {
             TopicKind::Group(group) => Some(group),
         }
     }
+
+    /// Whether this topic belongs in the Query tree: a Send operation with
+    /// payload fields. A single topic with MQTT wildcards (`+`, `#`) cannot
+    /// form a GraphQL path; a Group's wildcards stand for its Members.
+    #[must_use]
+    pub fn is_queryable(&self) -> bool {
+        let concrete = match self.kind {
+            TopicKind::Single => !self
+                .topic
+                .split('/')
+                .any(|level| level == "+" || level == "#"),
+            TopicKind::Group(_) => true,
+        };
+        concrete && !self.fields.is_empty() && self.action == OperationAction::Send
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -64,45 +85,56 @@ pub enum GraphqlType {
     Boolean,
 }
 
+/// One loaded Spec: what the bridge subscribes to, validates and serves for
+/// one AsyncAPI document.
 #[derive(Debug, Clone)]
-pub struct ApiModel {
+pub struct Spec {
     pub name: String,
     subscribe_topics: TopicMap<()>,
-    pub topics: Vec<TopicDef>,
-    pub validators: TopicMap<Validator>,
+    validators: TopicMap<Validator>,
+    /// TTL in seconds per topic or topic filter that sets one, taken from
+    /// every topic, also those left out of the Query tree.
+    ttl_map: TopicMap<u64>,
+    pub query_tree: QueryTree,
 }
 
-impl ApiModel {
-    #[must_use]
+impl Spec {
+    /// Errors on a queryable topic without a GraphQL path, or on a Path
+    /// conflict within this Spec.
     pub fn new(
         name: String,
         subscribe_topics: TopicMap<()>,
         topics: Vec<TopicDef>,
         validators: TopicMap<Validator>,
-    ) -> Self {
-        Self {
+    ) -> anyhow::Result<Self> {
+        let ttl_map = topics
+            .iter()
+            .filter_map(|t| Some((t.topic.clone(), t.ttl_secs?)))
+            .collect();
+        Ok(Self {
             name,
             subscribe_topics,
-            topics,
             validators,
-        }
+            ttl_map,
+            query_tree: tree::query_tree(topics)?,
+        })
     }
 
     #[must_use]
     pub fn is_empty(&self) -> bool {
-        self.topics.is_empty()
+        self.query_tree.is_empty()
     }
 }
-#[derive(Debug)]
 
+#[derive(Debug)]
 pub struct Api {
-    pub(crate) models: Vec<ApiModel>,
+    pub(crate) specs: Vec<Spec>,
 }
 
 impl Api {
     #[must_use]
-    pub fn new(models: Vec<ApiModel>) -> Self {
-        Api { models }
+    pub fn new(specs: Vec<Spec>) -> Self {
+        Api { specs }
     }
 
     /// Topics to subscribe on.
@@ -111,47 +143,35 @@ impl Api {
     /// We want to work as much as we can with mqtt wildcards
     #[must_use]
     pub fn subscribe_topics(&self) -> Vec<String> {
-        self.models
+        self.specs
             .iter()
-            .flat_map(|model| model.subscribe_topics.keys())
+            .flat_map(|spec| spec.subscribe_topics.keys())
             .cloned()
             .collect()
     }
 
-    /// Build a list of topics
-    #[must_use]
-    pub fn topics(&self) -> Vec<TopicDef> {
-        self.models
-            .iter()
-            .flat_map(|model| model.topics.clone())
-            .collect()
-    }
-
     pub fn is_empty(&self) -> bool {
-        self.models.iter().all(ApiModel::is_empty)
+        self.specs.iter().all(Spec::is_empty)
     }
 
     /// Build a set of validators
     ///
     /// This is used in validation incomming mqtt messages
     #[must_use]
-    pub fn validators(&self) -> crate::topic_map::TopicMap<jsonschema::Validator> {
-        self.models.iter().fold(TopicMap::new(), |acc, model| {
-            acc.extend(model.validators.clone())
+    pub fn validators(&self) -> TopicMap<Validator> {
+        self.specs.iter().fold(TopicMap::new(), |acc, spec| {
+            acc.extend(spec.validators.clone())
         })
     }
 
-    /// Build a cache whose TTL table is derived from the AsyncAPI
-    /// definitions: topics whose `ttl_secs` differs from `default_ttl` are
-    /// keyed by topic; a group's topic is a wildcard filter, so every Member
-    /// inherits the group's `x-ttl`.
+    /// The cache's TTL table, derived from the AsyncAPI definitions: topics
+    /// with an `x-ttl` are keyed by topic; a group's topic is a wildcard
+    /// filter, so every Member inherits the group's `x-ttl`.
     #[must_use]
     pub fn ttl_map(&self) -> TopicMap<u64> {
-        self.models
-            .iter()
-            .flat_map(|model| &model.topics)
-            .filter_map(|t| Some((t.topic.clone(), t.ttl_secs?)))
-            .collect()
+        self.specs.iter().fold(TopicMap::new(), |acc, spec| {
+            acc.extend(spec.ttl_map.clone())
+        })
     }
 }
 
@@ -159,31 +179,32 @@ impl Api {
 mod tests {
     use super::*;
 
+    fn topic(topic: &str, ttl_secs: Option<u64>) -> TopicDef {
+        TopicDef {
+            topic: topic.to_owned(),
+            fields: BTreeMap::from([("x".to_owned(), GraphqlType::Float)]),
+            payload_schema_ref: None,
+            ttl_secs,
+            action: OperationAction::Send,
+            kind: TopicKind::Single,
+        }
+    }
+
+    fn spec(topics: Vec<TopicDef>) -> Spec {
+        Spec::new("test".to_owned(), TopicMap::new(), topics, TopicMap::new()).unwrap()
+    }
+
     #[test_log::test]
     fn test_api_is_empty() {
-        let api = Api::new(vec![ApiModel::new(
-            "test".to_owned(),
-            TopicMap::new(),
-            vec![],
-            TopicMap::new(),
-        )]);
+        assert!(Api::new(vec![spec(vec![])]).is_empty());
+        assert!(!Api::new(vec![spec(vec![topic("some/topic", None)])]).is_empty());
+    }
+
+    #[test_log::test]
+    fn test_ttl_of_a_topic_left_out_of_the_tree_still_applies() {
+        let api = Api::new(vec![spec(vec![topic("marpower/#", Some(30))])]);
 
         assert!(api.is_empty());
-
-        let api_not_empty = Api::new(vec![ApiModel::new(
-            "test".to_owned(),
-            TopicMap::new(),
-            vec![TopicDef {
-                topic: "some/topic".to_owned(),
-                fields: BTreeMap::new(),
-                payload_schema_ref: None,
-                ttl_secs: None,
-                action: OperationAction::Send,
-                kind: TopicKind::Single,
-            }],
-            TopicMap::new(),
-        )]);
-
-        assert!(!api_not_empty.is_empty());
+        assert_eq!(api.ttl_map().get("marpower/a/b"), Some(&30));
     }
 }

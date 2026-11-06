@@ -12,7 +12,7 @@ use log::{debug, info, warn};
 use roas_asyncapi::common::reference::{RefOr, Reference};
 use serde_json::Value;
 
-use crate::api_model::{Api, ApiModel, GraphqlType, GroupDef, TopicDef, TopicKind};
+use crate::api_model::{Api, GraphqlType, GroupDef, Spec, TopicDef, TopicKind};
 use crate::message_validation::{ValidatorBuilder, build_validators};
 use crate::topic_map::TopicMap;
 
@@ -71,7 +71,7 @@ fn read_asyncapi_document(path: &Path) -> anyhow::Result<Value> {
     Ok(spec_value)
 }
 
-fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<ApiModel> {
+fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<Spec> {
     let validator_builder = ValidatorBuilder::new(document_json.clone())?;
 
     let document = serde_json::from_value::<Document>(document_json.clone())
@@ -95,7 +95,7 @@ fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<ApiModel> {
         path.display()
     );
 
-    Ok(ApiModel::new(
+    Spec::new(
         path.file_prefix()
             .ok_or(anyhow::anyhow!("File prefix is not valid as name"))?
             .to_string_lossy()
@@ -103,7 +103,8 @@ fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<ApiModel> {
         subscribe_topics,
         topics,
         validators,
-    ))
+    )
+    .with_context(|| format!("building the Query tree of {}", path.display()))
 }
 
 /// Load AsyncAPI 3.0.0 spec files from a directory in a single pass over the
@@ -760,10 +761,11 @@ mod tests {
     use serde_json::json;
     use std::collections::BTreeMap;
 
-    /// Test convenience wrapper.
+    /// The topics `load_spec` reads from a document, before they go into a
+    /// Spec's Query tree.
     fn loaded_topics(spec: &Value) -> anyhow::Result<Vec<TopicDef>> {
-        let api = load_spec(Path::new("test"), spec)?;
-        Ok(api.topics)
+        let document = serde_json::from_value::<Document>(spec.clone())?;
+        channels_from_document(&document, Path::new("test"), topic_from_channel)
     }
 
     fn schema_with_properties(props: BTreeMap<String, Value>) -> Schema {
@@ -926,9 +928,8 @@ mod tests {
             }
         });
 
-        let api_model = load_spec(Path::new("test"), &spec).unwrap();
-        let groups: Vec<_> = api_model
-            .topics
+        let groups: Vec<_> = loaded_topics(&spec)
+            .unwrap()
             .into_iter()
             .filter(|t| t.as_group().is_some())
             .collect();

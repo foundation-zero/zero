@@ -486,7 +486,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, ApiModel, GraphqlType, TopicKind};
+    use crate::api_model::{Api, GraphqlType, Spec, TopicKind};
     use crate::graphql::build_schema;
     use crate::metadata::MetadataByTopic;
     use crate::roas_asyncapi::OperationAction;
@@ -501,12 +501,9 @@ mod tests {
     }
 
     fn api(topics: Vec<TopicDef>) -> Api {
-        Api::new(vec![ApiModel::new(
-            String::new(),
-            TopicMap::new(),
-            topics,
-            TopicMap::new(),
-        )])
+        Api::new(vec![
+            Spec::new(String::new(), TopicMap::new(), topics, TopicMap::new()).unwrap(),
+        ])
     }
 
     fn power_tag_group(metadata: MetadataByTopic) -> Vec<TopicDef> {

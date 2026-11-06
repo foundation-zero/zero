@@ -65,7 +65,10 @@ async fn main() -> Result<()> {
     let api = load_specs(&cli.spec_dir, command != Command::Validate)?;
 
     if api.is_empty() {
-        info!("No MQTT topics found in spec directory '{}'", cli.spec_dir);
+        info!(
+            "No queryable topics found in spec directory '{}'",
+            cli.spec_dir
+        );
     }
 
     match command {
@@ -82,13 +85,11 @@ async fn main() -> Result<()> {
 fn validate_command(api: &Api) -> Result<()> {
     println!("Validating the graphql schema...");
 
-    zero_mqtt_graphql::graphql::graphql_tree(api)?;
-
     let cache = Arc::new(TopicCache::new());
 
     let _schema = zero_mqtt_graphql::graphql::build_schema(api, &cache)?;
 
-    println!("Validated — no sanitization collisions");
+    println!("Validated — the GraphQL schema builds");
     Ok(())
 }
 
@@ -287,7 +288,7 @@ mod tests {
     use zero_mqtt_graphql::api_model::GraphqlType;
     use zero_mqtt_graphql::roas_asyncapi::OperationAction;
     use zero_mqtt_graphql::{
-        api_model::{ApiModel, TopicDef, TopicKind},
+        api_model::{Spec, TopicDef, TopicKind},
         topic_map::TopicMap,
     };
 
@@ -301,12 +302,9 @@ mod tests {
             kind: TopicKind::Single,
         }];
 
-        Api::new(vec![ApiModel::new(
-            "test".to_string(),
-            TopicMap::new(),
-            topics,
-            TopicMap::new(),
-        )])
+        Api::new(vec![
+            Spec::new("test".to_string(), TopicMap::new(), topics, TopicMap::new()).unwrap(),
+        ])
     }
 
     #[test_log::test]

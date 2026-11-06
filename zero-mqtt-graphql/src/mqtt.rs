@@ -321,7 +321,7 @@ fn flatten_payload(value: Value) -> Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{Api, ApiModel, GraphqlType, GroupDef, TopicDef, TopicKind};
+    use crate::api_model::{Api, GraphqlType, GroupDef, Spec, TopicDef, TopicKind};
     use crate::roas_asyncapi::OperationAction;
     use serde_json::json;
     use std::collections::BTreeMap;
@@ -345,12 +345,15 @@ mod tests {
     }
 
     fn api(topics: Vec<TopicDef>, groups: Vec<TopicDef>, validators: TopicMap<Validator>) -> Api {
-        Api::new(vec![ApiModel::new(
-            String::new(),
-            TopicMap::new(),
-            topics.into_iter().chain(groups).collect(),
-            validators,
-        )])
+        Api::new(vec![
+            Spec::new(
+                String::new(),
+                TopicMap::new(),
+                topics.into_iter().chain(groups).collect(),
+                validators,
+            )
+            .unwrap(),
+        ])
     }
 
     /// Regression test for the gap where payloads on parametrized topic
@@ -452,11 +455,24 @@ mod tests {
             ttl_secs: None,
             kind: TopicKind::Single,
         };
-        let api = api(
-            vec![topic],
-            groups_with_schema("power-tags/+/+", "/"),
-            validators,
-        );
+        // Two Specs: within one Spec the topic and the Group would be a Path
+        // conflict.
+        let api = Api::new(vec![
+            Spec::new(
+                "exact".to_string(),
+                TopicMap::new(),
+                vec![topic],
+                validators,
+            )
+            .unwrap(),
+            Spec::new(
+                "group".to_string(),
+                TopicMap::new(),
+                groups_with_schema("power-tags/+/+", "/"),
+                TopicMap::new(),
+            )
+            .unwrap(),
+        ]);
         let sub = test_subscriber(&api);
 
         // Fails the exact-topic schema (missing required field) even though

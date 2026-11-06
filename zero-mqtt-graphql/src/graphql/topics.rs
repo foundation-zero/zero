@@ -2,24 +2,8 @@ use std::sync::Arc;
 
 use async_graphql::dynamic::{Field, Object, TypeRef};
 
-use crate::api_model::TopicKind;
+use crate::cache::TopicCache;
 use crate::graphql::json_to_graphql_value;
-use crate::roas_asyncapi::OperationAction;
-use crate::{api_model::TopicDef, cache::TopicCache};
-
-/// Topics that belong in the Query tree: Send operations with payload
-/// fields. A single topic with MQTT wildcards (`+`, `#`) cannot form a
-/// GraphQL path; a Group's wildcards stand for its Members.
-pub(super) fn queryable_topic(topic_def: &TopicDef) -> bool {
-    let concrete = match topic_def.kind {
-        TopicKind::Single => !topic_def
-            .topic
-            .split('/')
-            .any(|level| level == "+" || level == "#"),
-        TopicKind::Group(_) => true,
-    };
-    concrete && !topic_def.fields.is_empty() && topic_def.action == OperationAction::Send
-}
 
 /// The `<Topic>` query field: resolves to the topic's whole cached MQTT
 /// payload object. The object's scalar subfields project from this value
@@ -47,7 +31,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, ApiModel, GraphqlType};
+    use crate::api_model::{Api, GraphqlType, Spec, TopicDef, TopicKind};
     use crate::graphql::build_schema;
     use crate::http::router;
     use crate::roas_asyncapi::OperationAction;
@@ -57,12 +41,9 @@ mod tests {
     use tower::ServiceExt;
 
     fn api(topics: Vec<TopicDef>) -> Api {
-        Api::new(vec![ApiModel::new(
-            String::new(),
-            TopicMap::new(),
-            topics,
-            TopicMap::new(),
-        )])
+        Api::new(vec![
+            Spec::new(String::new(), TopicMap::new(), topics, TopicMap::new()).unwrap(),
+        ])
     }
 
     #[test_log::test]

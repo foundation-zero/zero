@@ -1,9 +1,9 @@
-use crate::naming::{pascal_case_graphql_name, sanitize_to_graphql_name};
+use crate::naming::sanitize_to_graphql_name;
 
 /// A GraphQL path: the chain of field names from the root of the Query tree
 /// to a branch or Topic, written as `marpower.freshWater.cold`.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub(super) struct GraphqlPath(Vec<String>);
+pub struct GraphqlPath(Vec<String>);
 
 impl GraphqlPath {
     /// The GraphQL path of a Topic or Group: its MQTT address split on `/`, each
@@ -23,30 +23,17 @@ impl GraphqlPath {
         Ok(Self(segments))
     }
 
+    #[must_use]
     pub fn segments(&self) -> &[String] {
         &self.0
     }
 
     /// This path extended by one field.
+    #[must_use]
     pub fn child(&self, segment: &str) -> Self {
         let mut segments = self.0.clone();
         segments.push(segment.to_string());
         Self(segments)
-    }
-
-    /// Type name of the branch at this path: the full path in PascalCase
-    /// (`marpower.freshWater` → `MarpowerFreshWater`).
-    pub fn type_name(&self) -> String {
-        let base = pascal_case_graphql_name(
-            &self
-                .0
-                .iter()
-                .map(String::as_str)
-                .map(|s| s.trim_start_matches('_'))
-                .collect::<Vec<&str>>()
-                .join("-"),
-        );
-        format!("Schema{}", base.trim_start_matches('_'))
     }
 }
 
