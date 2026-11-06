@@ -3,7 +3,8 @@ from typing import NoReturn
 
 import pytest
 
-from zero_modbus_bridge.readiness import Readiness
+from zero_modbus_bridge import readiness as readiness_module
+from zero_modbus_bridge.readiness import Readiness, exit_with_reason
 
 
 class Exited(Exception):
@@ -93,3 +94,39 @@ def test_without_status_file(clock: FakeClock):
     readiness = Readiness(None, clock=clock, exit_process=_exit)
     readiness.not_ready("mqtt", "down")
     assert readiness.status.endswith(": mqtt: down")
+
+
+@pytest.fixture
+def exit_code(monkeypatch: pytest.MonkeyPatch) -> list[int]:
+    codes: list[int] = []
+
+    def fake_exit(code: int) -> NoReturn:
+        codes.append(code)
+        raise Exited()
+
+    monkeypatch.setattr(readiness_module.os, "_exit", fake_exit)
+    return codes
+
+
+def test_exit_writes_termination_message(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, exit_code: list[int]
+):
+    termination_log = tmp_path / "termination-log"
+    monkeypatch.setattr(readiness_module, "TERMINATION_LOG", termination_log)
+
+    with pytest.raises(Exited):
+        exit_with_reason("mqtt: gave up")
+
+    assert termination_log.read_text() == "mqtt: gave up"
+    assert exit_code == [1]
+
+
+def test_exit_without_termination_log(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, exit_code: list[int]
+):
+    monkeypatch.setattr(readiness_module, "TERMINATION_LOG", tmp_path / "no" / "log")
+
+    with pytest.raises(Exited):
+        exit_with_reason("mqtt: gave up")
+
+    assert exit_code == [1]

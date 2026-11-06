@@ -1,8 +1,10 @@
 import re
-from unittest.mock import patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from pydantic_settings import CliApp
+from zero_modbus_bridge.readiness import Readiness
+from zero_modbus_bridge.settings import MqttSettings
 
 from zero_hull_temperature.cli import (
     ReadWithMqttCmd,
@@ -101,3 +103,42 @@ def test_stub_client_id_from_env(required_env, monkeypatch):
     monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
     cmd = StubCmd(_env_file=None)  # type: ignore[call-arg]
     assert cmd.mqtt_client_id == "custom-id"
+
+
+@pytest.fixture
+def make_broker(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
+    make_broker = MagicMock()
+    monkeypatch.setattr(MqttSettings, "make_broker", make_broker)
+    return make_broker
+
+
+@pytest.fixture
+def from_settings(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
+    from_settings = MagicMock()
+    from_settings.return_value.run_once = AsyncMock()
+    monkeypatch.setattr(
+        "zero_hull_temperature.cli.RelaySwitchingBridge.from_settings", from_settings
+    )
+    return from_settings
+
+
+async def test_run_makes_the_gateway_count_for_readiness(
+    required_env, monkeypatch, make_broker: MagicMock, from_settings: MagicMock
+):
+    app = MagicMock()
+    app.return_value.run = AsyncMock()
+    monkeypatch.setattr("zero_hull_temperature.cli.FastStream", app)
+
+    await RunCmd(_env_file=None).cli_cmd()  # type: ignore[call-arg]
+
+    readiness = make_broker.call_args.args[0]
+    assert isinstance(readiness, Readiness)
+    assert from_settings.call_args.kwargs["readiness"] is readiness
+
+
+async def test_read_with_mqtt_reads_once(
+    required_env, make_broker: MagicMock, from_settings: MagicMock
+):
+    await ReadWithMqttCmd(_env_file=None).cli_cmd()  # type: ignore[call-arg]
+
+    from_settings.return_value.run_once.assert_awaited_once()

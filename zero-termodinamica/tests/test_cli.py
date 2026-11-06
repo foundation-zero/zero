@@ -1,7 +1,8 @@
 import os
-from unittest.mock import patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from pydantic_settings import CliApp
+from zero_modbus_bridge.readiness import Readiness
 
 from zero_termodinamica.cli import RunCmd, StubCmd, ZeroTermodinamica
 from zero_termodinamica.io import read_modbus_topics
@@ -113,3 +114,25 @@ def test_stub_cmd_serves_termodinamica_topics():
     ]
     assert default_value == 7
     mock_stub.from_settings.return_value.run.assert_called_once_with()
+
+
+async def test_run_makes_the_gateway_count_for_readiness(monkeypatch):
+    make_broker = MagicMock()
+    from_settings = MagicMock()
+    app = MagicMock()
+    app.return_value.run = AsyncMock()
+    monkeypatch.setattr(RunCmd, "make_broker", make_broker)
+    monkeypatch.setattr(
+        "zero_termodinamica.cli.ModbusBridge.from_settings", from_settings
+    )
+    monkeypatch.setattr("zero_termodinamica.cli.FastStream", app)
+    monkeypatch.setenv("MODBUS_HOST", "gateway")
+    monkeypatch.setenv("MODBUS_PORT", "502")
+    monkeypatch.setenv("MQTT_HOST", "broker")
+    monkeypatch.setenv("MQTT_PORT", "1883")
+
+    await RunCmd().cli_cmd()  # pyright: ignore
+
+    readiness = make_broker.call_args.args[0]
+    assert isinstance(readiness, Readiness)
+    assert from_settings.call_args.kwargs["readiness"] is readiness
