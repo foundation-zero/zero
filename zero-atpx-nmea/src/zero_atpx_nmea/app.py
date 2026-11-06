@@ -13,7 +13,13 @@ from faststream import FastStream
 from faststream.mqtt import MQTTMessage, QoS
 
 from zero_atpx_nmea.parser import parse
-from zero_atpx_nmea.settings import InputMqttSettings, OutputMqttSettings
+from zero_atpx_nmea.readiness import STATUS_FILE, Readiness
+from zero_atpx_nmea.settings import (
+    INPUT_BROKER,
+    OUTPUT_BROKER,
+    InputMqttSettings,
+    OutputMqttSettings,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -36,8 +42,9 @@ def build_app(
     input_settings = input_settings or InputMqttSettings()  # type: ignore[call-arg]
     output_settings = output_settings or OutputMqttSettings()  # type: ignore[call-arg]
 
-    input_broker = input_settings.make_broker()
-    output_broker = output_settings.make_broker()
+    readiness = Readiness(STATUS_FILE, [INPUT_BROKER, OUTPUT_BROKER])
+    input_broker = input_settings.make_broker(readiness)
+    output_broker = output_settings.make_broker(readiness)
 
     @input_broker.subscriber(INPUT_TOPIC, description="Raw A+T NMEA 0183 sentences")
     async def handle(raw_sentence: str, message: MQTTMessage) -> None:

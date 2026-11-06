@@ -18,6 +18,19 @@ around that function: it uses two separate brokers, since in production
 `ATPX_MQTT_HOST` (A+T's onboard broker, unauthenticated) differs from
 `MQTT_HOST` (our own broker); locally both resolve to the same `vernemq`.
 
+## Readiness
+
+Both brokers are required (docs/adr/0001-dependency-outages.md). The service
+writes its state to `/tmp/ready`, which the chart's readiness probe prints, and
+names the broker that is down: `atpx-mqtt` for A+T's broker, `mqtt` for ours.
+
+```
+not ready: atpx-mqtt: ConnectionRefusedError: [Errno 111] Connect call failed ('10.1.40.10', 1883) since 13:02:05 UTC
+```
+
+It reconnects at most 30 s apart. It exits after 15 minutes not ready, after
+90 s of a broker refusing the login, or when a client gives up reconnecting.
+
 ## Consumer contract (AsyncAPI specification)
 
 The service's MQTT interface is documented in a committed **AsyncAPI 3.0.0**

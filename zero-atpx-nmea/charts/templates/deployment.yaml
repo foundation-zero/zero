@@ -65,6 +65,14 @@ spec:
                   name: {{ .Values.mqtt.existingSecret }}
                   key: {{ .Values.mqtt.existingSecretPasswordKey }}
             {{- end }}
+          # Ready while connected to both brokers; the app writes the status
+          # line, naming the broker that is down.
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - status=$(cat /tmp/ready) && echo "$status" && test "${status#ready:}" != "$status"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
