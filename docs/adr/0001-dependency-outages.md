@@ -1,0 +1,32 @@
+# Pods wait out dependency outages instead of crashing
+
+A pod either does its job or reports itself not ready. It never shows `Running` while it is silently cut off from something it needs.
+
+## Rules
+
+Each service decides which of its dependencies (MQTT broker, database, Modbus gateway, …) are **required** and which are **optional**. A required dependency is one without which the pod cannot do its job. Only required dependencies affect readiness. When an optional dependency is unavailable, the pod logs it and retries, and stays ready.
+
+- **Required dependency unavailable** (down, refusing connections, connection dropped), at startup or later: stay up, retry with capped backoff, and fail the readiness probe. The pod shows as `0/1 Running`.
+- **Client gives up** (the library stops retrying, or its reconnect task dies): exit immediately.
+- **Permanent error** (bad credentials, unknown host, malformed configuration): retry a few times, then exit. Some of these errors are temporary (a broker can refuse logins while it boots), so do not exit on the first one. They must still end the container well before the 15 minute deadline.
+- **Not ready for 15 minutes:** exit. This is a safety net for failures the pod cannot detect itself. The deadline is 15 minutes, not 10, because the kubelet only resets its restart backoff once a container has run for more than 10 minutes. Exits on this deadline therefore never add up to `CrashLoopBackOff`.
+- **Liveness checks only the process itself**, never a dependency. Most pods need no liveness probe, because they can exit on their own. Add one only where the process can hang without exiting, such as a blocked event loop.
+- **Report the reason.** The readiness probe output and the termination message name the dependency and why it is unavailable, so that `kubectl describe` and the pod events show it.
+
+## Defining "ready"
+
+What counts as ready depends on the dependency. Suggestions, not requirements:
+
+- **Long-lived connections** (MQTT): ready while the client is connected. Read the client's own connection state; do not make a network call on every probe.
+- **Pooled or per-request connections** (databases): ready while the most recent query or connection attempt succeeded. Optionally add a cheap periodic check (`SELECT 1`) when there is little traffic.
+- **Probe type:** pods without an HTTP server can use an exec probe that reads a status file the app writes. The kubelet copies exec probe output into the `Readiness probe failed` event; it drops HTTP probe response bodies.
+
+## Considered options
+
+**Crash when a dependency is unavailable, and let Kubernetes restart the pod.** This is simpler, and restarting does clear a client stuck in a bad state. We rejected it for two reasons. First, restart backoff grows to 5 minutes, which delays recovery once the dependency is back. Second, an outage of one shared dependency puts every pod that uses it into `CrashLoopBackOff`, which hides the pod that is actually broken.
+
+**Check dependencies in the liveness probe.** We rejected this for the same reasons. A liveness probe that checks a shared dependency restarts every pod that uses it at the same moment.
+
+## Out of scope
+
+Buffering or replaying data during an outage, and alerting on not-ready pods, are separate decisions.
