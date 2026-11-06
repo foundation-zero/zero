@@ -1,6 +1,6 @@
 FROM ghcr.io/astral-sh/uv:python3.15-trixie-slim@sha256:1017e944d8b320412287a572b8221cda45742348d0feb99e500f1f4c4b019206 AS builder
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
-ENV UV_NO_DEV=1
+ENV UV_NO_DEFAULT_GROUPS=1
 ENV UV_PYTHON_DOWNLOADS=0
 
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
