@@ -15,6 +15,12 @@ const KEEP_ALIVE: Duration = Duration::from_secs(15);
 /// roughly 16 KB of JSON, over rumqttc's 10 KB default.
 const MAX_PACKET_SIZE: usize = 65536;
 
+/// Socket send buffer: a few packets, so a broker that stops reading blocks the
+/// next flush within a second and the flush timeout fires. Left to Linux's
+/// autotuning it holds every unacknowledged publish, and the stall only shows
+/// when a ping goes unanswered, after twice the keep-alive.
+const SEND_BUFFER_SIZE: u32 = 65536;
+
 /// Capacity of the channel between publishers and the event loop.
 const REQUEST_CHANNEL_CAPACITY: usize = 10;
 
@@ -87,7 +93,10 @@ impl MqttHandler {
         }
 
         let metrics = MqttMetrics::new();
-        let (client, event_loop) = AsyncClient::new(options, REQUEST_CHANNEL_CAPACITY);
+        let (client, mut event_loop) = AsyncClient::new(options, REQUEST_CHANNEL_CAPACITY);
+        let mut network = event_loop.network_options();
+        network.set_tcp_send_buffer_size(SEND_BUFFER_SIZE);
+        event_loop.set_network_options(network);
         let handler = Self {
             client,
             prefix: prefix.to_string(),
