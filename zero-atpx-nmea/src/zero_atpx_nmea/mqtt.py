@@ -36,6 +36,17 @@ class ReportingClient(zmqtt.MQTTClient):
         self._clock = clock
         self._first_refusal_at: float | None = None
 
+    async def _connect_with_retry(
+        self, *, wait_before_first_attempt: bool = False
+    ) -> None:
+        # zmqtt waits before the first attempt only after losing a live
+        # connection; report that now rather than after the first failed attempt.
+        if wait_before_first_attempt:
+            self._readiness.not_ready(self._dependency, "connection lost")
+        await super()._connect_with_retry(
+            wait_before_first_attempt=wait_before_first_attempt
+        )
+
     async def _connect(self) -> None:
         """One attempt; zmqtt calls it for the initial connect and every reconnect."""
         try:
