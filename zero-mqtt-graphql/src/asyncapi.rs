@@ -12,7 +12,7 @@ use log::{debug, info, warn};
 use roas_asyncapi::common::reference::{RefOr, Reference};
 use serde_json::Value;
 
-use crate::api_model::{Api, GraphqlType, GroupDef, Spec, TopicDef, TopicKind};
+use crate::api_model::{Api, Direction, GraphqlType, GroupDef, Spec, TopicDef, TopicKind};
 use crate::message_validation::{ValidatorBuilder, build_validators};
 use crate::topic_map::TopicMap;
 
@@ -268,7 +268,10 @@ fn topic_from_channel(
 
     Ok(Some(TopicDef {
         topic: wildcard_from_address(address),
-        action,
+        operation: match action {
+            OperationAction::Send => Direction::Send,
+            OperationAction::Receive => Direction::Receive,
+        },
         fields,
         payload_schema_ref,
         ttl_secs: ttl_for_channel(channel_ref, channel, doc),

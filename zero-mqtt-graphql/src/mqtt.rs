@@ -321,8 +321,7 @@ fn flatten_payload(value: Value) -> Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{Api, GraphqlType, GroupDef, Spec, TopicDef, TopicKind};
-    use crate::roas_asyncapi::OperationAction;
+    use crate::api_model::{Api, Direction, GraphqlType, GroupDef, Spec, TopicDef, TopicKind};
     use serde_json::json;
     use std::collections::BTreeMap;
 
@@ -335,7 +334,7 @@ mod tests {
             )]),
             payload_schema_ref: Some(schema_ref.to_string()),
             ttl_secs: None,
-            action: OperationAction::Send,
+            operation: Direction::Send,
             kind: TopicKind::Group(GroupDef {
                 value_extensions: BTreeMap::new(),
                 group_by: String::new(),
@@ -451,7 +450,7 @@ mod tests {
                 GraphqlType::Float,
             )]),
             payload_schema_ref: None,
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         };

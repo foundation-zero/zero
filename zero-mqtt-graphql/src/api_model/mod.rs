@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use crate::{metadata::MetadataByTopic, roas_asyncapi::OperationAction};
+use crate::metadata::MetadataByTopic;
 use jsonschema::Validator;
 
 use crate::topic_map::TopicMap;
@@ -27,8 +27,19 @@ pub struct TopicDef {
     /// `x-ttl` extensions on the AsyncAPI message or channel
     /// (per-schema override) or a global default.
     pub ttl_secs: Option<u64>,
-    pub action: OperationAction,
+    /// Whether the topic comes from a Send or a Receive operation.
+    pub operation: Direction,
     pub kind: TopicKind,
+}
+
+/// Which way data flows through a topic, seen from the service whose Spec
+/// declares it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Direction {
+    /// A Send operation: the service publishes on the topic.
+    Send,
+    /// A Receive operation: the service accepts input on the topic.
+    Receive,
 }
 
 /// Whether a [`TopicDef`] is one fixed topic or a Group of Members.
@@ -72,7 +83,7 @@ impl TopicDef {
                 .any(|level| level == "+" || level == "#"),
             TopicKind::Group(_) => true,
         };
-        concrete && !self.fields.is_empty() && self.action == OperationAction::Send
+        concrete && !self.fields.is_empty() && self.operation == Direction::Send
     }
 }
 
@@ -185,7 +196,7 @@ mod tests {
             fields: BTreeMap::from([("x".to_owned(), GraphqlType::Float)]),
             payload_schema_ref: None,
             ttl_secs,
-            action: OperationAction::Send,
+            operation: Direction::Send,
             kind: TopicKind::Single,
         }
     }

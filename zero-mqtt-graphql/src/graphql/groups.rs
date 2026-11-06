@@ -481,10 +481,9 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, GraphqlType, Spec, TopicKind};
+    use crate::api_model::{Api, Direction, GraphqlType, Spec, TopicKind};
     use crate::graphql::build_schema;
     use crate::metadata::MetadataByTopic;
-    use crate::roas_asyncapi::OperationAction;
     use crate::topic_map::TopicMap;
     use serde_json::json;
 
@@ -502,7 +501,7 @@ mod tests {
                 ("current_a".to_string(), GraphqlType::Float),
             ]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Group(GroupDef {
                 value_extensions: BTreeMap::from([

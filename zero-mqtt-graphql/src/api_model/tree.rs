@@ -71,8 +71,7 @@ fn tree_conflict<T>(topic: &str, existing: &str) -> anyhow::Result<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{GraphqlType, TopicKind};
-    use crate::roas_asyncapi::OperationAction;
+    use crate::api_model::{Direction, GraphqlType, TopicKind};
 
     /// Helper for a Send Topic with one Float field.
     fn mock_topic(topic: &str, field: &str) -> TopicDef {
@@ -80,7 +79,7 @@ mod tests {
             topic: topic.to_string(),
             fields: BTreeMap::from_iter(vec![(field.to_string(), GraphqlType::Float)]),
             payload_schema_ref: Some(format!("#/components/schemas/{field}payload")),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }

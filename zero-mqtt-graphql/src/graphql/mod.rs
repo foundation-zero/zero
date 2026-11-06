@@ -319,8 +319,8 @@ fn graphql_type_ref(name_prefix: &str, typ: &GraphqlType) -> (TypeRef, Vec<Objec
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::api_model::Direction;
     use crate::api_model::{Spec, TopicDef};
-    use crate::roas_asyncapi::OperationAction;
     use crate::topic_map::TopicMap;
     use serde_json::json;
 
@@ -338,7 +338,7 @@ mod tests {
             topic: topic.to_string(),
             fields: BTreeMap::from_iter(vec![(field.to_string(), GraphqlType::Float)]),
             payload_schema_ref: Some(format!("#/components/schemas/{field}payload")),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }
@@ -389,7 +389,7 @@ mod tests {
                 topic: "aB/c".to_string(),
                 fields: BTreeMap::from_iter(vec![("field".to_string(), GraphqlType::Float)]),
                 payload_schema_ref: Some("#/components/schemas/schema-a".to_string()),
-                action: OperationAction::Send,
+                operation: Direction::Send,
                 ttl_secs: None,
                 kind: TopicKind::Single,
             },

@@ -285,8 +285,8 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
+    use zero_mqtt_graphql::api_model::Direction;
     use zero_mqtt_graphql::api_model::GraphqlType;
-    use zero_mqtt_graphql::roas_asyncapi::OperationAction;
     use zero_mqtt_graphql::{
         api_model::{Spec, TopicDef, TopicKind},
         topic_map::TopicMap,
@@ -297,7 +297,7 @@ mod tests {
             topic: "test/topic".to_string(),
             fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }];

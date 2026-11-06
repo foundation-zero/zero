@@ -64,8 +64,7 @@ pub fn build_validators(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{GraphqlType, GroupDef, TopicKind};
-    use crate::roas_asyncapi::OperationAction;
+    use crate::api_model::{Direction, GraphqlType, GroupDef, TopicKind};
     use serde_json::json;
     use std::collections::BTreeMap;
 
@@ -77,7 +76,7 @@ mod tests {
                 GraphqlType::Float,
             )]),
             payload_schema_ref: schema,
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Group(GroupDef {
                 value_extensions: BTreeMap::new(),
@@ -101,7 +100,7 @@ mod tests {
                 GraphqlType::Float,
             )]),
             payload_schema_ref: Some("#/validator".to_string()),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }];
@@ -181,7 +180,7 @@ mod tests {
                 GraphqlType::String,
             )]),
             payload_schema_ref: Some("#/schemas/message".to_string()),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }];

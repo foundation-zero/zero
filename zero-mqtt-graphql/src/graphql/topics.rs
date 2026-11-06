@@ -31,10 +31,9 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, GraphqlType, Spec, TopicDef, TopicKind};
+    use crate::api_model::{Api, Direction, GraphqlType, Spec, TopicDef, TopicKind};
     use crate::graphql::build_schema;
     use crate::http::router;
-    use crate::roas_asyncapi::OperationAction;
     use crate::topic_map::TopicMap;
     use axum::http::StatusCode;
     use serde_json::json;
@@ -55,7 +54,7 @@ mod tests {
                 ("ok".to_string(), GraphqlType::Boolean),
             ]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }];
@@ -71,7 +70,7 @@ mod tests {
             topic: "123/topic".to_string(),
             fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }];
@@ -89,7 +88,7 @@ mod tests {
             topic: "empty/topic".to_string(),
             fields: BTreeMap::new(),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }];
@@ -109,7 +108,7 @@ mod tests {
                 ("f_str".to_string(), GraphqlType::String),
             ]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }];
@@ -133,7 +132,7 @@ mod tests {
                 ("label".to_string(), GraphqlType::String),
             ]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }];
@@ -162,7 +161,7 @@ mod tests {
             topic: "test/channel".to_string(),
             fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }];
@@ -182,7 +181,7 @@ mod tests {
             topic: "test/channel".to_string(),
             fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }];
@@ -204,7 +203,7 @@ mod tests {
             topic: "test/channel".to_string(),
             fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }];
@@ -223,7 +222,7 @@ mod tests {
                 topic: "a/b".to_string(),
                 fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
                 payload_schema_ref: Some("payload1".to_string()),
-                action: OperationAction::Send,
+                operation: Direction::Send,
                 ttl_secs: None,
                 kind: TopicKind::Single,
             },
@@ -231,7 +230,7 @@ mod tests {
                 topic: "a/c".to_string(),
                 fields: BTreeMap::from_iter(vec![("y".to_string(), GraphqlType::Float)]),
                 payload_schema_ref: Some("payload2".to_string()),
-                action: OperationAction::Send,
+                operation: Direction::Send,
                 ttl_secs: None,
                 kind: TopicKind::Single,
             },
@@ -257,7 +256,7 @@ mod tests {
             topic: "test/channel".to_string(),
             fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Single,
         }];
