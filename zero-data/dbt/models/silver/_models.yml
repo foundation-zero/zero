@@ -132,3 +132,35 @@ models:
         description: "Power measurement of the PCS Aradex."
         tests:
           - not_null
+  - name: slv_solar_converters
+    description: >
+      Power the solar EPC converters on the main and owners biminis deliver to the main DC bus,
+      combined from the busbar table (until 5 Nov 2026 06:07 UTC) and the per-converter PV tables (since then).
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: converter
+        description: "The solar EPC converter, e.g. epc-31-t101, the same for the busbar and the per-converter PV topic."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["epc-31-t101", "epc-32-t101", "epc-32-t102"]
+      - name: bimini
+        description: "The bimini whose solar panels feed the converter."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["Main bimini", "Owners bimini"]
+      - name: power
+        description: "Power the converter delivers to the main DC bus in W: the HVDC (bus side) power with its sign flipped, so production is positive and draw from the bus negative."
+        tests:
+          - not_null
