@@ -1,3 +1,7 @@
+import io
+import urllib.request
+from functools import cache
+
 import fmpy
 import polars as pl
 
@@ -5,6 +9,19 @@ from thrs.input_output.base import ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1YyfkKmqL8MZuJfStljTjhgFxawcco2cp2qCmBGFrR04/export?gid=1769018304&format=csv"
+
+
+@cache
+def read_sheet() -> pl.DataFrame:
+    # The export URL answers with a 307 redirect, which polars does not follow when reading a URL
+    # itself, so download the CSV with urllib (which does) and parse the bytes.
+    with urllib.request.urlopen(SHEET_URL, timeout=30) as response:
+        data = response.read()
+    return pl.read_csv(
+        io.BytesIO(data),
+        skip_lines=1,
+        schema_overrides={"Pos": pl.String, "Sub": pl.String},
+    )
 
 
 def modelica_names_from_classes(classes: list[type[ThrsValues]]) -> set[str]:
@@ -21,9 +38,7 @@ def compare_modelica_names(
     """
     Compare the Modelica names in the Python code with the Modelica names in the Google Sheet.
     """
-    sheet = pl.read_csv(
-        SHEET_URL, skip_lines=1, schema_overrides={"Pos": pl.String, "Sub": pl.String}
-    )
+    sheet = read_sheet()
 
     if isinstance(module_name, str):
         module_name = [module_name]
@@ -73,9 +88,7 @@ def compare_yard_tags(
     exclude: set[str] | None = None,
 ):
     exclude = exclude or set()
-    sheet = pl.read_csv(
-        SHEET_URL, skip_lines=1, schema_overrides={"Pos": pl.String, "Sub": pl.String}
-    )
+    sheet = read_sheet()
 
     sheet_tags_df = sheet.with_columns(
         pl.when(pl.col("Sub") != "")
