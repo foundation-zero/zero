@@ -59,7 +59,7 @@ Things to know before rolling this out:
 Requirements:
 - **CONNACK refusals:** zmqtt never retries them, even with `max_attempts=None`. On the first connect the app exits; during a reconnect the refusal ends zmqtt's reconnect task and leaves the pod `Running`. The bridge wraps the client so it retries every refusal a few times, on the first connect and on reconnect, then exits. The wrapper is temporary: drop it once zmqtt retries refusals itself (see below).
 - **Give-up:** exit from `on_connection_recovery_failed` (zmqtt ≥0.2 and FastStream 0.7.5 have it).
-- **Defaults** in `MqttSettings.make_broker`: `ReconnectConfig(max_attempts=None)`, the 30 s backoff cap and a 15 s keepalive. Today only power-tags sets the first two, and termodinamica gives up after the default 5 attempts.
+- **Defaults** in `MqttSettings.make_broker`: `ReconnectConfig(max_attempts=None)`, the 30 s backoff cap and a 15 s keepalive. No app sets the 30 s cap yet. power-tags sets `max_attempts=None` and the 15 s keepalive; termodinamica and hull-temperature set neither, so termodinamica gives up after the default 5 attempts.
 - **Modbus gateways:** optional (logged only) for power-tags, which reads many; required for termodinamica and hull-temperature, which each read one.
 
 Open:
@@ -102,6 +102,8 @@ For that ticket:
 The `mqtt` source does not re-subscribe when the broker has lost the session (upstream: vectordotdev/vector#26730). The fix is our upstream PR [vectordotdev/vector#26731](https://github.com/vectordotdev/vector/pull/26731): it subscribes again when a reconnect's CONNACK has `session_present = 0`. It is open and waiting for a maintainer's review.
 
 **Decided: the existing alert until #26731 is released, then upgrade Vector.** `VectorSourceNoEvents` in edge-flux (`infrastructure/shared/observability/rules/vector/vector.yml`) fires after about 6 min without MQTT intake and pages through Alertmanager to PagerDuty. Until then, a human restarts Vector. No liveness probe or sidecar: an intake check can't tell a stuck source from a quiet one or a broker outage, so it would restart healthy pods. Known gap: a source that has never received anything never fires.
+
+**This is a temporary exception to the ADR's 15 minute deadline:** a stale source keeps Vector `Running` until a human restarts it. Owner: Floris Smit. It ends when #26731 is released and Vector is upgraded; until then the alert bounds how long it goes unnoticed, not how long it lasts.
 
 ## Not in this plan
 
