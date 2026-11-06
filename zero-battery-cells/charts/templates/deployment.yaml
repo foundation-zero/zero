@@ -83,7 +83,7 @@ spec:
               command:
                 - sh
                 - -c
-                - cat /tmp/ready && grep -q '^ready:' /tmp/ready
+                - status=$(cat /tmp/ready) && echo "$status" && test "${status#ready:}" != "$status"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

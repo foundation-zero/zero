@@ -153,6 +153,8 @@ impl MqttConnection {
                             write_termination_message(&message);
                             return;
                         }
+                    } else {
+                        refusals = 0;
                     }
                     warn!("MQTT connection error: {}. Retrying in {:?}...", e, backoff);
                     tokio::time::sleep(backoff).await;

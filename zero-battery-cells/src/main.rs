@@ -74,10 +74,11 @@ async fn main() -> Result<()> {
 }
 
 async fn run() -> Result<()> {
+    // First, so a restarted container does not inherit the previous run's `ready:` line.
+    let readiness = Readiness::new(STATUS_FILE, "mqtt: connecting");
     let config = PipelineConfig::load().context("Failed to load configuration")?;
     let decoder = Decoder::load(&config)?;
     let (publisher, connection) = MqttPublisher::new(&config.app, &mqtt_client_id());
-    let readiness = Readiness::new(STATUS_FILE, "mqtt: connecting");
 
     let (frame_tx, frame_rx) = tokio::sync::mpsc::channel(FRAME_QUEUE);
 
