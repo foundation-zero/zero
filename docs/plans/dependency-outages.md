@@ -2,6 +2,8 @@
 
 Temporary: delete this file when the work is done. The rules are in [ADR 0001](../adr/0001-dependency-outages.md); the trigger and outage notes are in [ZERO-2406](https://foundationzero-team.atlassian.net/browse/ZERO-2406).
 
+**Keep it 80/20.** Prefer the simplest change that fixes the actual outage behaviour over full conformance to every rule. Where meeting a rule would mean a large change for little benefit, stop and flag it with the simpler alternative instead of building it.
+
 ## Where we are
 
 Two ways the apps break the ADR today:
@@ -100,7 +102,7 @@ The `mqtt` source does not re-subscribe when the broker has lost the session (up
 
 Choices:
 - **Detection:** a readiness probe that checks MQTT intake through Vector's API or internal metrics, an alert on intake at 0, or both.
-- **Recovery:** with the 15 min rule the pod must also restart, so readiness alone isn't enough. That means either a liveness probe on intake, which breaks the ADR rule that liveness checks only the process, or a small sidecar that restarts it. Or we accept a manual restart until upstream fixes it.
+- **Recovery:** with the 15 min rule the pod must also restart, so readiness alone isn't enough. Vector can't exit on its own, so this means either a liveness probe that fails after 15 min without MQTT intake (the ADR allows liveness for a deadline the app can't enforce), or a small sidecar that restarts it. Or we accept a manual restart until upstream fixes it.
 - **Upstream:** wait, or contribute the fix ourselves?
 
 ## Not in this plan
