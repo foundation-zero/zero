@@ -37,11 +37,56 @@ async fn graphql_handler(
 }
 
 async fn graphql_playground() -> Html<String> {
-    Html(GraphiQLSource::build().endpoint("/graphql").finish())
+    Html(
+        GraphiQLSource::build()
+            .endpoint("/graphql")
+            .finish()
+            // Workaround for missing pin
+            .replace("esm.sh/@graphiql/react?", "esm.sh/@graphiql/react@0.37.7?")
+            .replace(
+                "esm.sh/@graphiql/plugin-explorer?",
+                "esm.sh/@graphiql/plugin-explorer@5.1.3?",
+            ),
+    )
 }
 
 /// Liveness probe. Deliberately does not touch the MQTT connection: a
 /// temporarily disconnected broker should not fail readiness here.
 async fn health() -> &'static str {
     "OK"
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::http::router;
+    use async_graphql::dynamic::{Field, FieldFuture, Object, TypeRef};
+    use axum::http::StatusCode;
+    use tower::ServiceExt;
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_health_endpoint() {
+        let basic_schema = Schema::build("query", None, None)
+            .register(Object::new("query").field(Field::new(
+                "test",
+                TypeRef::named(TypeRef::BOOLEAN),
+                |_| FieldFuture::from_value(None),
+            )))
+            .finish()
+            .unwrap();
+        let app = router(basic_schema);
+
+        let response = app
+            .oneshot(
+                axum::http::Request::builder()
+                    .uri("/health")
+                    .body(axum::body::Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(response.status(), StatusCode::OK);
+    }
 }
