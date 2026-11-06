@@ -19,13 +19,12 @@ pub struct TopicDef {
     /// `thrs/compressor/temperature` or `power-tags/+/+`.
     /// Used for subscribing, TTL, validator lookup and the GraphQL path.
     pub topic: String,
-    pub fields: BTreeMap<String, GraphqlType>,
+    pub fields: BTreeMap<String, FieldType>,
     /// Pointer to payload in json reference format (e.g. #/components/schemas/field)
     /// None means there is no payload
     pub payload_schema_ref: Option<String>,
-    /// TTL in seconds for cached values of this topic. Determined from
-    /// `x-ttl` extensions on the AsyncAPI message or channel
-    /// (per-schema override) or a global default.
+    /// TTL in seconds for cached values of this topic; `None` uses the
+    /// cache's default.
     pub ttl_secs: Option<u64>,
     /// Whether the topic comes from a Send or a Receive operation.
     pub operation: Direction,
@@ -54,9 +53,9 @@ pub enum TopicKind {
 /// What only a Group has: its Members' static metadata and how to bucket them.
 #[derive(Debug, Clone)]
 pub struct GroupDef {
-    /// Extension attributes per payload field (`x-*` schema extensions
-    /// minus the prefix), keyed by raw field name.
-    pub value_extensions: BTreeMap<String, BTreeMap<String, String>>,
+    /// Static attributes per payload field, such as its `unit`, keyed by raw
+    /// field name.
+    pub field_attributes: BTreeMap<String, BTreeMap<String, String>>,
     pub topic_metadata: MetadataByTopic,
     pub group_by: String,
 }
@@ -88,8 +87,8 @@ impl TopicDef {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum GraphqlType {
-    Object(String, Box<BTreeMap<String, GraphqlType>>),
+pub enum FieldType {
+    Object(String, Box<BTreeMap<String, FieldType>>),
     String,
     Float,
     Int,
@@ -175,9 +174,9 @@ impl Api {
         })
     }
 
-    /// The cache's TTL table, derived from the AsyncAPI definitions: topics
-    /// with an `x-ttl` are keyed by topic; a group's topic is a wildcard
-    /// filter, so every Member inherits the group's `x-ttl`.
+    /// The cache's TTL table: topics with a TTL are keyed by topic; a
+    /// group's topic is a wildcard filter, so every Member inherits the
+    /// group's TTL.
     #[must_use]
     pub fn ttl_map(&self) -> TopicMap<u64> {
         self.specs.iter().fold(TopicMap::new(), |acc, spec| {
@@ -193,7 +192,7 @@ mod tests {
     fn topic(topic: &str, ttl_secs: Option<u64>) -> TopicDef {
         TopicDef {
             topic: topic.to_owned(),
-            fields: BTreeMap::from([("x".to_owned(), GraphqlType::Float)]),
+            fields: BTreeMap::from([("x".to_owned(), FieldType::Float)]),
             payload_schema_ref: None,
             ttl_secs,
             operation: Direction::Send,

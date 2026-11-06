@@ -84,37 +84,36 @@ fn build_group_objects(
         .collect()
 }
 
-/// Union of a group's collected `x-*` extension keys across all its payload
-/// fields, in stable order.
-fn extension_keys(group: &GroupDef) -> Vec<String> {
+/// Union of a group's field attribute keys across all its payload fields, in
+/// stable order.
+fn attribute_keys(group: &GroupDef) -> Vec<String> {
     group
-        .value_extensions
+        .field_attributes
         .values()
-        .flat_map(|extensions| extensions.keys().cloned())
+        .flat_map(|attributes| attributes.keys().cloned())
         .collect::<BTreeSet<_>>()
         .into_iter()
         .collect()
 }
 
 /// Descriptor fields for the `<Group>ValueMeta` object: the reserved `name`
-/// plus every collected `x-*` schema extension (e.g. `unit`) as a string
-/// field.
+/// plus every field attribute (e.g. `unit`) as a string field.
 fn value_meta_descriptor_fields(topic: &str, group: &GroupDef) -> impl Iterator<Item = Field> {
     let group_id = topic.to_string();
     once(row_projection_field("name", TypeRef::named(TypeRef::STRING))).chain(
-        extension_keys(group)
+        attribute_keys(group)
             .into_iter()
             .filter_map(move |key| {
                 let sanitized = sanitize_to_graphql_name(&key);
                 if sanitized.is_empty() {
                     warn!(
-                        "Skipping group '{group_id}' value extension 'x-{key}' with empty GraphQL name"
+                        "Skipping group '{group_id}' field attribute '{key}' with empty GraphQL name"
                     );
                     return None;
                 }
                 if sanitized == "name" {
                     warn!(
-                        "Group '{group_id}' value extension 'x-{key}' collides with the reserved 'name' descriptor, skipping"
+                        "Group '{group_id}' field attribute '{key}' collides with the reserved 'name' descriptor, skipping"
                     );
                     return None;
                 }
@@ -375,7 +374,7 @@ fn bucket_rows_json(
 }
 
 /// Per-field descriptors for a group: camelCase GraphQL name plus every
-/// collected `x-*` schema extension (e.g. `unit`), keyed by sanitized name.
+/// field attribute (e.g. `unit`), keyed by sanitized name.
 fn value_metadata_json(topic: &TopicDef, group: &GroupDef) -> JsonValue {
     JsonValue::Array(
         topic
@@ -383,7 +382,7 @@ fn value_metadata_json(topic: &TopicDef, group: &GroupDef) -> JsonValue {
             .keys()
             .map(|field_name| {
                 let descriptors = group
-                    .value_extensions
+                    .field_attributes
                     .get(field_name)
                     .into_iter()
                     .flatten()
@@ -481,7 +480,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, Direction, GraphqlType, Spec, TopicKind};
+    use crate::api_model::{Api, Direction, FieldType, Spec, TopicKind};
     use crate::graphql::build_schema;
     use crate::metadata::MetadataByTopic;
     use crate::topic_map::TopicMap;
@@ -497,14 +496,14 @@ mod tests {
         vec![TopicDef {
             topic: "power-tags/+/+".to_string(),
             fields: BTreeMap::from_iter(vec![
-                ("active_power_total".to_string(), GraphqlType::Float),
-                ("current_a".to_string(), GraphqlType::Float),
+                ("active_power_total".to_string(), FieldType::Float),
+                ("current_a".to_string(), FieldType::Float),
             ]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Group(GroupDef {
-                value_extensions: BTreeMap::from([
+                field_attributes: BTreeMap::from([
                     (
                         "active_power_total".to_string(),
                         BTreeMap::from([("unit".to_string(), "W".to_string())]),

@@ -321,22 +321,19 @@ fn flatten_payload(value: Value) -> Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{Api, Direction, GraphqlType, GroupDef, Spec, TopicDef, TopicKind};
+    use crate::api_model::{Api, Direction, FieldType, GroupDef, Spec, TopicDef, TopicKind};
     use serde_json::json;
     use std::collections::BTreeMap;
 
     fn groups_with_schema(topic: &str, schema_ref: &str) -> Vec<TopicDef> {
         vec![TopicDef {
             topic: topic.to_string(),
-            fields: BTreeMap::from_iter(vec![(
-                "active_power_total".to_string(),
-                GraphqlType::Float,
-            )]),
+            fields: BTreeMap::from_iter(vec![("active_power_total".to_string(), FieldType::Float)]),
             payload_schema_ref: Some(schema_ref.to_string()),
             ttl_secs: None,
             operation: Direction::Send,
             kind: TopicKind::Group(GroupDef {
-                value_extensions: BTreeMap::new(),
+                field_attributes: BTreeMap::new(),
                 group_by: String::new(),
                 topic_metadata: BTreeMap::new(),
             }),
@@ -445,10 +442,7 @@ mod tests {
 
         let topic = TopicDef {
             topic: "power-tags/10P1/breaker3".to_string(),
-            fields: BTreeMap::from_iter(vec![(
-                "active_power_total".to_string(),
-                GraphqlType::Float,
-            )]),
+            fields: BTreeMap::from_iter(vec![("active_power_total".to_string(), FieldType::Float)]),
             payload_schema_ref: None,
             operation: Direction::Send,
             ttl_secs: None,

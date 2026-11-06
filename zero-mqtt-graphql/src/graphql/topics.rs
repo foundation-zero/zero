@@ -31,7 +31,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, Direction, GraphqlType, Spec, TopicDef, TopicKind};
+    use crate::api_model::{Api, Direction, FieldType, Spec, TopicDef, TopicKind};
     use crate::graphql::build_schema;
     use crate::http::router;
     use crate::topic_map::TopicMap;
@@ -50,8 +50,8 @@ mod tests {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
             fields: BTreeMap::from_iter(vec![
-                ("value".to_string(), GraphqlType::Float),
-                ("ok".to_string(), GraphqlType::Boolean),
+                ("value".to_string(), FieldType::Float),
+                ("ok".to_string(), FieldType::Boolean),
             ]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             operation: Direction::Send,
@@ -68,7 +68,7 @@ mod tests {
     fn test_digit_prefixed_topic_is_valid() {
         let topics = vec![TopicDef {
             topic: "123/topic".to_string(),
-            fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
+            fields: BTreeMap::from_iter(vec![("x".to_string(), FieldType::Float)]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             operation: Direction::Send,
             ttl_secs: None,
@@ -102,10 +102,10 @@ mod tests {
         let topics = vec![TopicDef {
             topic: "t".to_string(),
             fields: BTreeMap::from_iter(vec![
-                ("f_float".to_string(), GraphqlType::Float),
-                ("f_int".to_string(), GraphqlType::Int),
-                ("f_bool".to_string(), GraphqlType::Boolean),
-                ("f_str".to_string(), GraphqlType::String),
+                ("f_float".to_string(), FieldType::Float),
+                ("f_int".to_string(), FieldType::Int),
+                ("f_bool".to_string(), FieldType::Boolean),
+                ("f_str".to_string(), FieldType::String),
             ]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             operation: Direction::Send,
@@ -127,9 +127,9 @@ mod tests {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
             fields: BTreeMap::from_iter(vec![
-                ("value".to_string(), GraphqlType::Float),
-                ("ok".to_string(), GraphqlType::Boolean),
-                ("label".to_string(), GraphqlType::String),
+                ("value".to_string(), FieldType::Float),
+                ("ok".to_string(), FieldType::Boolean),
+                ("label".to_string(), FieldType::String),
             ]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             operation: Direction::Send,
@@ -159,7 +159,7 @@ mod tests {
     async fn test_query_returns_null_for_missing_topic() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
-            fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
+            fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             operation: Direction::Send,
             ttl_secs: None,
@@ -179,7 +179,7 @@ mod tests {
     async fn test_query_returns_null_for_missing_field() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
-            fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
+            fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             operation: Direction::Send,
             ttl_secs: None,
@@ -201,7 +201,7 @@ mod tests {
     async fn test_query_unknown_field_errors() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
-            fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
+            fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             operation: Direction::Send,
             ttl_secs: None,
@@ -220,7 +220,7 @@ mod tests {
         let topics = vec![
             TopicDef {
                 topic: "a/b".to_string(),
-                fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
+                fields: BTreeMap::from_iter(vec![("x".to_string(), FieldType::Float)]),
                 payload_schema_ref: Some("payload1".to_string()),
                 operation: Direction::Send,
                 ttl_secs: None,
@@ -228,7 +228,7 @@ mod tests {
             },
             TopicDef {
                 topic: "a/c".to_string(),
-                fields: BTreeMap::from_iter(vec![("y".to_string(), GraphqlType::Float)]),
+                fields: BTreeMap::from_iter(vec![("y".to_string(), FieldType::Float)]),
                 payload_schema_ref: Some("payload2".to_string()),
                 operation: Direction::Send,
                 ttl_secs: None,
@@ -254,7 +254,7 @@ mod tests {
     async fn test_graphql_endpoint_returns_cached_values() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
-            fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
+            fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
             payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             operation: Direction::Send,
             ttl_secs: None,

@@ -12,7 +12,7 @@ use log::{debug, info, warn};
 use roas_asyncapi::common::reference::{RefOr, Reference};
 use serde_json::Value;
 
-use crate::api_model::{Api, Direction, GraphqlType, GroupDef, Spec, TopicDef, TopicKind};
+use crate::api_model::{Api, Direction, FieldType, GroupDef, Spec, TopicDef, TopicKind};
 use crate::message_validation::{ValidatorBuilder, build_validators};
 use crate::topic_map::TopicMap;
 
@@ -287,7 +287,7 @@ fn group_from_channel(
     payload_schema: Option<&Value>,
     path: &Path,
 ) -> anyhow::Result<GroupDef> {
-    let value_extensions = payload_schema
+    let field_attributes = payload_schema
         .map(extensions_from_payload_schema)
         .unwrap_or_default();
 
@@ -322,7 +322,7 @@ fn group_from_channel(
     )?;
 
     Ok(GroupDef {
-        value_extensions,
+        field_attributes,
         topic_metadata,
         group_by,
     })
@@ -367,7 +367,7 @@ fn message_fields(
     channel_ref: &Reference,
     channel: &Channel,
     doc: &Document,
-) -> (BTreeMap<String, GraphqlType>, Option<String>, Option<Value>) {
+) -> (BTreeMap<String, FieldType>, Option<String>, Option<Value>) {
     let Some((message_ref, message)) = channel_messages(channel_ref, channel, doc)
         .into_iter()
         .next()
@@ -551,7 +551,7 @@ pub fn resolve_payload_schema<'a>(
 fn extract_fields_from_schema_or_multi(
     schema_or_multi: &SchemaOrMultiFormat,
     doc: &Document,
-) -> BTreeMap<String, GraphqlType> {
+) -> BTreeMap<String, FieldType> {
     let schema_entries = doc
         .components
         .as_ref()
@@ -578,26 +578,26 @@ fn extract_fields_from_schema_or_multi(
 fn extract_fields_from_schema(
     schema: &Schema,
     schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
-) -> BTreeMap<String, GraphqlType> {
+) -> BTreeMap<String, FieldType> {
     // Fields colliding after lowerCamel sanitization are not tolerated here:
     // they surface as errors from `validate_topics` instead.
     schema
         .properties
         .iter()
         .filter_map(|(name, subschema)| {
-            let graphql_type = graphql_type_for_subschema(name.clone(), subschema, schema_entries)?;
+            let field_type = field_type_for_subschema(name.clone(), subschema, schema_entries)?;
 
-            Some((name.clone(), graphql_type))
+            Some((name.clone(), field_type))
         })
         .collect()
 }
 
-/// Derive a GraphQL scalar type name from a (possibly `$ref`'d) subschema.
-fn graphql_type_for_subschema(
+/// Derive a field type from a (possibly `$ref`'d) subschema.
+fn field_type_for_subschema(
     name: String,
     sub: &SubSchema,
     schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
-) -> Option<GraphqlType> {
+) -> Option<FieldType> {
     match sub {
         SubSchema::Bool(_) => None,
         SubSchema::Schema(boxed) => match boxed.as_ref() {
@@ -630,23 +630,23 @@ fn type_from_schema(
     name: String,
     schema: &Schema,
     schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
-) -> Option<GraphqlType> {
+) -> Option<FieldType> {
     if let Some(schema_type) = &schema.schema_type {
         return match schema_type {
-            SchemaType::Single(t) => map_json_type_to_graphql(name, t, schema, schema_entries),
+            SchemaType::Single(t) => field_type_for_json_type(name, t, schema, schema_entries),
             SchemaType::Multiple(types) => {
                 for (index, t) in types.iter().enumerate() {
                     if t == "null" {
                         continue;
                     }
-                    if let Some(gql) = map_json_type_to_graphql(
+                    if let Some(field_type) = field_type_for_json_type(
                         format!("{name}{index}"),
                         t,
                         schema,
                         schema_entries,
                     ) {
                         // TODO: properly handle unions here
-                        return Some(gql);
+                        return Some(field_type);
                     }
                 }
                 None
@@ -657,8 +657,7 @@ fn type_from_schema(
     // Handle nullable via anyOf / oneOf / allOf
     if let Some(any_of) = &schema.any_of {
         for (index, sub) in any_of.iter().enumerate() {
-            if let Some(t) =
-                graphql_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
+            if let Some(t) = field_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
             {
                 return Some(t);
             }
@@ -666,8 +665,7 @@ fn type_from_schema(
     }
     if let Some(one_of) = &schema.one_of {
         for (index, sub) in one_of.iter().enumerate() {
-            if let Some(t) =
-                graphql_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
+            if let Some(t) = field_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
             {
                 return Some(t);
             }
@@ -675,8 +673,7 @@ fn type_from_schema(
     }
     if let Some(all_of) = &schema.all_of {
         for (index, sub) in all_of.iter().enumerate() {
-            if let Some(t) =
-                graphql_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
+            if let Some(t) = field_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
             {
                 return Some(t);
             }
@@ -686,21 +683,21 @@ fn type_from_schema(
     None
 }
 
-fn map_json_type_to_graphql(
+fn field_type_for_json_type(
     name: String,
     t: &str,
     schema: &Schema,
     schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
-) -> Option<GraphqlType> {
+) -> Option<FieldType> {
     match t {
         "object" => {
             let fields = extract_fields_from_schema(schema, schema_entries);
-            (!fields.is_empty()).then(|| GraphqlType::Object(name, Box::new(fields)))
+            (!fields.is_empty()).then(|| FieldType::Object(name, Box::new(fields)))
         }
-        "number" => Some(GraphqlType::Float),
-        "integer" => Some(GraphqlType::Int),
-        "boolean" => Some(GraphqlType::Boolean),
-        "string" => Some(GraphqlType::String),
+        "number" => Some(FieldType::Float),
+        "integer" => Some(FieldType::Int),
+        "boolean" => Some(FieldType::Boolean),
+        "string" => Some(FieldType::String),
         _ => None,
     }
 }
@@ -760,7 +757,7 @@ fn parse_ttl_str(s: &str) -> Option<u64> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{api_model::GraphqlType, roas_asyncapi::SubSchema};
+    use crate::{api_model::FieldType, roas_asyncapi::SubSchema};
     use serde_json::json;
     use std::collections::BTreeMap;
 
@@ -812,22 +809,22 @@ mod tests {
         assert_eq!(fields.len(), 6);
         // BTreeMap ordering, so sorted by key
         let get = |name: &str| fields.get(name).unwrap();
-        assert_eq!(get("celsius"), &GraphqlType::Float);
-        assert_eq!(get("sensor_id"), &GraphqlType::Int);
-        assert_eq!(get("ok"), &GraphqlType::Boolean);
-        assert_eq!(get("label"), &GraphqlType::String);
+        assert_eq!(get("celsius"), &FieldType::Float);
+        assert_eq!(get("sensor_id"), &FieldType::Int);
+        assert_eq!(get("ok"), &FieldType::Boolean);
+        assert_eq!(get("label"), &FieldType::String);
         assert_eq!(
             get("nested"),
-            &GraphqlType::Object(
+            &FieldType::Object(
                 "nested".to_string(),
-                Box::new(BTreeMap::from([("x".to_string(), GraphqlType::Float); 1]))
+                Box::new(BTreeMap::from([("x".to_string(), FieldType::Float); 1]))
             )
         );
         assert_eq!(
             get("reffed"),
-            &GraphqlType::Object(
+            &FieldType::Object(
                 "nested".to_string(),
-                Box::new(BTreeMap::from([("x".to_string(), GraphqlType::Float); 1]))
+                Box::new(BTreeMap::from([("x".to_string(), FieldType::Float); 1]))
             )
         );
     }
@@ -883,7 +880,7 @@ mod tests {
             "termodinamica/compressor/temperature:Publisher"
         );
         assert_eq!(topics[0].fields.len(), 3);
-        assert_eq!(topics[0].fields.get("celsius"), Some(&GraphqlType::Float));
+        assert_eq!(topics[0].fields.get("celsius"), Some(&FieldType::Float));
     }
 
     #[test_log::test]
@@ -940,7 +937,7 @@ mod tests {
         assert_eq!(groups.len(), 1);
         assert_eq!(groups[0].topic, "power-tags/+/+");
         assert_eq!(groups[0].fields.len(), 3);
-        assert_eq!(groups[0].fields.get("celsius"), Some(&GraphqlType::Float));
+        assert_eq!(groups[0].fields.get("celsius"), Some(&FieldType::Float));
     }
 
     #[test_log::test]
@@ -985,7 +982,7 @@ mod tests {
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "test/channel:Publisher");
         assert_eq!(topics[0].fields.len(), 1);
-        assert_eq!(topics[0].fields.get("value"), Some(&GraphqlType::Float));
+        assert_eq!(topics[0].fields.get("value"), Some(&FieldType::Float));
     }
 
     #[test_log::test]
@@ -1226,7 +1223,7 @@ mod tests {
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "ref/channel");
-        assert_eq!(topics[0].fields.get("x"), Some(&GraphqlType::Int));
+        assert_eq!(topics[0].fields.get("x"), Some(&FieldType::Int));
     }
 
     #[test_log::test]
@@ -1380,7 +1377,7 @@ mod tests {
         let schema = schema_with_properties(props);
         let fields = extract_fields_from_schema(&schema, None);
         assert_eq!(fields.len(), 1);
-        assert_eq!(fields.get("current_a"), Some(&GraphqlType::Float));
+        assert_eq!(fields.get("current_a"), Some(&FieldType::Float));
     }
 
     #[test_log::test]

@@ -64,22 +64,19 @@ pub fn build_validators(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{Direction, GraphqlType, GroupDef, TopicKind};
+    use crate::api_model::{Direction, FieldType, GroupDef, TopicKind};
     use serde_json::json;
     use std::collections::BTreeMap;
 
     fn group_with_schema(topic: &str, schema: Option<String>) -> TopicDef {
         TopicDef {
             topic: topic.to_string(),
-            fields: BTreeMap::from_iter(vec![(
-                "active_power_total".to_string(),
-                GraphqlType::Float,
-            )]),
+            fields: BTreeMap::from_iter(vec![("active_power_total".to_string(), FieldType::Float)]),
             payload_schema_ref: schema,
             operation: Direction::Send,
             ttl_secs: None,
             kind: TopicKind::Group(GroupDef {
-                value_extensions: BTreeMap::new(),
+                field_attributes: BTreeMap::new(),
                 group_by: String::new(),
                 topic_metadata: BTreeMap::new(),
             }),
@@ -95,10 +92,7 @@ mod tests {
 
         let topics = vec![TopicDef {
             topic: "power-tags".to_string(),
-            fields: BTreeMap::from_iter(vec![(
-                "active_power_total".to_string(),
-                GraphqlType::Float,
-            )]),
+            fields: BTreeMap::from_iter(vec![("active_power_total".to_string(), FieldType::Float)]),
             payload_schema_ref: Some("#/validator".to_string()),
             operation: Direction::Send,
             ttl_secs: None,
@@ -177,7 +171,7 @@ mod tests {
             topic: "power-tags".to_string(),
             fields: BTreeMap::from_iter(vec![(
                 "active_power_total".to_string(),
-                GraphqlType::String,
+                FieldType::String,
             )]),
             payload_schema_ref: Some("#/schemas/message".to_string()),
             operation: Direction::Send,

@@ -33,7 +33,7 @@ use crate::graphql::groups::register_group_queries;
 use crate::graphql::topics::payload_query_field;
 use crate::naming::{pascal_case_graphql_name, sanitize_to_graphql_name};
 use crate::{
-    api_model::{Api, GraphqlPath, GraphqlType, PathNode, QueryTree, TopicKind},
+    api_model::{Api, FieldType, GraphqlPath, PathNode, QueryTree, TopicKind},
     cache::TopicCache,
 };
 
@@ -246,7 +246,7 @@ fn json_to_graphql_value(val: &JsonValue) -> GraphQlValue {
 fn payload_object(
     name_prefix: &str,
     name: &str,
-    fields: &BTreeMap<String, GraphqlType>,
+    fields: &BTreeMap<String, FieldType>,
 ) -> Vec<Object> {
     if fields.is_empty() {
         warn!("Object {name} can't have zero fields!");
@@ -272,7 +272,7 @@ fn payload_object(
 fn payload_field(
     name_prefix: &str,
     name: &str,
-    graphql_type: &GraphqlType,
+    graphql_type: &FieldType,
 ) -> Option<(Field, Vec<Object>)> {
     let field_name = sanitize_to_graphql_name(name);
 
@@ -302,14 +302,14 @@ fn payload_field(
 }
 
 /// Map a GraphQL type name to an async-graphql TypeRef.
-fn graphql_type_ref(name_prefix: &str, typ: &GraphqlType) -> (TypeRef, Vec<Object>) {
+fn graphql_type_ref(name_prefix: &str, typ: &FieldType) -> (TypeRef, Vec<Object>) {
     #[allow(clippy::match_same_arms)]
     match typ {
-        GraphqlType::Float => (TypeRef::named(TypeRef::FLOAT), vec![]),
-        GraphqlType::Int => (TypeRef::named(TypeRef::INT), vec![]),
-        GraphqlType::Boolean => (TypeRef::named(TypeRef::BOOLEAN), vec![]),
-        GraphqlType::String => (TypeRef::named(TypeRef::STRING), vec![]),
-        GraphqlType::Object(name, fields) => {
+        FieldType::Float => (TypeRef::named(TypeRef::FLOAT), vec![]),
+        FieldType::Int => (TypeRef::named(TypeRef::INT), vec![]),
+        FieldType::Boolean => (TypeRef::named(TypeRef::BOOLEAN), vec![]),
+        FieldType::String => (TypeRef::named(TypeRef::STRING), vec![]),
+        FieldType::Object(name, fields) => {
             let objects = payload_object(name_prefix, name, fields);
             (TypeRef::named(objects[0].type_name()), objects)
         }
@@ -336,7 +336,7 @@ mod tests {
     fn mock_topic(topic: &str, field: &str) -> TopicDef {
         TopicDef {
             topic: topic.to_string(),
-            fields: BTreeMap::from_iter(vec![(field.to_string(), GraphqlType::Float)]),
+            fields: BTreeMap::from_iter(vec![(field.to_string(), FieldType::Float)]),
             payload_schema_ref: Some(format!("#/components/schemas/{field}payload")),
             operation: Direction::Send,
             ttl_secs: None,
@@ -387,7 +387,7 @@ mod tests {
             mock_topic("a/b", "x"),
             TopicDef {
                 topic: "aB/c".to_string(),
-                fields: BTreeMap::from_iter(vec![("field".to_string(), GraphqlType::Float)]),
+                fields: BTreeMap::from_iter(vec![("field".to_string(), FieldType::Float)]),
                 payload_schema_ref: Some("#/components/schemas/schema-a".to_string()),
                 operation: Direction::Send,
                 ttl_secs: None,
