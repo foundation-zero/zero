@@ -55,6 +55,20 @@ async def test_connected_is_ready(
     assert readiness.status.startswith("ready: mqtt since ")
 
 
+async def test_lost_connection_is_not_ready_before_reconnecting(
+    client: ReportingClient, readiness: Readiness, attempt: AsyncMock
+):
+    await client._connect_with_retry()
+    status_at_reconnect: list[str] = []
+    attempt.side_effect = lambda: status_at_reconnect.append(readiness.status)
+
+    # What zmqtt's run loop calls after a live connection drops.
+    await client._connect_with_retry(wait_before_first_attempt=True)
+
+    assert status_at_reconnect[0].startswith("not ready: mqtt: connection lost since ")
+    assert readiness.status.startswith("ready: mqtt since ")
+
+
 async def test_unreachable_broker_is_not_ready(
     client: ReportingClient, readiness: Readiness, attempt: AsyncMock
 ):

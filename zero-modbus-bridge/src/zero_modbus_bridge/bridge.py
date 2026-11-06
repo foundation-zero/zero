@@ -152,10 +152,8 @@ class ModbusBridge:
             return
         if readings is None:
             self._readiness.not_ready("modbus", "gateway unreachable")
-        elif not readings:
-            # The reader logs and skips each topic that fails, so a gateway
-            # that accepts connections but answers nothing yields no readings.
-            self._readiness.not_ready("modbus", "no topic could be read")
+        elif not self._reader.answered:
+            self._readiness.not_ready("modbus", "gateway does not answer")
         else:
             self._readiness.ready("modbus")
 

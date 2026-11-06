@@ -427,43 +427,50 @@ def gateway_readiness() -> Readiness:
 
 
 @pytest.fixture
-def required_gateway(gateway_readiness: Readiness) -> tuple[ModbusBridge, MagicMock]:
-    reader = MagicMock()
-    reader.ensure_open.return_value = True
-    bridge = ModbusBridge(
-        reader, RecordingPublisher(), [], buffer_size=10, readiness=gateway_readiness
+def gateway() -> MagicMock:
+    """An open Modbus connection to a gateway that answers every read."""
+    gateway = MagicMock(is_open=True)
+    gateway.read_holding_registers.return_value = [0x4248, 0x0000]
+    return gateway
+
+
+@pytest.fixture
+def required_gateway(gateway: MagicMock, gateway_readiness: Readiness) -> ModbusBridge:
+    topic = AnnotationModbusTopic(topic="test/g", model=FloatModel, start_register=3000)
+    return ModbusBridge(
+        ModbusReader(gateway, [topic]),
+        RecordingPublisher(),
+        [topic],
+        buffer_size=10,
+        readiness=gateway_readiness,
     )
-    return bridge, reader
 
 
 @pytest.mark.asyncio
-async def test_required_gateway_ready_on_readings(
-    required_gateway: tuple[ModbusBridge, MagicMock], gateway_readiness: Readiness
+async def test_answering_required_gateway_is_ready(
+    required_gateway: ModbusBridge, gateway_readiness: Readiness
 ):
-    bridge, reader = required_gateway
-    _probe_yields(reader, 1)
-    await bridge.run_once()
+    await required_gateway.run_once()
     assert gateway_readiness.status.startswith("ready: modbus since ")
 
 
 @pytest.mark.asyncio
 async def test_unreachable_required_gateway_is_not_ready(
-    required_gateway: tuple[ModbusBridge, MagicMock], gateway_readiness: Readiness
+    required_gateway: ModbusBridge, gateway: MagicMock, gateway_readiness: Readiness
 ):
-    bridge, reader = required_gateway
-    reader.ensure_open.return_value = False
-    await bridge.run_once()
+    gateway.is_open = False
+    gateway.open.return_value = False
+    await required_gateway.run_once()
     assert gateway_readiness.status.startswith("not ready: modbus: gateway unreachable")
 
 
 @pytest.mark.asyncio
-async def test_required_gateway_without_readings_is_not_ready(
-    required_gateway: tuple[ModbusBridge, MagicMock], gateway_readiness: Readiness
+async def test_silent_required_gateway_is_not_ready(
+    required_gateway: ModbusBridge, gateway: MagicMock, gateway_readiness: Readiness
 ):
-    """Connected, but every topic read failed."""
-    bridge, reader = required_gateway
-    reader.read_all.return_value = []
-    await bridge.run_once()
+    """Connected, but no read is answered: the reader still yields all-None payloads."""
+    gateway.read_holding_registers.return_value = None
+    await required_gateway.run_once()
     assert gateway_readiness.status.startswith(
-        "not ready: modbus: no topic could be read"
+        "not ready: modbus: gateway does not answer"
     )

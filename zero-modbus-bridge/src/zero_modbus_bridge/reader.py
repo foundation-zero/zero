@@ -23,6 +23,14 @@ class ModbusReader:
     def __init__(self, modbus: ModbusClient, topics: list[ModbusTopic]):
         self._modbus = modbus
         self._topics = topics
+        self._answered = False
+
+    @property
+    def answered(self) -> bool:
+        """Whether any register read during the last ``read_all`` got an answer.
+
+        Failed reads still yield payloads, with ``None`` for the failed fields."""
+        return self._answered
 
     def ensure_open(self) -> bool:
         """Open the underlying Modbus connection if needed.
@@ -40,6 +48,7 @@ class ModbusReader:
         drop the connection, so we may need to reopen between topics to keep the
         rest of the cycle readable.
         """
+        self._answered = False
         for topic in self._topics:
             if not self.ensure_open():
                 # A failed reopen means the whole gateway is down, so the rest
@@ -73,6 +82,7 @@ class ModbusReader:
             reg = _resolve_register(field, topic.start_register)
             try:
                 raw = self._read_field(field, reg)
+                self._answered = True
                 if field.validator is not None and not field.validator(raw):
                     raw = None
                 reads.append((reg, raw))
