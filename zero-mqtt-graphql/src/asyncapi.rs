@@ -5,14 +5,14 @@ use std::path::{Path, PathBuf};
 use crate::metadata::MetadataByTopic;
 use crate::roas_asyncapi::{
     Channel, Document, Message, Operation, OperationAction, Schema, SchemaOrMultiFormat,
+    SchemaType, SubSchema,
 };
 use anyhow::Context;
 use log::{debug, info, warn};
 use roas_asyncapi::common::reference::{RefOr, Reference};
 use serde_json::Value;
 
-use crate::api_model::{Api, ApiModel, FieldDef, TopicDef, TopicGroupDef};
-use crate::graphql::graphql_type_for_subschema;
+use crate::api_model::{Api, ApiModel, GraphqlType, TopicDef, TopicGroupDef};
 use crate::message_validation::{ValidatorBuilder, build_validators};
 use crate::naming::sanitize_to_graphql_name;
 use crate::topic_map::TopicMap;
@@ -72,9 +72,7 @@ fn read_asyncapi_document(path: &Path) -> anyhow::Result<Value> {
     Ok(spec_value)
 }
 
-fn load_spec(path: &Path) -> anyhow::Result<ApiModel> {
-    let document_json = read_asyncapi_document(path)?;
-
+fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<ApiModel> {
     let validator_builder = ValidatorBuilder::new(document_json.clone())?;
 
     let document = serde_json::from_value::<Document>(document_json.clone())
@@ -123,7 +121,9 @@ pub fn load_specs(spec_dir: &str, ignore_failures: bool) -> anyhow::Result<Api> 
     let api_models = specs
         .iter()
         .filter_map(|path| {
-            let spec = load_spec(path);
+            let spec = read_asyncapi_document(path)
+                .and_then(|document_json| load_spec(path, &document_json));
+
             if ignore_failures && let Err(error) = spec {
                 warn!("Skipping AsyncAPI spec '{}': {:#}", path.display(), error);
                 None
@@ -159,10 +159,13 @@ fn channels_from_document<
         .map(|(operation_name, operation_ref)| {
             debug!("Parsing operation {operation_name} from {}", path.display());
 
-            let operation = resolve_operation(operation_ref, doc).with_context(|| {
+            let (_, operation) = resolve_operation(operation_ref, doc).with_context(|| {
                 format!(
-                    "unresolvable operation $ref '{}' in {}",
+                    "unresolvable operation $ref '{}' ({}) in {}",
                     operation_name,
+                    operation_ref
+                        .reference()
+                        .map_or("<inline channel>", |r| r.reference.as_str()),
                     path.display()
                 )
             })?;
@@ -181,7 +184,7 @@ fn channels_from_document<
         .into_iter()
         .map(|(action, channel_name, channel_ref)| {
             debug!("Parsing channel {channel_name} from {}", path.display());
-            let channel = resolve_channel(&channel_ref, doc).with_context(|| {
+            let (_, channel) = resolve_channel(&channel_ref, doc).with_context(|| {
                 format!(
                     "unresolvable channel $ref '{}' ({}) in {}",
                     channel_name,
@@ -245,7 +248,7 @@ fn topic_from_channel(
     let mqtt_topic = channel.address().map(ToString::to_string);
     let Some(mqtt_topic) = mqtt_topic else {
         warn!(
-            "Channel '{}' in {} has no mqtt binding topic and no address, skipping",
+            "Channel '{}' in {} has no address, skipping",
             channel_name,
             path.display()
         );
@@ -257,6 +260,12 @@ fn topic_from_channel(
     }
 
     let (fields, payload_schema_ref, _) = message_fields(channel_ref, channel, doc);
+    debug!(
+        "Parsed channel {} with payload {:?} with {} fields",
+        channel_name,
+        payload_schema_ref,
+        fields.len()
+    );
 
     Ok(Some(TopicDef {
         topic: mqtt_topic,
@@ -368,7 +377,7 @@ fn param_name(segment: &str) -> Option<&str> {
 fn static_prefix(address: &str) -> Option<String> {
     let prefix = address
         .split('/')
-        .take_while(|segment| param_name(segment).is_none())
+        .take_while(|segment| param_name(segment).is_none() && !segment.is_empty())
         .collect::<Vec<_>>()
         .join("/");
     (!prefix.is_empty()).then_some(prefix)
@@ -397,37 +406,33 @@ fn message_fields(
     channel_ref: &Reference,
     channel: &Channel,
     doc: &Document,
-) -> (Vec<FieldDef>, Option<String>, Option<Value>) {
+) -> (BTreeMap<String, GraphqlType>, Option<String>, Option<Value>) {
     let Some((message_ref, message)) = channel_messages(channel_ref, channel, doc)
         .into_iter()
         .next()
     else {
-        return (Vec::new(), None, None);
+        info!("Channel {} has no message", channel_ref.reference);
+        return (BTreeMap::new(), None, None);
     };
     // The message payload may be inline or a `$ref` into components
     let Some(payload_ref) = &message.payload else {
-        return (Vec::new(), None, None);
+        info!("Channel {} message has no payload", channel_ref.reference);
+        return (BTreeMap::new(), None, None);
     };
 
-    let (schema_or_multi, payload_schema_ref, payload_schema) = match payload_ref {
-        RefOr::Reference(payload_reference) => match resolve_payload_schema(payload_ref, doc) {
-            Some(schema_or_multi) => (
-                schema_or_multi,
-                Some(payload_reference.reference.clone()),
-                serde_json::to_value(schema_or_multi).ok(),
-            ),
-            None => return (Vec::new(), None, None),
-        },
-        RefOr::Item(schema_or_multi) => {
-            let schema_ref = format!("{message_ref}/payload");
-            let schema_value = serde_json::to_value(schema_or_multi).ok();
-            (schema_or_multi, Some(schema_ref), schema_value)
-        }
+    let Some((pointer, schema_or_multi)) = resolve_payload_schema(payload_ref, doc) else {
+        info!(
+            "Channel {} message payload reference does not resolve",
+            channel_ref.reference,
+        );
+        return (BTreeMap::new(), None, None);
     };
 
-    let fields = extract_fields_from_schema_or_multi(schema_or_multi, doc);
-
-    (fields, payload_schema_ref, payload_schema)
+    (
+        extract_fields_from_schema_or_multi(schema_or_multi, doc),
+        Some(pointer.unwrap_or(format!("{message_ref}/payload"))),
+        serde_json::to_value(schema_or_multi).ok(),
+    )
 }
 
 /// All messages referenced by the channel, resolved against components.
@@ -448,7 +453,7 @@ fn channel_messages<'a>(
                     message_key.replace('~', "~0").replace('/', "~1")
                 ),
             };
-            resolve_message(message_ref, doc).map(|message| (message_reference, message))
+            resolve_message(message_ref, doc).map(|(_, message)| (message_reference, message))
         })
         .collect()
 }
@@ -485,12 +490,12 @@ fn extensions_from_payload_schema(
 }
 
 /// Follow a component `$ref` to a real entry
-fn resolve_ref_to_entry<'a, T: Debug>(
+pub(crate) fn resolve_ref_to_entry<'a, T: Debug>(
     reference: &'a Reference,
     entries_main: Option<&'a BTreeMap<String, RefOr<T>>>,
     entries_components: Option<&'a BTreeMap<String, RefOr<T>>>,
     mut traversed_keys: Vec<&'a str>,
-) -> Option<&'a T> {
+) -> Option<(Option<String>, &'a T)> {
     let pointer = reference.local_pointer()?;
     let key = reference.local_key()?;
 
@@ -512,7 +517,7 @@ fn resolve_ref_to_entry<'a, T: Debug>(
             traversed_keys.push(pointer);
             resolve_ref_to_entry(nested, entries_main, entries_components, traversed_keys)
         }
-        RefOr::Item(entry) => Some(entry),
+        RefOr::Item(entry) => Some((Some(reference.reference.clone()), entry)),
     }
 }
 
@@ -520,16 +525,19 @@ fn resolve_refor<'a, T: Debug>(
     reference: &'a RefOr<T>,
     entries_main: Option<&'a BTreeMap<String, RefOr<T>>>,
     entries_components: Option<&'a BTreeMap<String, RefOr<T>>>,
-) -> Option<&'a T> {
+) -> Option<(Option<String>, &'a T)> {
     match reference {
-        RefOr::Item(m) => Some(m),
+        RefOr::Item(m) => Some((None, m)),
         RefOr::Reference(reference) => {
             resolve_ref_to_entry(reference, entries_main, entries_components, vec![])
         }
     }
 }
 
-fn resolve_channel<'a>(r: &'a RefOr<Channel>, doc: &'a Document) -> Option<&'a Channel> {
+fn resolve_channel<'a>(
+    r: &'a RefOr<Channel>,
+    doc: &'a Document,
+) -> Option<(Option<String>, &'a Channel)> {
     resolve_refor(
         r,
         Some(&doc.channels),
@@ -539,7 +547,10 @@ fn resolve_channel<'a>(r: &'a RefOr<Channel>, doc: &'a Document) -> Option<&'a C
     )
 }
 
-fn resolve_operation<'a>(r: &'a RefOr<Operation>, doc: &'a Document) -> Option<&'a Operation> {
+fn resolve_operation<'a>(
+    r: &'a RefOr<Operation>,
+    doc: &'a Document,
+) -> Option<(Option<String>, &'a Operation)> {
     resolve_refor(
         r,
         Some(&doc.operations),
@@ -549,7 +560,10 @@ fn resolve_operation<'a>(r: &'a RefOr<Operation>, doc: &'a Document) -> Option<&
     )
 }
 
-fn resolve_message<'a>(r: &'a RefOr<Message>, doc: &'a Document) -> Option<&'a Message> {
+fn resolve_message<'a>(
+    r: &'a RefOr<Message>,
+    doc: &'a Document,
+) -> Option<(Option<String>, &'a Message)> {
     resolve_refor(
         r,
         None,
@@ -559,10 +573,11 @@ fn resolve_message<'a>(r: &'a RefOr<Message>, doc: &'a Document) -> Option<&'a M
     )
 }
 
-fn resolve_payload_schema<'a>(
+#[must_use]
+pub fn resolve_payload_schema<'a>(
     r: &'a RefOr<SchemaOrMultiFormat>,
     doc: &'a Document,
-) -> Option<&'a SchemaOrMultiFormat> {
+) -> Option<(Option<String>, &'a SchemaOrMultiFormat)> {
     resolve_refor(
         r,
         None,
@@ -575,52 +590,173 @@ fn resolve_payload_schema<'a>(
 fn extract_fields_from_schema_or_multi(
     schema_or_multi: &SchemaOrMultiFormat,
     doc: &Document,
-) -> Vec<FieldDef> {
+) -> BTreeMap<String, GraphqlType> {
+    let schema_entries = doc
+        .components
+        .as_ref()
+        .map(|componentens| &componentens.schemas);
+
     match schema_or_multi {
-        SchemaOrMultiFormat::Schema(schema) => extract_fields_from_schema(schema, doc),
+        SchemaOrMultiFormat::Schema(schema) => extract_fields_from_schema(schema, schema_entries),
         SchemaOrMultiFormat::MultiFormat(mf) => {
             // Try to deserialize the raw schema value as a Schema
             if let Ok(schema) = serde_json::from_value::<Schema>(mf.schema.clone()) {
-                extract_fields_from_schema(&schema, doc)
+                extract_fields_from_schema(&schema, schema_entries)
             } else {
-                Vec::new()
+                info!("Payload schema has no fields");
+                BTreeMap::new()
             }
         }
-        SchemaOrMultiFormat::Bool(_) => Vec::new(),
+        SchemaOrMultiFormat::Bool(_) => {
+            info!("Payload schema has no fields");
+            BTreeMap::new()
+        }
     }
 }
 
-fn extract_fields_from_schema(schema: &Schema, doc: &Document) -> Vec<FieldDef> {
+fn extract_fields_from_schema(
+    schema: &Schema,
+    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
+) -> BTreeMap<String, GraphqlType> {
     // Fields colliding after lowerCamel sanitization are not tolerated here:
     // they surface as errors from `validate_topics` instead.
     schema
         .properties
         .iter()
         .filter_map(|(name, subschema)| {
-            let graphql_type = graphql_type_for_subschema(subschema, doc)?;
+            let graphql_type = graphql_type_for_subschema(name.clone(), subschema, schema_entries)?;
             let sanitized = sanitize_to_graphql_name(name);
             if sanitized.is_empty() {
                 warn!("Skipping field '{name}' sanitizes to empty GraphQL name");
                 return None;
             }
-            Some(FieldDef {
-                name: name.clone(),
-                graphql_type,
-            })
+            Some((name.clone(), graphql_type))
         })
         .collect()
+}
+
+/// Derive a GraphQL scalar type name from a (possibly `$ref`'d) subschema.
+fn graphql_type_for_subschema(
+    name: String,
+    sub: &SubSchema,
+    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
+) -> Option<GraphqlType> {
+    match sub {
+        SubSchema::Bool(_) => None,
+        SubSchema::Schema(boxed) => match boxed.as_ref() {
+            RefOr::Item(schema) => type_from_schema(name, schema, schema_entries),
+            RefOr::Reference(r) => {
+                let Some((reference, resolved)) =
+                    resolve_ref_to_entry(r, None, schema_entries, vec![])
+                else {
+                    warn!("Cannot resolve reference {r:?} while determining payload type");
+                    return None;
+                };
+                let name = reference
+                    .and_then(|r| r.rsplit('/').next().map(ToOwned::to_owned))
+                    .unwrap_or(name);
+
+                match resolved {
+                    SchemaOrMultiFormat::Schema(s) => type_from_schema(name, s, schema_entries),
+                    SchemaOrMultiFormat::MultiFormat(mf) => {
+                        let schema: Schema = serde_json::from_value(mf.schema.clone()).ok()?;
+                        type_from_schema(name, &schema, schema_entries)
+                    }
+                    SchemaOrMultiFormat::Bool(_) => None,
+                }
+            }
+        },
+    }
+}
+
+fn type_from_schema(
+    name: String,
+    schema: &Schema,
+    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
+) -> Option<GraphqlType> {
+    if let Some(schema_type) = &schema.schema_type {
+        return match schema_type {
+            SchemaType::Single(t) => map_json_type_to_graphql(name, t, schema, schema_entries),
+            SchemaType::Multiple(types) => {
+                for (index, t) in types.iter().enumerate() {
+                    if t == "null" {
+                        continue;
+                    }
+                    if let Some(gql) = map_json_type_to_graphql(
+                        format!("{name}{index}"),
+                        t,
+                        schema,
+                        schema_entries,
+                    ) {
+                        // TODO: properly handle unions here
+                        return Some(gql);
+                    }
+                }
+                None
+            }
+        };
+    }
+
+    // Handle nullable via anyOf / oneOf / allOf
+    if let Some(any_of) = &schema.any_of {
+        for (index, sub) in any_of.iter().enumerate() {
+            if let Some(t) =
+                graphql_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
+            {
+                return Some(t);
+            }
+        }
+    }
+    if let Some(one_of) = &schema.one_of {
+        for (index, sub) in one_of.iter().enumerate() {
+            if let Some(t) =
+                graphql_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
+            {
+                return Some(t);
+            }
+        }
+    }
+    if let Some(all_of) = &schema.all_of {
+        for (index, sub) in all_of.iter().enumerate() {
+            if let Some(t) =
+                graphql_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
+            {
+                return Some(t);
+            }
+        }
+    }
+
+    None
+}
+
+fn map_json_type_to_graphql(
+    name: String,
+    t: &str,
+    schema: &Schema,
+    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
+) -> Option<GraphqlType> {
+    match t {
+        "object" => {
+            let fields = extract_fields_from_schema(schema, schema_entries);
+            (!fields.is_empty()).then(|| GraphqlType::Object(name, Box::new(fields)))
+        }
+        "number" => Some(GraphqlType::Float),
+        "integer" => Some(GraphqlType::Int),
+        "boolean" => Some(GraphqlType::Boolean),
+        "string" => Some(GraphqlType::String),
+        _ => None,
+    }
 }
 
 /// Effective TTL for cached values of a channel: the maximum `x-ttl`
 /// across its messages (a channel may declare several), falling back to the
 /// channel's own extension, then the global default.
-fn ttl_for_channel(channel_ref: &Reference, channel: &Channel, doc: &Document) -> u64 {
+fn ttl_for_channel(channel_ref: &Reference, channel: &Channel, doc: &Document) -> Option<u64> {
     channel_messages(channel_ref, channel, doc)
         .into_values()
         .filter_map(|message| ttl_from_extensions(message.extensions.as_ref()))
         .max()
         .or_else(|| ttl_from_extensions(channel.extensions.as_ref()))
-        .unwrap_or(crate::config::DEFAULT_TTL_SECS)
 }
 
 fn ttl_from_extensions(ext: Option<&std::collections::BTreeMap<String, Value>>) -> Option<u64> {
@@ -667,14 +803,14 @@ fn parse_ttl_str(s: &str) -> Option<u64> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::roas_asyncapi::SubSchema;
+    use crate::{api_model::GraphqlType, roas_asyncapi::SubSchema};
     use serde_json::json;
     use std::collections::BTreeMap;
 
     /// Test convenience wrapper.
-    fn loaded_topics(dir: &Path) -> anyhow::Result<Vec<TopicDef>> {
-        let api = load_specs(dir.to_str().unwrap(), false)?;
-        Ok(api.topics())
+    fn loaded_topics(spec: &Value) -> anyhow::Result<Vec<TopicDef>> {
+        let api = load_spec(Path::new("test"), spec)?;
+        Ok(api.topics)
     }
 
     fn schema_with_properties(props: BTreeMap<String, Value>) -> Schema {
@@ -700,18 +836,42 @@ mod tests {
                 "nested".to_string(),
                 json!({"type": "object", "properties": {"x": {"type": "number"}}}),
             ),
+            ("reffed".to_string(), json!({"$ref": "#/components/nested"})),
             ("items".to_string(), json!({"type": "array"})),
         ]);
         let schema = schema_with_properties(props);
-        let doc = Document::default();
-        let fields = extract_fields_from_schema(&schema, &doc);
-        assert_eq!(fields.len(), 4);
+        let schema_entries = BTreeMap::from([(
+            "nested".to_string(),
+            RefOr::Item(
+                serde_json::from_value::<SchemaOrMultiFormat>(
+                    json!({"type": "object", "properties": {"x": {"type": "number"}}}),
+                )
+                .unwrap(),
+            ),
+        )]);
+
+        let fields = extract_fields_from_schema(&schema, Some(&schema_entries));
+        assert_eq!(fields.len(), 6);
         // BTreeMap ordering, so sorted by key
-        let get = |name: &str| fields.iter().find(|f| f.name == name).unwrap();
-        assert_eq!(get("celsius").graphql_type, "Float");
-        assert_eq!(get("sensor_id").graphql_type, "Int");
-        assert_eq!(get("ok").graphql_type, "Boolean");
-        assert_eq!(get("label").graphql_type, "String");
+        let get = |name: &str| fields.get(name).unwrap();
+        assert_eq!(get("celsius"), &GraphqlType::Float);
+        assert_eq!(get("sensor_id"), &GraphqlType::Int);
+        assert_eq!(get("ok"), &GraphqlType::Boolean);
+        assert_eq!(get("label"), &GraphqlType::String);
+        assert_eq!(
+            get("nested"),
+            &GraphqlType::Object(
+                "nested".to_string(),
+                Box::new(BTreeMap::from([("x".to_string(), GraphqlType::Float); 1]))
+            )
+        );
+        assert_eq!(
+            get("reffed"),
+            &GraphqlType::Object(
+                "nested".to_string(),
+                Box::new(BTreeMap::from([("x".to_string(), GraphqlType::Float); 1]))
+            )
+        );
     }
 
     #[test_log::test]
@@ -725,13 +885,6 @@ mod tests {
                     "messages": {
                         "Message": {
                             "$ref": "#/components/messages/termodinamica.compressor.temperature:Publisher:Message"
-                        }
-                    },
-                    "bindings": {
-                        "mqtt": {
-                            "qos": 0,
-                            "retain": false,
-                            "bindingVersion": "0.2.0"
                         }
                     }
                 }
@@ -764,14 +917,7 @@ mod tests {
             }
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-specs");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        let path = dir.join("test.json");
-        std::fs::write(&path, serde_json::to_string_pretty(&spec).unwrap()).unwrap();
-
-        let topics = loaded_topics(&dir).unwrap();
-        let _ = std::fs::remove_dir_all(&dir);
+        let topics = loaded_topics(&spec).unwrap();
 
         assert_eq!(topics.len(), 1);
         assert_eq!(
@@ -779,74 +925,67 @@ mod tests {
             "termodinamica/compressor/temperature:Publisher"
         );
         assert_eq!(topics[0].fields.len(), 3);
-        assert_eq!(topics[0].fields[0].name, "celsius");
-        assert_eq!(topics[0].fields[0].graphql_type, "Float");
+        assert_eq!(topics[0].fields.get("celsius"), Some(&GraphqlType::Float));
     }
 
     #[test_log::test]
-    fn test_no_mqtt_binding_skipped() {
+    fn test_load_specs_from_json_groups() {
         let spec = json!({
             "asyncapi": "3.0.0",
             "info": {"title": "Test", "version": "1.0.0"},
             "channels": {
-                "some.channel:Publisher": {
-                    "address": "some/channel:Publisher",
+                "power-tags": {
+                    "address": "power-tags/{panel}/{slug}",
                     "messages": {
                         "Message": {
-                            "$ref": "#/components/messages/some.channel:Publisher:Message"
+                            "$ref": "#/components/messages/power-tags:Message"
                         }
                     },
-                    "bindings": {
-                        "http": {}
-                    }
+                    "x-group-topic-metadata": {},
+                    "x-group-by": "panel"
                 }
             },
             "operations": {
-                "some.channel:Publisher": {
+                "power-tags": {
                     "action": "send",
                     "channel": {
-                        "$ref": "#/channels/some.channel:Publisher"
+                        "$ref": "#/channels/power-tags"
                     }
                 },
             },
             "components": {
                 "messages": {
-                    "some.channel:Publisher:Message": {
-                        "payload": { "$ref": "#/components/schemas/SomeType" }
+                    "power-tags:Message": {
+                        "payload": { "$ref": "#/components/schemas/Temperature" }
                     }
                 },
                 "schemas": {
-                    "SomeType": {
+                    "Temperature": {
                         "type": "object",
                         "properties": {
-                            "x": { "type": "integer" }
-                        }
+                            "celsius": { "type": "number" },
+                            "sensor_id": { "type": "integer" },
+                            "ok": { "type": "boolean" }
+                        },
+                        "required": ["celsius", "sensor_id", "ok"]
                     }
                 }
             }
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-no-mqtt");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        let path = dir.join("test.json");
-        std::fs::write(&path, serde_json::to_string_pretty(&spec).unwrap()).unwrap();
+        let api_model = load_spec(Path::new("test"), &spec).unwrap();
+        let groups = api_model.groups;
 
-        let topics = loaded_topics(&dir).unwrap();
-        let _ = std::fs::remove_dir_all(&dir);
-
-        // Channel has no mqtt binding but has address, so it falls back to address
-        // For this spec address is "some/channel:Publisher", so it is not skipped.
-        // To test skipping, we need a channel with no bindings and no address.
-        assert_eq!(topics.len(), 1);
-        assert_eq!(topics[0].topic, "some/channel:Publisher");
+        assert_eq!(groups.len(), 1);
+        assert_eq!(groups[0].pattern, "power-tags/+/+");
+        assert_eq!(groups[0].fields.len(), 3);
+        assert_eq!(groups[0].fields.get("celsius"), Some(&GraphqlType::Float));
     }
 
     #[test_log::test]
     fn test_empty_properties_returns_empty_fields() {
         let schema = Schema::default();
-        let doc = Document::default();
-        let fields = extract_fields_from_schema(&schema, &doc);
+        let fields = extract_fields_from_schema(&schema, None);
         assert_eq!(fields.len(), 0);
     }
 
@@ -868,13 +1007,6 @@ mod tests {
                             }
                         }
                     },
-                    "bindings": {
-                        "mqtt": {
-                            "topic": "test/channel",
-                            "qos": 0,
-                            "retain": false
-                        }
-                    }
                 }
             },
             "operations": {
@@ -887,20 +1019,12 @@ mod tests {
             }
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-inline");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        let path = dir.join("test.json");
-        std::fs::write(&path, serde_json::to_string_pretty(&spec).unwrap()).unwrap();
-
-        let topics = loaded_topics(&dir).unwrap();
-        let _ = std::fs::remove_dir_all(&dir);
+        let topics = loaded_topics(&spec).unwrap();
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "test/channel:Publisher");
         assert_eq!(topics[0].fields.len(), 1);
-        assert_eq!(topics[0].fields[0].name, "value");
-        assert_eq!(topics[0].fields[0].graphql_type, "Float");
+        assert_eq!(topics[0].fields.get("value"), Some(&GraphqlType::Float));
     }
 
     #[test_log::test]
@@ -910,7 +1034,7 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(dir.join("readme.txt"), "not a spec").unwrap();
 
-        let topics = loaded_topics(&dir).unwrap();
+        let topics = load_specs(dir.to_str().unwrap(), false).unwrap();
         let _ = std::fs::remove_dir_all(&dir);
 
         assert!(topics.is_empty());
@@ -923,7 +1047,7 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         std::fs::write(dir.join("broken.json"), "{ not json }").unwrap();
 
-        let err = loaded_topics(&dir).unwrap_err();
+        let err = load_specs(dir.to_str().unwrap(), false).unwrap_err();
         let _ = std::fs::remove_dir_all(&dir);
 
         assert!(err.to_string().contains("parsing JSON"), "{err}");
@@ -945,7 +1069,7 @@ mod tests {
         )
         .unwrap();
 
-        let err = loaded_topics(&dir).unwrap_err();
+        let err = load_specs(dir.to_str().unwrap(), false).unwrap_err();
         let _ = std::fs::remove_dir_all(&dir);
 
         assert!(err.to_string().contains("no 'asyncapi' field"), "{err}");
@@ -958,8 +1082,7 @@ mod tests {
             "info": {"title": "Test", "version": "1.0.0"},
             "channels": {
                 "test.channel:Publisher": {
-                    "address": "test/channel",
-                    "bindings": { "mqtt": { "topic": "test/channel" } }
+                    "address": "test/channel"
                 }
             }
         });
@@ -973,7 +1096,7 @@ mod tests {
         )
         .unwrap();
 
-        let err = loaded_topics(&dir).unwrap_err();
+        let err = load_specs(dir.to_str().unwrap(), false).unwrap_err();
         let _ = std::fs::remove_dir_all(&dir);
 
         assert!(err.to_string().contains("only 3.x is supported"), "{err}");
@@ -995,7 +1118,6 @@ mod tests {
                             }
                         }
                     },
-                    "bindings": { "mqtt": { "topic": "one/channel" } }
                 },
                 "two.channel:Publisher": {
                     "address": "two/channel",
@@ -1007,7 +1129,6 @@ mod tests {
                             }
                         }
                     },
-                    "bindings": { "mqtt": { "topic": "two/channel" } }
                 }
             },
             "operations": {
@@ -1026,17 +1147,7 @@ mod tests {
             }
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-multi");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        std::fs::write(
-            dir.join("test.json"),
-            serde_json::to_string_pretty(&spec).unwrap(),
-        )
-        .unwrap();
-
-        let topics = loaded_topics(&dir).unwrap();
-        let _ = std::fs::remove_dir_all(&dir);
+        let topics = loaded_topics(&spec).unwrap();
 
         assert_eq!(topics.len(), 2);
         // BTreeMap ordering
@@ -1107,18 +1218,8 @@ mod tests {
             }
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-subscribe");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        std::fs::write(
-            dir.join("test.json"),
-            serde_json::to_string_pretty(&spec).unwrap(),
-        )
-        .unwrap();
-
-        let api = load_specs(dir.to_str().unwrap(), false).unwrap();
+        let api = Api::new(vec![load_spec(Path::new("test"), &spec).unwrap()]);
         let subscribed_topics = api.subscribe_topics();
-        let _ = std::fs::remove_dir_all(&dir);
 
         // We expect one topic that is not receive and the broadest
         assert_eq!(subscribed_topics.len(), 1);
@@ -1155,28 +1256,16 @@ mod tests {
                                 }
                             }
                         },
-                        "bindings": { "mqtt": { "topic": "ref/channel" } }
                     }
                 }
             }
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-channel-ref");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        std::fs::write(
-            dir.join("test.json"),
-            serde_json::to_string_pretty(&spec).unwrap(),
-        )
-        .unwrap();
-
-        let topics = loaded_topics(&dir).unwrap();
-        let _ = std::fs::remove_dir_all(&dir);
+        let topics = loaded_topics(&spec).unwrap();
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "ref/channel");
-        assert_eq!(topics[0].fields[0].name, "x");
-        assert_eq!(topics[0].fields[0].graphql_type, "Int");
+        assert_eq!(topics[0].fields.get("x"), Some(&GraphqlType::Int));
     }
 
     #[test_log::test]
@@ -1190,7 +1279,6 @@ mod tests {
                     "messages": {
                         "Message": { "summary": "no payload" }
                     },
-                    "bindings": { "mqtt": { "topic": "bare/channel" } }
                 }
             },
             "operations": {
@@ -1203,17 +1291,84 @@ mod tests {
             },
         });
 
-        let dir = std::env::temp_dir().join("mqtt-graphql-test-no-payload");
-        let _ = std::fs::remove_dir_all(&dir);
-        std::fs::create_dir_all(&dir).unwrap();
-        std::fs::write(
-            dir.join("test.json"),
-            serde_json::to_string_pretty(&spec).unwrap(),
-        )
-        .unwrap();
+        let topics = loaded_topics(&spec).unwrap();
 
-        let topics = loaded_topics(&dir).unwrap();
-        let _ = std::fs::remove_dir_all(&dir);
+        assert_eq!(topics.len(), 1);
+        assert_eq!(topics[0].topic, "bare/channel");
+        assert!(topics[0].fields.is_empty());
+    }
+
+    #[test_log::test]
+    fn test_no_resolvable_channel() {
+        let spec = json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "Test", "version": "1.0.0"},
+            "channels": {},
+            "operations": {
+                "bare.channel:Publisher": {
+                    "action": "send",
+                    "channel": {
+                        "$ref": "#/channels/does-not-exist"
+                    }
+                },
+            },
+        });
+
+        let err = loaded_topics(&spec).unwrap_err();
+
+        assert_eq!(
+            err.to_string(),
+            "unresolvable channel $ref 'does-not-exist' (#/channels/does-not-exist) in test",
+            "{err}"
+        );
+    }
+
+    #[test_log::test]
+    fn test_no_resolvable_operation() {
+        let spec = json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "Test", "version": "1.0.0"},
+            "channels": {},
+            "operations": {
+                "bare.channel:Publisher": {
+                     "$ref": "#/operations/does-not-exist"
+                },
+            },
+        });
+
+        let err = loaded_topics(&spec).unwrap_err();
+
+        assert_eq!(
+            err.to_string(),
+            "unresolvable operation $ref 'bare.channel:Publisher' (#/operations/does-not-exist) in test",
+            "{err}"
+        );
+    }
+
+    #[test_log::test]
+    fn test_no_resolvable_message_yields_empty_fields() {
+        let spec = json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "Test", "version": "1.0.0"},
+            "channels": {
+                "channel": {
+                    "address": "bare/channel",
+                    "messages": {
+                        "Message": { "$ref": "#/channels/does-not-exist" }
+                    },
+                }
+            },
+            "operations": {
+                "bare.channel:Publisher": {
+                    "action": "send",
+                    "channel": {
+                        "$ref": "#/channels/channel"
+                    }
+                },
+            },
+        });
+
+        let topics = loaded_topics(&spec).unwrap();
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "bare/channel");
@@ -1262,11 +1417,9 @@ mod tests {
             json!({"anyOf": [{"type": "number"}, {"type": "null"}]}),
         )]);
         let schema = schema_with_properties(props);
-        let doc = Document::default();
-        let fields = extract_fields_from_schema(&schema, &doc);
+        let fields = extract_fields_from_schema(&schema, None);
         assert_eq!(fields.len(), 1);
-        assert_eq!(fields[0].name, "current_a");
-        assert_eq!(fields[0].graphql_type, "Float");
+        assert_eq!(fields.get("current_a"), Some(&GraphqlType::Float));
     }
 
     #[test_log::test]
@@ -1288,5 +1441,21 @@ mod tests {
         assert_eq!(ttl_from_value(Some(&json!(-1.5))), None);
         assert_eq!(ttl_from_value(Some(&json!(true))), None);
         assert_eq!(ttl_from_value(None), None);
+    }
+
+    #[test_log::test]
+    fn test_static_prefix() {
+        assert_eq!(
+            static_prefix("powertags/{aa}/{bb}"),
+            Some("powertags".to_string())
+        );
+        assert_eq!(
+            static_prefix("powertags/{aa}/middle/{bb}"),
+            Some("powertags".to_string())
+        );
+        assert_eq!(static_prefix("{aa}/middle/{bb}"), None);
+        assert_eq!(static_prefix("{aa}/{bb}"), None);
+        assert_eq!(static_prefix("/"), None);
+        assert_eq!(static_prefix(""), None);
     }
 }

@@ -30,12 +30,10 @@ async fn graphql_handler(
     Json(request): Json<async_graphql::Request>,
 ) -> Result<Json<async_graphql::Response>, StatusCode> {
     let response = schema.execute(request).await;
-    if response.is_ok() {
-        Ok(Json(response))
-    } else {
+    if response.is_err() {
         warn!("GraphQL errors: {:?}", response.errors);
-        Ok(Json(response))
     }
+    Ok(Json(response))
 }
 
 async fn graphql_playground() -> Html<String> {
