@@ -4,6 +4,7 @@ import { RiArrowLeftLine, RiArrowRightLine } from "@remixicon/vue";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { MimicComponentInstanceProps } from ".";
+import { useLabelVisibility } from "../components/label/label.utils";
 import { ModuleField, SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 
@@ -25,12 +26,14 @@ const props = withDefaults(
 );
 
 const { t } = useI18n();
+const { showTag, showValue, isVisible } = useLabelVisibility();
 
 const pointsRight = computed(() => (props.side === "right") === (props.port === "out"));
 </script>
 
 <template>
   <foreignObject
+    v-show="isVisible"
     :x="x"
     :y="y"
     width="49"
@@ -41,6 +44,7 @@ const pointsRight = computed(() => (props.side === "right") === (props.port === 
       :class="port === 'in' && 'flex-col-reverse'"
     >
       <span
+        v-show="showTag"
         class="text-brand text-2xs flex items-center leading-2.5"
         :class="side === 'left' && 'flex-row-reverse'"
       >
@@ -58,7 +62,10 @@ const pointsRight = computed(() => (props.side === "right") === (props.port === 
         :source="temperature"
         :field="field"
       >
-        <span class="text-muted-foreground text-xs leading-3 text-nowrap">
+        <span
+          v-show="showValue"
+          class="text-muted-foreground text-xs leading-3 text-nowrap"
+        >
           <FieldRenderer.Temperature />
         </span>
       </SensorValue>

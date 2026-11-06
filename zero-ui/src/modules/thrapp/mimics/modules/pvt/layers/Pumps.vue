@@ -9,6 +9,8 @@ import {
   PumpInstance,
   TagLabelInstance,
 } from "../../../instances";
+import LayerFilter from "../../../components/layer-filter/LayerFilter.vue";
+import { LayerFilterOption } from "../../../components/layer-filter/layer-filter.provider";
 
 const pumps = getTooltipContexts(MimicComponentType.Pump, ["1018", "1019", "1021"]);
 const manualPumps = getTooltipContexts(MimicComponentType.ManualPump, ["1182"]);
@@ -58,20 +60,22 @@ const manualPumps = getTooltipContexts(MimicComponentType.ManualPump, ["1182"]);
         :pump="pumps['1021'].controls.pump"
       />
     </PumpInstance>
-    <ManualPumpInstance
-      x="885"
-      y="519"
-      :width="28"
-      :height="28"
-      :orientation="ComponentOrientation.Left"
-      v-bind="manualPumps['1182']"
-    >
-      <TagLabelInstance
-        :target-x="885"
-        :target-width="28"
-        y="550"
-        :tag-id="manualPumps['1182'].tooltip?.yardTag"
-      />
-    </ManualPumpInstance>
+    <LayerFilter :filter="LayerFilterOption.Bypasses">
+      <ManualPumpInstance
+        x="885"
+        y="519"
+        :width="28"
+        :height="28"
+        :orientation="ComponentOrientation.Left"
+        v-bind="manualPumps['1182']"
+      >
+        <TagLabelInstance
+          :target-x="885"
+          :target-width="28"
+          y="550"
+          :tag-id="manualPumps['1182'].tooltip?.yardTag"
+        />
+      </ManualPumpInstance>
+    </LayerFilter>
   </g>
 </template>

@@ -1,5 +1,10 @@
+<script setup lang="ts">
+import LayerFilter from "../../../components/layer-filter/LayerFilter.vue";
+import { LayerFilterOption } from "../../../components/layer-filter/layer-filter.provider";
+</script>
+
 <template>
-  <g>
+  <LayerFilter :filter="LayerFilterOption.DirectionArrows">
     <defs>
       <marker
         id="pvt-owners-dir-arrow"
@@ -125,5 +130,5 @@
         y2="496"
       />
     </g>
-  </g>
+  </LayerFilter>
 </template>

@@ -402,6 +402,16 @@
       "demoMode": "Demo mode",
       "showLegend": "Show legend",
       "legend": "Legend",
+      "view": "View",
+      "layerFilters": {
+        "ManualComponent": "Manual components",
+        "Bypasses": "Bypasses",
+        "SupportComponents": "Support components",
+        "Flows": "Flows",
+        "DirectionArrows": "Direction arrows",
+        "YardTags": "Yard tags",
+        "SensorValues": "Sensor values"
+      },
       "on": "On",
       "off": "Off",
       "zoom": {

@@ -11,12 +11,16 @@ import {
 import { useTemplateRef, type HTMLAttributes } from "vue";
 
 const props = defineProps<
-  SwitchRootProps & { class?: HTMLAttributes["class"]; autofocus?: boolean }
+  SwitchRootProps & {
+    class?: HTMLAttributes["class"];
+    thumbClass?: HTMLAttributes["class"];
+    autofocus?: boolean;
+  }
 >();
 
 const emits = defineEmits<SwitchRootEmits>();
 
-const delegatedProps = reactiveOmit(props, "class");
+const delegatedProps = reactiveOmit(props, "class", "thumbClass");
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits);
 
@@ -41,6 +45,7 @@ useAutoFocus<HTMLButtonElement>(useTemplateRef("switch"), props.autofocus);
       :class="
         cn(
           'bg-background data-[state=unchecked]:bg-muted-foreground data-[state=checked]:bg-attention pointer-events-none block size-3 rounded-full ring-0 transition-transform data-[state=checked]:translate-x-[calc(100%+3.5px)] data-[state=unchecked]:translate-x-0.5',
+          props.thumbClass,
         )
       "
     >

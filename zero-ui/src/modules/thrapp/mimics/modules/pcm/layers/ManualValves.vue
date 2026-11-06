@@ -5,6 +5,8 @@ import { MANUAL_VALVE_WIDTH, ManualValveType } from "../../../components/manual-
 import { getTooltipContexts } from "../../../data";
 import { ManualValveInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
+import LayerFilter from "../../../components/layer-filter/LayerFilter.vue";
+import { LayerFilterOption } from "../../../components/layer-filter/layer-filter.provider";
 
 const manualValves = getTooltipContexts(MimicComponentType.ManualValve, [
   "1168-23",
@@ -18,7 +20,7 @@ const manualValves = getTooltipContexts(MimicComponentType.ManualValve, [
 </script>
 
 <template>
-  <g>
+  <LayerFilter :filter="LayerFilterOption.ManualComponents">
     <ManualValveInstance
       x="552"
       y="156"
@@ -111,5 +113,5 @@ const manualValves = getTooltipContexts(MimicComponentType.ManualValve, [
         :tag-id="manualValves['pcm:??????'].tooltip?.yardTag"
       />
     </ManualValveInstance>
-  </g>
+  </LayerFilter>
 </template>
