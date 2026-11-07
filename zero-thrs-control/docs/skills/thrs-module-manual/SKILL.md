@@ -23,14 +23,16 @@ bridge between the control code and the person standing in front of the hardware
 Deliverable, per module, written to `/tmp/thrs-manuals/` — manuals are not
 committed to this service:
 
-- `<module>.html` — the manual as an HTML fragment, with its Mermaid state
-  diagram embedded. This is what the front-end shows in its Documentation tab.
-  The prose above *Tuning* stays within **425 words**; the parameter and alarm
-  sections run as long as they need (see *Length* below).
-- `<module>.pdf` — the same manual printed to A4 for the crew, rendered from the
-  fragment in step 5 so it looks like the front-end.
+- `<module>.html` — the manual as an HTML fragment, with the Mermaid source of
+  its state diagram embedded. This is what the front-end shows in its
+  Documentation tab. The prose above *Tuning* stays within **425 words**; the
+  parameter and alarm sections run as long as they need (see *Length* below).
+- `<module>.svg` — the diagram rendered from that source in step 5. The
+  front-end shows it in place of the Mermaid block; it never runs Mermaid itself.
 
 Once it passes the checks, ask whether to publish it to the front-end (step 7).
+Publishing also prints `<module>.pdf`, the manual on A4 for the crew; the PDF is
+never committed.
 
 **Refreshing a manual?** The published one is
 `zero-ui/src/modules/thrapp/documentation/<module>.html`. Read it first and
@@ -39,7 +41,9 @@ about equipment and the plant, which the code cannot give you again. A refresh
 usually starts from a failing `tests/manuals/test_published_manuals.py`, which
 means the manual's control version is stale; if the code changed but nothing
 the manual says did, `just manual_stamp <module>` re-stamps the published manual
-instead.
+instead. The same test fails when a published `<module>.svg` was not rendered
+from its manual's current Mermaid source or from the current
+`assets/diagram.css`; render and publish it again.
 
 ## 1. Extract the facts
 
@@ -129,9 +133,10 @@ that fires it. Keep both. Translate `_set_valves_to_boosting_heatpump` into
 has lost the engineering content and is not worth the space it takes.
 
 **The shipped figure** you write by hand as a Mermaid `stateDiagram-v2`, embedded
-in the manual. Mermaid rather than an image because the front-end renders it in
-the mimic colours and in dark mode, and the next person edits text instead of
-redrawing a picture. `references/template.md` has the house style.
+in the manual. Mermaid rather than a drawing because the next person edits text
+instead of redrawing a picture; step 5 renders it to an SVG that uses the
+front-end's own colour variables, which colours each state by its mode and
+follows dark mode. `references/template.md` has the house style.
 
 Before shipping, compare the two pictures state by state and edge by edge. Same
 states, same transitions, same direction. If your figure is missing an edge, the
@@ -154,7 +159,7 @@ Three things that come up nearly every time:
   (`direction`, shorter lines), not the content.
 - **Check the rendered figure, don't trust the source.** Mermaid lays out the
   graph itself, and long edge labels can make it far wider than tall. Look at
-  the preview PNG from step 5; switch `direction` or break label lines with
+  the diagram preview from step 5; switch `direction` or break label lines with
   `<br/>` if it is wider than about 4:1.
 
 ## 4. Write it
@@ -329,24 +334,24 @@ The grouping tracks authority, not word count: the engineer on board moves
 setpoints, gain changes go through engineering. Every parameter still appears
 somewhere — grouped, never omitted.
 
-## 5. Render the PDF
-
-The PDF is printed by headless Chromium from the front-end's own manual
-component, so it has the mimic fonts, colours and diagram styling:
+## 5. Render it
 
 ```bash
-just manual_pdf <module>
+just manual <module>
 ```
 
 It stamps `/tmp/thrs-manuals/<module>.html` with the control version it
-describes, then renders it with zero-ui's `render-manual` script, installing
-zero-ui's dependencies and Chromium first if needed. The version is a hash of
-the step-1 output and of the module's source files, sub-controls included; a
-unit test fails when a published manual's version no longer matches the code.
-It writes `<module>.pdf` and a full-length preview
-`<module>.png` next to the fragment, and counts the words of prose above
-*Tuning* against the limit. Look at the PNG — it is the quickest way to see the
-diagram as the reader will.
+describes, then renders the Mermaid block to `<module>.svg` in headless
+Chromium, installing Chromium first if needed. The version is a hash of the
+step-1 output and of the module's source files, sub-controls included; the SVG
+carries a hash of the Mermaid source and of `assets/diagram.css` it was rendered
+from. A unit test fails when either no longer matches.
+
+The render uses the house diagram styling in `assets/diagram.css` and the
+front-end's fonts, so the SVG is what the reader sees. It also writes
+`<module>-diagram.png` and counts the words of prose above *Tuning* against the
+limit. Look at the PNG — it is the quickest way to see the diagram as the reader
+will. Render again after every change to the Mermaid block.
 
 ## 6. Check it before handing it over
 
@@ -377,17 +382,21 @@ diagram as the reader will.
 
 ## 7. Ask whether to update the front-end
 
-Hand over the PDF and the preview, then **ask the user whether to publish the
-manual to the front-end**. The Documentation tab is what the crew reads on
+Hand over the HTML and the diagram preview, then **ask the user whether to
+publish the manual to the front-end**. The Documentation tab is what the crew reads on
 board, so publishing is the user's call, not a default — a draft they still want
 to review, or a manual for a branch that has not shipped, must not land there.
 
-On yes, copy the fragment in and format it with zero-ui's Prettier, which CI
-checks and which leaves the Mermaid block's content as it is:
+On yes, copy the fragment and its SVG in, format the fragment with zero-ui's
+Prettier, which CI checks and which leaves the Mermaid block's content as it is,
+and print the PDF:
 
 ```bash
 just manual_publish <module>
 ```
+
+It writes `/tmp/thrs-manuals/<module>.pdf` from the manual and its SVG, printed
+plainly in black and white by `assets/print.css`; hand it over for the crew.
 
 The tab picks up every file in that directory; nothing needs registering. The
 file name is the module tab it appears under (`dhw`, `pvt`, `pcm`, `thrusters`,
@@ -397,4 +406,4 @@ belongs under rather than inventing a name. When it replaces a published
 manual, summarise what changed in a sentence or two so the user can review the
 diff knowingly.
 
-On no, leave zero-ui untouched; the HTML and PDF stay in `/tmp/thrs-manuals/`.
+On no, leave zero-ui untouched; the HTML and SVG stay in `/tmp/thrs-manuals/`.

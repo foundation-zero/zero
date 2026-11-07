@@ -1,0 +1,67 @@
+/* Mermaid themeCSS: scoped to the diagram's SVG and shipped inside it. Colours are
+   zero-ui's CSS variables, so the diagram follows the front-end's light and dark theme;
+   the front-end also outlines each state in its mode's colour. */
+
+.node rect {
+  fill: var(--background);
+  stroke: var(--border);
+  rx: 12px;
+  ry: 12px;
+}
+
+.node .nodeLabel,
+.node .nodeLabel p {
+  text-align: left;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--foreground);
+}
+
+.node foreignObject:first-child .nodeLabel {
+  font-family: "Urbanist", sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.node .nodeLabel b {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+}
+
+.transition {
+  stroke: var(--muted-foreground);
+  stroke-width: 1.25px;
+}
+
+marker path,
+#statediagram-barbEnd {
+  fill: var(--muted-foreground);
+  stroke: var(--muted-foreground);
+}
+
+.edgeLabel,
+.edgeLabel p,
+.edgeLabel rect,
+.labelBkg {
+  background-color: var(--background);
+  fill: var(--background);
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+
+.state-start,
+circle.state-start {
+  fill: var(--foreground);
+  stroke: var(--foreground);
+}
+
+.edgeLabel div,
+.node .nodeLabel,
+.node foreignObject div {
+  max-width: none !important;
+  white-space: nowrap !important;
+}

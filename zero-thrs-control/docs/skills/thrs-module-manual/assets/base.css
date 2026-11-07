@@ -1,0 +1,29 @@
+/* The parts of Tailwind's preflight, which the front-end uses, that change how text is
+   measured and laid out, so the diagram's boxes fit their labels there. */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+
+html {
+  font-family: "Inter", sans-serif;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+svg {
+  display: block;
+  vertical-align: middle;
+}
+
+/* Black and white for the preview and the PDF; the front-end supplies its own colours. */
+:root {
+  --background: white;
+  --foreground: black;
+  --muted-foreground: #444;
+  --border: #888;
+}

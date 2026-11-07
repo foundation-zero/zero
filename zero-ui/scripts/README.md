@@ -4,17 +4,6 @@ This directory contains Node.js scripts for automatically extracting GraphQL sch
 
 ## Scripts
 
-### `render-manual.ts`
-
-Prints a THRS module manual (an HTML fragment) to an A4 PDF and a full-length PNG
-preview, using the same `ManualDocument` component as the Documentation tab.
-Used by the `thrs-module-manual` skill in `zero-thrs-control`.
-
-```bash
-pnpm exec playwright install chromium   # once
-pnpm render-manual /tmp/thrs-manuals/dhw.html
-```
-
 ### `generate-tooltips.ts`
 
 Generates `src/modules/thrapp/mimics/data/tooltips.json` from every
