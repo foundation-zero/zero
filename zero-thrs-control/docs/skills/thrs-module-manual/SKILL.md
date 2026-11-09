@@ -41,9 +41,9 @@ about equipment and the plant, which the code cannot give you again. A refresh
 usually starts from a failing `tests/manuals/test_published_manuals.py`, which
 means the manual's control version is stale; if the code changed but nothing
 the manual says did, `just manual_stamp <module>` re-stamps the published manual
-instead. The same test fails when a published `<module>.svg` was not rendered
-from its manual's current Mermaid source or from the current
-`assets/diagram.css`; render and publish it again.
+instead. The same test fails when a published `<module>.svg` is out of date, for
+example after a change to its Mermaid source or to `assets/diagram.css`;
+render and publish it again.
 
 ## 1. Extract the facts
 
@@ -344,11 +344,15 @@ It stamps `/tmp/thrs-manuals/<module>.html` with the control version it
 describes, then renders the Mermaid block to `<module>.svg` in headless
 Chromium, installing Chromium first if needed. The version is a hash of the
 step-1 output and of the module's source files, sub-controls included; the SVG
-carries a hash of the Mermaid source and of `assets/diagram.css` it was rendered
-from. A unit test fails when either no longer matches.
+carries a hash of everything it was rendered from: the Mermaid source and
+version, the stylesheets in `assets/` and the front-end's fonts. A unit test fails
+when either no longer matches.
 
 The render uses the house diagram styling in `assets/diagram.css` and the
-front-end's fonts, so the SVG is what the reader sees. It also writes
+front-end's fonts, so the SVG is what the reader sees. Every colour in it must
+come from the front-end's colour variables, so it follows dark mode; the render
+fails on any colour Mermaid paints itself, which a new diagram feature such as a
+note or a composite state can bring in. Restyle it in `assets/diagram.css`. It also writes
 `<module>-diagram.png` and counts the words of prose above *Tuning* against the
 limit. Look at the PNG — it is the quickest way to see the diagram as the reader
 will. Render again after every change to the Mermaid block.
@@ -387,8 +391,8 @@ publish the manual to the front-end**. The Documentation tab is what the crew re
 board, so publishing is the user's call, not a default — a draft they still want
 to review, or a manual for a branch that has not shipped, must not land there.
 
-On yes, copy the fragment and its SVG in, format the fragment with zero-ui's
-Prettier, which CI checks and which leaves the Mermaid block's content as it is,
+On yes, check the SVG is current, copy the fragment and its SVG in, format the
+fragment with zero-ui's Prettier, which CI checks and which leaves the Mermaid block's content as it is,
 and print the PDF:
 
 ```bash

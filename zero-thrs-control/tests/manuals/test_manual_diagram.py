@@ -52,16 +52,29 @@ def test_diagram_is_not_current_when_missing_or_unstamped(manual_diagram, tmp_pa
     assert not manual_diagram.is_diagram_current(page)
 
 
+@pytest.mark.parametrize("stylesheet_name", ["DIAGRAM_CSS", "BASE_CSS"])
 def test_diagram_is_not_current_after_a_stylesheet_change(
-    manual_diagram, tmp_path, monkeypatch
+    manual_diagram, tmp_path, monkeypatch, stylesheet_name
 ):
-    stylesheet = tmp_path / "diagram.css"
+    stylesheet = tmp_path / "stylesheet.css"
     stylesheet.write_text(".node rect { rx: 12px; }")
-    monkeypatch.setattr(manual_diagram, "DIAGRAM_CSS", stylesheet)
+    monkeypatch.setattr(manual_diagram, stylesheet_name, stylesheet)
     page = tmp_path / "dhw.html"
     page.write_text(manual(SOURCE))
     (tmp_path / "dhw.svg").write_text(manual_diagram.stamp_diagram(SVG, SOURCE))
 
     stylesheet.write_text(".node rect { rx: 4px; }")
+
+    assert not manual_diagram.is_diagram_current(page)
+
+
+def test_diagram_is_not_current_after_a_mermaid_upgrade(
+    manual_diagram, tmp_path, monkeypatch
+):
+    page = tmp_path / "dhw.html"
+    page.write_text(manual(SOURCE))
+    (tmp_path / "dhw.svg").write_text(manual_diagram.stamp_diagram(SVG, SOURCE))
+
+    monkeypatch.setattr(manual_diagram, "MERMAID", "https://cdn.example/mermaid@13.0.0")
 
     assert not manual_diagram.is_diagram_current(page)

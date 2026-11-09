@@ -116,6 +116,7 @@ manual module: _chromium
     uv run python {{ manual_scripts }}/manual_render.py diagram /tmp/thrs-manuals/{{ module }}.html
 
 manual_publish module: _chromium
+    uv run python {{ manual_scripts }}/manual_render.py check /tmp/thrs-manuals/{{ module }}.html
     cp /tmp/thrs-manuals/{{ module }}.html {{ manuals }}/{{ module }}.html
     cp /tmp/thrs-manuals/{{ module }}.svg {{ manuals }}/{{ module }}.svg
     cd ../zero-ui && pnpm exec prettier --write src/modules/thrapp/documentation/{{ module }}.html

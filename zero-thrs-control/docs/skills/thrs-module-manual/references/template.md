@@ -3,10 +3,10 @@
 ## The manual
 
 The manual is an **HTML fragment**: no `<html>`, `<head>` or `<style>`, just the
-body content. The front-end renders it inside its Documentation tab and the PDF
-is printed from the same render, so the fragment carries structure and the
-front-end owns all styling. Use only the elements and classes below; anything
-else renders unstyled.
+body content. The front-end renders it inside its Documentation tab with its own
+styling, and `just manual_publish` prints it plainly in black and white with
+`assets/print.css`, so the fragment carries structure only. Use only the elements
+and classes below; anything else renders unstyled.
 
 Fixed section order, so an engineer who has read one can navigate any of them.
 Headings are literal; the `<!-- … -->` notes are guidance, not content to

@@ -8,10 +8,12 @@ const props = defineProps<{ html: string; class?: string }>();
 
 const article = useTemplateRef<HTMLElement>("article");
 
-const decorate = () => paintModes(article.value!);
-
-onMounted(decorate);
-watch(() => props.html, decorate, { flush: "post" });
+onMounted(() => paintModes(article.value!));
+watch(
+  () => props.html,
+  () => paintModes(article.value!),
+  { flush: "post" },
+);
 </script>
 
 <template>

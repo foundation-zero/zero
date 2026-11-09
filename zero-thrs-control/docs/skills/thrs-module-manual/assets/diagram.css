@@ -65,3 +65,102 @@ circle.state-start {
   max-width: none !important;
   white-space: nowrap !important;
 }
+
+/* Mermaid's base theme paints the rest in fixed light colours; repaint everything a
+   state diagram can draw. manual_render.py fails on any colour this leaves behind. */
+& {
+  fill: var(--foreground);
+}
+
+marker,
+.marker,
+[id$="-barbEnd"],
+defs [id$="-barbEnd"],
+[id$="-dependencyStart"],
+[id$="-dependencyEnd"] {
+  fill: var(--muted-foreground);
+  stroke: var(--muted-foreground);
+}
+
+.marker.cross {
+  stroke: var(--muted-foreground);
+}
+
+.divider,
+.statediagram-state .divider,
+g.stateGroup line {
+  stroke: var(--border);
+}
+
+.statediagram-state rect.divider,
+.statediagram-cluster .inner,
+.statediagram-cluster.statediagram-cluster .inner,
+.statediagram-cluster.statediagram-cluster-alt .inner,
+.stateGroup .composit,
+.stateGroup .alt-composit {
+  fill: var(--background);
+}
+
+.node circle.state-start,
+.node .fork-join {
+  fill: var(--foreground);
+  stroke: var(--foreground);
+}
+
+.node circle.state-end {
+  fill: var(--foreground);
+  stroke: var(--background);
+}
+
+.end-state-inner {
+  fill: var(--foreground);
+}
+
+.node polygon,
+.statediagram-cluster rect,
+.statediagram-note rect,
+.state-note,
+.stateLabel .box {
+  fill: var(--background);
+  stroke: var(--border);
+}
+
+.cluster-label,
+.nodeLabel,
+.label div .edgeLabel,
+.statediagram-note .nodeLabel {
+  color: var(--foreground);
+}
+
+.statediagram .edgeLabel {
+  color: var(--muted-foreground);
+}
+
+g.stateGroup text,
+g.stateGroup .state-title,
+.state-note text,
+.statediagram-note text,
+.stateLabel text,
+.edgeLabel .label text,
+.statediagramTitleText {
+  fill: var(--foreground);
+}
+
+/* End states, forks, joins and notes are paths with fixed fill and stroke attributes. */
+.node .outer-path > path[fill]:not([fill="none"]) {
+  fill: var(--background);
+}
+
+.node .outer-path > path[stroke]:not([stroke="none"]) {
+  stroke: var(--foreground);
+}
+
+.node g:not([class]) > path[fill]:not([fill="none"]),
+.node g:not([class]) > path[stroke]:not([stroke="none"]) {
+  fill: var(--foreground);
+  stroke: var(--foreground);
+}
+
+.statediagram-note .outer-path > path[stroke]:not([stroke="none"]) {
+  stroke: var(--border);
+}
