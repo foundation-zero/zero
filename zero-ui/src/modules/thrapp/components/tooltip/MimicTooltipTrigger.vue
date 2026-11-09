@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { getTooltipContext, TooltipComponentContext } from ".";
+import { provideLabelTarget } from "../../mimics/components/label/label.utils";
 import { TOOLTIPS } from "../../mimics/tooltips";
 import { MimicComponentType } from "../../types";
 
@@ -11,6 +12,9 @@ const props = defineProps<{
 
 const router = useRouter();
 const { disabled } = getTooltipContext();
+
+// The component of this instance tells the labels in its slot where it is.
+provideLabelTarget();
 
 // Components without a registered tooltip (yet) render as plain content instead of a dead trigger.
 const interactive = computed(() => !disabled && !!props.data.type && !!TOOLTIPS[props.data.type]);
