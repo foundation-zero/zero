@@ -75,9 +75,15 @@ name (`atpx_0_consts.vrl`, also **auto-generated** by `zero-data`), then writes
 builds the wide, per-domain shapes later.
 
 It also republishes each parsed row back onto our own broker under
-`atpx/processed/<field>/<sender>` for other consumers. That republish has a disk
-buffer, so a broker outage does not hold up the `atpx_raw` writes; once the
-buffer is full, new rows are dropped from the republish (not from `atpx_raw`).
+`atpx/processed/<field>/<sender>` for other consumers.
+
+Both sinks have their own 12 GiB disk buffer with `when_full: drop_newest`, so
+an outage of Greptime or of our broker never holds up `atpx_parse` or the other
+sink. A+T's broker can't keep a backlog for us, so blocking would lose the data
+anyway. At ~6.4 MB/s each buffer covers about 30 min; after that, new rows are
+dropped from the sink whose target is down. The dead letter queue drops when
+its in-memory buffer is full for the same reason. Both disk buffers live on the
+same volume, which must be larger than their sum (24 GiB).
 
 The topic it listens on is `${ATPX_MQTT_TOPIC}`. Locally that is `atpx_raw/+/+`
 (so synthetic test data stays separate); in production the variable is unset and
