@@ -1,0 +1,37 @@
+name: no-claude-attribution
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+
+jobs:
+  attribution:
+    name: No Claude attribution
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - name: Check commits and PR description
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          pattern='co-authored-by:.*(claude|anthropic)|noreply@anthropic\.com|generated with \[?claude|claude\.ai/code'
+          failed=0
+          for sha in $(git rev-list "$BASE_SHA..$HEAD_SHA"); do
+            if git log -1 --format=%B "$sha" | grep -qiE "$pattern"; then
+              echo "::error::Commit $(git log -1 --format='%h %s' "$sha") contains Claude attribution"
+              failed=1
+            fi
+          done
+          if printf '%s\n' "$PR_BODY" | grep -qiE "$pattern"; then
+            echo "::error::PR description contains Claude attribution"
+            failed=1
+          fi
+          exit "$failed"
