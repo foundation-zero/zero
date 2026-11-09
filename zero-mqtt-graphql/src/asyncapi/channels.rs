@@ -1,158 +1,98 @@
-//! Topics and subscriptions from a document's operations and channels.
+//! Topics from a document's operations and channels.
 
 use std::collections::BTreeMap;
 use std::path::Path;
 
 use anyhow::Context;
-use log::{debug, info, warn};
-use roas_asyncapi::common::reference::{RefOr, Reference};
+use log::{debug, info};
 
 use super::refs::{resolve_channel, resolve_operation};
-use super::roas::{Channel, Document, OperationAction};
-use super::schema::message_payload;
+use super::roas::{Channel, Document, Operation, OperationAction};
+use super::schema::MessagePayload;
 use super::ttl::ttl_for_channel;
 use crate::api_model::{Direction, GroupDef, MetadataByTopic, TopicDef, TopicKind};
 
-/// Extract channels and create relevant datastructure from one document, erroring on unresolvable
-/// channel and operation references.
-pub(super) fn channels_from_document<
-    T,
-    U: Fn(&Reference, &str, OperationAction, &Channel, &Document, &Path) -> anyhow::Result<Option<T>>,
->(
-    doc: &Document,
+/// The document's operations, each with the channel it points at and that
+/// channel's own reference: where a `$ref` chain ends, so pointers into its
+/// inline messages exist. Errors on unresolvable operation and channel
+/// references.
+pub(super) fn operation_channels<'a>(
+    doc: &'a Document,
     path: &Path,
-    resolve_func: U,
-) -> anyhow::Result<Vec<T>> {
+) -> anyhow::Result<Vec<(&'a Operation, String, &'a Channel)>> {
     if doc.operations.is_empty() {
         info!("File {} has no operations, skipping", path.display());
-        return Ok(Vec::new());
     }
 
-    let operations: Vec<_> = doc
-        .operations
+    doc.operations
         .iter()
         .map(|(operation_name, operation_ref)| {
             debug!("Parsing operation {operation_name} from {}", path.display());
-
             let (_, operation) = resolve_operation(operation_ref, doc).with_context(|| {
                 format!(
                     "unresolvable operation $ref '{}' ({}) in {}",
                     operation_name,
                     operation_ref
                         .reference()
-                        .map_or("<inline channel>", |r| r.reference.as_str()),
+                        .map_or("<inline operation>", |r| r.reference.as_str()),
                     path.display()
                 )
             })?;
-
-            Ok::<(OperationAction, String, RefOr<Channel>), anyhow::Error>((
-                operation.action,
-                operation
-                    .channel
-                    .local_key()
-                    .with_context(|| "Can't find operation key")?,
-                RefOr::Reference(operation.channel.clone()),
-            ))
+            let (pointer, channel) =
+                resolve_channel(&operation.channel, doc).with_context(|| {
+                    format!(
+                        "unresolvable channel $ref '{}' in {}",
+                        operation.channel.reference,
+                        path.display()
+                    )
+                })?;
+            let channel_ref = pointer.unwrap_or_else(|| operation.channel.reference.clone());
+            Ok((operation, channel_ref, channel))
         })
-        .collect::<anyhow::Result<Vec<(_, _, _)>>>()?;
-    operations
-        .into_iter()
-        .map(|(action, channel_name, channel_ref)| {
-            debug!("Parsing channel {channel_name} from {}", path.display());
-            let (_, channel) = resolve_channel(&channel_ref, doc).with_context(|| {
-                format!(
-                    "unresolvable channel $ref '{}' ({}) in {}",
-                    channel_name,
-                    channel_ref
-                        .reference()
-                        .map_or("<inline channel>", |r| r.reference.as_str()),
-                    path.display()
-                )
-            })?;
-            resolve_func(
-                channel_ref
-                    .reference()
-                    .with_context(|| "Channel is wrongly embedded in the operation")?,
-                &channel_name,
-                action,
-                channel,
-                doc,
-                path,
-            )
-        })
-        .collect::<anyhow::Result<Vec<_>>>()
-        .map(|items| items.into_iter().flatten().collect())
+        .collect()
 }
 
-#[allow(clippy::unnecessary_wraps)]
-pub(super) fn channel_addresses_from_channel(
-    _channel_ref: &Reference,
-    _channel_name: &str,
-    action: OperationAction,
-    channel: &Channel,
-    _doc: &Document,
-    _path: &Path,
-) -> anyhow::Result<Option<String>> {
-    if let OperationAction::Receive = action {
-        return Ok(None);
-    }
-
-    let Some(Some(address)) = &channel.address else {
-        return Ok(None);
-    };
-
-    Ok(Some(wildcard_from_address(address)))
-}
-
-/// Convert one channel into a [`TopicDef`]: a Group when its address is
-/// parametrized, a single topic otherwise. Returns `None` for channels
-/// without an address.
+/// Convert the channel an operation points at, with its own reference (see
+/// [`operation_channels`]), address and message payload, into a
+/// [`TopicDef`]: a Group when its address is parametrized, a single topic
+/// otherwise.
 pub(super) fn topic_from_channel(
-    channel_ref: &Reference,
-    channel_name: &str,
-    action: OperationAction,
+    operation: &Operation,
+    channel_ref: &str,
     channel: &Channel,
+    address: &str,
+    message_payload: Option<MessagePayload>,
     doc: &Document,
     path: &Path,
-) -> anyhow::Result<Option<TopicDef>> {
-    let Some(address) = channel.address() else {
-        warn!(
-            "Channel '{}' in {} has no address, skipping",
-            channel_name,
-            path.display()
-        );
-        return Ok(None);
-    };
-
+) -> anyhow::Result<TopicDef> {
+    let name = &operation.channel.reference;
     if channel.messages.is_empty() {
-        info!("Channel '{channel_name}' (address: '{address}') has no messages");
+        info!("Channel '{name}' (address: '{address}') has no messages");
     }
-
-    let message_payload = message_payload(channel_ref, channel, doc);
-    debug!("Parsed channel {channel_name} with payload {message_payload:?}");
+    debug!("Parsed channel {name} with payload {message_payload:?}");
 
     let kind = if is_parametrized_channel(Some(address)) {
         let field_attributes = message_payload
             .as_ref()
             .map(|m| m.field_attributes.clone())
             .unwrap_or_default();
-        let group = group_from_channel(channel_name, channel, field_attributes, path)?;
+        let group = group_from_channel(name, channel, field_attributes, path)?;
         info!("Loaded topic group '{address}' from {}", path.display());
         TopicKind::Group(group)
     } else {
         TopicKind::Single
     };
 
-    Ok(Some(TopicDef {
+    Ok(TopicDef {
         topic: wildcard_from_address(address),
-        operation: match action {
+        operation: match operation.action {
             OperationAction::Send => Direction::Send,
             OperationAction::Receive => Direction::Receive,
         },
         payload: message_payload.map(|m| m.payload),
         ttl_secs: ttl_for_channel(channel_ref, channel, doc),
         kind,
-    }))
+    })
 }
 
 /// The Group part of a parametrized channel, read from its
@@ -217,7 +157,7 @@ fn param_name(segment: &str) -> Option<&str> {
 }
 
 /// MQTT subscription pattern derived from the address.
-pub(super) fn wildcard_from_address(address: &str) -> String {
+fn wildcard_from_address(address: &str) -> String {
     address
         .split('/')
         .map(|segment| {
@@ -235,13 +175,30 @@ pub(super) fn wildcard_from_address(address: &str) -> String {
 mod tests {
     use super::*;
     use crate::api_model::FieldType;
+    use crate::asyncapi::schema::message_payload;
     use serde_json::{Value, json};
 
     /// The topics `load_spec` reads from a document, before they go into a
     /// Spec's Query tree.
     fn loaded_topics(spec: &Value) -> anyhow::Result<Vec<TopicDef>> {
         let document = serde_json::from_value::<Document>(spec.clone())?;
-        channels_from_document(&document, Path::new("test"), topic_from_channel)
+        let path = Path::new("test");
+        operation_channels(&document, path)?
+            .into_iter()
+            .filter_map(|(operation, channel_ref, channel)| {
+                let address = channel.address()?;
+                let payload = message_payload(&channel_ref, channel, &document);
+                Some(topic_from_channel(
+                    operation,
+                    &channel_ref,
+                    channel,
+                    address,
+                    payload,
+                    &document,
+                    path,
+                ))
+            })
+            .collect()
     }
 
     /// The payload fields of a topic that must have a payload.
@@ -543,7 +500,7 @@ mod tests {
 
         assert_eq!(
             err.to_string(),
-            "unresolvable channel $ref 'does-not-exist' (#/channels/does-not-exist) in test",
+            "unresolvable channel $ref '#/channels/does-not-exist' in test",
             "{err}"
         );
     }

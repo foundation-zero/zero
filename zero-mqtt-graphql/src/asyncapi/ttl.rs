@@ -3,7 +3,6 @@
 use std::collections::BTreeMap;
 
 use log::warn;
-use roas_asyncapi::common::reference::Reference;
 use serde_json::Value;
 
 use super::roas::{Channel, Document};
@@ -12,11 +11,7 @@ use super::schema::channel_messages;
 /// Effective TTL for cached values of a channel: the maximum `x-ttl`
 /// across its messages (a channel may declare several), falling back to the
 /// channel's own extension, then the global default.
-pub(super) fn ttl_for_channel(
-    channel_ref: &Reference,
-    channel: &Channel,
-    doc: &Document,
-) -> Option<u64> {
+pub(super) fn ttl_for_channel(channel_ref: &str, channel: &Channel, doc: &Document) -> Option<u64> {
     channel_messages(channel_ref, channel, doc)
         .into_values()
         .filter_map(|message| ttl_from_extensions(message.extensions.as_ref()))

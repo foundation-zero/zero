@@ -3,7 +3,7 @@
 use std::collections::BTreeMap;
 
 use log::{info, warn};
-use roas_asyncapi::common::reference::{RefOr, Reference};
+use roas_asyncapi::common::reference::RefOr;
 use serde_json::Value;
 
 use super::refs::{resolve_message, resolve_payload_schema, resolve_ref_to_entry};
@@ -28,7 +28,7 @@ pub(super) struct MessagePayload {
 /// Channels with multiple messages are not yet union-typed; only the first
 /// message contributes a payload.
 pub(super) fn message_payload(
-    channel_ref: &Reference,
+    channel_ref: &str,
     channel: &Channel,
     doc: &Document,
 ) -> Option<MessagePayload> {
@@ -36,20 +36,17 @@ pub(super) fn message_payload(
         .into_iter()
         .next()
     else {
-        info!("Channel {} has no message", channel_ref.reference);
+        info!("Channel {channel_ref} has no message");
         return None;
     };
     // The message payload may be inline or a `$ref` into components
     let Some(payload_ref) = &message.payload else {
-        info!("Channel {} message has no payload", channel_ref.reference);
+        info!("Channel {channel_ref} message has no payload");
         return None;
     };
 
     let Some((pointer, schema_or_multi)) = resolve_payload_schema(payload_ref, doc) else {
-        info!(
-            "Channel {} message payload reference does not resolve",
-            channel_ref.reference,
-        );
+        info!("Channel {channel_ref} message payload reference does not resolve");
         return None;
     };
 
@@ -73,7 +70,7 @@ pub(super) fn message_payload(
 
 /// All messages referenced by the channel, resolved against components.
 pub(super) fn channel_messages<'a>(
-    channel_ref: &Reference,
+    channel_ref: &str,
     channel: &'a Channel,
     doc: &'a Document,
 ) -> BTreeMap<String, &'a Message> {
@@ -86,7 +83,7 @@ pub(super) fn channel_messages<'a>(
             let (resolved, message) = resolve_message(message_ref, doc)?;
             let pointer = resolved.unwrap_or_else(|| {
                 let key = message_key.replace('~', "~0").replace('/', "~1");
-                format!("{}/messages/{key}", channel_ref.reference)
+                format!("{channel_ref}/messages/{key}")
             });
             Some((pointer, message))
         })

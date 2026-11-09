@@ -53,16 +53,18 @@ fn resolve_refor<'a, T: Debug>(
     }
 }
 
+/// Resolve an operation's channel, which is always a `$ref`.
 pub(super) fn resolve_channel<'a>(
-    r: &'a RefOr<Channel>,
+    r: &'a Reference,
     doc: &'a Document,
 ) -> Option<(Option<String>, &'a Channel)> {
-    resolve_refor(
+    resolve_ref_to_entry(
         r,
         Some(&doc.channels),
         doc.components
             .as_ref()
             .map(|componentens| &componentens.channels),
+        vec![],
     )
 }
 

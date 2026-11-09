@@ -6,13 +6,12 @@ use anyhow::Context;
 use log::{info, warn};
 use serde_json::Value;
 
-use jsonschema::Validator;
-
-use crate::api_model::{Api, Spec};
+use crate::api_model::{Api, Direction, Spec};
 use crate::topic_map::TopicMap;
-use channels::{channel_addresses_from_channel, channels_from_document, topic_from_channel};
+use channels::{operation_channels, topic_from_channel};
 use roas::Document;
-use validation::{ValidatorBuilder, validator_from_channel};
+use schema::message_payload;
+use validation::{ValidatorBuilder, payload_validator};
 
 mod channels;
 mod refs;
@@ -88,30 +87,46 @@ fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<Spec> {
     let document = serde_json::from_value::<Document>(document_json.clone())
         .with_context(|| format!("parsing AsyncAPI document {}", path.display()))?;
 
-    let topics = channels_from_document(&document, path, topic_from_channel)?;
-    let subscribe_topics = channels_from_document(&document, path, channel_addresses_from_channel)?
-        .into_iter()
-        .fold(TopicMap::new(), |mut acc, topic| {
-            if !acc.covers_topic(&topic) {
-                acc.insert_with_replace(topic, ());
-            }
-            acc
-        });
+    let mut topics = Vec::new();
+    let mut subscribe_topics = TopicMap::new();
+    let mut validators = Vec::new();
+    for (operation, channel_ref, channel) in operation_channels(&document, path)? {
+        let Some(address) = channel.address() else {
+            warn!(
+                "Channel '{}' in {} has no address, skipping",
+                operation.channel.reference,
+                path.display()
+            );
+            continue;
+        };
+        let message_payload = message_payload(&channel_ref, channel, &document);
+        let validator = message_payload
+            .as_ref()
+            .and_then(|m| payload_validator(&validator_builder, address, &m.schema_ref));
+        let topic = topic_from_channel(
+            operation,
+            &channel_ref,
+            channel,
+            address,
+            message_payload,
+            &document,
+            path,
+        )?;
 
-    let validators: Vec<(String, Validator)> =
-        channels_from_document(&document, path, |channel_ref, _, _, channel, doc, _| {
-            Ok(validator_from_channel(
-                &validator_builder,
-                channel_ref,
-                channel,
-                doc,
-            ))
-        })?;
+        if let Some(validator) = validator {
+            validators.push((topic.topic.clone(), validator));
+        }
+        // Subscribe only to Send topics, and only to the broadest filter
+        // covering each.
+        if topic.operation == Direction::Send && !subscribe_topics.covers_topic(&topic.topic) {
+            subscribe_topics.insert_with_replace(topic.topic.clone(), ());
+        }
+        topics.push(topic);
+    }
 
     info!(
-        "Parsed: {} topic(s) and {} validator(s) from '{}'.",
+        "Parsed: {} topic(s) from '{}'.",
         topics.len(),
-        validators.len(),
         path.display()
     );
 
@@ -338,5 +353,67 @@ mod tests {
         let validators = api.validators();
         let topics: Vec<&String> = validators.keys().collect();
         assert_eq!(topics, ["chained/channel"]);
+    }
+
+    #[test_log::test]
+    fn test_validators_are_keyed_by_topic_and_skip_channels_without_payload() {
+        let spec = json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "Test", "version": "1.0.0"},
+            "channels": {
+                "power": {
+                    "address": "power/{panel}",
+                    "messages": {"Message": {"payload": {"type": "object"}}},
+                    "x-group-topic-metadata": {},
+                    "x-group-by": "panel"
+                },
+                "bare": {"address": "bare/channel"}
+            },
+            "operations": {
+                "power": {"action": "send", "channel": {"$ref": "#/channels/power"}},
+                "bare": {"action": "send", "channel": {"$ref": "#/channels/bare"}}
+            }
+        });
+
+        let api = Api::new(vec![load_spec(Path::new("test"), &spec).unwrap()]);
+
+        let validators = api.validators();
+        let topics: Vec<&String> = validators.keys().collect();
+        assert_eq!(topics, ["power/+"]);
+    }
+
+    #[test_log::test]
+    fn test_inline_message_of_a_referenced_channel_is_validated() {
+        let spec = json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "Test", "version": "1.0.0"},
+            "channels": {
+                "referenced": {"$ref": "#/components/channels/referenced"}
+            },
+            "operations": {
+                "referenced": {"action": "send", "channel": {"$ref": "#/channels/referenced"}}
+            },
+            "components": {
+                "channels": {
+                    "referenced": {
+                        "address": "ref/channel",
+                        "messages": {
+                            "Message": {
+                                "payload": {
+                                    "type": "object",
+                                    "properties": {"x": {"type": "integer"}}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        let api = Api::new(vec![load_spec(Path::new("test"), &spec).unwrap()]);
+
+        let validators = api.validators();
+        let topics: Vec<&String> = validators.keys().collect();
+        assert_eq!(topics, ["ref/channel"]);
     }
 }
