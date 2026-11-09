@@ -23,6 +23,8 @@ impl Default for TopicCache {
     }
 }
 
+const EVICTION_INTERVAL: u64 = 30;
+
 impl TopicCache {
     #[must_use]
     pub fn new() -> Self {
@@ -91,7 +93,7 @@ impl TopicCache {
 /// Evict expired entries from the cache periodically.
 pub fn spawn_eviction(cache: std::sync::Arc<TopicCache>) {
     tokio::spawn(async move {
-        let mut interval = tokio::time::interval(std::time::Duration::from_secs(30));
+        let mut interval = tokio::time::interval(std::time::Duration::from_secs(EVICTION_INTERVAL));
         loop {
             interval.tick().await;
             cache.evict_expired();
