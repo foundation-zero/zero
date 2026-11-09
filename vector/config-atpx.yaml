@@ -68,8 +68,9 @@ sinks:
     encoding:
       codec: json
     # A broker outage must not backpressure atpx_parse, or atpx_raw writes stop
-    # too. 12 GiB holds ~30 min at ~6.4 MB/s. Size the volume above max_size:
-    # Vector stops on an I/O error while flushing a disk buffer.
+    # too. 12 GiB holds ~30 min at ~6.4 MB/s. The volume holds this buffer and
+    # greptimedb_atpx's, so size it above both max_size values combined (24 GiB)
+    # plus headroom: Vector stops on an I/O error while flushing a disk buffer.
     buffer:
       type: disk
       max_size: 12884901888
