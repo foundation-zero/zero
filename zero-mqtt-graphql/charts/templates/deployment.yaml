@@ -45,6 +45,8 @@ spec:
               type: RuntimeDefault
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # Shows why the app exited (e.g. MQTT kept refusing it) in `kubectl describe`.
+          terminationMessagePolicy: FallbackToLogsOnError
           args:
             - {{ .Values.command | default "serve" }}
             - --spec-dir
