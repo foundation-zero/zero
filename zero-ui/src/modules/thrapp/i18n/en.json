@@ -734,13 +734,13 @@
           "adsorption": "{mode}",
           "consumers": "{mode}",
           "pvt": {
-            "idle": "AFT - Idle | FWD - Idle | Owners - Idle",
-            "warmup": "AFT - Warmup | FWD - Warmup | Owners - Warmup",
-            "recovery": "AFT - Recovery | FWD - Recovery | Owners - Recovery"
+            "idle": "Idle",
+            "warmup": "Warmup",
+            "recovery": "Recovery"
           },
           "dc": {
-            "idle": "AFT - Idle | FWD - Idle | Ugrids - Idle",
-            "recovery": "AFT - Recovery | FWD - Recovery | Ugrids - Recovery"
+            "idle": "Idle",
+            "recovery": "Recovery"
           },
           "dhw": {
             "filling": {
@@ -754,6 +754,24 @@
               "idle": "Not Boosting"
             }
           }
+        },
+        "prefixed": "{prefix} - {label}",
+        "prefixes": {
+          "pvt": {
+            "fwd": "FW",
+            "aft": "AFT",
+            "owners": "Owners"
+          },
+          "dc": {
+            "brightloopsAft": "AFT",
+            "brightloopsFwd": "FWD",
+            "ugrids": "Ugrids"
+          }
+        },
+        "amcs": {
+          "LOCAL": "AMCS local",
+          "MANUAL": "AMCS manual",
+          "AUTO": "AMCS auto"
         }
       },
       "sections": {
