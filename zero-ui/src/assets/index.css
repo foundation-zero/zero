@@ -159,6 +159,7 @@ h6 {
   --default-font-family: "Inter", var(--font-sans);
   --font-headers: "Urbanist", sans-serif;
   --font-ui: "Inter", sans-serif;
+  --breakpoint-desktop: 90rem;
   --breakpoint-3xl: 120rem;
   --breakpoint-4xl: 144rem;
 
