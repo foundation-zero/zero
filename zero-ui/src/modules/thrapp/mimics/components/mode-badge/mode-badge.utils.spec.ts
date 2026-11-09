@@ -69,6 +69,15 @@ describe("getModuleModes", () => {
     expect(labels("thrusters", automatic("thrusters", null))).toEqual(["Manual control"]);
   });
 
+  it("shows no badges while the control mode is unknown", () => {
+    const control = withModule("pvt", {
+      controlMode: null,
+      sensorValues: amcs(AmcsControlMode.External),
+    });
+
+    expect(getModuleModes("pvt", control, t)).toEqual([]);
+  });
+
   it("names the AMCS mode when the advisory mode is disabled", () => {
     const control = withModule("pvt", { sensorValues: amcs(AmcsControlMode.Manual) });
 

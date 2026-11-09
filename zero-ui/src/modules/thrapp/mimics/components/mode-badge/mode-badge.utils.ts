@@ -95,6 +95,11 @@ export function getModuleModes(
     return [{ mode: ModeBadgeMode.AdvisoryOff, label }];
   }
 
+  // Unknown until the control mode is loaded; never announce manual control before that.
+  if (!status?.controlMode) {
+    return [];
+  }
+
   if (!automaticMode) {
     const label = t(`modes.${ModeBadgeMode.ManualControl}`);
     const targets = MODULE_TARGETS[module];

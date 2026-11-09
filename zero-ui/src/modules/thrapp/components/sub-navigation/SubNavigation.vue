@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SubNavigationProps } from "@/modules/thrapp/components/navigation";
 import { useAutomationStore } from "@/modules/thrapp/stores/automation";
-import { computed, provide, toRefs } from "vue";
+import { computed, toRefs } from "vue";
 import ControlState from "./ControlState.vue";
 import ModuleSelector from "./ModuleSelector.vue";
 import SubNavigationModes from "./SubNavigationModes.vue";
@@ -15,8 +15,6 @@ const { control } = toRefs(useAutomationStore());
 // Sub-modules (e.g. the PVT biminis) are controlled through their module.
 const controlModule = computed(() => props.activeModule && getControlModule(props.activeModule));
 const controlState = computed(() => getControlState(control.value, controlModule.value));
-
-provide("currentModule", controlModule);
 </script>
 
 <template>
