@@ -4,6 +4,11 @@ import { DOCUMENTATION } from "./documentation";
 import { MIMICS } from "./mimics";
 import { PARAMETERS } from "./parameters";
 
+// Rendered by the layout below the main navigation, with `SubNavigationProps`.
+const SUB_NAVIGATION = defineAsyncComponent(
+  () => import("@/modules/thrapp/components/navigation/InterimSubNavigation.vue"),
+);
+
 export const thrappRoutes: RouteRecordRaw = {
   path: "/thrs",
   name: "thrs",
@@ -19,12 +24,7 @@ export const thrappRoutes: RouteRecordRaw = {
       name: "thrs/mimics",
       component: () => import("@/modules/thrapp/views/Mimic.vue"),
       meta: {
-        toolbarLeft: defineAsyncComponent(
-          () => import("@/modules/thrapp/components/navigation/ModuleTabs.vue"),
-        ),
-        toolbarRight: defineAsyncComponent(
-          () => import("@/modules/thrapp/components/control-actions/ControlActions.vue"),
-        ),
+        subNavigation: SUB_NAVIGATION,
         views: MIMICS,
       },
     },
@@ -33,12 +33,7 @@ export const thrappRoutes: RouteRecordRaw = {
       name: "thrs/control",
       component: () => import("@/modules/thrapp/views/Control.vue"),
       meta: {
-        toolbarLeft: defineAsyncComponent(
-          () => import("@/modules/thrapp/components/navigation/ModuleTabs.vue"),
-        ),
-        toolbarRight: defineAsyncComponent(
-          () => import("@/modules/thrapp/components/control-actions/ControlActions.vue"),
-        ),
+        subNavigation: SUB_NAVIGATION,
         views: PARAMETERS,
       },
     },
@@ -47,12 +42,7 @@ export const thrappRoutes: RouteRecordRaw = {
       name: "thrs/documentation",
       component: () => import("@/modules/thrapp/views/Documentation.vue"),
       meta: {
-        toolbarLeft: defineAsyncComponent(
-          () => import("@/modules/thrapp/components/navigation/ModuleTabs.vue"),
-        ),
-        toolbarRight: defineAsyncComponent(
-          () => import("@/modules/thrapp/components/control-actions/ControlActions.vue"),
-        ),
+        subNavigation: SUB_NAVIGATION,
         views: DOCUMENTATION,
       },
     },

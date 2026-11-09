@@ -47,7 +47,7 @@ watchEffect(() => (activeQuery.value = demoMode.value ? undefined : currentMimic
 <template>
   <component :is="provider">
     <MimicZoomProvider :key="currentModule">
-      <section class="relative -mx-4 -mt-8 flex min-h-0 grow flex-col md:-mx-6 md:-mt-6 md:-mb-6">
+      <section class="relative -mx-4 -mt-4 flex min-h-0 grow flex-col md:-mx-6 md:-mt-6 md:-mb-6">
         <GridPattern class="absolute top-0 right-0 bottom-0 left-0 h-full w-full" />
 
         <MimicTooltipProvider v-if="currentMimic">

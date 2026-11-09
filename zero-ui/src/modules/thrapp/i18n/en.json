@@ -943,6 +943,15 @@
       "controlActions": {
         "automatedControl": "Automated control",
         "manualControl": "Manual control"
+      },
+      "navigation": {
+        "mainNavigation": "Main navigation",
+        "mimics": "Mimics",
+        "controls": "Controls",
+        "documentation": "Documentation",
+        "menu": "Menu",
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu"
       }
     }
   }

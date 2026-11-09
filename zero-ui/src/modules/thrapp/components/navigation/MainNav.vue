@@ -1,37 +1,34 @@
 <script setup lang="ts">
-import { Tabs, TabsList, TabsTrigger } from "@common/components/tab-links";
-import { useI18n } from "vue-i18n";
-import { RouterLink, useRoute } from "vue-router";
+import { tScoped } from "@/modules/common/lib/utils";
+import { useThrappNavigation } from "./navigation.utils";
 
-const currentRoute = useRoute();
+const t = tScoped("thrapp.components.navigation");
 
-const { t } = useI18n();
+const { tabs } = useThrappNavigation();
 </script>
 
 <template>
-  <Tabs
-    :model-value="String(currentRoute.name)"
+  <ul
+    class="flex self-stretch"
     data-testid="thrapp-nav"
   >
-    <TabsList
-      as="nav"
-      class="py-0"
+    <li
+      v-for="tab in tabs"
+      :key="tab.name"
+      class="flex"
     >
-      <RouterLink :to="{ name: 'thrs/control', params: { module: 'dhw' } }">
-        <TabsTrigger value="thrs/control">
-          {{ t("thrapp.views.control.title") }}
-        </TabsTrigger>
+      <RouterLink
+        :to="tab.to"
+        :aria-current="tab.active ? 'page' : undefined"
+        class="focus-visible:ring-brand -mb-px inline-flex items-center border-b px-4 text-base whitespace-nowrap uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset"
+        :class="
+          tab.active
+            ? 'border-attention text-foreground'
+            : 'text-muted-foreground hover:text-foreground border-transparent'
+        "
+      >
+        {{ t(tab.label) }}
       </RouterLink>
-      <RouterLink :to="{ name: 'thrs/mimics', params: { module: 'dhw' } }">
-        <TabsTrigger value="thrs/mimics">
-          {{ t("thrapp.views.mimics.title") }}
-        </TabsTrigger>
-      </RouterLink>
-      <RouterLink :to="{ name: 'thrs/documentation', params: { module: 'dhw' } }">
-        <TabsTrigger value="thrs/documentation">
-          {{ t("thrapp.views.documentation.title") }}
-        </TabsTrigger>
-      </RouterLink>
-    </TabsList>
-  </Tabs>
+    </li>
+  </ul>
 </template>
