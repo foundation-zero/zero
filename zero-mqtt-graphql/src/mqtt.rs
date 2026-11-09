@@ -351,7 +351,6 @@ mod tests {
         Api::new(vec![
             Spec::new(
                 String::new(),
-                TopicMap::new(),
                 topics.into_iter().chain(groups).collect(),
                 validators,
             )

@@ -4,19 +4,60 @@ use std::collections::BTreeMap;
 use std::path::Path;
 
 use anyhow::Context;
-use log::{debug, info};
+use jsonschema::Validator;
+use log::{debug, info, warn};
 
 use super::refs::{resolve_channel, resolve_operation};
 use super::roas::{Channel, Document, Operation, OperationAction};
-use super::schema::MessagePayload;
+use super::schema::{MessagePayload, message_payload};
 use super::ttl::ttl_for_channel;
+use super::validation::{ValidatorBuilder, payload_validator};
 use crate::api_model::{Direction, GroupDef, MetadataByTopic, TopicDef, TopicKind};
+use crate::topic_map::TopicMap;
+
+/// The topics a document's operations define, and the validators of their
+/// payloads. Skips, with a warning, channels without an address.
+pub(super) fn document_topics(
+    doc: &Document,
+    validator_builder: &ValidatorBuilder,
+    path: &Path,
+) -> anyhow::Result<(Vec<TopicDef>, TopicMap<Validator>)> {
+    let mut topics = Vec::new();
+    let mut validators = Vec::new();
+    for (operation, channel_ref, channel) in operation_channels(doc, path)? {
+        let Some(address) = channel.address() else {
+            warn!(
+                "Channel '{}' in {} has no address, skipping",
+                operation.channel.reference,
+                path.display()
+            );
+            continue;
+        };
+        let message_payload = message_payload(&channel_ref, channel, doc);
+        if let Some(validator) = message_payload
+            .as_ref()
+            .and_then(|m| payload_validator(validator_builder, address, &m.schema_ref))
+        {
+            validators.push((wildcard_from_address(address), validator));
+        }
+        topics.push(topic_from_channel(
+            operation,
+            &channel_ref,
+            channel,
+            address,
+            message_payload,
+            doc,
+            path,
+        )?);
+    }
+    Ok((topics, validators.into_iter().collect()))
+}
 
 /// The document's operations, each with the channel it points at and that
 /// channel's own reference: where a `$ref` chain ends, so pointers into its
 /// inline messages exist. Errors on unresolvable operation and channel
 /// references.
-pub(super) fn operation_channels<'a>(
+fn operation_channels<'a>(
     doc: &'a Document,
     path: &Path,
 ) -> anyhow::Result<Vec<(&'a Operation, String, &'a Channel)>> {
@@ -56,7 +97,7 @@ pub(super) fn operation_channels<'a>(
 /// [`operation_channels`]), address and message payload, into a
 /// [`TopicDef`]: a Group when its address is parametrized, a single topic
 /// otherwise.
-pub(super) fn topic_from_channel(
+fn topic_from_channel(
     operation: &Operation,
     channel_ref: &str,
     channel: &Channel,
@@ -175,30 +216,15 @@ fn wildcard_from_address(address: &str) -> String {
 mod tests {
     use super::*;
     use crate::api_model::FieldType;
-    use crate::asyncapi::schema::message_payload;
     use serde_json::{Value, json};
 
     /// The topics `load_spec` reads from a document, before they go into a
     /// Spec's Query tree.
     fn loaded_topics(spec: &Value) -> anyhow::Result<Vec<TopicDef>> {
         let document = serde_json::from_value::<Document>(spec.clone())?;
-        let path = Path::new("test");
-        operation_channels(&document, path)?
-            .into_iter()
-            .filter_map(|(operation, channel_ref, channel)| {
-                let address = channel.address()?;
-                let payload = message_payload(&channel_ref, channel, &document);
-                Some(topic_from_channel(
-                    operation,
-                    &channel_ref,
-                    channel,
-                    address,
-                    payload,
-                    &document,
-                    path,
-                ))
-            })
-            .collect()
+        let validator_builder = ValidatorBuilder::new(spec.clone())?;
+        let (topics, _) = document_topics(&document, &validator_builder, Path::new("test"))?;
+        Ok(topics)
     }
 
     /// The payload fields of a topic that must have a payload.

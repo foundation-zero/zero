@@ -6,12 +6,10 @@ use anyhow::Context;
 use log::{info, warn};
 use serde_json::Value;
 
-use crate::api_model::{Api, Direction, Spec};
-use crate::topic_map::TopicMap;
-use channels::{operation_channels, topic_from_channel};
+use crate::api_model::{Api, Spec};
+use channels::document_topics;
 use roas::Document;
-use schema::message_payload;
-use validation::{ValidatorBuilder, payload_validator};
+use validation::ValidatorBuilder;
 
 mod channels;
 mod refs;
@@ -87,42 +85,7 @@ fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<Spec> {
     let document = serde_json::from_value::<Document>(document_json.clone())
         .with_context(|| format!("parsing AsyncAPI document {}", path.display()))?;
 
-    let mut topics = Vec::new();
-    let mut subscribe_topics = TopicMap::new();
-    let mut validators = Vec::new();
-    for (operation, channel_ref, channel) in operation_channels(&document, path)? {
-        let Some(address) = channel.address() else {
-            warn!(
-                "Channel '{}' in {} has no address, skipping",
-                operation.channel.reference,
-                path.display()
-            );
-            continue;
-        };
-        let message_payload = message_payload(&channel_ref, channel, &document);
-        let validator = message_payload
-            .as_ref()
-            .and_then(|m| payload_validator(&validator_builder, address, &m.schema_ref));
-        let topic = topic_from_channel(
-            operation,
-            &channel_ref,
-            channel,
-            address,
-            message_payload,
-            &document,
-            path,
-        )?;
-
-        if let Some(validator) = validator {
-            validators.push((topic.topic.clone(), validator));
-        }
-        // Subscribe only to Send topics, and only to the broadest filter
-        // covering each.
-        if topic.operation == Direction::Send && !subscribe_topics.covers_topic(&topic.topic) {
-            subscribe_topics.insert_with_replace(topic.topic.clone(), ());
-        }
-        topics.push(topic);
-    }
+    let (topics, validators) = document_topics(&document, &validator_builder, path)?;
 
     info!(
         "Parsed: {} topic(s) from '{}'.",
@@ -135,9 +98,8 @@ fn load_spec(path: &Path, document_json: &Value) -> anyhow::Result<Spec> {
             .ok_or(anyhow::anyhow!("File prefix is not valid as name"))?
             .to_string_lossy()
             .into_owned(),
-        subscribe_topics,
         topics,
-        validators.into_iter().collect(),
+        validators,
     )
     .with_context(|| format!("building the Query tree of {}", path.display()))
 }
@@ -272,13 +234,10 @@ mod tests {
                         }
                     },
                 },
+                // Like marpower's subscribe channels: a broad filter without
+                // messages, only there to be subscribed to.
                 "send_channel_broader": {
-                    "address": "two/#",
-                    "messages": {
-                        "Message": {
-                            "$ref": "#/components/messages/Message"
-                        }
-                    },
+                    "address": "two/#"
                 }
             },
             "operations": {

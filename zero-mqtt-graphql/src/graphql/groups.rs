@@ -488,7 +488,7 @@ mod tests {
 
     fn api(topics: Vec<TopicDef>) -> Api {
         Api::new(vec![
-            Spec::new(String::new(), TopicMap::new(), topics, TopicMap::new()).unwrap(),
+            Spec::new(String::new(), topics, TopicMap::new()).unwrap(),
         ])
     }
 

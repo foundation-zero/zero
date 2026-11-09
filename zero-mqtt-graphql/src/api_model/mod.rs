@@ -113,6 +113,7 @@ pub enum FieldType {
 #[derive(Debug, Clone)]
 pub struct Spec {
     pub name: String,
+    /// The broadest filters covering the Send topics.
     subscribe_topics: TopicMap<()>,
     validators: TopicMap<Validator>,
     /// TTL in seconds per topic or topic filter that sets one, taken from
@@ -126,10 +127,18 @@ impl Spec {
     /// conflict within this Spec.
     pub fn new(
         name: String,
-        subscribe_topics: TopicMap<()>,
         topics: Vec<TopicDef>,
         validators: TopicMap<Validator>,
     ) -> anyhow::Result<Self> {
+        let subscribe_topics = topics
+            .iter()
+            .filter(|t| t.operation == Direction::Send)
+            .fold(TopicMap::new(), |mut acc, t| {
+                if !acc.covers_topic(&t.topic) {
+                    acc.insert_with_replace(t.topic.clone(), ());
+                }
+                acc
+            });
         let ttl_map = topics
             .iter()
             .filter_map(|t| Some((t.topic.clone(), t.ttl_secs?)))
@@ -216,7 +225,7 @@ mod tests {
     }
 
     fn spec(topics: Vec<TopicDef>) -> Spec {
-        Spec::new("test".to_owned(), TopicMap::new(), topics, TopicMap::new()).unwrap()
+        Spec::new("test".to_owned(), topics, TopicMap::new()).unwrap()
     }
 
     #[test_log::test]

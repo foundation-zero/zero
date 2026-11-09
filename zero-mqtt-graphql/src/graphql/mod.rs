@@ -321,7 +321,7 @@ mod tests {
     use serde_json::json;
 
     fn spec(name: &str, topics: Vec<TopicDef>) -> Spec {
-        Spec::new(name.to_string(), TopicMap::new(), topics, TopicMap::new()).unwrap()
+        Spec::new(name.to_string(), topics, TopicMap::new()).unwrap()
     }
 
     fn mock_api(topics: Vec<TopicDef>) -> Api {

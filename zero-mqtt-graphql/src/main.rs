@@ -303,7 +303,7 @@ mod tests {
         }];
 
         Api::new(vec![
-            Spec::new("test".to_string(), TopicMap::new(), topics, TopicMap::new()).unwrap(),
+            Spec::new("test".to_string(), topics, TopicMap::new()).unwrap(),
         ])
     }
 
