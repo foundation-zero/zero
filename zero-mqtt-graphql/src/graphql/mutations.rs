@@ -18,7 +18,7 @@ use tokio::time::Instant;
 
 use crate::api_model::{Direction, FieldType, GraphqlPath, TopicDef};
 use crate::cache::TopicCache;
-use crate::graphql::{JSON_SCALAR, Leaf, json_to_graphql_value, payload_type_name};
+use crate::graphql::{JSON_SCALAR, Leaf, enum_type, json_to_graphql_value, payload_type_name};
 use crate::naming::sanitize_to_graphql_name;
 
 /// A boxed future returned by [`Publisher::publish`].
@@ -39,10 +39,10 @@ pub struct Mutations {
 }
 
 /// The Mutation field that sets `topic` at `path`, if it can be set, plus
-/// the input types it takes. The field takes `input` and returns the value
-/// of `topic` when it is a State topic, or `Boolean!` when it is an
-/// unpaired Receive topic. A payload without fields is a signal, such as a
-/// pause: the field takes no input, publishes `{}` and returns `Boolean!`,
+/// the input and enum types it takes. The field takes `input` and returns
+/// the value of `topic` when it is a State topic, or `Boolean!` when it is
+/// an unpaired Receive topic. A payload without fields is a signal, such as
+/// a pause: the field takes no input, publishes `{}` and returns `Boolean!`,
 /// as there is nothing to confirm. Type names are prefixed with `spec`.
 pub(super) fn mutation_leaf(
     spec: &str,
@@ -92,7 +92,14 @@ pub(super) fn mutation_leaf(
     };
     let input_type = inputs.first().map(InputObject::type_name);
     let field = set_field(segment, input_type, return_type, target);
-    (vec![field], inputs.into_iter().map(Type::from).collect())
+    // The input types refer to these enums, which an unpaired Receive topic
+    // has nowhere else.
+    let types = inputs
+        .into_iter()
+        .map(Type::from)
+        .chain(field_enums(spec, &setter.payload.fields))
+        .collect();
+    (vec![field], types)
 }
 
 /// The Mutation field `name`: takes an `input` of `input_type`, if any, sets
@@ -150,12 +157,37 @@ fn input_type_ref(spec: &str, field_type: &FieldType, nested: &mut Vec<InputObje
         FieldType::Boolean => TypeRef::named(TypeRef::BOOLEAN),
         FieldType::String => TypeRef::named(TypeRef::STRING),
         FieldType::Json => TypeRef::named(JSON_SCALAR),
+        FieldType::Enum(name, _) => TypeRef::named(payload_type_name(spec, name)),
         FieldType::List(element) => TypeRef::List(Box::new(input_type_ref(spec, element, nested))),
         FieldType::Object(name, fields) => {
             let objects = input_objects(spec, name, fields);
             let type_ref = TypeRef::named(objects[0].type_name());
             nested.extend(objects);
             type_ref
+        }
+    }
+}
+
+/// The enum types of `fields`, also inside objects and lists, for the input
+/// types that refer to them.
+fn field_enums(spec: &str, fields: &BTreeMap<String, FieldType>) -> Vec<Type> {
+    fields
+        .values()
+        .flat_map(|field_type| field_type_enums(spec, field_type))
+        .collect()
+}
+
+fn field_type_enums(spec: &str, field_type: &FieldType) -> Vec<Type> {
+    match field_type {
+        FieldType::Enum(name, values) => vec![enum_type(spec, name, values).into()],
+        FieldType::List(element) => field_type_enums(spec, element),
+        FieldType::Object(_, fields) => field_enums(spec, fields),
+        FieldType::Json
+        | FieldType::String
+        | FieldType::Float
+        | FieldType::Int
+        | FieldType::Boolean => {
+            vec![]
         }
     }
 }
@@ -265,10 +297,15 @@ fn input_payload(
 }
 
 /// One client-given value as JSON, with objects, also inside lists, keyed
-/// by raw field names.
+/// by raw field names, and enum values as their raw value.
 fn input_json(field_type: &FieldType, value: &GraphQlValue) -> anyhow::Result<JsonValue> {
     match (field_type, value) {
         (FieldType::Object(_, nested), GraphQlValue::Object(_)) => input_payload(value, nested),
+        (FieldType::Enum(name, values), GraphQlValue::Enum(graphql_name)) => values
+            .iter()
+            .find(|enum_value| enum_value.name == graphql_name.as_str())
+            .map(|enum_value| JsonValue::String(enum_value.raw.clone()))
+            .with_context(|| format!("{graphql_name} is not one of the values of enum {name}")),
         (FieldType::List(element), GraphQlValue::List(items)) => items
             .iter()
             .map(|item| input_json(element, item))
@@ -353,8 +390,9 @@ mod tests {
     use serde_json::json;
 
     use super::*;
-    use crate::api_model::{Api, Payload, SET_SUFFIX, Spec, TopicKind};
+    use crate::api_model::{Api, EnumValue, Payload, SET_SUFFIX, Spec, TopicKind};
     use crate::graphql::build_schema;
+    use crate::topic_map::TopicMap;
 
     /// A service on the other side of MQTT: records what is published and,
     /// when given a reply, publishes the resulting State like a real service.
@@ -406,9 +444,49 @@ mod tests {
 
     /// A thermostat whose State topic reports its setpoint, mode and
     /// measured temperature, a light without a State topic, a pump whose
-    /// settings are stamped values, a pause signal without a payload, and a
-    /// heater with list settings.
+    /// settings are stamped values, a pause signal without a payload, a
+    /// heater with list settings, and a fan and a vent with enum settings.
     fn api() -> Api {
+        Api::new(vec![
+            Spec::new(
+                "room".to_string(),
+                vec![
+                    topic(
+                        "room/thermostat",
+                        Direction::Send,
+                        &[
+                            ("setpoint", FieldType::Float),
+                            ("mode", FieldType::String),
+                            ("measured", FieldType::Float),
+                        ],
+                    ),
+                    topic(
+                        "room/thermostat/set",
+                        Direction::Receive,
+                        &[("setpoint", FieldType::Float), ("mode", FieldType::String)],
+                    ),
+                    topic(
+                        "room/light/set",
+                        Direction::Receive,
+                        &[("on", FieldType::Boolean)],
+                    ),
+                    topic("room/pump", Direction::Send, &pump_fields()),
+                    topic("room/pump/set", Direction::Receive, &pump_fields()),
+                    topic("room/pause", Direction::Receive, &[]),
+                    topic("room/heater", Direction::Send, &heater_fields()),
+                    topic("room/heater/set", Direction::Receive, &heater_fields()),
+                    topic("room/fan", Direction::Send, &fan_fields()),
+                    topic("room/fan/set", Direction::Receive, &fan_fields()),
+                    topic("room/vent/set", Direction::Receive, &fan_fields()[..1]),
+                ],
+                validators(),
+            )
+            .unwrap(),
+        ])
+    }
+
+    /// The JSON Schema validators of the Receive topics in [`api`].
+    fn validators() -> TopicMap<Validator> {
         let thermostat_schema = json!({
             "type": "object",
             "properties": {
@@ -438,7 +516,7 @@ mod tests {
             },
             "required": ["dutypoint", "on"],
         });
-        let validators = [
+        [
             ("room/thermostat/set", thermostat_schema),
             ("room/light/set", light_schema),
             ("room/pump/set", pump_schema),
@@ -462,6 +540,27 @@ mod tests {
                     "required": ["tuning", "curve"],
                 }),
             ),
+            (
+                "room/fan/set",
+                json!({
+                    "type": "object",
+                    "properties": {
+                        "mode": {"type": "string", "enum": ["auto", "high speed"]},
+                        "speeds": {
+                            "type": "array",
+                            "items": {"type": "string", "enum": ["auto", "high speed"]},
+                        },
+                    },
+                    "required": ["mode"],
+                }),
+            ),
+            (
+                "room/vent/set",
+                json!({
+                    "type": "object",
+                    "properties": {"mode": {"type": "string", "enum": ["auto", "high speed"]}},
+                }),
+            ),
         ]
         .into_iter()
         .map(|(topic, schema)| {
@@ -470,46 +569,34 @@ mod tests {
                 jsonschema::validator_for(&schema).unwrap(),
             )
         })
-        .collect();
-        Api::new(vec![
-            Spec::new(
-                "room".to_string(),
-                vec![
-                    topic(
-                        "room/thermostat",
-                        Direction::Send,
-                        &[
-                            ("setpoint", FieldType::Float),
-                            ("mode", FieldType::String),
-                            ("measured", FieldType::Float),
-                        ],
-                    ),
-                    topic(
-                        "room/thermostat/set",
-                        Direction::Receive,
-                        &[("setpoint", FieldType::Float), ("mode", FieldType::String)],
-                    ),
-                    topic(
-                        "room/light/set",
-                        Direction::Receive,
-                        &[("on", FieldType::Boolean)],
-                    ),
-                    topic("room/pump", Direction::Send, &pump_fields()),
-                    topic("room/pump/set", Direction::Receive, &pump_fields()),
-                    topic("room/pause", Direction::Receive, &[]),
-                    topic("room/heater", Direction::Send, &heater_fields()),
-                    topic("room/heater/set", Direction::Receive, &heater_fields()),
-                ],
-                validators,
-            )
-            .unwrap(),
-        ])
+        .collect()
     }
 
     fn pump_fields() -> [(&'static str, FieldType); 2] {
         [
             ("dutypoint", stamped("StampedFloat", FieldType::Float)),
             ("on", stamped("StampedBool", FieldType::Boolean)),
+        ]
+    }
+
+    /// A fan with a mode and the list of modes it supports, both enums.
+    fn fan_fields() -> [(&'static str, FieldType); 2] {
+        let fan_mode = FieldType::Enum(
+            "FanMode".to_string(),
+            vec![
+                EnumValue {
+                    name: "AUTO".to_string(),
+                    raw: "auto".to_string(),
+                },
+                EnumValue {
+                    name: "HIGH_SPEED".to_string(),
+                    raw: "high speed".to_string(),
+                },
+            ],
+        );
+        [
+            ("mode", fan_mode.clone()),
+            ("speeds", FieldType::List(Box::new(fan_mode))),
         ]
     }
 
@@ -939,6 +1026,97 @@ mod tests {
             response.errors
         );
         assert!(service.published.lock().unwrap().is_empty());
+    }
+
+    #[test_log::test]
+    fn test_enums_in_output_and_input() {
+        let cache = Arc::new(TopicCache::new());
+        let mutations = mutations_through(service(&cache, None));
+        let sdl = build_schema(&api(), &cache, Some(&mutations))
+            .unwrap()
+            .sdl();
+
+        let (_, body) = sdl.split_once("enum RoomFanMode {").unwrap();
+        let (body, _) = body.split_once('}').unwrap();
+        assert_eq!(
+            body.split_whitespace().collect::<Vec<_>>(),
+            ["AUTO", "HIGH_SPEED"]
+        );
+        for type_name in ["type RoomRoomFan {", "input RoomRoomFanSetInput {"] {
+            let (_, body) = sdl.split_once(type_name).unwrap();
+            let (body, _) = body.split_once('}').unwrap();
+            assert!(body.contains("mode: RoomFanMode"), "{type_name}{body}");
+            assert!(body.contains("speeds: [RoomFanMode]"), "{type_name}{body}");
+        }
+        // A Receive topic without State also gets its enum.
+        assert!(
+            sdl.contains("vent(input: RoomRoomVentSetInput!): Boolean!"),
+            "{sdl}"
+        );
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_query_returns_enum_names() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "room/fan",
+            json!({"mode": "high speed", "speeds": ["auto", "high speed"]}),
+        );
+        let service = service(&cache, None);
+
+        let response = execute(&cache, &service, "{ room { fan { mode speeds } } }").await;
+
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        let data = response.data.into_json().unwrap();
+        assert_eq!(
+            data["room"]["fan"],
+            json!({"mode": "HIGH_SPEED", "speeds": ["AUTO", "HIGH_SPEED"]})
+        );
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_query_errors_on_a_value_not_in_the_enum() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert("room/fan", json!({"mode": "turbo"}));
+        let service = service(&cache, None);
+
+        let response = execute(&cache, &service, "{ room { fan { mode } } }").await;
+
+        assert_eq!(
+            response.errors[0].message,
+            "\"turbo\" is not one of the values of enum FanMode"
+        );
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_mutation_publishes_the_raw_enum_value() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert("room/fan", json!({"mode": "auto", "speeds": ["auto"]}));
+        let service = service(&cache, Some(Clone::clone));
+
+        let response = execute(
+            &cache,
+            &service,
+            "mutation { room { fan(input: {mode: HIGH_SPEED, speeds: [AUTO, HIGH_SPEED]}) { mode speeds } } }",
+        )
+        .await;
+
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        let data = response.data.into_json().unwrap();
+        assert_eq!(
+            data["room"]["fan"],
+            json!({"mode": "HIGH_SPEED", "speeds": ["AUTO", "HIGH_SPEED"]})
+        );
+        assert_eq!(
+            *service.published.lock().unwrap(),
+            [(
+                "room/fan/set".to_string(),
+                json!({"mode": "high speed", "speeds": ["auto", "high speed"]})
+            )]
+        );
     }
 
     #[test_log::test]

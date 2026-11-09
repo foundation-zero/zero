@@ -7,7 +7,7 @@ use crate::graphql::{
 };
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
-use async_graphql::dynamic::{Field, FieldValue, InputValue, Object, TypeRef};
+use async_graphql::dynamic::{Field, FieldValue, InputValue, Object, Type, TypeRef};
 use log::warn;
 use serde_json::Value as JsonValue;
 
@@ -45,7 +45,7 @@ fn build_group_objects(
     topic: &str,
     payload: &Payload,
     group: &GroupDef,
-) -> Vec<Object> {
+) -> Vec<Type> {
     let item_type = format!("{name_prefix}Topic");
     let meta_type = format!("{name_prefix}Metadata");
     let values_type = payload_type_name(name_prefix, "Values");
@@ -80,7 +80,7 @@ fn build_group_objects(
             obj.field(field)
         });
 
-    vec![item_obj, meta_obj, value_meta_obj]
+    vec![item_obj.into(), meta_obj.into(), value_meta_obj.into()]
         .into_iter()
         .chain(values_objects)
         .collect()
@@ -185,7 +185,7 @@ pub(super) fn register_group_queries(
     payload: &Payload,
     group: &GroupDef,
     cache: &Arc<TopicCache>,
-) -> anyhow::Result<Option<(Vec<Field>, Vec<Object>)>> {
+) -> anyhow::Result<Option<(Vec<Field>, Vec<Type>)>> {
     if payload.fields.is_empty() {
         anyhow::bail!("topic group '{topic}' has no payload fields");
     }
@@ -210,7 +210,7 @@ pub(super) fn register_group_queries(
     );
 
     let mut objects = build_group_objects(&name_prefix, &metadata_fields, topic, payload, group);
-    objects.push(bucket_object);
+    objects.push(bucket_object.into());
 
     let mut fields = vec![group_query_field(
         query_field_name,

@@ -136,6 +136,7 @@ impl TopicDef {
     }
 }
 
+/// The type of a payload field.
 #[derive(Debug, Clone, PartialEq)]
 pub enum FieldType {
     Object(String, Box<BTreeMap<String, FieldType>>),
@@ -145,10 +146,21 @@ pub enum FieldType {
     /// tuple written with JSON Schema 2020-12 `prefixItems`, which the
     /// AsyncAPI 3.0 (draft-07) parser drops.
     Json,
+    /// A string with a fixed set of values, named after its schema.
+    Enum(String, Vec<EnumValue>),
     String,
     Float,
     Int,
     Boolean,
+}
+
+/// One value of a string enum.
+#[derive(Debug, Clone, PartialEq)]
+pub struct EnumValue {
+    /// The GraphQL name: `IN_USE`.
+    pub name: String,
+    /// The value on the wire: `in use`.
+    pub raw: String,
 }
 
 /// What a Receive Topic's MQTT topic adds to its State topic's: Receive topic

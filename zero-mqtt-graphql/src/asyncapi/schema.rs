@@ -1,6 +1,6 @@
 //! Payload fields and field attributes from a message's JSON Schema.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use log::{info, warn};
 use roas_asyncapi::common::reference::RefOr;
@@ -10,7 +10,8 @@ use super::refs::{resolve_message, resolve_payload_schema, resolve_ref_to_entry}
 use super::roas::{
     Channel, Document, Items, Message, Schema, SchemaOrMultiFormat, SchemaType, SubSchema,
 };
-use crate::api_model::{FieldType, Payload};
+use crate::api_model::{EnumValue, FieldType, Payload};
+use crate::naming::enum_value_name;
 
 /// The payload of a channel's message, with what else is read from its
 /// schema.
@@ -266,8 +267,40 @@ fn field_type_for_json_type(
         "number" => Some(FieldType::Float),
         "integer" => Some(FieldType::Int),
         "boolean" => Some(FieldType::Boolean),
-        "string" => Some(FieldType::String),
+        "string" => Some(string_field_type(name, schema)),
         _ => None,
+    }
+}
+
+/// An enum when the string has a fixed set of values that each have their
+/// own GraphQL name, otherwise a plain string.
+fn string_field_type(name: String, schema: &Schema) -> FieldType {
+    let Some(raw_values) = &schema.enum_values else {
+        return FieldType::String;
+    };
+    let values: Option<Vec<EnumValue>> = raw_values
+        .iter()
+        .map(|value| {
+            let raw = value.as_str()?;
+            let name = enum_value_name(raw)?;
+            Some(EnumValue {
+                name,
+                raw: raw.to_string(),
+            })
+        })
+        .collect();
+    let distinct = |values: &[EnumValue]| {
+        let names: BTreeSet<&str> = values.iter().map(|value| value.name.as_str()).collect();
+        !values.is_empty() && names.len() == values.len()
+    };
+    match values {
+        Some(values) if distinct(&values) => FieldType::Enum(name, values),
+        _ => {
+            warn!(
+                "Enum {name} {raw_values:?} has values without a distinct GraphQL name, using String"
+            );
+            FieldType::String
+        }
     }
 }
 
@@ -416,6 +449,42 @@ mod tests {
         assert_eq!(fields["types"], FieldType::Json);
         // Each element is a number or a string: any JSON, not `Float`.
         assert_eq!(fields["items"], FieldType::List(Box::new(FieldType::Json)));
+    }
+
+    #[test_log::test]
+    fn test_enum_types() {
+        let props = BTreeMap::from([
+            (
+                "state".to_string(),
+                json!({"type": "string", "enum": ["in use", "standby"]}),
+            ),
+            (
+                "pump_mode".to_string(),
+                json!({"type": "integer", "enum": [1, 3, 4]}),
+            ),
+            (
+                "clash".to_string(),
+                json!({"type": "string", "enum": ["a b", "a_b"]}),
+            ),
+        ]);
+
+        let fields = extract_fields_from_schema(&schema_with_properties(props), None);
+
+        let value = |name: &str, raw: &str| EnumValue {
+            name: name.to_string(),
+            raw: raw.to_string(),
+        };
+        assert_eq!(
+            fields["state"],
+            FieldType::Enum(
+                "state".to_string(),
+                vec![value("IN_USE", "in use"), value("STANDBY", "standby")]
+            )
+        );
+        // Integer values have no names to use.
+        assert_eq!(fields["pump_mode"], FieldType::Int);
+        // Both values would be named `A_B`.
+        assert_eq!(fields["clash"], FieldType::String);
     }
 
     #[test_log::test]
