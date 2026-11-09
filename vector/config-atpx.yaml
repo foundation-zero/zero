@@ -50,6 +50,10 @@ sinks:
     table: "atpx_raw"
     extra_params:
       custom_time_index: "timestamp;datestr;%+"
+    buffer:
+      type: disk
+      max_size: 12884901888
+      when_full: drop_newest
   # Republishes each row to our own broker; the topic rides in metadata so it
   # isn't duplicated inside the JSON payload.
   atpx_mqtt_publish:
@@ -64,11 +68,11 @@ sinks:
     encoding:
       codec: json
     # A broker outage must not backpressure atpx_parse, or atpx_raw writes stop
-    # too. 4 GiB holds ~30 min at ~1.2 MB/s. Size the volume above max_size:
+    # too. 12 GiB holds ~30 min at ~6.4 MB/s. Size the volume above max_size:
     # Vector stops on an I/O error while flushing a disk buffer.
     buffer:
       type: disk
-      max_size: 4294967296
+      max_size: 12884901888
       when_full: drop_newest
   prometheus:
     type: prometheus_exporter
@@ -83,3 +87,6 @@ sinks:
     table: "vector_dead_letter_queue"
     extra_params:
       custom_time_index: "timestamp;datestr;%+"
+    buffer:
+      type: memory
+      when_full: drop_newest
