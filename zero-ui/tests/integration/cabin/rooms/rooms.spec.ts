@@ -35,14 +35,12 @@ test.describe("Rooms", () => {
       await expect(roomsPage.title).toHaveText(dutchCabin.name);
     });
 
-    test("shows the correct state of the audio system", async ({ roomsPage, page }) => {
+    test("shows the correct state of the audio system", async ({ roomsPage }) => {
       roomsPage.updateRoom(dutchCabin, { amplifier: { on: false } });
 
       await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "unchecked");
 
       roomsPage.updateRoom(dutchCabin, { amplifier: { on: true } });
-
-      await page.waitForTimeout(1000);
 
       await expect(roomsPage.audioSystemToggle).toHaveAttribute("data-state", "checked");
     });

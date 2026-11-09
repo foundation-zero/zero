@@ -14,9 +14,8 @@ test.describe("App", () => {
     await expect(page).toHaveTitle(/Zero/);
   });
 
-  test("connects to graphql server", async ({ subscriptions, page }) => {
-    await page.waitForTimeout(3000);
-    expect(subscriptions.incoming).toHaveLength(2);
+  test("connects to graphql server", async ({ subscriptions }) => {
+    await expect.poll(() => subscriptions.incoming.length).toBe(2);
 
     const message = subscriptions.incoming[0] as ConnectionInitMessage;
     expect(message.type).toBe("connection_init");

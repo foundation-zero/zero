@@ -30,23 +30,19 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+      - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3
         with:
-          package_json_file: zero-ui/package.json
-
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
-        with:
-          node-version: "24.x"
-          cache: "pnpm"
+          working-directory: zero-ui
+          runtime: node@24
+          cache: true
           cache-dependency-path: zero-ui/pnpm-lock.yaml
-
-      - name: Install dependencies
-        working-directory: zero-ui
-        run: pnpm install
 
       - name: Run ESLint
         working-directory: zero-ui
@@ -69,6 +65,24 @@ jobs:
         run: |
           echo "${{ secrets.ENV_THRS }}" > .env
         working-directory: zero-thrs-control
+
+      # Set up in https://github.com/foundation-zero/gcp-common
+      - id: auth
+        name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          token_format: access_token
+          project_id: ${{ secrets.GCP_COMMON_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_COMMON_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_COMMON_SERVICE_ACCOUNT }}
+          access_token_lifetime: 600s
+
+      - name: Login to Artifact Registry
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4
+        with:
+          registry: europe-west1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
 
       - name: Run services
         run: MACHINE_STATE_LOGGING=false docker compose --profile loads --profile thrs up --quiet-pull --wait
@@ -97,7 +111,7 @@ jobs:
 
       - name: Install Playwright Browsers
         working-directory: zero-ui
-        run: pnpm exec playwright install chromium
+        run: pnpm exec playwright install --only-shell chromium
 
       - name: Run Playwright tests
         working-directory: zero-ui
@@ -167,18 +181,12 @@ jobs:
       deployments: "write"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+      - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3
         with:
-          package_json_file: zero-ui/package.json
-
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
-        with:
-          node-version: "24.x"
-          cache: "pnpm"
+          working-directory: zero-ui
+          runtime: node@24
+          cache: true
           cache-dependency-path: zero-ui/pnpm-lock.yaml
-      - name: Install dependencies
-        working-directory: zero-ui
-        run: pnpm install
       - name: Build
         run: pnpm build
         working-directory: zero-ui

@@ -17,7 +17,7 @@ const test = testBase.extend<{ aircoPage: AirconditioningPage }>({
         dutchCabin,
         dutchCabin.airConditioning.actualTemperature ?? 20,
       );
-      await page.waitForTimeout(1000);
+      await expect(aircoPage.actualTemperature).toBeVisible();
 
       await page.screenshot({ path: "screenshots/air-conditioning.png" });
       await use(aircoPage);

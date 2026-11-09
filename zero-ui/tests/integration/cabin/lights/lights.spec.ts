@@ -15,7 +15,7 @@ const test = testBase.extend<{ lightsPage: LightsPage }>({
       await auth.asUser();
       lightsPage.setLightLevels([0, 0], dutchCabin);
       await lightsPage.open();
-      await page.waitForTimeout(500);
+      await expect(lightsPage.sliders).toHaveCount(dutchCabin.lightingGroups.length);
 
       await page.screenshot({ path: "screenshots/lights_before.png" });
       await use(lightsPage);
@@ -37,11 +37,14 @@ test.describe("Lights", () => {
     });
 
     test("shows the correct values", async ({ lightsPage }) => {
-      const firstValue = await lightsPage.getValue(0);
-      const secondValue = await lightsPage.getValue(1);
-
-      expect(firstValue).toBe((targetLevels[0] * 100).toString());
-      expect(secondValue).toBe((targetLevels[1] * 100).toString());
+      await expect(lightsPage.sliders.nth(0)).toHaveAttribute(
+        "aria-valuenow",
+        (targetLevels[0] * 100).toString(),
+      );
+      await expect(lightsPage.sliders.nth(1)).toHaveAttribute(
+        "aria-valuenow",
+        (targetLevels[1] * 100).toString(),
+      );
     });
   });
 
@@ -52,13 +55,12 @@ test.describe("Lights", () => {
       lightsPage.setLightLevels(targetLevels, dutchCabin);
     });
 
-    test("pushes a mutation", async ({ lightsPage, page }) => {
+    test("pushes a mutation", async ({ lightsPage }) => {
       const track = lightsPage.tracks.first();
 
       await track.click({ position: { x: 300, y: 0 } });
 
-      await page.waitForTimeout(1000);
-      expect(setLightLevel.isUsed).toBe(true);
+      await expect.poll(() => setLightLevel.isUsed).toBe(true);
     });
   });
 
@@ -71,37 +73,29 @@ test.describe("Lights", () => {
       });
 
       test("turns the light on", async ({ lightsPage }) => {
-        const value = await lightsPage.getValue(0);
-
-        expect(value).toBe("100");
+        await expect(lightsPage.sliders.first()).toHaveAttribute("aria-valuenow", "100");
       });
 
-      test("pushes a mutation", async ({ page }) => {
-        await page.waitForTimeout(1000);
-        expect(setLightLevel.isUsed).toBe(true);
+      test("pushes a mutation", async () => {
+        await expect.poll(() => setLightLevel.isUsed).toBe(true);
       });
     });
 
     test.describe("when light is on", () => {
-      test.beforeEach(async ({ lightsPage, page }) => {
+      test.beforeEach(async ({ lightsPage }) => {
         lightsPage.setLightLevels([0.1, 0.1], dutchCabin);
 
-        await page.waitForTimeout(1000);
+        await expect(lightsPage.sliders.first()).toHaveAttribute("aria-valuenow", "10");
 
         await lightsPage.switches.first().click();
-
-        await page.waitForTimeout(1000);
       });
 
       test("turns the light off", async ({ lightsPage }) => {
-        const value = await lightsPage.getValue(0);
-
-        expect(value).toBe("0");
+        await expect(lightsPage.sliders.first()).toHaveAttribute("aria-valuenow", "0");
       });
 
-      test("pushes a mutation", async ({ page }) => {
-        await page.waitForTimeout(1000);
-        expect(setLightLevel.isUsed).toBe(true);
+      test("pushes a mutation", async () => {
+        await expect.poll(() => setLightLevel.isUsed).toBe(true);
       });
     });
   });

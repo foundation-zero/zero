@@ -3568,3 +3568,853 @@ models:
         description: "Timestamp of watchdog counter update."
       - name: watchdog_counter__value
         description: "Monotonically increasing watchdog heartbeat pulse counter."
+  - name: stg_marpower__busbar
+    description: "Staging view for the Marpower busbar EPC (DC/DC) converters containing raw telemetry streams, statuses, and measurements."
+    columns:
+      - name: ts
+        description: "Time index of the measurement record (renamed from timestamp)."
+        tests:
+          - not_null
+      - name: auto__has_value
+        description: "Indicates whether a value is present for the automatic mode state."
+      - name: auto__is_valid
+        description: "Indicates whether the automatic mode state value is valid."
+      - name: auto__timestamp
+        description: "Timestamp of the automatic mode state reading."
+      - name: auto__value
+        description: "Automatic mode state."
+      - name: auto_start__has_value
+        description: "Indicates whether a value is present for the automatic start state."
+      - name: auto_start__is_valid
+        description: "Indicates whether the automatic start state value is valid."
+      - name: auto_start__timestamp
+        description: "Timestamp of the automatic start state reading."
+      - name: auto_start__value
+        description: "Automatic start state."
+      - name: auto_stop__has_value
+        description: "Indicates whether a value is present for the automatic stop state."
+      - name: auto_stop__is_valid
+        description: "Indicates whether the automatic stop state value is valid."
+      - name: auto_stop__timestamp
+        description: "Timestamp of the automatic stop state reading."
+      - name: auto_stop__value
+        description: "Automatic stop state."
+      - name: btn_reset__has_value
+        description: "Indicates whether a value is present for the reset button state."
+      - name: btn_reset__is_valid
+        description: "Indicates whether the reset button state value is valid."
+      - name: btn_reset__timestamp
+        description: "Timestamp of the reset button state reading."
+      - name: btn_reset__value
+        description: "Reset button state."
+      - name: can_network_check_mode__has_value
+        description: "Indicates whether a value is present for the CAN network check mode."
+      - name: can_network_check_mode__is_valid
+        description: "Indicates whether the CAN network check mode value is valid."
+      - name: can_network_check_mode__timestamp
+        description: "Timestamp of the CAN network check mode reading."
+      - name: can_network_check_mode__value
+        description: "CAN network check mode."
+      - name: cfg_can_network_check_mode__has_value
+        description: "Indicates whether a value is present for the configured CAN network check mode."
+      - name: cfg_can_network_check_mode__is_valid
+        description: "Indicates whether the configured CAN network check mode value is valid."
+      - name: cfg_can_network_check_mode__timestamp
+        description: "Timestamp of the configured CAN network check mode reading."
+      - name: cfg_can_network_check_mode__value
+        description: "Configured CAN network check mode."
+      - name: cfg_charge_power_limit__has_value
+        description: "Indicates whether a value is present for the configured charge power limit."
+      - name: cfg_charge_power_limit__is_valid
+        description: "Indicates whether the configured charge power limit value is valid."
+      - name: cfg_charge_power_limit__timestamp
+        description: "Timestamp of the configured charge power limit reading."
+      - name: cfg_charge_power_limit__value
+        description: "Configured charge power limit."
+      - name: cfg_discharge_power_limit__has_value
+        description: "Indicates whether a value is present for the configured discharge power limit."
+      - name: cfg_discharge_power_limit__is_valid
+        description: "Indicates whether the configured discharge power limit value is valid."
+      - name: cfg_discharge_power_limit__timestamp
+        description: "Timestamp of the configured discharge power limit reading."
+      - name: cfg_discharge_power_limit__value
+        description: "Configured discharge power limit."
+      - name: cfg_extended_mode__has_value
+        description: "Indicates whether a value is present for the configured extended mode."
+      - name: cfg_extended_mode__is_valid
+        description: "Indicates whether the configured extended mode value is valid."
+      - name: cfg_extended_mode__timestamp
+        description: "Timestamp of the configured extended mode reading."
+      - name: cfg_extended_mode__value
+        description: "Configured extended mode."
+      - name: cfg_high_side_voltage_reference__has_value
+        description: "Indicates whether a value is present for the configured high side voltage reference."
+      - name: cfg_high_side_voltage_reference__is_valid
+        description: "Indicates whether the configured high side voltage reference value is valid."
+      - name: cfg_high_side_voltage_reference__timestamp
+        description: "Timestamp of the configured high side voltage reference reading."
+      - name: cfg_high_side_voltage_reference__value
+        description: "Configured high side voltage reference."
+      - name: cfg_hvdc_charge_current_limit__has_value
+        description: "Indicates whether a value is present for the configured HVDC charge current limit."
+      - name: cfg_hvdc_charge_current_limit__is_valid
+        description: "Indicates whether the configured HVDC charge current limit value is valid."
+      - name: cfg_hvdc_charge_current_limit__timestamp
+        description: "Timestamp of the configured HVDC charge current limit reading."
+      - name: cfg_hvdc_charge_current_limit__value
+        description: "Configured HVDC charge current limit."
+      - name: cfg_hvdc_discharge_current_limit__has_value
+        description: "Indicates whether a value is present for the configured HVDC discharge current limit."
+      - name: cfg_hvdc_discharge_current_limit__is_valid
+        description: "Indicates whether the configured HVDC discharge current limit value is valid."
+      - name: cfg_hvdc_discharge_current_limit__timestamp
+        description: "Timestamp of the configured HVDC discharge current limit reading."
+      - name: cfg_hvdc_discharge_current_limit__value
+        description: "Configured HVDC discharge current limit."
+      - name: cfg_hvdc_max_voltage__has_value
+        description: "Indicates whether a value is present for the configured HVDC maximum voltage."
+      - name: cfg_hvdc_max_voltage__is_valid
+        description: "Indicates whether the configured HVDC maximum voltage value is valid."
+      - name: cfg_hvdc_max_voltage__timestamp
+        description: "Timestamp of the configured HVDC maximum voltage reading."
+      - name: cfg_hvdc_max_voltage__value
+        description: "Configured HVDC maximum voltage."
+      - name: cfg_hvdc_max_voltage_hysteresis__has_value
+        description: "Indicates whether a value is present for the configured HVDC maximum voltage hysteresis."
+      - name: cfg_hvdc_max_voltage_hysteresis__is_valid
+        description: "Indicates whether the configured HVDC maximum voltage hysteresis value is valid."
+      - name: cfg_hvdc_max_voltage_hysteresis__timestamp
+        description: "Timestamp of the configured HVDC maximum voltage hysteresis reading."
+      - name: cfg_hvdc_max_voltage_hysteresis__value
+        description: "Configured HVDC maximum voltage hysteresis."
+      - name: cfg_hvdc_min_voltage__has_value
+        description: "Indicates whether a value is present for the configured HVDC minimum voltage."
+      - name: cfg_hvdc_min_voltage__is_valid
+        description: "Indicates whether the configured HVDC minimum voltage value is valid."
+      - name: cfg_hvdc_min_voltage__timestamp
+        description: "Timestamp of the configured HVDC minimum voltage reading."
+      - name: cfg_hvdc_min_voltage__value
+        description: "Configured HVDC minimum voltage."
+      - name: cfg_hvdc_min_voltage_hysteresis__has_value
+        description: "Indicates whether a value is present for the configured HVDC minimum voltage hysteresis."
+      - name: cfg_hvdc_min_voltage_hysteresis__is_valid
+        description: "Indicates whether the configured HVDC minimum voltage hysteresis value is valid."
+      - name: cfg_hvdc_min_voltage_hysteresis__timestamp
+        description: "Timestamp of the configured HVDC minimum voltage hysteresis reading."
+      - name: cfg_hvdc_min_voltage_hysteresis__value
+        description: "Configured HVDC minimum voltage hysteresis."
+      - name: cfg_low_side_voltage_reference__has_value
+        description: "Indicates whether a value is present for the configured low side voltage reference."
+      - name: cfg_low_side_voltage_reference__is_valid
+        description: "Indicates whether the configured low side voltage reference value is valid."
+      - name: cfg_low_side_voltage_reference__timestamp
+        description: "Timestamp of the configured low side voltage reference reading."
+      - name: cfg_low_side_voltage_reference__value
+        description: "Configured low side voltage reference."
+      - name: cfg_lvdc_charge_current_limit__has_value
+        description: "Indicates whether a value is present for the configured LVDC charge current limit."
+      - name: cfg_lvdc_charge_current_limit__is_valid
+        description: "Indicates whether the configured LVDC charge current limit value is valid."
+      - name: cfg_lvdc_charge_current_limit__timestamp
+        description: "Timestamp of the configured LVDC charge current limit reading."
+      - name: cfg_lvdc_charge_current_limit__value
+        description: "Configured LVDC charge current limit."
+      - name: cfg_lvdc_discharge_current_limit__has_value
+        description: "Indicates whether a value is present for the configured LVDC discharge current limit."
+      - name: cfg_lvdc_discharge_current_limit__is_valid
+        description: "Indicates whether the configured LVDC discharge current limit value is valid."
+      - name: cfg_lvdc_discharge_current_limit__timestamp
+        description: "Timestamp of the configured LVDC discharge current limit reading."
+      - name: cfg_lvdc_discharge_current_limit__value
+        description: "Configured LVDC discharge current limit."
+      - name: cfg_lvdc_max_voltage__has_value
+        description: "Indicates whether a value is present for the configured LVDC maximum voltage."
+      - name: cfg_lvdc_max_voltage__is_valid
+        description: "Indicates whether the configured LVDC maximum voltage value is valid."
+      - name: cfg_lvdc_max_voltage__timestamp
+        description: "Timestamp of the configured LVDC maximum voltage reading."
+      - name: cfg_lvdc_max_voltage__value
+        description: "Configured LVDC maximum voltage."
+      - name: cfg_lvdc_max_voltage_hysteresis__has_value
+        description: "Indicates whether a value is present for the configured LVDC maximum voltage hysteresis."
+      - name: cfg_lvdc_max_voltage_hysteresis__is_valid
+        description: "Indicates whether the configured LVDC maximum voltage hysteresis value is valid."
+      - name: cfg_lvdc_max_voltage_hysteresis__timestamp
+        description: "Timestamp of the configured LVDC maximum voltage hysteresis reading."
+      - name: cfg_lvdc_max_voltage_hysteresis__value
+        description: "Configured LVDC maximum voltage hysteresis."
+      - name: cfg_lvdc_min_voltage__has_value
+        description: "Indicates whether a value is present for the configured LVDC minimum voltage."
+      - name: cfg_lvdc_min_voltage__is_valid
+        description: "Indicates whether the configured LVDC minimum voltage value is valid."
+      - name: cfg_lvdc_min_voltage__timestamp
+        description: "Timestamp of the configured LVDC minimum voltage reading."
+      - name: cfg_lvdc_min_voltage__value
+        description: "Configured LVDC minimum voltage."
+      - name: cfg_lvdc_min_voltage_hysteresis__has_value
+        description: "Indicates whether a value is present for the configured LVDC minimum voltage hysteresis."
+      - name: cfg_lvdc_min_voltage_hysteresis__is_valid
+        description: "Indicates whether the configured LVDC minimum voltage hysteresis value is valid."
+      - name: cfg_lvdc_min_voltage_hysteresis__timestamp
+        description: "Timestamp of the configured LVDC minimum voltage hysteresis reading."
+      - name: cfg_lvdc_min_voltage_hysteresis__value
+        description: "Configured LVDC minimum voltage hysteresis."
+      - name: cfg_mode__has_value
+        description: "Indicates whether a value is present for the configured converter mode."
+      - name: cfg_mode__is_valid
+        description: "Indicates whether the configured converter mode value is valid."
+      - name: cfg_mode__timestamp
+        description: "Timestamp of the configured converter mode reading."
+      - name: cfg_mode__value
+        description: "Configured converter mode."
+      - name: cfg_power_flow_direction__has_value
+        description: "Indicates whether a value is present for the configured power flow direction."
+      - name: cfg_power_flow_direction__is_valid
+        description: "Indicates whether the configured power flow direction value is valid."
+      - name: cfg_power_flow_direction__timestamp
+        description: "Timestamp of the configured power flow direction reading."
+      - name: cfg_power_flow_direction__value
+        description: "Configured power flow direction."
+      - name: charge_power_limit__has_value
+        description: "Indicates whether a value is present for the charge power limit."
+      - name: charge_power_limit__is_valid
+        description: "Indicates whether the charge power limit value is valid."
+      - name: charge_power_limit__timestamp
+        description: "Timestamp of the charge power limit reading."
+      - name: charge_power_limit__value
+        description: "Charge power limit."
+      - name: control_mode__has_value
+        description: "Indicates whether a value is present for the control mode."
+      - name: control_mode__is_valid
+        description: "Indicates whether the control mode value is valid."
+      - name: control_mode__timestamp
+        description: "Timestamp of the control mode reading."
+      - name: control_mode__value
+        description: "Control mode."
+      - name: converter_in_error_exception__has_value
+        description: "Indicates whether a value is present for the converter in error exception."
+      - name: converter_in_error_exception__is_valid
+        description: "Indicates whether the converter in error exception value is valid."
+      - name: converter_in_error_exception__timestamp
+        description: "Timestamp of the converter in error exception reading."
+      - name: converter_in_error_exception__value
+        description: "Converter in error exception."
+      - name: current_ref_high_side__has_value
+        description: "Indicates whether a value is present for the high side current reference."
+      - name: current_ref_high_side__is_valid
+        description: "Indicates whether the high side current reference value is valid."
+      - name: current_ref_high_side__timestamp
+        description: "Timestamp of the high side current reference reading."
+      - name: current_ref_high_side__value
+        description: "High side current reference."
+      - name: current_ref_low_side__has_value
+        description: "Indicates whether a value is present for the low side current reference."
+      - name: current_ref_low_side__is_valid
+        description: "Indicates whether the low side current reference value is valid."
+      - name: current_ref_low_side__timestamp
+        description: "Timestamp of the low side current reference reading."
+      - name: current_ref_low_side__value
+        description: "Low side current reference."
+      - name: discharge_power_limit__has_value
+        description: "Indicates whether a value is present for the discharge power limit."
+      - name: discharge_power_limit__is_valid
+        description: "Indicates whether the discharge power limit value is valid."
+      - name: discharge_power_limit__timestamp
+        description: "Timestamp of the discharge power limit reading."
+      - name: discharge_power_limit__value
+        description: "Discharge power limit."
+      - name: enable__has_value
+        description: "Indicates whether a value is present for the enable command."
+      - name: enable__is_valid
+        description: "Indicates whether the enable command value is valid."
+      - name: enable__timestamp
+        description: "Timestamp of the enable command reading."
+      - name: enable__value
+        description: "Enable command."
+      - name: enable_hardware_echo__has_value
+        description: "Indicates whether a value is present for the enable hardware echo."
+      - name: enable_hardware_echo__is_valid
+        description: "Indicates whether the enable hardware echo value is valid."
+      - name: enable_hardware_echo__timestamp
+        description: "Timestamp of the enable hardware echo reading."
+      - name: enable_hardware_echo__value
+        description: "Enable hardware echo."
+      - name: error__has_value
+        description: "Indicates whether a value is present for the error state."
+      - name: error__is_valid
+        description: "Indicates whether the error state value is valid."
+      - name: error__timestamp
+        description: "Timestamp of the error state reading."
+      - name: error__value
+        description: "Error state."
+      - name: error_code__has_value
+        description: "Indicates whether a value is present for the error code."
+      - name: error_code__is_valid
+        description: "Indicates whether the error code value is valid."
+      - name: error_code__timestamp
+        description: "Timestamp of the error code reading."
+      - name: error_code__value
+        description: "Error code."
+      - name: error_value__has_value
+        description: "Indicates whether a value is present for the error value."
+      - name: error_value__is_valid
+        description: "Indicates whether the error value value is valid."
+      - name: error_value__timestamp
+        description: "Timestamp of the error value reading."
+      - name: error_value__value
+        description: "Error value."
+      - name: extended_mode__has_value
+        description: "Indicates whether a value is present for the extended mode."
+      - name: extended_mode__is_valid
+        description: "Indicates whether the extended mode value is valid."
+      - name: extended_mode__timestamp
+        description: "Timestamp of the extended mode reading."
+      - name: extended_mode__value
+        description: "Extended mode."
+      - name: hdvc_switch_on_error__has_value
+        description: "Indicates whether a value is present for the HVDC switch-on error."
+      - name: hdvc_switch_on_error__is_valid
+        description: "Indicates whether the HVDC switch-on error value is valid."
+      - name: hdvc_switch_on_error__timestamp
+        description: "Timestamp of the HVDC switch-on error reading."
+      - name: hdvc_switch_on_error__value
+        description: "HVDC switch-on error."
+      - name: high_side_max_voltage__has_value
+        description: "Indicates whether a value is present for the high side maximum voltage."
+      - name: high_side_max_voltage__is_valid
+        description: "Indicates whether the high side maximum voltage value is valid."
+      - name: high_side_max_voltage__timestamp
+        description: "Timestamp of the high side maximum voltage reading."
+      - name: high_side_max_voltage__value
+        description: "High side maximum voltage."
+      - name: high_side_min_voltage__has_value
+        description: "Indicates whether a value is present for the high side minimum voltage."
+      - name: high_side_min_voltage__is_valid
+        description: "Indicates whether the high side minimum voltage value is valid."
+      - name: high_side_min_voltage__timestamp
+        description: "Timestamp of the high side minimum voltage reading."
+      - name: high_side_min_voltage__value
+        description: "High side minimum voltage."
+      - name: high_side_voltage_reference__has_value
+        description: "Indicates whether a value is present for the high side voltage reference."
+      - name: high_side_voltage_reference__is_valid
+        description: "Indicates whether the high side voltage reference value is valid."
+      - name: high_side_voltage_reference__timestamp
+        description: "Timestamp of the high side voltage reference reading."
+      - name: high_side_voltage_reference__value
+        description: "High side voltage reference."
+      - name: hvdc_charge_current_limit__has_value
+        description: "Indicates whether a value is present for the HVDC charge current limit."
+      - name: hvdc_charge_current_limit__is_valid
+        description: "Indicates whether the HVDC charge current limit value is valid."
+      - name: hvdc_charge_current_limit__timestamp
+        description: "Timestamp of the HVDC charge current limit reading."
+      - name: hvdc_charge_current_limit__value
+        description: "HVDC charge current limit."
+      - name: hvdc_current__has_value
+        description: "Indicates whether a value is present for the HVDC (high side) current in A."
+      - name: hvdc_current__is_valid
+        description: "Indicates whether the HVDC (high side) current in A value is valid."
+      - name: hvdc_current__timestamp
+        description: "Timestamp of the HVDC (high side) current in A reading."
+      - name: hvdc_current__value
+        description: "HVDC (high side) current in A."
+      - name: hvdc_discharge_current_limit__has_value
+        description: "Indicates whether a value is present for the HVDC discharge current limit."
+      - name: hvdc_discharge_current_limit__is_valid
+        description: "Indicates whether the HVDC discharge current limit value is valid."
+      - name: hvdc_discharge_current_limit__timestamp
+        description: "Timestamp of the HVDC discharge current limit reading."
+      - name: hvdc_discharge_current_limit__value
+        description: "HVDC discharge current limit."
+      - name: hvdc_earth_fault__has_value
+        description: "Indicates whether a value is present for the HVDC earth fault."
+      - name: hvdc_earth_fault__is_valid
+        description: "Indicates whether the HVDC earth fault value is valid."
+      - name: hvdc_earth_fault__timestamp
+        description: "Timestamp of the HVDC earth fault reading."
+      - name: hvdc_earth_fault__value
+        description: "HVDC earth fault."
+      - name: hvdc_max_voltage__has_value
+        description: "Indicates whether a value is present for the HVDC maximum voltage."
+      - name: hvdc_max_voltage__is_valid
+        description: "Indicates whether the HVDC maximum voltage value is valid."
+      - name: hvdc_max_voltage__timestamp
+        description: "Timestamp of the HVDC maximum voltage reading."
+      - name: hvdc_max_voltage__value
+        description: "HVDC maximum voltage."
+      - name: hvdc_max_voltage_hysteresis__has_value
+        description: "Indicates whether a value is present for the HVDC maximum voltage hysteresis."
+      - name: hvdc_max_voltage_hysteresis__is_valid
+        description: "Indicates whether the HVDC maximum voltage hysteresis value is valid."
+      - name: hvdc_max_voltage_hysteresis__timestamp
+        description: "Timestamp of the HVDC maximum voltage hysteresis reading."
+      - name: hvdc_max_voltage_hysteresis__value
+        description: "HVDC maximum voltage hysteresis."
+      - name: hvdc_min_voltage__has_value
+        description: "Indicates whether a value is present for the HVDC minimum voltage."
+      - name: hvdc_min_voltage__is_valid
+        description: "Indicates whether the HVDC minimum voltage value is valid."
+      - name: hvdc_min_voltage__timestamp
+        description: "Timestamp of the HVDC minimum voltage reading."
+      - name: hvdc_min_voltage__value
+        description: "HVDC minimum voltage."
+      - name: hvdc_min_voltage_hysteresis__has_value
+        description: "Indicates whether a value is present for the HVDC minimum voltage hysteresis."
+      - name: hvdc_min_voltage_hysteresis__is_valid
+        description: "Indicates whether the HVDC minimum voltage hysteresis value is valid."
+      - name: hvdc_min_voltage_hysteresis__timestamp
+        description: "Timestamp of the HVDC minimum voltage hysteresis reading."
+      - name: hvdc_min_voltage_hysteresis__value
+        description: "HVDC minimum voltage hysteresis."
+      - name: hvdc_overcurr_hwd__has_value
+        description: "Indicates whether a value is present for the HVDC hardware overcurrent fault."
+      - name: hvdc_overcurr_hwd__is_valid
+        description: "Indicates whether the HVDC hardware overcurrent fault value is valid."
+      - name: hvdc_overcurr_hwd__timestamp
+        description: "Timestamp of the HVDC hardware overcurrent fault reading."
+      - name: hvdc_overcurr_hwd__value
+        description: "HVDC hardware overcurrent fault."
+      - name: hvdc_overcurr_soft__has_value
+        description: "Indicates whether a value is present for the HVDC software overcurrent fault."
+      - name: hvdc_overcurr_soft__is_valid
+        description: "Indicates whether the HVDC software overcurrent fault value is valid."
+      - name: hvdc_overcurr_soft__timestamp
+        description: "Timestamp of the HVDC software overcurrent fault reading."
+      - name: hvdc_overcurr_soft__value
+        description: "HVDC software overcurrent fault."
+      - name: hvdc_power__has_value
+        description: "Indicates whether a value is present for the HVDC (high side) power in W."
+      - name: hvdc_power__is_valid
+        description: "Indicates whether the HVDC (high side) power in W value is valid."
+      - name: hvdc_power__timestamp
+        description: "Timestamp of the HVDC (high side) power in W reading."
+      - name: hvdc_power__value
+        description: "HVDC (high side) power in W."
+      - name: hvdc_volt_err_hwd__has_value
+        description: "Indicates whether a value is present for the HVDC hardware voltage error."
+      - name: hvdc_volt_err_hwd__is_valid
+        description: "Indicates whether the HVDC hardware voltage error value is valid."
+      - name: hvdc_volt_err_hwd__timestamp
+        description: "Timestamp of the HVDC hardware voltage error reading."
+      - name: hvdc_volt_err_hwd__value
+        description: "HVDC hardware voltage error."
+      - name: hvdc_volt_err_soft__has_value
+        description: "Indicates whether a value is present for the HVDC software voltage error."
+      - name: hvdc_volt_err_soft__is_valid
+        description: "Indicates whether the HVDC software voltage error value is valid."
+      - name: hvdc_volt_err_soft__timestamp
+        description: "Timestamp of the HVDC software voltage error reading."
+      - name: hvdc_volt_err_soft__value
+        description: "HVDC software voltage error."
+      - name: hvdc_voltage__has_value
+        description: "Indicates whether a value is present for the HVDC (high side) voltage in V."
+      - name: hvdc_voltage__is_valid
+        description: "Indicates whether the HVDC (high side) voltage in V value is valid."
+      - name: hvdc_voltage__timestamp
+        description: "Timestamp of the HVDC (high side) voltage in V reading."
+      - name: hvdc_voltage__value
+        description: "HVDC (high side) voltage in V."
+      - name: internal_error_1__has_value
+        description: "Indicates whether a value is present for the internal error 1."
+      - name: internal_error_1__is_valid
+        description: "Indicates whether the internal error 1 value is valid."
+      - name: internal_error_1__timestamp
+        description: "Timestamp of the internal error 1 reading."
+      - name: internal_error_1__value
+        description: "Internal error 1."
+      - name: internal_error_2__has_value
+        description: "Indicates whether a value is present for the internal error 2."
+      - name: internal_error_2__is_valid
+        description: "Indicates whether the internal error 2 value is valid."
+      - name: internal_error_2__timestamp
+        description: "Timestamp of the internal error 2 reading."
+      - name: internal_error_2__value
+        description: "Internal error 2."
+      - name: local__has_value
+        description: "Indicates whether a value is present for the local control state."
+      - name: local__is_valid
+        description: "Indicates whether the local control state value is valid."
+      - name: local__timestamp
+        description: "Timestamp of the local control state reading."
+      - name: local__value
+        description: "Local control state."
+      - name: low_side_max_voltage__has_value
+        description: "Indicates whether a value is present for the low side maximum voltage."
+      - name: low_side_max_voltage__is_valid
+        description: "Indicates whether the low side maximum voltage value is valid."
+      - name: low_side_max_voltage__timestamp
+        description: "Timestamp of the low side maximum voltage reading."
+      - name: low_side_max_voltage__value
+        description: "Low side maximum voltage."
+      - name: low_side_min_voltage__has_value
+        description: "Indicates whether a value is present for the low side minimum voltage."
+      - name: low_side_min_voltage__is_valid
+        description: "Indicates whether the low side minimum voltage value is valid."
+      - name: low_side_min_voltage__timestamp
+        description: "Timestamp of the low side minimum voltage reading."
+      - name: low_side_min_voltage__value
+        description: "Low side minimum voltage."
+      - name: low_side_voltage_reference__has_value
+        description: "Indicates whether a value is present for the low side voltage reference."
+      - name: low_side_voltage_reference__is_valid
+        description: "Indicates whether the low side voltage reference value is valid."
+      - name: low_side_voltage_reference__timestamp
+        description: "Timestamp of the low side voltage reference reading."
+      - name: low_side_voltage_reference__value
+        description: "Low side voltage reference."
+      - name: lvdc_charge_current_limit__has_value
+        description: "Indicates whether a value is present for the LVDC charge current limit."
+      - name: lvdc_charge_current_limit__is_valid
+        description: "Indicates whether the LVDC charge current limit value is valid."
+      - name: lvdc_charge_current_limit__timestamp
+        description: "Timestamp of the LVDC charge current limit reading."
+      - name: lvdc_charge_current_limit__value
+        description: "LVDC charge current limit."
+      - name: lvdc_current__has_value
+        description: "Indicates whether a value is present for the LVDC (low side) current in A."
+      - name: lvdc_current__is_valid
+        description: "Indicates whether the LVDC (low side) current in A value is valid."
+      - name: lvdc_current__timestamp
+        description: "Timestamp of the LVDC (low side) current in A reading."
+      - name: lvdc_current__value
+        description: "LVDC (low side) current in A."
+      - name: lvdc_discharge_current_limit__has_value
+        description: "Indicates whether a value is present for the LVDC discharge current limit."
+      - name: lvdc_discharge_current_limit__is_valid
+        description: "Indicates whether the LVDC discharge current limit value is valid."
+      - name: lvdc_discharge_current_limit__timestamp
+        description: "Timestamp of the LVDC discharge current limit reading."
+      - name: lvdc_discharge_current_limit__value
+        description: "LVDC discharge current limit."
+      - name: lvdc_max_voltage__has_value
+        description: "Indicates whether a value is present for the LVDC maximum voltage."
+      - name: lvdc_max_voltage__is_valid
+        description: "Indicates whether the LVDC maximum voltage value is valid."
+      - name: lvdc_max_voltage__timestamp
+        description: "Timestamp of the LVDC maximum voltage reading."
+      - name: lvdc_max_voltage__value
+        description: "LVDC maximum voltage."
+      - name: lvdc_max_voltage_hysteresis__has_value
+        description: "Indicates whether a value is present for the LVDC maximum voltage hysteresis."
+      - name: lvdc_max_voltage_hysteresis__is_valid
+        description: "Indicates whether the LVDC maximum voltage hysteresis value is valid."
+      - name: lvdc_max_voltage_hysteresis__timestamp
+        description: "Timestamp of the LVDC maximum voltage hysteresis reading."
+      - name: lvdc_max_voltage_hysteresis__value
+        description: "LVDC maximum voltage hysteresis."
+      - name: lvdc_min_voltage__has_value
+        description: "Indicates whether a value is present for the LVDC minimum voltage."
+      - name: lvdc_min_voltage__is_valid
+        description: "Indicates whether the LVDC minimum voltage value is valid."
+      - name: lvdc_min_voltage__timestamp
+        description: "Timestamp of the LVDC minimum voltage reading."
+      - name: lvdc_min_voltage__value
+        description: "LVDC minimum voltage."
+      - name: lvdc_min_voltage_hysteresis__has_value
+        description: "Indicates whether a value is present for the LVDC minimum voltage hysteresis."
+      - name: lvdc_min_voltage_hysteresis__is_valid
+        description: "Indicates whether the LVDC minimum voltage hysteresis value is valid."
+      - name: lvdc_min_voltage_hysteresis__timestamp
+        description: "Timestamp of the LVDC minimum voltage hysteresis reading."
+      - name: lvdc_min_voltage_hysteresis__value
+        description: "LVDC minimum voltage hysteresis."
+      - name: lvdc_volt_err_hwd__has_value
+        description: "Indicates whether a value is present for the LVDC hardware voltage error."
+      - name: lvdc_volt_err_hwd__is_valid
+        description: "Indicates whether the LVDC hardware voltage error value is valid."
+      - name: lvdc_volt_err_hwd__timestamp
+        description: "Timestamp of the LVDC hardware voltage error reading."
+      - name: lvdc_volt_err_hwd__value
+        description: "LVDC hardware voltage error."
+      - name: lvdc_volt_err_soft__has_value
+        description: "Indicates whether a value is present for the LVDC software voltage error."
+      - name: lvdc_volt_err_soft__is_valid
+        description: "Indicates whether the LVDC software voltage error value is valid."
+      - name: lvdc_volt_err_soft__timestamp
+        description: "Timestamp of the LVDC software voltage error reading."
+      - name: lvdc_volt_err_soft__value
+        description: "LVDC software voltage error."
+      - name: lvdc_voltage__has_value
+        description: "Indicates whether a value is present for the LVDC (low side) voltage in V."
+      - name: lvdc_voltage__is_valid
+        description: "Indicates whether the LVDC (low side) voltage in V value is valid."
+      - name: lvdc_voltage__timestamp
+        description: "Timestamp of the LVDC (low side) voltage in V reading."
+      - name: lvdc_voltage__value
+        description: "LVDC (low side) voltage in V."
+      - name: mode__has_value
+        description: "Indicates whether a value is present for the converter mode."
+      - name: mode__is_valid
+        description: "Indicates whether the converter mode value is valid."
+      - name: mode__timestamp
+        description: "Timestamp of the converter mode reading."
+      - name: mode__value
+        description: "Converter mode."
+      - name: mode_unexpected_exception__has_value
+        description: "Indicates whether a value is present for the unexpected mode exception."
+      - name: mode_unexpected_exception__is_valid
+        description: "Indicates whether the unexpected mode exception value is valid."
+      - name: mode_unexpected_exception__timestamp
+        description: "Timestamp of the unexpected mode exception reading."
+      - name: mode_unexpected_exception__value
+        description: "Unexpected mode exception."
+      - name: overheating_error__has_value
+        description: "Indicates whether a value is present for the overheating error."
+      - name: overheating_error__is_valid
+        description: "Indicates whether the overheating error value is valid."
+      - name: overheating_error__timestamp
+        description: "Timestamp of the overheating error reading."
+      - name: overheating_error__value
+        description: "Overheating error."
+      - name: power_direction__has_value
+        description: "Indicates whether a value is present for the power direction."
+      - name: power_direction__is_valid
+        description: "Indicates whether the power direction value is valid."
+      - name: power_direction__timestamp
+        description: "Timestamp of the power direction reading."
+      - name: power_direction__value
+        description: "Power direction."
+      - name: power_flow_direction__has_value
+        description: "Indicates whether a value is present for the power flow direction."
+      - name: power_flow_direction__is_valid
+        description: "Indicates whether the power flow direction value is valid."
+      - name: power_flow_direction__timestamp
+        description: "Timestamp of the power flow direction reading."
+      - name: power_flow_direction__value
+        description: "Power flow direction."
+      - name: remote__has_value
+        description: "Indicates whether a value is present for the remote control state."
+      - name: remote__is_valid
+        description: "Indicates whether the remote control state value is valid."
+      - name: remote__timestamp
+        description: "Timestamp of the remote control state reading."
+      - name: remote__value
+        description: "Remote control state."
+      - name: remote_start__has_value
+        description: "Indicates whether a value is present for the remote start command."
+      - name: remote_start__is_valid
+        description: "Indicates whether the remote start command value is valid."
+      - name: remote_start__timestamp
+        description: "Timestamp of the remote start command reading."
+      - name: remote_start__value
+        description: "Remote start command."
+      - name: remote_stop__has_value
+        description: "Indicates whether a value is present for the remote stop command."
+      - name: remote_stop__is_valid
+        description: "Indicates whether the remote stop command value is valid."
+      - name: remote_stop__timestamp
+        description: "Timestamp of the remote stop command reading."
+      - name: remote_stop__value
+        description: "Remote stop command."
+      - name: request_auto__has_value
+        description: "Indicates whether a value is present for the automatic mode request."
+      - name: request_auto__is_valid
+        description: "Indicates whether the automatic mode request value is valid."
+      - name: request_auto__timestamp
+        description: "Timestamp of the automatic mode request reading."
+      - name: request_auto__value
+        description: "Automatic mode request."
+      - name: request_remote__has_value
+        description: "Indicates whether a value is present for the remote control request."
+      - name: request_remote__is_valid
+        description: "Indicates whether the remote control request value is valid."
+      - name: request_remote__timestamp
+        description: "Timestamp of the remote control request reading."
+      - name: request_remote__value
+        description: "Remote control request."
+      - name: rfu__has_value
+        description: "Indicates whether a value is present for the ready for use state."
+      - name: rfu__is_valid
+        description: "Indicates whether the ready for use state value is valid."
+      - name: rfu__timestamp
+        description: "Timestamp of the ready for use state reading."
+      - name: rfu__value
+        description: "Ready for use state."
+      - name: rfu_converter_not_in_error__has_value
+        description: "Indicates whether a value is present for the ready for use condition: converter not in error."
+      - name: rfu_converter_not_in_error__is_valid
+        description: "Indicates whether the ready for use condition: converter not in error value is valid."
+      - name: rfu_converter_not_in_error__timestamp
+        description: "Timestamp of the ready for use condition: converter not in error reading."
+      - name: rfu_converter_not_in_error__value
+        description: "Ready for use condition: converter not in error."
+      - name: rfu_hvdc_over_500_v__has_value
+        description: "Indicates whether a value is present for the ready for use condition: HVDC above 500 V."
+      - name: rfu_hvdc_over_500_v__is_valid
+        description: "Indicates whether the ready for use condition: HVDC above 500 V value is valid."
+      - name: rfu_hvdc_over_500_v__timestamp
+        description: "Timestamp of the ready for use condition: HVDC above 500 V reading."
+      - name: rfu_hvdc_over_500_v__value
+        description: "Ready for use condition: HVDC above 500 V."
+      - name: rfu_mode_expected__has_value
+        description: "Indicates whether a value is present for the ready for use condition: mode as expected."
+      - name: rfu_mode_expected__is_valid
+        description: "Indicates whether the ready for use condition: mode as expected value is valid."
+      - name: rfu_mode_expected__timestamp
+        description: "Timestamp of the ready for use condition: mode as expected reading."
+      - name: rfu_mode_expected__value
+        description: "Ready for use condition: mode as expected."
+      - name: running__has_value
+        description: "Indicates whether a value is present for the running state."
+      - name: running__is_valid
+        description: "Indicates whether the running state value is valid."
+      - name: running__timestamp
+        description: "Timestamp of the running state reading."
+      - name: running__value
+        description: "Running state."
+      - name: safety_disconnection_hardware_echo__has_value
+        description: "Indicates whether a value is present for the safety disconnection hardware echo."
+      - name: safety_disconnection_hardware_echo__is_valid
+        description: "Indicates whether the safety disconnection hardware echo value is valid."
+      - name: safety_disconnection_hardware_echo__timestamp
+        description: "Timestamp of the safety disconnection hardware echo reading."
+      - name: safety_disconnection_hardware_echo__value
+        description: "Safety disconnection hardware echo."
+      - name: sfc_current_step__has_value
+        description: "Indicates whether a value is present for the current sequential function chart step."
+      - name: sfc_current_step__is_valid
+        description: "Indicates whether the current sequential function chart step value is valid."
+      - name: sfc_current_step__timestamp
+        description: "Timestamp of the current sequential function chart step reading."
+      - name: sfc_current_step__value
+        description: "Current sequential function chart step."
+      - name: source_type
+        description: "Source type reported by the device."
+      - name: starting__has_value
+        description: "Indicates whether a value is present for the starting state."
+      - name: starting__is_valid
+        description: "Indicates whether the starting state value is valid."
+      - name: starting__timestamp
+        description: "Timestamp of the starting state reading."
+      - name: starting__value
+        description: "Starting state."
+      - name: starting_timeout_exception__has_value
+        description: "Indicates whether a value is present for the starting timeout exception."
+      - name: starting_timeout_exception__is_valid
+        description: "Indicates whether the starting timeout exception value is valid."
+      - name: starting_timeout_exception__timestamp
+        description: "Timestamp of the starting timeout exception reading."
+      - name: starting_timeout_exception__value
+        description: "Starting timeout exception."
+      - name: stopped__has_value
+        description: "Indicates whether a value is present for the stopped state."
+      - name: stopped__is_valid
+        description: "Indicates whether the stopped state value is valid."
+      - name: stopped__timestamp
+        description: "Timestamp of the stopped state reading."
+      - name: stopped__value
+        description: "Stopped state."
+      - name: stopping__has_value
+        description: "Indicates whether a value is present for the stopping state."
+      - name: stopping__is_valid
+        description: "Indicates whether the stopping state value is valid."
+      - name: stopping__timestamp
+        description: "Timestamp of the stopping state reading."
+      - name: stopping__value
+        description: "Stopping state."
+      - name: stopping_timeout_exception__has_value
+        description: "Indicates whether a value is present for the stopping timeout exception."
+      - name: stopping_timeout_exception__is_valid
+        description: "Indicates whether the stopping timeout exception value is valid."
+      - name: stopping_timeout_exception__timestamp
+        description: "Timestamp of the stopping timeout exception reading."
+      - name: stopping_timeout_exception__value
+        description: "Stopping timeout exception."
+      - name: table
+        description: "Table name associated with the raw message."
+      - name: topic
+        description: "MQTT topic associated with the raw message, one per EPC converter."
+        tests:
+          - not_null
+      - name: unit_id__has_value
+        description: "Indicates whether a value is present for the converter unit identifier."
+      - name: unit_id__is_valid
+        description: "Indicates whether the converter unit identifier value is valid."
+      - name: unit_id__timestamp
+        description: "Timestamp of the converter unit identifier reading."
+      - name: unit_id__value
+        description: "Converter unit identifier."
+      - name: vvvf_status__has_value
+        description: "Indicates whether a value is present for the VVVF status."
+      - name: vvvf_status__is_valid
+        description: "Indicates whether the VVVF status value is valid."
+      - name: vvvf_status__timestamp
+        description: "Timestamp of the VVVF status reading."
+      - name: vvvf_status__value
+        description: "VVVF status."
+      - name: warning_code__has_value
+        description: "Indicates whether a value is present for the warning code."
+      - name: warning_code__is_valid
+        description: "Indicates whether the warning code value is valid."
+      - name: warning_code__timestamp
+        description: "Timestamp of the warning code reading."
+      - name: warning_code__value
+        description: "Warning code."
+      - name: watchdog_counter__has_value
+        description: "Indicates whether a value is present for the watchdog counter."
+      - name: watchdog_counter__is_valid
+        description: "Indicates whether the watchdog counter value is valid."
+      - name: watchdog_counter__timestamp
+        description: "Timestamp of the watchdog counter reading."
+      - name: watchdog_counter__value
+        description: "Watchdog counter."
+  - name: stg_marpower__pv_converters
+    description: >
+      Staging view for the Marpower solar (PV) EPC converters on the main and owners biminis,
+      one topic per converter, unioned from their per-converter tables (published since 5 Nov 2026 06:07 UTC).
+    columns:
+      - name: ts
+        description: "Time index of the measurement record (renamed from timestamp)."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message, one per PV converter."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - "marpower/450000-dc-distribution/pv-converter-main-1"
+                  - "marpower/450000-dc-distribution/pv-converter-main-2"
+                  - "marpower/450000-dc-distribution/pv-converter-owner"
+      - name: hvdc_current__has_value
+        description: "Indicates whether a value is present for the HVDC (high side) current in A."
+      - name: hvdc_current__is_valid
+        description: "Indicates whether the HVDC (high side) current in A value is valid."
+      - name: hvdc_current__timestamp
+        description: "Timestamp of the HVDC (high side) current in A reading."
+      - name: hvdc_current__value
+        description: "HVDC (high side) current in A."
+      - name: hvdc_power__has_value
+        description: "Indicates whether a value is present for the HVDC (high side) power in W."
+      - name: hvdc_power__is_valid
+        description: "Indicates whether the HVDC (high side) power in W value is valid."
+      - name: hvdc_power__timestamp
+        description: "Timestamp of the HVDC (high side) power in W reading."
+      - name: hvdc_power__value
+        description: "HVDC (high side) power in W."
+      - name: hvdc_voltage__has_value
+        description: "Indicates whether a value is present for the HVDC (high side) voltage in V."
+      - name: hvdc_voltage__is_valid
+        description: "Indicates whether the HVDC (high side) voltage in V value is valid."
+      - name: hvdc_voltage__timestamp
+        description: "Timestamp of the HVDC (high side) voltage in V reading."
+      - name: hvdc_voltage__value
+        description: "HVDC (high side) voltage in V."
+      - name: lvdc_current__has_value
+        description: "Indicates whether a value is present for the LVDC (low side) current in A."
+      - name: lvdc_current__is_valid
+        description: "Indicates whether the LVDC (low side) current in A value is valid."
+      - name: lvdc_current__timestamp
+        description: "Timestamp of the LVDC (low side) current in A reading."
+      - name: lvdc_current__value
+        description: "LVDC (low side) current in A."
+      - name: lvdc_voltage__has_value
+        description: "Indicates whether a value is present for the LVDC (low side) voltage in V."
+      - name: lvdc_voltage__is_valid
+        description: "Indicates whether the LVDC (low side) voltage in V value is valid."
+      - name: lvdc_voltage__timestamp
+        description: "Timestamp of the LVDC (low side) voltage in V reading."
+      - name: lvdc_voltage__value
+        description: "LVDC (low side) voltage in V."

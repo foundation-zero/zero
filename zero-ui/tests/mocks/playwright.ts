@@ -9,7 +9,7 @@ import { AuthFixture, createAuthFixture } from "../integration/fixtures/auth";
 import { createSessionFixture, SessionFixture } from "../integration/fixtures/session";
 
 export type ZeroSubscriptions = {
-  SubscribeToRoom: { rooms: Room[] };
+  SubscribeToRooms: { rooms: Room[] };
 };
 
 const test = base.extend<{

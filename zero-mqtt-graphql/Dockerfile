@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM rust:1.99-trixie@sha256:4c4c8ec55be09785e6d6ac45ea9853525a73c15db74009100ac08952e773dfb8 AS builder
+FROM --platform=$BUILDPLATFORM rust:1.99-trixie@sha256:8a4e90c7946b74626488b1446f712c0fe0ed1a596cbd3d871684bc9c5433ae07 AS builder
 
 WORKDIR /app
 
@@ -43,7 +43,7 @@ RUN touch src/*.rs && \
   cargo build --release --locked --target "$(cat /rust-target)" && \
   cp "target/$(cat /rust-target)/release/zero-mqtt-graphql" /app/zero-mqtt-graphql
 
-FROM debian:trixie-slim@sha256:f6b08b09a05725f9431502d3b5714f5c4576e82c1a84fa1debe0c24a7e0c3ec4 AS runtime
+FROM debian:trixie-slim@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2 AS runtime
 
 RUN apt-get update && \
   apt-get install -y --no-install-recommends ca-certificates && \
