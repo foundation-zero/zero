@@ -90,7 +90,6 @@ fn build_group_objects(
     // Named as `payload_object` names it, which pascal-cases the prefix again.
     let values_type = pascal_case_graphql_name(&format!("{name_prefix}-Values"));
     let value_meta_type = format!("{name_prefix}ValueMeta");
-    let mut objects = vec![];
 
     let item_obj = [
         ("topic", TypeRef::named(TypeRef::STRING)),
@@ -102,7 +101,6 @@ fn build_group_objects(
     .fold(Object::new(item_type.as_str()), |obj, field| {
         obj.field(field)
     });
-    objects.push(item_obj);
 
     let meta_obj = metadata_fields
         .iter()
@@ -114,18 +112,18 @@ fn build_group_objects(
         .fold(Object::new(meta_type.as_str()), |obj, field| {
             obj.field(field)
         });
-    objects.push(meta_obj);
 
     let values_objects = payload_object(name_prefix, "Values", &group.fields);
-    objects.extend(values_objects);
 
     let value_meta_obj = value_meta_descriptor_fields(group)
         .fold(Object::new(value_meta_type.as_str()), |obj, field| {
             obj.field(field)
         });
-    objects.push(value_meta_obj);
 
-    objects
+    vec![item_obj, meta_obj, value_meta_obj]
+        .into_iter()
+        .chain(values_objects)
+        .collect()
 }
 
 /// Union of a group's collected `x-*` extension keys across all its payload
