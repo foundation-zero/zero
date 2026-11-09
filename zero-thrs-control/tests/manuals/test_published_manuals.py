@@ -27,3 +27,16 @@ def test_published_manual_matches_control_version(manual, scripts):
         f"now at {current}. Refresh it with the thrs-module-manual skill, or run "
         f"`just manual_stamp {module_name}` if it is still accurate."
     )
+
+
+@pytest.mark.parametrize(
+    "manual", sorted(MANUALS.glob("*.html")), ids=lambda path: path.stem
+)
+def test_published_diagram_matches_manual(manual, scripts):
+    manual_diagram = importlib.import_module("manual_diagram")
+
+    assert manual_diagram.is_diagram_current(manual), (
+        f"{manual.stem}.svg is missing or was not rendered from {manual.name}'s Mermaid "
+        f"source. Render it with `just manual {manual.stem}` and publish it with "
+        f"`just manual_publish {manual.stem}`."
+    )
