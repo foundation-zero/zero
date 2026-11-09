@@ -6,7 +6,7 @@ import { PARAMETERS } from "./parameters";
 
 // Rendered by the layout below the main navigation, with `SubNavigationProps`.
 const SUB_NAVIGATION = defineAsyncComponent(
-  () => import("@/modules/thrapp/components/navigation/InterimSubNavigation.vue"),
+  () => import("@/modules/thrapp/components/sub-navigation/SubNavigation.vue"),
 );
 
 export const thrappRoutes: RouteRecordRaw = {

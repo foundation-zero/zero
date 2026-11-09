@@ -970,7 +970,32 @@
         "menu": "Menu",
         "openMenu": "Open menu",
         "closeMenu": "Close menu"
+      },
+      "controlState": {
+        "automaticControl": "Automatic control",
+        "manualControl": "Manual control"
+      },
+      "subNavigation": {
+        "module": "Module",
+        "mode": "Mode",
+        "groups": {
+          "producers": "Producers",
+          "buffers": "Buffers",
+          "consumers": "Consumers"
+        }
       }
+    },
+    "modules": {
+      "adsorption": "Adsorption",
+      "dc": "DC converters",
+      "dhw": "Domestic hot water",
+      "drives": "Drives & shorepower",
+      "pcm": "PCM",
+      "pvt": "PVT",
+      "pvt-main": "PVT-Bimini FWD AFT",
+      "pvt-owners": "PVT-Bimini Owners",
+      "pvt-main-heat": "PVT-Bimini heat map",
+      "thrusters": "Thrusters"
     }
   }
 }

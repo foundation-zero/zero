@@ -4,12 +4,14 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import { useAutomationStore } from "@/modules/thrapp/stores/automation";
 import { ENV } from "@/settings";
 import { RiLock2Line } from "@remixicon/vue";
-import { inject, Ref } from "vue";
+import { cn } from "@/modules/common/lib/utils";
+import { HTMLAttributes, inject, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useManualModeUnlock } from "./manual-mode-toggle.utils";
 
 const { t } = useI18n();
 
+const props = defineProps<{ class?: HTMLAttributes["class"] }>();
 const emit = defineEmits(["close"]);
 
 const { setAutomatedControl } = useAutomationStore();
@@ -30,7 +32,7 @@ const close = () => {
 </script>
 
 <template>
-  <section class="grid gap-6 max-md:px-4">
+  <section :class="cn('grid gap-6 max-md:px-4', props.class)">
     <h2 class="text-xl font-bold">
       {{ t("thrapp.dialogs.manualMode.title") }}
     </h2>
