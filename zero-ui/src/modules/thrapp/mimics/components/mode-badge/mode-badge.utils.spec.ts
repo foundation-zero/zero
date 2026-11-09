@@ -78,6 +78,20 @@ describe("getModuleModes", () => {
     expect(getModuleModes("pvt", control, t)).toEqual([]);
   });
 
+  it("follows the automatic flag rather than the presence of an automatic mode", () => {
+    const automaticWithoutMode = withModule("pvt", {
+      controlMode: { automatic: true, automaticMode: null },
+      sensorValues: amcs(AmcsControlMode.External),
+    });
+    const manualWithStaleMode = withModule("thrusters", {
+      controlMode: { automatic: false, automaticMode: { mode: "cooling" } },
+      sensorValues: amcs(AmcsControlMode.External),
+    });
+
+    expect(getModuleModes("pvt", automaticWithoutMode, t)).toEqual([]);
+    expect(labels("thrusters", manualWithStaleMode)).toEqual(["Manual control"]);
+  });
+
   it("names the AMCS mode when the advisory mode is disabled", () => {
     const control = withModule("pvt", { sensorValues: amcs(AmcsControlMode.Manual) });
 

@@ -100,7 +100,7 @@ export function getModuleModes(
     return [];
   }
 
-  if (!automaticMode) {
+  if (!status.controlMode.automatic) {
     const label = t(`modes.${ModeBadgeMode.ManualControl}`);
     const targets = MODULE_TARGETS[module];
     return targets
@@ -109,6 +109,10 @@ export function getModuleModes(
           label: prefixed(target, label),
         }))
       : [{ mode: ModeBadgeMode.ManualControl, label }];
+  }
+
+  if (!automaticMode) {
+    return [];
   }
 
   switch (module) {
