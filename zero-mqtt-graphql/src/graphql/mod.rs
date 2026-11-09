@@ -25,7 +25,9 @@ use std::sync::Arc;
 use anyhow::{Context, bail};
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
-use async_graphql::dynamic::{Field, FieldValue, Object, Schema, SchemaBuilder, Type, TypeRef};
+use async_graphql::dynamic::{
+    Field, FieldValue, Object, Scalar, Schema, SchemaBuilder, Type, TypeRef,
+};
 use log::{info, warn};
 use serde_json::Value as JsonValue;
 
@@ -105,7 +107,8 @@ pub fn build_schema(
         query.type_name(),
         mutation.as_ref().map(Object::type_name),
         None,
-    );
+    )
+    .register(json_scalar());
     known_types
         .into_values()
         .chain([query.into()])
@@ -414,7 +417,22 @@ fn graphql_type_ref(name_prefix: &str, typ: &FieldType) -> (TypeRef, Vec<Object>
             let objects = payload_object(name_prefix, name, fields);
             (TypeRef::named(objects[0].type_name()), objects)
         }
+        FieldType::List(element) => {
+            let (element, objects) = graphql_type_ref(name_prefix, element);
+            (TypeRef::List(Box::new(element)), objects)
+        }
+        FieldType::Json => (TypeRef::named(JSON_SCALAR), vec![]),
     }
+}
+
+/// The scalar for values without a known GraphQL type: any JSON.
+const JSON_SCALAR: &str = "JSON";
+
+/// The [`JSON_SCALAR`] type. It accepts any value; inputs are still
+/// validated against the topic's JSON Schema before publishing.
+fn json_scalar() -> Scalar {
+    Scalar::new(JSON_SCALAR)
+        .description("Any JSON value, for a list whose element type the Spec does not declare")
 }
 
 #[cfg(test)]
