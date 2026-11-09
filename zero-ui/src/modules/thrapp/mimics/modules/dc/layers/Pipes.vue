@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
+import LayerFilter from "../../../components/layer-filter/LayerFilter.vue";
+import { LayerFilterOption } from "../../../components/layer-filter/layer-filter.provider";
 
 const { t } = useI18n();
 </script>
@@ -25,63 +27,107 @@ const { t } = useI18n();
       class="stroke-flows-pipe"
       stroke-linejoin="round"
     />
-    <mask
-      id="path-4-inside-1_10180_10390"
-      fill="white"
-    >
+    <LayerFilter :filter="LayerFilterOption.SupportComponents">
+      <mask
+        id="path-4-inside-1_10180_10390"
+        fill="white"
+      >
+        <path
+          d="M1118.11 595.353C1118.11 586.517 1125.27 579.353 1134.11 579.353H1283.86C1292.7 579.353 1299.86 586.517 1299.86 595.353V696.156C1299.86 704.993 1292.7 712.156 1283.86 712.156H1134.11C1125.27 712.156 1118.11 704.993 1118.11 696.156V546.377Z"
+        />
+      </mask>
       <path
         d="M1118.11 595.353C1118.11 586.517 1125.27 579.353 1134.11 579.353H1283.86C1292.7 579.353 1299.86 586.517 1299.86 595.353V696.156C1299.86 704.993 1292.7 712.156 1283.86 712.156H1134.11C1125.27 712.156 1118.11 704.993 1118.11 696.156V546.377Z"
+        fill="#FAFAFA"
+        fill-opacity="0.05"
+        stroke="#EE44DD"
+        stroke-opacity="0.55"
+        stroke-width="2"
+        stroke-dasharray="2 2"
+        mask="url(#path-4-inside-1_10180_10390)"
       />
-    </mask>
-    <path
-      d="M1118.11 595.353C1118.11 586.517 1125.27 579.353 1134.11 579.353H1283.86C1292.7 579.353 1299.86 586.517 1299.86 595.353V696.156C1299.86 704.993 1292.7 712.156 1283.86 712.156H1134.11C1125.27 712.156 1118.11 704.993 1118.11 696.156V546.377Z"
-      fill="#FAFAFA"
-      fill-opacity="0.05"
-      stroke="#EE44DD"
-      stroke-opacity="0.55"
-      stroke-width="2"
-      stroke-dasharray="2 2"
-      mask="url(#path-4-inside-1_10180_10390)"
-    />
-    <mask
-      id="dc-support-ac-inside"
-      fill="white"
-    >
+      <mask
+        id="dc-support-ac-inside"
+        fill="white"
+      >
+        <path
+          d="M407.672 258.655C407.672 249.818 414.836 242.655 423.672 242.655H538.422C547.259 242.655 554.422 249.818 554.422 258.655V296.073C554.422 304.909 547.259 312.073 538.422 312.073H423.672C414.836 312.073 407.672 304.909 407.672 296.073V258.655Z"
+        />
+      </mask>
       <path
         d="M407.672 258.655C407.672 249.818 414.836 242.655 423.672 242.655H538.422C547.259 242.655 554.422 249.818 554.422 258.655V296.073C554.422 304.909 547.259 312.073 538.422 312.073H423.672C414.836 312.073 407.672 304.909 407.672 296.073V258.655Z"
+        fill="#FAFAFA"
+        fill-opacity="0.05"
+        stroke="#EE44DD"
+        stroke-opacity="0.55"
+        stroke-width="2"
+        stroke-dasharray="2 2"
+        mask="url(#dc-support-ac-inside)"
       />
-    </mask>
-    <path
-      d="M407.672 258.655C407.672 249.818 414.836 242.655 423.672 242.655H538.422C547.259 242.655 554.422 249.818 554.422 258.655V296.073C554.422 304.909 547.259 312.073 538.422 312.073H423.672C414.836 312.073 407.672 304.909 407.672 296.073V258.655Z"
-      fill="#FAFAFA"
-      fill-opacity="0.05"
-      stroke="#EE44DD"
-      stroke-opacity="0.55"
-      stroke-width="2"
-      stroke-dasharray="2 2"
-      mask="url(#dc-support-ac-inside)"
-    />
-    <path
-      d="M426.014 316.701V247.3"
-      class="stroke-flows-pipe"
-    />
-    <path
-      d="M1009.47 411.682L1009.47 502.423H1159.55L1159.55 688.856"
-      class="stroke-flows-pipe"
-      stroke-linejoin="round"
-    />
-    <path
-      d="M1159.88 645.75H1216.33"
-      class="stroke-flows-pipe"
-    />
-    <path
-      d="M1159.88 688.373H1190.44"
-      class="stroke-flows-pipe"
-    />
-    <path
-      d="M1190.3 702.59L1190.3 687.204"
-      class="stroke-flows-pipe"
-    />
+      <path
+        d="M426.014 316.701V247.3"
+        class="stroke-flows-pipe"
+      />
+      <path
+        d="M1009.47 411.682L1009.47 502.423H1159.55L1159.55 688.856"
+        class="stroke-flows-pipe"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M1159.88 645.75H1216.33"
+        class="stroke-flows-pipe"
+      />
+      <path
+        d="M1159.88 688.373H1190.44"
+        class="stroke-flows-pipe"
+      />
+      <path
+        d="M1190.3 702.59L1190.3 687.204"
+        class="stroke-flows-pipe"
+      />
+      <text
+        fill="#C4CBD0"
+        style="white-space: pre"
+        xml:space="preserve"
+        font-family="Inter"
+        font-size="10"
+        letter-spacing="0em"
+      >
+        <tspan
+          x="1161.56"
+          y="595.03"
+        >
+          {{ t("thrapp.mimics.sections.supportComponents") }}
+        </tspan>
+      </text>
+      <text
+        fill="#C4CBD0"
+        style="white-space: pre"
+        xml:space="preserve"
+        font-family="Inter"
+        font-size="10"
+        letter-spacing="0em"
+      >
+        <tspan
+          x="435.455"
+          y="252.7"
+        >
+          {{ t("thrapp.mimics.sections.supportComponents") }}
+        </tspan>
+      </text>
+      <circle
+        cx="425.983"
+        cy="316.701"
+        r="2.5"
+        class="fill-flows-pipe"
+      />
+      <circle
+        cx="1009.48"
+        cy="411.384"
+        r="2.5"
+        class="fill-flows-pipe"
+      />
+    </LayerFilter>
     <path
       d="M634.098 316.66V412.196"
       class="stroke-flows-pipe"
@@ -177,36 +223,6 @@ const { t } = useI18n();
       letter-spacing="0em"
     >
       <tspan
-        x="1161.56"
-        y="595.03"
-      >
-        {{ t("thrapp.mimics.sections.supportComponents") }}
-      </tspan>
-    </text>
-    <text
-      fill="#C4CBD0"
-      style="white-space: pre"
-      xml:space="preserve"
-      font-family="Inter"
-      font-size="10"
-      letter-spacing="0em"
-    >
-      <tspan
-        x="435.455"
-        y="252.7"
-      >
-        {{ t("thrapp.mimics.sections.supportComponents") }}
-      </tspan>
-    </text>
-    <text
-      fill="#C4CBD0"
-      style="white-space: pre"
-      xml:space="preserve"
-      font-family="Inter"
-      font-size="10"
-      letter-spacing="0em"
-    >
-      <tspan
         x="95.1484"
         y="15.5531"
       >
@@ -241,12 +257,6 @@ const { t } = useI18n();
       class="fill-flows-pipe"
     />
     <circle
-      cx="425.983"
-      cy="316.701"
-      r="2.5"
-      class="fill-flows-pipe"
-    />
-    <circle
       cx="671.473"
       cy="411.4"
       r="2.5"
@@ -270,73 +280,69 @@ const { t } = useI18n();
       r="2.5"
       class="fill-flows-pipe"
     />
-    <circle
-      cx="1009.48"
-      cy="411.384"
-      r="2.5"
-      class="fill-flows-pipe"
-    />
-    <circle
-      cx="2.5"
-      cy="2.5"
-      r="2.5"
-      transform="matrix(-1 0 0 1 312.81 461.453)"
-      class="fill-flows-pipe"
-    />
-    <path
-      d="M296.523 411.375C296.523 409.995 295.404 408.875 294.023 408.875C292.643 408.875 291.523 409.995 291.523 411.375C291.523 412.756 292.643 413.875 294.023 413.875C295.404 413.875 296.523 412.756 296.523 411.375Z"
-      class="fill-flows-pipe"
-    />
-    <mask
-      id="path-34-inside-4_10180_10390"
-      fill="white"
-    >
+    <LayerFilter :filter="LayerFilterOption.Bypasses">
+      <circle
+        cx="2.5"
+        cy="2.5"
+        r="2.5"
+        transform="matrix(-1 0 0 1 312.81 461.453)"
+        class="fill-flows-pipe"
+      />
+      <path
+        d="M296.523 411.375C296.523 409.995 295.404 408.875 294.023 408.875C292.643 408.875 291.523 409.995 291.523 411.375C291.523 412.756 292.643 413.875 294.023 413.875C295.404 413.875 296.523 412.756 296.523 411.375Z"
+        class="fill-flows-pipe"
+      />
+      <mask
+        id="path-34-inside-4_10180_10390"
+        fill="white"
+      >
+        <path
+          d="M295.94 476.145L295.941 610.877C295.941 619.135 302.635 625.829 310.893 625.829C319.147 625.829 325.839 619.141 325.845 610.887L325.983 399.882C325.986 395.365 329.675 391.717 334.192 391.765C338.712 391.812 342.402 388.161 342.402 383.641L342.402 338.086C342.402 333.511 338.693 329.802 334.118 329.802C329.543 329.802 325.835 326.094 325.835 321.519L325.835 220.291C325.835 211.711 318.879 204.755 310.299 204.755C301.719 204.755 294.764 211.711 294.764 220.291V400.038C294.764 403.29 292.129 405.927 288.878 405.929C285.626 405.932 282.992 408.568 282.992 411.82L282.991 463.161C282.991 466.74 285.887 469.644 289.466 469.653C293.044 469.663 295.94 472.567 295.94 476.145Z"
+        />
+      </mask>
       <path
         d="M295.94 476.145L295.941 610.877C295.941 619.135 302.635 625.829 310.893 625.829C319.147 625.829 325.839 619.141 325.845 610.887L325.983 399.882C325.986 395.365 329.675 391.717 334.192 391.765C338.712 391.812 342.402 388.161 342.402 383.641L342.402 338.086C342.402 333.511 338.693 329.802 334.118 329.802C329.543 329.802 325.835 326.094 325.835 321.519L325.835 220.291C325.835 211.711 318.879 204.755 310.299 204.755C301.719 204.755 294.764 211.711 294.764 220.291V400.038C294.764 403.29 292.129 405.927 288.878 405.929C285.626 405.932 282.992 408.568 282.992 411.82L282.991 463.161C282.991 466.74 285.887 469.644 289.466 469.653C293.044 469.663 295.94 472.567 295.94 476.145Z"
+        fill="#FAFAFA"
+        fill-opacity="0.05"
+        stroke="#EE44DD"
+        stroke-opacity="0.55"
+        stroke-width="2"
+        stroke-dasharray="2 2"
+        mask="url(#path-34-inside-4_10180_10390)"
       />
-    </mask>
-    <path
-      d="M295.94 476.145L295.941 610.877C295.941 619.135 302.635 625.829 310.893 625.829C319.147 625.829 325.839 619.141 325.845 610.887L325.983 399.882C325.986 395.365 329.675 391.717 334.192 391.765C338.712 391.812 342.402 388.161 342.402 383.641L342.402 338.086C342.402 333.511 338.693 329.802 334.118 329.802C329.543 329.802 325.835 326.094 325.835 321.519L325.835 220.291C325.835 211.711 318.879 204.755 310.299 204.755C301.719 204.755 294.764 211.711 294.764 220.291V400.038C294.764 403.29 292.129 405.927 288.878 405.929C285.626 405.932 282.992 408.568 282.992 411.82L282.991 463.161C282.991 466.74 285.887 469.644 289.466 469.653C293.044 469.663 295.94 472.567 295.94 476.145Z"
-      fill="#FAFAFA"
-      fill-opacity="0.05"
-      stroke="#EE44DD"
-      stroke-opacity="0.55"
-      stroke-width="2"
-      stroke-dasharray="2 2"
-      mask="url(#path-34-inside-4_10180_10390)"
-    />
-    <path
-      d="M310.387 641.465V553.092C313.148 553.092 315.344 551.031 315.344 548.546C315.344 546.061 313.148 544.065 310.387 544.065V463.942M310.387 463.942V415.964C313.148 415.964 315.409 413.913 315.409 411.428C315.409 408.942 313.148 406.93 310.387 406.93V321.365C313.148 321.365 315.409 319.353 315.409 316.868C315.409 314.383 313.148 312.376 310.387 312.376V198.078M310.387 463.942H294.063V411.358"
-      class="stroke-flows-pipe"
-    />
-    <circle
-      cx="310.355"
-      cy="641.369"
-      r="2.5"
-      class="fill-flows-pipe"
-    />
-    <circle
-      cx="2.5"
-      cy="2.5"
-      r="2.5"
-      transform="matrix(-1 -1.74846e-07 -1.74846e-07 1 312.891 196.064)"
-      class="fill-flows-pipe"
-    />
-    <text
-      transform="translate(325.135 395.033) rotate(-90)"
-      fill="#C4CBD0"
-      style="white-space: pre"
-      xml:space="preserve"
-      font-family="Inter"
-      font-size="12"
-      letter-spacing="0em"
-    >
-      <tspan
-        x="4.24036"
-        y="10.3636"
+      <path
+        d="M310.387 641.465V553.092C313.148 553.092 315.344 551.031 315.344 548.546C315.344 546.061 313.148 544.065 310.387 544.065V463.942M310.387 463.942V415.964C313.148 415.964 315.409 413.913 315.409 411.428C315.409 408.942 313.148 406.93 310.387 406.93V321.365C313.148 321.365 315.409 319.353 315.409 316.868C315.409 314.383 313.148 312.376 310.387 312.376V198.078M310.387 463.942H294.063V411.358"
+        class="stroke-flows-pipe"
+      />
+      <circle
+        cx="310.355"
+        cy="641.369"
+        r="2.5"
+        class="fill-flows-pipe"
+      />
+      <circle
+        cx="2.5"
+        cy="2.5"
+        r="2.5"
+        transform="matrix(-1 -1.74846e-07 -1.74846e-07 1 312.891 196.064)"
+        class="fill-flows-pipe"
+      />
+      <text
+        transform="translate(325.135 395.033) rotate(-90)"
+        fill="#C4CBD0"
+        style="white-space: pre"
+        xml:space="preserve"
+        font-family="Inter"
+        font-size="12"
+        letter-spacing="0em"
       >
-        {{ t("thrapp.mimics.sections.bypassA") }}
-      </tspan>
-    </text>
+        <tspan
+          x="4.24036"
+          y="10.3636"
+        >
+          {{ t("thrapp.mimics.sections.bypassA") }}
+        </tspan>
+      </text>
+    </LayerFilter>
   </svg>
 </template>

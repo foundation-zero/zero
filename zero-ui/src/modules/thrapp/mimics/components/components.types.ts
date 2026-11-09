@@ -11,6 +11,8 @@ export interface MimicComponentBaseProps {
 export interface MimicComponentProps {
   baseOrientation?: ComponentOrientation;
   id?: string;
+  x?: number | string;
+  y?: number | string;
   width: number;
   height: number;
 }

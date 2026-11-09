@@ -35,7 +35,7 @@ import TemperatureSensors from "./layers/TemperatureSensors.vue";
     <FlowSensors />
     <TemperatureSensors />
     <DirectionArrows
-      x="250"
+      x="254"
       y="110"
     />
     <CircuitBoxes />

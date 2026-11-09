@@ -1,28 +1,100 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { BypassArea } from "../../../components/bypass-area";
+import LayerFilter from "../../../components/layer-filter/LayerFilter.vue";
+import { LayerFilterOption } from "../../../components/layer-filter/layer-filter.provider";
 
 const { t } = useI18n();
 </script>
 
 <template>
   <g>
-    <BypassArea
-      x="18.623"
-      y="466.07"
-      :width="155.564"
-      :height="210.93"
-    >
-      {{ t("thrapp.mimics.adsorption.sections.supportComponentsMt") }}
-    </BypassArea>
-    <BypassArea
-      x="1660"
-      y="456.338"
-      :width="171.928"
-      :height="184.008"
-    >
-      {{ t("thrapp.mimics.adsorption.sections.supportComponentsHt") }}
-    </BypassArea>
+    <LayerFilter :filter="LayerFilterOption.SupportComponents">
+      <BypassArea
+        x="18.623"
+        y="466.07"
+        :width="155.564"
+        :height="210.93"
+      >
+        {{ t("thrapp.mimics.adsorption.sections.supportComponentsMt") }}
+      </BypassArea>
+      <BypassArea
+        x="1660"
+        y="456.338"
+        :width="171.928"
+        :height="184.008"
+      >
+        {{ t("thrapp.mimics.adsorption.sections.supportComponentsHt") }}
+      </BypassArea>
+      <g transform="translate(1675.66 604.221)">
+        <path
+          d="M0 0.5H61.5696"
+          class="stroke-flows-pipe"
+        />
+      </g>
+      <g transform="translate(1675.66 493.674)">
+        <path
+          d="M0 0.5H48.3815"
+          class="stroke-flows-pipe"
+        />
+      </g>
+      <g transform="translate(1705.36 558.528)">
+        <path
+          d="M0 0.5H15.7485"
+          class="stroke-flows-pipe"
+        />
+      </g>
+      <g transform="translate(1675.66 558.712)">
+        <path
+          d="M0 0.5H61.5696"
+          class="stroke-flows-pipe"
+        />
+      </g>
+      <g transform="translate(1334.26 262.675)">
+        <path
+          d="M0.5 0V86.6505L341.087 88.1038V342.432"
+          class="stroke-flows-pipe"
+          stroke-linejoin="round"
+        />
+      </g>
+      <g transform="translate(151.486 397.624)">
+        <path
+          d="M0.5 255.326V0"
+          class="stroke-flows-pipe"
+          stroke-linejoin="round"
+        />
+      </g>
+      <g transform="translate(113.09 549.418)">
+        <path
+          d="M39.3008 0.5H0"
+          class="stroke-flows-pipe"
+        />
+      </g>
+      <g transform="translate(113.09 592.531)">
+        <path
+          d="M39.3008 0.5H0"
+          class="stroke-flows-pipe"
+        />
+      </g>
+      <g transform="translate(131.123 652.439)">
+        <path
+          d="M21.2681 0.5H0"
+          class="stroke-flows-pipe"
+        />
+      </g>
+      <g transform="translate(131.123 652.439)">
+        <path
+          d="M15.2595 0.5H0"
+          class="stroke-flows-pipe"
+        />
+      </g>
+      <circle
+        cx="152"
+        cy="397.6"
+        r="2.5"
+        class="fill-flows-pipe"
+      />
+    </LayerFilter>
     <g transform="translate(69.043 286.981)">
       <path
         d="M6.49783 0.5H765.154V110.5H0.5V0.5H6.49783Z"
@@ -112,68 +184,6 @@ const { t } = useI18n();
         stroke-linejoin="round"
       />
     </g>
-    <g transform="translate(1675.66 604.221)">
-      <path
-        d="M0 0.5H61.5696"
-        class="stroke-flows-pipe"
-      />
-    </g>
-    <g transform="translate(1675.66 493.674)">
-      <path
-        d="M0 0.5H48.3815"
-        class="stroke-flows-pipe"
-      />
-    </g>
-    <g transform="translate(1705.36 558.528)">
-      <path
-        d="M0 0.5H15.7485"
-        class="stroke-flows-pipe"
-      />
-    </g>
-    <g transform="translate(1675.66 558.712)">
-      <path
-        d="M0 0.5H61.5696"
-        class="stroke-flows-pipe"
-      />
-    </g>
-    <g transform="translate(1334.26 262.675)">
-      <path
-        d="M0.5 0V86.6505L341.087 88.1038V342.432"
-        class="stroke-flows-pipe"
-        stroke-linejoin="round"
-      />
-    </g>
-    <g transform="translate(151.486 397.624)">
-      <path
-        d="M0.5 255.326V0"
-        class="stroke-flows-pipe"
-        stroke-linejoin="round"
-      />
-    </g>
-    <g transform="translate(113.09 549.418)">
-      <path
-        d="M39.3008 0.5H0"
-        class="stroke-flows-pipe"
-      />
-    </g>
-    <g transform="translate(113.09 592.531)">
-      <path
-        d="M39.3008 0.5H0"
-        class="stroke-flows-pipe"
-      />
-    </g>
-    <g transform="translate(131.123 652.439)">
-      <path
-        d="M21.2681 0.5H0"
-        class="stroke-flows-pipe"
-      />
-    </g>
-    <g transform="translate(131.123 652.439)">
-      <path
-        d="M15.2595 0.5H0"
-        class="stroke-flows-pipe"
-      />
-    </g>
     <circle
       cx="367.72"
       cy="397.46"
@@ -201,12 +211,6 @@ const { t } = useI18n();
     <circle
       cx="1334.77"
       cy="262.63"
-      r="2.5"
-      class="fill-flows-pipe"
-    />
-    <circle
-      cx="152"
-      cy="397.6"
       r="2.5"
       class="fill-flows-pipe"
     />

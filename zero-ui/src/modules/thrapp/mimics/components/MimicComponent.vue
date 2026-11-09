@@ -11,6 +11,7 @@ import {
   provideMimicComponentContext,
   useRotationDegrees,
 } from ".";
+import { registerLabelTarget } from "./label/label.utils";
 
 const props = withDefaults(
   defineProps<
@@ -26,6 +27,13 @@ const props = withDefaults(
 
 const { baseOrientation, orientation, rotation, state } = toRefs(props);
 
+registerLabelTarget(() => ({
+  x: Number(props.x ?? 0),
+  y: Number(props.y ?? 0),
+  width: Number(props.width),
+  height: Number(props.height),
+}));
+
 const rotationDegrees = useRotationDegrees(orientation, baseOrientation, rotation);
 
 const rotationStyle = computed(() => ({ transform: `rotate(${rotationDegrees.value}deg)` }));
@@ -38,6 +46,8 @@ const { stateColor, strokeWidth } = provideMimicComponentContext(
 <template>
   <svg
     v-bind="createSizeAndViewbox(width, height)"
+    :x="x"
+    :y="y"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     aria-hidden="true"

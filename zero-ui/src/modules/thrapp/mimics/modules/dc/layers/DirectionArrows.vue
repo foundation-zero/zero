@@ -1,11 +1,16 @@
+<script setup lang="ts">
+import LayerFilter from "../../../components/layer-filter/LayerFilter.vue";
+import { LayerFilterOption } from "../../../components/layer-filter/layer-filter.provider";
+</script>
+
 <template>
-  <svg
+  <LayerFilter
+    as="svg"
+    :filter="LayerFilterOption.DirectionArrows"
     width="887"
     height="546"
     viewBox="0 0 887 546"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
   >
     <defs>
       <marker
@@ -202,5 +207,5 @@
       height="62.0402"
       fill="url(#pattern0_10180_12108)"
     />
-  </svg>
+  </LayerFilter>
 </template>
