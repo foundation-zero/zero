@@ -23,6 +23,11 @@ const MAX_BACKOFF: Duration = Duration::from_secs(30);
 /// backoff. A booting broker refuses logins too, so the first is not final.
 const PERMANENT_ERROR_ATTEMPTS: u32 = 10;
 
+/// Largest MQTT packet sent or received. rumqttc defaults to 10 KiB, which
+/// some topics exceed; a larger packet breaks the connection, and a retained
+/// one breaks it again on every reconnect.
+const MAX_PACKET_SIZE: usize = 1024 * 1024;
+
 /// Publishes through the subscriber's connection. Resolves once the publish
 /// is queued; with QoS 1 the client retries until the broker acknowledges.
 impl Publisher for AsyncClient {
@@ -64,6 +69,7 @@ impl MqttSubscriber {
 
         let mut mqttoptions = MqttOptions::new(&client_id, connection.host, connection.port);
         mqttoptions.set_keep_alive(KEEP_ALIVE);
+        mqttoptions.set_max_packet_size(MAX_PACKET_SIZE, MAX_PACKET_SIZE);
 
         if let (Some(user), Some(pass)) = (connection.username, connection.password) {
             mqttoptions.set_credentials(user, pass);
