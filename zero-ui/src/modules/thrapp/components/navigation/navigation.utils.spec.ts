@@ -22,6 +22,10 @@ vi.mock(import("@/modules/thrapp/router/parameters"), () => ({
   PARAMETERS: { dhw: {} } as never,
 }));
 
+vi.mock(import("@/modules/thrapp/router/documentation"), () => ({
+  DOCUMENTATION: { dhw: async () => "", pvt: async () => "" },
+}));
+
 const navigate = (name: string, module?: string) => {
   route.name = name;
   route.params = module ? { module } : {};
@@ -50,14 +54,24 @@ describe("useThrappNavigation", () => {
   });
 
   it("links documentation to the current module and marks it active on its own page", () => {
-    navigate("thrs/documentation", "pvt-owners");
+    navigate("thrs/documentation", "pvt");
     const { tabs, documentation } = useThrappNavigation();
 
     expect(documentation.value).toEqual({
-      to: { name: "thrs/documentation", params: { module: "pvt-owners" } },
+      to: { name: "thrs/documentation", params: { module: "pvt" } },
       active: true,
     });
     expect(tabs.value.some(({ active }) => active)).toBe(false);
+  });
+
+  it("falls back to dhw documentation for modules without a manual", () => {
+    navigate("thrs/mimics", "pvt-owners");
+    const { documentation } = useThrappNavigation();
+
+    expect(documentation.value.to).toEqual({
+      name: "thrs/documentation",
+      params: { module: "dhw" },
+    });
   });
 
   it("falls back to dhw documentation without a module", () => {

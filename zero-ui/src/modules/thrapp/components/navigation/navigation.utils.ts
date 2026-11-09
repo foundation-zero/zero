@@ -1,3 +1,4 @@
+import { DOCUMENTATION } from "@/modules/thrapp/router/documentation";
 import { MimicKey } from "@/modules/thrapp/router/mimics";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
@@ -9,16 +10,20 @@ export const useThrappNavigation = () => {
   const route = useRoute();
   const currentModule = computed(() => route.params.module as MimicKey | undefined);
 
+  const moduleWithView = (views: Partial<Record<MimicKey, unknown>>) =>
+    currentModule.value && views[currentModule.value] ? currentModule.value : DEFAULT_MODULE;
+
   const tabs = computed<MainTabLink[]>(() =>
-    MAIN_TABS.map(({ name, label, views }) => {
-      const module =
-        currentModule.value && views[currentModule.value] ? currentModule.value : DEFAULT_MODULE;
-      return { name, label, to: { name, params: { module } }, active: route.name === name };
-    }),
+    MAIN_TABS.map(({ name, label, views }) => ({
+      name,
+      label,
+      to: { name, params: { module: moduleWithView(views) } },
+      active: route.name === name,
+    })),
   );
 
   const documentation = computed<NavigationLink>(() => ({
-    to: { name: DOCUMENTATION_ROUTE, params: { module: currentModule.value ?? DEFAULT_MODULE } },
+    to: { name: DOCUMENTATION_ROUTE, params: { module: moduleWithView(DOCUMENTATION) } },
     active: route.name === DOCUMENTATION_ROUTE,
   }));
 
