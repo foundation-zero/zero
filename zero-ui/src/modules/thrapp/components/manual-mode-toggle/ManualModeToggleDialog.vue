@@ -4,58 +4,45 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import { useAutomationStore } from "@/modules/thrapp/stores/automation";
 import { ENV } from "@/settings";
 import { RiLock2Line } from "@remixicon/vue";
-import { useCountdown } from "@vueuse/core";
-import { inject, Ref, ref } from "vue";
+import { inject, Ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { useManualModeUnlock } from "./manual-mode-toggle.utils";
 
 const { t } = useI18n();
 
 const emit = defineEmits(["close"]);
 
-const cancel = () => {
-  if (!isActive.value) {
-    emit("close");
-  }
-
-  stop();
-};
-
-const COOLDOWN_SECONDS = 5;
-const MATCH_PASSWORD = ENV.VITE_MANUAL_MODE_PWD;
-const password = ref("");
-
 const { setAutomatedControl } = useAutomationStore();
 const currentDefinition = inject<Ref<string>>("currentModule")!;
 
-const { stop, start, remaining, isActive } = useCountdown(COOLDOWN_SECONDS, {
-  onComplete: async () => {
+const { password, isValid, confirm, cancel, remaining, isActive } = useManualModeUnlock(
+  ENV.VITE_MANUAL_MODE_PWD,
+  async () => {
     await setAutomatedControl(currentDefinition.value)(false);
-
-    cancel();
+    emit("close");
   },
-});
+);
 
-const validateAndStart = () => {
-  if (password.value === MATCH_PASSWORD) {
-    start();
-  }
+const close = () => {
+  cancel();
+  emit("close");
 };
 </script>
 
 <template>
   <section class="grid gap-6 max-md:px-4">
-    <h2 class="text-xl font-medium">
+    <h2 class="text-xl font-bold">
       {{ t("thrapp.dialogs.manualMode.title") }}
     </h2>
 
-    <header class="font-ui!">{{ t("thrapp.dialogs.manualMode.description") }}</header>
+    <p class="font-ui!">{{ t("thrapp.dialogs.manualMode.description") }}</p>
 
     <InputGroup>
       <InputGroupInput
         v-model="password"
         :placeholder="t('thrapp.dialogs.manualMode.password')"
         type="password"
-        @keyup.enter="validateAndStart"
+        @keyup.enter="confirm"
       />
       <InputGroupAddon>
         <RiLock2Line />
@@ -64,12 +51,13 @@ const validateAndStart = () => {
 
     <div class="flex items-center gap-6">
       <Button
-        :disabled="password !== MATCH_PASSWORD || isActive"
-        @click="validateAndStart"
-        >{{ t("thrapp.dialogs.manualMode.confirm") }}</Button
+        :disabled="!isValid || isActive"
+        @click="confirm"
       >
-      <Button @click="cancel">
-        {{ t("thrapp.dialogs.manualMode.cancel", { count: isActive ? remaining : 0 }) }}
+        {{ t("thrapp.dialogs.manualMode.confirm", { count: remaining }) }}
+      </Button>
+      <Button @click="close">
+        {{ t("thrapp.dialogs.manualMode.cancel") }}
       </Button>
     </div>
   </section>

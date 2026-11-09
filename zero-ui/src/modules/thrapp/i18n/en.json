@@ -381,10 +381,10 @@
     "dialogs": {
       "manualMode": {
         "warning": "Attention: Module in manual mode",
-        "title": "Switch to manual mode",
+        "title": "Switch to manual control",
         "description": "Enter password to unlock",
-        "confirm": "OK",
-        "cancel": "Cancel | Cancel ({count}) | Cancel ({count})",
+        "confirm": "OK ({count})",
+        "cancel": "Cancel",
         "password": "Password",
         "advisoryDisabled": "Advisory mode off. Control through AMCS."
       },
