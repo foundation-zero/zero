@@ -286,16 +286,21 @@ fn payload_field(
         async_graphql::dynamic::FieldFuture::new(async move {
             let parent = ctx.parent_value.try_to_value()?;
             let value = match parent {
-                GraphQlValue::Object(map) => {
-                    map.get(&raw_name).cloned().unwrap_or(GraphQlValue::Null)
-                }
-                _ => GraphQlValue::Null,
+                GraphQlValue::Object(map) => map.get(&raw_name).cloned(),
+                _ => None,
             };
-            Ok(Some(FieldValue::value(value)))
+            Ok(non_null(value).map(FieldValue::value))
         })
     });
 
     Some((field, objects))
+}
+
+/// `value` unless it is missing or `null`. A resolver must return `None`
+/// for those: `Some(Null)` on an object-typed field resolves the object
+/// against a `null` parent, giving an object with only `null` fields.
+fn non_null(value: Option<GraphQlValue>) -> Option<GraphQlValue> {
+    value.filter(|value| *value != GraphQlValue::Null)
 }
 
 /// Map a GraphQL type name to an async-graphql TypeRef.
@@ -459,5 +464,47 @@ mod tests {
         let data: serde_json::Value = response.data.into_json().unwrap();
         assert_eq!(data["thrs"]["controller"]["pcm"]["x"], json!(1.0));
         assert_eq!(data["simulator"]["step"]["y"], json!(2.0));
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_null_or_missing_nested_object_is_null() {
+        let topic = TopicDef {
+            topic: "a/b".to_string(),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from([
+                    (
+                        "inner".to_string(),
+                        FieldType::Object(
+                            "inner".to_string(),
+                            Box::new(BTreeMap::from([("x".to_string(), FieldType::Float)])),
+                        ),
+                    ),
+                    ("y".to_string(), FieldType::Float),
+                ]),
+            }),
+            operation: Direction::Send,
+            ttl_secs: None,
+            kind: TopicKind::Single,
+        };
+        let schema_with = |payload| {
+            let cache = Arc::new(TopicCache::new());
+            cache.insert("a/b", payload);
+            build_schema(&mock_api(vec![topic.clone()]), &cache).unwrap()
+        };
+
+        for payload in [json!({"inner": null, "y": 1.0}), json!({"y": 1.0})] {
+            let response = schema_with(payload.clone())
+                .execute("{ a { b { inner { x } y } } }")
+                .await;
+            assert!(response.errors.is_empty(), "{:?}", response.errors);
+            let data: serde_json::Value = response.data.into_json().unwrap();
+            assert_eq!(
+                data["a"]["b"],
+                json!({"inner": null, "y": 1.0}),
+                "for {payload}"
+            );
+        }
     }
 }

@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::iter::once;
 use std::sync::Arc;
 
-use crate::graphql::{json_to_graphql_value, path_type_name, payload_object};
+use crate::graphql::{json_to_graphql_value, non_null, path_type_name, payload_object};
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{Field, FieldValue, InputValue, Object, TypeRef};
@@ -306,10 +306,10 @@ fn row_projection_field(name: &str, type_ref: TypeRef) -> Field {
         async_graphql::dynamic::FieldFuture::new(async move {
             let parent = ctx.parent_value.try_to_value()?;
             let value = match parent {
-                GraphQlValue::Object(map) => map.get(&key).cloned().unwrap_or(GraphQlValue::Null),
-                _ => GraphQlValue::Null,
+                GraphQlValue::Object(map) => map.get(&key).cloned(),
+                _ => None,
             };
-            Ok(Some(FieldValue::value(value)))
+            Ok(non_null(value).map(FieldValue::value))
         })
     })
 }
@@ -651,7 +651,8 @@ mod tests {
             .execute("{ powerTags { values { currentA } } }")
             .await;
         let data: serde_json::Value = response.data.into_json().unwrap();
-        assert_eq!(data["powerTags"][0]["values"]["currentA"], json!(null));
+        // An expired Member has no values at all, not values that are all null.
+        assert_eq!(data["powerTags"][0]["values"], json!(null));
 
         // A topic without a zero-TTL override keeps serving its cached value
         cache.insert("power-tags/10P2/no-data", json!({"current_a": 2.5}));

@@ -3,7 +3,7 @@ use std::sync::Arc;
 use async_graphql::dynamic::{Field, Object, TypeRef};
 
 use crate::cache::TopicCache;
-use crate::graphql::json_to_graphql_value;
+use crate::graphql::{json_to_graphql_value, non_null};
 
 /// The `<Topic>` query field: resolves to the topic's whole cached MQTT
 /// payload object. The object's scalar subfields project from this value
@@ -21,7 +21,9 @@ pub(super) fn payload_query_field(
     Field::new(name, obj_ref, move |_ctx| {
         let val = cache_for_query.get(&topic);
         async_graphql::dynamic::FieldFuture::new(async move {
-            Ok(val.map(|json_val| json_to_graphql_value(&json_val)))
+            Ok(non_null(
+                val.map(|json_val| json_to_graphql_value(&json_val)),
+            ))
         })
     })
 }
@@ -179,6 +181,30 @@ mod tests {
         }];
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
+
+        let response = schema.execute("{ test { channel { value } } }").await;
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        let data: serde_json::Value = response.data.into_json().unwrap();
+        assert_eq!(data["test"]["channel"], json!(null));
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_query_returns_null_for_null_payload() {
+        let topics = vec![TopicDef {
+            topic: "test/channel".to_string(),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
+            }),
+            operation: Direction::Send,
+            ttl_secs: None,
+            kind: TopicKind::Single,
+        }];
+
+        let cache = Arc::new(TopicCache::new());
+        cache.insert("test/channel", json!(null));
+        let schema = build_schema(&api(topics), &cache).unwrap();
 
         let response = schema.execute("{ test { channel { value } } }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
