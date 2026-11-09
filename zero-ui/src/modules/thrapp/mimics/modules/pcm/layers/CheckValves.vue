@@ -4,12 +4,14 @@ import { ComponentOrientation } from "../../../components";
 import { getTooltipContexts } from "../../../data";
 import { CheckValveInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
+import LayerFilter from "../../../components/layer-filter/LayerFilter.vue";
+import { LayerFilterOption } from "../../../components/layer-filter/layer-filter.provider";
 
 const checkValves = getTooltipContexts(MimicComponentType.CheckValve, ["1078-01", "1085-02"]);
 </script>
 
 <template>
-  <g>
+  <LayerFilter :filter="LayerFilterOption.ManualComponents">
     <CheckValveInstance
       x="313"
       y="620"
@@ -34,5 +36,5 @@ const checkValves = getTooltipContexts(MimicComponentType.CheckValve, ["1078-01"
         :tag-id="checkValves['1085-02'].tooltip?.yardTag"
       />
     </CheckValveInstance>
-  </g>
+  </LayerFilter>
 </template>

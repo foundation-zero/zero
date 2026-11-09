@@ -14,6 +14,7 @@ const tLegend = tScoped("thrapp.legends.labelValue");
       <Label
         class="bg-[#BDBDBD]/10"
         height="40"
+        unfiltered
       >
         <template #value>
           68

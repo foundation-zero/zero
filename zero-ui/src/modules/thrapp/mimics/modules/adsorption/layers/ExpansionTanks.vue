@@ -6,6 +6,8 @@ import {
   ExpansionValveInstance,
   TagLabelInstance,
 } from "../../../instances";
+import LayerFilter from "../../../components/layer-filter/LayerFilter.vue";
+import { LayerFilterOption } from "../../../components/layer-filter/layer-filter.provider";
 
 const expansionTanks = getTooltipContexts(MimicComponentType.ExpansionTank, ["1040-03", "1040-02"]);
 const expansionValves = getTooltipContexts(MimicComponentType.ExpansionValve, [
@@ -15,7 +17,7 @@ const expansionValves = getTooltipContexts(MimicComponentType.ExpansionValve, [
 </script>
 
 <template>
-  <g>
+  <LayerFilter :filter="LayerFilterOption.SupportComponents">
     <ExpansionTankInstance
       x="78"
       y="568"
@@ -60,5 +62,5 @@ const expansionValves = getTooltipContexts(MimicComponentType.ExpansionValve, [
         :tag-id="expansionValves['1041-02'].tooltip?.yardTag"
       />
     </ExpansionValveInstance>
-  </g>
+  </LayerFilter>
 </template>
