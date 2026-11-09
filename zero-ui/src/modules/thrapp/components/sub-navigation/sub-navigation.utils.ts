@@ -56,5 +56,9 @@ export function getControlState(
     return "advisoryDisabled";
   }
 
-  return status.controlMode?.automatic ? "automatic" : "manual";
+  if (!status.controlMode) {
+    return undefined;
+  }
+
+  return status.controlMode.automatic ? "automatic" : "manual";
 }

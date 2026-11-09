@@ -98,6 +98,19 @@ describe("getControlState", () => {
   it("is unknown until the status of the module is loaded", () => {
     expect(getControlState(undefined, "dhw")).toBeUndefined();
     expect(getControlState(status(AmcsControlMode.External, true), "pvt")).toBeUndefined();
+  });
+
+  it("is unknown while the control mode of the module is missing", () => {
+    const withoutControlMode = {
+      modules: {
+        dhw: {
+          controlMode: null,
+          sensorValues: { mode: { mode: { value: AmcsControlMode.External } } },
+        },
+      },
+    } as unknown as ControlStatus;
+
+    expect(getControlState(withoutControlMode, "dhw")).toBeUndefined();
     expect(getControlState(status(AmcsControlMode.External, true), undefined)).toBeUndefined();
   });
 });
