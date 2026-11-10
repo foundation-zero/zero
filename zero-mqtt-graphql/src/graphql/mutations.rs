@@ -18,7 +18,7 @@ use tokio::time::Instant;
 
 use crate::api_model::{Direction, FieldType, GraphqlPath, TopicDef};
 use crate::cache::TopicCache;
-use crate::graphql::{JSON_SCALAR, Leaf, enum_type, json_to_graphql_value, payload_type_name};
+use crate::graphql::{JSON_SCALAR, Leaf, enum_type, payload_type_name};
 use crate::naming::sanitize_to_graphql_name;
 
 /// A boxed future returned by [`Publisher::publish`].
@@ -230,7 +230,7 @@ impl Target {
             if let Some(state) = self.cache.get(state_topic)
                 && shows(&state, &given)
             {
-                return Ok(json_to_graphql_value(&state));
+                return Ok(GraphQlValue::from_json(state)?);
             }
             if !next_update(&mut updates, state_topic, deadline).await {
                 bail!(
