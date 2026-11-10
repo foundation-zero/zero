@@ -111,8 +111,6 @@ pub struct MqttMetrics {
     acked: AtomicU64,
     publish_errors: AtomicU64,
     publish_timeouts: AtomicU64,
-    puback_denied: AtomicU64,
-    server_disconnects: AtomicU64,
 }
 
 /// Point-in-time copy of [`MqttMetrics`], suitable for logging.
@@ -124,8 +122,6 @@ pub struct MqttSnapshot {
     pub acked: u64,
     pub publish_errors: u64,
     pub publish_timeouts: u64,
-    pub puback_denied: u64,
-    pub server_disconnects: u64,
 }
 
 impl MqttMetrics {
@@ -134,12 +130,12 @@ impl MqttMetrics {
         Arc::new(Self::default())
     }
 
-    /// Count a CONNACK, successful or rejected.
+    /// Count a connection the broker accepted.
     pub fn incr_connects(&self) -> u64 {
         increment(&self.connects)
     }
 
-    /// Count a failed poll followed by a reconnect attempt.
+    /// Count a connection error or refusal followed by a reconnect attempt.
     pub fn incr_reconnects(&self) -> u64 {
         increment(&self.reconnects)
     }
@@ -154,12 +150,8 @@ impl MqttMetrics {
         increment(&self.enqueued)
     }
 
-    /// Count a PUBACK the broker returned with a success reason code, or with
-    /// `NoMatchingSubscribers`.
-    ///
-    /// Both mean the broker took the message; `NoMatchingSubscribers` only adds
-    /// that nothing was subscribed to the topic. The only counter that reflects
-    /// the broker having taken the message.
+    /// Count a PUBACK: the only counter that reflects the broker having taken
+    /// the message.
     pub fn incr_acked(&self) -> u64 {
         increment(&self.acked)
     }
@@ -174,16 +166,6 @@ impl MqttMetrics {
         increment(&self.publish_timeouts)
     }
 
-    /// Count a PUBACK carrying a non-success reason code.
-    pub fn incr_puback_denied(&self) -> u64 {
-        increment(&self.puback_denied)
-    }
-
-    /// Count a DISCONNECT initiated by the broker.
-    pub fn incr_server_disconnects(&self) -> u64 {
-        increment(&self.server_disconnects)
-    }
-
     /// Copy of all counters at this instant.
     pub fn snapshot(&self) -> MqttSnapshot {
         MqttSnapshot {
@@ -193,8 +175,6 @@ impl MqttMetrics {
             acked: self.acked.load(Ordering::Relaxed),
             publish_errors: self.publish_errors.load(Ordering::Relaxed),
             publish_timeouts: self.publish_timeouts.load(Ordering::Relaxed),
-            puback_denied: self.puback_denied.load(Ordering::Relaxed),
-            server_disconnects: self.server_disconnects.load(Ordering::Relaxed),
         }
     }
 }
@@ -262,8 +242,6 @@ mod tests {
         metrics.incr_acked();
         metrics.incr_publish_errors();
         metrics.incr_publish_timeouts();
-        metrics.incr_puback_denied();
-        metrics.incr_server_disconnects();
 
         assert_eq!(
             metrics.snapshot(),
@@ -274,8 +252,6 @@ mod tests {
                 acked: 1,
                 publish_errors: 1,
                 publish_timeouts: 1,
-                puback_denied: 1,
-                server_disconnects: 1,
             }
         );
     }
