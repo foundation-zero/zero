@@ -272,12 +272,16 @@ fn field_type_for_json_type(
     }
 }
 
-/// A timestamp when the string has `format: date-time`, an enum when it has
-/// a fixed set of values that each have their own GraphQL name, otherwise a
-/// plain string.
+/// A date or time when the string has a date or time `format`, an enum when
+/// it has a fixed set of values that each have their own GraphQL name,
+/// otherwise a plain string.
 fn string_field_type(name: String, schema: &Schema) -> FieldType {
-    if schema.format.as_deref() == Some("date-time") {
-        return FieldType::DateTime;
+    match schema.format.as_deref() {
+        Some("date-time") => return FieldType::DateTime,
+        Some("date") => return FieldType::Date,
+        Some("time") => return FieldType::Time,
+        Some("duration") => return FieldType::Duration,
+        _ => {}
     }
     let Some(raw_values) = &schema.enum_values else {
         return FieldType::String;
@@ -355,6 +359,22 @@ mod tests {
                 json!({"type": "string", "format": "date-time"}),
             ),
             (
+                "day".to_string(),
+                json!({"type": "string", "format": "date"}),
+            ),
+            (
+                "start".to_string(),
+                json!({"type": "string", "format": "time"}),
+            ),
+            (
+                "step".to_string(),
+                json!({"type": "string", "format": "duration"}),
+            ),
+            (
+                "email".to_string(),
+                json!({"type": "string", "format": "email"}),
+            ),
+            (
                 "nested".to_string(),
                 json!({"type": "object", "properties": {"x": {"type": "number"}}}),
             ),
@@ -373,7 +393,7 @@ mod tests {
         )]);
 
         let fields = extract_fields_from_schema(&schema, Some(&schema_entries));
-        assert_eq!(fields.len(), 8);
+        assert_eq!(fields.len(), 12);
         // BTreeMap ordering, so sorted by key
         let get = |name: &str| fields.get(name).unwrap();
         // An array without a declared element type is any JSON.
@@ -383,6 +403,11 @@ mod tests {
         assert_eq!(get("ok"), &FieldType::Boolean);
         assert_eq!(get("label"), &FieldType::String);
         assert_eq!(get("stamp"), &FieldType::DateTime);
+        assert_eq!(get("day"), &FieldType::Date);
+        assert_eq!(get("start"), &FieldType::Time);
+        assert_eq!(get("step"), &FieldType::Duration);
+        // Other formats stay plain strings.
+        assert_eq!(get("email"), &FieldType::String);
         assert_eq!(
             get("nested"),
             &FieldType::Object(
