@@ -803,7 +803,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', ts, TIMESTAMP '1970-01-01') AS time,\n  avg(dc) AS \"FWD DC\"\nFROM (SELECT ts,\n    last_value(CASE WHEN drive = 1 THEN power END) IGNORE NULLS OVER (ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)\n    + last_value(CASE WHEN drive = 2 THEN power END) IGNORE NULLS OVER (ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS dc\n  FROM (SELECT timestamp AS ts, 1 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp AS ts, 2 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a) f\nWHERE dc IS NOT NULL\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', ts, TIMESTAMP '1970-01-01') AS time,\n  avg(dc) AS \"FWD DC\"\nFROM (SELECT ts,\n    last_value(CASE WHEN drive = 1 THEN power END) IGNORE NULLS OVER (ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)\n    + last_value(CASE WHEN drive = 2 THEN power END) IGNORE NULLS OVER (ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS dc\n  FROM (SELECT timestamp AS ts, 1 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp AS ts, 2 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a) f\nWHERE dc IS NOT NULL\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -854,7 +854,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', ts, TIMESTAMP '1970-01-01') AS time,\n  avg(dc) AS \"AFT DC\"\nFROM (SELECT ts,\n    last_value(CASE WHEN drive = 1 THEN power END) IGNORE NULLS OVER (ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)\n    + last_value(CASE WHEN drive = 2 THEN power END) IGNORE NULLS OVER (ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS dc\n  FROM (SELECT timestamp AS ts, 1 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp AS ts, 2 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a) f\nWHERE dc IS NOT NULL\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', ts, TIMESTAMP '1970-01-01') AS time,\n  avg(dc) AS \"AFT DC\"\nFROM (SELECT ts,\n    last_value(CASE WHEN drive = 1 THEN power END) IGNORE NULLS OVER (ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)\n    + last_value(CASE WHEN drive = 2 THEN power END) IGNORE NULLS OVER (ORDER BY ts ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS dc\n  FROM (SELECT timestamp AS ts, 1 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n    UNION ALL\n    SELECT timestamp AS ts, 2 AS drive, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a) f\nWHERE dc IS NOT NULL\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -905,7 +905,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_mech_power__value) / 10.0 AS \"FWD shaft\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_mech_power__value) / 10.0 AS \"FWD shaft\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -956,7 +956,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_mech_power__value) / 10.0 AS \"AFT shaft\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_mech_power__value) / 10.0 AS \"AFT shaft\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -1045,7 +1045,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -1180,7 +1180,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(water_speed_knots) AS bsp\nFROM public.atpx__nmea_vhw\nWHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time, avg(water_speed_knots) AS bsp\nFROM public.atpx__nmea_vhw\nWHERE $__timeFilter(timestamp)\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -1257,7 +1257,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": false,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -2121,7 +2121,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN torque END) * 100 AS \"Drive 1\",\n  avg(CASE WHEN drive = 2 THEN torque END) * 100 AS \"Drive 2\",\n  min(CASE WHEN drive = 1 THEN max_torque END) AS \"Max torque sent d1\",\n  min(CASE WHEN drive = 2 THEN max_torque END) AS \"Max torque sent d2\",\n  max(CASE WHEN drive = 1 THEN min_torque END) AS \"Min torque sent d1\",\n  max(CASE WHEN drive = 2 THEN min_torque END) AS \"Min torque sent d2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN torque END) * 100 AS \"Drive 1\",\n  avg(CASE WHEN drive = 2 THEN torque END) * 100 AS \"Drive 2\",\n  min(CASE WHEN drive = 1 THEN max_torque END) AS \"Max torque sent d1\",\n  min(CASE WHEN drive = 2 THEN max_torque END) AS \"Max torque sent d2\",\n  max(CASE WHEN drive = 1 THEN min_torque END) AS \"Min torque sent d1\",\n  max(CASE WHEN drive = 2 THEN min_torque END) AS \"Min torque sent d2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -2210,7 +2210,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -2395,7 +2395,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN power END) AS \"DC drive 1\",\n  avg(CASE WHEN drive = 2 THEN power END) AS \"DC drive 2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN power END) AS \"DC drive 1\",\n  avg(CASE WHEN drive = 2 THEN power END) AS \"DC drive 2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -2446,7 +2446,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-31-u101' THEN setpoint_power__value END) AS \"Propulsion limit d1\",\n  min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-31-u102' THEN setpoint_power__value END) AS \"Propulsion limit d2\",\n  -min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-31-u101' THEN produce_power_limit__value END) AS \"Regeneration limit d1\",\n  -min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-31-u102' THEN produce_power_limit__value END) AS \"Regeneration limit d2\"\nFROM public.marpower__150000_propulsion_ara\nWHERE $__timeFilter(timestamp) AND topic IN ('marpower/150000-propulsion-ara/13-31-u101', 'marpower/150000-propulsion-ara/13-31-u102')\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-31-u101' THEN setpoint_power__value END) AS \"Propulsion limit d1\",\n  min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-31-u102' THEN setpoint_power__value END) AS \"Propulsion limit d2\",\n  -min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-31-u101' THEN produce_power_limit__value END) AS \"Regeneration limit d1\",\n  -min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-31-u102' THEN produce_power_limit__value END) AS \"Regeneration limit d2\"\nFROM public.marpower__150000_propulsion_ara\nWHERE $__timeFilter(timestamp) AND topic IN ('marpower/150000-propulsion-ara/13-31-u101', 'marpower/150000-propulsion-ara/13-31-u102')\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -2535,7 +2535,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -2720,7 +2720,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN speed END) AS \"Drive 1\",\n  avg(CASE WHEN drive = 2 THEN speed END) AS \"Drive 2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN speed END) AS \"Drive 1\",\n  avg(CASE WHEN drive = 2 THEN speed END) AS \"Drive 2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_fwd_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -2771,7 +2771,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  COALESCE(avg(CASE WHEN selected THEN CASE WHEN abs((lever_raw / 327.0 - 50) * 2) < 5 THEN 0 ELSE (lever_raw / 327.0 - 50) * 2 END END), avg(CASE WHEN abs((lever_raw / 327.0 - 50) * 2) < 5 THEN 0 ELSE (lever_raw / 327.0 - 50) * 2 END)) * 500 / 100 * 1.478 AS \"Specified for lever\"\nFROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_pshelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_sbhelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  COALESCE(avg(CASE WHEN selected THEN CASE WHEN abs((lever_raw / 327.0 - 50) * 2) < 5 THEN 0 ELSE (lever_raw / 327.0 - 50) * 2 END END), avg(CASE WHEN abs((lever_raw / 327.0 - 50) * 2) < 5 THEN 0 ELSE (lever_raw / 327.0 - 50) * 2 END)) * 500 / 100 * 1.478 AS \"Specified for lever\"\nFROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_pshelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_fwd_sbhelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -2860,7 +2860,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -3787,7 +3787,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN torque END) * 100 AS \"Drive 1\",\n  avg(CASE WHEN drive = 2 THEN torque END) * 100 AS \"Drive 2\",\n  min(CASE WHEN drive = 1 THEN max_torque END) AS \"Max torque sent d1\",\n  min(CASE WHEN drive = 2 THEN max_torque END) AS \"Max torque sent d2\",\n  max(CASE WHEN drive = 1 THEN min_torque END) AS \"Min torque sent d1\",\n  max(CASE WHEN drive = 2 THEN min_torque END) AS \"Min torque sent d2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN torque END) * 100 AS \"Drive 1\",\n  avg(CASE WHEN drive = 2 THEN torque END) * 100 AS \"Drive 2\",\n  min(CASE WHEN drive = 1 THEN max_torque END) AS \"Max torque sent d1\",\n  min(CASE WHEN drive = 2 THEN max_torque END) AS \"Max torque sent d2\",\n  max(CASE WHEN drive = 1 THEN min_torque END) AS \"Min torque sent d1\",\n  max(CASE WHEN drive = 2 THEN min_torque END) AS \"Min torque sent d2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power, setpoint_2__value AS max_torque, setpoint_3__value AS min_torque FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -3876,7 +3876,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -4061,7 +4061,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN power END) AS \"DC drive 1\",\n  avg(CASE WHEN drive = 2 THEN power END) AS \"DC drive 2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN power END) AS \"DC drive 1\",\n  avg(CASE WHEN drive = 2 THEN power END) AS \"DC drive 2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -4112,7 +4112,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-11-u101' THEN setpoint_power__value END) AS \"Propulsion limit d1\",\n  min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-11-u102' THEN setpoint_power__value END) AS \"Propulsion limit d2\",\n  -min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-11-u101' THEN produce_power_limit__value END) AS \"Regeneration limit d1\",\n  -min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-11-u102' THEN produce_power_limit__value END) AS \"Regeneration limit d2\"\nFROM public.marpower__150000_propulsion_ara\nWHERE $__timeFilter(timestamp) AND topic IN ('marpower/150000-propulsion-ara/13-11-u101', 'marpower/150000-propulsion-ara/13-11-u102')\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-11-u101' THEN setpoint_power__value END) AS \"Propulsion limit d1\",\n  min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-11-u102' THEN setpoint_power__value END) AS \"Propulsion limit d2\",\n  -min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-11-u101' THEN produce_power_limit__value END) AS \"Regeneration limit d1\",\n  -min(CASE WHEN topic = 'marpower/150000-propulsion-ara/13-11-u102' THEN produce_power_limit__value END) AS \"Regeneration limit d2\"\nFROM public.marpower__150000_propulsion_ara\nWHERE $__timeFilter(timestamp) AND topic IN ('marpower/150000-propulsion-ara/13-11-u101', 'marpower/150000-propulsion-ara/13-11-u102')\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -4201,7 +4201,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -4386,7 +4386,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN speed END) AS \"Drive 1\",\n  avg(CASE WHEN drive = 2 THEN speed END) AS \"Drive 2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN speed END) AS \"Drive 1\",\n  avg(CASE WHEN drive = 2 THEN speed END) AS \"Drive 2\"\nFROM (SELECT timestamp, 1 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, speed__value AS speed, torque__value AS torque, power__value AS power FROM public.marpower__150000_propulsion__pcs_aft_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -4437,7 +4437,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  COALESCE(avg(CASE WHEN selected THEN CASE WHEN abs((lever_raw / 327.0 - 50) * 2) < 5 THEN 0 ELSE (lever_raw / 327.0 - 50) * 2 END END), avg(CASE WHEN abs((lever_raw / 327.0 - 50) * 2) < 5 THEN 0 ELSE (lever_raw / 327.0 - 50) * 2 END)) * 400 / 100 * 1.478 AS \"Specified for lever\"\nFROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_pshelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_sbhelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  COALESCE(avg(CASE WHEN selected THEN CASE WHEN abs((lever_raw / 327.0 - 50) * 2) < 5 THEN 0 ELSE (lever_raw / 327.0 - 50) * 2 END END), avg(CASE WHEN abs((lever_raw / 327.0 - 50) * 2) < 5 THEN 0 ELSE (lever_raw / 327.0 - 50) * 2 END)) * 400 / 100 * 1.478 AS \"Specified for lever\"\nFROM (SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_pshelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0\n  UNION ALL\n  SELECT timestamp, COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) AS lever_raw, station_selected__value AS selected FROM public.marpower__150000_propulsion__pcs_aft_sbhelm WHERE $__timeFilter(timestamp) AND COALESCE(thruster_lever_speed_signal__value, fwd_thruster_lever_speed_signal__value) > 0) l\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -4526,7 +4526,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -9140,7 +9140,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_speed__value) / 10.0 AS \"Propeller speed\",\n  83.3 AS \"Specified limit (±83.3 rpm/s)\",\n  -83.3 AS \"Specified limit −\",\n  121.8 AS \"Drive ramp (±121.8 rpm/s)\",\n  -121.8 AS \"Drive ramp −\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_speed__value) / 10.0 AS \"Propeller speed\",\n  83.3 AS \"Specified limit (±83.3 rpm/s)\",\n  -83.3 AS \"Specified limit −\",\n  121.8 AS \"Drive ramp (±121.8 rpm/s)\",\n  -121.8 AS \"Drive ramp −\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -9230,7 +9230,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -9504,7 +9504,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_speed__value) / 10.0 AS \"Propeller speed\",\n  66.7 AS \"Specified limit (±66.7 rpm/s)\",\n  -66.7 AS \"Specified limit −\",\n  121.8 AS \"Drive ramp (±121.8 rpm/s)\",\n  -121.8 AS \"Drive ramp −\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_speed__value) / 10.0 AS \"Propeller speed\",\n  66.7 AS \"Specified limit (±66.7 rpm/s)\",\n  -66.7 AS \"Specified limit −\",\n  121.8 AS \"Drive ramp (±121.8 rpm/s)\",\n  -121.8 AS \"Drive ramp −\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -9594,7 +9594,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -11014,7 +11014,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(loadpin_1_horizontal__value) AS \"Pin 1 H\",\n  avg(loadpin_1_vertical__value) AS \"Pin 1 V\",\n  avg(loadpin_2_horizontal__value) AS \"Pin 2 H\",\n  avg(loadpin_2_vertical__value) AS \"Pin 2 V\",\n  avg(loadpin_3_horizontal__value) AS \"Pin 3 H\",\n  avg(loadpin_3_vertical__value) AS \"Pin 3 V\",\n  avg(loadpin_4_horizontal__value) AS \"Pin 4 H\",\n  avg(loadpin_4_vertical__value) AS \"Pin 4 V\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(loadpin_1_horizontal__value) AS \"Pin 1 H\",\n  avg(loadpin_1_vertical__value) AS \"Pin 1 V\",\n  avg(loadpin_2_horizontal__value) AS \"Pin 2 H\",\n  avg(loadpin_2_vertical__value) AS \"Pin 2 V\",\n  avg(loadpin_3_horizontal__value) AS \"Pin 3 H\",\n  avg(loadpin_3_vertical__value) AS \"Pin 3 V\",\n  avg(loadpin_4_horizontal__value) AS \"Pin 4 H\",\n  avg(loadpin_4_vertical__value) AS \"Pin 4 V\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -11103,7 +11103,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -11689,7 +11689,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(loadpin_1_horizontal__value) AS \"Pin 1 H\",\n  avg(loadpin_1_vertical__value) AS \"Pin 1 V\",\n  avg(loadpin_2_horizontal__value) AS \"Pin 2 H\",\n  avg(loadpin_2_vertical__value) AS \"Pin 2 V\",\n  avg(loadpin_3_horizontal__value) AS \"Pin 3 H\",\n  avg(loadpin_3_vertical__value) AS \"Pin 3 V\",\n  avg(loadpin_4_horizontal__value) AS \"Pin 4 H\",\n  avg(loadpin_4_vertical__value) AS \"Pin 4 V\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(loadpin_1_horizontal__value) AS \"Pin 1 H\",\n  avg(loadpin_1_vertical__value) AS \"Pin 1 V\",\n  avg(loadpin_2_horizontal__value) AS \"Pin 2 H\",\n  avg(loadpin_2_vertical__value) AS \"Pin 2 V\",\n  avg(loadpin_3_horizontal__value) AS \"Pin 3 H\",\n  avg(loadpin_3_vertical__value) AS \"Pin 3 V\",\n  avg(loadpin_4_horizontal__value) AS \"Pin 4 H\",\n  avg(loadpin_4_vertical__value) AS \"Pin 4 V\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -11778,7 +11778,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -13695,7 +13695,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_speed__value) / 10.0 AS \"FWD\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_speed__value) / 10.0 AS \"FWD\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -13746,7 +13746,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_speed__value) / 10.0 AS \"AFT\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(azimuth_prop_speed__value) / 10.0 AS \"AFT\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -13835,7 +13835,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -13920,7 +13920,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(shear_beam_1__value) AS \"Beam 1\",\n  avg(shear_beam_2__value) AS \"Beam 2\",\n  avg(shear_beam_3__value) AS \"Beam 3\",\n  avg(shear_beam_4__value) AS \"Beam 4\",\n  avg(shear_beam_calculated__value) AS \"Calculated (R13)\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(shear_beam_1__value) AS \"Beam 1\",\n  avg(shear_beam_2__value) AS \"Beam 2\",\n  avg(shear_beam_3__value) AS \"Beam 3\",\n  avg(shear_beam_4__value) AS \"Beam 4\",\n  avg(shear_beam_calculated__value) AS \"Calculated (R13)\"\nFROM public.marpower__150000_propulsion__pcs_fwd WHERE $__timeFilter(timestamp)\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -14009,7 +14009,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
@@ -14149,7 +14149,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(shear_beam_1__value) AS \"Beam 1\",\n  avg(shear_beam_2__value) AS \"Beam 2\",\n  avg(shear_beam_3__value) AS \"Beam 3\",\n  avg(shear_beam_4__value) AS \"Beam 4\",\n  avg(shear_beam_calculated__value) AS \"Calculated (R13)\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1 ORDER BY 1",
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(shear_beam_1__value) AS \"Beam 1\",\n  avg(shear_beam_2__value) AS \"Beam 2\",\n  avg(shear_beam_3__value) AS \"Beam 3\",\n  avg(shear_beam_4__value) AS \"Beam 4\",\n  avg(shear_beam_calculated__value) AS \"Calculated (R13)\"\nFROM public.marpower__150000_propulsion__pcs_aft WHERE $__timeFilter(timestamp)\nGROUP BY 1\n) q USING (time)\nORDER BY 1",
                         "sql": {
                           "columns": [
                             {
@@ -14238,7 +14238,7 @@
                       "type": "linear"
                     },
                     "showPoints": "auto",
-                    "spanNulls": 60000,
+                    "spanNulls": 120000,
                     "stacking": {
                       "group": "A",
                       "mode": "none"
