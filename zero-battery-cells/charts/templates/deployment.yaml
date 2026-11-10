@@ -77,6 +77,13 @@ spec:
             - name: udp-{{ .Values.udp.port }}
               containerPort: {{ .Values.udp.port }}
               protocol: UDP
+          # Ready while connected to MQTT; the app writes the status line (SPEC.md).
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - status=$(cat /tmp/ready) && echo "$status" && test "${status#ready:}" != "$status"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
