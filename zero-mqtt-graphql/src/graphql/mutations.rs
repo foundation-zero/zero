@@ -10,6 +10,7 @@ use async_graphql::dynamic::{
     Field, FieldFuture, FieldValue, InputObject, InputValue, Type, TypeRef,
 };
 use async_graphql::indexmap::IndexMap;
+use jiff::Timestamp;
 use jsonschema::Validator;
 use log::{info, warn};
 use serde_json::{Map, Value as JsonValue};
@@ -239,7 +240,7 @@ impl Target {
         let deadline = Instant::now() + self.mutations.timeout;
         loop {
             if let Some(state) = self.cache.get(state_topic)
-                && shows(&state, &given)
+                && shows(&state, &given, &self.fields)
             {
                 return Ok(GraphQlValue::from_json(state)?);
             }
@@ -373,23 +374,65 @@ fn merge_level(base: JsonValue, given: &JsonValue, root: bool) -> JsonValue {
     }
 }
 
-/// Whether `state` shows every leaf of `given`. Numbers compare by value, so
-/// `21` and `21.0` match, but a rounded or clamped value does not. A list
-/// matches element by element, at the same length.
-#[allow(clippy::float_cmp)]
-fn shows(state: &JsonValue, given: &JsonValue) -> bool {
+/// Whether `state` shows every leaf of `given`, whose fields have the types
+/// in `fields`. Numbers compare by value, so `21` and `21.0` match, but a
+/// rounded or clamped value does not. Timestamps compare as instants, so
+/// `…30.123Z` and `…30.123000Z` match. A list matches element by element,
+/// at the same length.
+fn shows(state: &JsonValue, given: &JsonValue, fields: &BTreeMap<String, FieldType>) -> bool {
+    shows_value(state, given, Some(fields))
+}
+
+/// [`shows`] for one value, inside an object whose fields have the types in
+/// `fields`, or of unknown type when `None`.
+fn shows_value(
+    state: &JsonValue,
+    given: &JsonValue,
+    fields: Option<&BTreeMap<String, FieldType>>,
+) -> bool {
+    let field_type = |key: &str| fields.and_then(|fields| fields.get(key));
     match (state, given) {
-        (_, JsonValue::Object(given)) => given
-            .iter()
-            .all(|(key, value)| state.get(key).is_some_and(|state| shows(state, value))),
-        (JsonValue::Array(state), JsonValue::Array(given)) => {
+        (_, JsonValue::Object(given)) => given.iter().all(|(key, value)| {
+            state
+                .get(key)
+                .is_some_and(|state| shows_field(state, value, field_type(key)))
+        }),
+        _ => shows_field(state, given, None),
+    }
+}
+
+/// [`shows`] for one value of `field_type`, or of unknown type when `None`.
+#[allow(clippy::float_cmp)]
+fn shows_field(state: &JsonValue, given: &JsonValue, field_type: Option<&FieldType>) -> bool {
+    match (field_type, state, given) {
+        (Some(FieldType::Object(_, fields)), _, JsonValue::Object(_)) => {
+            shows_value(state, given, Some(fields))
+        }
+        (_, _, JsonValue::Object(_)) => shows_value(state, given, None),
+        (_, JsonValue::Array(state), JsonValue::Array(given)) => {
+            let element = match field_type {
+                Some(FieldType::List(element)) => Some(element.as_ref()),
+                _ => None,
+            };
             state.len() == given.len()
                 && state
                     .iter()
                     .zip(given)
-                    .all(|(state, given)| shows(state, given))
+                    .all(|(state, given)| shows_field(state, given, element))
         }
-        (JsonValue::Number(state), JsonValue::Number(given)) => state.as_f64() == given.as_f64(),
+        (_, JsonValue::Number(state), JsonValue::Number(given)) => state.as_f64() == given.as_f64(),
+        (Some(FieldType::DateTime), JsonValue::String(state), JsonValue::String(given)) => {
+            same_instant(state, given)
+        }
+        _ => state == given,
+    }
+}
+
+/// Whether two timestamps name the same instant. Strings that are not RFC
+/// 3339 timestamps with an offset compare as strings.
+fn same_instant(state: &str, given: &str) -> bool {
+    match (state.parse::<Timestamp>(), given.parse::<Timestamp>()) {
+        (Ok(state), Ok(given)) => state == given,
         _ => state == given,
     }
 }
@@ -956,6 +999,35 @@ mod tests {
         }
     }
 
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_mutation_confirms_a_timestamp_echoed_in_another_format() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert("room/pump", pump_state());
+        // Echoes the timestamp with microseconds, as pydantic writes it.
+        let service = service(
+            &cache,
+            Some(|published| {
+                let mut state = published.clone();
+                state["dutypoint"]["TimeStamp"] = json!("2026-11-10T09:30:00.123000Z");
+                state
+            }),
+        );
+
+        let response = execute(
+            &cache,
+            &service,
+            r#"mutation { room { pump(input: {dutypoint: {value: 0.3, timeStamp: "2026-11-10T09:30:00.123Z"}}) { dutypoint { timeStamp } } } }"#,
+        )
+        .await;
+
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        assert_eq!(
+            response.data.into_json().unwrap(),
+            json!({"room": {"pump": {"dutypoint": {"timeStamp": "2026-11-10T09:30:00.123000Z"}}}})
+        );
+    }
+
     #[test_log::test]
     fn test_timestamps_are_date_times_in_output_and_input() {
         let cache = Arc::new(TopicCache::new());
@@ -1161,9 +1233,39 @@ mod tests {
 
     #[test_log::test]
     fn test_shows_compares_lists_by_element_and_length() {
-        assert!(shows(&json!([1, 2.5]), &json!([1.0, 2.5])));
-        assert!(!shows(&json!([1, 2.5]), &json!([1.0])));
-        assert!(!shows(&json!([1, 2.5]), &json!([1.0, 2.6])));
+        let shows =
+            |state, given| shows(&json!({"l": state}), &json!({"l": given}), &BTreeMap::new());
+        assert!(shows(json!([1, 2.5]), json!([1.0, 2.5])));
+        assert!(!shows(json!([1, 2.5]), json!([1.0])));
+        assert!(!shows(json!([1, 2.5]), json!([1.0, 2.6])));
+    }
+
+    #[test_log::test]
+    fn test_shows_compares_timestamps_as_instants() {
+        let fields = BTreeMap::from([
+            (
+                "pump".to_string(),
+                stamped("StampedFloat", FieldType::Float),
+            ),
+            ("label".to_string(), FieldType::String),
+        ]);
+        let pump = |time: &str| json!({"pump": {"Value": 0.3, "TimeStamp": time}});
+        let state = pump("2026-11-10T09:30:00.123000Z");
+
+        assert!(shows(&state, &pump("2026-11-10T09:30:00.123Z"), &fields));
+        assert!(shows(
+            &state,
+            &pump("2026-11-10T10:30:00.123+01:00"),
+            &fields
+        ));
+        assert!(!shows(&state, &pump("2026-11-10T09:30:00.124Z"), &fields));
+        // Plain strings still compare as written.
+        let label = |time: &str| json!({"label": time});
+        assert!(!shows(
+            &label("2026-11-10T09:30:00.123000Z"),
+            &label("2026-11-10T09:30:00.123Z"),
+            &fields
+        ));
     }
 
     #[test_log::test]
@@ -1193,9 +1295,10 @@ mod tests {
     #[test_log::test]
     fn test_shows_compares_given_leaves_only() {
         let state = json!({"a": {"x": 1.0, "y": 2}, "b": 3});
-        assert!(shows(&state, &json!({"a": {"x": 1}})));
-        assert!(!shows(&state, &json!({"a": {"x": 1.5}})));
-        assert!(!shows(&state, &json!({"c": 1})));
+        let untyped = BTreeMap::new();
+        assert!(shows(&state, &json!({"a": {"x": 1}}), &untyped));
+        assert!(!shows(&state, &json!({"a": {"x": 1.5}}), &untyped));
+        assert!(!shows(&state, &json!({"c": 1}), &untyped));
     }
 
     #[test_log::test]
