@@ -18,7 +18,7 @@ use tokio::time::Instant;
 
 use crate::api_model::{Direction, FieldType, GraphqlPath, TopicDef};
 use crate::cache::TopicCache;
-use crate::graphql::{JSON_SCALAR, Leaf, enum_type, payload_type_name};
+use crate::graphql::{DATE_TIME_SCALAR, JSON_SCALAR, Leaf, enum_type, payload_type_name};
 use crate::naming::sanitize_to_graphql_name;
 
 /// A boxed future returned by [`Publisher::publish`].
@@ -157,6 +157,7 @@ fn input_type_ref(spec: &str, field_type: &FieldType, nested: &mut Vec<InputObje
         FieldType::Boolean => TypeRef::named(TypeRef::BOOLEAN),
         FieldType::String => TypeRef::named(TypeRef::STRING),
         FieldType::Json => TypeRef::named(JSON_SCALAR),
+        FieldType::DateTime => TypeRef::named(DATE_TIME_SCALAR),
         FieldType::Enum(name, _) => TypeRef::named(payload_type_name(spec, name)),
         FieldType::List(element) => TypeRef::List(Box::new(input_type_ref(spec, element, nested))),
         FieldType::Object(name, fields) => {
@@ -183,6 +184,7 @@ fn field_type_enums(spec: &str, field_type: &FieldType) -> Vec<Type> {
         FieldType::List(element) => field_type_enums(spec, element),
         FieldType::Object(_, fields) => field_enums(spec, fields),
         FieldType::Json
+        | FieldType::DateTime
         | FieldType::String
         | FieldType::Float
         | FieldType::Int
@@ -437,7 +439,7 @@ mod tests {
             name.to_string(),
             Box::new(BTreeMap::from([
                 ("Value".to_string(), value),
-                ("TimeStamp".to_string(), FieldType::String),
+                ("TimeStamp".to_string(), FieldType::DateTime),
             ])),
         )
     }
@@ -942,6 +944,33 @@ mod tests {
             let (body, _) = body.split_once('}').unwrap();
             assert!(body.contains("curve: [Float]"), "{type_name}{body}");
             assert!(body.contains("tuning: JSON"), "{type_name}{body}");
+        }
+    }
+
+    #[test_log::test]
+    fn test_timestamps_are_date_times_in_output_and_input() {
+        let cache = Arc::new(TopicCache::new());
+        let mutations = mutations_through(service(&cache, None));
+        let sdl = build_schema(&api(), &cache, Some(&mutations))
+            .unwrap()
+            .sdl();
+
+        assert!(sdl.contains("scalar DateTime"), "{sdl}");
+        // In the output types of the State topic and the Setter's input types.
+        let blocks: Vec<&str> = sdl
+            .split("\n\n")
+            .filter(|block| block.contains("timeStamp:"))
+            .collect();
+        assert!(
+            blocks.iter().any(|block| block.starts_with("type ")),
+            "{sdl}"
+        );
+        assert!(
+            blocks.iter().any(|block| block.starts_with("input ")),
+            "{sdl}"
+        );
+        for block in blocks {
+            assert!(block.contains("timeStamp: DateTime"), "{block}");
         }
     }
 
