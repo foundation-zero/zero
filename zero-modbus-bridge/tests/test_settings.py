@@ -2,7 +2,7 @@ import re
 
 import pytest
 
-from zero_modbus_bridge.mqtt import RefusalRetryingBroker
+from zero_modbus_bridge.mqtt import RecoveringBroker
 from zero_modbus_bridge.settings import MqttSettings
 
 
@@ -27,7 +27,7 @@ def test_mqtt_client_id_from_env(monkeypatch: pytest.MonkeyPatch):
 def test_broker_rides_out_outages():
     broker = MqttSettings(_env_file=None).make_broker()  # type: ignore[call-arg]
     kwargs = broker._connection_kwargs
-    assert isinstance(broker, RefusalRetryingBroker)
+    assert isinstance(broker, RecoveringBroker)
     assert kwargs["reconnect"].max_attempts is None
     assert kwargs["reconnect"].max_delay == 30.0
     assert kwargs["keepalive"] == 15

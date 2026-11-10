@@ -8,7 +8,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pyModbusTCP.client import ModbusClient
 from pyModbusTCP.server import ModbusServer
 
-from zero_modbus_bridge.mqtt import RefusalRetryingBroker, exit_with_reason
+from zero_modbus_bridge.mqtt import RecoveringBroker, exit_with_reason
 
 model_config = SettingsConfigDict(
     env_file=".env",
@@ -28,7 +28,7 @@ class MqttSettings(BaseSettings):
     mqtt_password: str | None = None
     mqtt_client_id: str = Field(default_factory=lambda: f"modbus-bridge-{token_hex(4)}")
 
-    def make_broker(self, **extra: Any) -> RefusalRetryingBroker:
+    def make_broker(self, **extra: Any) -> RecoveringBroker:
         """A broker that rides out broker outages; ``extra`` overrides the defaults."""
 
         async def exit_on_give_up() -> None:
@@ -46,7 +46,7 @@ class MqttSettings(BaseSettings):
         kwargs["client_id"] = self.mqtt_client_id
         if self.mqtt_username and self.mqtt_password:
             kwargs["security"] = SASLPlaintext(self.mqtt_username, self.mqtt_password)
-        return RefusalRetryingBroker(f"{self.mqtt_host}:{self.mqtt_port}", **kwargs)
+        return RecoveringBroker(f"{self.mqtt_host}:{self.mqtt_port}", **kwargs)
 
 
 class ModbusSettings(BaseSettings):
