@@ -85,7 +85,7 @@ mod tests {
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new()), None).unwrap();
         let sdl = schema.sdl();
-        assert!(sdl.contains("Schema123"), "{sdl}");
+        assert!(sdl.contains("Query123"), "{sdl}");
     }
 
     #[test_log::test]

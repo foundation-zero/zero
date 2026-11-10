@@ -603,7 +603,7 @@ mod tests {
             json!("marpower/fuel/a/middle/b")
         );
         assert_eq!(data["marpower"]["fuelBuckets"][0]["id"], json!("10P1"));
-        assert!(schema.sdl().contains("type SchemaMarpowerFuelTopic"));
+        assert!(schema.sdl().contains("type QueryMarpowerFuelTopic"));
     }
 
     #[tokio::test]

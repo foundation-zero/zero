@@ -10,7 +10,7 @@
 //!   `power-tags/{panel}/{slug}` with MQTT topic filter `power-tags/+/+`. A group
 //!   is enumerated by the x-group-topic-metadata extension listing its concrete topics and
 //!   static attributes; the schema exposes one list query `<group>: [<Group>Topic]`
-//!   (e.g. `powerTags: [SchemaPowerTagsTopic]`) whose rows merge that static metadata
+//!   (e.g. `powerTags: [QueryPowerTagsTopic]`) whose rows merge that static metadata
 //!   with live values from the cache.
 //! - **Bucket**: a partition of a group's rows by the distinct value of the
 //!   `group_by` metadata attribute declared in the group's metadata file. For
@@ -79,7 +79,6 @@ pub fn build_schema(
 
     let query = root(
         "Query",
-        "Schema",
         api,
         &mut |spec, segment, path, topic| query_leaf(spec, segment, path, topic, cache),
         &mut known_types,
@@ -92,7 +91,6 @@ pub fn build_schema(
 
     let mutation = match mutations {
         Some(mutations) => root(
-            "Mutation",
             "Mutation",
             api,
             &mut |spec, segment, path, topic| {
@@ -135,11 +133,10 @@ fn check_root_fields(api: &Api) -> anyhow::Result<()> {
 }
 
 /// The root object `name` of one tree over every Spec, or `None` without
-/// fields. Its branch types are named `prefix` plus their path; `leaf`
-/// gives each Topic's fields, given the name of the Spec it is in.
+/// fields. Its branch types are named `name` plus their path; `leaf` gives
+/// each Topic's fields, given the name of the Spec it is in.
 fn root(
     name: &str,
-    prefix: &str,
     api: &Api,
     leaf: &mut impl FnMut(&str, &str, &GraphqlPath, &TopicDef) -> anyhow::Result<Leaf>,
     known_types: &mut HashMap<String, Type>,
@@ -147,7 +144,7 @@ fn root(
     let mut fields = Vec::new();
     for spec in &api.specs {
         fields.extend(tree_fields(
-            prefix,
+            name,
             &GraphqlPath::default(),
             &spec.tree,
             &mut |segment, path, topic| leaf(&spec.name, segment, path, topic),
@@ -282,11 +279,12 @@ fn query_leaf(
     }
 }
 
-/// Type name of what sits at `path`: `Schema` plus the full path in
-/// PascalCase (`marpower.freshWater` → `SchemaMarpowerFreshWater`). A
-/// branch is named exactly this; a Group's types use it as a prefix.
+/// Type name of what sits at `path` in the Query tree: `Query` plus the
+/// full path in PascalCase (`marpower.freshWater` →
+/// `QueryMarpowerFreshWater`). A branch is named exactly this; a Group's
+/// types use it as a prefix.
 fn path_type_name(path: &GraphqlPath) -> String {
-    prefixed_path_type_name("Schema", path)
+    prefixed_path_type_name("Query", path)
 }
 
 /// Type name of the branch at `path` in a tree whose types start with
@@ -459,13 +457,13 @@ mod tests {
         let sdl = build_schema(&mock_api(topics), &Arc::new(TopicCache::new()), None)
             .unwrap()
             .sdl();
-        assert!(sdl.contains("marpower: SchemaMarpower\n"), "{sdl}");
+        assert!(sdl.contains("marpower: QueryMarpower\n"), "{sdl}");
         assert!(
-            sdl.contains("_250000FreshWater: SchemaMarpower250000FreshWater\n"),
+            sdl.contains("_250000FreshWater: QueryMarpower250000FreshWater\n"),
             "{sdl}"
         );
         assert!(
-            sdl.contains("cold: SchemaMarpower250000FreshWaterCold\n"),
+            sdl.contains("cold: QueryMarpower250000FreshWaterCold\n"),
             "{sdl}"
         );
     }
@@ -482,18 +480,18 @@ mod tests {
         let sdl = schema.sdl();
         assert!(!sdl.contains("logs"), "{sdl}");
         assert!(!sdl.contains("sensors"), "{sdl}");
-        assert!(sdl.contains("a: SchemaA"), "{sdl}");
+        assert!(sdl.contains("a: QueryA"), "{sdl}");
     }
 
     #[test_log::test]
     fn test_branch_type_name_clashing_with_a_payload_type_errors() {
-        // Payload type of `aB/c` is `SchemaA`; the branch at `a/b` is also `SchemaA`.
+        // Payload type of `aB/c` is `QueryA`; the branch at `a/b` is also `QueryA`.
         let topics = vec![
             mock_topic("a/b", "x"),
             TopicDef {
                 topic: "aB/c".to_string(),
                 payload: Some(Payload {
-                    name: "schema-a".to_string(),
+                    name: "query-a".to_string(),
                     fields: BTreeMap::from_iter(vec![("field".to_string(), FieldType::Float)]),
                 }),
                 operation: Direction::Send,
@@ -506,19 +504,19 @@ mod tests {
         let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new()), None).unwrap_err();
         assert!(
             err.to_string()
-                .contains("GraphQL type name clash: 'SchemaA' is used by both"),
+                .contains("GraphQL type name clash: 'QueryA' is used by both"),
         );
     }
 
     #[test_log::test]
     fn test_two_branches_with_the_same_type_name_error() {
-        // The branch at `aB` and the branch at `a/b` are both named `SchemaAB`.
+        // The branch at `aB` and the branch at `a/b` are both named `QueryAB`.
         let topics = vec![mock_topic("aB/x/y", "v"), mock_topic("a/b/y/z", "v")];
 
         let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new()), None).unwrap_err();
         assert!(
             err.to_string()
-                .contains("GraphQL type name clash: 'SchemaAB' is used by both"),
+                .contains("GraphQL type name clash: 'QueryAB' is used by both"),
         );
     }
 
@@ -530,7 +528,7 @@ mod tests {
             let schema =
                 build_schema(&mock_api(topics), &Arc::new(TopicCache::new()), None).unwrap();
             let sdl = schema.sdl();
-            assert!(sdl.contains("a: SchemaA"), "{sdl}");
+            assert!(sdl.contains("a: QueryA"), "{sdl}");
             assert!(sdl.contains("b: Vpayload"), "{sdl}");
         }
     }

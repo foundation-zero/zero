@@ -345,7 +345,7 @@ mod tests {
 
         let sdl = std::fs::read_to_string(&path).unwrap();
         assert!(sdl.contains("type Query"), "{sdl}");
-        assert!(sdl.contains("test: SchemaTest\n"), "{sdl}");
+        assert!(sdl.contains("test: QueryTest\n"), "{sdl}");
 
         let _ = std::fs::remove_dir_all(&dir);
     }
