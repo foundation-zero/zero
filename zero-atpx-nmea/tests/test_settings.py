@@ -1,7 +1,9 @@
 import re
 
 import pytest
+from pydantic_settings import BaseSettings
 
+from zero_atpx_nmea.mqtt import RecoveringBroker
 from zero_atpx_nmea.settings import InputMqttSettings, OutputMqttSettings
 
 
@@ -35,3 +37,17 @@ def test_output_client_id_from_env(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("MQTT_CLIENT_ID", "custom-out")
     settings = OutputMqttSettings(_env_file=None)  # type: ignore[call-arg]
     assert settings.mqtt_client_id == "custom-out"
+
+
+@pytest.mark.parametrize(
+    ("settings", "name"),
+    [(InputMqttSettings, "atpx-mqtt"), (OutputMqttSettings, "mqtt")],
+)
+def test_brokers_ride_out_outages(settings: type[BaseSettings], name: str):
+    broker = settings(_env_file=None).make_broker()  # type: ignore[call-arg]
+    kwargs = broker._connection_kwargs
+    assert isinstance(broker, RecoveringBroker)
+    assert broker._name == name
+    assert kwargs["reconnect"].max_attempts is None
+    assert kwargs["reconnect"].max_delay == 30.0
+    assert kwargs["keepalive"] == 15

@@ -1,0 +1,156 @@
+import asyncio
+from typing import NoReturn
+from unittest.mock import AsyncMock
+
+import pytest
+import zmqtt
+from zmqtt import (
+    MQTTConnectError,
+    MQTTDisconnectedError,
+    MQTTProtocolError,
+    ReconnectConfig,
+)
+
+from zero_atpx_nmea.mqtt import (
+    REFUSAL_GRACE_SECONDS,
+    RecoveringBroker,
+    RecoveringClient,
+)
+
+NOT_AUTHORIZED = 0x87
+
+
+class Exited(Exception):
+    pass
+
+
+def _exit(reason: str) -> NoReturn:
+    raise Exited(reason)
+
+
+class FakeClock:
+    def __init__(self) -> None:
+        self.now = 0.0
+
+    def __call__(self) -> float:
+        return self.now
+
+
+@pytest.fixture
+def clock() -> FakeClock:
+    return FakeClock()
+
+
+@pytest.fixture
+def attempt(monkeypatch: pytest.MonkeyPatch) -> AsyncMock:
+    """Stands in for one zmqtt connect attempt."""
+    connect = AsyncMock()
+    monkeypatch.setattr(zmqtt.MQTTClient, "_connect", connect)
+    return connect
+
+
+@pytest.fixture
+def client(clock: FakeClock) -> RecoveringClient:
+    return RecoveringClient(
+        clock=clock,
+        exit_process=_exit,
+        host="broker",
+        reconnect=ReconnectConfig(initial_delay=0, max_attempts=None),
+    )
+
+
+async def test_refusal_is_retried(client: RecoveringClient, attempt: AsyncMock):
+    """zmqtt alone would give up on the first CONNACK refusal."""
+    attempt.side_effect = [MQTTConnectError(NOT_AUTHORIZED), None]
+    await client._connect_with_retry()
+    assert attempt.await_count == 2
+
+
+@pytest.mark.parametrize(
+    "error",
+    [
+        MQTTDisconnectedError("Connection closed by remote"),
+        MQTTProtocolError("Expected CONNACK"),
+    ],
+)
+async def test_broken_handshake_is_retried(
+    client: RecoveringClient, attempt: AsyncMock, error: Exception
+):
+    attempt.side_effect = [error, None]
+    await client._connect_with_retry()
+    assert attempt.await_count == 2
+
+
+async def test_exits_when_still_refused_after_grace(
+    client: RecoveringClient, attempt: AsyncMock, clock: FakeClock
+):
+    attempt.side_effect = MQTTConnectError(NOT_AUTHORIZED)
+    with pytest.raises(ConnectionRefusedError, match=r"return code 135"):
+        await client._connect()
+
+    clock.now = REFUSAL_GRACE_SECONDS
+    with pytest.raises(
+        Exited, match="^mqtt: CONNACK refused .* still refused after 90 s"
+    ):
+        await client._connect()
+
+
+async def test_refusal_grace_restarts_after_connecting(
+    client: RecoveringClient, attempt: AsyncMock, clock: FakeClock
+):
+    attempt.side_effect = [MQTTConnectError(NOT_AUTHORIZED), None]
+    with pytest.raises(ConnectionRefusedError):
+        await client._connect()
+    await client._connect()
+
+    clock.now = REFUSAL_GRACE_SECONDS
+    attempt.side_effect = MQTTConnectError(NOT_AUTHORIZED)
+    with pytest.raises(ConnectionRefusedError):
+        await client._connect()
+
+
+async def test_refusal_grace_restarts_after_another_failure(
+    client: RecoveringClient, attempt: AsyncMock, clock: FakeClock
+):
+    attempt.side_effect = MQTTConnectError(NOT_AUTHORIZED)
+    with pytest.raises(ConnectionRefusedError):
+        await client._connect()
+    attempt.side_effect = ConnectionRefusedError(111, "Connect call failed")
+    with pytest.raises(ConnectionRefusedError):
+        await client._connect()
+
+    clock.now = REFUSAL_GRACE_SECONDS
+    attempt.side_effect = MQTTConnectError(NOT_AUTHORIZED)
+    with pytest.raises(ConnectionRefusedError):
+        await client._connect()
+
+
+async def test_exits_when_run_loop_fails(
+    monkeypatch: pytest.MonkeyPatch, client: RecoveringClient
+):
+    run_loop = AsyncMock(side_effect=MQTTProtocolError("Unexpected packet"))
+    monkeypatch.setattr(zmqtt.MQTTClient, "_run_loop", run_loop)
+    with pytest.raises(
+        Exited, match="^mqtt: client stopped: MQTTProtocolError: Unexpected packet"
+    ):
+        await client._run_loop()
+
+
+async def test_cancelled_run_loop_does_not_exit(
+    monkeypatch: pytest.MonkeyPatch, client: RecoveringClient
+):
+    run_loop = AsyncMock(side_effect=asyncio.CancelledError)
+    monkeypatch.setattr(zmqtt.MQTTClient, "_run_loop", run_loop)
+    with pytest.raises(asyncio.CancelledError):
+        await client._run_loop()
+
+
+async def test_broker_connects_through_recovering_client(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    connect = AsyncMock()
+    monkeypatch.setattr(RecoveringClient, "connect", connect)
+    broker = RecoveringBroker("broker:1883")
+
+    await broker.connect()
+    connect.assert_awaited_once()

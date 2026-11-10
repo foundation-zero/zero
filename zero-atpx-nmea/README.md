@@ -18,6 +18,14 @@ around that function: it uses two separate brokers, since in production
 `ATPX_MQTT_HOST` (A+T's onboard broker, unauthenticated) differs from
 `MQTT_HOST` (our own broker); locally both resolve to the same `vernemq`.
 
+## Broker outages
+
+Both brokers are handled the same way (docs/adr/0001-dependency-outages.md),
+and logs and exit messages name them: `atpx-mqtt` for A+T's broker, `mqtt` for
+ours. The service reconnects without a limit, at most 30 s apart. It exits after
+90 s of a broker refusing the login, or when a client stops on an error it
+doesn't retry, so Kubernetes restarts it.
+
 ## Consumer contract (AsyncAPI specification)
 
 The service's MQTT interface is documented in a committed **AsyncAPI 3.0.0**
