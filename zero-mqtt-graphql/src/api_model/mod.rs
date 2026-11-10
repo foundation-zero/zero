@@ -148,6 +148,8 @@ pub enum FieldType {
     Json,
     /// A string with a fixed set of values, named after its schema.
     Enum(String, Vec<EnumValue>),
+    /// A string in JSON Schema `format: date-time`, an RFC 3339 timestamp.
+    DateTime,
     String,
     Float,
     Int,

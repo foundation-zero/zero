@@ -109,7 +109,8 @@ pub fn build_schema(
         mutation.as_ref().map(Object::type_name),
         None,
     )
-    .register(json_scalar());
+    .register(json_scalar())
+    .register(date_time_scalar());
     known_types
         .into_values()
         .chain([query.into()])
@@ -443,6 +444,7 @@ fn graphql_type_ref(name_prefix: &str, field_type: &FieldType) -> (TypeRef, Vec<
             (TypeRef::List(Box::new(element)), types)
         }
         FieldType::Json => (TypeRef::named(JSON_SCALAR), vec![]),
+        FieldType::DateTime => (TypeRef::named(DATE_TIME_SCALAR), vec![]),
     }
 }
 
@@ -454,6 +456,18 @@ const JSON_SCALAR: &str = "JSON";
 fn json_scalar() -> Scalar {
     Scalar::new(JSON_SCALAR)
         .description("Any JSON value, for a list whose element type the Spec does not declare")
+}
+
+/// The scalar for strings in JSON Schema `format: date-time`.
+const DATE_TIME_SCALAR: &str = "DateTime";
+
+/// The [`DATE_TIME_SCALAR`] type. Values pass through as the strings on the
+/// wire; inputs are validated against the topic's JSON Schema before
+/// publishing.
+fn date_time_scalar() -> Scalar {
+    Scalar::new(DATE_TIME_SCALAR)
+        .description("An RFC 3339 timestamp, such as 2026-11-10T09:30:00Z")
+        .specified_by_url("https://datatracker.ietf.org/doc/html/rfc3339")
 }
 
 #[cfg(test)]

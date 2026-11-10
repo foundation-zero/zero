@@ -272,9 +272,13 @@ fn field_type_for_json_type(
     }
 }
 
-/// An enum when the string has a fixed set of values that each have their
-/// own GraphQL name, otherwise a plain string.
+/// A timestamp when the string has `format: date-time`, an enum when it has
+/// a fixed set of values that each have their own GraphQL name, otherwise a
+/// plain string.
 fn string_field_type(name: String, schema: &Schema) -> FieldType {
+    if schema.format.as_deref() == Some("date-time") {
+        return FieldType::DateTime;
+    }
     let Some(raw_values) = &schema.enum_values else {
         return FieldType::String;
     };
@@ -347,6 +351,10 @@ mod tests {
             ("ok".to_string(), json!({"type": "boolean"})),
             ("label".to_string(), json!({"type": "string"})),
             (
+                "stamp".to_string(),
+                json!({"type": "string", "format": "date-time"}),
+            ),
+            (
                 "nested".to_string(),
                 json!({"type": "object", "properties": {"x": {"type": "number"}}}),
             ),
@@ -365,7 +373,7 @@ mod tests {
         )]);
 
         let fields = extract_fields_from_schema(&schema, Some(&schema_entries));
-        assert_eq!(fields.len(), 7);
+        assert_eq!(fields.len(), 8);
         // BTreeMap ordering, so sorted by key
         let get = |name: &str| fields.get(name).unwrap();
         // An array without a declared element type is any JSON.
@@ -374,6 +382,7 @@ mod tests {
         assert_eq!(get("sensor_id"), &FieldType::Int);
         assert_eq!(get("ok"), &FieldType::Boolean);
         assert_eq!(get("label"), &FieldType::String);
+        assert_eq!(get("stamp"), &FieldType::DateTime);
         assert_eq!(
             get("nested"),
             &FieldType::Object(
