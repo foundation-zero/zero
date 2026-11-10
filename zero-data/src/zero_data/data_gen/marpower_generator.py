@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field, TypeAdapter
 from pydantic.alias_generators import to_pascal
 
 from zero_data.data_gen import Generator
+from zero_data.io_list.enums import ENUMS
 from zero_data.io_list.types import IOTopic, IOValue
 
 
@@ -25,7 +26,11 @@ class MarpowerGenerator(Generator):
         return TypeAdapter(dict[str, dict[str, Any]]).dump_json(message, by_alias=True)
 
     def generate_random_value(self, field: IOValue) -> Any:
-        return self._random_message(field.data_type).model_dump(by_alias=True)
+        if enum := ENUMS.get(field.name):
+            message = self._generate_marpower_struct(random.choice(list(enum)).value)
+        else:
+            message = self._random_message(field.data_type)
+        return message.model_dump(by_alias=True)
 
     def _random_message(self, data_type: str) -> MarpowerStruct:
         """Generate a random value based on the data type."""

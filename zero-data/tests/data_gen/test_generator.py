@@ -9,6 +9,7 @@ from pydantic import TypeAdapter
 
 from zero_data.config import MQTTConfig
 from zero_data.data_gen.marpower_generator import MarpowerGenerator, MarpowerStruct
+from zero_data.io_list.enums import AmcsControlMode, PumpControlMode
 from zero_data.io_list.types import IOTopic, IOValue
 
 
@@ -75,6 +76,32 @@ async def test_marpower_generator():
             # Verify the publish calls
 
             assert mock_client.publish.call_args_list == expected_calls
+
+
+def test_marpower_generator_picks_named_values_for_enum_fields():
+    mode = IOTopic("marpower/500000-thrs/dhw/mode", [IOValue("Mode", "INTEGER")])
+    pump = IOTopic(
+        "marpower/500000-thrs/dhw/dhw-pump-boiler",
+        [IOValue("CC_ControlMode", "INTEGER"), IOValue("Starts", "INTEGER")],
+    )
+    gen = MarpowerGenerator(1, MQTTConfig(host="mocked", port=1885), [mode, pump])
+    random.seed(1)
+
+    messages = [
+        gen.generate_message(topic) for _ in range(50) for topic in (mode, pump)
+    ]
+
+    modes = {message["Mode"]["Value"] for message in messages if "Mode" in message}
+    control_modes = {
+        message["CC_ControlMode"]["Value"]
+        for message in messages
+        if "CC_ControlMode" in message
+    }
+    starts = {message["Starts"]["Value"] for message in messages if "Starts" in message}
+    assert modes <= set(AmcsControlMode)
+    assert control_modes <= set(PumpControlMode)
+    # Other integers stay random.
+    assert not starts <= {1, 3, 4}
 
 
 async def test_context_manager_async():
