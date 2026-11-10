@@ -53,7 +53,7 @@
             "version": "",
             "spec": {
               "options": {
-                "content": "<center><h2>PCS testing</h2></center>\n\nMonitoring of a thruster pod: propulsion, motor, drives, cooling water, hydraulics, shear beams and mounts, with the batteries and DC switches. The **Pod** selector switches every panel between FWD and AFT, except the batteries and DC switches, which serve both pods. Drives are named by their designation: FWD 13-31-U101/U102, AFT 13-11-U101/U102.\n**Times are UTC.**\n**DC power** in kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, corrected: raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** corrected: raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **Load pins** corrected: raw / 1000 kN. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature corrected: raw × 0.1 °C; currents raw.\nWhere a published value disagrees with the unit its IO list declares, the dashboard shows the corrected value and the info icon says so. Values another device reads and acts on are shown as published: the power limits the PMS sends and the torque setpoints. The info icon of each panel states the source and any correction.",
+                "content": "<center><h2>PCS testing</h2></center>\n\nMonitoring of a thruster pod: propulsion, motor, drives, cooling water, hydraulics, shear beams and mounts, with the batteries and DC switches. The **Pod** selector switches every panel between FWD and AFT, except the batteries and DC switches, which serve both pods. Drives are named by their designation: FWD 13-31-U101/U102, AFT 13-11-U101/U102.\n**Times are UTC.**\n**DC power** in kW, positive when consuming. **Shaft power** and **propeller speed** come from the PLC, corrected: raw / 10, in kW (negative when propelling) and rpm (without sign). **Torque** corrected: raw × 100 Nm at the motor shaft. **Pitch and azimuth** in whole degrees. **Load pins** corrected: raw / 1000 kN. **THRS** temperatures in °C and flows in l/min. **DC switch** heat sink temperature corrected: raw × 0.1 °C; currents raw.\nWhere a published value disagrees with the unit its IO list declares, the dashboard shows the corrected value and the info icon says so. Values another device reads and acts on are shown as published: the power limits the PMS sends, the PMS's consumed power and the torque setpoints. The info icon of each panel states the source and any correction.",
                 "mode": "markdown"
               },
               "fieldConfig": {
@@ -3297,7 +3297,7 @@
         "spec": {
           "id": 42,
           "title": "Drive loads · ${pod:text}",
-          "description": "DC power, positive when consuming; torque at the motor shaft; the torque limits the PLC sends and the power limits the PMS gives each drive, both as sent. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources and scaling as the trends of this section.",
+          "description": "DC power, positive when consuming; torque at the motor shaft; the torque limits the PLC sends and the power limits the PMS gives each drive, both as sent; the consumed power and maximum consumption power in the PMS's power object, as published. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources and scaling as the trends of this section.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -3319,7 +3319,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH drives AS (\n  SELECT 1 AS drive, last_value(power__value ORDER BY timestamp) AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE timestamp > now() - INTERVAL '$live_window'\n  UNION ALL\n  SELECT 2 AS drive, last_value(power__value ORDER BY timestamp) AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE timestamp > now() - INTERVAL '$live_window'),\nlimits AS (\n  SELECT CASE right(topic, 4) WHEN 'u101' THEN 1 ELSE 2 END AS drive,\n    last_value(setpoint_power__value ORDER BY timestamp) AS propulsion_limit, last_value(produce_power_limit__value ORDER BY timestamp) AS regeneration_limit\n  FROM public.marpower__150000_propulsion_ara\n  WHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u101' ELSE '13-11-u101' END, 'marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u102' ELSE '13-11-u102' END)\n  GROUP BY topic)\nSELECT 'Drive ' || CAST(d.drive AS VARCHAR) || ' (${pod_system}-U10' || CAST(d.drive AS VARCHAR) || ')' AS \"Drive\",\n  round(d.power, 1) AS \"DC power [kW]\",\n  d.torque AS \"Torque [Nm]\",\n  d.max_torque AS \"Max torque sent [Nm]\",\n  d.min_torque AS \"Min torque sent [Nm]\",\n  round(l.propulsion_limit, 1) AS \"Propulsion limit [kW]\",\n  round(l.regeneration_limit, 1) AS \"Regeneration limit [kW]\",\n  to_unixtime(now()) - to_unixtime(d.updated) AS \"Updated\"\nFROM drives d LEFT JOIN limits l ON l.drive = d.drive\nORDER BY d.drive"
+                        "rawSql": "WITH drives AS (\n  SELECT 1 AS drive, last_value(power__value ORDER BY timestamp) AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE timestamp > now() - INTERVAL '$live_window'\n  UNION ALL\n  SELECT 2 AS drive, last_value(power__value ORDER BY timestamp) AS power, last_value(torque__value ORDER BY timestamp) * 100 AS torque,\n    last_value(setpoint_2__value ORDER BY timestamp) AS max_torque, last_value(setpoint_3__value ORDER BY timestamp) AS min_torque, max(timestamp) AS updated\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE timestamp > now() - INTERVAL '$live_window'),\nlimits AS (\n  SELECT CASE right(topic, 4) WHEN 'u101' THEN 1 ELSE 2 END AS drive,\n    last_value(setpoint_power__value ORDER BY timestamp) AS propulsion_limit, last_value(produce_power_limit__value ORDER BY timestamp) AS regeneration_limit,\n    last_value(consumed_power__value ORDER BY timestamp) AS consumed_power, last_value(maximum_consumption_power__value ORDER BY timestamp) AS maximum_consumption\n  FROM public.marpower__150000_propulsion_ara\n  WHERE timestamp > now() - INTERVAL '$live_window' AND topic IN ('marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u101' ELSE '13-11-u101' END, 'marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u102' ELSE '13-11-u102' END)\n  GROUP BY topic)\nSELECT 'Drive ' || CAST(d.drive AS VARCHAR) || ' (${pod_system}-U10' || CAST(d.drive AS VARCHAR) || ')' AS \"Drive\",\n  round(d.power, 1) AS \"DC power [kW]\",\n  d.torque AS \"Torque [Nm]\",\n  d.max_torque AS \"Max torque sent [Nm]\",\n  d.min_torque AS \"Min torque sent [Nm]\",\n  round(l.propulsion_limit, 1) AS \"Propulsion limit [kW]\",\n  round(l.regeneration_limit, 1) AS \"Regeneration limit [kW]\",\n  round(l.consumed_power, 1) AS \"PMS consumed power [kW]\",\n  round(l.maximum_consumption, 1) AS \"PMS maximum consumption [kW]\",\n  to_unixtime(now()) - to_unixtime(d.updated) AS \"Updated\"\nFROM drives d LEFT JOIN limits l ON l.drive = d.drive\nORDER BY d.drive"
                       }
                     },
                     "refId": "A",
@@ -4648,7 +4648,7 @@
         "spec": {
           "id": 58,
           "title": "Mode, station and drive enable · ${pod:text}",
-          "description": "Transitions only, for the selected pod. Mode: R45 from the pod table (0 Off, 1 Sailing, 2 Propulsion, 3 Maneuvering, 4 Hydrogeneration). Pitch mode: R54 (1 Normal, 2 High thrust, 3 Motor sail, 4 Auto). Lever not in zero: from the pod table. Drive control mode: R30/31 per drive, as published; its values are not documented. Station selected: from the PS and SB helm tables. Drive enabled: from the Aradex tables.",
+          "description": "Transitions only, for the selected pod. Mode: R45 from the pod table (0 Off, 1 Sailing, 2 Propulsion, 3 Maneuvering, 4 Hydrogeneration). Pitch mode: R54 (1 Normal, 2 High thrust, 3 Motor sail, 4 Auto). Lever not in zero: from the pod table. Drive control mode: R30/31 per drive, as published; its values are not documented. Station selected: from the PS and SB helm tables. Drive enabled: from the Aradex tables. PMS power limit active: R0.5 from the pod table, as published.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -5112,6 +5112,57 @@
                     "refId": "I",
                     "hidden": false
                   }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "info8fcc-greptimedb-datasource",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "meta": {
+                          "builderOptions": {
+                            "columns": [],
+                            "database": "",
+                            "limit": 1000,
+                            "meta": {},
+                            "mode": "list",
+                            "queryType": "table",
+                            "table": ""
+                          }
+                        },
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT time, pms_power_limit_active FROM (\n  SELECT timestamp AS time, CAST(pms_power_limit_active__value AS INT) AS pms_power_limit_active, LAG(CAST(pms_power_limit_active__value AS INT)) OVER (ORDER BY timestamp) AS prev\n  FROM public.marpower__150000_propulsion__pcs_${pod}\n  WHERE $__timeFilter(timestamp)\n) t\nWHERE prev IS NULL OR prev <> pms_power_limit_active\nORDER BY time",
+                        "sql": {
+                          "columns": [
+                            {
+                              "parameters": [],
+                              "type": "function"
+                            }
+                          ],
+                          "groupBy": [
+                            {
+                              "property": {
+                                "type": "string"
+                              },
+                              "type": "groupBy"
+                            }
+                          ],
+                          "limit": 50
+                        }
+                      }
+                    },
+                    "refId": "J",
+                    "hidden": false
+                  }
                 }
               ],
               "transformations": [
@@ -5390,6 +5441,18 @@
                       {
                         "id": "displayName",
                         "value": "Drive 2 control mode"
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "pms_power_limit_active"
+                    },
+                    "properties": [
+                      {
+                        "id": "displayName",
+                        "value": "PMS power limit active"
                       }
                     ]
                   }
@@ -6785,6 +6848,170 @@
             }
           }
         }
+      },
+      "panel-62": {
+        "kind": "Panel",
+        "spec": {
+          "id": 62,
+          "title": "PMS power object · ${pod:text}",
+          "description": "The PMS's power object of each drive, as published by the PMS and not corrected. Solid: the consumed power the PMS counts for the drive, in kW, the mean in each interval. Dashed: the drive's maximum consumption power, in kW, the highest value in each interval.",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "info8fcc-greptimedb-datasource",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "WITH bins AS (SELECT unnest(generate_series(date_bin('$__interval', CAST($__fromTime AS TIMESTAMP), TIMESTAMP '1970-01-01'), CAST($__toTime AS TIMESTAMP), INTERVAL '$__interval')) AS time)\nSELECT * FROM bins LEFT JOIN (\nSELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN right(topic, 4) = 'u101' THEN consumed_power__value END) AS \"Consumed power d1\",\n  avg(CASE WHEN right(topic, 4) = 'u102' THEN consumed_power__value END) AS \"Consumed power d2\",\n  max(CASE WHEN right(topic, 4) = 'u101' THEN maximum_consumption_power__value END) AS \"Maximum consumption d1\",\n  max(CASE WHEN right(topic, 4) = 'u102' THEN maximum_consumption_power__value END) AS \"Maximum consumption d2\"\nFROM public.marpower__150000_propulsion_ara\nWHERE $__timeFilter(timestamp) AND topic IN ('marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u101' ELSE '13-11-u101' END, 'marpower/150000-propulsion-ara/' || CASE '${pod}' WHEN 'fwd' THEN '13-31-u102' ELSE '13-11-u102' END)\nGROUP BY 1\n) q USING (time)\nORDER BY 1"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [
+                {
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "regex": "^(.*) Result \\d+$",
+                      "renamePattern": "$1"
+                    }
+                  }
+                }
+              ],
+              "queryOptions": {
+                "maxDataPoints": 600,
+                "interval": "1s"
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "12.3.0",
+            "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "kwatt",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "spanNulls": 120000,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".* d1$"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "green",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": ".* d2$"
+                    },
+                    "properties": [
+                      {
+                        "id": "color",
+                        "value": {
+                          "fixedColor": "yellow",
+                          "mode": "fixed"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": "^Maximum consumption .*"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.lineStyle",
+                        "value": {
+                          "dash": [
+                            10,
+                            10
+                          ],
+                          "fill": "dash"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     },
     "layout": {
@@ -6897,7 +7124,7 @@
                                   "height": 8,
                                   "element": {
                                     "kind": "ElementReference",
-                                    "name": "panel-7"
+                                    "name": "panel-62"
                                   }
                                 }
                               },
@@ -6906,7 +7133,20 @@
                                 "spec": {
                                   "x": 0,
                                   "y": 26,
-                                  "width": 24,
+                                  "width": 12,
+                                  "height": 8,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-7"
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 12,
+                                  "y": 26,
+                                  "width": 12,
                                   "height": 8,
                                   "element": {
                                     "kind": "ElementReference",
