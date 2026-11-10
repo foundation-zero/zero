@@ -10,7 +10,7 @@ dependencies = [
     "zero-modbus-bridge",
     "pydantic>=2.11.7,<3.0.0",
     "pydantic-settings>=2.10.1,<3.0.0",
-    "faststream[mqtt]>=0.7.0,<1.0.0",
+    "faststream[mqtt]>=0.7.5,<1.0.0",
 ]
 dynamic = ["version"]
 

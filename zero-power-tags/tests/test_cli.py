@@ -1,12 +1,13 @@
 import logging
 import os
 import re
-from unittest.mock import MagicMock
 
 import pytest
 from faststream.mqtt import MQTTBroker
-from zero_modbus_bridge.settings import MqttSettings
+from zero_modbus_bridge.bridge import ModbusBridge
+from zero_modbus_bridge.mqtt import RecoveringBroker
 
+from zero_power_tags import cli
 from zero_power_tags.cli import (
     PowerTagsSettings,
     RunCmd,
@@ -16,7 +17,7 @@ from zero_power_tags.cli import (
     resolve_bridge_endpoints,
     stub_ports,
 )
-from zero_power_tags.io import BridgeSpec
+from zero_power_tags.io import BridgeSpec, read_modbus_bridge_specs
 
 
 @pytest.fixture(autouse=True)
@@ -120,22 +121,6 @@ class TestStubPorts:
         }
 
 
-def test_run_cmd_broker_reconnects_indefinitely(monkeypatch):
-    """RunCmd asks the base broker for indefinite reconnect and a 15s keepalive."""
-    captured: dict = {}
-
-    def fake_make_broker(self, **kwargs):
-        captured.update(kwargs)
-        return MagicMock()
-
-    monkeypatch.setattr(MqttSettings, "make_broker", fake_make_broker)
-    cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
-    cmd.make_broker()
-
-    assert captured["reconnect"].max_attempts is None
-    assert captured["keepalive"] == 15
-
-
 def test_make_broker_accepts_kwargs_on_real_broker():
     """The real MQTTBroker accepts our security + reconnect + keepalive kwargs."""
     cmd = RunCmd(
@@ -169,3 +154,48 @@ def test_run_cmd_client_id_from_env(monkeypatch):
 
 def test_local_topic_groups():
     assert local_topic_groups(_settings(), [_spec("10P1")], 1000) == [([], 1000)]
+
+
+class _FakeApp:
+    """Stands in for FastStream: records the broker and startup hooks, runs nothing."""
+
+    def __init__(self, broker):
+        self.broker = broker
+        self.startup = []
+
+    def after_startup(self, hook):
+        self.startup.append(hook)
+
+    async def run(self):
+        pass
+
+
+async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    panel = read_modbus_bridge_specs()[0].panel
+    monkeypatch.setattr(
+        cli,
+        "PowerTagsSettings",
+        lambda: _settings(**{cli._panel_field_key(panel, "host"): "192.168.0.10"}),
+    )
+    apps: list[_FakeApp] = []
+    monkeypatch.setattr(
+        cli, "FastStream", lambda broker: apps.append(_FakeApp(broker)) or apps[-1]
+    )
+    started: list[ModbusBridge] = []
+
+    async def fake_run(bridge: ModbusBridge) -> None:
+        started.append(bridge)
+
+    monkeypatch.setattr(ModbusBridge, "run", fake_run)
+    cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
+
+    await cmd.cli_cmd()
+    for hook in apps[0].startup:
+        await hook()
+
+    broker = apps[0].broker
+    assert isinstance(broker, RecoveringBroker)
+    assert broker._connection_kwargs["reconnect"].max_attempts is None
+    assert len(started) == 1
