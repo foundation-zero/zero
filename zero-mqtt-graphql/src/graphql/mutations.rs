@@ -1,6 +1,8 @@
+use std::cmp::Ordering;
 use std::collections::BTreeMap;
 use std::future::Future;
 use std::pin::Pin;
+use std::str::FromStr;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -10,7 +12,7 @@ use async_graphql::dynamic::{
     Field, FieldFuture, FieldValue, InputObject, InputValue, Type, TypeRef,
 };
 use async_graphql::indexmap::IndexMap;
-use jiff::Timestamp;
+use jiff::{Span, SpanCompare, Timestamp, civil};
 use jsonschema::Validator;
 use log::{info, warn};
 use serde_json::{Map, Value as JsonValue};
@@ -376,9 +378,9 @@ fn merge_level(base: JsonValue, given: &JsonValue, root: bool) -> JsonValue {
 
 /// Whether `state` shows every leaf of `given`, whose fields have the types
 /// in `fields`. Numbers compare by value, so `21` and `21.0` match, but a
-/// rounded or clamped value does not. Timestamps compare as instants, so
-/// `…30.123Z` and `…30.123000Z` match. A list matches element by element,
-/// at the same length.
+/// rounded or clamped value does not. Dates and times compare by value (see
+/// [`same_temporal`]), so `…30.123Z` and `…30.123000Z` match. A list
+/// matches element by element, at the same length.
 fn shows(state: &JsonValue, given: &JsonValue, fields: &BTreeMap<String, FieldType>) -> bool {
     shows_value(state, given, Some(fields))
 }
@@ -421,20 +423,39 @@ fn shows_field(state: &JsonValue, given: &JsonValue, field_type: Option<&FieldTy
                     .all(|(state, given)| shows_field(state, given, element))
         }
         (_, JsonValue::Number(state), JsonValue::Number(given)) => state.as_f64() == given.as_f64(),
-        (Some(FieldType::DateTime), JsonValue::String(state), JsonValue::String(given)) => {
-            same_instant(state, given)
+        (Some(field_type), JsonValue::String(state), JsonValue::String(given)) => {
+            same_temporal(field_type, state, given)
         }
         _ => state == given,
     }
 }
 
-/// Whether two timestamps name the same instant. Strings that are not RFC
-/// 3339 timestamps with an offset compare as strings.
-fn same_instant(state: &str, given: &str) -> bool {
-    match (state.parse::<Timestamp>(), given.parse::<Timestamp>()) {
-        (Ok(state), Ok(given)) => state == given,
-        _ => state == given,
-    }
+/// Whether two strings of `field_type` name the same value, whatever their
+/// precision or offset: timestamps the same instant, dates and times the
+/// same calendar value, durations the same length with 24-hour days. A
+/// string of another type, that does not parse, a time with an offset, or a
+/// duration in months or years compares as written.
+fn same_temporal(field_type: &FieldType, state: &str, given: &str) -> bool {
+    let same = match field_type {
+        FieldType::DateTime => same_parsed::<Timestamp>(state, given),
+        FieldType::Date => same_parsed::<civil::Date>(state, given),
+        FieldType::Time => same_parsed::<civil::Time>(state, given),
+        FieldType::Duration => match (state.parse::<Span>(), given.parse::<Span>()) {
+            (Ok(state), Ok(given)) => state
+                .compare(SpanCompare::from(given).days_are_24_hours())
+                .ok()
+                .map(Ordering::is_eq),
+            _ => None,
+        },
+        _ => None,
+    };
+    same.unwrap_or(state == given)
+}
+
+/// Whether two strings parse to equal values; `None` when either does not
+/// parse.
+fn same_parsed<T: FromStr + PartialEq>(state: &str, given: &str) -> Option<bool> {
+    Some(state.parse::<T>().ok()? == given.parse::<T>().ok()?)
 }
 
 #[cfg(test)]
@@ -1266,6 +1287,29 @@ mod tests {
             &label("2026-11-10T09:30:00.123Z"),
             &fields
         ));
+    }
+
+    #[test_log::test]
+    fn test_shows_compares_dates_times_and_durations_by_value() {
+        let same = |field_type, state, given| same_temporal(&field_type, state, given);
+
+        assert!(same(FieldType::Date, "2026-11-10", "2026-11-10"));
+        assert!(!same(FieldType::Date, "2026-11-10", "2026-11-11"));
+
+        // pydantic writes microseconds where JavaScript writes milliseconds.
+        assert!(same(FieldType::Time, "09:30:00.123000", "09:30:00.123"));
+        assert!(!same(FieldType::Time, "09:30:00", "09:30:01"));
+
+        assert!(same(FieldType::Duration, "PT1M30S", "PT90S"));
+        assert!(same(FieldType::Duration, "P1DT2H", "PT26H"));
+        assert!(!same(FieldType::Duration, "PT1M30S", "PT91S"));
+        // Months have no fixed length, so only the same string matches.
+        assert!(same(FieldType::Duration, "P1M", "P1M"));
+        assert!(!same(FieldType::Duration, "P1M", "P30D"));
+
+        // A string that does not parse compares as written.
+        assert!(same(FieldType::Date, "soon", "soon"));
+        assert!(!same(FieldType::Date, "soon", "later"));
     }
 
     #[test_log::test]
