@@ -10,10 +10,12 @@ Locally both resolve to the same `vernemq` container; in production
 from secrets import token_hex
 from typing import Any
 
-from faststream.mqtt import MQTTBroker
+from faststream.mqtt import ReconnectConfig
 from faststream.security import SASLPlaintext
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from zero_atpx_nmea.mqtt import RecoveringBroker, exit_with_reason
 
 model_config = SettingsConfigDict(
     env_file=".env",
@@ -34,9 +36,10 @@ class InputMqttSettings(BaseSettings):
         default_factory=lambda: f"atpx-nmea-in-{token_hex(4)}"
     )
 
-    def make_broker(self) -> MQTTBroker:
-        return MQTTBroker(
+    def make_broker(self) -> RecoveringBroker:
+        return _make_broker(
             f"{self.atpx_mqtt_host}:{self.atpx_mqtt_port}",
+            "atpx-mqtt",
             client_id=self.atpx_mqtt_client_id,
         )
 
@@ -52,8 +55,29 @@ class OutputMqttSettings(BaseSettings):
     mqtt_password: str | None = None
     mqtt_client_id: str = Field(default_factory=lambda: f"atpx-nmea-out-{token_hex(4)}")
 
-    def make_broker(self) -> MQTTBroker:
+    def make_broker(self) -> RecoveringBroker:
         kwargs: dict[str, Any] = {"client_id": self.mqtt_client_id}
         if self.mqtt_user and self.mqtt_password:
             kwargs["security"] = SASLPlaintext(self.mqtt_user, self.mqtt_password)
-        return MQTTBroker(f"{self.mqtt_host}:{self.mqtt_port}", **kwargs)
+        return _make_broker(f"{self.mqtt_host}:{self.mqtt_port}", "mqtt", **kwargs)
+
+
+def _make_broker(url: str, name: str, **kwargs: Any) -> RecoveringBroker:
+    """A broker that rides out outages of the broker at ``url``.
+
+    ``name`` labels the broker in logs and in the termination message."""
+
+    async def exit_on_give_up() -> None:
+        exit_with_reason(f"{name}: client gave up reconnecting")
+
+    return RecoveringBroker(
+        url,
+        name=name,
+        # Retry for as long as it takes, at most 30 s apart, so we are back
+        # within about 30 s of the broker.
+        reconnect=ReconnectConfig(max_attempts=None, max_delay=30.0),
+        # 60 s races RabbitMQ's keepalive window.
+        keepalive=15,
+        on_connection_recovery_failed=exit_on_give_up,
+        **kwargs,
+    )
