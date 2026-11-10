@@ -22,7 +22,13 @@ from asyncapi3.models import (
     Server,
     Servers,
 )
-from pydantic.json_schema import JsonSchemaMode, models_json_schema
+from pydantic.json_schema import (
+    GenerateJsonSchema,
+    JsonSchemaMode,
+    JsonSchemaValue,
+    models_json_schema,
+)
+from pydantic_core import core_schema
 
 from thrs.input_output.base import ThrsValues
 from thrs.orchestration.config import Config
@@ -31,6 +37,24 @@ from thrs.spec.recording_connector import TopicMapping, collect_topics
 
 # As in thrs-api, a served value never expires into null.
 CHANNEL_TTL = "1h"
+
+
+class _NamedEnumsJsonSchema(GenerateJsonSchema):
+    """Writes each enum as named constants: a `oneOf` of `const` with `title`.
+
+    This is the standard JSON Schema way to name enum values, in place of a
+    bare `enum`. With it, the MQTT GraphQL bridge exposes an integer enum such
+    as `PumpControlMode` as a GraphQL enum rather than a plain `Int`.
+    """
+
+    def enum_schema(self, schema: core_schema.EnumSchema) -> JsonSchemaValue:
+        result = super().enum_schema(schema)
+        values = result.pop("enum")
+        result["oneOf"] = [
+            {"const": value, "title": member.name}
+            for value, member in zip(values, schema["members"], strict=True)
+        ]
+        return result
 
 
 def _channel_key(topic: str) -> str:
@@ -57,6 +81,7 @@ def _build_asyncapi(
         payloads,
         by_alias=True,
         ref_template="#/components/schemas/{model}",
+        schema_generator=_NamedEnumsJsonSchema,
     )
     schemas = defs.get("$defs", {})
 

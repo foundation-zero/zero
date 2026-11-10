@@ -1,3 +1,4 @@
+from enum import Enum
 from unittest.mock import Mock
 
 import pytest
@@ -168,6 +169,32 @@ def test_build_asyncapi_message_deduplication(sample_topics: list[TopicMapping])
 
     # ComplexPayload has NestedDetail in defs
     assert "NestedDetail" in doc.components.schemas.root
+
+
+class Level(Enum):
+    LOW = 1
+    HIGH = 3
+
+
+class LevelPayload(ThrsValues):
+    level: Level
+
+
+def test_build_asyncapi_names_enum_values():
+    topics = [TopicMapping("pump/level", LevelPayload, "send", "pump")]
+    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # type: ignore[arg-type]
+
+    assert doc.components
+    assert doc.components.schemas
+    level = doc.components.schemas.root["Level"].model_dump(
+        by_alias=True, exclude_none=True
+    )
+    assert level["type"] == "integer"
+    assert level["oneOf"] == [
+        {"const": 1, "title": "LOW"},
+        {"const": 3, "title": "HIGH"},
+    ]
+    assert "enum" not in level
 
 
 def test_build_asyncapi_topics_are_sorted():
