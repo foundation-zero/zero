@@ -515,12 +515,12 @@ tui = [
 
 [package.metadata]
 requires-dist = [
-    { name = "faststream", extras = ["mqtt"], specifier = ">=0.7.0,<1.0.0" },
+    { name = "faststream", extras = ["mqtt"], specifier = ">=0.7.5,<1.0.0" },
     { name = "pydantic", specifier = ">=2.11.7,<3.0.0" },
     { name = "pydantic-settings", specifier = ">=2.10.1,<3.0.0" },
     { name = "pymodbustcp", specifier = ">=0.3.0,<0.4.0" },
     { name = "textual", marker = "extra == 'tui'", specifier = ">=8,<9" },
-    { name = "zmqtt", specifier = ">=0.2.0,<0.3.0" },
+    { name = "zmqtt", specifier = ">=0.2.2,<0.3.0" },
 ]
 provides-extras = ["tui"]
 
@@ -562,7 +562,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "faststream", extras = ["mqtt"], specifier = ">=0.7.0,<1.0.0" },
+    { name = "faststream", extras = ["mqtt"], specifier = ">=0.7.5,<1.0.0" },
     { name = "pydantic", specifier = ">=2.11.7,<3.0.0" },
     { name = "pydantic-settings", specifier = ">=2.10.1,<3.0.0" },
     { name = "zero-modbus-bridge", editable = "../zero-modbus-bridge" },
@@ -584,9 +584,9 @@ test = [
 
 [[package]]
 name = "zmqtt"
-version = "0.2.1"
+version = "0.2.5"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ac/e6/23be7be9c899681c742bbbd861069f59e9cc669de929962951f23f869c6d/zmqtt-0.2.1.tar.gz", hash = "sha256:2b1ed7af2fb0e0eb0ee7d7a0477812e434d78e9626ebc0ef233690fc508118d8", size = 42724, upload-time = "2026-08-30T21:13:11.518Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/82/0c/0dd7426a8e919669f2a30ef76fd16c89ae076c8b35f4ef98e434dd019dda/zmqtt-0.2.5.tar.gz", hash = "sha256:737b763d485323afae1dd88646027f2d70b744cbb8098bfdee7de31bbbe721e3", size = 50518, upload-time = "2026-10-07T19:45:05.358Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/83/38/5e1a552960bfe5beabeb5fa32b78b71105a6289a11769c6772810f4eb181/zmqtt-0.2.1-py3-none-any.whl", hash = "sha256:af8e71066c55cc4802fd8352cb230133c7026314536fd92b62c3112848ecd8af", size = 54597, upload-time = "2026-08-30T21:13:10.202Z" },
+    { url = "https://files.pythonhosted.org/packages/7b/f6/921a255d54ab8098e3b29a66f6f4d2990fd274d1287607c321bc50963e0f/zmqtt-0.2.5-py3-none-any.whl", hash = "sha256:892ac1ce25effbcbe2caa19dabb4f67bd10ed66ffa6eac1fa8a4f5bb719aca5d", size = 62521, upload-time = "2026-10-07T19:45:04.207Z" },
 ]
