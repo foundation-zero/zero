@@ -9,6 +9,14 @@ specDir: /app/specs
 logLevel: info
 listenPort: 5103
 defaultTtlSecs: 300
+
+mutations:
+  # Expose Receive Topics as GraphQL Mutations. Off by default: the bridge
+  # has no authorization, and these inputs actuate equipment.
+  enabled: false
+  # How long a Mutation waits for its State topic to confirm the input.
+  timeoutSecs: 10
+
 # Command to run: "serve" (default), "validate" or "listen"
 command: serve
 
