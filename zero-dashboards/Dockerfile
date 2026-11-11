@@ -1,6 +1,6 @@
 # Custom Grafana dockerfile from http://github.com/grafana/grafana/blob/main/packaging/docker/custom/Dockerfile
 # Documented here: https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/
-ARG GRAFANA_VERSION="13.3.0@sha256:488984b716c0862639f91a698adbe2862677a5a07bad42da5f03f3030883b205"
+ARG GRAFANA_VERSION="13.3.1@sha256:0615ec4fbd4072004b7d86b46ded63013a74b7d6eb1119273dd89e8fa25c13cf"
 
 FROM grafana/grafana:${GRAFANA_VERSION}
 
