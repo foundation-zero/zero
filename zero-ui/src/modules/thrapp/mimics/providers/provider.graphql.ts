@@ -135,13 +135,11 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
   // Every value is stamped with now, so thrs-control takes it as the newest setpoint.
   const setControlValue = <Type extends ControlComponentType, Module extends keyof ThrsDefinitions>(
     [_type, module, field]: ModuleField<Type, Module>,
-    values: ControlValues<Type>,
+    values: Partial<ControlValues<Type>>,
   ) => {
     const timeStamp = new Date().toISOString();
     const stamped = Object.fromEntries(
-      Object.entries(values)
-        .filter(([name]) => name !== "__typename")
-        .map(([name, value]) => [name, { value, timeStamp }]),
+      Object.entries(values).map(([name, value]) => [name, { value, timeStamp }]),
     );
     return send(module, "controlValues", { [field]: stamped });
   };

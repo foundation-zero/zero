@@ -1,4 +1,4 @@
-import { toEntries, unstamp } from "@/modules/common/lib/utils";
+import { unstamp } from "@/modules/common/lib/utils";
 import { Unstamp } from "@/modules/common/types";
 import {
   ControlComponentType,
@@ -47,12 +47,6 @@ export const createFormContext = <Control extends ControlComponentType>(
   const isAdvisoryEnabled = useAdvisoryEnabled();
 
   const dirtyValues = ref({} as Partial<ControlValues<Control>>);
-  const currentValues = computed(
-    () =>
-      Object.fromEntries(
-        toEntries(control.value!, (_, value) => unstamp(value)),
-      ) as ControlValues<Control>,
-  );
   const isDirty = computed(() => !isEmpty(dirtyValues.value));
   const error = ref<string>();
   const isPending = ref(false);
@@ -61,16 +55,21 @@ export const createFormContext = <Control extends ControlComponentType>(
   );
 
   async function submit() {
-    if (!isEditable.value || !control.value || automaticMode.value || isPending.value) return;
+    if (
+      !isEditable.value ||
+      !control.value ||
+      automaticMode.value ||
+      isPending.value ||
+      !isDirty.value
+    )
+      return;
 
     error.value = undefined;
     isPending.value = true;
 
     try {
-      await setControlValue(source, {
-        ...currentValues.value,
-        ...dirtyValues.value,
-      });
+      // Only the edited fields, so a field another operator set meanwhile keeps its value.
+      await setControlValue(source, dirtyValues.value);
     } catch (err) {
       error.value = (err as Error).message;
     } finally {

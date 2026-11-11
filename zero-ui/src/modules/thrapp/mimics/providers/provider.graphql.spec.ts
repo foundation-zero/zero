@@ -155,7 +155,7 @@ describe("GraphQL mimic data provider", () => {
 
       await useGraphQLDataProvider().setControlValue(
         [ControlComponentType.Pump, "thrusters", "thrustersPump1", null],
-        { dutypoint: 0.8, on: true, __typename: "Pump" } as never,
+        { dutypoint: 0.8, on: true },
       );
 
       const { query, input } = lastMutation();

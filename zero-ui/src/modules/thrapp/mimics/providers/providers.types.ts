@@ -62,7 +62,7 @@ export interface MimicDataProvider {
   ) => Ref<ControllerStateDefinitionMap[Type] | undefined>;
   setControlValue: <Type extends ControlComponentType, Module extends keyof ThrsDefinitions>(
     prop: ModuleField<Type, Module>,
-    value: ControlValues<Type>,
+    values: Partial<ControlValues<Type>>,
   ) => Promise<void>;
   setParameter: <Type extends ParametersType, Module extends keyof ThrsDefinitions>(
     prop: ModuleField<Type, Module>,
