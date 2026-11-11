@@ -1,0 +1,61 @@
+[project]
+name = "zero-health"
+description = "Readiness and liveness endpoints for Zero's Python services"
+readme = "README.md"
+requires-python = ">=3.15.1,<4.0"
+dependencies = [
+    "pydantic>=2.11.7,<3.0.0",
+    "pydantic-settings>=2.10.1,<3.0.0",
+]
+dynamic = ["version"]
+
+[dependency-groups]
+dev = ["ruff>=0.17.2,<0.18", "pyright>=1.1.403,<2"]
+test = [
+    "pytest-asyncio>=1.1.0,<2",
+    "pytest-cov>=7.1.0,<8",
+    "pytest>=9.1.1,<10",
+]
+
+[tool.ruff]
+fix = true
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "W", "I"]
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+log_level = "DEBUG"
+log_format = "%(asctime)s.%(msecs)03d | %(levelname)-8s | %(message)s"
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+exclude_also = [
+    "if TYPE_CHECKING:",
+    'if __name__ == "__main__":',
+    "@overload",
+    "raise NotImplementedError",
+    '^\s*\.\.\.$',
+]
+
+[build-system]
+requires = ["hatchling>=1.26,<2", "hatch-vcs>=0.4,<1"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+search_parent_directories = true
+fallback_version = "0.0.0"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/zero_health"]
+
+[tool.uv]
+default-groups = ["dev", "test"]
