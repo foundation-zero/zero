@@ -2,7 +2,9 @@ name: "Power Tags: Test and push Docker image"
 on:
   pull_request:
     paths:
+      - packages/py/zero-health/**
       - packages/py/zero-modbus-bridge/**
+      - packages/py/zero-mqtt/**
       - zero-power-tags/**
       - .github/workflows/ci_power_tags.yaml
       - .github/actions/coverage-report/**
@@ -12,7 +14,9 @@ on:
     branches:
       - main
     paths:
+      - packages/py/zero-health/**
       - packages/py/zero-modbus-bridge/**
+      - packages/py/zero-mqtt/**
       - zero-power-tags/**
       - .github/workflows/ci_power_tags.yaml
       - .github/actions/coverage-report/**

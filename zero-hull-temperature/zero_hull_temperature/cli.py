@@ -17,7 +17,8 @@ from pydantic_settings import (
 )
 from zero_modbus_bridge.io import ModbusTopic
 from zero_modbus_bridge.reader import ModbusReader
-from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
+from zero_modbus_bridge.settings import ModbusSettings
+from zero_mqtt import MqttSettings
 
 from zero_hull_temperature.addresses import (
     HULL_TEMPERATURE_TOPIC,

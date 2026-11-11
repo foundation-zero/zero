@@ -13,8 +13,9 @@ from pydantic_settings import (
 )
 from zero_modbus_bridge.bridge import ModbusBridge
 from zero_modbus_bridge.publisher import MqttPublisher
-from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
+from zero_modbus_bridge.settings import ModbusSettings
 from zero_modbus_bridge.stub import Stub
+from zero_mqtt import MqttSettings
 
 from zero_termodinamica.io import read_modbus_topics
 

@@ -17,8 +17,8 @@ from pydantic_settings import (
 )
 from zero_modbus_bridge.bridge import ModbusBridge
 from zero_modbus_bridge.io import ModbusTopic
-from zero_modbus_bridge.settings import MqttSettings
 from zero_modbus_bridge.stub import Stub
+from zero_mqtt import MqttSettings
 
 from zero_power_tags.io import (
     BridgeSpec,

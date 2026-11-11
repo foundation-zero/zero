@@ -51,6 +51,7 @@ class ModbusBridge:
         self._buffer: deque[_Reading] = deque()
         self._dropped = 0
         self._failing = False
+        self._gateway_error: str | None = "not read yet"
         self._reader = reader
         self._publisher = publisher
         if probe_interval <= 0:
@@ -66,6 +67,10 @@ class ModbusBridge:
     def dropped_count(self) -> int:
         """Readings discarded because the buffer was full, since start."""
         return self._dropped
+
+    async def gateway_check(self) -> str | None:
+        """Readiness check: None while the last probe reached the gateway, else why not."""
+        return self._gateway_error
 
     @staticmethod
     def from_settings(
@@ -128,6 +133,7 @@ class ModbusBridge:
         # One worker-thread call per probe: keeps the loop responsive to MQTT
         # keepalives, and the client on one thread (pyModbusTCP isn't thread-safe).
         readings = await asyncio.to_thread(self._probe)
+        self._gateway_error = None if readings is not None else "no connection"
         # Replay the backlog before queueing this probe, so a full buffer only
         # drops readings while the broker is still refusing.
         drained = await self._flush()

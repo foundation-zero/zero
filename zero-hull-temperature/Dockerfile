@@ -5,7 +5,9 @@ ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
 
+COPY packages/py/zero-health/ /app/packages/py/zero-health/
 COPY packages/py/zero-modbus-bridge/ /app/packages/py/zero-modbus-bridge/
+COPY packages/py/zero-mqtt/ /app/packages/py/zero-mqtt/
 COPY zero-hull-temperature/pyproject.toml zero-hull-temperature/uv.lock zero-hull-temperature/README.md ./zero-hull-temperature/
 COPY zero-hull-temperature/zero_hull_temperature ./zero-hull-temperature/zero_hull_temperature
 

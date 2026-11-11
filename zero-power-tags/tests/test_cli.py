@@ -5,7 +5,7 @@ import re
 import pytest
 from faststream.mqtt import MQTTBroker
 from zero_modbus_bridge.bridge import ModbusBridge
-from zero_modbus_bridge.mqtt import RecoveringBroker
+from zero_mqtt.broker import RecoveringBroker
 
 from zero_power_tags import cli
 from zero_power_tags.cli import (

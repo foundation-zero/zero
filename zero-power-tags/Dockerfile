@@ -5,7 +5,9 @@ ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
 
+COPY packages/py/zero-health/ /app/packages/py/zero-health/
 COPY packages/py/zero-modbus-bridge/ /app/packages/py/zero-modbus-bridge/
+COPY packages/py/zero-mqtt/ /app/packages/py/zero-mqtt/
 COPY zero-power-tags/pyproject.toml zero-power-tags/uv.lock zero-power-tags/README.md ./zero-power-tags/
 COPY zero-power-tags/src ./zero-power-tags/src
 
