@@ -19,6 +19,10 @@
               "description": "THRS API GraphQL endpoint",
               "type": "string"
             },
+            "VITE_MQTT_GRAPHQL_API_SERVER_URL": {
+              "description": "MQTT GraphQL API endpoint (THRS views, power tags); defaults to /api/mqtt-graphql/graphql",
+              "type": "string"
+            },
             "VITE_LOADS_API_SERVER_URL": {
               "description": "Loads API GraphQL endpoint",
               "type": "string"

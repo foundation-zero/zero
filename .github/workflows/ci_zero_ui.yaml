@@ -195,6 +195,7 @@ jobs:
         run: |
           echo '{
             "VITE_THRS_API_SERVER_URL": "https://thrs-control-singel.tail0b4840.ts.net/graphql",
+            "VITE_MQTT_GRAPHQL_API_SERVER_URL": "https://api-singel.tail0b4840.ts.net/graphql",
             "VITE_LOADS_API_SERVER_URL": "https://loads-app-singel.tail0b4840.ts.net/graphql",
             "VITE_GRAPHQL_URL": "https://hasura-singel.tail0b4840.ts.net/v1/graphql",
             "VITE_GRAPHQL_WS_URL": "ws://hasura-singel.tail0b4840.ts.net/v1/graphql",
