@@ -1,16 +1,20 @@
+use std::future;
 use std::net::SocketAddr;
 use std::sync::Arc;
 
 use anyhow::{Context, Result, bail};
 use clap::Parser;
 use log::{error, info};
+use std::io::Error;
 use tokio::net::TcpListener;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
 
+#[cfg(unix)]
+use tokio::signal::unix::{SignalKind, signal};
 use zero_mqtt_graphql::api_model::Api;
 use zero_mqtt_graphql::asyncapi::load_specs;
-use zero_mqtt_graphql::cache::TopicCache;
+use zero_mqtt_graphql::cache::{TopicCache, spawn_eviction};
 use zero_mqtt_graphql::config::AppConfig;
 use zero_mqtt_graphql::graphql::build_schema;
 use zero_mqtt_graphql::http::router;
@@ -92,11 +96,8 @@ fn validate_command(api: &Api) -> Result<()> {
 /// values, until Ctrl-C or an unexpected MQTT subscriber death (an error, so
 /// the process exits non-zero and Kubernetes restarts it).
 async fn run_serve(config: AppConfig, api: &Api) -> Result<()> {
-    let cache = Arc::new(TopicCache::with_ttl(
-        config.default_ttl_secs,
-        api.ttl_map(config.default_ttl_secs),
-    ));
-    zero_mqtt_graphql::graphql::spawn_eviction(cache.clone());
+    let cache = Arc::new(TopicCache::with_ttl(config.default_ttl_secs, api.ttl_map()));
+    spawn_eviction(cache.clone());
 
     let mut mqtt = spawn_mqtt_subscriber(&config, api, &cache)?;
 
@@ -105,11 +106,7 @@ async fn run_serve(config: AppConfig, api: &Api) -> Result<()> {
     info!("Listening on http://{addr}");
     let listener = TcpListener::bind(addr).await?;
 
-    let sig = async {
-        _ = tokio::signal::ctrl_c().await;
-        info!("Received shutdown signal");
-    };
-    let server = axum::serve(listener, router(schema)).with_graceful_shutdown(sig);
+    let server = axum::serve(listener, router(schema)).with_graceful_shutdown(shutdown_signal());
 
     // `?` propagates a server error straight out of serve mode; otherwise
     // we only learn whether the MQTT subscriber died before the server.
@@ -129,6 +126,29 @@ async fn run_serve(config: AppConfig, api: &Api) -> Result<()> {
 
     info!("Shutdown complete");
     Ok(())
+}
+
+async fn shutdown_signal() {
+    let ctrl_c = tokio::signal::ctrl_c();
+
+    #[cfg(unix)]
+    let terminate = async {
+        signal(SignalKind::terminate())?.recv().await;
+        Ok(())
+    };
+    #[cfg(not(unix))]
+    let terminate = future::pending();
+
+    tokio::select! {
+        result = ctrl_c => match result {
+            Ok(()) => info!("Received SIGINT, shutting down"),
+            Err(e) => error!("Failed to listen for SIGINT: {e} — shutting down"),
+        },
+        result = terminate => match result {
+            Ok(()) => info!("Received SIGTERM, shutting down"),
+            Err(e@Error {..}) => error!("Failed to listen for SIGTERM: {e} — shutting down"),
+        },
+    }
 }
 
 /// Subscribe the MQTT subscriber to every concrete topic and group pattern.
@@ -176,7 +196,7 @@ async fn mqtt_exit(mqtt: &mut Option<MqttTask>) {
         Some((_, dead_rx)) => {
             let _ = dead_rx.await;
         }
-        None => std::future::pending().await,
+        None => future::pending().await,
     }
 }
 
@@ -223,13 +243,8 @@ async fn run_listen_only(api: &Api, config: AppConfig) -> Result<()> {
 
     let (handle, dead_rx) = spawn_subscriber(sub);
 
-    let sig = async {
-        _ = tokio::signal::ctrl_c().await;
-        info!("Received shutdown signal");
-    };
-
     let interrupted = tokio::select! {
-        () = sig => true,
+        () = shutdown_signal() => true,
         _ = dead_rx => false,
     };
 
@@ -266,23 +281,23 @@ fn export_sdl(api: &Api, output: Option<&str>) -> Result<()> {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::BTreeMap;
+
     use super::*;
+    use zero_mqtt_graphql::api_model::GraphqlType;
     use zero_mqtt_graphql::roas_asyncapi::OperationAction;
     use zero_mqtt_graphql::{
-        api_model::{ApiModel, FieldDef, TopicDef},
+        api_model::{ApiModel, TopicDef},
         topic_map::TopicMap,
     };
 
     fn sample_api() -> Api {
         let topics = vec![TopicDef {
             topic: "test/topic".to_string(),
-            fields: vec![FieldDef {
-                name: "x".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
+            fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         Api::new(vec![ApiModel::new(
@@ -309,20 +324,6 @@ mod tests {
 
         let _ = std::fs::remove_dir_all(&dir);
     }
-
-    // #[test_log::test]
-    // fn test_export_sdl_empty_specs_error() {
-    //     let api = Api::new(vec![ApiModel::new(
-    //         "test".to_string(),
-    //         TopicMap::new(),
-    //         vec![],
-    //         vec![],
-    //         TopicMap::new(),
-    //     )]);
-
-    //     let err = export_sdl(&api, None).unwrap_err();
-    //     assert!(err.to_string().contains("no topics found"), "{err}");
-    // }
 
     #[test_log::test]
     fn test_export_sdl_stdout_does_not_fail() {

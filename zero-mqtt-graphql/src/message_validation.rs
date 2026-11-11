@@ -95,7 +95,7 @@ pub fn build_validators(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{FieldDef, TopicGroupDef};
+    use crate::api_model::{GraphqlType, TopicGroupDef};
     use crate::roas_asyncapi::OperationAction;
     use serde_json::json;
     use std::collections::BTreeMap;
@@ -104,15 +104,15 @@ mod tests {
         TopicGroupDef {
             group: "power-tags".to_string(),
             pattern: pattern.to_string(),
-            fields: vec![FieldDef {
-                name: "active_power_total".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
+            fields: BTreeMap::from_iter(vec![(
+                "active_power_total".to_string(),
+                GraphqlType::Float,
+            )]),
             payload_schema_ref: schema,
             action: OperationAction::Send,
             value_extensions: BTreeMap::new(),
-            ttl_secs: 300,
-            group_by: "".to_string(),
+            ttl_secs: None,
+            group_by: String::new(),
             topic_metadata: BTreeMap::new(),
         }
     }
@@ -126,13 +126,13 @@ mod tests {
 
         let topics = vec![TopicDef {
             topic: "power-tags".to_string(),
-            fields: vec![FieldDef {
-                name: "active_power_total".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
+            fields: BTreeMap::from_iter(vec![(
+                "active_power_total".to_string(),
+                GraphqlType::Float,
+            )]),
             payload_schema_ref: Some("#/validator".to_string()),
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let validators = build_validators(&validator_builder, &topics, &[]).unwrap();
@@ -205,13 +205,13 @@ mod tests {
 
         let topics = vec![TopicDef {
             topic: "power-tags".to_string(),
-            fields: vec![FieldDef {
-                name: "active_power_total".to_string(),
-                graphql_type: "String".to_string(),
-            }],
+            fields: BTreeMap::from_iter(vec![(
+                "active_power_total".to_string(),
+                GraphqlType::String,
+            )]),
             payload_schema_ref: Some("#/schemas/message".to_string()),
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         }];
 
         let validators = build_validators(&validator_builder, &topics, &[]).unwrap();

@@ -2,7 +2,7 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use jsonschema::Validator;
-use log::{debug, error, info, warn};
+use log::{Level, debug, error, info, log_enabled, warn};
 use rumqttc::{
     AsyncClient, ConnectReturnCode, ConnectionError, Event, EventLoop, Incoming, MqttOptions, QoS,
 };
@@ -196,20 +196,22 @@ impl MqttSubscriber {
         // caches the payload regardless of validity.
         let _ = self.validate_payload(topic, &value);
 
-        let rendered = value.to_string();
-        let preview_len = rendered
-            .char_indices()
-            .nth(100)
-            .map_or(rendered.len(), |(idx, _)| idx);
-        if preview_len < rendered.len() {
-            debug!(
-                "Caching payload for topic '{}': {}...",
-                topic,
-                &rendered[..preview_len]
-            );
-        } else {
-            debug!("Caching payload for topic '{topic}': {rendered}");
+        if log_enabled!(Level::Debug) {
+            let rendered = value.to_string();
+            let preview_len = rendered
+                .char_indices()
+                .nth(100)
+                .map_or(rendered.len(), |(idx, _)| idx);
+            if preview_len < rendered.len() {
+                debug!(
+                    "Caching payload for topic '{topic}': {}...",
+                    &rendered[..preview_len]
+                );
+            } else {
+                debug!("Caching payload for topic '{topic}': {rendered}");
+            }
         }
+
         self.cache.insert(topic, flatten_payload(value));
     }
 
@@ -223,14 +225,9 @@ impl MqttSubscriber {
         if !valid {
             let details: Vec<String> = validator
                 .iter_errors(value)
-                .map(|e| format!("{}: {}", e.instance_path(), e))
+                .map(|e| format!("{}: {e}", e.instance_path()))
                 .collect();
-            warn!(
-                "Schema mismatch on topic '{}': {} | payload: {}",
-                topic,
-                details.join("; "),
-                value
-            );
+            warn!("Schema mismatch on topic '{topic}': {}", details.join("; "));
         }
         Some(valid)
     }
@@ -324,7 +321,7 @@ fn flatten_payload(value: Value) -> Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{Api, ApiModel, FieldDef, TopicDef, TopicGroupDef};
+    use crate::api_model::{Api, ApiModel, GraphqlType, TopicDef, TopicGroupDef};
     use crate::roas_asyncapi::OperationAction;
     use serde_json::json;
     use std::collections::BTreeMap;
@@ -333,15 +330,15 @@ mod tests {
         vec![TopicGroupDef {
             group: "power-tags".to_string(),
             pattern: pattern.to_string(),
-            fields: vec![FieldDef {
-                name: "active_power_total".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
+            fields: BTreeMap::from_iter(vec![(
+                "active_power_total".to_string(),
+                GraphqlType::Float,
+            )]),
             payload_schema_ref: Some(schema_ref.to_string()),
             value_extensions: BTreeMap::new(),
-            ttl_secs: 300,
+            ttl_secs: None,
             action: OperationAction::Send,
-            group_by: "".to_string(),
+            group_by: String::new(),
             topic_metadata: BTreeMap::new(),
         }]
     }
@@ -352,7 +349,7 @@ mod tests {
         validators: TopicMap<Validator>,
     ) -> Api {
         Api::new(vec![ApiModel::new(
-            "".to_string(),
+            String::new(),
             TopicMap::new(),
             topics,
             groups,
@@ -450,13 +447,13 @@ mod tests {
 
         let topic = TopicDef {
             topic: "power-tags/10P1/breaker3".to_string(),
-            fields: vec![FieldDef {
-                name: "active_power_total".to_string(),
-                graphql_type: "Float".to_string(),
-            }],
+            fields: BTreeMap::from_iter(vec![(
+                "active_power_total".to_string(),
+                GraphqlType::Float,
+            )]),
             payload_schema_ref: None,
             action: OperationAction::Send,
-            ttl_secs: 300,
+            ttl_secs: None,
         };
         let api = api(
             vec![topic],

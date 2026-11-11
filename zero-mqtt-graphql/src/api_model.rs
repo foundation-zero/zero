@@ -8,40 +8,43 @@ use crate::topic_map::TopicMap;
 #[derive(Debug, Clone)]
 pub struct TopicDef {
     pub topic: String,
-    pub fields: Vec<FieldDef>,
+    pub fields: BTreeMap<String, GraphqlType>,
     /// Pointer to payload in json reference format (e.g. #/components/schemas/field)
     pub payload_schema_ref: Option<String>,
     /// TTL in seconds for cached values of this topic. Determined from
     /// `x-ttl` extensions on the AsyncAPI message or channel
     /// (per-schema override) or a global default.
-    pub ttl_secs: u64,
+    pub ttl_secs: Option<u64>,
     pub action: OperationAction,
 }
 
 /// A parametrized topic family declared by a single channel, e.g.
-/// address `power-tags/{panel}/{slug}` with mqtt binding `power-tags/+/+`.
+/// address `power-tags/{panel}/{slug}`.
 #[derive(Debug, Clone)]
 pub struct TopicGroupDef {
     /// Static prefix of the address (`power-tags`); seeds the GraphQL names.
     pub group: String,
     /// Wildcard MQTT topic to subscribe to (`power-tags/+/+`).
     pub pattern: String,
-    pub fields: Vec<FieldDef>,
-    /// Raw JSON Schema value for the payload.
+    pub fields: BTreeMap<String, GraphqlType>,
+    /// Pointer to payload in json reference format (e.g. #/components/schemas/field)
     pub payload_schema_ref: Option<String>,
+    pub ttl_secs: Option<u64>,
+    pub action: OperationAction,
     /// Extension attributes per payload field (`x-*` schema extensions
     /// minus the prefix), keyed by raw field name.
-    pub ttl_secs: u64,
-    pub action: OperationAction,
     pub value_extensions: BTreeMap<String, BTreeMap<String, String>>,
     pub topic_metadata: MetadataByTopic,
     pub group_by: String,
 }
 
-#[derive(Debug, Clone)]
-pub struct FieldDef {
-    pub name: String,
-    pub graphql_type: String,
+#[derive(Debug, Clone, PartialEq)]
+pub enum GraphqlType {
+    Object(String, Box<BTreeMap<String, GraphqlType>>),
+    String,
+    Float,
+    Int,
+    Boolean,
 }
 
 #[derive(Debug, Clone)]
@@ -76,6 +79,7 @@ impl ApiModel {
         self.topics.is_empty() && self.groups.is_empty()
     }
 }
+#[derive(Debug)]
 
 pub struct Api {
     pub(crate) models: Vec<ApiModel>,
@@ -128,20 +132,18 @@ impl Api {
     /// keyed by topic, groups by their wildcard pattern so every concrete
     /// topic under them inherits the group's `x-ttl`.
     #[must_use]
-    pub fn ttl_map(&self, default_ttl: u64) -> TopicMap<u64> {
+    pub fn ttl_map(&self) -> TopicMap<u64> {
         let topic_overrides = self
             .models
             .iter()
             .flat_map(|model| &model.topics)
-            .filter(|t| t.ttl_secs != default_ttl)
-            .map(|t| (t.topic.clone(), t.ttl_secs));
+            .filter_map(|t| Some((t.topic.clone(), t.ttl_secs?)));
 
         let group_overrides = self
             .models
             .iter()
             .flat_map(|model| &model.groups)
-            .filter(|g| g.ttl_secs != default_ttl)
-            .map(|g| (g.pattern.clone(), g.ttl_secs));
+            .filter_map(|g| Some((g.pattern.clone(), g.ttl_secs?)));
         topic_overrides.chain(group_overrides).collect()
     }
 }
@@ -166,10 +168,10 @@ mod tests {
             "test".to_owned(),
             TopicMap::new(),
             vec![TopicDef {
-                topic: "".to_owned(),
-                fields: vec![],
+                topic: "some/topic".to_owned(),
+                fields: BTreeMap::new(),
                 payload_schema_ref: None,
-                ttl_secs: 0,
+                ttl_secs: None,
                 action: OperationAction::Send,
             }],
             vec![],
