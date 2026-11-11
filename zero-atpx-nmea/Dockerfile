@@ -5,6 +5,9 @@ ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app/zero-atpx-nmea
 
+COPY packages/py/zero-health/ /app/packages/py/zero-health/
+COPY packages/py/zero-mqtt/ /app/packages/py/zero-mqtt/
+
 # Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=zero-atpx-nmea/uv.lock,target=uv.lock \

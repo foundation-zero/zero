@@ -54,7 +54,7 @@ spec:
             - name: MQTT_PORT
               value: {{ .Values.mqtt.port | quote }}
             {{- if .Values.mqtt.existingSecret }}
-            - name: MQTT_USER
+            - name: MQTT_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mqtt.existingSecret }}
@@ -65,6 +65,20 @@ spec:
                   name: {{ .Values.mqtt.existingSecret }}
                   key: {{ .Values.mqtt.existingSecretPasswordKey }}
             {{- end }}
+          ports:
+            - name: health
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: health
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health/alive
+              port: health
+            periodSeconds: 10
+            failureThreshold: 3
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

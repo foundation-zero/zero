@@ -10,10 +10,9 @@ lives in and is tested against the pure `parse` function.
 import logging
 
 from faststream import FastStream
-from faststream.mqtt import MQTTMessage, QoS
+from faststream.mqtt import MQTTBroker, MQTTMessage, QoS
 
 from zero_atpx_nmea.parser import parse
-from zero_atpx_nmea.settings import InputMqttSettings, OutputMqttSettings
 
 logger = logging.getLogger(__name__)
 
@@ -21,23 +20,13 @@ INPUT_TOPIC = "atpx/nmea0183/#"
 OUTPUT_TOPIC_TEMPLATE = "atpx/processed/nmea/{type}/{sender}"
 
 
-def build_app(
-    input_settings: InputMqttSettings | None = None,
-    output_settings: OutputMqttSettings | None = None,
-) -> FastStream:
+def build_app(input_broker: MQTTBroker, output_broker: MQTTBroker) -> FastStream:
     """Wire up the input subscriber and output broker, and return the app.
 
     Two separate `MQTTBroker`s are used (even though locally they point at
     the same `vernemq` instance) because in production `ATPX_MQTT_HOST` is a
     different, unauthenticated broker on A+T's side.
     """
-    # Required fields are sourced from the environment by pydantic-settings
-    # at runtime; pyright can't see that, hence the ignores below.
-    input_settings = input_settings or InputMqttSettings()  # type: ignore[call-arg]
-    output_settings = output_settings or OutputMqttSettings()  # type: ignore[call-arg]
-
-    input_broker = input_settings.make_broker()
-    output_broker = output_settings.make_broker()
 
     @input_broker.subscriber(INPUT_TOPIC, description="Raw A+T NMEA 0183 sentences")
     async def handle(raw_sentence: str, message: MQTTMessage) -> None:
