@@ -1,0 +1,15 @@
+{{- $processing := "" }}
+{{- range $path, $_ := .Files.Glob "processing/*" }}
+{{- $processing = printf "%s%s\n%s\n" $processing $path ($.Files.Get $path) }}
+{{- end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vector-config-checksums
+  namespace: {{ .Release.Namespace }}
+  labels:
+    reconcile.fluxcd.io/watch: Enabled
+data:
+{{- range $instance := list "atpx" "process" }}
+  {{ $instance }}: {{ printf "%s\n%s" ($.Files.Get (printf "config-%s.yaml" $instance)) $processing | sha256sum | quote }}
+{{- end }}
