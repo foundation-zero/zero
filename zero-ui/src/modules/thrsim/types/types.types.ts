@@ -28,6 +28,7 @@ export type SimulationFields = {
   [SimulationComponentType.Flow]: (keyof FlowSimulation)[];
   [SimulationComponentType.HvacExchanger]: (keyof HvacExchangerSimulation)[];
   [SimulationComponentType.AdsorptionChiller]: (keyof AdsorptionChillerSimulation)[];
+  [SimulationComponentType.AmcsControlMode]: (keyof AmcsControlModeSimulation)[];
 };
 
 export type ThrusterSimulation = {

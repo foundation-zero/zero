@@ -1,35 +1,20 @@
 import i18n from "@/i18n";
 import { PromiseFn } from "@/modules/common/types";
 import { mutationWithoutValue, mutationWithValue } from "@/modules/thrapp/graphql";
-import { context } from "@/modules/thrapp/graphql/client";
+import { context, mqttGraphqlContext } from "@/modules/thrapp/graphql/client";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 
-import { gql, TypedDocumentNode, useClientHandle, useQuery } from "@urql/vue";
+import { TypedDocumentNode, useClientHandle, useQuery } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { OperationResult } from "graphql-ws";
 import { Maybe } from "graphql/jsutils/Maybe";
 
 import { AmcsControlMode } from "@/modules/thrapp/types/thrs";
+import { camelCase } from "lodash";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { QUERY_SIMULATION, SIMULATION_INPUT_QUERIES, THRSIM } from "../lib/consts";
-import { SIMULATION_TYPES } from "../lib/consts.types";
-
-export type SimulationStatus = {
-  simulation: {
-    status: "running" | "available" | "stepping";
-    time: number;
-  };
-};
-
-export const STATUS_QUERY = gql`
-  query SimulationStatus {
-    simulation {
-      status
-      time
-    }
-  }
-`;
+import { SIMULATION_INPUT_QUERIES, SIMULATOR_QUERY } from "../lib/consts";
+import { SIMULATION_TYPES, Simulator } from "../lib/consts.types";
 
 export const useSimulationStore = defineStore("simulation", () => {
   // For some reason the injected client does not come from the component in the outer scope.
@@ -40,45 +25,38 @@ export const useSimulationStore = defineStore("simulation", () => {
   const step = mutationWithValue("simulationStep", "seconds", "Float!");
   // TODO: make set automated control module dependent
   const isProcessing = ref(false);
-  const simulationQuery = useQuery<THRSIM>({
-    query: QUERY_SIMULATION,
-    context,
+  const simulatorQuery = useQuery<Simulator>({
+    query: SIMULATOR_QUERY,
+    context: mqttGraphqlContext,
     requestPolicy: "network-only",
   });
-  const simulation = computed(() => simulationQuery.data.value?.simulation);
-  const refreshSimulation = () => simulationQuery.executeQuery({ requestPolicy: "network-only" });
+  const simulator = computed(() => simulatorQuery.data.value?.thrs?.simulator);
+  const refreshSimulation = () => simulatorQuery.executeQuery({ requestPolicy: "network-only" });
 
-  const activeSimulation = computed(() => simulation.value?.inputs?.__typename);
-  const activeSimulationType = computed(() =>
-    SIMULATION_TYPES.find((type) =>
-      `${activeSimulation.value?.charAt(0)?.toLowerCase()}${activeSimulation.value?.slice(1)}`.startsWith(
-        type,
-      ),
-    ),
+  const status = computed(() => simulator.value?.status ?? undefined);
+  // Without a status, as from a simulator that runs apart from the controller, there is no
+  // simulation to show.
+  const simulation = computed(() =>
+    status.value
+      ? {
+          inputs: simulator.value?.simulationInputs ?? undefined,
+          outputs: simulator.value?.simulationOutputs ?? undefined,
+        }
+      : undefined,
   );
-
-  const statusQuery = useQuery<SimulationStatus>({
-    query: STATUS_QUERY,
-    context,
-  });
-
-  // Use network-only policy to always get the latest status
-  const updateStatus = () => statusQuery.executeQuery({ requestPolicy: "network-only" });
+  const activeSimulationType = computed(() =>
+    SIMULATION_TYPES.find((type) => type === camelCase(status.value?.mode)),
+  );
 
   // Poll only while a simulation view is open; the store outlives the views.
-  const { resume: startPolling, pause: stopPolling } = useIntervalFn(
-    () => {
-      refreshSimulation();
-      updateStatus();
-    },
-    5000,
-    { immediate: false, immediateCallback: true },
-  );
+  const { resume: startPolling, pause: stopPolling } = useIntervalFn(refreshSimulation, 5000, {
+    immediate: false,
+    immediateCallback: true,
+  });
 
-  const status = computed(() => statusQuery.data?.value?.simulation.status);
-  const isAvailable = computed(() => status.value === "available");
-  const isRunning = computed(() => status.value === "running");
-  const isStepping = computed(() => status.value === "stepping");
+  const isAvailable = computed(() => status.value?.status === "AVAILABLE");
+  const isRunning = computed(() => status.value?.status === "RUNNING");
+  const isStepping = computed(() => status.value?.status === "STEPPING");
 
   const advisoryError = ref<string | null>(null);
   const isAdvisory = computed(
@@ -107,7 +85,6 @@ export const useSimulationStore = defineStore("simulation", () => {
       }
       await useThrsHistory().refresh();
       await refreshSimulation();
-      await updateStatus();
     } catch (err) {
       advisoryError.value =
         err instanceof Error ? err.message : i18n.global.t("thrs.labels.failedToSubmit");
@@ -145,18 +122,17 @@ export const useSimulationStore = defineStore("simulation", () => {
     refreshSimulation,
     startPolling,
     stopPolling,
-    pause: mutationFn(pause, updateStatus),
-    play: mutationFn<number>(play, updateStatus),
-    step: mutationFn<number>(step, updateStatus),
+    pause: mutationFn(pause, refreshSimulation),
+    play: mutationFn<number>(play, refreshSimulation),
+    step: mutationFn<number>(step, refreshSimulation),
     setAdvisory,
     isAdvisory,
     advisoryError,
-    status: statusQuery.data,
+    status,
     isAvailable,
     isRunning,
     isProcessing,
     isStepping,
-    activeSimulation,
     activeSimulationType,
   };
 });

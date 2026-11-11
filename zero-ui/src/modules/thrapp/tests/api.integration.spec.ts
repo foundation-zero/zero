@@ -3,6 +3,8 @@ import { MQTT_GRAPHQL_DEFINITIONS } from "@/modules/thrapp/lib/definitions.gener
 import * as Fragments from "@/modules/thrapp/lib/mqtt-graphql-queries.generated";
 import { valueAt } from "@/modules/thrapp/lib/mqtt-graphql.utils";
 import { CONTROL_QUERY, ControlResponse } from "@/modules/thrapp/stores/automation";
+import { SIMULATOR_QUERY } from "@/modules/thrsim/lib/consts";
+import { Simulator } from "@/modules/thrsim/lib/consts.types";
 import { ENV } from "@/settings";
 import { Client, fetchExchange, gql, OperationResult } from "@urql/vue";
 import { describe, expect, test } from "vitest";
@@ -28,6 +30,28 @@ const DEFINITIONS = MQTT_GRAPHQL_DEFINITIONS as Record<
 >;
 
 describe("MQTT GraphQL API", () => {
+  // CI runs a lockstep simulator, the only kind that publishes a status.
+  describe("Simulation", () => {
+    const getSimulator = async () => await client.query<Simulator>(SIMULATOR_QUERY, {});
+
+    describe("Status", () => {
+      test("query does not return errors", async () => {
+        const simulator = await getSimulator();
+
+        expect(simulator.error).toBeUndefined();
+      });
+
+      test("query returns data", async () => {
+        const simulator = await getSimulator();
+        const status = simulator.data?.thrs?.simulator?.status;
+
+        expect(status?.status).toBeDefined();
+        expect(status?.mode).toBeDefined();
+        expect(status?.simulationTime).toBeDefined();
+      });
+    });
+  });
+
   describe("Modules", () => {
     let _definitions: OperationResult;
 
