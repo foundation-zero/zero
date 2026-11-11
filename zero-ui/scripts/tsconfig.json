@@ -5,7 +5,11 @@
     "moduleResolution": "bundler",
     "types": ["node"],
     "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@/*": ["../src/*"],
+      "@common/*": ["../src/modules/common/*"]
+    }
   },
   "include": ["*.ts"]
 }
