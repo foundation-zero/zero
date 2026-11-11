@@ -14,8 +14,8 @@ If you are an agent tasked with writing or modifying code, **read CODESTYLE.md f
 
 ## Shared packages
 
-Shared Python code lives in [packages/py](./packages/py); read
-[its README](./packages/py/README.md) before you add a package or a service
+Shared code lives in `packages/<language>/`, for example `packages/py`. Each
+language directory has a README; read it before you add a package or a service
 that uses one.
 
 ## Skills
