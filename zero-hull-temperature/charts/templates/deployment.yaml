@@ -76,6 +76,20 @@ spec:
               value: {{ .Values.hullTemperature.activateTopic | quote }}
             - name: ACTIVATE_JSON_PATH
               value: {{ .Values.hullTemperature.activateJsonPath | quote }}
+          ports:
+            - name: health
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: health
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health/alive
+              port: health
+            periodSeconds: 10
+            failureThreshold: 3
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
