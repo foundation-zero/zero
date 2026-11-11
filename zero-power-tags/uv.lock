@@ -588,6 +588,7 @@ dependencies = [
     { name = "faststream", extra = ["mqtt"] },
     { name = "pydantic" },
     { name = "pydantic-settings" },
+    { name = "zero-health" },
     { name = "zero-modbus-bridge" },
     { name = "zero-mqtt" },
 ]
@@ -611,6 +612,7 @@ requires-dist = [
     { name = "faststream", extras = ["mqtt"], specifier = ">=0.7.8,<1.0.0" },
     { name = "pydantic", specifier = ">=2.11.7,<3.0.0" },
     { name = "pydantic-settings", specifier = ">=2.10.1,<3.0.0" },
+    { name = "zero-health", editable = "../packages/py/zero-health" },
     { name = "zero-modbus-bridge", editable = "../packages/py/zero-modbus-bridge" },
     { name = "zero-mqtt", editable = "../packages/py/zero-mqtt" },
 ]

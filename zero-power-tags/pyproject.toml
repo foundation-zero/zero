@@ -7,6 +7,7 @@ authors = [
 ]
 requires-python = ">=3.15.1,<4.0"
 dependencies = [
+    "zero-health",
     "zero-modbus-bridge",
     "zero-mqtt",
     "pydantic>=2.11.7,<3.0.0",
@@ -29,6 +30,7 @@ test = ["pytest-asyncio>=1.1.0,<2", "pytest>=9.1.1,<10", "pytest-cov>=7.1.0,<8"]
 default-groups = ["dev", "test"]
 
 [tool.uv.sources]
+zero-health = { path = "../packages/py/zero-health", editable = true }
 zero-modbus-bridge = { path = "../packages/py/zero-modbus-bridge", editable = true }
 zero-mqtt = { path = "../packages/py/zero-mqtt", editable = true }
 
