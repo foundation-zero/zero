@@ -375,7 +375,13 @@
       },
       "documentation": {
         "title": "Documentation",
-        "empty": "No documentation for this module yet."
+        "empty": "No documentation for this module yet.",
+        "outline": "On this page",
+        "version": "Control version",
+        "issued": "Issued",
+        "viewPrinted": "View printed manual",
+        "print": "Print or save as PDF",
+        "back": "Back to documentation"
       }
     },
     "dialogs": {

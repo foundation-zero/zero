@@ -10,5 +10,5 @@ const markRendered = async () => {
 };
 
 createApp({
-  render: () => h(ManualDocument, { html: fragment, onRendered: markRendered }),
+  render: () => h(ManualDocument, { html: fragment, class: "printed", onRendered: markRendered }),
 }).mount("#app");

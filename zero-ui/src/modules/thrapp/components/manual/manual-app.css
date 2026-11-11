@@ -1,0 +1,143 @@
+@reference "@/assets/index.css";
+
+/* The manual as the Documentation page shows it. These rules only apply with the
+   `manual-app` class, so the printed manual keeps the styling in manual.css. */
+
+.manual.manual-app {
+  @apply text-base/8;
+}
+
+.manual.manual-app h1 {
+  @apply mb-4 text-[2rem]/9;
+}
+
+.manual.manual-app .lede {
+  @apply mb-8 text-xl/snug font-medium;
+}
+
+.manual.manual-app h2 {
+  @apply mt-10 mb-4 scroll-mt-6 border-b-0 pb-0 text-2xl/7;
+}
+
+.manual.manual-app h3 {
+  @apply mt-6 mb-3 text-xl/6 tracking-normal normal-case;
+}
+
+.manual.manual-app p,
+.manual.manual-app ul,
+.manual.manual-app dl {
+  @apply mb-4;
+}
+
+.manual.manual-app code {
+  @apply text-brand-dull text-[0.9375rem] underline decoration-from-font underline-offset-2;
+}
+
+.manual.manual-app a:has(> code):hover code {
+  @apply text-brand;
+}
+
+.manual.manual-app p.version {
+  @apply hidden;
+}
+
+/* Mode values */
+
+.manual.manual-app [data-mode],
+.manual.manual-app [data-severity] {
+  @apply h-6.5 rounded-xl px-3 text-base/4;
+}
+
+.manual.manual-app dl.modes {
+  @apply border-border-subtle grid-cols-[12.5rem_1fr] items-stretch gap-0 border-t;
+}
+
+.manual.manual-app dl.modes dt,
+.manual.manual-app dl.modes dd {
+  @apply border-border-subtle flex items-center border-b py-3;
+}
+
+.manual.manual-app dl.modes dt {
+  @apply pr-6 font-medium;
+}
+
+.manual.manual-app dl.modes dd {
+  @apply m-0 gap-2;
+}
+
+/* State diagram */
+
+.manual.manual-app figure.diagram {
+  @apply bg-muted border-foreground/10 mt-4 mb-8 rounded-sm bg-none px-6 py-8;
+}
+
+.manual.manual-app figure.diagram figcaption {
+  @apply mt-5 text-xs;
+}
+
+/* Parameter tables: cells on a 1px grid of the border colour. */
+
+.manual.manual-app table {
+  @apply bg-border-subtle mb-6 border-separate border-spacing-px overflow-hidden rounded-sm text-sm/5;
+}
+
+.manual.manual-app th,
+.manual.manual-app td {
+  @apply bg-dull border-0 px-3 py-2.5;
+}
+
+.manual.manual-app th {
+  @apply font-ui text-muted-foreground font-medium;
+}
+
+.manual.manual-app table.parameters tbody tr {
+  @apply border-0;
+}
+
+.manual.manual-app table.parameters ~ table.parameters thead {
+  @apply not-sr-only;
+}
+
+.manual.manual-app table.parameters td:nth-child(1) code {
+  @apply text-[0.8125rem]/5;
+}
+
+.manual.manual-app table.parameters td:nth-child(2) {
+  @apply font-medium;
+}
+
+.manual.manual-app table.parameters td {
+  @apply transition-colors duration-700;
+}
+
+.manual.manual-app table.parameters tr[data-highlighted] td:not([rowspan]) {
+  @apply bg-brand-dull/40 duration-150;
+}
+
+@media screen and (width < 48rem) {
+  .manual.manual-app table.parameters {
+    @apply rounded-none bg-transparent;
+  }
+
+  .manual.manual-app table.parameters thead {
+    @apply sr-only;
+  }
+
+  .manual.manual-app table.parameters td {
+    @apply bg-transparent;
+  }
+
+  .manual.manual-app table.parameters tr {
+    @apply border-border-subtle border-b;
+  }
+}
+
+/* Hard constraints on the parameter set */
+
+.manual.manual-app .constraints {
+  @apply border-warning bg-warning/10 text-foreground relative mb-6 rounded-sm border py-3 pr-4 pl-12 text-base/8;
+}
+
+.manual.manual-app .constraints::before {
+  @apply absolute top-4.5 left-4 size-5 bg-[url(./alert-line.svg)] bg-contain bg-no-repeat content-[""];
+}

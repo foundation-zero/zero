@@ -46,5 +46,13 @@ export const thrappRoutes: RouteRecordRaw = {
         views: DOCUMENTATION,
       },
     },
+    {
+      path: "documentation/:module/print",
+      name: "thrs/documentation/print",
+      component: () => import("@/modules/thrapp/views/DocumentationPrint.vue"),
+      meta: {
+        layout: defineAsyncComponent(() => import("@/modules/common/layouts/EmptyLayout.vue")),
+      },
+    },
   ],
 };
