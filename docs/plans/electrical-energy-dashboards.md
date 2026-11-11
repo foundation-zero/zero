@@ -117,6 +117,24 @@ GROUP BY topic, time_window;
 -- The hourly Flow reads rollups.slv_aradex_1m: sum of sums, min of mins, max of maxes, sum of counts.
 ```
 
+### GreptimeDB 1.1.3 Range Queries: not an alternative to rollups
+
+Tested locally on 2026-11-11, to see whether Range Queries (`avg(x) RANGE '1m' ... ALIGN '1m' BY (topic)`) could replace Flows. Test bed: a `power_tags` copy with 14 days of synthetic data (1.2 M rows, 10 topics, one sample every 10 s, 5 files). Pushdown was read from the raw scan node in `EXPLAIN ANALYZE`. A full scan is 1.2 M rows and 5 files; 24 h with the filter pushed down is ~84 k rows and 1 file.
+
+**Conclusion:** Range Queries are query syntax only. They read the same raw rows as `date_bin` + `GROUP BY`, so they don't change the 30–60 day numbers in [Measurements](#measurements). History still needs stored rollups.
+
+| Works | Doesn't work or watch out |
+|---|---|
+| Time filter pushed down when the `WHERE` is **inside** the Range Query: `now() - interval`, and Grafana-style `BETWEEN` literals | **A view containing a Range Query:** `CREATE VIEW` fails ("Serialize logical plan for RangeSelect" not implemented). So no thin views with Range Queries. |
+| A Range Query in a CTE with the filter inside, then joined to metadata (aggregate then join) | **A Range Query reading from a view**, even a plain one, fails ("Unknown table type, downcast failed"). |
+| A Range Query reading from a subquery, or from a `UNION ALL` of raw tables, with the filter in each part | **The filter outside the Range Query** (a subquery or CTE filtered on its output time, or after a join) is **not** pushed down: a full scan, as with today's gold views. |
+| A `UNION ALL` of several Range Queries, each with its own filter | Same rows read as `date_bin`; on 7 days hourly it was slightly slower locally (30 ms vs 15 ms). |
+| `FILL LINEAR`, `ALIGN '1h' TO NOW`, any `ALIGN` size (`$__interval`-style) | |
+| Conditional aggregates: `sum(CASE WHEN p > 0 ...) RANGE '1m'` | |
+| Sliding windows: `avg(x) RANGE '5m' ALIGN '1m'` gives a 5-minute rolling average in one query | |
+
+**Where they can help:** inline 24 h queries on raw data (paths C and D). For example the flow canvas's 5-minute rolling average, or gap-filled 1-minute buckets. Every panel then carries the full SQL with `$__timeFilter("timestamp")` inside each Range Query and each union part, because views can't hold them.
+
 ## Measurements
 
 All times are server time (`execution_time_ms`). The Zero measurements were taken on 2026-11-10, while Zero was healthy.
@@ -131,6 +149,8 @@ All times are server time (`execution_time_ms`). The Zero measurements were take
 | Rollup tables, locally, 24 h through gold views (3 months of synthetic 1 m data) | ~15 ms; 1 of 13+ files read |
 
 Grafana's `$__interval` (bucket size calculated from the range) reduces the rows **returned**, not the rows **read**. Raw-query cost is driven by the range × the raw sample rate.
+
+Range Queries have the same limit: with the filter pushed down they read exactly as many rows as `date_bin` (7 d locally: 602,000 rows and 3 files for both). See [Range Queries](#greptimedb-113-range-queries-not-an-alternative-to-rollups).
 
 ## Requirements and decisions
 
@@ -299,6 +319,8 @@ These hold whichever path is chosen, unless the path says otherwise.
 
 **When to choose it:** if real-time 24 h curves matter more to the crew than having one source of truth.
 
+**Range Queries** fit the raw 24 h side, such as the canvas's 5-minute rolling average with `RANGE '5m' ALIGN '1m'`, but only as inline SQL in the panels. 1.1.3 views can't contain them.
+
 ### D: raw + thin views + `$__interval`, with a rollup only for the battery
 
 **What it is:**
@@ -323,10 +345,13 @@ These hold whichever path is chosen, unless the path says otherwise.
 
 (B, raw only, is D without the battery rollup. It's ruled out by the battery numbers.)
 
+Range Queries don't rescue D: they read the same raw rows, and they can't be put in views. See [Range Queries](#greptimedb-113-range-queries-not-an-alternative-to-rollups).
+
 ## Open decisions
 1. **Path: A, C or D.** Not decided. See above.
 2. Whether the hourly Flow should read the 1 m table for every silver table (assumed yes).
-3. Retiring dbt entirely: a later, separate cleanup.
+3. **Rollups without Flows** (raised 2026-11-11, not evaluated): run the backfill CLI's `INSERT INTO … SELECT` on a schedule, for example every 1–5 min over the last hour or two. It upserts on topic + time, so reruns are safe. It avoids the 1.1.3 Flow limits (silent errors, the `flow` materialization, ~18 Flows), but needs a scheduler that doesn't exist yet and its own freshness monitoring. Lag is one schedule interval.
+4. Retiring dbt entirely: a later, separate cleanup.
 
 ## Follow-ups (out of scope)
 - **Shore power:** a new source, a silver Flow and table, and a series in the combined gold view. Can be added during or after this work.
