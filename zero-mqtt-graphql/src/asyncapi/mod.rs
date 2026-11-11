@@ -21,7 +21,9 @@ mod validation;
 mod roas {
     pub use roas_asyncapi::v3_0::channel::Channel;
     pub use roas_asyncapi::v3_0::message::Message;
-    pub use roas_asyncapi::v3_0::schema::{Schema, SchemaOrMultiFormat, SchemaType, SubSchema};
+    pub use roas_asyncapi::v3_0::schema::{
+        Items, Schema, SchemaOrMultiFormat, SchemaType, SubSchema,
+    };
     pub use roas_asyncapi::v3_0::{Document, Operation, OperationAction};
 }
 

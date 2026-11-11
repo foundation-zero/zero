@@ -7,7 +7,9 @@ use roas_asyncapi::common::reference::RefOr;
 use serde_json::Value;
 
 use super::refs::{resolve_message, resolve_payload_schema, resolve_ref_to_entry};
-use super::roas::{Channel, Document, Message, Schema, SchemaOrMultiFormat, SchemaType, SubSchema};
+use super::roas::{
+    Channel, Document, Items, Message, Schema, SchemaOrMultiFormat, SchemaType, SubSchema,
+};
 use crate::api_model::{FieldType, Payload};
 
 /// The payload of a channel's message, with what else is read from its
@@ -207,43 +209,22 @@ fn type_from_schema(
     if let Some(schema_type) = &schema.schema_type {
         return match schema_type {
             SchemaType::Single(t) => field_type_for_json_type(name, t, schema, schema_entries),
-            SchemaType::Multiple(types) => {
-                for (index, t) in types.iter().enumerate() {
-                    if t == "null" {
-                        continue;
-                    }
-                    if let Some(field_type) = field_type_for_json_type(
-                        format!("{name}{index}"),
-                        t,
-                        schema,
-                        schema_entries,
-                    ) {
-                        // TODO: properly handle unions here
-                        return Some(field_type);
-                    }
-                }
-                None
-            }
+            SchemaType::Multiple(types) => one_type(types.iter().enumerate().map(|(index, t)| {
+                field_type_for_json_type(format!("{name}{index}"), t, schema, schema_entries)
+            })),
         };
     }
 
-    // Handle nullable via anyOf / oneOf / allOf
-    if let Some(any_of) = &schema.any_of {
-        for (index, sub) in any_of.iter().enumerate() {
-            if let Some(t) = field_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
-            {
-                return Some(t);
-            }
+    // A union, nullable when one of its arms is `null`.
+    for arms in [&schema.any_of, &schema.one_of].into_iter().flatten() {
+        let types = arms.iter().enumerate().map(|(index, sub)| {
+            field_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
+        });
+        if let Some(field_type) = one_type(types) {
+            return Some(field_type);
         }
     }
-    if let Some(one_of) = &schema.one_of {
-        for (index, sub) in one_of.iter().enumerate() {
-            if let Some(t) = field_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
-            {
-                return Some(t);
-            }
-        }
-    }
+    // An intersection, such as pydantic wrapping a single `$ref`.
     if let Some(all_of) = &schema.all_of {
         for (index, sub) in all_of.iter().enumerate() {
             if let Some(t) = field_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
@@ -254,6 +235,20 @@ fn type_from_schema(
     }
 
     None
+}
+
+/// The type of a union of `types`, of which `None` are `null` or untyped
+/// arms: the type they all share, or any JSON when they differ, so the
+/// JSON Schema decides which values are valid. `None` when no arm has a
+/// type.
+fn one_type(types: impl Iterator<Item = Option<FieldType>>) -> Option<FieldType> {
+    let mut types = types.flatten();
+    let first = types.next()?;
+    Some(if types.all(|t| t == first) {
+        first
+    } else {
+        FieldType::Json
+    })
 }
 
 fn field_type_for_json_type(
@@ -267,12 +262,31 @@ fn field_type_for_json_type(
             let fields = extract_fields_from_schema(schema, schema_entries);
             (!fields.is_empty()).then(|| FieldType::Object(name, Box::new(fields)))
         }
+        "array" => Some(array_field_type(name, schema, schema_entries)),
         "number" => Some(FieldType::Float),
         "integer" => Some(FieldType::Int),
         "boolean" => Some(FieldType::Boolean),
         "string" => Some(FieldType::String),
         _ => None,
     }
+}
+
+/// A list when every element has the same known type, otherwise any JSON.
+/// The element type is unknown for a tuple, as draft-07 allows extra items
+/// of any type, and for `prefixItems` (JSON Schema 2020-12), which the
+/// draft-07 parser drops.
+fn array_field_type(
+    name: String,
+    schema: &Schema,
+    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
+) -> FieldType {
+    let element = match &schema.items {
+        Some(Items::Single(item)) => field_type_for_subschema(name, item, schema_entries),
+        Some(Items::Tuple(_)) | None => None,
+    };
+    element.map_or(FieldType::Json, |element| {
+        FieldType::List(Box::new(element))
+    })
 }
 
 #[cfg(test)]
@@ -318,9 +332,11 @@ mod tests {
         )]);
 
         let fields = extract_fields_from_schema(&schema, Some(&schema_entries));
-        assert_eq!(fields.len(), 6);
+        assert_eq!(fields.len(), 7);
         // BTreeMap ordering, so sorted by key
         let get = |name: &str| fields.get(name).unwrap();
+        // An array without a declared element type is any JSON.
+        assert_eq!(get("items"), &FieldType::Json);
         assert_eq!(get("celsius"), &FieldType::Float);
         assert_eq!(get("sensor_id"), &FieldType::Int);
         assert_eq!(get("ok"), &FieldType::Boolean);
@@ -339,6 +355,67 @@ mod tests {
                 Box::new(BTreeMap::from([("x".to_string(), FieldType::Float); 1]))
             )
         );
+    }
+
+    #[test_log::test]
+    fn test_array_types() {
+        let props = BTreeMap::from([
+            (
+                "modules".to_string(),
+                json!({"type": "array", "items": {"type": "string"}}),
+            ),
+            (
+                "same".to_string(),
+                json!({"type": "array", "items": [{"type": "number"}, {"type": "number"}]}),
+            ),
+            (
+                "mixed".to_string(),
+                json!({"type": "array", "items": [{"type": "number"}, {"type": "string"}]}),
+            ),
+            (
+                "tuning".to_string(),
+                json!({"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}]}),
+            ),
+        ]);
+
+        let fields = extract_fields_from_schema(&schema_with_properties(props), None);
+
+        let list = |element| FieldType::List(Box::new(element));
+        assert_eq!(fields["modules"], list(FieldType::String));
+        // A tuple allows extra items of any type (draft-07 `additionalItems`).
+        assert_eq!(fields["same"], FieldType::Json);
+        assert_eq!(fields["mixed"], FieldType::Json);
+        // The draft-07 parser drops `prefixItems`, so the element type is unknown.
+        assert_eq!(fields["tuning"], FieldType::Json);
+    }
+
+    #[test_log::test]
+    fn test_union_types_have_one_type_or_are_json() {
+        let number_or_string = json!([{"type": "number"}, {"type": "string"}]);
+        let props = BTreeMap::from([
+            (
+                "optional".to_string(),
+                json!({"anyOf": [{"type": "number"}, {"type": "null"}]}),
+            ),
+            ("nullable".to_string(), json!({"type": ["number", "null"]})),
+            ("any_of".to_string(), json!({"anyOf": number_or_string})),
+            ("one_of".to_string(), json!({"oneOf": number_or_string})),
+            ("types".to_string(), json!({"type": ["number", "string"]})),
+            (
+                "items".to_string(),
+                json!({"type": "array", "items": {"anyOf": number_or_string}}),
+            ),
+        ]);
+
+        let fields = extract_fields_from_schema(&schema_with_properties(props), None);
+
+        assert_eq!(fields["optional"], FieldType::Float);
+        assert_eq!(fields["nullable"], FieldType::Float);
+        assert_eq!(fields["any_of"], FieldType::Json);
+        assert_eq!(fields["one_of"], FieldType::Json);
+        assert_eq!(fields["types"], FieldType::Json);
+        // Each element is a number or a string: any JSON, not `Float`.
+        assert_eq!(fields["items"], FieldType::List(Box::new(FieldType::Json)));
     }
 
     #[test_log::test]

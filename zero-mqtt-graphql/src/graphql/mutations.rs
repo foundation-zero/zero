@@ -18,7 +18,7 @@ use tokio::time::Instant;
 
 use crate::api_model::{Direction, FieldType, GraphqlPath, TopicDef};
 use crate::cache::TopicCache;
-use crate::graphql::{Leaf, json_to_graphql_value, payload_type_name};
+use crate::graphql::{JSON_SCALAR, Leaf, json_to_graphql_value, payload_type_name};
 use crate::naming::sanitize_to_graphql_name;
 
 /// A boxed future returned by [`Publisher::publish`].
@@ -128,28 +128,36 @@ fn input_objects(spec: &str, name: &str, fields: &BTreeMap<String, FieldType>) -
     let type_name = format!("{}Input", payload_type_name(spec, name));
     let mut nested = Vec::new();
     let mut object = InputObject::new(type_name.as_str());
-    for (raw_name, graphql_type) in fields {
+    for (raw_name, field_type) in fields {
         let field_name = sanitize_to_graphql_name(raw_name);
         if field_name.is_empty() {
             warn!("Skipping input field '{raw_name}' sanitizes to empty GraphQL name");
             continue;
         }
-        let type_ref = match graphql_type {
-            FieldType::Float => TypeRef::named(TypeRef::FLOAT),
-            FieldType::Int => TypeRef::named(TypeRef::INT),
-            FieldType::Boolean => TypeRef::named(TypeRef::BOOLEAN),
-            FieldType::String => TypeRef::named(TypeRef::STRING),
-            FieldType::Object(name, fields) => {
-                let objects = input_objects(spec, name, fields);
-                let type_ref = TypeRef::named(objects[0].type_name());
-                nested.extend(objects);
-                type_ref
-            }
-        };
+        let type_ref = input_type_ref(spec, field_type, &mut nested);
         object = object.field(InputValue::new(field_name, type_ref));
     }
     nested.insert(0, object);
     nested
+}
+
+/// The input type of one field, adding the input types of nested objects
+/// to `nested`.
+fn input_type_ref(spec: &str, field_type: &FieldType, nested: &mut Vec<InputObject>) -> TypeRef {
+    match field_type {
+        FieldType::Float => TypeRef::named(TypeRef::FLOAT),
+        FieldType::Int => TypeRef::named(TypeRef::INT),
+        FieldType::Boolean => TypeRef::named(TypeRef::BOOLEAN),
+        FieldType::String => TypeRef::named(TypeRef::STRING),
+        FieldType::Json => TypeRef::named(JSON_SCALAR),
+        FieldType::List(element) => TypeRef::List(Box::new(input_type_ref(spec, element, nested))),
+        FieldType::Object(name, fields) => {
+            let objects = input_objects(spec, name, fields);
+            let type_ref = TypeRef::named(objects[0].type_name());
+            nested.extend(objects);
+            type_ref
+        }
+    }
 }
 
 /// One mutable Receive Topic, as its resolver needs it.
@@ -248,18 +256,26 @@ fn input_payload(
     };
     fields
         .iter()
-        .filter_map(|(raw_name, graphql_type)| {
+        .filter_map(|(raw_name, field_type)| {
             let value = input.get(sanitize_to_graphql_name(raw_name).as_str())?;
-            let json = match (graphql_type, value) {
-                (FieldType::Object(_, nested), GraphQlValue::Object(_)) => {
-                    input_payload(value, nested)
-                }
-                _ => value.clone().into_json().map_err(Into::into),
-            };
-            Some(json.map(|json| (raw_name.clone(), json)))
+            Some(input_json(field_type, value).map(|json| (raw_name.clone(), json)))
         })
         .collect::<anyhow::Result<Map<_, _>>>()
         .map(JsonValue::Object)
+}
+
+/// One client-given value as JSON, with objects, also inside lists, keyed
+/// by raw field names.
+fn input_json(field_type: &FieldType, value: &GraphQlValue) -> anyhow::Result<JsonValue> {
+    match (field_type, value) {
+        (FieldType::Object(_, nested), GraphQlValue::Object(_)) => input_payload(value, nested),
+        (FieldType::List(element), GraphQlValue::List(items)) => items
+            .iter()
+            .map(|item| input_json(element, item))
+            .collect::<anyhow::Result<Vec<_>>>()
+            .map(JsonValue::Array),
+        _ => value.clone().into_json().map_err(Into::into),
+    }
 }
 
 /// The part of a State value that the Receive Topic's `fields` describe,
@@ -310,13 +326,21 @@ fn merge_level(base: JsonValue, given: &JsonValue, root: bool) -> JsonValue {
 }
 
 /// Whether `state` shows every leaf of `given`. Numbers compare by value, so
-/// `21` and `21.0` match, but a rounded or clamped value does not.
+/// `21` and `21.0` match, but a rounded or clamped value does not. A list
+/// matches element by element, at the same length.
 #[allow(clippy::float_cmp)]
 fn shows(state: &JsonValue, given: &JsonValue) -> bool {
     match (state, given) {
         (_, JsonValue::Object(given)) => given
             .iter()
             .all(|(key, value)| state.get(key).is_some_and(|state| shows(state, value))),
+        (JsonValue::Array(state), JsonValue::Array(given)) => {
+            state.len() == given.len()
+                && state
+                    .iter()
+                    .zip(given)
+                    .all(|(state, given)| shows(state, given))
+        }
         (JsonValue::Number(state), JsonValue::Number(given)) => state.as_f64() == given.as_f64(),
         _ => state == given,
     }
@@ -382,7 +406,8 @@ mod tests {
 
     /// A thermostat whose State topic reports its setpoint, mode and
     /// measured temperature, a light without a State topic, a pump whose
-    /// settings are stamped values, and a pause signal without a payload.
+    /// settings are stamped values, a pause signal without a payload, and a
+    /// heater with list settings.
     fn api() -> Api {
         let thermostat_schema = json!({
             "type": "object",
@@ -421,6 +446,22 @@ mod tests {
                 "room/pause",
                 json!({"type": "object", "properties": {}, "additionalProperties": false}),
             ),
+            (
+                "room/heater/set",
+                json!({
+                    "type": "object",
+                    "properties": {
+                        "tuning": {
+                            "type": "array",
+                            "prefixItems": [{"type": "number"}, {"type": "number"}, {"type": "number"}],
+                            "minItems": 3,
+                            "maxItems": 3,
+                        },
+                        "curve": {"type": "array", "items": {"type": "number"}},
+                    },
+                    "required": ["tuning", "curve"],
+                }),
+            ),
         ]
         .into_iter()
         .map(|(topic, schema)| {
@@ -456,6 +497,8 @@ mod tests {
                     topic("room/pump", Direction::Send, &pump_fields()),
                     topic("room/pump/set", Direction::Receive, &pump_fields()),
                     topic("room/pause", Direction::Receive, &[]),
+                    topic("room/heater", Direction::Send, &heater_fields()),
+                    topic("room/heater/set", Direction::Receive, &heater_fields()),
                 ],
                 validators,
             )
@@ -467,6 +510,15 @@ mod tests {
         [
             ("dutypoint", stamped("StampedFloat", FieldType::Float)),
             ("on", stamped("StampedBool", FieldType::Boolean)),
+        ]
+    }
+
+    /// A heater with a PID tuning whose element type is unknown, as a
+    /// `prefixItems` tuple, and a curve declared as a list of numbers.
+    fn heater_fields() -> [(&'static str, FieldType); 2] {
+        [
+            ("tuning", FieldType::Json),
+            ("curve", FieldType::List(Box::new(FieldType::Float))),
         ]
     }
 
@@ -787,6 +839,113 @@ mod tests {
                 })
             )]
         );
+    }
+
+    #[test_log::test]
+    fn test_lists_are_typed_or_json_in_output_and_input() {
+        let cache = Arc::new(TopicCache::new());
+        let mutations = mutations_through(service(&cache, None));
+        let sdl = build_schema(&api(), &cache, Some(&mutations))
+            .unwrap()
+            .sdl();
+
+        assert!(sdl.contains("scalar JSON"), "{sdl}");
+        for type_name in ["type RoomRoomHeater {", "input RoomRoomHeaterSetInput {"] {
+            let (_, body) = sdl.split_once(type_name).unwrap();
+            let (body, _) = body.split_once('}').unwrap();
+            assert!(body.contains("curve: [Float]"), "{type_name}{body}");
+            assert!(body.contains("tuning: JSON"), "{type_name}{body}");
+        }
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_query_returns_lists() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "room/heater",
+            json!({"tuning": [0.01, 0.001, 0], "curve": [20.0, 21.5]}),
+        );
+        let service = service(&cache, None);
+
+        let response = execute(&cache, &service, "{ room { heater { tuning curve } } }").await;
+
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        let data = response.data.into_json().unwrap();
+        assert_eq!(
+            data["room"]["heater"],
+            json!({"tuning": [0.01, 0.001, 0], "curve": [20.0, 21.5]})
+        );
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_mutation_sets_a_list_and_confirms_it_by_value() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "room/heater",
+            json!({"tuning": [0.01, 0.001, 0.0], "curve": [20.0, 21.5]}),
+        );
+        // The service reports `0.0` as `0`.
+        let service = service(
+            &cache,
+            Some(|payload| {
+                let mut state = payload.clone();
+                state["tuning"] = json!([0.02, 0.001, 0]);
+                state
+            }),
+        );
+
+        let response = execute(
+            &cache,
+            &service,
+            "mutation { room { heater(input: {tuning: [0.02, 0.001, 0.0], curve: [19.0, 22.0]}) { tuning curve } } }",
+        )
+        .await;
+
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        // Both the `JSON` list and the typed `[Float]` list come from the input.
+        assert_eq!(
+            *service.published.lock().unwrap(),
+            [(
+                "room/heater/set".to_string(),
+                json!({"tuning": [0.02, 0.001, 0.0], "curve": [19.0, 22.0]})
+            )]
+        );
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_mutation_rejects_a_list_that_does_not_match_the_schema() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "room/heater",
+            json!({"tuning": [0.01, 0.001, 0.0], "curve": [20.0]}),
+        );
+        let service = service(&cache, None);
+
+        let response = execute(
+            &cache,
+            &service,
+            "mutation { room { heater(input: {tuning: [0.02, 0.001]}) { tuning } } }",
+        )
+        .await;
+
+        assert!(
+            response.errors[0]
+                .message
+                .starts_with("input for 'room/heater/set' does not match its schema: /tuning"),
+            "{:?}",
+            response.errors
+        );
+        assert!(service.published.lock().unwrap().is_empty());
+    }
+
+    #[test_log::test]
+    fn test_shows_compares_lists_by_element_and_length() {
+        assert!(shows(&json!([1, 2.5]), &json!([1.0, 2.5])));
+        assert!(!shows(&json!([1, 2.5]), &json!([1.0])));
+        assert!(!shows(&json!([1, 2.5]), &json!([1.0, 2.6])));
     }
 
     #[test_log::test]

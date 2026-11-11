@@ -139,6 +139,12 @@ impl TopicDef {
 #[derive(Debug, Clone, PartialEq)]
 pub enum FieldType {
     Object(String, Box<BTreeMap<String, FieldType>>),
+    /// An array whose elements all have this type.
+    List(Box<FieldType>),
+    /// Any JSON value: an array whose element type is not known, such as a
+    /// tuple written with JSON Schema 2020-12 `prefixItems`, which the
+    /// AsyncAPI 3.0 (draft-07) parser drops.
+    Json,
     String,
     Float,
     Int,
