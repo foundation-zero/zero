@@ -1,12 +1,14 @@
 """The broker and its check against a scripted MQTT 5 server on localhost."""
 
 import asyncio
-import dataclasses
+from functools import partial
 
 import pytest
+from faststream.mqtt import ReconnectConfig
 from zero_health import Check
 
 from zero_mqtt import MqttSettings, broker_check
+from zero_mqtt import broker as broker_module
 
 NOT_AUTHORIZED = 0x87
 PINGREQ = 0xC0
@@ -73,13 +75,12 @@ async def test_check_follows_the_connection(monkeypatch: pytest.MonkeyPatch):
     server = ScriptedServer([NOT_AUTHORIZED, NOT_AUTHORIZED, 0])
     monkeypatch.setenv("MQTT_HOST", "127.0.0.1")
     monkeypatch.setenv("MQTT_PORT", str(await server.start()))
-    broker = MqttSettings(_env_file=None).make_broker()  # type: ignore[call-arg]
     # Retry at once instead of after zmqtt's 1 s initial backoff.
-    reconnect = broker._connection_kwargs["reconnect"]
-    broker._connection_kwargs["reconnect"] = dataclasses.replace(
-        reconnect, initial_delay=0.01
+    monkeypatch.setattr(
+        broker_module, "ReconnectConfig", partial(ReconnectConfig, initial_delay=0.01)
     )
-    check = broker_check(broker, timeout=1.0)
+    broker = MqttSettings(_env_file=None).make_broker()  # type: ignore[call-arg]
+    check = broker_check(broker)
 
     assert await check() == "ping failed"
 

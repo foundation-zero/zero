@@ -64,11 +64,11 @@ class MqttSettings(BaseSettings):
         )
 
 
-def broker_check(broker: MQTTBroker, timeout: float) -> Check:
-    """Ready while ``broker`` answers a ping within ``timeout`` seconds."""
+def broker_check(broker: MQTTBroker) -> Check:
+    """Ready while ``broker`` answers a ping."""
 
     async def check() -> str | None:
-        return None if await broker.ping(timeout) else "ping failed"
+        return None if await broker.ping() else "ping failed"
 
     return check
 

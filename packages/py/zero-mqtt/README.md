@@ -6,7 +6,7 @@ check for [zero-health](../zero-health), following
 
 ```python
 broker = MqttSettings().make_broker()
-health = Health(HealthSettings(), {"mqtt": broker_check(broker, timeout=5)})
+health = Health(HealthSettings(), {"mqtt": broker_check(broker)})
 async with health.serve():
     await FastStream(broker).run()
 ```
@@ -17,7 +17,8 @@ as its termination message. Until ZERO-2532 it also retries CONNACK refusals,
 which RabbitMQ sends for about a minute after it boots, and exits when they
 last longer than 90 s.
 
-`broker_check` is ready while the broker answers a ping.
+`broker_check` is ready while the broker answers a ping within
+`HEALTH_CHECK_TIMEOUT`.
 
 | Variable | Default |
 |---|---|
