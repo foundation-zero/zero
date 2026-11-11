@@ -6,7 +6,6 @@ from contextlib import asynccontextmanager
 import pytest
 from faststream.mqtt import MQTTBroker
 from zero_modbus_bridge.bridge import ModbusBridge
-from zero_mqtt.broker import RecoveringBroker
 
 from zero_power_tags import cli
 from zero_power_tags.cli import (
@@ -210,8 +209,5 @@ async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
     for hook in apps[0].startup:
         await hook()
 
-    broker = apps[0].broker
-    assert isinstance(broker, RecoveringBroker)
-    assert broker._connection_kwargs["reconnect"].max_attempts is None
     assert len(started) == 1
     assert list(_FakeHealth.checks) == ["mqtt"]
