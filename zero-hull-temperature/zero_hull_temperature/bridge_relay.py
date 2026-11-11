@@ -4,7 +4,7 @@ import json
 import logging
 
 from faststream.mqtt import MQTTBroker, QoS
-from jsonpath_ng import parse
+from jsonpath_ng.parser import parse
 from zero_modbus_bridge.bridge import TRANSIENT_PUBLISH_ERRORS, ModbusBridge
 from zero_modbus_bridge.io import ModbusTopic
 from zero_modbus_bridge.publisher import TopicPublisher

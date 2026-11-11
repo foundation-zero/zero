@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any, Protocol, cast
 
 from faststream._internal.broker.registrator import Registrator
 from faststream.mqtt import MQTTBroker, QoS
+from faststream.mqtt.path import build_mqtt_address
 from faststream.mqtt.publisher.config import (
     MQTTPublisherConfig,
     MQTTPublisherSpecificationConfig,
@@ -221,7 +222,7 @@ class ParametrizedMQTTPublisher(MQTTPublisher):
         # dict key as both channel key and address.
         super().__init__(
             MQTTPublisherConfig(
-                topic=template,
+                address=build_mqtt_address(template),
                 qos=qos,
                 retain=retain,
                 headers=None,
@@ -230,7 +231,7 @@ class ParametrizedMQTTPublisher(MQTTPublisher):
             ParametrizedPublisherSpecification(
                 broker_config,
                 MQTTPublisherSpecificationConfig(
-                    topic=template,
+                    address=build_mqtt_address(template),
                     qos=qos,
                     retain=retain,
                     schema_=with_timestamp(schema) if schema is not None else None,
@@ -309,7 +310,7 @@ class ParametrizedMQTTPublisher(MQTTPublisher):
             if publisher is None:
                 publisher = MQTTPublisher(
                     MQTTPublisherConfig(
-                        topic=topic,
+                        address=build_mqtt_address(topic),
                         qos=self.qos,
                         retain=self.retain,
                         headers=None,
@@ -318,7 +319,7 @@ class ParametrizedMQTTPublisher(MQTTPublisher):
                     MQTTPublisherSpecification(
                         _outer_config=self._outer_config,
                         specification_config=MQTTPublisherSpecificationConfig(
-                            topic=topic,
+                            address=build_mqtt_address(topic),
                             qos=self.qos,
                             retain=self.retain,
                             schema_=None,
