@@ -5,12 +5,14 @@ import { ChartDataType, TimeSeriesData } from "@/modules/common/types";
 import { DocumentInput, TypedDocumentNode } from "@urql/vue";
 import { useIntervalFn, useLocalStorage } from "@vueuse/core";
 import { ref, shallowRef, watch } from "vue";
-import { client, context } from "../graphql/client";
-import { ComponentRecord, THRS } from "../lib/consts";
+import { client, mqttGraphqlClient, mqttGraphqlContext } from "../graphql/client";
+import { ComponentRecord } from "../lib/consts";
+import { MqttGraphqlModules } from "../lib/consts.types";
+import { toThrsModules } from "../lib/mqtt-graphql.utils";
 
 export const useThrsHistory = defineStore("thrsHistory", () => {
   const lastUpdate = useLocalStorage<number | null>("thrs-history-last-update", null);
-  const data = ref<THRS>();
+  const data = ref<{ modules: MqttGraphqlModules }>();
 
   /** Query of the active view (see `queries.consts.ts`); nothing is queried without one. */
   const activeQuery = shallowRef<TypedDocumentNode>();
@@ -22,19 +24,19 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
     if (!activeQuery.value) return data.value;
 
     const request = ++latestRequest;
-    const result = await client
-      .query<THRS>(
+    const result = await mqttGraphqlClient
+      .query(
         activeQuery.value,
         {},
         {
-          ...context,
+          ...mqttGraphqlContext,
           requestPolicy: "network-only",
         },
       )
       .toPromise();
 
     if (request === latestRequest) {
-      data.value = result.data;
+      data.value = result.data ? { modules: toThrsModules(result.data) } : undefined;
       lastUpdate.value = Date.now();
     }
     return data.value;

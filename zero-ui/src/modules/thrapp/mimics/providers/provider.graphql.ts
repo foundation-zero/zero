@@ -1,6 +1,10 @@
 import { capitalizeFirst } from "@/modules/common/lib/utils";
 import { QUERIES } from "@/modules/thrapp/lib/consts";
-import { ThrsDefinitions, ThrsModules } from "@/modules/thrapp/lib/consts.types";
+import {
+  MqttGraphqlModules,
+  ThrsDefinitions,
+  ThrsModules,
+} from "@/modules/thrapp/lib/consts.types";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import {
   ControlComponentType,
@@ -44,10 +48,13 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
   const { refresh, mutate } = useThrsHistory();
   // Each view queries only the module parts it shows (see `queries.consts.ts`); flag missing parts.
   const missingWarnings = new Set<string>();
-  const modulePart = <Module extends keyof ThrsDefinitions, Part extends keyof ThrsModules[Module]>(
+  const modulePart = <
+    Module extends keyof ThrsDefinitions,
+    Part extends keyof MqttGraphqlModules[Module],
+  >(
     module: Module,
     part: Part,
-  ): ThrsModules[Module][Part] | undefined => {
+  ): MqttGraphqlModules[Module][Part] | undefined => {
     const value = data.value?.modules?.[module]?.[part];
     const key = `${module}.${String(part)}`;
 
