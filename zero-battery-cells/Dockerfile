@@ -2,8 +2,11 @@ FROM --platform=$BUILDPLATFORM rust:1.99.1-trixie@sha256:8a4e90c7946b74626488b14
 
 WORKDIR /app
 
-COPY Cargo.toml Cargo.lock ./
-COPY src ./src
+# Cargo.toml points at ../packages/rust/zero-readiness, which is /packages from /app.
+COPY packages/rust/zero-readiness/Cargo.toml /packages/rust/zero-readiness/
+COPY packages/rust/zero-readiness/src /packages/rust/zero-readiness/src
+COPY zero-battery-cells/Cargo.toml zero-battery-cells/Cargo.lock ./
+COPY zero-battery-cells/src ./src
 
 ARG TARGETARCH
 
@@ -43,7 +46,7 @@ RUN apt-get update && \
 WORKDIR /app
 
 COPY --from=builder /app/zero-battery-cells /usr/local/bin/zero-battery-cells
-COPY --chown=1001:1001 spec/KEB6_FOX_05_41_1_NVL_Declaration.txt /app/spec/KEB6_FOX_05_41_1_NVL_Declaration.txt
+COPY --chown=1001:1001 zero-battery-cells/spec/KEB6_FOX_05_41_1_NVL_Declaration.txt /app/spec/KEB6_FOX_05_41_1_NVL_Declaration.txt
 
 USER 1001
 

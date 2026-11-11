@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - zero-fiber-optics/**
+      - packages/rust/zero-readiness/**
       - .github/workflows/ci_fiber_optics.yaml
       - .github/actions/coverage-report/**
   release:
@@ -12,6 +13,7 @@ on:
       - main
     paths:
       - zero-fiber-optics/**
+      - packages/rust/zero-readiness/**
       - .github/workflows/ci_fiber_optics.yaml
       - .github/actions/coverage-report/**
 
@@ -81,7 +83,8 @@ jobs:
     secrets: inherit
     with:
       image: "zero-fiber-optics"
-      context: "zero-fiber-optics"
+      context: "."
+      dockerfile: "zero-fiber-optics/Dockerfile"
   helm-push:
     if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
     needs: [test, docker-push]

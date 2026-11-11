@@ -1502,6 +1502,15 @@ dependencies = [
  "serde_json",
  "tokio",
  "tokio-stream",
+ "zero-readiness",
+]
+
+[[package]]
+name = "zero-readiness"
+version = "0.1.0"
+dependencies = [
+ "log",
+ "tokio",
 ]
 
 [[package]]

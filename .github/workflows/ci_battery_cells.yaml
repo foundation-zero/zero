@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - zero-battery-cells/**
+      - packages/rust/zero-readiness/**
       - .github/workflows/ci_battery_cells.yaml
       - .github/actions/coverage-report/**
   release:
@@ -12,6 +13,7 @@ on:
       - main
     paths:
       - zero-battery-cells/**
+      - packages/rust/zero-readiness/**
       - .github/workflows/ci_battery_cells.yaml
       - .github/actions/coverage-report/**
 
@@ -86,7 +88,8 @@ jobs:
     secrets: inherit
     with:
       image: "zero-battery-cells"
-      context: "zero-battery-cells"
+      context: "."
+      dockerfile: "zero-battery-cells/Dockerfile"
 
   helm-push:
     if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}

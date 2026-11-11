@@ -19,6 +19,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tokio = { version = "1.43", features = ["full"] }
 tokio-stream = "0.1"
+zero-readiness = { path = "../packages/rust/zero-readiness" }
 
 [dev-dependencies]
 tokio = { version = "=1.54.1", features = ["full", "test-util"] }

@@ -1,3 +1,5 @@
+//! Pod readiness for the chart's exec probe, and the not-ready deadline of ADR 0001.
+
 use log::{debug, error};
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex, MutexGuard};

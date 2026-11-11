@@ -2,8 +2,11 @@ FROM --platform=$BUILDPLATFORM rust:1.99-trixie@sha256:8a4e90c7946b74626488b1446
 
 WORKDIR /app
 
-COPY Cargo.toml Cargo.lock ./
-COPY src ./src
+# Cargo.toml points at ../packages/rust/zero-readiness, which is /packages from /app.
+COPY packages/rust/zero-readiness/Cargo.toml /packages/rust/zero-readiness/
+COPY packages/rust/zero-readiness/src /packages/rust/zero-readiness/src
+COPY zero-fiber-optics/Cargo.toml zero-fiber-optics/Cargo.lock ./
+COPY zero-fiber-optics/src ./src
 
 ARG TARGETARCH
 
@@ -43,8 +46,8 @@ RUN apt-get update && \
 WORKDIR /app
 
 COPY --from=builder /app/zero-fiber-optics /usr/local/bin/zero-fiber-optics
-COPY --chown=1001:1001 example/config.xml /app/example/config.xml
-COPY --chown=1001:1001 config.xml /app/config.xml
+COPY --chown=1001:1001 zero-fiber-optics/example/config.xml /app/example/config.xml
+COPY --chown=1001:1001 zero-fiber-optics/config.xml /app/config.xml
 
 USER 1001
 
