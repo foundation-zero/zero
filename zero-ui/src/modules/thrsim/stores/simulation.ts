@@ -1,10 +1,8 @@
 import i18n from "@/i18n";
-import { PromiseFn } from "@/modules/common/types";
-import { mutationWithoutValue, mutationWithValue } from "@/modules/thrapp/graphql";
 import { context, mqttGraphqlContext } from "@/modules/thrapp/graphql/client";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 
-import { TypedDocumentNode, useClientHandle, useQuery } from "@urql/vue";
+import { gql, TypedDocumentNode, useClientHandle, useQuery } from "@urql/vue";
 import { useIntervalFn } from "@vueuse/core";
 import { OperationResult } from "graphql-ws";
 import { Maybe } from "graphql/jsutils/Maybe";
@@ -16,13 +14,24 @@ import { computed, ref } from "vue";
 import { SIMULATION_INPUT_QUERIES, SIMULATOR_QUERY } from "../lib/consts";
 import { SIMULATION_TYPES, Simulator } from "../lib/consts.types";
 
+// Requests a simulator status on the MQTT GraphQL API, which returns once the simulator has
+// taken it; only a simulator in lockstep does.
+export const SET_STATUS = gql`
+  mutation ($input: ThrsControlSimulationStatusSetMessageInput!) {
+    thrs {
+      simulator {
+        status(input: $input) {
+          status
+        }
+      }
+    }
+  }
+`;
+
 export const useSimulationStore = defineStore("simulation", () => {
   // For some reason the injected client does not come from the component in the outer scope.
   // This means we need to manually provide the context to each query and mutation.
   const { client } = useClientHandle();
-  const pause = mutationWithoutValue("simulationPause");
-  const play = mutationWithValue("simulationPlay", "playbackRate", "Float");
-  const step = mutationWithValue("simulationStep", "seconds", "Float!");
   // TODO: make set automated control module dependent
   const isProcessing = ref(false);
   const simulatorQuery = useQuery<Simulator>({
@@ -93,38 +102,47 @@ export const useSimulationStore = defineStore("simulation", () => {
     }
   };
 
-  type MutationFnParams = [query: TypedDocumentNode, onSuccess: PromiseFn];
+  // Sends one of the simulator's directives, then reloads the simulator.
+  const send = async (query: TypedDocumentNode, variables: Record<string, unknown> = {}) => {
+    if (isProcessing.value) return;
 
-  function mutationFn(...args: MutationFnParams): () => Promise<Maybe<OperationResult>>;
-  function mutationFn<T>(...args: MutationFnParams): (value: T) => Promise<Maybe<OperationResult>>;
-  function mutationFn<T>(...[query, onSuccess]: MutationFnParams) {
-    return async (value?: T) => {
-      if (isProcessing.value) return;
+    isProcessing.value = true;
+    let result: Maybe<OperationResult> = undefined;
 
-      isProcessing.value = true;
-      let result: Maybe<OperationResult> = undefined;
+    try {
+      result = await client.mutation(query, variables, mqttGraphqlContext);
+      await refreshSimulation();
+    } catch (error) {
+      console.error("Error executing mutation:", error);
+    } finally {
+      isProcessing.value = false;
+    }
 
-      try {
-        result = await client.mutation(query, value === undefined ? {} : { value }, context);
-        await onSuccess();
-      } catch (error) {
-        console.error("Error executing mutation:", error);
-      } finally {
-        isProcessing.value = false;
-      }
+    return result;
+  };
 
-      return result;
-    };
-  }
+  const play = (playbackRate: number) =>
+    send(SET_STATUS, { input: { status: "RUNNING", playbackRate, pauseAt: null } });
+
+  const pause = () => send(SET_STATUS, { input: { status: "AVAILABLE", pauseAt: null } });
+
+  // Steps as fast as possible until `seconds` after the simulation time. Only a paused
+  // simulator steps, and its time stands still, so the last polled one is current.
+  const step = (seconds: number) => {
+    const simulationTime = status.value?.simulationTime;
+    if (!simulationTime) return;
+    const pauseAt = new Date(new Date(simulationTime).getTime() + seconds * 1000).toISOString();
+    return send(SET_STATUS, { input: { status: "STEPPING", pauseAt } });
+  };
 
   return {
     simulation,
     refreshSimulation,
     startPolling,
     stopPolling,
-    pause: mutationFn(pause, refreshSimulation),
-    play: mutationFn<number>(play, refreshSimulation),
-    step: mutationFn<number>(step, refreshSimulation),
+    pause,
+    play,
+    step,
     setAdvisory,
     isAdvisory,
     advisoryError,

@@ -103,9 +103,34 @@ describe("simulation store", () => {
     await simulation.play(2);
 
     const [query, variables] = mutation.mock.lastCall as [DocumentNode, unknown];
-    expect(print(query)).toContain("simulationPlay(playbackRate: $value)");
-    expect(variables).toEqual({ value: 2 });
+    expect(print(query)).toContain("status(input: $input)");
+    expect(variables).toEqual({ input: { status: "RUNNING", playbackRate: 2, pauseAt: null } });
     expect(simulatorQuery().executeQuery).toHaveBeenCalledWith({ requestPolicy: "network-only" });
+  });
+
+  it("pauses the simulator now", async () => {
+    await useSimulationStore().pause();
+
+    const [, variables] = mutation.mock.lastCall as [DocumentNode, unknown];
+    expect(variables).toEqual({ input: { status: "AVAILABLE", pauseAt: null } });
+  });
+
+  it("steps until the given seconds after the simulation time", async () => {
+    const simulation = useSimulationStore();
+    withSimulator({ ...running, status: "AVAILABLE", simulationTime: "2026-11-13T10:00:00Z" });
+
+    await simulation.step(30);
+
+    const [, variables] = mutation.mock.lastCall as [DocumentNode, unknown];
+    expect(variables).toEqual({
+      input: { status: "STEPPING", pauseAt: "2026-11-13T10:00:30.000Z" },
+    });
+  });
+
+  it("does not step without a simulation time", async () => {
+    await useSimulationStore().step(30);
+
+    expect(mutation.mock.calls).toEqual([]);
   });
 
   describe("advisory mode", () => {

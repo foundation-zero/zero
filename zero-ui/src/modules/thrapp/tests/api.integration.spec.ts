@@ -5,6 +5,7 @@ import { valueAt } from "@/modules/thrapp/lib/mqtt-graphql.utils";
 import { CONTROL_QUERY, ControlResponse } from "@/modules/thrapp/stores/automation";
 import { SIMULATOR_QUERY } from "@/modules/thrsim/lib/consts";
 import { Simulator } from "@/modules/thrsim/lib/consts.types";
+import { SET_STATUS } from "@/modules/thrsim/stores/simulation";
 import { ENV } from "@/settings";
 import { Client, fetchExchange, gql, OperationResult } from "@urql/vue";
 import { describe, expect, test } from "vitest";
@@ -48,6 +49,56 @@ describe("MQTT GraphQL API", () => {
         expect(status?.status).toBeDefined();
         expect(status?.mode).toBeDefined();
         expect(status?.simulationTime).toBeDefined();
+      });
+    });
+
+    // thrsim's play, pause and step: a requested status, which the API returns once the
+    // simulator has taken it.
+    describe("Control (mutations)", () => {
+      const getStatus = async () => (await getSimulator()).data?.thrs?.simulator?.status;
+
+      const setStatus = async (input: Record<string, unknown>) =>
+        await client.mutation(SET_STATUS, { input });
+
+      describe("Play", () => {
+        test("does not return errors and changes state", async ({ skip }) => {
+          if ((await getStatus())?.status === "RUNNING") {
+            return skip("Simulation is already running, skipping play mutation test");
+          }
+
+          const response = await setStatus({ status: "RUNNING", playbackRate: 1, pauseAt: null });
+
+          expect(response.error).toBeUndefined();
+          expect((await getStatus())?.status).toBe("RUNNING");
+        });
+      });
+
+      describe("Pause", () => {
+        test("does not return errors and changes state", async ({ skip }) => {
+          if ((await getStatus())?.status === "AVAILABLE") {
+            return skip("Simulation is already paused, skipping pause mutation test");
+          }
+
+          const response = await setStatus({ status: "AVAILABLE", pauseAt: null });
+
+          expect(response.error).toBeUndefined();
+          expect((await getStatus())?.status).toBe("AVAILABLE");
+        });
+      });
+
+      describe("Step", () => {
+        test("does not return errors", async ({ skip }) => {
+          const status = await getStatus();
+
+          if (status?.status !== "AVAILABLE") {
+            return skip("Simulation is not paused, skipping step mutation test");
+          }
+
+          const pauseAt = new Date(new Date(status.simulationTime).getTime() + 1000).toISOString();
+          const response = await setStatus({ status: "STEPPING", pauseAt });
+
+          expect(response.error).toBeUndefined();
+        });
       });
     });
   });
