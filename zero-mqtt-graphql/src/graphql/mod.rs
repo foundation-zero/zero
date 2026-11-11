@@ -26,7 +26,7 @@ use anyhow::{Context, bail};
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{
-    Field, FieldValue, Object, Scalar, Schema, SchemaBuilder, Type, TypeRef,
+    Enum, Field, FieldValue, Object, Scalar, Schema, SchemaBuilder, Type, TypeRef,
 };
 use log::{info, warn};
 use serde_json::Value as JsonValue;
@@ -37,7 +37,9 @@ pub use crate::graphql::mutations::{Mutations, PublishFuture, Publisher};
 use crate::graphql::topics::payload_query_field;
 use crate::naming::{pascal_case_graphql_name, sanitize_to_graphql_name};
 use crate::{
-    api_model::{Api, Direction, FieldType, GraphqlPath, PathNode, TopicDef, TopicKind, Tree},
+    api_model::{
+        Api, Direction, EnumValue, FieldType, GraphqlPath, PathNode, TopicDef, TopicKind, Tree,
+    },
     cache::TopicCache,
 };
 
@@ -193,17 +195,6 @@ fn type_name(ty: &Type) -> &str {
 /// has one namespace for both. Empty to leave the Topic out.
 type Leaf = (Vec<Field>, Vec<Type>);
 
-/// `objects` as the types of a [`Leaf`].
-fn object_types(objects: Vec<Object>) -> Vec<Type> {
-    objects.into_iter().map(Type::from).collect()
-}
-
-/// The type name of the payload object `name` in a Spec or Group named
-/// `name_prefix`.
-fn payload_type_name(name_prefix: &str, name: &str) -> String {
-    pascal_case_graphql_name(&format!("{name_prefix}-{name}"))
-}
-
 /// The fields for one level of a Spec's tree, collecting the types they
 /// need into `known_types`. Query and Mutation both use it: `leaf` gives
 /// each Topic's fields, and a branch is an object named `prefix` plus its
@@ -269,15 +260,16 @@ fn query_leaf(
 
     match &topic.kind {
         TopicKind::Single => {
-            let objects = payload_object(spec, &payload.name, &payload.fields);
-            let field = payload_query_field(segment, &topic.topic, objects[0].type_name(), cache);
-            Ok((vec![field], object_types(objects)))
+            let type_name = payload_type_name(spec, &payload.name);
+            let field = payload_query_field(segment, &topic.topic, &type_name, cache);
+            Ok((
+                vec![field],
+                payload_object(spec, &payload.name, &payload.fields),
+            ))
         }
         TopicKind::Group(group) => {
             let leaf = register_group_queries(segment, path, &topic.topic, payload, group, cache)?;
-            Ok(leaf.map_or_else(Leaf::default, |(fields, objects)| {
-                (fields, object_types(objects))
-            }))
+            Ok(leaf.unwrap_or_default())
         }
     }
 }
@@ -341,38 +333,45 @@ fn json_to_graphql_value(val: &JsonValue) -> GraphQlValue {
     }
 }
 
-/// One concrete topic's `<Topic>` payload object
+/// The type name of a payload object, or of an enum, named `name` in a
+/// Spec or Group named `name_prefix`.
+fn payload_type_name(name_prefix: &str, name: &str) -> String {
+    pascal_case_graphql_name(&format!("{name_prefix}-{name}"))
+}
+
+/// One concrete topic's `<Topic>` payload object, named
+/// [`payload_type_name`], followed by the types of its nested fields.
 fn payload_object(
     name_prefix: &str,
     name: &str,
     fields: &BTreeMap<String, FieldType>,
-) -> Vec<Object> {
+) -> Vec<Type> {
     if fields.is_empty() {
         warn!("Object {name} can't have zero fields!");
     }
 
     let type_name = payload_type_name(name_prefix, name);
-    let (object, mut objects) = fields
+    let (object, mut types) = fields
         .iter()
-        .filter_map(|(name, graphql_type)| payload_field(name_prefix, name, graphql_type))
+        .filter_map(|(name, field_type)| payload_field(name_prefix, name, field_type))
         .fold(
             (Object::new(type_name.as_str()), Vec::new()),
-            |(obj, mut objects), (field, new_objects)| {
-                objects.extend(new_objects);
-                (obj.field(field), objects)
+            |(obj, mut types), (field, new_types)| {
+                types.extend(new_types);
+                (obj.field(field), types)
             },
         );
-    objects.insert(0, object);
-    objects
+    types.insert(0, object.into());
+    types
 }
 
-/// One scalar payload field on a `<Topic>` object: projects the raw field
-/// name from the object value returned by [`topic_query_field`].
+/// One payload field on a `<Topic>` object: projects the raw field name
+/// from the object value returned by [`topic_query_field`].
 fn payload_field(
     name_prefix: &str,
     name: &str,
-    graphql_type: &FieldType,
-) -> Option<(Field, Vec<Object>)> {
+    field_type: &FieldType,
+) -> Option<(Field, Vec<Type>)> {
     let field_name = sanitize_to_graphql_name(name);
 
     if field_name.is_empty() {
@@ -381,21 +380,62 @@ fn payload_field(
     }
 
     let raw_name = Name::new(name);
-    let (graphql_type, objects) = graphql_type_ref(name_prefix, graphql_type);
+    let (type_ref, types) = graphql_type_ref(name_prefix, field_type);
+    let field_type = field_type.clone();
 
-    let field = Field::new(field_name, graphql_type, move |ctx| {
+    let field = Field::new(field_name, type_ref, move |ctx| {
         let raw_name = raw_name.clone();
+        let field_type = field_type.clone();
         async_graphql::dynamic::FieldFuture::new(async move {
             let parent = ctx.parent_value.try_to_value()?;
             let value = match parent {
                 GraphQlValue::Object(map) => map.get(&raw_name).cloned(),
                 _ => None,
             };
-            Ok(non_null(value).map(FieldValue::value))
+            non_null(value)
+                .map(|value| output_value(&field_type, value).map(FieldValue::value))
+                .transpose()
         })
     });
 
-    Some((field, objects))
+    Some((field, types))
+}
+
+/// `value` as the output of a field of `field_type`: enum values by their
+/// GraphQL name. Errors on a value that is not one of the enum's, so a Spec
+/// that no longer matches what is published shows.
+fn output_value(
+    field_type: &FieldType,
+    value: GraphQlValue,
+) -> async_graphql::Result<GraphQlValue> {
+    match (field_type, value) {
+        (FieldType::Enum(name, values), value) => {
+            let raw = match &value {
+                GraphQlValue::String(raw) => Some(raw.as_str()),
+                _ => None,
+            };
+            values
+                .iter()
+                .find(|enum_value| Some(enum_value.raw.as_str()) == raw)
+                .map(|enum_value| GraphQlValue::Enum(Name::new(&enum_value.name)))
+                .ok_or_else(|| format!("{value} is not one of the values of enum {name}").into())
+        }
+        (FieldType::List(element), GraphQlValue::List(items)) => items
+            .into_iter()
+            .map(|item| match item {
+                GraphQlValue::Null => Ok(GraphQlValue::Null),
+                item => output_value(element, item),
+            })
+            .collect::<async_graphql::Result<_>>()
+            .map(GraphQlValue::List),
+        (_, value) => Ok(value),
+    }
+}
+
+/// The enum type of a field of type [`FieldType::Enum`].
+fn enum_type(name_prefix: &str, name: &str, values: &[EnumValue]) -> Enum {
+    Enum::new(payload_type_name(name_prefix, name))
+        .items(values.iter().map(|value| value.name.as_str()))
 }
 
 /// `value` unless it is missing or `null`. A resolver must return `None`
@@ -405,21 +445,29 @@ fn non_null(value: Option<GraphQlValue>) -> Option<GraphQlValue> {
     value.filter(|value| *value != GraphQlValue::Null)
 }
 
-/// Map a GraphQL type name to an async-graphql TypeRef.
-fn graphql_type_ref(name_prefix: &str, typ: &FieldType) -> (TypeRef, Vec<Object>) {
+/// The output type of a field of `field_type`, with the object and enum
+/// types it needs.
+fn graphql_type_ref(name_prefix: &str, field_type: &FieldType) -> (TypeRef, Vec<Type>) {
     #[allow(clippy::match_same_arms)]
-    match typ {
+    match field_type {
         FieldType::Float => (TypeRef::named(TypeRef::FLOAT), vec![]),
         FieldType::Int => (TypeRef::named(TypeRef::INT), vec![]),
         FieldType::Boolean => (TypeRef::named(TypeRef::BOOLEAN), vec![]),
         FieldType::String => (TypeRef::named(TypeRef::STRING), vec![]),
-        FieldType::Object(name, fields) => {
-            let objects = payload_object(name_prefix, name, fields);
-            (TypeRef::named(objects[0].type_name()), objects)
+        FieldType::Object(name, fields) => (
+            TypeRef::named(payload_type_name(name_prefix, name)),
+            payload_object(name_prefix, name, fields),
+        ),
+        FieldType::Enum(name, values) => {
+            let enum_type = enum_type(name_prefix, name, values);
+            (
+                TypeRef::named(enum_type.type_name()),
+                vec![enum_type.into()],
+            )
         }
         FieldType::List(element) => {
-            let (element, objects) = graphql_type_ref(name_prefix, element);
-            (TypeRef::List(Box::new(element)), objects)
+            let (element, types) = graphql_type_ref(name_prefix, element);
+            (TypeRef::List(Box::new(element)), types)
         }
         FieldType::Json => (TypeRef::named(JSON_SCALAR), vec![]),
     }

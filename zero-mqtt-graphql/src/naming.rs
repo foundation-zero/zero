@@ -1,6 +1,6 @@
 use std::sync::LazyLock;
 
-use convert_case::{Boundary, Converter, Pattern};
+use convert_case::{Boundary, Case, Casing, Converter, Pattern};
 
 static INVALID_CHARS: Boundary = Boundary::Custom {
     condition: |s: &[&str]| {
@@ -88,6 +88,23 @@ pub fn pascal_case_graphql_name(name: &str) -> String {
         Some(first) => first.to_ascii_uppercase().to_string() + chars.as_str(),
         None => String::new(),
     }
+}
+
+/// The GraphQL name of an enum value, in `SCREAMING_SNAKE_CASE`
+/// (`needs boost` → `NEEDS_BOOST`); `None` when it has no valid one, such as
+/// one starting with `__`, which GraphQL reserves for introspection.
+#[must_use]
+pub fn enum_value_name(raw: &str) -> Option<String> {
+    let mut name = raw.to_case(Case::Constant);
+    if name.starts_with(|c: char| c.is_ascii_digit()) {
+        name.insert(0, '_');
+    }
+    let valid = !name.is_empty()
+        && !name.starts_with("__")
+        && name
+            .chars()
+            .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_');
+    valid.then_some(name)
 }
 
 /// Reserved GraphQL names that cannot be used for topic query fields (lowerCamelCase).
@@ -182,5 +199,21 @@ mod tests {
             .iter()
             .all(|n| is_reserved_name(n))
         );
+    }
+
+    #[test_log::test]
+    fn test_enum_value_name() {
+        for (raw, name) in [
+            ("propulsion", "PROPULSION"),
+            ("in use", "IN_USE"),
+            ("needs-boost", "NEEDS_BOOST"),
+            ("valveRun", "VALVE_RUN"),
+            ("1st", "_1_ST"),
+        ] {
+            assert_eq!(enum_value_name(raw).as_deref(), Some(name), "for {raw}");
+        }
+        for raw in ["", "a.b", "é", "__schema", "__"] {
+            assert_eq!(enum_value_name(raw), None, "for {raw}");
+        }
     }
 }
