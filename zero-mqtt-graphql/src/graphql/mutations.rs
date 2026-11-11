@@ -1,6 +1,8 @@
+use std::cmp::Ordering;
 use std::collections::BTreeMap;
 use std::future::Future;
 use std::pin::Pin;
+use std::str::FromStr;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -10,6 +12,7 @@ use async_graphql::dynamic::{
     Field, FieldFuture, FieldValue, InputObject, InputValue, Type, TypeRef,
 };
 use async_graphql::indexmap::IndexMap;
+use jiff::{Span, SpanCompare, Timestamp, civil};
 use jsonschema::Validator;
 use log::{info, warn};
 use serde_json::{Map, Value as JsonValue};
@@ -239,7 +242,7 @@ impl Target {
         let deadline = Instant::now() + self.mutations.timeout;
         loop {
             if let Some(state) = self.cache.get(state_topic)
-                && shows(&state, &given)
+                && equal_fields(&state, &given, Some(&self.fields))
             {
                 return Ok(GraphQlValue::from_json(state)?);
             }
@@ -373,25 +376,82 @@ fn merge_level(base: JsonValue, given: &JsonValue, root: bool) -> JsonValue {
     }
 }
 
-/// Whether `state` shows every leaf of `given`. Numbers compare by value, so
-/// `21` and `21.0` match, but a rounded or clamped value does not. A list
-/// matches element by element, at the same length.
+/// Whether `state` has a value equal to `given`'s in every field `given`
+/// has, whose types are in `fields`, or unknown when `None`. Fields `given`
+/// omits are not compared, and a `given` that is not an object is not equal.
+fn equal_fields(
+    state: &JsonValue,
+    given: &JsonValue,
+    fields: Option<&BTreeMap<String, FieldType>>,
+) -> bool {
+    given.as_object().is_some_and(|given| {
+        given.iter().all(|(key, given)| {
+            state.get(key).is_some_and(|state| {
+                equal_value(state, given, fields.and_then(|fields| fields.get(key)))
+            })
+        })
+    })
+}
+
+/// Whether `state` equals `given`, a value of `field_type`, or of unknown
+/// type when `None`. An object compares as in [`equal_fields`], a list
+/// element by element at the same length, and a string as in
+/// [`equal_string`]. Numbers compare by value, so `21` and `21.0` are equal,
+/// but a rounded or clamped value is not.
 #[allow(clippy::float_cmp)]
-fn shows(state: &JsonValue, given: &JsonValue) -> bool {
+fn equal_value(state: &JsonValue, given: &JsonValue, field_type: Option<&FieldType>) -> bool {
     match (state, given) {
-        (_, JsonValue::Object(given)) => given
-            .iter()
-            .all(|(key, value)| state.get(key).is_some_and(|state| shows(state, value))),
+        (_, JsonValue::Object(_)) => {
+            let fields = match field_type {
+                Some(FieldType::Object(_, fields)) => Some(fields.as_ref()),
+                _ => None,
+            };
+            equal_fields(state, given, fields)
+        }
         (JsonValue::Array(state), JsonValue::Array(given)) => {
+            let element = match field_type {
+                Some(FieldType::List(element)) => Some(element.as_ref()),
+                _ => None,
+            };
             state.len() == given.len()
                 && state
                     .iter()
                     .zip(given)
-                    .all(|(state, given)| shows(state, given))
+                    .all(|(state, given)| equal_value(state, given, element))
         }
         (JsonValue::Number(state), JsonValue::Number(given)) => state.as_f64() == given.as_f64(),
+        (JsonValue::String(state), JsonValue::String(given)) => {
+            equal_string(state, given, field_type)
+        }
         _ => state == given,
     }
+}
+
+/// Whether two strings of `field_type` name the same value, whatever their
+/// precision or offset: timestamps the same instant, dates and times the
+/// same calendar value, durations the same length with 24-hour days. Any
+/// other string, one that does not parse, a time with an offset, or a
+/// duration in months or years compares as written.
+fn equal_string(state: &str, given: &str, field_type: Option<&FieldType>) -> bool {
+    /// Whether both parse to equal values; `None` when either does not parse.
+    fn equal_parsed<T: FromStr + PartialEq>(state: &str, given: &str) -> Option<bool> {
+        Some(state.parse::<T>().ok()? == given.parse::<T>().ok()?)
+    }
+
+    let equal = match field_type {
+        Some(FieldType::DateTime) => equal_parsed::<Timestamp>(state, given),
+        Some(FieldType::Date) => equal_parsed::<civil::Date>(state, given),
+        Some(FieldType::Time) => equal_parsed::<civil::Time>(state, given),
+        Some(FieldType::Duration) => match (state.parse::<Span>(), given.parse::<Span>()) {
+            (Ok(state), Ok(given)) => state
+                .compare(SpanCompare::from(given).days_are_24_hours())
+                .ok()
+                .map(Ordering::is_eq),
+            _ => None,
+        },
+        _ => None,
+    };
+    equal.unwrap_or(state == given)
 }
 
 #[cfg(test)]
@@ -956,6 +1016,35 @@ mod tests {
         }
     }
 
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_mutation_confirms_a_timestamp_echoed_in_another_format() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert("room/pump", pump_state());
+        // Echoes the timestamp with microseconds, as pydantic writes it.
+        let service = service(
+            &cache,
+            Some(|published| {
+                let mut state = published.clone();
+                state["dutypoint"]["TimeStamp"] = json!("2026-11-10T09:30:00.123000Z");
+                state
+            }),
+        );
+
+        let response = execute(
+            &cache,
+            &service,
+            r#"mutation { room { pump(input: {dutypoint: {value: 0.3, timeStamp: "2026-11-10T09:30:00.123Z"}}) { dutypoint { timeStamp } } } }"#,
+        )
+        .await;
+
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        assert_eq!(
+            response.data.into_json().unwrap(),
+            json!({"room": {"pump": {"dutypoint": {"timeStamp": "2026-11-10T09:30:00.123000Z"}}}})
+        );
+    }
+
     #[test_log::test]
     fn test_timestamps_are_date_times_in_output_and_input() {
         let cache = Arc::new(TopicCache::new());
@@ -1160,10 +1249,60 @@ mod tests {
     }
 
     #[test_log::test]
-    fn test_shows_compares_lists_by_element_and_length() {
-        assert!(shows(&json!([1, 2.5]), &json!([1.0, 2.5])));
-        assert!(!shows(&json!([1, 2.5]), &json!([1.0])));
-        assert!(!shows(&json!([1, 2.5]), &json!([1.0, 2.6])));
+    fn test_equal_fields_compares_lists_by_element_and_length() {
+        let equal = |state, given| equal_fields(&json!({"l": state}), &json!({"l": given}), None);
+        assert!(equal(json!([1, 2.5]), json!([1.0, 2.5])));
+        assert!(!equal(json!([1, 2.5]), json!([1.0])));
+        assert!(!equal(json!([1, 2.5]), json!([1.0, 2.6])));
+    }
+
+    #[test_log::test]
+    fn test_equal_fields_compares_timestamps_as_instants() {
+        let fields = BTreeMap::from([
+            (
+                "pump".to_string(),
+                stamped("StampedFloat", FieldType::Float),
+            ),
+            ("label".to_string(), FieldType::String),
+        ]);
+        let pump = |time: &str| json!({"pump": {"Value": 0.3, "TimeStamp": time}});
+        let state = pump("2026-11-10T09:30:00.123000Z");
+
+        let equal =
+            |state: &JsonValue, given: JsonValue| equal_fields(state, &given, Some(&fields));
+
+        assert!(equal(&state, pump("2026-11-10T09:30:00.123Z")));
+        assert!(equal(&state, pump("2026-11-10T10:30:00.123+01:00")));
+        assert!(!equal(&state, pump("2026-11-10T09:30:00.124Z")));
+        // Plain strings still compare as written.
+        let label = |time: &str| json!({"label": time});
+        assert!(!equal(
+            &label("2026-11-10T09:30:00.123000Z"),
+            label("2026-11-10T09:30:00.123Z")
+        ));
+    }
+
+    #[test_log::test]
+    fn test_equal_string_compares_dates_times_and_durations_by_value() {
+        let equal = |field_type, state, given| equal_string(state, given, Some(&field_type));
+
+        assert!(equal(FieldType::Date, "2026-11-10", "2026-11-10"));
+        assert!(!equal(FieldType::Date, "2026-11-10", "2026-11-11"));
+
+        // pydantic writes microseconds where JavaScript writes milliseconds.
+        assert!(equal(FieldType::Time, "09:30:00.123000", "09:30:00.123"));
+        assert!(!equal(FieldType::Time, "09:30:00", "09:30:01"));
+
+        assert!(equal(FieldType::Duration, "PT1M30S", "PT90S"));
+        assert!(equal(FieldType::Duration, "P1DT2H", "PT26H"));
+        assert!(!equal(FieldType::Duration, "PT1M30S", "PT91S"));
+        // Months have no fixed length, so only the same string is equal.
+        assert!(equal(FieldType::Duration, "P1M", "P1M"));
+        assert!(!equal(FieldType::Duration, "P1M", "P30D"));
+
+        // A string that does not parse compares as written.
+        assert!(equal(FieldType::Date, "soon", "soon"));
+        assert!(!equal(FieldType::Date, "soon", "later"));
     }
 
     #[test_log::test]
@@ -1191,11 +1330,11 @@ mod tests {
     }
 
     #[test_log::test]
-    fn test_shows_compares_given_leaves_only() {
+    fn test_equal_fields_compares_given_leaves_only() {
         let state = json!({"a": {"x": 1.0, "y": 2}, "b": 3});
-        assert!(shows(&state, &json!({"a": {"x": 1}})));
-        assert!(!shows(&state, &json!({"a": {"x": 1.5}})));
-        assert!(!shows(&state, &json!({"c": 1})));
+        assert!(equal_fields(&state, &json!({"a": {"x": 1}}), None));
+        assert!(!equal_fields(&state, &json!({"a": {"x": 1.5}}), None));
+        assert!(!equal_fields(&state, &json!({"c": 1}), None));
     }
 
     #[test_log::test]
