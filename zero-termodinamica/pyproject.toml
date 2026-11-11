@@ -5,6 +5,7 @@ authors = [{ name = "Floris Smit", email = "floris.smit@sy-zero.com" }]
 requires-python = ">=3.15.1,<4.0"
 readme = "README.md"
 dependencies = [
+    "zero-health",
     "zero-modbus-bridge",
     "zero-mqtt",
     "aiomqtt>=2.4.0,<3.0.0",
@@ -32,6 +33,7 @@ test = [
 default-groups = ["dev", "test"]
 
 [tool.uv.sources]
+zero-health = { path = "../packages/py/zero-health", editable = true }
 zero-modbus-bridge = { path = "../packages/py/zero-modbus-bridge", editable = true }
 zero-mqtt = { path = "../packages/py/zero-mqtt", editable = true }
 pymodbus-repl = { git = "https://github.com/pymodbus-dev/repl" }

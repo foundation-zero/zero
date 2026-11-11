@@ -11,11 +11,12 @@ from pydantic_settings import (
     CliApp,
     CliSubCommand,
 )
+from zero_health import Health, HealthSettings
 from zero_modbus_bridge.bridge import ModbusBridge
 from zero_modbus_bridge.publisher import MqttPublisher
 from zero_modbus_bridge.settings import ModbusSettings
 from zero_modbus_bridge.stub import Stub
-from zero_mqtt import MqttSettings
+from zero_mqtt import MqttSettings, broker_check
 
 from zero_termodinamica.io import read_modbus_topics
 
@@ -42,7 +43,12 @@ class RunCmd(ModbusSettings, MqttSettings):
         )
         app = FastStream(broker)
         app.after_startup(bridge.run)
-        await app.run()
+        health = Health(
+            HealthSettings(),
+            {"mqtt": broker_check(broker), "modbus": bridge.gateway_check},
+        )
+        async with health.serve():
+            await app.run()
 
 
 class StubCmd(ModbusSettings):
