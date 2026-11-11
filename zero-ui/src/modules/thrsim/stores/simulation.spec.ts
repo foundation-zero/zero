@@ -1,4 +1,3 @@
-import { client as thrappClient } from "@/modules/thrapp/graphql/client";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import { AmcsControlMode } from "@/modules/thrapp/types/thrs";
 import { createTestingPinia } from "@pinia/testing";
@@ -16,17 +15,17 @@ vi.mock(import("@urql/vue"), async (importOriginal) => ({
   useClientHandle: vi.fn(),
 }));
 
-// used by the THRS history store, which the simulation store mutates through
+// used by the THRS history store, which the simulation store refreshes
 vi.mock("@/modules/thrapp/graphql/client", () => ({
-  client: { mutation: vi.fn() },
   context: {},
+  mqttGraphqlClient: { query: vi.fn(), mutation: vi.fn() },
+  mqttGraphqlContext: {},
 }));
 
 const queries = createUseQueryFake();
 const statusQuery = () => queries.resultOf<SimulationStatus>(STATUS_QUERY);
 const simulationQuery = () => queries.resultOf(QUERY_SIMULATION);
 const mutation = vi.fn();
-const historyMutation = vi.fn();
 
 const withInputs = (inputs: Record<string, unknown>) => {
   simulationQuery().data.value = { simulation: { inputs } };
@@ -39,11 +38,7 @@ describe("simulation store", () => {
     queries.reset();
     vi.mocked(useQuery).mockImplementation(queries.useQuery);
     vi.mocked(useClientHandle).mockReturnValue({ client: { mutation } } as never);
-    vi.mocked(thrappClient.mutation).mockImplementation(
-      (...args) => ({ toPromise: () => historyMutation(...args) }) as never,
-    );
     mutation.mockReset().mockResolvedValue({ data: {} });
-    historyMutation.mockReset().mockResolvedValue({ data: {} });
     setActivePinia(createTestingPinia({ stubActions: false }));
   });
 
@@ -121,7 +116,7 @@ describe("simulation store", () => {
 
       await simulation.setAdvisory(enabled);
 
-      const [query, variables] = historyMutation.mock.lastCall as [string, unknown];
+      const [query, variables] = mutation.mock.lastCall as [string, unknown];
       expect(query).toContain("thrustersSimulationSetMode(value: $input)");
       expect(variables).toEqual({ input: { mode } });
       expect(refreshHistory).toHaveBeenCalled();
@@ -132,7 +127,7 @@ describe("simulation store", () => {
     it("shows why switching failed", async () => {
       const simulation = useSimulationStore();
       withInputs({ __typename: "ThrustersSimulationInputs" });
-      historyMutation.mockResolvedValue({ error: { message: "Simulation not running" } });
+      mutation.mockResolvedValue({ error: { message: "Simulation not running" } });
 
       await simulation.setAdvisory(true);
 
@@ -143,7 +138,7 @@ describe("simulation store", () => {
     it("does nothing while no simulation is loaded", async () => {
       await useSimulationStore().setAdvisory(true);
 
-      expect(historyMutation).not.toHaveBeenCalled();
+      expect(mutation).not.toHaveBeenCalled();
     });
   });
 });
