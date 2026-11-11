@@ -1,8 +1,8 @@
 import { ENV } from "@env";
 import { Client, fetchExchange, OperationContext } from "@urql/vue";
 
-// thrs-api: thrsim's simulator controls, the automation mode and the mutations, until they move
-// to MQTT GraphQL too.
+// thrs-api: thrsim's simulator and control values and the automation mode, until they move to
+// MQTT GraphQL too.
 export const context: Partial<OperationContext> = {
   url: ENV.VITE_THRS_API_SERVER_URL ?? "/api/thrs/graphql",
 };
@@ -12,7 +12,8 @@ export const client = new Client({
   exchanges: [fetchExchange],
 });
 
-// The MQTT GraphQL API (zero-mqtt-graphql), which thrapp's views and thrsim's pages read from.
+// The MQTT GraphQL API (zero-mqtt-graphql), which thrapp's views and thrsim's pages read from,
+// and thrapp's mimics write parameters and control values to.
 const mqttGraphqlUrl = ENV.VITE_MQTT_GRAPHQL_API_SERVER_URL ?? "/api/mqtt-graphql/graphql";
 
 export const mqttGraphqlContext: Partial<OperationContext> = { url: mqttGraphqlUrl };

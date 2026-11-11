@@ -1,5 +1,5 @@
 import { capitalizeFirst } from "@/modules/common/lib/utils";
-import { isThrsApiModule, QUERIES } from "@/modules/thrapp/lib/consts";
+import { isThrsApiModule } from "@/modules/thrapp/lib/consts";
 import {
   MqttGraphqlModules,
   ThrsDefinitions,
@@ -23,32 +23,27 @@ import { MimicDataProvider, ModuleField } from ".";
 import { useAdvisoryEnabled, useAutomaticMode } from "../../state";
 import { MimicComponentState } from "../components";
 
-const PARAMETER_INPUT_TYPES: Partial<Record<ParametersType, string>> = {
-  [ParametersType.Enabled]: "Boolean!",
-  [ParametersType.Flow]: "Float!",
-  [ParametersType.FlowControl]: "Float!",
-  [ParametersType.Level]: "Float!",
-  [ParametersType.Ratio]: "Float!",
-  [ParametersType.Temperature]: "Float!",
-  [ParametersType.Tuning]: "[Float!]!",
-  [ParametersType.Dutypoint]: "Float!",
-  [ParametersType.dT]: "Float!",
-  [ParametersType.Duration]: "Float!",
-  [ParametersType.Power]: "Float!",
+type ControllerInput = "parameters" | "controlValues";
+
+const INPUT_TYPES: Record<ControllerInput, string> = {
+  parameters: "Parameters",
+  controlValues: "ControlValues",
 };
 
-const CONTROL_INPUT_TYPES: Partial<Record<ControlComponentType, string>> = {
-  [ControlComponentType.Pump]: "PumpInputType!",
-  [ControlComponentType.Valve]: "ValveInputType!",
-  [ControlComponentType.Heatpump]: "HeatPumpInputType!",
-};
-
-// The mutations still go to thrs-api, which has only its own modules.
-const thrsApiQuery = (module: keyof ThrsDefinitions, part: "parameters" | "controlValues") => {
+// A module's controller takes its parameters and control values on the MQTT GraphQL API, each
+// as one input object; the API returns once the parameters are stored and once the AMCS has
+// actuated the control values. Only modules with a controller have them; the API names their
+// input types after the module. The response is not used: the view's query is refreshed instead.
+const controllerMutation = (module: keyof ThrsDefinitions, part: ControllerInput) => {
   if (!isThrsApiModule(module)) {
-    throw new Error(`thrs-api has no module ${module}`);
+    throw new Error(`${module} has no controller`);
   }
-  return QUERIES[module][part];
+  const inputType = `ThrsControl${capitalizeFirst(module)}${INPUT_TYPES[part]}Input`;
+  return gql`
+    mutation ($input: ${inputType}!) {
+      thrs { controller { ${module} { ${part}(input: $input) { __typename } } } }
+    }
+  `;
 };
 
 export const useGraphQLDataProvider = (): MimicDataProvider => {
@@ -118,26 +113,12 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
         ],
     );
 
-  const setParameter = async <Type extends ParametersType, Module extends keyof ThrsDefinitions>(
-    source: ModuleField<Type, Module>,
-    value: ParameterDefinitionMap[Type],
+  const send = async (
+    module: keyof ThrsDefinitions,
+    part: ControllerInput,
+    input: Record<string, unknown>,
   ) => {
-    const inputType = PARAMETER_INPUT_TYPES[source[0]];
-
-    if (!inputType) {
-      throw new Error(`No input type defined for parameter type ${source[0]}`);
-    }
-
-    const mutation = `${source[1]}ParameterSet${capitalizeFirst(source[2])}`;
-    const query = gql`mutation ($input: ${inputType}) {
-          ${mutation}(value: $input) {
-            ${thrsApiQuery(source[1], "parameters")}
-          }
-      }`;
-
-    const result = await mutate(query, {
-      input: value,
-    });
+    const result = await mutate(controllerMutation(module, part), { input });
 
     await refresh();
 
@@ -146,35 +127,23 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
     }
   };
 
-  const setControlValue = async <
-    Type extends ControlComponentType,
-    Module extends keyof ThrsDefinitions,
-  >(
-    source: ModuleField<Type, Module>,
-    value: ControlValues<Type>,
+  const setParameter = <Type extends ParametersType, Module extends keyof ThrsDefinitions>(
+    [_type, module, field]: ModuleField<Type, Module>,
+    value: ParameterDefinitionMap[Type],
+  ) => send(module, "parameters", { [field]: value });
+
+  // Every value is stamped with now, so thrs-control takes it as the newest setpoint.
+  const setControlValue = <Type extends ControlComponentType, Module extends keyof ThrsDefinitions>(
+    [_type, module, field]: ModuleField<Type, Module>,
+    values: ControlValues<Type>,
   ) => {
-    const inputType = CONTROL_INPUT_TYPES[source[0]];
-
-    if (!inputType) {
-      throw new Error(`No input type defined for control type ${source[0]}`);
-    }
-
-    const mutation = `${source[1]}ControlSet${capitalizeFirst(source[2])}`;
-    const query = gql`mutation ($input: ${inputType}) {
-          ${mutation}(value: $input) {
-            ${thrsApiQuery(source[1], "controlValues")}
-          }
-      }`;
-
-    const result = await mutate(query, {
-      input: { ...value, __typename: undefined },
-    });
-
-    await refresh();
-
-    if (result.error) {
-      throw result.error;
-    }
+    const timeStamp = new Date().toISOString();
+    const stamped = Object.fromEntries(
+      Object.entries(values)
+        .filter(([name]) => name !== "__typename")
+        .map(([name, value]) => [name, { value, timeStamp }]),
+    );
+    return send(module, "controlValues", { [field]: stamped });
   };
 
   return {

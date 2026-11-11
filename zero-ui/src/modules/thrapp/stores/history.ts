@@ -5,7 +5,7 @@ import { ChartDataType, TimeSeriesData } from "@/modules/common/types";
 import { DocumentInput, TypedDocumentNode } from "@urql/vue";
 import { useIntervalFn, useLocalStorage } from "@vueuse/core";
 import { ref, shallowRef, watch } from "vue";
-import { client, mqttGraphqlClient, mqttGraphqlContext } from "../graphql/client";
+import { mqttGraphqlClient, mqttGraphqlContext } from "../graphql/client";
 import { ComponentRecord } from "../lib/consts";
 import { MqttGraphqlModules } from "../lib/consts.types";
 import { toThrsModules } from "../lib/mqtt-graphql.utils";
@@ -53,7 +53,7 @@ export const useThrsHistory = defineStore("thrsHistory", () => {
   });
 
   const mutate = (query: DocumentInput, variables: Record<string, unknown>) => {
-    return client.mutation(query, variables).toPromise();
+    return mqttGraphqlClient.mutation(query, variables, mqttGraphqlContext).toPromise();
   };
 
   const getHistory = <Type extends ChartDataType = ChartDataType>(
