@@ -109,7 +109,11 @@ pub fn build_schema(
         mutation.as_ref().map(Object::type_name),
         None,
     )
-    .register(json_scalar());
+    .register(json_scalar())
+    .register(date_time_scalar())
+    .register(date_scalar())
+    .register(time_scalar())
+    .register(duration_scalar());
     known_types
         .into_values()
         .chain([query.into()])
@@ -443,6 +447,10 @@ fn graphql_type_ref(name_prefix: &str, field_type: &FieldType) -> (TypeRef, Vec<
             (TypeRef::List(Box::new(element)), types)
         }
         FieldType::Json => (TypeRef::named(JSON_SCALAR), vec![]),
+        FieldType::DateTime => (TypeRef::named(DATE_TIME_SCALAR), vec![]),
+        FieldType::Date => (TypeRef::named(DATE_SCALAR), vec![]),
+        FieldType::Time => (TypeRef::named(TIME_SCALAR), vec![]),
+        FieldType::Duration => (TypeRef::named(DURATION_SCALAR), vec![]),
     }
 }
 
@@ -456,6 +464,33 @@ fn json_scalar() -> Scalar {
         .description("Any JSON value, for a list whose element type the Spec does not declare")
 }
 
+/// The scalars for strings in a date or time `format`. Like [`JSON_SCALAR`],
+/// their values pass through as the strings on the wire; inputs are
+/// validated against the topic's JSON Schema before publishing.
+const DATE_TIME_SCALAR: &str = "DateTime";
+const DATE_SCALAR: &str = "Date";
+const TIME_SCALAR: &str = "Time";
+const DURATION_SCALAR: &str = "Duration";
+
+/// The [`DATE_TIME_SCALAR`] type, for `format: date-time`.
+fn date_time_scalar() -> Scalar {
+    Scalar::new(DATE_TIME_SCALAR).description("An RFC 3339 timestamp, such as 2026-11-10T09:30:00Z")
+}
+
+/// The [`DATE_SCALAR`] type, for `format: date`.
+fn date_scalar() -> Scalar {
+    Scalar::new(DATE_SCALAR).description("An RFC 3339 full-date, such as 2026-11-10")
+}
+
+/// The [`TIME_SCALAR`] type, for `format: time`.
+fn time_scalar() -> Scalar {
+    Scalar::new(TIME_SCALAR).description("An RFC 3339 full-time, such as 09:30:00Z")
+}
+
+/// The [`DURATION_SCALAR`] type, for `format: duration`.
+fn duration_scalar() -> Scalar {
+    Scalar::new(DURATION_SCALAR).description("An ISO 8601 duration, such as PT1M30S")
+}
 #[cfg(test)]
 mod tests {
     use super::*;
