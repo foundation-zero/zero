@@ -5,7 +5,7 @@ ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
 
-COPY zero-modbus-bridge/ /app/zero-modbus-bridge/
+COPY packages/py/zero-modbus-bridge/ /app/packages/py/zero-modbus-bridge/
 COPY zero-power-tags/pyproject.toml zero-power-tags/uv.lock zero-power-tags/README.md ./zero-power-tags/
 COPY zero-power-tags/src ./zero-power-tags/src
 

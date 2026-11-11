@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - zero-mqtt-graphql/**
-      - zero-modbus-bridge/**
+      - packages/py/zero-modbus-bridge/**
       - zero-termodinamica/**
       - zero-power-tags/**
       - zero-hull-temperature/**
@@ -17,7 +17,7 @@ on:
       - main
     paths:
       - zero-mqtt-graphql/**
-      - zero-modbus-bridge/**
+      - packages/py/zero-modbus-bridge/**
       - zero-termodinamica/**
       - zero-power-tags/**
       - zero-hull-temperature/**

@@ -5,7 +5,7 @@ ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
 
-COPY zero-modbus-bridge/ /app/zero-modbus-bridge/
+COPY packages/py/zero-modbus-bridge/ /app/packages/py/zero-modbus-bridge/
 COPY zero-termodinamica/pyproject.toml zero-termodinamica/uv.lock zero-termodinamica/README.md ./zero-termodinamica/
 COPY zero-termodinamica/src ./zero-termodinamica/src
 

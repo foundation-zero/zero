@@ -31,7 +31,7 @@ test = [
 default-groups = ["dev", "test"]
 
 [tool.uv.sources]
-zero-modbus-bridge = { path = "../zero-modbus-bridge", editable = true }
+zero-modbus-bridge = { path = "../packages/py/zero-modbus-bridge", editable = true }
 pymodbus-repl = { git = "https://github.com/pymodbus-dev/repl" }
 
 [tool.ruff]

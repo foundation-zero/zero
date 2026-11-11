@@ -72,4 +72,4 @@ packages = ["zero_hull_temperature"]
 default-groups = ["dev", "test"]
 
 [tool.uv.sources]
-zero-modbus-bridge = { path = "../zero-modbus-bridge", editable = true }
+zero-modbus-bridge = { path = "../packages/py/zero-modbus-bridge", editable = true }
