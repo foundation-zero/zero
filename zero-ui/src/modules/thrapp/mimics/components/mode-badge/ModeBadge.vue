@@ -28,7 +28,7 @@ const icons: Partial<Record<ModeBadgeMode, Component>> = {
 
 <template>
   <div
-    class="text-inverse-foreground bg-attention inline-flex items-center gap-1 px-4 font-medium text-nowrap transition-colors"
+    class="text-inverse-foreground bg-attention inline-flex items-center gap-1 font-medium text-nowrap transition-colors"
     :style="{
       backgroundColor: color,
     }"

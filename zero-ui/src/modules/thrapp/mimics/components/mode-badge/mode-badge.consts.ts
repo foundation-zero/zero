@@ -25,12 +25,14 @@ export const enum ModeBadgeSize {
   Asset = "asset",
   Circuit = "circuit",
   Tank = "tank",
+  Navigation = "navigation",
 }
 
 export const SIZE_ATTRIBUTES: Record<ModeBadgeSize, string> = {
-  [ModeBadgeSize.Asset]: "rounded-lg py-0.5 text-xs",
-  [ModeBadgeSize.Tank]: "rounded-lg py-0.5 text-xs",
-  [ModeBadgeSize.Circuit]: "rounded-xl py-0.5 text-sm",
+  [ModeBadgeSize.Asset]: "rounded-lg px-4 py-0.5 text-xs",
+  [ModeBadgeSize.Tank]: "rounded-lg px-4 py-0.5 text-xs",
+  [ModeBadgeSize.Circuit]: "rounded-xl px-4 py-0.5 text-sm",
+  [ModeBadgeSize.Navigation]: "rounded-xl px-3 py-2 text-base leading-4",
 };
 
 export const MODE_COLORS: Record<ModeBadgeMode, string> = {

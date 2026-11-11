@@ -1,17 +1,23 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import InfoTooltip from "@/modules/common/components/info-tooltip/InfoTooltip.vue";
-import { ref } from "vue";
+import { cn } from "@/modules/common/lib/utils";
+import { HTMLAttributes, ref } from "vue";
 import { useI18n } from "vue-i18n";
+
+const props = defineProps<{ class?: HTMLAttributes["class"] }>();
 
 const { tm, t } = useI18n();
 const isOpen = ref(false);
 </script>
 
 <template>
-  <InfoTooltip v-model:open="isOpen">
+  <InfoTooltip
+    v-model:open="isOpen"
+    trigger-class="items-center"
+  >
     <template #trigger>
-      <span class="flex justify-center text-sm">
+      <span :class="cn('flex justify-center text-sm', props.class)">
         {{ t("thrapp.dialogs.advisoryModeDisabled.title") }}
       </span>
     </template>

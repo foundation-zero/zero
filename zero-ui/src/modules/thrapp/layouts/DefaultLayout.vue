@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ThrappHeader } from "@/modules/thrapp/components/navigation";
+import { getControlModule } from "@/modules/thrapp/components/sub-navigation";
 import { client } from "@/modules/thrapp/graphql/client";
 import { MimicKey } from "@/modules/thrapp/router/mimics";
 import { provideClient } from "@urql/vue";
@@ -24,7 +25,12 @@ const modules: Array<MimicKey> = [
 ];
 const currentTabKey = computed(() => currentRoute.params.module as MimicKey);
 
-provide("currentModule", currentTabKey);
+// The header and the page share the control module: sub-modules (e.g. the PVT biminis) are
+// controlled through their parent module.
+provide(
+  "currentModule",
+  computed(() => currentTabKey.value && getControlModule(currentTabKey.value)),
+);
 </script>
 
 <template>
