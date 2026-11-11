@@ -527,7 +527,7 @@ export type HeatPumpSensorDefinition = SensorDefinition<SensorComponentType.Heat
 export type PvtSensorDefinition = SensorDefinition<SensorComponentType.Pvt>;
 export type CalculatedFlowSensorDefinition = SensorDefinition<SensorComponentType.CalculatedFlow>;
 
-export type SensorDefinitions = SchemaDefinitions<SensorDefinition>;
+export type SensorDefinitions = SchemaDefinitions<SensorDefinition | ValveSensorDefinition>;
 
 export type SensorDefinitionMap = {
   [SensorComponentType.Temperature]: TemperatureSensor;
