@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import math
 import time
 from collections.abc import Callable
 from secrets import token_hex
@@ -68,7 +69,9 @@ def broker_check(broker: MQTTBroker) -> Check:
     """Ready while ``broker`` answers a ping."""
 
     async def check() -> str | None:
-        return None if await broker.ping() else "ping failed"
+        # Health's check timeout bounds the ping; FastStream's own 5 s limit
+        # would race it and flip the reason between two texts.
+        return None if await broker.ping(timeout=math.inf) else "ping failed"
 
     return check
 
