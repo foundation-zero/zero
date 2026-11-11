@@ -29,7 +29,6 @@ use async_graphql::dynamic::{
     Enum, Field, FieldValue, Object, Scalar, Schema, SchemaBuilder, Type, TypeRef,
 };
 use log::{info, warn};
-use serde_json::Value as JsonValue;
 
 use crate::graphql::groups::register_group_queries;
 use crate::graphql::mutations::mutation_leaf;
@@ -305,32 +304,6 @@ fn branch_field(name: &str, type_name: &str) -> Field {
             ))))
         })
     })
-}
-
-/// Convert a JSON value to an async-graphql Value.
-fn json_to_graphql_value(val: &JsonValue) -> GraphQlValue {
-    match val {
-        JsonValue::Null => GraphQlValue::Null,
-        JsonValue::Bool(b) => GraphQlValue::Boolean(*b),
-        JsonValue::Number(n) => {
-            if let Some(i) = n.as_i64() {
-                GraphQlValue::Number(i.into())
-            } else if let Some(f) = n.as_f64() {
-                GraphQlValue::Number(async_graphql::Number::from_f64(f).unwrap_or_else(|| 0.into()))
-            } else {
-                GraphQlValue::Null
-            }
-        }
-        JsonValue::String(s) => GraphQlValue::String(s.clone()),
-        JsonValue::Array(arr) => {
-            GraphQlValue::List(arr.iter().map(json_to_graphql_value).collect())
-        }
-        JsonValue::Object(map) => GraphQlValue::Object(
-            map.iter()
-                .map(|(k, v)| (Name::new(k.clone()), json_to_graphql_value(v)))
-                .collect(),
-        ),
-    }
 }
 
 /// The type name of a payload object, or of an enum, named `name` in a

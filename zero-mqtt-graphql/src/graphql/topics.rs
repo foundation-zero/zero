@@ -1,9 +1,10 @@
 use std::sync::Arc;
 
+use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{Field, TypeRef};
 
 use crate::cache::TopicCache;
-use crate::graphql::{json_to_graphql_value, non_null};
+use crate::graphql::non_null;
 
 /// The `<Topic>` query field, of the payload object type `type_name`:
 /// resolves to the topic's whole cached MQTT payload object. The object's
@@ -21,9 +22,8 @@ pub(super) fn payload_query_field(
     Field::new(name, obj_ref, move |_ctx| {
         let val = cache_for_query.get(&topic);
         async_graphql::dynamic::FieldFuture::new(async move {
-            Ok(non_null(
-                val.map(|json_val| json_to_graphql_value(&json_val)),
-            ))
+            let value = val.map(GraphQlValue::from_json).transpose()?;
+            Ok(non_null(value))
         })
     })
 }
@@ -169,6 +169,32 @@ mod tests {
         assert_eq!(data["test"]["channel"]["value"], json!(23.5));
         assert_eq!(data["test"]["channel"]["ok"], json!(true));
         assert_eq!(data["test"]["channel"]["label"], json!("hello"));
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_query_returns_integers_above_i64_exactly() {
+        // A `JSON` field, as `Int` is 32-bit and `Float` would round.
+        let topics = vec![TopicDef {
+            topic: "test/channel".to_string(),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from([("counter".to_string(), FieldType::Json)]),
+            }),
+            operation: Direction::Send,
+            ttl_secs: None,
+            setter: None,
+            kind: TopicKind::Single,
+        }];
+
+        let cache = Arc::new(TopicCache::new());
+        cache.insert("test/channel", json!({"counter": u64::MAX}));
+        let schema = build_schema(&api(topics), &cache, None).unwrap();
+
+        let response = schema.execute("{ test { channel { counter } } }").await;
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        let data: serde_json::Value = response.data.into_json().unwrap();
+        assert_eq!(data["test"]["channel"]["counter"], json!(u64::MAX));
     }
 
     #[tokio::test]

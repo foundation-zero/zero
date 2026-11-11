@@ -2,9 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::iter::once;
 use std::sync::Arc;
 
-use crate::graphql::{
-    json_to_graphql_value, non_null, path_type_name, payload_object, payload_type_name,
-};
+use crate::graphql::{non_null, path_type_name, payload_object, payload_type_name};
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{Field, FieldValue, InputValue, Object, Type, TypeRef};
@@ -259,9 +257,8 @@ fn register_bucket_queries(
             let cache = cache_for_list.clone();
             async_graphql::dynamic::FieldFuture::new(async move {
                 let values = bucket_rows_json(&buckets, &value_meta_json, &cache, &rows_field);
-                Ok(Some(FieldValue::value(json_to_graphql_value(
-                    &JsonValue::Array(values),
-                ))))
+                let values = GraphQlValue::from_json(JsonValue::Array(values))?;
+                Ok(Some(FieldValue::value(values)))
             })
         },
     );
@@ -282,10 +279,12 @@ fn register_bucket_queries(
                 Some(rows) => {
                     let single = BTreeMap::from([(id.to_string(), rows.clone())]);
                     let values = bucket_rows_json(&single, &value_meta_json, &cache, &rows_field);
-                    Ok(values
+                    let bucket = values
                         .into_iter()
                         .next()
-                        .map(|bucket| FieldValue::value(json_to_graphql_value(&bucket))))
+                        .map(GraphQlValue::from_json)
+                        .transpose()?;
+                    Ok(bucket.map(FieldValue::value))
                 }
                 None => Ok(None),
             }
@@ -336,17 +335,17 @@ fn group_query_field(
             let value_meta_json = value_meta_json.clone();
             let cache = cache.clone();
             async_graphql::dynamic::FieldFuture::new(async move {
-                let rows: Vec<GraphQlValue> = entries
+                let rows = entries
                     .iter()
                     .map(|(topic, meta)| {
-                        json_to_graphql_value(&group_row(
+                        GraphQlValue::from_json(group_row(
                             topic,
                             meta,
                             &cache,
                             Some(&value_meta_json),
                         ))
                     })
-                    .collect();
+                    .collect::<Result<Vec<_>, _>>()?;
                 Ok(Some(FieldValue::value(GraphQlValue::List(rows))))
             })
         },
