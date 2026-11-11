@@ -22,6 +22,7 @@ _Avoid_: Flat schema, topic fields
 
 **Topic**:
 A Send operation on a single, fixed MQTT topic, readable as one current value.
+In code, Topics and Groups are both a `TopicDef`, told apart by its `TopicKind`.
 _Avoid_: Channel, field, leaf
 
 **Group**:

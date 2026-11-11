@@ -2,29 +2,8 @@ use std::sync::Arc;
 
 use async_graphql::dynamic::{Field, Object, TypeRef};
 
-use crate::api_model::TopicGroupDef;
-use crate::graphql::json_to_graphql_value;
-use crate::roas_asyncapi::OperationAction;
-use crate::{api_model::TopicDef, cache::TopicCache};
-
-/// Topics that belong in the Query tree:
-/// Send operations with payload fields on a concrete address.
-/// Addresses with MQTT wildcards (`+`, `#`) cannot form a GraphQL path.
-pub(super) fn queryable_topic(topic_def: &TopicDef) -> bool {
-    !topic_def.fields.is_empty()
-        && topic_def.action == OperationAction::Send
-        && !topic_def
-            .topic
-            .split('/')
-            .any(|level| level == "+" || level == "#")
-}
-
-/// Groups that belong in the Query tree:
-/// Send operations with payload fields on a concrete address.
-/// Addresses with MQTT wildcards (`+`, `#`) cannot form a GraphQL path.
-pub(super) fn queryable_group(topic_def: &TopicGroupDef) -> bool {
-    !topic_def.fields.is_empty() && topic_def.action == OperationAction::Send
-}
+use crate::cache::TopicCache;
+use crate::graphql::{json_to_graphql_value, non_null};
 
 /// The `<Topic>` query field: resolves to the topic's whole cached MQTT
 /// payload object. The object's scalar subfields project from this value
@@ -42,7 +21,9 @@ pub(super) fn payload_query_field(
     Field::new(name, obj_ref, move |_ctx| {
         let val = cache_for_query.get(&topic);
         async_graphql::dynamic::FieldFuture::new(async move {
-            Ok(val.map(|json_val| json_to_graphql_value(&json_val)))
+            Ok(non_null(
+                val.map(|json_val| json_to_graphql_value(&json_val)),
+            ))
         })
     })
 }
@@ -52,36 +33,34 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, ApiModel, GraphqlType};
+    use crate::api_model::{Api, Direction, FieldType, Payload, Spec, TopicDef, TopicKind};
     use crate::graphql::build_schema;
     use crate::http::router;
-    use crate::roas_asyncapi::OperationAction;
     use crate::topic_map::TopicMap;
     use axum::http::StatusCode;
     use serde_json::json;
     use tower::ServiceExt;
 
     fn api(topics: Vec<TopicDef>) -> Api {
-        Api::new(vec![ApiModel::new(
-            String::new(),
-            TopicMap::new(),
-            topics,
-            vec![],
-            TopicMap::new(),
-        )])
+        Api::new(vec![
+            Spec::new(String::new(), topics, TopicMap::new()).unwrap(),
+        ])
     }
 
     #[test_log::test]
     fn test_build_schema_for_one_topic() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
-            fields: BTreeMap::from_iter(vec![
-                ("value".to_string(), GraphqlType::Float),
-                ("ok".to_string(), GraphqlType::Boolean),
-            ]),
-            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![
+                    ("value".to_string(), FieldType::Float),
+                    ("ok".to_string(), FieldType::Boolean),
+                ]),
+            }),
+            operation: Direction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         }];
 
         let cache = Arc::new(TopicCache::new());
@@ -93,10 +72,13 @@ mod tests {
     fn test_digit_prefixed_topic_is_valid() {
         let topics = vec![TopicDef {
             topic: "123/topic".to_string(),
-            fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
-            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![("x".to_string(), FieldType::Float)]),
+            }),
+            operation: Direction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         }];
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
@@ -110,10 +92,13 @@ mod tests {
         // it stays visible via `topics` but has no query type.
         let topics = vec![TopicDef {
             topic: "empty/topic".to_string(),
-            fields: BTreeMap::new(),
-            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::new(),
+            }),
+            operation: Direction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         }];
 
         let err = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap_err();
@@ -124,15 +109,18 @@ mod tests {
     fn test_field_types_in_schema() {
         let topics = vec![TopicDef {
             topic: "t".to_string(),
-            fields: BTreeMap::from_iter(vec![
-                ("f_float".to_string(), GraphqlType::Float),
-                ("f_int".to_string(), GraphqlType::Int),
-                ("f_bool".to_string(), GraphqlType::Boolean),
-                ("f_str".to_string(), GraphqlType::String),
-            ]),
-            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![
+                    ("f_float".to_string(), FieldType::Float),
+                    ("f_int".to_string(), FieldType::Int),
+                    ("f_bool".to_string(), FieldType::Boolean),
+                    ("f_str".to_string(), FieldType::String),
+                ]),
+            }),
+            operation: Direction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         }];
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
@@ -148,14 +136,17 @@ mod tests {
     async fn test_query_returns_cached_values() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
-            fields: BTreeMap::from_iter(vec![
-                ("value".to_string(), GraphqlType::Float),
-                ("ok".to_string(), GraphqlType::Boolean),
-                ("label".to_string(), GraphqlType::String),
-            ]),
-            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![
+                    ("value".to_string(), FieldType::Float),
+                    ("ok".to_string(), FieldType::Boolean),
+                    ("label".to_string(), FieldType::String),
+                ]),
+            }),
+            operation: Direction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         }];
 
         let cache = Arc::new(TopicCache::new());
@@ -180,10 +171,13 @@ mod tests {
     async fn test_query_returns_null_for_missing_topic() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
-            fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
-            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
+            }),
+            operation: Direction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         }];
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
@@ -196,13 +190,40 @@ mod tests {
 
     #[tokio::test]
     #[test_log::test]
+    async fn test_query_returns_null_for_null_payload() {
+        let topics = vec![TopicDef {
+            topic: "test/channel".to_string(),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
+            }),
+            operation: Direction::Send,
+            ttl_secs: None,
+            kind: TopicKind::Single,
+        }];
+
+        let cache = Arc::new(TopicCache::new());
+        cache.insert("test/channel", json!(null));
+        let schema = build_schema(&api(topics), &cache).unwrap();
+
+        let response = schema.execute("{ test { channel { value } } }").await;
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        let data: serde_json::Value = response.data.into_json().unwrap();
+        assert_eq!(data["test"]["channel"], json!(null));
+    }
+
+    #[tokio::test]
+    #[test_log::test]
     async fn test_query_returns_null_for_missing_field() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
-            fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
-            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
+            }),
+            operation: Direction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         }];
 
         let cache = Arc::new(TopicCache::new());
@@ -220,10 +241,13 @@ mod tests {
     async fn test_query_unknown_field_errors() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
-            fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
-            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
+            }),
+            operation: Direction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         }];
 
         let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
@@ -238,17 +262,23 @@ mod tests {
         let topics = vec![
             TopicDef {
                 topic: "a/b".to_string(),
-                fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
-                payload_schema_ref: Some("payload1".to_string()),
-                action: OperationAction::Send,
+                payload: Some(Payload {
+                    name: "payload1".to_string(),
+                    fields: BTreeMap::from_iter(vec![("x".to_string(), FieldType::Float)]),
+                }),
+                operation: Direction::Send,
                 ttl_secs: None,
+                kind: TopicKind::Single,
             },
             TopicDef {
                 topic: "a/c".to_string(),
-                fields: BTreeMap::from_iter(vec![("y".to_string(), GraphqlType::Float)]),
-                payload_schema_ref: Some("payload2".to_string()),
-                action: OperationAction::Send,
+                payload: Some(Payload {
+                    name: "payload2".to_string(),
+                    fields: BTreeMap::from_iter(vec![("y".to_string(), FieldType::Float)]),
+                }),
+                operation: Direction::Send,
                 ttl_secs: None,
+                kind: TopicKind::Single,
             },
         ];
 
@@ -270,10 +300,13 @@ mod tests {
     async fn test_graphql_endpoint_returns_cached_values() {
         let topics = vec![TopicDef {
             topic: "test/channel".to_string(),
-            fields: BTreeMap::from_iter(vec![("value".to_string(), GraphqlType::Float)]),
-            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
-            action: OperationAction::Send,
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
+            }),
+            operation: Direction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         }];
 
         let cache = Arc::new(TopicCache::new());

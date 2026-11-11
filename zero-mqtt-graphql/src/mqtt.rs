@@ -321,45 +321,46 @@ fn flatten_payload(value: Value) -> Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{Api, ApiModel, GraphqlType, TopicDef, TopicGroupDef};
-    use crate::roas_asyncapi::OperationAction;
+    use crate::api_model::{
+        Api, Direction, FieldType, GroupDef, Payload, Spec, TopicDef, TopicKind,
+    };
     use serde_json::json;
     use std::collections::BTreeMap;
 
-    fn groups_with_schema(pattern: &str, schema_ref: &str) -> Vec<TopicGroupDef> {
-        vec![TopicGroupDef {
-            group: "power-tags".to_string(),
-            pattern: pattern.to_string(),
-            fields: BTreeMap::from_iter(vec![(
-                "active_power_total".to_string(),
-                GraphqlType::Float,
-            )]),
-            payload_schema_ref: Some(schema_ref.to_string()),
-            value_extensions: BTreeMap::new(),
+    fn group(topic: &str) -> Vec<TopicDef> {
+        vec![TopicDef {
+            topic: topic.to_string(),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from_iter(vec![(
+                    "active_power_total".to_string(),
+                    FieldType::Float,
+                )]),
+            }),
             ttl_secs: None,
-            action: OperationAction::Send,
-            group_by: String::new(),
-            topic_metadata: BTreeMap::new(),
+            operation: Direction::Send,
+            kind: TopicKind::Group(GroupDef {
+                field_attributes: BTreeMap::new(),
+                group_by: String::new(),
+                topic_metadata: BTreeMap::new(),
+            }),
         }]
     }
 
-    fn api(
-        topics: Vec<TopicDef>,
-        groups: Vec<TopicGroupDef>,
-        validators: TopicMap<Validator>,
-    ) -> Api {
-        Api::new(vec![ApiModel::new(
-            String::new(),
-            TopicMap::new(),
-            topics,
-            groups,
-            validators,
-        )])
+    fn api(topics: Vec<TopicDef>, groups: Vec<TopicDef>, validators: TopicMap<Validator>) -> Api {
+        Api::new(vec![
+            Spec::new(
+                String::new(),
+                topics.into_iter().chain(groups).collect(),
+                validators,
+            )
+            .unwrap(),
+        ])
     }
 
     /// Regression test for the gap where payloads on parametrized topic
     /// group patterns (e.g. `power-tags/+/+`) were never validated: no
-    /// validator was ever compiled from `TopicGroupDef`, and the exact-key
+    /// validator was ever compiled for a Group, and the exact-key
     /// lookup wouldn't have matched a concrete topic against a pattern key
     /// anyway.
     #[test_log::test]
@@ -370,11 +371,7 @@ mod tests {
         .unwrap();
         let mut validators = TopicMap::new();
         validators.insert("power-tags/+/+".to_string(), validator);
-        let api = api(
-            vec![],
-            groups_with_schema("power-tags/+/+", "/"),
-            validators,
-        );
+        let api = api(vec![], group("power-tags/+/+"), validators);
         let sub = test_subscriber(&api);
 
         // Matches: concrete topic under the group's wildcard pattern.
@@ -406,11 +403,7 @@ mod tests {
         let mut validators = TopicMap::new();
         validators.insert("power-tags/+/+".to_string(), validator);
 
-        let api = api(
-            vec![],
-            groups_with_schema("power-tags/+/+", "/"),
-            validators,
-        );
+        let api = api(vec![], group("power-tags/+/+"), validators);
         let sub = test_subscriber(&api);
 
         assert_eq!(
@@ -447,19 +440,12 @@ mod tests {
 
         let topic = TopicDef {
             topic: "power-tags/10P1/breaker3".to_string(),
-            fields: BTreeMap::from_iter(vec![(
-                "active_power_total".to_string(),
-                GraphqlType::Float,
-            )]),
-            payload_schema_ref: None,
-            action: OperationAction::Send,
+            payload: None,
+            operation: Direction::Send,
             ttl_secs: None,
+            kind: TopicKind::Single,
         };
-        let api = api(
-            vec![topic],
-            groups_with_schema("power-tags/+/+", "/"),
-            validators,
-        );
+        let api = api(vec![topic], group("power-tags/+/+"), validators);
         let sub = test_subscriber(&api);
 
         // Fails the exact-topic schema (missing required field) even though
@@ -480,7 +466,7 @@ mod tests {
         let mut validators = TopicMap::new();
         validators.insert("logs/#".to_string(), validator);
 
-        let api = api(vec![], groups_with_schema("logs/#", "/"), validators);
+        let api = api(vec![], group("logs/#"), validators);
         let sub = test_subscriber(&api);
 
         assert_eq!(
