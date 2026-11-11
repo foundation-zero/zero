@@ -83,15 +83,6 @@ def _mqtt_is_available(host: str, port: int, timeout_s: float = 0.2) -> bool:
         return False
 
 
-@pytest.hookimpl(tryfirst=True)  # before xdist's own hook reads the groups
-def pytest_collection_modifyitems(items: list[pytest.Item]):
-    # MQTT tests share one broker and fixed topic prefixes, so under xdist they must run on a
-    # single worker or they read each other's messages (needs `--dist loadgroup`).
-    for item in items:
-        if "mqtt" in item.keywords:
-            item.add_marker(pytest.mark.xdist_group("mqtt"))
-
-
 def pytest_runtest_setup(item):
     if "mqtt" not in item.keywords:
         return

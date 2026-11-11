@@ -62,6 +62,9 @@ jobs:
       - run: just test --cov-report=xml -v
         working-directory: zero-thrs-control
 
+      - run: just test_mqtt --cov-append --cov-report=xml -v
+        working-directory: zero-thrs-control
+
       - name: Run IO tests (non-blocking)
         run: just test_io --cov-append --cov-report=xml -v
         working-directory: zero-thrs-control
