@@ -133,6 +133,8 @@ fn topic_from_channel(
         payload: message_payload.map(|m| m.payload),
         ttl_secs: ttl_for_channel(channel_ref, channel, doc),
         kind,
+        // Paired with its Receive topic when the Spec is built.
+        setter: None,
     })
 }
 

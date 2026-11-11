@@ -74,6 +74,10 @@ spec:
               value: {{ .Values.listenPort | quote }}
             - name: DEFAULT_TTL_SECS
               value: {{ .Values.defaultTtlSecs | default 300 | quote }}
+            - name: ENABLE_MUTATIONS
+              value: {{ .Values.mutations.enabled | quote }}
+            - name: MUTATION_TIMEOUT_SECS
+              value: {{ .Values.mutations.timeoutSecs | default 10 | quote }}
           ports:
             {{- if ne (.Values.command | default "serve") "listen" }}
             - name: http

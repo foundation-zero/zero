@@ -1,10 +1,12 @@
 use std::future;
 use std::net::SocketAddr;
 use std::sync::Arc;
+use std::time::Duration;
 
 use anyhow::{Context, Result, bail};
 use clap::Parser;
-use log::{error, info};
+use log::{error, info, warn};
+use rumqttc::{AsyncClient, MqttOptions};
 use std::io::Error;
 use tokio::net::TcpListener;
 use tokio::sync::oneshot;
@@ -16,7 +18,7 @@ use zero_mqtt_graphql::api_model::Api;
 use zero_mqtt_graphql::asyncapi::load_specs;
 use zero_mqtt_graphql::cache::{TopicCache, spawn_eviction};
 use zero_mqtt_graphql::config::AppConfig;
-use zero_mqtt_graphql::graphql::build_schema;
+use zero_mqtt_graphql::graphql::{Mutations, build_schema};
 use zero_mqtt_graphql::http::router;
 use zero_mqtt_graphql::mqtt::{MqttConnection, MqttSubscriber};
 
@@ -66,28 +68,49 @@ async fn main() -> Result<()> {
 
     if api.is_empty() {
         info!(
-            "No queryable topics found in spec directory '{}'",
+            "No queryable or settable topics found in spec directory '{}'",
             cli.spec_dir
         );
     }
 
     match command {
-        Command::Validate => validate_command(&api)?,
-        Command::PrintSchema { output } => export_sdl(&api, output.as_deref())?,
+        Command::Validate => validate_command(&api, offline_mutations(&config).as_ref())?,
+        Command::PrintSchema { output } => {
+            export_sdl(&api, offline_mutations(&config).as_ref(), output.as_deref())?;
+        }
         Command::Listen => run_listen_only(&api, config).await?,
         Command::Serve => run_serve(config, &api).await?,
     }
     Ok(())
 }
 
+/// Mutations publishing through `client`, or `None` unless enabled in config.
+fn mutations(config: &AppConfig, client: AsyncClient) -> Option<Mutations> {
+    if !config.enable_mutations {
+        return None;
+    }
+    warn!("Mutations are enabled: GraphQL clients can publish to Receive Topics");
+    Some(Mutations {
+        publisher: Arc::new(client),
+        timeout: Duration::from_secs(config.mutation_timeout_secs),
+    })
+}
+
+/// Mutations for commands that only build the schema: their client is never
+/// connected, so publishing fails.
+fn offline_mutations(config: &AppConfig) -> Option<Mutations> {
+    let options = MqttOptions::new("zero-mqtt-graphql-offline", "localhost", 1883);
+    mutations(config, AsyncClient::new(options, 1).0)
+}
+
 /// Strict validation for the `validate` subcommand: a missing or malformed
 /// metadata file must fail so CI catches it (serve/listen stay lenient).
-fn validate_command(api: &Api) -> Result<()> {
+fn validate_command(api: &Api, mutations: Option<&Mutations>) -> Result<()> {
     println!("Validating the graphql schema...");
 
     let cache = Arc::new(TopicCache::new());
 
-    let _schema = zero_mqtt_graphql::graphql::build_schema(api, &cache)?;
+    let _schema = build_schema(api, &cache, mutations)?;
 
     println!("Validated — the GraphQL schema builds");
     Ok(())
@@ -100,9 +123,10 @@ async fn run_serve(config: AppConfig, api: &Api) -> Result<()> {
     let cache = Arc::new(TopicCache::with_ttl(config.default_ttl_secs, api.ttl_map()));
     spawn_eviction(cache.clone());
 
-    let mut mqtt = spawn_mqtt_subscriber(&config, api, &cache)?;
+    let (mut mqtt, client) = spawn_mqtt_subscriber(&config, api, &cache)?.unzip();
+    let mutations = client.and_then(|client| mutations(&config, client));
 
-    let schema = build_schema(api, &cache)?;
+    let schema = build_schema(api, &cache, mutations.as_ref())?;
     let addr = SocketAddr::from(([0, 0, 0, 0], config.listen_port));
     info!("Listening on http://{addr}");
     let listener = TcpListener::bind(addr).await?;
@@ -155,14 +179,15 @@ async fn shutdown_signal() {
 /// Subscribe the MQTT subscriber to every concrete topic and group pattern.
 ///
 /// Returns `None` without touching MQTT when there is nothing to subscribe
-/// to; otherwise the returned receiver fires once the subscriber exits.
+/// to and Mutations are off; otherwise the returned receiver fires once the
+/// subscriber exits, and the client publishes over its connection.
 fn spawn_mqtt_subscriber(
     config: &AppConfig,
     api: &Api,
     cache: &Arc<TopicCache>,
-) -> Result<Option<MqttTask>> {
+) -> Result<Option<(MqttTask, AsyncClient)>> {
     let mqtt_topics: Vec<String> = api.subscribe_topics();
-    if mqtt_topics.is_empty() {
+    if mqtt_topics.is_empty() && !config.enable_mutations {
         info!("No MQTT topics to subscribe to");
         return Ok(None);
     }
@@ -176,7 +201,8 @@ fn spawn_mqtt_subscriber(
     let mut sub =
         MqttSubscriber::new_with_mode(&connection, cache.clone(), false, api.validators())?;
     sub.set_pending_subscriptions(&mqtt_topics);
-    Ok(Some(spawn_subscriber(sub)))
+    let client = sub.client();
+    Ok(Some((spawn_subscriber(sub), client)))
 }
 
 /// Spawn a prepared subscriber, returning its task handle plus its exit
@@ -264,11 +290,11 @@ async fn run_listen_only(api: &Api, config: AppConfig) -> Result<()> {
 ///
 /// Used by the `print-schema` subcommand so the SDL can be exported for
 /// client codegen without starting the server.
-fn export_sdl(api: &Api, output: Option<&str>) -> Result<()> {
+fn export_sdl(api: &Api, mutations: Option<&Mutations>, output: Option<&str>) -> Result<()> {
     info!("Exporting graphql schema sdl.");
 
     let cache = Arc::new(TopicCache::new());
-    let schema = build_schema(api, &cache)?;
+    let schema = build_schema(api, &cache, mutations)?;
     let sdl = schema.sdl();
     match output {
         Some(path) => {
@@ -299,6 +325,7 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         }];
 
@@ -314,17 +341,17 @@ mod tests {
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join("schema.graphql");
 
-        export_sdl(&sample_api(), path.to_str()).unwrap();
+        export_sdl(&sample_api(), None, path.to_str()).unwrap();
 
         let sdl = std::fs::read_to_string(&path).unwrap();
         assert!(sdl.contains("type Query"), "{sdl}");
-        assert!(sdl.contains("test: SchemaTest\n"), "{sdl}");
+        assert!(sdl.contains("test: QueryTest\n"), "{sdl}");
 
         let _ = std::fs::remove_dir_all(&dir);
     }
 
     #[test_log::test]
     fn test_export_sdl_stdout_does_not_fail() {
-        export_sdl(&sample_api(), None).unwrap();
+        export_sdl(&sample_api(), None, None).unwrap();
     }
 }

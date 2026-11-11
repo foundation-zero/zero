@@ -1,21 +1,21 @@
 use std::sync::Arc;
 
-use async_graphql::dynamic::{Field, Object, TypeRef};
+use async_graphql::dynamic::{Field, TypeRef};
 
 use crate::cache::TopicCache;
 use crate::graphql::{json_to_graphql_value, non_null};
 
-/// The `<Topic>` query field: resolves to the topic's whole cached MQTT
-/// payload object. The object's scalar subfields project from this value
-/// (see [`payload_field`]), so the payload is read from the cache exactly
-/// once per query.
+/// The `<Topic>` query field, of the payload object type `type_name`:
+/// resolves to the topic's whole cached MQTT payload object. The object's
+/// scalar subfields project from this value (see [`payload_field`]), so the
+/// payload is read from the cache exactly once per query.
 pub(super) fn payload_query_field(
     name: &str,
     topic: &str,
-    graphql_type: &Object,
+    type_name: &str,
     cache: &Arc<TopicCache>,
 ) -> Field {
-    let obj_ref = TypeRef::named(graphql_type.type_name());
+    let obj_ref = TypeRef::named(type_name);
     let topic = topic.to_string();
     let cache_for_query = cache.clone();
     Field::new(name, obj_ref, move |_ctx| {
@@ -60,11 +60,12 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         }];
 
         let cache = Arc::new(TopicCache::new());
-        let _schema = build_schema(&api(topics), &cache).unwrap();
+        let _schema = build_schema(&api(topics), &cache, None).unwrap();
         // Schema builds without panicking
     }
 
@@ -78,12 +79,13 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         }];
 
-        let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
+        let schema = build_schema(&api(topics), &Arc::new(TopicCache::new()), None).unwrap();
         let sdl = schema.sdl();
-        assert!(sdl.contains("Schema123"), "{sdl}");
+        assert!(sdl.contains("Query123"), "{sdl}");
     }
 
     #[test_log::test]
@@ -98,11 +100,12 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         }];
 
-        let err = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap_err();
-        assert!(err.to_string().contains("Query has no queryable children!"));
+        let err = build_schema(&api(topics), &Arc::new(TopicCache::new()), None).unwrap_err();
+        assert!(err.to_string().contains("Query has no queryable children"));
     }
 
     #[test_log::test]
@@ -120,10 +123,11 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         }];
 
-        let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
+        let schema = build_schema(&api(topics), &Arc::new(TopicCache::new()), None).unwrap();
         let sdl = schema.sdl();
         assert!(sdl.contains("fFloat: Float"), "{sdl}");
         assert!(sdl.contains("fInt: Int"), "{sdl}");
@@ -146,6 +150,7 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         }];
 
@@ -154,7 +159,7 @@ mod tests {
             "test/channel",
             json!({"value": 23.5, "ok": true, "label": "hello"}),
         );
-        let schema = build_schema(&api(topics), &cache).unwrap();
+        let schema = build_schema(&api(topics), &cache, None).unwrap();
 
         let response = schema
             .execute("{ test { channel { value ok label } } }")
@@ -177,10 +182,11 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         }];
 
-        let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
+        let schema = build_schema(&api(topics), &Arc::new(TopicCache::new()), None).unwrap();
 
         let response = schema.execute("{ test { channel { value } } }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
@@ -199,12 +205,13 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         }];
 
         let cache = Arc::new(TopicCache::new());
         cache.insert("test/channel", json!(null));
-        let schema = build_schema(&api(topics), &cache).unwrap();
+        let schema = build_schema(&api(topics), &cache, None).unwrap();
 
         let response = schema.execute("{ test { channel { value } } }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
@@ -223,12 +230,13 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         }];
 
         let cache = Arc::new(TopicCache::new());
         cache.insert("test/channel", json!({"other": 1.0}));
-        let schema = build_schema(&api(topics), &cache).unwrap();
+        let schema = build_schema(&api(topics), &cache, None).unwrap();
 
         let response = schema.execute("{ test { channel { value } } }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);
@@ -247,10 +255,11 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         }];
 
-        let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
+        let schema = build_schema(&api(topics), &Arc::new(TopicCache::new()), None).unwrap();
 
         let response = schema.execute("{ test { channel { nope } } }").await;
         assert_ne!(response.errors, []);
@@ -268,6 +277,7 @@ mod tests {
                 }),
                 operation: Direction::Send,
                 ttl_secs: None,
+                setter: None,
                 kind: TopicKind::Single,
             },
             TopicDef {
@@ -278,6 +288,7 @@ mod tests {
                 }),
                 operation: Direction::Send,
                 ttl_secs: None,
+                setter: None,
                 kind: TopicKind::Single,
             },
         ];
@@ -285,7 +296,7 @@ mod tests {
         let cache = Arc::new(TopicCache::new());
         cache.insert("a/b", json!({"x": 1.5}));
         cache.insert("a/c", json!({"y": 2.5}));
-        let schema = build_schema(&api(topics), &cache).unwrap();
+        let schema = build_schema(&api(topics), &cache, None).unwrap();
 
         // Topics sharing a prefix share one branch.
         let response = schema.execute("{ a { b { x } c { y } } }").await;
@@ -306,12 +317,13 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         }];
 
         let cache = Arc::new(TopicCache::new());
         cache.insert("test/channel", json!({"value": 42.0}));
-        let app = router(build_schema(&api(topics), &cache).unwrap());
+        let app = router(build_schema(&api(topics), &cache, None).unwrap());
 
         let request = axum::http::Request::builder()
             .method("POST")

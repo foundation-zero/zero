@@ -1,0 +1,18 @@
+# Mutations confirm through the State topic
+
+A mutation on a Receive Topic that has a State topic does not return as soon as it publishes. It waits until the State topic shows every value the client supplied, then returns that State value. The input is partial: omitted fields are filled from the State topic's cached value before publishing. At the top level every omitted field is filled. Inside an object the client wrote into, only omitted objects are filled, as a whole; omitted scalars are not. A Receive Topic without a State topic returns `Boolean!` once the publish is handed to the MQTT client, which retries it at QoS 1 until the broker acknowledges. This lets a client know whether the service actually took the value, not only whether the broker received it, and lets it change one setpoint without restating the whole payload.
+
+## Considered Options
+
+- **Fire-and-forget (`Boolean!` on broker acceptance) everywhere**: simple and needs no pairing, but the client never learns whether the service applied, clamped or ignored the input, and must send full payloads.
+- **Echo the published payload**: confirms nothing beyond what the client already knows.
+- **Wait for the first State topic update**: services that publish their state periodically can report the old state before handling the input, so the first update proves nothing.
+- **Wait for a State value that matches the client-supplied leaves (chosen)**: confirms the effect. Merged-in fields are not compared, because another writer or the service may have changed them in the meantime. A State that already shows the input confirms at once, so setting a value that is already set succeeds even against a service that only publishes on change.
+
+## Consequences
+
+- A Receive Topic is paired by MQTT topic, not GraphQL path: `<state>/set` sets `<state>`, with no other check. A Receive Topic without the suffix sets the Send Topic on its own MQTT topic. A Receive Topic is expected to have a State topic, as reporting the state a client sets is good practice; one without still works but returns only `Boolean!`. The suffix is one rule per Spec, `/set` for all of them until it moves into the Spec's Mount config. Pairing happens once, when the Spec is loaded. The Specs may be wrong about which Topics have state (for example, `thrs-control` declares no `automation-mode` Send operations). The fix belongs in the Spec, not in bridge heuristics.
+- Values are compared by exact JSON equality, so a service that rounds or clamps the input makes the mutation fail. On timeout the mutation returns a plain error after the input has already been published, and the error message is the only sign that the value wasn't confirmed.
+- Filling stops at scalars inside an object the client wrote into. A merge that filled every level would combine a new value with the State's old metadata. For example, THRS stamped values `{Value, TimeStamp}` would be published with the new `Value` and the previous `TimeStamp`, a stale timestamp that nothing flags. The cost is that a nested object with scalar fields is replaced as a whole: a client that sets one scalar in it must send its other required scalars too, or the schema rejects the input.
+- The bridge never writes to the cache. Mutations are off unless enabled in config, because the bridge has no authorization and these inputs actuate equipment.
+- Receive Topics are part of a Spec's tree whether Mutations are on or off. A Path conflict involving a Receive Topic, or two Specs sharing a root field only through Receive Topics, fails the Spec in either case. The config switch decides which operations are served, not which Specs load, so a Spec that loads with Mutations off also loads with them on.

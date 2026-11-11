@@ -1,7 +1,7 @@
 use crate::naming::sanitize_to_graphql_name;
 
-/// A GraphQL path: the chain of field names from the root of the Query tree
-/// to a branch or Topic, written as `marpower.freshWater.cold`.
+/// A GraphQL path: the chain of field names from the root of the Query or
+/// Mutation tree to a branch or Topic, written as `marpower.freshWater.cold`.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct GraphqlPath(Vec<String>);
 

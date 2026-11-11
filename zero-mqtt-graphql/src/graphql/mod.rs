@@ -10,7 +10,7 @@
 //!   `power-tags/{panel}/{slug}` with MQTT topic filter `power-tags/+/+`. A group
 //!   is enumerated by the x-group-topic-metadata extension listing its concrete topics and
 //!   static attributes; the schema exposes one list query `<group>: [<Group>Topic]`
-//!   (e.g. `powerTags: [SchemaPowerTagsTopic]`) whose rows merge that static metadata
+//!   (e.g. `powerTags: [QueryPowerTagsTopic]`) whose rows merge that static metadata
 //!   with live values from the cache.
 //! - **Bucket**: a partition of a group's rows by the distinct value of the
 //!   `group_by` metadata attribute declared in the group's metadata file. For
@@ -25,19 +25,22 @@ use std::sync::Arc;
 use anyhow::{Context, bail};
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
-use async_graphql::dynamic::{Field, FieldValue, Object, Schema, TypeRef};
+use async_graphql::dynamic::{Field, FieldValue, Object, Schema, SchemaBuilder, Type, TypeRef};
 use log::{info, warn};
 use serde_json::Value as JsonValue;
 
 use crate::graphql::groups::register_group_queries;
+use crate::graphql::mutations::mutation_leaf;
+pub use crate::graphql::mutations::{Mutations, PublishFuture, Publisher};
 use crate::graphql::topics::payload_query_field;
 use crate::naming::{pascal_case_graphql_name, sanitize_to_graphql_name};
 use crate::{
-    api_model::{Api, FieldType, GraphqlPath, PathNode, QueryTree, TopicKind},
+    api_model::{Api, Direction, FieldType, GraphqlPath, PathNode, TopicDef, TopicKind, Tree},
     cache::TopicCache,
 };
 
 mod groups;
+mod mutations;
 mod topics;
 
 /// Build a dynamic GraphQL schema from the Specs' Query trees and the cache.
@@ -61,17 +64,63 @@ mod topics;
 /// Each Spec builds its own fields; `Query` combines their root fields. For
 /// now Specs are assumed not to overlap: two Specs with the same root field
 /// are a Path conflict. A Mount by Spec name at the root may lift this later.
-pub fn build_schema(api: &Api, cache: &Arc<TopicCache>) -> anyhow::Result<Schema> {
-    let query = Object::new("Query");
+///
+/// With `mutations`, the schema also has a Mutation tree of the Receive
+/// Topics, which publishes through it. A Receive Topic with a State topic
+/// returns that topic's value once it shows the input; one without returns
+/// `Boolean!`.
+pub fn build_schema(
+    api: &Api,
+    cache: &Arc<TopicCache>,
+    mutations: Option<&Mutations>,
+) -> anyhow::Result<Schema> {
+    check_root_fields(api)?;
+    let mut known_types = HashMap::new();
 
-    let mut schema_builder = Schema::build(query.type_name(), None, None);
+    let query = root(
+        "Query",
+        api,
+        &mut |spec, segment, path, topic| query_leaf(spec, segment, path, topic, cache),
+        &mut known_types,
+    )?;
+    let Some(query) = query else {
+        bail!(
+            "Query has no queryable children: GraphQL needs at least one, even when there are Mutations"
+        );
+    };
 
-    let mut known_types: HashMap<String, Object> = HashMap::new();
+    let mutation = match mutations {
+        Some(mutations) => root(
+            "Mutation",
+            api,
+            &mut |spec, segment, path, topic| {
+                Ok(mutation_leaf(spec, segment, path, topic, cache, mutations))
+            },
+            &mut known_types,
+        )?,
+        None => None,
+    };
 
+    let schema_builder = Schema::build(
+        query.type_name(),
+        mutation.as_ref().map(Object::type_name),
+        None,
+    );
+    known_types
+        .into_values()
+        .chain([query.into()])
+        .chain(mutation.map(Type::from))
+        .fold(schema_builder, SchemaBuilder::register)
+        .finish()
+        .with_context(|| "Schema building failed")
+}
+
+/// Errors when two Specs have the same root field. Both trees are laid out
+/// from the Spec's tree, so this covers Query and Mutation alike.
+fn check_root_fields(api: &Api) -> anyhow::Result<()> {
     let mut root_specs: HashMap<&str, &str> = HashMap::new();
-    let mut query_fields = Vec::new();
     for spec in &api.specs {
-        for root in spec.query_tree.keys() {
+        for root in spec.tree.keys() {
             if let Some(other) = root_specs.insert(root, &spec.name) {
                 bail!(
                     "GraphQL path conflict: Specs '{other}' and '{}' both have root field '{root}'",
@@ -79,118 +128,168 @@ pub fn build_schema(api: &Api, cache: &Arc<TopicCache>) -> anyhow::Result<Schema
                 );
             }
         }
-        query_fields.extend(tree_fields(
-            &spec.name,
-            &GraphqlPath::default(),
-            &spec.query_tree,
-            cache,
-            &mut known_types,
-        )?);
     }
-    if query_fields.is_empty() {
-        bail!("Query has no queryable children!");
-    }
-    schema_builder = known_types
-        .into_iter()
-        .fold(schema_builder, |builder, (_, t)| builder.register(t));
-
-    let query = query_fields.into_iter().fold(query, Object::field);
-
-    schema_builder
-        .register(query)
-        .finish()
-        .with_context(|| "Schema building failed")
+    Ok(())
 }
 
-/// The fields for one level of a Spec's tree, collecting the object types
-/// they need into `known_types`. Payload types are named after `spec`.
-fn tree_fields(
-    spec: &str,
-    parent_path: &GraphqlPath,
-    children: &QueryTree,
-    cache: &Arc<TopicCache>,
-    known_types: &mut HashMap<String, Object>,
-) -> anyhow::Result<Vec<Field>> {
-    let fields: Vec<Field> = children
-        .iter()
-        .map(|(segment, node)| {
-            let (fields, mut objects) = match node {
-                PathNode::Branch(grandchildren) => {
-                    let path = parent_path.child(segment);
-                    let type_name = path_type_name(&path);
-                    let fields = tree_fields(spec, &path, grandchildren, cache, known_types)?;
-                    if fields.is_empty() {
-                        warn!("Branch '{path}' has no queryable children, leaving it out");
-                        return Ok(vec![]);
-                    }
-                    let branch = fields
-                        .into_iter()
-                        .fold(Object::new(type_name.as_str()), Object::field);
+/// The root object `name` of one tree over every Spec, or `None` without
+/// fields. Its branch types are named `name` plus their path; `leaf` gives
+/// each Topic's fields, given the name of the Spec it is in.
+fn root(
+    name: &str,
+    api: &Api,
+    leaf: &mut impl FnMut(&str, &str, &GraphqlPath, &TopicDef) -> anyhow::Result<Leaf>,
+    known_types: &mut HashMap<String, Type>,
+) -> anyhow::Result<Option<Object>> {
+    let mut fields = Vec::new();
+    for spec in &api.specs {
+        fields.extend(tree_fields(
+            name,
+            &GraphqlPath::default(),
+            &spec.tree,
+            &mut |segment, path, topic| leaf(&spec.name, segment, path, topic),
+            known_types,
+        )?);
+    }
+    Ok(object(name, fields))
+}
 
-                    let field = branch_field(segment, &type_name);
-                    (vec![field], vec![branch])
-                }
-                PathNode::Topic(topic) => {
-                    info!("Building schema for topic {}", topic.topic);
-                    let Some(payload) = topic.payload.as_ref() else {
-                        warn!("Topic {} without payload, ignoring", topic.topic);
-                        return Ok(vec![]);
-                    };
-
-                    if payload.name.is_empty() {
-                        warn!("Topic {} would create an invalid payload type, ignoring", topic.topic);
-                        return Ok(vec![]);
-                    }
-
-                    match &topic.kind {
-                        TopicKind::Single => {
-                            let payload_objects = payload_object(spec, &payload.name, &payload.fields);
-                            let field = payload_query_field(
-                                segment,
-                                &topic.topic,
-                                &payload_objects[0],
-                                cache,
-                            );
-                            (vec![field], payload_objects)
-                        }
-                        TopicKind::Group(group) => register_group_queries(
-                            segment,
-                            &parent_path.child(segment),
-                            &topic.topic,
-                            payload,
-                            group,
-                            cache,
-                        )?
-                        .unwrap_or_else(|| (vec![], vec![])),
-                    }
-                }
-            };
-
-            for object in objects.drain(..) {
-                let name = object.type_name().to_string();
-                let object_string = format!("{object:?}" );
-                if let Some(other) = known_types.insert(name.clone(), object) {
-                    let other_string = format!("{other:?}" );
-
-                    if object_string != other_string  {
-                        bail!(
-                            "GraphQL type name clash: '{name}' is used by both '{other_string}' and '{object_string}'"
-                        );
-                    }
-                }
+/// Add `types` to `known`, erroring when a name is already taken by a
+/// different type.
+fn register_types(known: &mut HashMap<String, Type>, types: Vec<Type>) -> anyhow::Result<()> {
+    for new in types {
+        let name = type_name(&new).to_string();
+        let new_string = format!("{new:?}");
+        if let Some(other) = known.insert(name.clone(), new) {
+            let other_string = format!("{other:?}");
+            if new_string != other_string {
+                bail!(
+                    "GraphQL type name clash: '{name}' is used by both '{other_string}' and '{new_string}'"
+                );
             }
+        }
+    }
+    Ok(())
+}
 
-            Ok(fields)
-        })
-        .collect::<anyhow::Result<Vec<_>>>()?.into_iter().flatten().collect();
+/// The name of `ty`. `Type::name` is crate-private in async-graphql.
+fn type_name(ty: &Type) -> &str {
+    match ty {
+        Type::Scalar(scalar) => scalar.type_name(),
+        Type::Object(object) => object.type_name(),
+        Type::InputObject(input) => input.type_name(),
+        Type::Enum(enum_type) => enum_type.type_name(),
+        Type::Interface(interface) => interface.type_name(),
+        Type::Union(union) => union.type_name(),
+        Type::Subscription(subscription) => subscription.type_name(),
+        Type::Upload => TypeRef::UPLOAD,
+    }
+}
 
+/// A Topic's fields and the types they need, output and input alike: GraphQL
+/// has one namespace for both. Empty to leave the Topic out.
+type Leaf = (Vec<Field>, Vec<Type>);
+
+/// `objects` as the types of a [`Leaf`].
+fn object_types(objects: Vec<Object>) -> Vec<Type> {
+    objects.into_iter().map(Type::from).collect()
+}
+
+/// The type name of the payload object `name` in a Spec or Group named
+/// `name_prefix`.
+fn payload_type_name(name_prefix: &str, name: &str) -> String {
+    pascal_case_graphql_name(&format!("{name_prefix}-{name}"))
+}
+
+/// The fields for one level of a Spec's tree, collecting the types they
+/// need into `known_types`. Query and Mutation both use it: `leaf` gives
+/// each Topic's fields, and a branch is an object named `prefix` plus its
+/// path, left out when nothing below it has a field.
+fn tree_fields(
+    prefix: &str,
+    parent_path: &GraphqlPath,
+    children: &Tree,
+    leaf: &mut impl FnMut(&str, &GraphqlPath, &TopicDef) -> anyhow::Result<Leaf>,
+    known_types: &mut HashMap<String, Type>,
+) -> anyhow::Result<Vec<Field>> {
+    let mut fields = Vec::new();
+    for (segment, node) in children {
+        let path = parent_path.child(segment);
+        let (new_fields, types) = match node {
+            PathNode::Branch(grandchildren) => {
+                let type_name = prefixed_path_type_name(prefix, &path);
+                let branch_fields = tree_fields(prefix, &path, grandchildren, leaf, known_types)?;
+                let Some(branch) = object(&type_name, branch_fields) else {
+                    info!("Branch '{path}' has no fields, leaving out {type_name}");
+                    continue;
+                };
+                (vec![branch_field(segment, &type_name)], vec![branch.into()])
+            }
+            PathNode::Topic(topic) => leaf(segment, &path, topic)?,
+        };
+        register_types(known_types, types)?;
+        fields.extend(new_fields);
+    }
     Ok(fields)
 }
 
-/// Type name of what sits at `path`: `Schema` plus the full path in
-/// PascalCase (`marpower.freshWater` → `SchemaMarpowerFreshWater`). A
-/// branch is named exactly this; a Group's types use it as a prefix.
+/// An object named `name` with `fields`, or `None` without fields: GraphQL
+/// has no objects without fields.
+fn object(name: &str, fields: Vec<Field>) -> Option<Object> {
+    (!fields.is_empty()).then(|| fields.into_iter().fold(Object::new(name), Object::field))
+}
+
+/// The Query fields of `topic` at `path`. A Topic only a client can set
+/// belongs to Mutation alone. Payload types are named after `spec`.
+fn query_leaf(
+    spec: &str,
+    segment: &str,
+    path: &GraphqlPath,
+    topic: &TopicDef,
+    cache: &Arc<TopicCache>,
+) -> anyhow::Result<Leaf> {
+    if topic.operation != Direction::Send {
+        return Ok(Leaf::default());
+    }
+    info!("Building schema for topic {}", topic.topic);
+    let Some(payload) = topic.payload.as_ref() else {
+        warn!("Topic {} without payload, ignoring", topic.topic);
+        return Ok(Leaf::default());
+    };
+    if payload.name.is_empty() {
+        warn!(
+            "Topic {} would create an invalid payload type, ignoring",
+            topic.topic
+        );
+        return Ok(Leaf::default());
+    }
+
+    match &topic.kind {
+        TopicKind::Single => {
+            let objects = payload_object(spec, &payload.name, &payload.fields);
+            let field = payload_query_field(segment, &topic.topic, objects[0].type_name(), cache);
+            Ok((vec![field], object_types(objects)))
+        }
+        TopicKind::Group(group) => {
+            let leaf = register_group_queries(segment, path, &topic.topic, payload, group, cache)?;
+            Ok(leaf.map_or_else(Leaf::default, |(fields, objects)| {
+                (fields, object_types(objects))
+            }))
+        }
+    }
+}
+
+/// Type name of what sits at `path` in the Query tree: `Query` plus the
+/// full path in PascalCase (`marpower.freshWater` →
+/// `QueryMarpowerFreshWater`). A branch is named exactly this; a Group's
+/// types use it as a prefix.
 fn path_type_name(path: &GraphqlPath) -> String {
+    prefixed_path_type_name("Query", path)
+}
+
+/// Type name of the branch at `path` in a tree whose types start with
+/// `prefix` (`Mutation`, `marpower.freshWater` → `MutationMarpowerFreshWater`).
+fn prefixed_path_type_name(prefix: &str, path: &GraphqlPath) -> String {
     let base = pascal_case_graphql_name(
         &path
             .segments()
@@ -199,7 +298,7 @@ fn path_type_name(path: &GraphqlPath) -> String {
             .collect::<Vec<&str>>()
             .join("-"),
     );
-    format!("Schema{}", base.trim_start_matches('_'))
+    format!("{prefix}{}", base.trim_start_matches('_'))
 }
 
 /// A branch field: resolves to an empty object so its children resolve.
@@ -249,7 +348,7 @@ fn payload_object(
         warn!("Object {name} can't have zero fields!");
     }
 
-    let type_name = pascal_case_graphql_name(&format!("{name_prefix}-{name}"));
+    let type_name = payload_type_name(name_prefix, name);
     let (object, mut objects) = fields
         .iter()
         .filter_map(|(name, graphql_type)| payload_field(name_prefix, name, graphql_type))
@@ -343,6 +442,7 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         }
     }
@@ -354,16 +454,16 @@ mod tests {
             "x",
         )];
 
-        let sdl = build_schema(&mock_api(topics), &Arc::new(TopicCache::new()))
+        let sdl = build_schema(&mock_api(topics), &Arc::new(TopicCache::new()), None)
             .unwrap()
             .sdl();
-        assert!(sdl.contains("marpower: SchemaMarpower\n"), "{sdl}");
+        assert!(sdl.contains("marpower: QueryMarpower\n"), "{sdl}");
         assert!(
-            sdl.contains("_250000FreshWater: SchemaMarpower250000FreshWater\n"),
+            sdl.contains("_250000FreshWater: QueryMarpower250000FreshWater\n"),
             "{sdl}"
         );
         assert!(
-            sdl.contains("cold: SchemaMarpower250000FreshWaterCold\n"),
+            sdl.contains("cold: QueryMarpower250000FreshWaterCold\n"),
             "{sdl}"
         );
     }
@@ -376,46 +476,47 @@ mod tests {
             mock_topic("a/b", "y"),
         ];
 
-        let schema = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap();
+        let schema = build_schema(&mock_api(topics), &Arc::new(TopicCache::new()), None).unwrap();
         let sdl = schema.sdl();
         assert!(!sdl.contains("logs"), "{sdl}");
         assert!(!sdl.contains("sensors"), "{sdl}");
-        assert!(sdl.contains("a: SchemaA"), "{sdl}");
+        assert!(sdl.contains("a: QueryA"), "{sdl}");
     }
 
     #[test_log::test]
     fn test_branch_type_name_clashing_with_a_payload_type_errors() {
-        // Payload type of `aB/c` is `SchemaA`; the branch at `a/b` is also `SchemaA`.
+        // Payload type of `aB/c` is `QueryA`; the branch at `a/b` is also `QueryA`.
         let topics = vec![
             mock_topic("a/b", "x"),
             TopicDef {
                 topic: "aB/c".to_string(),
                 payload: Some(Payload {
-                    name: "schema-a".to_string(),
+                    name: "query-a".to_string(),
                     fields: BTreeMap::from_iter(vec![("field".to_string(), FieldType::Float)]),
                 }),
                 operation: Direction::Send,
                 ttl_secs: None,
+                setter: None,
                 kind: TopicKind::Single,
             },
         ];
 
-        let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap_err();
+        let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new()), None).unwrap_err();
         assert!(
             err.to_string()
-                .contains("GraphQL type name clash: 'SchemaA' is used by both"),
+                .contains("GraphQL type name clash: 'QueryA' is used by both"),
         );
     }
 
     #[test_log::test]
     fn test_two_branches_with_the_same_type_name_error() {
-        // The branch at `aB` and the branch at `a/b` are both named `SchemaAB`.
+        // The branch at `aB` and the branch at `a/b` are both named `QueryAB`.
         let topics = vec![mock_topic("aB/x/y", "v"), mock_topic("a/b/y/z", "v")];
 
-        let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap_err();
+        let err = build_schema(&mock_api(topics), &Arc::new(TopicCache::new()), None).unwrap_err();
         assert!(
             err.to_string()
-                .contains("GraphQL type name clash: 'SchemaAB' is used by both"),
+                .contains("GraphQL type name clash: 'QueryAB' is used by both"),
         );
     }
 
@@ -424,9 +525,10 @@ mod tests {
         for address in ["/a/b", "a//b", "a/-/b"] {
             let topics = vec![mock_topic(address, "v")];
 
-            let schema = build_schema(&mock_api(topics), &Arc::new(TopicCache::new())).unwrap();
+            let schema =
+                build_schema(&mock_api(topics), &Arc::new(TopicCache::new()), None).unwrap();
             let sdl = schema.sdl();
-            assert!(sdl.contains("a: SchemaA"), "{sdl}");
+            assert!(sdl.contains("a: QueryA"), "{sdl}");
             assert!(sdl.contains("b: Vpayload"), "{sdl}");
         }
     }
@@ -438,7 +540,7 @@ mod tests {
             spec("two", vec![mock_topic("thrs/simulator/step", "y")]),
         ]);
 
-        let err = build_schema(&api, &Arc::new(TopicCache::new())).unwrap_err();
+        let err = build_schema(&api, &Arc::new(TopicCache::new()), None).unwrap_err();
         assert_eq!(
             err.to_string(),
             "GraphQL path conflict: Specs 'one' and 'two' both have root field 'thrs'"
@@ -455,7 +557,7 @@ mod tests {
         let cache = Arc::new(TopicCache::new());
         cache.insert("thrs/controller/pcm", json!({"x": 1.0}));
         cache.insert("simulator/step", json!({"y": 2.0}));
-        let schema = build_schema(&api, &cache).unwrap();
+        let schema = build_schema(&api, &cache, None).unwrap();
 
         let response = schema
             .execute("{ thrs { controller { pcm { x } } } simulator { step { y } } }")
@@ -486,12 +588,13 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Single,
         };
         let schema_with = |payload| {
             let cache = Arc::new(TopicCache::new());
             cache.insert("a/b", payload);
-            build_schema(&mock_api(vec![topic.clone()]), &cache).unwrap()
+            build_schema(&mock_api(vec![topic.clone()]), &cache, None).unwrap()
         };
 
         for payload in [json!({"inner": null, "y": 1.0}), json!({"y": 1.0})] {

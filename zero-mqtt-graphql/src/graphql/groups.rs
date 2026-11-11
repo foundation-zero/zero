@@ -2,7 +2,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::iter::once;
 use std::sync::Arc;
 
-use crate::graphql::{json_to_graphql_value, non_null, path_type_name, payload_object};
+use crate::graphql::{
+    json_to_graphql_value, non_null, path_type_name, payload_object, payload_type_name,
+};
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{Field, FieldValue, InputValue, Object, TypeRef};
@@ -11,7 +13,7 @@ use serde_json::Value as JsonValue;
 
 use crate::api_model::{GraphqlPath, GroupDef, Payload};
 use crate::cache::TopicCache;
-use crate::naming::{is_reserved_name, pascal_case_graphql_name, sanitize_to_graphql_name};
+use crate::naming::{is_reserved_name, sanitize_to_graphql_name};
 
 /// A group's rows partitioned into buckets by the `group_by` metadata
 /// attribute: bucket id → `(topic, metadata)` pairs.
@@ -46,8 +48,7 @@ fn build_group_objects(
 ) -> Vec<Object> {
     let item_type = format!("{name_prefix}Topic");
     let meta_type = format!("{name_prefix}Metadata");
-    // Named as `payload_object` names it, which pascal-cases the prefix again.
-    let values_type = pascal_case_graphql_name(&format!("{name_prefix}-Values"));
+    let values_type = payload_type_name(name_prefix, "Values");
     let value_meta_type = format!("{name_prefix}ValueMeta");
 
     let item_obj = [
@@ -504,6 +505,7 @@ mod tests {
             }),
             operation: Direction::Send,
             ttl_secs: None,
+            setter: None,
             kind: TopicKind::Group(GroupDef {
                 field_attributes: BTreeMap::from([
                     (
@@ -544,7 +546,8 @@ mod tests {
             "power-tags/10P1/test-consumer",
             json!({"active_power_total": 42.0}),
         );
-        let schema = build_schema(&api(power_tag_group(power_tag_metadata())), &cache).unwrap();
+        let schema =
+            build_schema(&api(power_tag_group(power_tag_metadata())), &cache, None).unwrap();
 
         let response = schema
             .execute(
@@ -588,7 +591,7 @@ mod tests {
             .unwrap(),
         );
         topics[0].topic = "marpower/fuel/+/middle/+".to_string();
-        let schema = build_schema(&api(topics), &Arc::new(TopicCache::new())).unwrap();
+        let schema = build_schema(&api(topics), &Arc::new(TopicCache::new()), None).unwrap();
 
         let response = schema
             .execute("{ marpower { fuel { topic } fuelBuckets { id fuel { topic } } } }")
@@ -600,7 +603,7 @@ mod tests {
             json!("marpower/fuel/a/middle/b")
         );
         assert_eq!(data["marpower"]["fuelBuckets"][0]["id"], json!("10P1"));
-        assert!(schema.sdl().contains("type SchemaMarpowerFuelTopic"));
+        assert!(schema.sdl().contains("type QueryMarpowerFuelTopic"));
     }
 
     #[tokio::test]
@@ -609,6 +612,7 @@ mod tests {
         let schema = build_schema(
             &api(power_tag_group(power_tag_metadata())),
             &Arc::new(TopicCache::new()),
+            None,
         )
         .unwrap();
 
@@ -631,10 +635,11 @@ mod tests {
         let err = build_schema(
             &api(power_tag_group(BTreeMap::new())),
             &Arc::new(TopicCache::new()),
+            None,
         )
         .unwrap_err();
 
-        assert!(err.to_string().contains("Query has no queryable children!"));
+        assert!(err.to_string().contains("Query has no queryable children"));
     }
 
     #[tokio::test]
@@ -645,7 +650,8 @@ mod tests {
             .collect();
         let cache = Arc::new(TopicCache::with_ttl(60, per_topic));
         cache.insert("power-tags/10P1/test-consumer", json!({"current_a": 1.0}));
-        let schema = build_schema(&api(power_tag_group(power_tag_metadata())), &cache).unwrap();
+        let schema =
+            build_schema(&api(power_tag_group(power_tag_metadata())), &cache, None).unwrap();
 
         let response = schema
             .execute("{ powerTags { values { currentA } } }")
@@ -674,7 +680,7 @@ mod tests {
             "power-tags/10P1/test-consumer",
             json!({"active_power_total": 42.0}),
         );
-        let schema = build_schema(&api(power_tag_group(metadata)), &cache).unwrap();
+        let schema = build_schema(&api(power_tag_group(metadata)), &cache, None).unwrap();
 
         let response = schema
             .execute(
@@ -744,7 +750,7 @@ mod tests {
         group.group_by = "tank".to_string();
 
         let cache = Arc::new(TopicCache::new());
-        let schema = build_schema(&api(vec![topic]), &cache).unwrap();
+        let schema = build_schema(&api(vec![topic]), &cache, None).unwrap();
 
         let response = schema
             .execute(
@@ -777,7 +783,7 @@ mod tests {
 
         let cache = Arc::new(TopicCache::new());
         cache.insert("x-y/1", json!({"current_a": 1.5}));
-        let schema = build_schema(&api(topics), &cache).unwrap();
+        let schema = build_schema(&api(topics), &cache, None).unwrap();
 
         let response = schema.execute("{ xY { values { currentA } } }").await;
         assert!(response.errors.is_empty(), "{:?}", response.errors);

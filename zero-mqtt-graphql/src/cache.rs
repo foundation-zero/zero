@@ -2,8 +2,12 @@ use std::time::Instant;
 
 use dashmap::DashMap;
 use serde_json::Value;
+use tokio::sync::broadcast;
 
 use crate::topic_map::TopicMap;
+
+/// How many topic updates a slow listener may fall behind before it lags.
+const UPDATES_CAPACITY: usize = 1024;
 
 struct Entry {
     value: Value,
@@ -15,6 +19,8 @@ pub struct TopicCache {
     data: DashMap<String, Entry>,
     default_ttl_secs: u64,
     per_topic_ttl: TopicMap<u64>,
+    /// The topic of every insert, for listeners waiting on a value.
+    updates: broadcast::Sender<String>,
 }
 
 impl Default for TopicCache {
@@ -37,6 +43,7 @@ impl TopicCache {
             data: DashMap::new(),
             default_ttl_secs,
             per_topic_ttl,
+            updates: broadcast::channel(UPDATES_CAPACITY).0,
         }
     }
 
@@ -51,6 +58,14 @@ impl TopicCache {
                 ttl_secs: *ttl.unwrap_or(&self.default_ttl_secs),
             },
         );
+        // Fails only when nobody listens, which is fine.
+        let _ = self.updates.send(topic.to_string());
+    }
+
+    /// Listen for the topics of inserts made after this call.
+    #[must_use]
+    pub fn updates(&self) -> broadcast::Receiver<String> {
+        self.updates.subscribe()
     }
 
     /// Get the full cached payload for a topic, or `None` if missing or expired.

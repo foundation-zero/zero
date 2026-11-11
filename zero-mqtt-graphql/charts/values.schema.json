@@ -47,6 +47,20 @@
       "description": "Default TTL in seconds for cached values before they expire.",
       "minimum": 1
     },
+    "mutations": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Expose Receive Topics as GraphQL Mutations. The bridge has no authorization, and these inputs actuate equipment."
+        },
+        "timeoutSecs": {
+          "type": "integer",
+          "description": "How long a Mutation waits for its State topic to confirm the input, in seconds.",
+          "minimum": 1
+        }
+      }
+    },
     "mqtt": {
       "type": "object",
       "required": ["host", "port"],

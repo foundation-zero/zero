@@ -6,7 +6,7 @@ use serde_json::Value;
 use crate::topic_map::TopicMap;
 
 pub use graphql_path::GraphqlPath;
-pub use tree::{PathNode, QueryTree};
+pub use tree::{PathNode, Tree};
 
 mod graphql_path;
 mod tree;
@@ -27,6 +27,21 @@ pub struct TopicDef {
     /// Whether the topic comes from a Send or a Receive operation.
     pub operation: Direction,
     pub kind: TopicKind,
+    /// How a client sets this topic, if it can: the Receive topic paired with
+    /// this Send topic, or, on an unpaired Receive topic, that topic itself.
+    pub setter: Option<Box<Setter>>,
+}
+
+/// The Receive topic through which a client sets a [`TopicDef`].
+#[derive(Debug, Clone)]
+pub struct Setter {
+    /// MQTT topic the input is published on: `room/thermostat/set`.
+    pub topic: String,
+    /// What the input looks like.
+    pub payload: Payload,
+    /// The JSON Schema of `payload`; inputs are checked against it before
+    /// publishing.
+    pub validator: Validator,
 }
 
 /// The format of a topic's payload.
@@ -87,15 +102,37 @@ impl TopicDef {
     #[must_use]
     pub fn is_queryable(&self) -> bool {
         let concrete = match self.kind {
-            TopicKind::Single => !self
-                .topic
-                .split('/')
-                .any(|level| level == "+" || level == "#"),
+            TopicKind::Single => !self.has_wildcards(),
             TopicKind::Group(_) => true,
         };
-        concrete
-            && self.payload.as_ref().is_some_and(|p| !p.fields.is_empty())
-            && self.operation == Direction::Send
+        concrete && self.has_fields() && self.operation == Direction::Send
+    }
+
+    /// Whether this topic can set state: a single Receive operation with a
+    /// payload on a concrete address. A payload without fields is a signal,
+    /// such as a pause. Groups are left out.
+    #[must_use]
+    pub fn is_settable(&self) -> bool {
+        matches!(self.kind, TopicKind::Single)
+            && !self.has_wildcards()
+            && self.payload.is_some()
+            && self.operation == Direction::Receive
+    }
+
+    /// Whether this topic is a single topic that can report the state a
+    /// Receive topic sets.
+    fn is_state(&self) -> bool {
+        matches!(self.kind, TopicKind::Single) && self.is_queryable()
+    }
+
+    fn has_wildcards(&self) -> bool {
+        self.topic
+            .split('/')
+            .any(|level| level == "+" || level == "#")
+    }
+
+    fn has_fields(&self) -> bool {
+        self.payload.as_ref().is_some_and(|p| !p.fields.is_empty())
     }
 }
 
@@ -108,6 +145,11 @@ pub enum FieldType {
     Boolean,
 }
 
+/// What a Receive Topic's MQTT topic adds to its State topic's: Receive topic
+/// `<state>/set` sets Send topic `<state>`. The same for every Spec for now;
+/// it belongs with a Spec's Mount config once that exists.
+pub const SET_SUFFIX: &str = "/set";
+
 /// One loaded Spec: what the bridge subscribes to, validates and serves for
 /// one AsyncAPI document.
 #[derive(Debug, Clone)]
@@ -119,12 +161,14 @@ pub struct Spec {
     /// TTL in seconds per topic or topic filter that sets one, taken from
     /// every topic, also those left out of the Query tree.
     ttl_map: TopicMap<u64>,
-    pub query_tree: QueryTree,
+    /// The queryable and settable topics at their GraphQL paths; Query and
+    /// Mutation are both laid out from it.
+    pub tree: Tree,
 }
 
 impl Spec {
-    /// Errors on a queryable topic without a GraphQL path, or on a Path
-    /// conflict within this Spec.
+    /// Errors on a queryable or settable topic without a GraphQL path, or on
+    /// a Path conflict within this Spec.
     pub fn new(
         name: String,
         topics: Vec<TopicDef>,
@@ -143,18 +187,19 @@ impl Spec {
             .iter()
             .filter_map(|t| Some((t.topic.clone(), t.ttl_secs?)))
             .collect();
+        let tree = tree::tree(topics, &validators, SET_SUFFIX)?;
         Ok(Self {
             name,
             subscribe_topics,
             validators,
             ttl_map,
-            query_tree: tree::query_tree(topics)?,
+            tree,
         })
     }
 
     #[must_use]
     pub fn is_empty(&self) -> bool {
-        self.query_tree.is_empty()
+        self.tree.is_empty()
     }
 }
 
@@ -220,6 +265,7 @@ mod tests {
             }),
             ttl_secs,
             operation: Direction::Send,
+            setter: None,
             kind: TopicKind::Single,
         }
     }
