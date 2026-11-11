@@ -49,7 +49,7 @@ jobs:
         working-directory: zero-thrs-control
 
       - name: Setup Graphviz
-        uses: ts-graphviz/setup-graphviz@b1de5da23ed0a6d14e0aeee8ed52fdd87af2363c # v2
+        uses: ts-graphviz/setup-graphviz@6005aebc0168bb7f1c4b55f1e611648e57fb15d0 # v2
 
       - run: uv sync --locked
         working-directory: zero-thrs-control
