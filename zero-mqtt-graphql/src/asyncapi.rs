@@ -14,7 +14,6 @@ use serde_json::Value;
 
 use crate::api_model::{Api, ApiModel, GraphqlType, TopicDef, TopicGroupDef};
 use crate::message_validation::{ValidatorBuilder, build_validators};
-use crate::naming::sanitize_to_graphql_name;
 use crate::topic_map::TopicMap;
 
 /// Read and parse every AsyncAPI document in `spec_dir` once, returning
@@ -625,11 +624,7 @@ fn extract_fields_from_schema(
         .iter()
         .filter_map(|(name, subschema)| {
             let graphql_type = graphql_type_for_subschema(name.clone(), subschema, schema_entries)?;
-            let sanitized = sanitize_to_graphql_name(name);
-            if sanitized.is_empty() {
-                warn!("Skipping field '{name}' sanitizes to empty GraphQL name");
-                return None;
-            }
+
             Some((name.clone(), graphql_type))
         })
         .collect()

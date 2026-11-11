@@ -10,6 +10,7 @@ pub struct TopicDef {
     pub topic: String,
     pub fields: BTreeMap<String, GraphqlType>,
     /// Pointer to payload in json reference format (e.g. #/components/schemas/field)
+    /// None means there is no payload
     pub payload_schema_ref: Option<String>,
     /// TTL in seconds for cached values of this topic. Determined from
     /// `x-ttl` extensions on the AsyncAPI message or channel

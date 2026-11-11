@@ -95,7 +95,6 @@ const RESERVED_GRAPHQL_NAMES: &[&str] = &[
     "query",
     "mutation",
     "subscription",
-    "topics",
     "boolean",
     "float",
     "int",
@@ -106,7 +105,7 @@ const RESERVED_GRAPHQL_NAMES: &[&str] = &[
 /// Whether `name` collides with a reserved GraphQL name.
 #[must_use]
 pub fn is_reserved_name(name: &str) -> bool {
-    RESERVED_GRAPHQL_NAMES.contains(&name)
+    RESERVED_GRAPHQL_NAMES.contains(&name.to_ascii_lowercase().as_ref())
 }
 
 #[cfg(test)]
@@ -174,7 +173,6 @@ mod tests {
                 "query",
                 "mutation",
                 "subscription",
-                "topics",
                 "boolean",
                 "float",
                 "int",

@@ -82,7 +82,7 @@ async fn main() -> Result<()> {
 fn validate_command(api: &Api) -> Result<()> {
     println!("Validating the graphql schema...");
 
-    zero_mqtt_graphql::graphql::validate_topics(api)?;
+    zero_mqtt_graphql::graphql::graphql_tree(api)?;
 
     let cache = Arc::new(TopicCache::new());
 
@@ -295,7 +295,7 @@ mod tests {
         let topics = vec![TopicDef {
             topic: "test/topic".to_string(),
             fields: BTreeMap::from_iter(vec![("x".to_string(), GraphqlType::Float)]),
-            payload_schema_ref: None,
+            payload_schema_ref: Some("#/components/schemas/payload".to_string()),
             action: OperationAction::Send,
             ttl_secs: None,
         }];
@@ -320,7 +320,7 @@ mod tests {
 
         let sdl = std::fs::read_to_string(&path).unwrap();
         assert!(sdl.contains("type Query"), "{sdl}");
-        assert!(sdl.contains("testTopic"), "{sdl}");
+        assert!(sdl.contains("test: SchemaTest\n"), "{sdl}");
 
         let _ = std::fs::remove_dir_all(&dir);
     }
