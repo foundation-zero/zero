@@ -64,4 +64,4 @@ packages = ["src/zero_mqtt"]
 default-groups = ["dev", "test"]
 
 [tool.uv.sources]
-zero-health = { path = "../zero-health" }
+zero-health = { path = "../zero-health", editable = true }

@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.15.1, <4.0"
 
 [[package]]
@@ -349,7 +349,7 @@ wheels = [
 
 [[package]]
 name = "zero-health"
-source = { directory = "../zero-health" }
+source = { editable = "../zero-health" }
 dependencies = [
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -375,6 +375,7 @@ test = [
 [[package]]
 name = "zero-mqtt"
 source = { editable = "." }
+default-groups = ["dev", "test"]
 dependencies = [
     { name = "faststream", extra = ["mqtt"] },
     { name = "pydantic" },
@@ -399,7 +400,7 @@ requires-dist = [
     { name = "faststream", extras = ["mqtt"], specifier = ">=0.7.5,<1.0.0" },
     { name = "pydantic", specifier = ">=2.11.7,<3.0.0" },
     { name = "pydantic-settings", specifier = ">=2.10.1,<3.0.0" },
-    { name = "zero-health", directory = "../zero-health" },
+    { name = "zero-health", editable = "../zero-health" },
     { name = "zmqtt", specifier = ">=0.2.2,<0.3.0" },
 ]
 
