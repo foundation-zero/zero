@@ -191,8 +191,8 @@ def test_broker_rides_out_outages(env: pytest.MonkeyPatch):
 
 async def test_broker_exits_when_the_client_gives_up(env: pytest.MonkeyPatch):
     env.setattr(broker_module, "exit_with_reason", _exit)
-    broker = _settings().make_broker(name="atpx-mqtt")
-    with pytest.raises(Exited, match="^atpx-mqtt: client gave up reconnecting$"):
+    broker = _settings().make_broker(name="mqtt-input")
+    with pytest.raises(Exited, match="^mqtt-input: client gave up reconnecting$"):
         await broker._connection_kwargs["on_connection_recovery_failed"]()
 
 
