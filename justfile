@@ -15,8 +15,8 @@ run-all recipe:
 
     failed=()
 
-    # Find all subdirectories (and packages/py/*) containing a Justfile/justfile
-    for dir in $(find . packages/py -mindepth 2 -maxdepth 2 \( -name "Justfile" -o -name "justfile" \) | xargs -n1 dirname | sort); do
+    # Find all subdirectories (and packages/<language>/*) containing a Justfile/justfile
+    for dir in $(find . packages/* -mindepth 2 -maxdepth 2 \( -name "Justfile" -o -name "justfile" \) | xargs -n1 dirname | sort); do
         echo "========================================"
         echo "==> Running '{{ recipe }}' in $dir"
         echo "========================================"
