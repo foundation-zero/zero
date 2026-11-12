@@ -4,8 +4,8 @@ services:
     container_name: vernemq
     restart: always
     ports:
-      - 1883:1883
-      - 9001:9001
+      - 127.0.0.1:1883:1883
+      - 127.0.0.1:9001:9001
     profiles:
       - zero
       - data
@@ -30,7 +30,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - 127.0.0.1:5432:5432
     profiles:
       - zero
       - data
@@ -53,7 +53,7 @@ services:
       context: ./zero-dashboards
     command: []
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     depends_on: []
     volumes:
       - "grafana:/var/lib/grafana"
@@ -77,7 +77,7 @@ services:
       cache_from:
         - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/hasura-graphql-engine:main
     ports:
-      - 8080:8080
+      - 127.0.0.1:8080:8080
     restart: always
     profiles:
       - zero
@@ -114,7 +114,7 @@ services:
       - /run/dbus:/run/dbus:ro
     restart: unless-stopped
     ports:
-      - 8123:8123
+      - 127.0.0.1:8123:8123
     healthcheck:
       test: ["CMD-SHELL", "curl --silent --fail http://localhost:8123/"]
       interval: 10s
@@ -152,7 +152,7 @@ services:
     build:
       context: ./zero-mqtt-graphql
     ports:
-      - 5103:5103
+      - 127.0.0.1:5103:5103
     profiles:
       - data
     environment:
@@ -243,7 +243,7 @@ services:
       # Instructions can be found in edge-flux/apps/base/greptime-backup/README.md
       GOOGLE_APPLICATION_CREDENTIALS: /gcp-credentials.json
     ports:
-      - "4000-4003:4000-4003"
+      - "127.0.0.1:4000-4003:4000-4003"
     restart: always
     profiles:
       - data-collection
@@ -265,7 +265,7 @@ services:
     build:
       context: ./zero-domestic-control
     ports:
-      - 5100:5100
+      - 127.0.0.1:5100:5100
     profiles:
       - domestic
     depends_on:
@@ -331,7 +331,7 @@ services:
       cache_from:
         - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-loads-app:main
     ports:
-      - 5101:5101
+      - 127.0.0.1:5101:5101
     profiles:
       - loads
     environment:
@@ -411,7 +411,7 @@ services:
     profiles:
       - thrs
     ports:
-      - "5102:5102"
+      - "127.0.0.1:5102:5102"
     environment: &thrs_env
       MACHINE_STATE_LOGGING: ${MACHINE_STATE_LOGGING:-true}
       MODULE_PERSISTENCE: ${MODULE_PERSISTENCE:-false}
