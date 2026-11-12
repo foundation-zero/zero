@@ -28,6 +28,10 @@ class ComponentType(StrEnum):
     PID_CONTROLLER = "pid_controller"
     TANK_CONTROLLER = "tank_controller"
     PCM_CHARGE_CONTROLLER = "pcm_charge_controller"
+    # Devices outside the managed systems, in the Spec only (extra_topics.py).
+    DRIVE = "drive"
+    CONVERTER = "converter"
+    SHORE_CONVERTER = "shore_converter"
 
 
 class ValveType(StrEnum):

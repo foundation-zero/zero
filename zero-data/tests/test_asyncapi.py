@@ -143,6 +143,49 @@ def test_flow_meters_that_measure_only_a_flow_have_their_own_schema():
     assert set(schemas["FlowOnly"]["properties"]) == {"Flow"}
 
 
+@pytest.mark.parametrize(
+    ("channel_key", "address", "component", "fields"),
+    [
+        (
+            "propulsion.drive.pcs-aft-ara1",
+            "marpower/150000-propulsion/pcs-aft-ara1",
+            "Drive",
+            {"VpEnable", "TempPowerStage", "Power"},
+        ),
+        (
+            "dc_ac.converter.05-12-u101",
+            "marpower/450000-dynamic-conv-sb-ara/5-12-u101",
+            "Converter",
+            {"Running", "TempPowerStage", "PvPower"},
+        ),
+        (
+            "dc_700v.shore-converter.07-11-tbc1a",
+            "marpower/450000-dc-distribution-esi/07-11-tbc1a",
+            "ShoreConverter",
+            {
+                "Online",
+                "EsiTransformerTemperature",
+                "EsiIgbtMinTemperature",
+                "EsiIgbtMaxTemperature",
+                "EsiAcBusActivePower3Phase",
+            },
+        ),
+    ],
+)
+def test_extra_devices_are_named_by_the_proposal_at_todays_address(
+    document: dict, channel_key: str, address: str, component: str, fields: set[str]
+):
+    device = document["channels"][channel_key]
+
+    assert device["address"] == address
+    assert device["messages"]["message"]["payload"] == {
+        "$ref": f"{SCHEMA_REF_PREFIX}{component}"
+    }
+    schema = document["components"]["schemas"][component]
+    assert set(schema["properties"]) == fields
+    assert document["operations"][channel_key]["action"] == "send"
+
+
 def test_document_does_not_depend_on_io_list_order(io_result: IOResult):
     reversed_result = IOResult(io_result.io_list, list(reversed(io_result.topics)))
 
