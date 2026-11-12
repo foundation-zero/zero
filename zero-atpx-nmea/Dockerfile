@@ -5,11 +5,9 @@ ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app/zero-atpx-nmea
 
-COPY packages/py/zero-health/ /app/packages/py/zero-health/
-COPY packages/py/zero-mqtt/ /app/packages/py/zero-mqtt/
-
 # Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=packages/py,target=/app/packages/py \
     --mount=type=bind,source=zero-atpx-nmea/uv.lock,target=uv.lock \
     --mount=type=bind,source=zero-atpx-nmea/pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-install-project --no-dev --no-editable
@@ -20,6 +18,7 @@ COPY zero-atpx-nmea/src ./src
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=packages/py,target=/app/packages/py \
     uv sync --locked --no-dev --no-editable
 
 FROM python:3.15-slim-trixie@sha256:65a65fc7b30b06cb6df4930fd4650697cb23f4c2698ab81fc87e4b031bc36928 AS runtime
