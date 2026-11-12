@@ -2,7 +2,6 @@
 
 import asyncio
 import logging
-import math
 import time
 from collections.abc import Callable
 from secrets import token_hex
@@ -65,13 +64,17 @@ class MqttSettings(BaseSettings):
         )
 
 
-def broker_check(broker: MQTTBroker) -> Check:
-    """Ready while ``broker`` answers a ping."""
+def broker_check(broker: MQTTBroker, timeout: float = 4.0) -> Check:
+    """Ready while ``broker`` answers a ping within ``timeout`` seconds.
+
+    Keep ``timeout`` below Health's check timeout (5 s): zmqtt only cleans up
+    a ping that times out by itself. A ping cancelled from outside leaves its
+    reply future behind, and asyncio logs "Future exception was never
+    retrieved" when the connection later drops.
+    """
 
     async def check() -> str | None:
-        # Health's check timeout bounds the ping; FastStream's own 5 s limit
-        # would race it and flip the reason between two texts.
-        return None if await broker.ping(timeout=math.inf) else "ping failed"
+        return None if await broker.ping(timeout=timeout) else "ping failed"
 
     return check
 
