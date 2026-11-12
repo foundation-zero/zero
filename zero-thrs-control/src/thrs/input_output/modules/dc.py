@@ -537,7 +537,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002081",
             component_type="ugrid",
             included_in_fmu=False,
-            topic_override="450000-dynamic-conv-sb/ara-5/12/u101",
+            topic_override="450000-dynamic-conv-sb-ara/5-12-u101",
         ),
     ]
 
