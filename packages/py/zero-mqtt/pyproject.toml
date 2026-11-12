@@ -61,6 +61,9 @@ fallback_version = "0.0.0"
 packages = ["src/zero_mqtt"]
 
 [tool.uv]
+# Apps install this as a non-editable path dependency; without the source
+# files here uv reuses its cached wheel when only the code changed.
+cache-keys = [{ file = "pyproject.toml" }, { file = "src/**/*.py" }]
 default-groups = ["dev", "test"]
 
 [tool.uv.sources]
