@@ -202,6 +202,17 @@ class PvtMode(Enum):
 
 
 class PumpControlMode(Enum):
+    """The Wilo `controlFunction` register (holding register 42).
+
+    THRS control sets only the first three; the others are the generic modes
+    a pump can also be set to on site, so that the AMCS reporting one back
+    still reads as a known mode.
+    """
+
     CONSTANT_SPEED = 1
     CONSTANT_DIFFERENTIAL_PRESSURE = 3
     VARIABLE_DIFFERENTIAL_PRESSURE = 4
+    CONSTANT_PRESSURE = 5
+    CONSTANT_TEMPERATURE = 9
+    CONSTANT_DIFFERENTIAL_TEMPERATURE = 10
+    INVALID = 15

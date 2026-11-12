@@ -31,8 +31,8 @@ use async_graphql::dynamic::{
 use log::{info, warn};
 
 use crate::graphql::groups::register_group_queries;
-use crate::graphql::mutations::mutation_leaf;
 pub use crate::graphql::mutations::{Mutations, PublishFuture, Publisher};
+use crate::graphql::mutations::{equal_value, mutation_leaf};
 use crate::graphql::topics::payload_query_field;
 use crate::naming::{pascal_case_graphql_name, sanitize_to_graphql_name};
 use crate::{
@@ -387,13 +387,13 @@ fn output_value(
 ) -> async_graphql::Result<GraphQlValue> {
     match (field_type, value) {
         (FieldType::Enum(name, values), value) => {
-            let raw = match &value {
-                GraphQlValue::String(raw) => Some(raw.as_str()),
-                _ => None,
-            };
+            let raw = value.clone().into_json().ok();
             values
                 .iter()
-                .find(|enum_value| Some(enum_value.raw.as_str()) == raw)
+                .find(|enum_value| {
+                    raw.as_ref()
+                        .is_some_and(|raw| equal_value(raw, &enum_value.raw, None))
+                })
                 .map(|enum_value| GraphQlValue::Enum(Name::new(&enum_value.name)))
                 .ok_or_else(|| format!("{value} is not one of the values of enum {name}").into())
         }

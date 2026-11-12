@@ -3,10 +3,12 @@
 import logging
 import re
 from collections import defaultdict
+from enum import IntEnum
 from typing import Any
 
 import stringcase  # type: ignore
 
+from zero_data.io_list.enums import ENUMS
 from zero_data.io_list.managed_topics import (
     SYSTEMS,
     ManagedTopic,
@@ -36,20 +38,35 @@ JSON_TYPES = {
 SCHEMA_REF_PREFIX = "#/components/schemas/"
 
 
-def stamped_schema_name(data_type: str) -> str:
-    return f"stamped{stringcase.capitalcase(JSON_TYPES[data_type])}"
+def value_type(field: str, data_type: str) -> str:
+    """What a field's value is: its enum when it has one, else its JSON type."""
+    enum = ENUMS.get(field)
+    return enum.__name__ if enum else JSON_TYPES[data_type]
 
 
-def stamped_schema(data_type: str) -> dict[str, Any]:
+def stamped_schema_name(value_type: str) -> str:
+    return f"stamped{stringcase.capitalcase(value_type)}"
+
+
+def stamped_schema(value_type: str, value: dict[str, Any]) -> dict[str, Any]:
     """Every AMCS value is published as {"Value": 1.0, "TimeStamp": "timestamp", ...}."""
     return {
-        "title": stamped_schema_name(data_type),
+        "title": stamped_schema_name(value_type),
         "type": "object",
         "properties": {
-            "Value": {"type": JSON_TYPES[data_type]},
+            "Value": value,
             "TimeStamp": {"type": "string", "format": "date-time"},
         },
         "required": ["Value", "TimeStamp"],
+    }
+
+
+def enum_schema(enum: type[IntEnum]) -> dict[str, Any]:
+    """An integer enum whose values are named, as named constants."""
+    return {
+        "title": enum.__name__,
+        "type": "integer",
+        "oneOf": [{"const": member.value, "title": member.name} for member in enum],
     }
 
 
@@ -62,8 +79,11 @@ def component_schema(name: str, fields: dict[str, str]) -> dict[str, Any]:
         "title": stringcase.titlecase(name),
         "type": "object",
         "properties": {
-            name: {"$ref": SCHEMA_REF_PREFIX + stamped_schema_name(data_type)}
-            for name, data_type in fields.items()
+            field: {
+                "$ref": SCHEMA_REF_PREFIX
+                + stamped_schema_name(value_type(field, data_type))
+            }
+            for field, data_type in fields.items()
         },
     }
 
@@ -139,19 +159,31 @@ def extract_schemas(
             topic,
         )
 
-    field_types = {
-        data_type
+    all_fields = [
+        (field, data_type)
         for fields in component_types.values()
-        for data_type in fields.values()
-    }
+        for field, data_type in fields.items()
+    ]
+    enums = sorted(
+        {enum for field, _ in all_fields if (enum := ENUMS.get(field))},
+        key=lambda enum: enum.__name__,
+    )
+    values = {
+        json_type: {"type": json_type}
+        for json_type in sorted({JSON_TYPES[data_type] for _, data_type in all_fields})
+    } | {enum.__name__: {"$ref": SCHEMA_REF_PREFIX + enum.__name__} for enum in enums}
 
-    return {
-        component_name(component): component_schema(component, fields)
-        for component, fields in component_types.items()
-    } | {
-        stamped_schema_name(data_type): stamped_schema(data_type)
-        for data_type in sorted(field_types)
-    }
+    return (
+        {
+            component_name(component): component_schema(component, fields)
+            for component, fields in component_types.items()
+        }
+        | {enum.__name__: enum_schema(enum) for enum in enums}
+        | {
+            stamped_schema_name(name): stamped_schema(name, value)
+            for name, value in values.items()
+        }
+    )
 
 
 def channel(topic: ManagedTopic) -> dict[str, Any]:

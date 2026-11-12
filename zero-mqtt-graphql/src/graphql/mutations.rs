@@ -318,7 +318,7 @@ fn input_json(field_type: &FieldType, value: &GraphQlValue) -> anyhow::Result<Js
         (FieldType::Enum(name, values), GraphQlValue::Enum(graphql_name)) => values
             .iter()
             .find(|enum_value| enum_value.name == graphql_name.as_str())
-            .map(|enum_value| JsonValue::String(enum_value.raw.clone()))
+            .map(|enum_value| enum_value.raw.clone())
             .with_context(|| format!("{graphql_name} is not one of the values of enum {name}")),
         (FieldType::List(element), GraphQlValue::List(items)) => items
             .iter()
@@ -399,7 +399,11 @@ fn equal_fields(
 /// [`equal_string`]. Numbers compare by value, so `21` and `21.0` are equal,
 /// but a rounded or clamped value is not.
 #[allow(clippy::float_cmp)]
-fn equal_value(state: &JsonValue, given: &JsonValue, field_type: Option<&FieldType>) -> bool {
+pub(super) fn equal_value(
+    state: &JsonValue,
+    given: &JsonValue,
+    field_type: Option<&FieldType>,
+) -> bool {
     match (state, given) {
         (_, JsonValue::Object(_)) => {
             let fields = match field_type {
@@ -621,6 +625,10 @@ mod tests {
                             "type": "array",
                             "items": {"type": "string", "enum": ["auto", "high speed"]},
                         },
+                        "level": {
+                            "type": "integer",
+                            "oneOf": [{"const": 1, "title": "LOW"}, {"const": 3, "title": "HIGH"}],
+                        },
                     },
                     "required": ["mode"],
                 }),
@@ -650,24 +658,28 @@ mod tests {
         ]
     }
 
-    /// A fan with a mode and the list of modes it supports, both enums.
-    fn fan_fields() -> [(&'static str, FieldType); 2] {
+    /// A fan with a mode and the list of modes it supports, both string
+    /// enums, and a level, an integer enum.
+    fn fan_fields() -> [(&'static str, FieldType); 3] {
+        let value = |name: &str, raw: JsonValue| EnumValue {
+            name: name.to_string(),
+            raw,
+        };
         let fan_mode = FieldType::Enum(
             "FanMode".to_string(),
             vec![
-                EnumValue {
-                    name: "AUTO".to_string(),
-                    raw: "auto".to_string(),
-                },
-                EnumValue {
-                    name: "HIGH_SPEED".to_string(),
-                    raw: "high speed".to_string(),
-                },
+                value("AUTO", json!("auto")),
+                value("HIGH_SPEED", json!("high speed")),
             ],
+        );
+        let fan_level = FieldType::Enum(
+            "FanLevel".to_string(),
+            vec![value("LOW", json!(1)), value("HIGH", json!(3))],
         );
         [
             ("mode", fan_mode.clone()),
             ("speeds", FieldType::List(Box::new(fan_mode))),
+            ("level", fan_level),
         ]
     }
 
@@ -1244,6 +1256,41 @@ mod tests {
             [(
                 "room/fan/set".to_string(),
                 json!({"mode": "high speed", "speeds": ["auto", "high speed"]})
+            )]
+        );
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_integer_enums_are_named_in_queries_and_mutations() {
+        let cache = Arc::new(TopicCache::new());
+        // As published by a service that writes integers as floats.
+        cache.insert("room/fan", json!({"mode": "auto", "level": 1.0}));
+        let service = service(&cache, Some(Clone::clone));
+
+        let query = execute(&cache, &service, "{ room { fan { level } } }").await;
+        let mutation = execute(
+            &cache,
+            &service,
+            "mutation { room { fan(input: {level: HIGH}) { level } } }",
+        )
+        .await;
+
+        assert!(query.errors.is_empty(), "{:?}", query.errors);
+        assert_eq!(
+            query.data.into_json().unwrap()["room"]["fan"],
+            json!({"level": "LOW"})
+        );
+        assert!(mutation.errors.is_empty(), "{:?}", mutation.errors);
+        assert_eq!(
+            mutation.data.into_json().unwrap()["room"]["fan"],
+            json!({"level": "HIGH"})
+        );
+        assert_eq!(
+            *service.published.lock().unwrap(),
+            [(
+                "room/fan/set".to_string(),
+                json!({"mode": "auto", "level": 3})
             )]
         );
     }

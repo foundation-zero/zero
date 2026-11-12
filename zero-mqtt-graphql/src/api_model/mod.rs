@@ -146,7 +146,8 @@ pub enum FieldType {
     /// tuple written with JSON Schema 2020-12 `prefixItems`, which the
     /// AsyncAPI 3.0 (draft-07) parser drops.
     Json,
-    /// A string with a fixed set of values, named after its schema.
+    /// A string or integer with a fixed set of values, named after its
+    /// schema.
     Enum(String, Vec<EnumValue>),
     /// A string in JSON Schema `format: date-time`, an RFC 3339 timestamp:
     /// `2026-11-10T09:30:00Z`.
@@ -163,13 +164,13 @@ pub enum FieldType {
     Boolean,
 }
 
-/// One value of a string enum.
+/// One value of an enum.
 #[derive(Debug, Clone, PartialEq)]
 pub struct EnumValue {
     /// The GraphQL name: `IN_USE`.
     pub name: String,
-    /// The value on the wire: `in use`.
-    pub raw: String,
+    /// The value on the wire, a string or an integer: `"in use"`, `3`.
+    pub raw: serde_json::Value,
 }
 
 /// What a Receive Topic's MQTT topic adds to its State topic's: Receive topic

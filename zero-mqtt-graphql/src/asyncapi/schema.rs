@@ -216,6 +216,17 @@ fn type_from_schema(
         };
     }
 
+    // Named constants without a `type`: an enum of whatever their values are.
+    if let Some(constants) = named_constants(schema) {
+        let plain = if constants.iter().all(|(raw, _)| raw.is_string()) {
+            FieldType::String
+        } else if constants.iter().all(|(raw, _)| raw.is_i64()) {
+            FieldType::Int
+        } else {
+            FieldType::Json
+        };
+        return Some(enum_field_type(name, schema, plain));
+    }
     // A union, nullable when one of its arms is `null`.
     for arms in [&schema.any_of, &schema.one_of].into_iter().flatten() {
         let types = arms.iter().enumerate().map(|(index, sub)| {
@@ -265,16 +276,15 @@ fn field_type_for_json_type(
         }
         "array" => Some(array_field_type(name, schema, schema_entries)),
         "number" => Some(FieldType::Float),
-        "integer" => Some(FieldType::Int),
+        "integer" => Some(enum_field_type(name, schema, FieldType::Int)),
         "boolean" => Some(FieldType::Boolean),
         "string" => Some(string_field_type(name, schema)),
         _ => None,
     }
 }
 
-/// A date or time when the string has a date or time `format`, an enum when
-/// it has a fixed set of values that each have their own GraphQL name,
-/// otherwise a plain string.
+/// A date or time when the string has a date or time `format`, otherwise an
+/// enum or a plain string (see [`enum_field_type`]).
 fn string_field_type(name: String, schema: &Schema) -> FieldType {
     match schema.format.as_deref() {
         Some("date-time") => return FieldType::DateTime,
@@ -283,17 +293,30 @@ fn string_field_type(name: String, schema: &Schema) -> FieldType {
         Some("duration") => return FieldType::Duration,
         _ => {}
     }
-    let Some(raw_values) = &schema.enum_values else {
-        return FieldType::String;
+    enum_field_type(name, schema, FieldType::String)
+}
+
+/// An enum when the schema has a fixed set of values that each have their
+/// own GraphQL name, otherwise `plain`. The values and their names come from
+/// [`named_constants`] when the schema has them, otherwise from `enum`,
+/// where only strings name themselves, so an integer `enum` stays `plain`.
+fn enum_field_type(name: String, schema: &Schema, plain: FieldType) -> FieldType {
+    let constants = named_constants(schema);
+    let candidates: Vec<(&Value, Option<&str>)> = match (&constants, &schema.enum_values) {
+        (Some(constants), _) => constants
+            .iter()
+            .map(|&(raw, title)| (raw, Some(title)))
+            .collect(),
+        (None, Some(raw_values)) => raw_values.iter().map(|raw| (raw, raw.as_str())).collect(),
+        (None, None) => return plain,
     };
-    let values: Option<Vec<EnumValue>> = raw_values
+    let values: Option<Vec<EnumValue>> = candidates
         .iter()
-        .map(|value| {
-            let raw = value.as_str()?;
-            let name = enum_value_name(raw)?;
+        .map(|&(raw, source)| {
+            (raw.is_string() || raw.is_i64()).then_some(())?;
             Some(EnumValue {
-                name,
-                raw: raw.to_string(),
+                name: enum_value_name(source?)?,
+                raw: raw.clone(),
             })
         })
         .collect();
@@ -303,13 +326,35 @@ fn string_field_type(name: String, schema: &Schema) -> FieldType {
     };
     match values {
         Some(values) if distinct(&values) => FieldType::Enum(name, values),
+        // An integer `enum` has no names, so it is a plain integer.
+        None if constants.is_none() && plain == FieldType::Int => plain,
         _ => {
+            let raw: Vec<&Value> = candidates.iter().map(|&(raw, _)| raw).collect();
             warn!(
-                "Enum {name} {raw_values:?} has values without a distinct GraphQL name, using String"
+                "Enum {name} {raw:?} has values without a distinct GraphQL name, using {plain:?}"
             );
-            FieldType::String
+            plain
         }
     }
+}
+
+/// The values of a schema written as named constants, the standard JSON
+/// Schema way to name enum values: a `oneOf` whose every arm is a `const`
+/// with a `title`, as in `{"oneOf": [{"const": 1, "title": "CONSTANT_SPEED"},
+/// …]}`. `None` for any other schema.
+fn named_constants(schema: &Schema) -> Option<Vec<(&Value, &str)>> {
+    schema
+        .one_of
+        .as_ref()?
+        .iter()
+        .map(|arm| match arm {
+            SubSchema::Schema(boxed) => match boxed.as_ref() {
+                RefOr::Item(arm) => Some((arm.const_value.as_ref()?, arm.title.as_deref()?)),
+                RefOr::Reference(_) => None,
+            },
+            SubSchema::Bool(_) => None,
+        })
+        .collect()
 }
 
 /// A list when every element has the same known type, otherwise any JSON.
@@ -500,25 +545,84 @@ mod tests {
                 "clash".to_string(),
                 json!({"type": "string", "enum": ["a b", "a_b"]}),
             ),
+            (
+                "named_pump_mode".to_string(),
+                json!({
+                    "type": "integer",
+                    "oneOf": [
+                        {"const": 1, "title": "CONSTANT_SPEED"},
+                        {"const": 3, "title": "constant pressure"}
+                    ]
+                }),
+            ),
+            (
+                "named_state".to_string(),
+                json!({
+                    "type": "string",
+                    "oneOf": [{"const": "in use", "title": "OCCUPIED"}]
+                }),
+            ),
+            (
+                "untyped_named_mode".to_string(),
+                json!({"oneOf": [{"const": 1, "title": "ONE"}, {"const": 2, "title": "TWO"}]}),
+            ),
+            (
+                "untitled".to_string(),
+                json!({
+                    "type": "integer",
+                    "oneOf": [{"const": 1, "title": "ONE"}, {"const": 3}]
+                }),
+            ),
         ]);
 
         let fields = extract_fields_from_schema(&schema_with_properties(props), None);
 
-        let value = |name: &str, raw: &str| EnumValue {
+        let value = |name: &str, raw: Value| EnumValue {
             name: name.to_string(),
-            raw: raw.to_string(),
+            raw,
         };
         assert_eq!(
             fields["state"],
             FieldType::Enum(
                 "state".to_string(),
-                vec![value("IN_USE", "in use"), value("STANDBY", "standby")]
+                vec![
+                    value("IN_USE", json!("in use")),
+                    value("STANDBY", json!("standby"))
+                ]
             )
         );
-        // Integer values have no names to use.
+        // Integer values without names have no names to use.
         assert_eq!(fields["pump_mode"], FieldType::Int);
         // Both values would be named `A_B`.
         assert_eq!(fields["clash"], FieldType::String);
+        // Named values take those names, made valid GraphQL names.
+        assert_eq!(
+            fields["named_pump_mode"],
+            FieldType::Enum(
+                "named_pump_mode".to_string(),
+                vec![
+                    value("CONSTANT_SPEED", json!(1)),
+                    value("CONSTANT_PRESSURE", json!(3))
+                ]
+            )
+        );
+        assert_eq!(
+            fields["named_state"],
+            FieldType::Enum(
+                "named_state".to_string(),
+                vec![value("OCCUPIED", json!("in use"))]
+            )
+        );
+        // Named constants need no `type`.
+        assert_eq!(
+            fields["untyped_named_mode"],
+            FieldType::Enum(
+                "untyped_named_mode".to_string(),
+                vec![value("ONE", json!(1)), value("TWO", json!(2))]
+            )
+        );
+        // A constant without a title is no named constant.
+        assert_eq!(fields["untitled"], FieldType::Int);
     }
 
     #[test_log::test]
