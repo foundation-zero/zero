@@ -6,6 +6,7 @@ from zero_data.asyncapi import (
     JSON_TYPES,
     SCHEMA_REF_PREFIX,
     build_asyncapi,
+    channel,
     component_name,
     extract_schemas,
     key,
@@ -16,7 +17,9 @@ from zero_data.io_list.enums import ENUMS
 from zero_data.io_list.managed_topics import (
     ComponentType,
     ManagedTopic,
+    ValveType,
     extract_managed_topics,
+    extract_parts,
 )
 from zero_data.io_list.types import IOResult, IOTopic, IOValue
 
@@ -97,6 +100,30 @@ def test_enum_fields_have_named_values(component, field, enum):
     assert schemas[enum]["oneOf"] == [
         {"const": member.value, "title": member.name} for member in ENUMS[field]
     ]
+
+
+@pytest.mark.parametrize(
+    ("technical_name", "valve_type"),
+    [
+        ("dhw-mix-boosting", ValveType.MIX),
+        ("dhw-switch-aft", ValveType.SWITCH),
+        ("dhw-flowcontrol-aft", ValveType.FLOW_CONTROL),
+    ],
+)
+def test_valves_carry_their_valve_type(technical_name, valve_type):
+    address = f"marpower/500000-thrs/dhw/{technical_name}"
+    topic = extract_parts(IOTopic(address, [IOValue("PositionRel", "REAL")]))
+
+    assert isinstance(topic, ManagedTopic)
+    assert channel(topic)["x-zero-valve-type"] == valve_type
+
+
+def test_other_components_have_no_valve_type():
+    address = "marpower/500000-thrs/dhw/dhw-flow-dc"
+    topic = extract_parts(IOTopic(address, [IOValue("Flow", "REAL")]))
+
+    assert isinstance(topic, ManagedTopic)
+    assert "x-zero-valve-type" not in channel(topic)
 
 
 def test_document_does_not_depend_on_io_list_order(io_result: IOResult):

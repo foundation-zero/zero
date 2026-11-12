@@ -29,6 +29,14 @@ class ComponentType(StrEnum):
     PCM_CHARGE_CONTROLLER = "pcm_charge_controller"
 
 
+class ValveType(StrEnum):
+    """A valve's kind, which its technical name carries (`dhw-mix-boosting`)."""
+
+    MIX = "mix"
+    SWITCH = "switch"
+    FLOW_CONTROL = "flowcontrol"
+
+
 SYSTEMS = (
     "250000-fresh-water",
     "250000-tech-water",
@@ -66,6 +74,7 @@ class ManagedTopic:
     technical_name: str
     component: ComponentType
     topic: IOTopic
+    valve_type: ValveType | None = None
 
 
 def extract_parts(topic: IOTopic) -> ManagedTopic | str:
@@ -105,6 +114,7 @@ def extract_parts(topic: IOTopic) -> ManagedTopic | str:
                 technical_name,
                 COMPONENTS[component_key],
                 topic,
+                ValveType(component_key) if component_key in ValveType else None,
             )
     return "Component is not of known type"
 

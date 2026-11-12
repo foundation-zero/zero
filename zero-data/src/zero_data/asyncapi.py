@@ -193,6 +193,7 @@ def channel(topic: ManagedTopic) -> dict[str, Any]:
         if topic.topic.yard_tag
         else None,
         "x-zero-component-type": topic.component,
+        **({"x-zero-valve-type": topic.valve_type} if topic.valve_type else {}),
         "messages": {
             "message": {
                 "payload": {
