@@ -26,6 +26,8 @@ COMPONENT_TYPE_TABLE: dict[ComponentType, str] = {
     ComponentType.PUMP: "pumps",
     ComponentType.TEMPERATURE: "temperatures",
     ComponentType.FLOW: "flows",
+    # Flow-only meters share the table of the other flow meters; only the Spec tells them apart.
+    ComponentType.FLOW_ONLY: "flows",
     ComponentType.PRESSURE: "pressures",
     ComponentType.RH33: "rh33s",
     ComponentType.PYRANOMETER: "pyranometers",

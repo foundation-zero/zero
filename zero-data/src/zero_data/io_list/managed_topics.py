@@ -15,6 +15,7 @@ class ComponentType(StrEnum):
     PUMP = "pump"
     TEMPERATURE = "temperature"
     FLOW = "flow"
+    FLOW_ONLY = "flow_only"
     PRESSURE = "pressure"
     RH33 = "rh33"
     PYRANOMETER = "pyranometer"
@@ -77,6 +78,17 @@ class ManagedTopic:
     valve_type: ValveType | None = None
 
 
+def component_type(component_key: str, topic: IOTopic) -> ComponentType:
+    component = COMPONENTS[component_key]
+    # The fresh water, tech water and sea water meters publish only a flow; the THRS
+    # meters also a quantity and a temperature. All are named `<module>-flow-…`, so only
+    # their fields tell them apart.
+    fields = {field.name for field in topic.fields}
+    if component == ComponentType.FLOW and fields == {"Flow"}:
+        return ComponentType.FLOW_ONLY
+    return component
+
+
 def extract_parts(topic: IOTopic) -> ManagedTopic | str:
     # example topics
     # marpower/500000-thrs/thrusters/thrusters-switch-aft
@@ -112,7 +124,7 @@ def extract_parts(topic: IOTopic) -> ManagedTopic | str:
                 system_name,
                 module_name,
                 technical_name,
-                COMPONENTS[component_key],
+                component_type(component_key, topic),
                 topic,
                 ValveType(component_key) if component_key in ValveType else None,
             )

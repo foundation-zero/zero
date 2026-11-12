@@ -126,6 +126,23 @@ def test_other_components_have_no_valve_type():
     assert "x-zero-valve-type" not in channel(topic)
 
 
+def test_flow_meters_that_measure_only_a_flow_have_their_own_schema():
+    meter = "marpower/500000-thrs/dhw/dhw-flow-dc"
+    flow_meter = extract_parts(
+        IOTopic(meter, [IOValue(name, "REAL") for name in ("Flow", "Temperature")])
+    )
+    flow_only_meter = extract_parts(IOTopic(meter, [IOValue("Flow", "REAL")]))
+    assert isinstance(flow_meter, ManagedTopic)
+    assert isinstance(flow_only_meter, ManagedTopic)
+
+    schemas = extract_schemas([flow_meter, flow_only_meter])
+
+    assert flow_meter.component == ComponentType.FLOW
+    assert flow_only_meter.component == ComponentType.FLOW_ONLY
+    assert set(schemas["Flow"]["properties"]) == {"Flow", "Temperature"}
+    assert set(schemas["FlowOnly"]["properties"]) == {"Flow"}
+
+
 def test_document_does_not_depend_on_io_list_order(io_result: IOResult):
     reversed_result = IOResult(io_result.io_list, list(reversed(io_result.topics)))
 
