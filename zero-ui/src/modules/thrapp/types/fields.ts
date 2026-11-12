@@ -111,11 +111,7 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.Pvt]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
   };
-  [MimicComponentType.PvtString]: {
-    flow: SensorComponentType.Flow;
-    supplyTemperature: SensorComponentType.Temperature;
-    returnTemperature: SensorComponentType.Temperature;
-  };
+  [MimicComponentType.PvtString]: EmptyObject;
   [MimicComponentType.Thruster]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
     pcs: SensorComponentType.Pcs;
@@ -369,9 +365,7 @@ export type CustomFieldDefinitions = CustomFields<{
     group: PvtGroup;
     mimic?: MimicKey;
   };
-  [MimicComponentType.PvtString]: {
-    label: string;
-  };
+  [MimicComponentType.PvtString]: EmptyObject;
   [MimicComponentType.Thruster]: {
     titleKey: "fwdTitle" | "aftTitle";
   };
@@ -409,7 +403,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.PropulsionCooler]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.ShorePowerConverter]: SensorComponentType.ShorePowerGroup;
   [MimicComponentType.Pvt]: SensorComponentType.Pvt;
-  [MimicComponentType.PvtString]: undefined;
+  [MimicComponentType.PvtString]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.Thruster]: SensorComponentType.Thruster;
   [MimicComponentType.AdsorptionChiller]: SensorComponentType.AdsorptionChiller;
   [MimicComponentType.FreshwaterCircuit]: undefined;

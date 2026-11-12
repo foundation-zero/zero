@@ -28,7 +28,7 @@ const { items, labels } = useTranslations();
     <TooltipList>
       <TooltipListHeader>{{ labels("output") }}</TooltipListHeader>
       <SensorValue
-        :source="sensors.flow"
+        :source="source"
         field="flow"
       >
         <Partials.ListItem>
@@ -36,16 +36,16 @@ const { items, labels } = useTranslations();
         </Partials.ListItem>
       </SensorValue>
       <SensorValue
-        :source="sensors.supplyTemperature"
-        field="temperature"
+        :source="source"
+        field="temperatureSupply"
       >
         <Partials.ListItem>
           {{ items("incomingTemperature") }}
         </Partials.ListItem>
       </SensorValue>
       <SensorValue
-        :source="sensors.returnTemperature"
-        field="temperature"
+        :source="source"
+        field="temperatureReturn"
       >
         <Partials.ListItem>
           {{ items("outgoingTemperature") }}
