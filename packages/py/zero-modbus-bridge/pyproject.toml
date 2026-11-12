@@ -67,4 +67,7 @@ fallback_version = "0.0.0"
 packages = ["src/zero_modbus_bridge"]
 
 [tool.uv]
+# Apps install this as a non-editable path dependency; without the source
+# files here uv reuses its cached wheel when only the code changed.
+cache-keys = [{ file = "pyproject.toml" }, { file = "src/**/*.py" }]
 default-groups = ["dev", "test"]
