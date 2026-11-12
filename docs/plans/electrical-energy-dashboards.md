@@ -1,8 +1,10 @@
 # Plan: fast electrical energy dashboards (24 h and history)
 
-Temporary: delete this file when the work is done. It records a design session held on 2026-11-09 and 2026-11-10. Use it as the handoff for the sessions that write the design and build it.
+Temporary: delete this file when the work is done. It records design sessions held on 2026-11-09, 2026-11-10 and 2026-11-12. Use it as the handoff for the sessions that write the design and build it.
 
-**Status:** the requirements and most of the decisions are settled. **The architecture (path A, C or D below) is not chosen yet.** Read [Paths](#paths) and [Measurements](#measurements), make that choice first, then follow [Next steps](#next-steps).
+**Status:** the requirements and most of the decisions are settled. **The architecture (path A, C, D or E below) is not chosen yet.** Read [Paths](#paths) and [Measurements](#measurements), make that choice first, then follow [Next steps](#next-steps).
+
+The 2026-11-12 session tested three new ideas: thin dbt views without aggregation, aggregation in Grafana, and sampling instead of averaging. See [Thin views, Grafana aggregation and sampling](#thin-views-grafana-aggregation-and-sampling-tested-2026-11-12). It led to path E.
 
 ## Goal
 
@@ -135,6 +137,81 @@ Tested locally on 2026-11-11, to see whether Range Queries (`avg(x) RANGE '1m' .
 
 **Where they can help:** inline 24 h queries on raw data (paths C and D). For example the flow canvas's 5-minute rolling average, or gap-filled 1-minute buckets. Every panel then carries the full SQL with `$__timeFilter("timestamp")` inside each Range Query and each union part, because views can't hold them.
 
+### Thin views, Grafana aggregation and sampling (tested 2026-11-12)
+
+Three ideas were tested. Local tests used Greptime 1.1.3 with synthetic `power_tags` data: 10 topics, one sample every 4 s, 3–7 days in separate files. Pushdown was read from the raw scan node in `EXPLAIN ANALYZE`. The Zero measurements are read-only and inline (the SQL a thin view would expand to), one query at a time, with `/health` checked between runs.
+
+**Publish rates on Zero (samples per topic per minute):** battery, PV converters and ESI 60; DC switches ~36; `power_tags` 15; 24 V 4; Aradex ~3. Aradex is published on change, but still has a sample in ~98 % of minutes.
+
+#### 1. Thin dbt views without aggregation: the filter reaches the raw scan
+
+Views that only rename, filter, derive columns and join metadata keep Grafana's time filter at the raw time index. The dbt structure (staging → silver → gold) can stay; only the `date_bin` + `GROUP BY` moves out of the views into the panel SQL. Greptime still does the aggregation.
+
+| View shape (local, 24 h of 7 days selected) | Raw rows read |
+|---|---|
+| Today's gold view: `date_bin` + `GROUP BY` inside the view | 1,512,000 (all 7 days, 4 files) |
+| Thin view; the panel aggregates | 216,000 (1 file) |
+| Thin view with the metadata join inside it | 216,000 |
+| `UNION ALL` of two sources with derived columns (`× 100`, `greatest(-x, 0)`) | 216,000 per source |
+| A sampling view (`first_value` or `row_number()` per minute inside the view) | 1,512,000: blocked, like today's gold views |
+
+Two conditions:
+- **Aggregate per topic first, then join metadata, in the panel.** On Zero, `power_tags` 24 h took 0.66 s that way and 2.4 s with the row-level join from the view. Group power is the *sum* of per-topic averages anyway, so the panel needs the two-step query regardless.
+- **Logic that needs a shared time bucket can't be row level.** 24 V current × voltage come from different samples and must be aligned per bucket in the panel query (or in a rollup).
+
+Cost still grows with the selected range, because every query reads all raw rows in it (Zero, aggregate then join):
+
+| Query | 24 h | 7 d | 30 d |
+|---|---|---|---|
+| `power_tags` per topic, then metadata | 0.58–0.66 s | 1.0–2.0 s | 2.6–3.6 s |
+| Battery per topic per minute | 0.5–0.7 s | 3.6–4.1 s | ~25 s (2026-11-10) |
+
+#### 2. Aggregation in Grafana: ruled out
+
+- **Transfer:** raw `power_tags` over Greptime's HTTP API, which the Grafana plugin uses, took 2 s for 10 min (19,377 rows, 1.3 MB), 14 s for 1 h (116,488 rows, 8 MB) and 96 s for 6 h (688,835 rows, 48 MB). 24 h is ~2.7 M rows for `power_tags` alone.
+- **Grafana 13 limits (docs):** SQL expressions run on the Grafana server and fail above `sql_expression_cell_limit` = 100,000 input cells (rows × columns) or after `sql_expression_timeout` = 10 s. SQL data sources are capped at `[dataproxy] row_limit` = 1,000,000 rows. Transformations have no documented limits or execution location.
+- **Use Grafana only for the last step:** reshaping a few thousand rows that Greptime already aggregated, as the panels do now.
+
+#### 3. Sampling (value at the start of each minute instead of the average): accurate, but no faster
+
+- **Accuracy (Zero, 8 days, per day):** `power_tags` energy from the first sample per minute differs from the minute average by 0.05–1.5 %, mostly ~0.3 %. Battery charge and discharge differ by under 1 %.
+- **Speed: no gain.** The database can't jump to the first sample of each minute: it reads every row in the range, then picks one. Locally `first_value`, `last_value`, `row_number() = 1`, a filter on the first 4 s of each minute, and a Range Query with `last_value` all read exactly as many rows as `avg()`. On Zero, 30 days took 3.1–3.6 s with `first_value` and 2.6–3.1 s with `avg`. (An earlier run that looked 2× faster was the file cache.)
+- **In a view it is harmful:** the minute bucket has to be inside the view, which blocks the time filter (table above).
+- Sampling only saves work if fewer rows are *stored*: at ingest (out of scope) or as rollup content, where it is no cheaper than an average.
+
+#### 4. `INSERT INTO … SELECT` from a view works: rollups without Flows
+
+Tested locally to see whether thin views can feed rollup tables (open decision 3). Flows can't read views; `INSERT … SELECT` can.
+
+| Test | Result |
+|---|---|
+| Source: gold view on a silver view, with the metadata join | Works: 240 rows (10 topics × 24 h), exactly one day of samples |
+| Time filter at the raw scan | Yes. The SELECT part reads only the window (1 file); runtime scales with it: 33 ms for 2 h, 50 ms for 1 day, 110 ms for 3 days. `EXPLAIN ANALYZE` of an INSERT isn't supported ("Insert into not implemented"), so this is checked via the SELECT and the timings. |
+| Rerun the same INSERT | Upserts on primary key + time index: 240 rows after 3 runs, no duplicates |
+| Late data | Picked up by the next run: the 10:00 hour went from 900 to 1,000 samples |
+| Source: `UNION ALL` gold view (`power_tags` + Aradex split into Propulsion and Hydrogeneration) | Works; the filter reaches each part, old files are pruned |
+| Filter relative to `now()`, as a scheduled job uses | Works |
+
+Cost on Zero of the SELECT part of a run over the last 2 h (read-only): `power_tags` with metadata per hour or per minute 0.53 s; battery per minute 0.43 s.
+
+Sink pattern used (as for Flows: primary key, not append mode):
+
+```sql
+CREATE TABLE rollups.electrical_1h (
+  topic STRING, src STRING, main_group STRING,
+  time_window TIMESTAMP(9) TIME INDEX,
+  p_sum DOUBLE, n BIGINT, update_at TIMESTAMP(3),
+  PRIMARY KEY (topic, src, main_group)
+);
+INSERT INTO rollups.electrical_1h (topic, src, main_group, time_window, p_sum, n, update_at)
+SELECT topic, src, main_group, date_bin('1 hour'::INTERVAL, ts) AS tw, sum(power), count(power), now()
+FROM views.gld_electrical
+WHERE ts >= now() - INTERVAL '2 hours'
+GROUP BY topic, src, main_group, tw;
+```
+
+Watch out: `source` is a reserved word in Greptime (quote it or use another name), and `Int64 * INTERVAL` isn't supported, so generate test timestamps outside SQL.
+
 ## Measurements
 
 All times are server time (`execution_time_ms`). The Zero measurements were taken on 2026-11-10, while Zero was healthy.
@@ -147,6 +224,12 @@ All times are server time (`execution_time_ms`). The Zero measurements were take
 | **A full D-style panel** (daily production and consumption; `power_tags` + 24 V current×voltage + 4 Aradex + 3 PV + busbar), aggregate then join: 1 d / 7 d / 30 d / 60 d | **0.28 s / 2.2 s / 4.9 s / 16.9 s** |
 | The same panel with join then aggregate: 1 d / 7 d / 30 d | 3.1 s / 24 s / >60 s |
 | Rollup tables, locally, 24 h through gold views (3 months of synthetic 1 m data) | ~15 ms; 1 of 13+ files read |
+| Raw `power_tags`, aggregate then join, Zero 2026-11-12: 24 h / 7 d / 30 d | 0.58–0.66 s / 1.0–2.0 s / 2.6–3.6 s |
+| Raw `power_tags` 24 h, row-level metadata join then aggregate (as through a thin view with the join) | 2.4 s |
+| Raw battery per minute, Zero 2026-11-12: 24 h / 7 d | 0.5–0.7 s / 3.6–4.1 s |
+| Sampling (`first_value` per minute) instead of `avg`, `power_tags` 30 d | 3.1–3.6 s vs 2.6–3.1 s: no gain |
+| Raw rows to Grafana over the HTTP API, `power_tags` 1 h / 6 h | 14 s / 96 s |
+| SELECT part of a scheduled rollup run over 2 h: `power_tags` / battery | 0.53 s / 0.43 s |
 
 Grafana's `$__interval` (bucket size calculated from the range) reduces the rows **returned**, not the rows **read**. Raw-query cost is driven by the range × the raw sample rate.
 
@@ -347,11 +430,44 @@ These hold whichever path is chosen, unless the path says otherwise.
 
 Range Queries don't rescue D: they read the same raw rows, and they can't be put in views. See [Range Queries](#greptimedb-113-range-queries-not-an-alternative-to-rollups).
 
+**D can keep the dbt structure:** thin views without aggregation keep the time filter at the raw scan, so the panels can query views instead of raw tables, and the SQL in the panels gets simpler. This doesn't change D's cost. See [Thin views](#thin-views-grafana-aggregation-and-sampling-tested-2026-11-12).
+
+### E: thin dbt views for everything, rollups by scheduled `INSERT … SELECT`
+
+Added 2026-11-12. Combines D's thin views with A's stored history, without Flows.
+
+**What it is:**
+- The dbt structure stays: staging → silver → gold, but **all views are thin**: rename, validity filters, derived columns (`× 100`, sign), metadata join, `UNION ALL` of sources. **No `date_bin` / `GROUP BY` in any view.**
+- The **24 h dashboard** queries the gold views directly. The panel SQL aggregates per topic and bucket with `$__timeFilter`, then sums per group. Live, real time.
+- The **history dashboard** reads `_1h` rollup tables (and `_1m` if needed), filled by a **scheduled `INSERT INTO rollup SELECT … FROM <gold view> WHERE ts >= now() - INTERVAL '2 hours' GROUP BY topic, …, bucket`**, for example every 5 min. The **backfill** is the same statement over older windows.
+- Logic that needs a shared bucket (24 V current × voltage) is done in the panel query and in the rollup SELECT, from the same view.
+- The staging layer can stay. The decision to drop it (see [dbt](#dbt)) was made because Flows can't read views, which doesn't apply here. The silver rules (raw units, validity filters, no metadata) still hold, but as row-level views instead of per-minute tables.
+
+**Pros:**
+- **One logic path:** the same views feed the live panels and the rollups. A fix in a view applies to both (history after re-running the backfill).
+- History is fast and constant cost, as in A. Solves the battery history problem.
+- **No Flows:** no silent errors, no `flow` materialization, no ~18 Flows, no Flow limits (views, joins and unions are all allowed as source).
+- Late data and reruns are safe (upsert on primary key + time). Tested locally.
+- The rollup cost per run is small (0.4–0.5 s per source for 2 h on Zero).
+- The 24 h dashboard stays real time.
+
+**Cons:**
+- **Needs a scheduler**, which doesn't exist yet. Candidate: a Kubernetes CronJob running a `zero-data` CLI command (`rollups refresh`), next to the planned `rollups backfill`. Not tested.
+- Freshness monitoring is needed (the `update_at` column; a freshness stat in the dashboards).
+- History lags by one schedule interval plus the run time.
+- The 24 h panels cost grows with viewers and refreshes, as in C and D (0.6 s per source for 24 h).
+- The panel SQL carries the two-step aggregation (per topic, then per group).
+- `dbt-deploy` only changes definitions; the rollup tables need their own creation (dbt `table` materialization with a pre-created sink, or the CLI).
+- Not yet tested on Zero with writes; only locally and read-only.
+
+**When to choose it:** if one logic path matters and the Flow machinery is unwanted. It meets "smooth for 1–2 months" through the rollups, and keeps the 24 h data live.
+
 ## Open decisions
-1. **Path: A, C or D.** Not decided. See above.
-2. Whether the hourly Flow should read the 1 m table for every silver table (assumed yes).
-3. **Rollups without Flows** (raised 2026-11-11, not evaluated): run the backfill CLI's `INSERT INTO … SELECT` on a schedule, for example every 1–5 min over the last hour or two. It upserts on topic + time, so reruns are safe. It avoids the 1.1.3 Flow limits (silent errors, the `flow` materialization, ~18 Flows), but needs a scheduler that doesn't exist yet and its own freshness monitoring. Lag is one schedule interval.
-4. Retiring dbt entirely: a later, separate cleanup.
+1. **Path: A, C, D or E.** Not decided. See above.
+2. Whether the hourly Flow should read the 1 m table for every silver table (assumed yes; paths A and C).
+3. **Rollups without Flows** (raised 2026-11-11, **evaluated 2026-11-12**): `INSERT INTO … SELECT` from a view works, upserts safely and picks up late data. It is the core of path E. Still open: which scheduler (Kubernetes CronJob with a `zero-data` CLI command is the candidate), the schedule interval (e.g. 5 min over the last 2 h), and a first write test on Zero.
+4. **Rollup bucket for path E:** `_1h` only, or also `_1m` (the 24 h dashboard can read raw through the views, so `_1m` may not be needed).
+5. Retiring dbt entirely: a later, separate cleanup.
 
 ## Follow-ups (out of scope)
 - **Shore power:** a new source, a silver Flow and table, and a series in the combined gold view. Can be added during or after this work.
@@ -359,7 +475,7 @@ Range Queries don't rescue D: they read the same raw rows, and they can't be put
 - Retention or TTL for raw data and rollups.
 
 ## Next steps
-1. Choose the path.
+1. Choose the path. If E: first test a scheduled run on Zero (one source, `_1h`, a test database) and choose the scheduler.
 2. Write the design plan for that path from this file: models, tables, Flows, views and dashboard queries.
 3. Build it locally:
    - start the local Greptime with `docker compose --profile data-collection up -d --no-deps greptimedb`;
