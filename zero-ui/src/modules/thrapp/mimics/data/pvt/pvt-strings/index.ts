@@ -22,7 +22,7 @@ const toPvtString = (
     },
   });
 
-// String 1.2 has an naming conflict with string 12 and thus does not exist yet
+// String 1.2 has a naming conflict with string 12 and thus does not exist yet
 export const PVT_STRING_DATA = toFieldsMap({
   [MimicComponentType.PvtString]: {
     "aft-string-1.1": toPvtString(
