@@ -7,12 +7,12 @@ not obvious from the code: where the data comes from and how to look at live dat
 ## Sources of truth
 
 - **The loads Google Sheet** (`11sE_LaWqBz4rfQrQgS-j8XIEl9pCgsJEX_HSi0XDoxw`) holds the technical
-  names, the max loads (lower and upper warning and alarm thresholds) and the SailPack mapping. It
-  is edited in meetings with the rigging and naval team, so code follows the sheet, not the other
-  way round.
+  names, the max loads (lower and upper warning and alarm thresholds), the PLC reference of every
+  load and the SailPack mapping with its purchases. It is edited in meetings with the rigging and
+  naval team, so code follows the sheet, not the other way round.
 - **The registry** (`src/loads/registry/registry.py`, built from the models in
-  `src/loads/sensors/`) is the source of truth for which variables the app reads and from which MQTT
-  topic and payload path.
+  `src/loads/sensors/`) defines which variables the app reads and from which MQTT topic and payload
+  path. That path must match the sheet's PLC reference.
 - **The SailPack load cases** (`src/sailpack/load_cases/*.htm`) give the target loads. Every load
   case is modelled on port tack; the starboard tack is a ps↔sb mirror.
 
@@ -33,9 +33,14 @@ is also checked by `tests/integration/test_loads_sheet.py`. To change the sheet,
 let the user import it into the tab with "replace current sheet" (keeps the gid). The claude.ai Google Drive connector
 is not authenticated, so a session cannot edit the sheet.
 
-- **Max loads** are read by header name (`src/sailpack/max_loads.py`). The runner block thresholds
-  are not in the sheet; they are derived from the runner tail thresholds with the Vitters PLC
-  factors (`RUNNER_BLOCK_LOAD_PER_TAIL_LOAD` in `src/sailpack/seed_utils.py`).
+- **Max loads** are read by header name (`src/sailpack/max_loads.py`), except the rows the team has
+  not settled yet (`IGNORED_ROWS`). A PLC reference such as
+  `FE205_MainSheetCaptiveWinch.st_Load.i_Load` maps to the topic
+  `sail-systems/fe205-main-sheet-captive-winch` and the payload key `st_Load/i_Load`; the check
+  compares it with the registry ignoring case, as the sheet's casing differs from what the PLC
+  publishes.
+- **Purchases**: a SailPack cable load times the mapping's `Purchase (sailpack : function)` gives
+  the load the app shows, e.g. 2 for a runner block from `RUNNER_TAIL`. Every mapped load needs one.
 - **Seeds**: SailPack targets go into `loads.reference_values`, the max loads into
   `loads.thresholds`. Targets outside their thresholds are clamped to the warning, or to the alarm
   where that side has no warning (the DB CHECK constraints require

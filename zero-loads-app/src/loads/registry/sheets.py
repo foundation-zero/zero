@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import requests
 
 from loads.registry.registry import VARIABLES
+from loads.util import camel_to_kebab
 from sailpack.max_loads import (
     THRESHOLD_COLUMNS,
     kilogram_to_tonne,
@@ -20,6 +21,10 @@ SAILPACK_MAPPING_GID = 1005053580
 MAX_LOADS_GID = 321612479
 
 SAILPACK_MAPPING_HEADER_ROWS = 1
+
+SAIL_SYSTEM_TOPIC_PREFIX = "sail-systems/"
+# The PLC reference of the loads that do not come from the sail system PLC, such as the fiber optics.
+NOT_FROM_THE_PLC = "n/a"
 
 
 def download_tab(gid: int) -> str:
@@ -89,6 +94,53 @@ def max_loads_problems(max_loads_csv: str) -> list[str]:
     return non_numeric
 
 
+def plc_reference_to_mqtt_key(plc_reference: str) -> str:
+    """Convert a PLC reference, such as `FE205_MainSheetCaptiveWinch.st_Load.i_Load`, to the
+    adapter's MQTT topic and payload key, such as
+    `sail-systems/fe205-main-sheet-captive-winch/st_Load/i_Load`."""
+    function_block, _, payload_path = plc_reference.partition(".")
+    code, _, name = function_block.rpartition("_")
+    topic_segment = (
+        f"{code.lower()}-{camel_to_kebab(name)}" if code else camel_to_kebab(name)
+    )
+    return f"{SAIL_SYSTEM_TOPIC_PREFIX}{topic_segment}/{payload_path.replace('.', '/')}"
+
+
+def plc_reference_problems(max_loads_csv: str) -> list[str]:
+    """Compare the PLC references with the registry, ignoring case, as the sheet's casing differs
+    from what the PLC publishes."""
+    try:
+        cells_by_row = read_max_loads_cells(max_loads_csv)
+    except ValueError:
+        # max_loads_problems reports the missing columns.
+        return []
+
+    plc_rows = [
+        (
+            cells["variable"],
+            cells["plc_reference"],
+            f"{variable.topic}/{variable.payload_key}",
+        )
+        for cells in cells_by_row
+        if (variable := VARIABLES.get(cells["variable"]))
+        and cells["plc_reference"] != NOT_FROM_THE_PLC
+    ]
+    unreferenced = [
+        f"Max loads: {name} has no PLC reference"
+        for name, plc_reference, _ in plc_rows
+        if not plc_reference
+    ]
+    mismatched = [
+        f"Max loads: {name} reads {registry_key} in the registry, "
+        f"but its PLC reference {plc_reference} is {plc_reference_to_mqtt_key(plc_reference)}"
+        for name, plc_reference, registry_key in plc_rows
+        if plc_reference
+        and plc_reference_to_mqtt_key(plc_reference).casefold()
+        != registry_key.casefold()
+    ]
+    return [*unreferenced, *mismatched]
+
+
 def sailpack_mapping_problems(mapping_csv: str) -> list[str]:
     try:
         mapping = read_reference_values_mapping(mapping_csv)
@@ -115,5 +167,6 @@ def consistency_problems(sheet: LoadsSheet) -> list[str]:
     return [
         *unknown_names,
         *max_loads_problems(sheet.max_loads),
+        *plc_reference_problems(sheet.max_loads),
         *sailpack_mapping_problems(sheet.sailpack_mapping),
     ]

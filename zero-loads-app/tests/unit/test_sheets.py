@@ -4,6 +4,8 @@ from loads.registry.sheets import (
     first_column_values,
     max_loads_problems,
     max_loads_technical_names,
+    plc_reference_problems,
+    plc_reference_to_mqtt_key,
     sailpack_mapping_problems,
 )
 
@@ -62,6 +64,61 @@ def test_max_loads_problems(row: str, problem: str | None):
         assert problems == []
     else:
         assert any(problem.lower() in found.lower() for found in problems), problems
+
+
+@pytest.mark.parametrize(
+    ("plc_reference", "mqtt_key"),
+    [
+        (
+            "FE205_MainSheetCaptiveWinch.st_Load.i_Load",
+            "sail-systems/fe205-main-sheet-captive-winch/st_Load/i_Load",
+        ),
+        (
+            "F0103_BladeAdjuster.i_CombinedLoad",
+            "sail-systems/f0103-blade-adjuster/i_CombinedLoad",
+        ),
+        (
+            "Mast.StormSailFurlerLoad.i_Load",
+            "sail-systems/mast/StormSailFurlerLoad/i_Load",
+        ),
+    ],
+)
+def test_plc_reference_to_mqtt_key(plc_reference: str, mqtt_key: str):
+    assert plc_reference_to_mqtt_key(plc_reference) == mqtt_key
+
+
+@pytest.mark.parametrize(
+    ("row", "problem"),
+    [
+        (",,,,,FE205_MainSheetCaptiveWinch.i_blockLoad", None),
+        (",,,,,FE205_MainSheetCaptiveWinch.I_BLOCKLOAD", None),
+        (
+            ",,,,,FE205_MainSheetCaptiveWinch.i_MaxBlockLoadSetting",
+            "i_MaxBlockLoadSetting",
+        ),
+        (",,,,,FE504_MizzenSheetCaptiveWinch.i_blockLoad", "fe504"),
+        (",,,,,", "no PLC reference"),
+    ],
+)
+def test_plc_reference_problems_compare_with_the_registry(
+    row: str, problem: str | None
+):
+    problems = plc_reference_problems(f"{MAX_LOADS_HEADER}main-sheet-load{row}\n")
+
+    if problem is None:
+        assert problems == []
+    else:
+        assert len(problems) == 1 and problem in problems[0], problems
+
+
+def test_plc_reference_problems_skip_loads_not_from_the_plc_and_unknown_names():
+    max_loads_csv = (
+        f"{MAX_LOADS_HEADER}"
+        "fiber-optic-main-v1-ps,,,,,n/a\n"
+        "main-sheet-lod,,,,,FE205_MainSheetCaptiveWinch.i_blockLoad\n"
+    )
+
+    assert plc_reference_problems(max_loads_csv) == []
 
 
 def test_sailpack_mapping_problems_report_mapped_loads_without_a_purchase():
