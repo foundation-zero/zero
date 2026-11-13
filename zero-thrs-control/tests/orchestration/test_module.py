@@ -196,6 +196,22 @@ async def test_tick_publishes_no_control_values_before_any_are_actuated(
     assert not mock_channels.send_actuated_control_values.called
 
 
+async def test_control_values_set_becomes_the_manual_controls(
+    advisory_sensor_values, mock_channels, mock_control, module_factory
+):
+    requested = simple_control_values(flow=5.0)
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+    mock_channels.get_control_values_set.return_value = requested
+
+    module = module_factory()
+
+    await module.sync_control_channels_state()
+    control_values = await module.tick(advisory_sensor_values)
+
+    assert control_values == requested
+    assert mock_channels.send_manual_control.await_args == mock.call(requested)
+
+
 async def test_automatic_control_resets_and_returns_first_control_tick(
     advisory_sensor_values,
     manual_values,

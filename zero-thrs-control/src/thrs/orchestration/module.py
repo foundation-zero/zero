@@ -99,6 +99,10 @@ class Module[
         if manual_control_values is not None:
             self._control.update_manual_controls(manual_control_values)
 
+        control_values_set = self._channels.get_control_values_set()
+        if control_values_set is not None:
+            self._control.update_manual_controls(control_values_set)
+
         manual_modes = self._channels.get_automation_modes()
         if manual_modes is not None:
             self._control.switch_mode(manual_modes)
