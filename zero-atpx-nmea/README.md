@@ -20,11 +20,11 @@ around that function: it uses two separate brokers, since in production
 
 ## Broker outages
 
-Both brokers are handled the same way (docs/adr/0001-dependency-outages.md),
-and logs and exit messages name them: `atpx-mqtt` for A+T's broker, `mqtt` for
-ours. The service reconnects without a limit, at most 30 s apart. It exits after
-90 s of a broker refusing the login, or when a client stops on an error it
-doesn't retry, so Kubernetes restarts it.
+Both brokers come from `zero-mqtt` and are handled the same way
+(docs/adr/0001-dependency-outages.md); logs and exit messages name them:
+`mqtt-input` for A+T's broker, `mqtt-output` for ours. The service is ready
+(`GET /health/ready` on port 8080, from `zero-health`) while both answer a
+ping, and exits after 15 minutes of not being ready.
 
 ## Consumer contract (AsyncAPI specification)
 

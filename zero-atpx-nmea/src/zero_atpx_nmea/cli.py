@@ -11,9 +11,12 @@ from pydantic_settings import (
     CliSubCommand,
     SettingsConfigDict,
 )
+from zero_health import Health, HealthSettings
+from zero_mqtt import broker_check
 
 from zero_atpx_nmea.app import build_app
 from zero_atpx_nmea.asyncapi_spec import build_spec
+from zero_atpx_nmea.settings import InputMqttSettings, OutputMqttSettings
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s"
@@ -22,7 +25,19 @@ logging.basicConfig(
 
 class RunCmd(BaseModel):
     async def cli_cmd(self) -> None:
-        await build_app().run()
+        # pydantic-settings reads the required fields from the environment.
+        input_broker = InputMqttSettings().make_broker("mqtt-input")  # type: ignore[call-arg]
+        output_broker = OutputMqttSettings().make_broker("mqtt-output")  # type: ignore[call-arg]
+        # Both are required: without either broker nothing gets bridged.
+        health = Health(
+            HealthSettings(),
+            {
+                "mqtt-input": broker_check(input_broker),
+                "mqtt-output": broker_check(output_broker),
+            },
+        )
+        async with health.serve():
+            await build_app(input_broker, output_broker).run()
 
 
 class AsyncApiCmd(BaseModel):

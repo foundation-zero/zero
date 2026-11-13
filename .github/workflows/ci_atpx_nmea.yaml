@@ -2,6 +2,8 @@ name: "ATPX NMEA: Test and push Docker image"
 on:
   pull_request:
     paths:
+      - packages/py/zero-health/**
+      - packages/py/zero-mqtt/**
       - zero-atpx-nmea/**
       - .github/workflows/ci_atpx_nmea.yaml
       - .github/actions/coverage-report/**
@@ -11,6 +13,8 @@ on:
     branches:
       - main
     paths:
+      - packages/py/zero-health/**
+      - packages/py/zero-mqtt/**
       - zero-atpx-nmea/**
       - .github/workflows/ci_atpx_nmea.yaml
       - .github/actions/coverage-report/**
