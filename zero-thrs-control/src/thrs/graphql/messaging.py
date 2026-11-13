@@ -93,9 +93,8 @@ class ControlMessaging[
         await self._channels.send_automation_mode(mode)
 
         try:
-            await self._channels.wait_for_control_modes(
-                lambda m: bool(getattr(m, "automatic", False)) == enabled,
-                timeout_s=WAIT_TIMEOUT,
+            await self._channels.wait_for_automation_mode(
+                lambda current: current == mode, timeout_s=WAIT_TIMEOUT
             )
         except TimeoutError as e:
             raise Exception("Timeout when setting automation mode") from e
