@@ -12,6 +12,12 @@ It covers:
 
 If you are an agent tasked with writing or modifying code, **read CODESTYLE.md first** and follow its conventions. Do not introduce patterns that contradict it.
 
+## Shared packages
+
+Shared code lives in `packages/<language>/`, for example `packages/py`. Each
+language directory has a README; read it before you add a package or a service
+that uses one.
+
 ## Skills
 
 Reusable task instructions live next to the code they describe, as a directory
