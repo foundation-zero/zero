@@ -349,7 +349,7 @@ class TestControlChannelsPublishQos:
         publisher_qos = [
             call.kwargs["qos"] for call in connector._create_publisher.call_args_list
         ]
-        assert publisher_qos == [expected_qos] * 6
+        assert publisher_qos == [expected_qos] * 7
 
 
 class TestCombinedMqttMapping:
