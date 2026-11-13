@@ -9,7 +9,7 @@ from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.classes.control import ControlMode
 from thrs.control.switching import SwitchingControlMode
-from thrs.input_output.base import ThrsValues
+from thrs.input_output.base import ThrsValues, component_meta, computed_meta
 from thrs.orchestration.comms import (
     DirectMqttMapping,
     MergedModuleMqttMapping,
@@ -47,6 +47,18 @@ class DummyPayloadModel(ThrsValues):
     @property
     def is_active(self) -> bool:
         return self.speed > 0
+
+
+class TaggedPayloadModel(ThrsValues):
+    tagged: Annotated[int, component_meta(yard_tag="50001018", component_type="pump")]
+    untagged: Annotated[int, component_meta(component_type="pump")]
+
+    @computed_field(
+        json_schema_extra=computed_meta(component_type="heat_transfer", yard_tag="1.1")
+    )
+    @property
+    def heat(self) -> int:
+        return self.tagged
 
 
 # ---------------------------------------------------------------------------
@@ -127,6 +139,14 @@ def test_describe_mapping_partial_computed_fields_only(settings: Config):
     assert described[0][1] is bool
 
 
+def test_describe_mapping_partial_yard_tags(settings: Config):
+    mapping = PartialMqttMapping(TaggedPayloadModel, "system/sensors", "module")
+
+    yard_tags = [item[3] for item in _describe_mapping(settings, mapping)]
+
+    assert yard_tags == ["50001018", None]
+
+
 def test_describe_mapping_direct(settings: Config):
     mapping = DirectMqttMapping(DummyPayloadModel, "devices/actuator/control-mode")
 
@@ -136,6 +156,7 @@ def test_describe_mapping_direct(settings: Config):
     assert described[0][0] == "devices/actuator/control-mode"
     assert described[0][1] == DummyPayloadModel
     assert described[0][2] is None
+    assert described[0][3] is None
 
 
 def test_describe_mapping_module_recursive(settings: Config):
@@ -179,6 +200,17 @@ def test_recording_connector_register_listener(settings: Config):
         qos=None,
         retain=False,
     )
+
+
+def test_recording_connector_records_yard_tag(settings: Config):
+    connector = RecordingConnector(settings)
+    sender = PartialMqttMapping(
+        TaggedPayloadModel, "system/status", "module", only_computed_fields=True
+    )
+
+    connector._create_publisher(sender)
+
+    assert [topic.yard_tag for topic in connector.topics] == ["1.1"]
 
 
 def test_recording_connector_create_publisher(settings: Config):

@@ -7,7 +7,12 @@ from typing import Annotated, Any, Literal, Union, get_args, get_origin
 from more_itertools import one
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
-from thrs.input_output.base import ComponentType, ThrsValues, get_component_type
+from thrs.input_output.base import (
+    ComponentType,
+    ThrsValues,
+    get_component_type,
+    get_yard_tag,
+)
 from thrs.orchestration.comms import (
     ControlChannels,
     DirectivesChannels,
@@ -34,6 +39,7 @@ class TopicMapping:
     component_type: ComponentType
     qos: int | None = None
     retain: bool = False
+    yard_tag: str | None = None
 
 
 def _strip_none(annotation: Any) -> Any:
@@ -53,8 +59,8 @@ def _field_annotation(field: FieldInfo | ComputedFieldInfo) -> type[ThrsValues]:
 def _describe_mapping(
     config: Config,
     mapping: MqttSendMapping[ThrsValues] | MqttReceiveMapping[ThrsValues],
-) -> list[tuple[str, type[ThrsValues], ComponentType]]:
-    """(topic, _type type) pairs from a mapping, using its own topic-building logic."""
+) -> list[tuple[str, type[ThrsValues], ComponentType, str | None]]:
+    """Each topic of a mapping, using its own topic-building logic."""
     if isinstance(mapping, PartialMqttMapping):
         if mapping._topic_prefix == config.mqtt_devices_topic_prefix:
             return []
@@ -69,11 +75,12 @@ def _describe_mapping(
                 mapping._topic(name, field),
                 _field_annotation(field),
                 get_component_type(field),
+                get_yard_tag(field),
             )
             for name, field in fields.items()
         ]
     if isinstance(mapping, DirectMqttMapping):
-        return [(mapping._topic, t, None) for t in mapping._types]
+        return [(mapping._topic, t, None, None) for t in mapping._types]
     if isinstance(mapping, ModuleMqttMapping):
         return [
             pair
@@ -99,15 +106,35 @@ class RecordingConnector(MqttConnector):
         self._config = config
 
     def _register_listener(self, receiver: MqttReceiveMapping) -> None:
-        for topic, payload, component_type in _describe_mapping(self._config, receiver):
-            self.topics.append(TopicMapping(topic, payload, "receive", component_type))
+        for topic, payload, component_type, yard_tag in _describe_mapping(
+            self._config, receiver
+        ):
+            self.topics.append(
+                TopicMapping(
+                    topic=topic,
+                    payload_type=payload,
+                    direction="receive",
+                    component_type=component_type,
+                    yard_tag=yard_tag,
+                )
+            )
 
     def _create_publisher(
         self, sender: MqttSendMapping, qos: int = 1, retain: bool = False
     ):
-        for topic, payload, component_type in _describe_mapping(self._config, sender):
+        for topic, payload, component_type, yard_tag in _describe_mapping(
+            self._config, sender
+        ):
             self.topics.append(
-                TopicMapping(topic, payload, "send", component_type, qos, retain)
+                TopicMapping(
+                    topic=topic,
+                    payload_type=payload,
+                    direction="send",
+                    component_type=component_type,
+                    qos=qos,
+                    retain=retain,
+                    yard_tag=yard_tag,
+                )
             )
 
         return _dummy_publish

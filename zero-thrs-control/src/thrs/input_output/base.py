@@ -221,6 +221,14 @@ def get_component_type(
     return field.json_schema_extra.get("component_type")  # type: ignore
 
 
+def get_yard_tag(field: FieldInfo | ComputedFieldInfo) -> str | None:
+    if not field.json_schema_extra or not isinstance(field.json_schema_extra, dict):
+        return None
+
+    # BaseMeta defaults the yard tag to "", which means it has none.
+    return field.json_schema_extra.get("yard_tag") or None  # type: ignore
+
+
 @dataclass
 class ParameterMeta:
     fds_tag: str

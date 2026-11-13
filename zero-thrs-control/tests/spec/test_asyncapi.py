@@ -153,6 +153,22 @@ def test_build_asyncapi_channel_and_operation_mapping(
         assert operation.channel.ref == f"#/channels/{channel_key}"
 
 
+def test_build_asyncapi_yard_tag_on_channel():
+    topics = [
+        TopicMapping("a/tagged", SimplePayload, "send", "pump", yard_tag="50001018"),
+        TopicMapping("a/untagged", SimplePayload, "send", "pump"),
+    ]
+    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # type: ignore[arg-type]
+
+    assert doc.channels
+    channels = {
+        key: channel.model_dump(by_alias=True, exclude_none=True)
+        for key, channel in doc.channels.root.items()
+    }
+    assert channels["a_tagged"]["x-zero-yard-tag"] == "50001018"
+    assert "x-zero-yard-tag" not in channels["a_untagged"]
+
+
 def test_build_asyncapi_message_deduplication(sample_topics: list[TopicMapping]):
     doc = _build_asyncapi("THRS Control", "1.0.0", Mode("", {}, None), sample_topics)  # type: ignore[arg-type]
 
