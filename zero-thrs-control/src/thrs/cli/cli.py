@@ -90,7 +90,7 @@ class ControlCmd(BaseSettings):
             runner = ControlRunner(control_modules, liveness_check, persistence)
             runtime = Runtime(runner, connector, timedelta(seconds=1), datetime.now)
 
-            await runtime.loop.play(1)
+            await runtime.loop.play()
             logger.info("Running control")
 
             async with control_shutdown_context(control_modules):
@@ -135,7 +135,7 @@ class SimulationCmd(BaseSettings):
                 simulation_module.time,
             )
 
-            await runtime.loop.play(1)
+            await runtime.loop.play()
             logger.info("Running simulation")
             await runtime.start()
 
@@ -229,7 +229,7 @@ class LockstepCmd(BaseSettings):
             logger.info("Running lockstep")
 
             if self.play:
-                await runtime.loop.play(1)
+                await runtime.loop.play()
 
             async with control_shutdown_context(runtime.runner.control_modules):  # type: ignore
                 await runtime.start()

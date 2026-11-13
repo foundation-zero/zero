@@ -25,11 +25,8 @@ from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.orchestration.config import Config
 from thrs.orchestration.module import ModuleClassMap, ModuleDescription
 from thrs.runtime.messages import (
-    PauseMessage,
-    PlayMessage,
     SimulationStatusMessage,
     SimulationStatusSetMessage,
-    StepMessage,
 )
 from thrs.utils.string import hyphenize
 
@@ -713,24 +710,6 @@ class SimulationApiChannels[I: ThrsValues, O: ThrsValues]:
 class DirectivesChannels:
     def __init__(self, connector: MqttConnector, config: Config) -> None:
         self._connector = connector
-        play_mapping = DirectMqttMapping(
-            PlayMessage,
-            f"{config.mqtt_simulator_topic_prefix}/{PlayMessage.subscribe_topic()}",
-        )
-        connector._register_listener(play_mapping)
-
-        step_mapping = DirectMqttMapping(
-            StepMessage,
-            f"{config.mqtt_simulator_topic_prefix}/{StepMessage.subscribe_topic()}",
-        )
-        connector._register_listener(step_mapping)
-
-        pause_mapping = DirectMqttMapping(
-            PauseMessage,
-            f"{config.mqtt_simulator_topic_prefix}/{PauseMessage.subscribe_topic()}",
-        )
-        connector._register_listener(pause_mapping)
-
         status_set_mapping = DirectMqttMapping(
             SimulationStatusSetMessage,
             f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusSetMessage.subscribe_topic()}",
@@ -743,9 +722,6 @@ class DirectivesChannels:
             DirectMqttMapping(SimulationStatusMessage, self._status_topic), retain=True
         )
 
-        self.on_play = play_mapping.add_hook
-        self.on_step = step_mapping.add_hook
-        self.on_pause = pause_mapping.add_hook
         self.on_status_set = status_set_mapping.add_hook
 
     async def clear_simulation_status(self):
@@ -768,38 +744,11 @@ class DirectivesApiChannels:
                 f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusSetMessage.subscribe_topic()}",
             )
         )
-        self._send_play = connector._create_publisher(
-            DirectMqttMapping(
-                PlayMessage,
-                f"{config.mqtt_simulator_topic_prefix}/{PlayMessage.subscribe_topic()}",
-            )
-        )
-        self._send_step = connector._create_publisher(
-            DirectMqttMapping(
-                StepMessage,
-                f"{config.mqtt_simulator_topic_prefix}/{StepMessage.subscribe_topic()}",
-            )
-        )
-        self._send_pause = connector._create_publisher(
-            DirectMqttMapping(
-                PauseMessage,
-                f"{config.mqtt_simulator_topic_prefix}/{PauseMessage.subscribe_topic()}",
-            )
-        )
 
         self.get_simulation_status = simulation_status_mapping.result
         self.wait_for_simulation_status = simulation_status_mapping.wait_for_result
         self.wait_for_simulation_status_where = simulation_status_mapping.wait_for
         self.on_simulation_status = simulation_status_mapping.add_hook
-
-    async def send_play(self, playback_rate: float):
-        await self._send_play(PlayMessage(playback_rate=playback_rate))
-
-    async def send_step(self, seconds: float):
-        await self._send_step(StepMessage(seconds=seconds))
-
-    async def send_pause(self):
-        await self._send_pause(PauseMessage())
 
 
 class MqttConnector:

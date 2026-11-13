@@ -6,12 +6,9 @@ from thrs.orchestration.comms import DirectivesChannels
 from thrs.runtime.descriptions.simulation import Mode
 from thrs.runtime.loop import Loop, LoopHooks, Request
 from thrs.runtime.messages import (
-    PauseMessage,
-    PlayMessage,
     SimulationStatus,
     SimulationStatusMessage,
     SimulationStatusSetMessage,
-    StepMessage,
 )
 
 
@@ -22,21 +19,9 @@ class DirectiveHandler:
 
     async def register(self):
         self._channels.on_status_set(self._on_status_set)
-        self._channels.on_play(self._on_play)
-        self._channels.on_step(self._on_step)
-        self._channels.on_pause(self._on_pause)
 
     async def _on_status_set(self, msg: SimulationStatusSetMessage):
         await self._loop.request(Request(msg.status, msg.playback_rate, msg.pause_at))
-
-    async def _on_play(self, msg: PlayMessage):
-        await self._loop.play(msg.playback_rate)
-
-    async def _on_step(self, msg: StepMessage):
-        await self._loop.step(msg.seconds)
-
-    async def _on_pause(self, msg: PauseMessage):
-        await self._loop.pause()
 
 
 class DirectiveHandling:

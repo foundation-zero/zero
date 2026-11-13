@@ -12,6 +12,7 @@ import pytest
 from thrs.runtime.loop import Loop, LoopHooks, Request
 
 START = datetime(2026, 11, 13, 10, tzinfo=UTC)
+PAUSE = Request("available", 1.0, None)
 
 
 class Clock:
@@ -144,7 +145,7 @@ async def test_loop_runs_on_with_a_past_pause_at():
     async with looping(loop, runner, hooks):
         await loop.request(Request("running", 10, START))
         await hooks.wait_until(lambda calls: calls.count("running") > 3)
-        await loop.pause()
+        await loop.request(PAUSE)
         await hooks.wait_until_available(2)
 
     assert runner.calls.call_count >= 3
@@ -160,7 +161,7 @@ async def test_loop_pause_interrupts_stepping():
         await loop.request(Request("stepping", 1.0, START + timedelta(hours=1)))
         await asyncio.wait_for(runner.started.wait(), timeout=1)
 
-        await loop.pause()
+        await loop.request(PAUSE)
         runner.release.set()
         await hooks.wait_until_available(2)
 
@@ -189,13 +190,13 @@ async def test_loop_play_runs_until_pause():
     hooks = RecordingHooks()
 
     async with looping(loop, runner, hooks):
-        await loop.play(2.0)
+        await loop.request(Request("running", 2.0, None))
 
         await asyncio.wait_for(runner.started.wait(), timeout=1)
         assert runner.calls.call_count == 1
         assert hooks.calls == ["available", "running"]
 
-        await loop.pause()
+        await loop.request(PAUSE)
         runner.release.set()
         await hooks.wait_until_available(2)
 

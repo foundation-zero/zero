@@ -95,12 +95,5 @@ class Loop:
         logger.debug("Loop request: %s", request)
         await self._requests.put(request)
 
-    async def play(self, playback_rate: float):
-        await self.request(Request("running", playback_rate, None))
-
-    async def pause(self):
-        await self.request(Request("available", self.requested.playback_rate, None))
-
-    async def step(self, seconds: float):
-        pause_at = self._time_fn() + timedelta(seconds=seconds)
-        await self.request(Request("stepping", self.requested.playback_rate, pause_at))
+    async def play(self):
+        await self.request(Request("running", 1.0, None))

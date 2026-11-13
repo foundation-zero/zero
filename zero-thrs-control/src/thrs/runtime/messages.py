@@ -49,25 +49,3 @@ class SimulationStatusSetMessage(IncomingMessage):
     @staticmethod
     def subscribe_topic() -> str:
         return "status/set"
-
-
-class PlayMessage(IncomingMessage):
-    playback_rate: PlaybackRate = 1.0
-
-    @staticmethod
-    def subscribe_topic() -> str:
-        return "play"
-
-
-class StepMessage(IncomingMessage):
-    seconds: Annotated[float, Field(ge=0)]
-
-    @staticmethod
-    def subscribe_topic() -> str:
-        return "step"
-
-
-class PauseMessage(IncomingMessage):
-    @staticmethod
-    def subscribe_topic() -> str:
-        return "pause"

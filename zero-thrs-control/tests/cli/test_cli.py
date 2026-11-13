@@ -2,6 +2,7 @@ import asyncio
 import logging
 from asyncio import create_task, sleep
 from contextlib import suppress
+from datetime import datetime, timedelta
 from typing import cast
 from unittest import mock
 
@@ -25,7 +26,11 @@ from thrs.orchestration.config import Config
 from thrs.orchestration.setup import setup_control_modules, setup_simulation_module
 from thrs.runtime.descriptions.simulation import Mode, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
-from thrs.runtime.messages import SimulationStatus, SimulationStatusMessage
+from thrs.runtime.messages import (
+    SimulationStatus,
+    SimulationStatusMessage,
+    SimulationStatusSetMessage,
+)
 from thrs.runtime.runners.lockstep import LockstepRunner
 from thrs.runtime.runtime import Runtime
 
@@ -54,6 +59,29 @@ async def wait_for_status(status_client: Client, status: SimulationStatus) -> No
         if status_message.status == status:
             return
     raise RuntimeError(f"Status messages ended before status '{status}'")
+
+
+async def read_status(status_client: Client) -> SimulationStatusMessage:
+    message = await anext(status_client.messages)
+    assert isinstance(message.payload, str | bytes)
+    return SimulationStatusMessage.model_validate_json(message.payload)
+
+
+async def request_status(
+    controls_client: Client,
+    settings: Config,
+    status: SimulationStatus,
+    playback_rate: float = 1.0,
+    pause_at: datetime | None = None,
+) -> None:
+    request = SimulationStatusSetMessage(
+        status=status, playback_rate=playback_rate, pause_at=pause_at
+    )
+    await controls_client.publish(
+        f"{settings.mqtt_simulator_topic_prefix}/status/set",
+        request.model_dump_json(by_alias=True),
+        qos=1,
+    )
 
 
 def setup_lockstep(
@@ -141,11 +169,7 @@ async def test_simulation_run_start_stop(
             == "available"
         )
 
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/play",
-            "{}",
-            qos=1,
-        )
+        await request_status(controls_client, settings, "running")
         logger.info("Waiting on message")
         running = await anext(status_client.messages)
         assert isinstance(running.payload, str | bytes)
@@ -158,11 +182,7 @@ async def test_simulation_run_start_stop(
         amount_before_pause = len(test_client.messages)
         assert amount_before_pause > 0
 
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/pause",
-            "{}",
-            qos=1,
-        )
+        await request_status(controls_client, settings, "available")
         logger.info("Waiting on message")
         await wait_for_status(status_client, "available")
         amount_after_pause = len(test_client.messages)
@@ -211,11 +231,7 @@ async def test_simulation_run_playback_rate(
             == "available"
         )
 
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/play",
-            '{"playback_rate": 1}',
-            qos=1,
-        )
+        await request_status(controls_client, settings, "running", playback_rate=1)
         logger.info("Waiting on message")
         running = await anext(status_client.messages)
         assert isinstance(running.payload, str | bytes)
@@ -225,11 +241,7 @@ async def test_simulation_run_playback_rate(
         )
 
         await sleep(2.6)
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/pause",
-            "{}",
-            qos=1,
-        )
+        await request_status(controls_client, settings, "available")
         logger.info("Waiting on message")
         await wait_for_status(status_client, "available")
 
@@ -240,19 +252,11 @@ async def test_simulation_run_playback_rate(
             if msg.topic.value == outputs_topic:
                 rate_1_count += 1
 
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/play",
-            '{"playback_rate": 2}',
-            qos=1,
-        )
+        await request_status(controls_client, settings, "running", playback_rate=2)
         logger.info("Waiting on message")
         await wait_for_status(status_client, "running")
         await sleep(2.6)
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/pause",
-            "{}",
-            qos=1,
-        )
+        await request_status(controls_client, settings, "available")
         logger.info("Waiting on message")
         await wait_for_status(status_client, "available")
 
@@ -297,17 +301,14 @@ async def test_simulation_run_step(
     run_task = create_task(runtime.start())
     try:
         logger.info("Waiting on message")
-        available = await anext(status_client.messages)
-        assert isinstance(available.payload, str | bytes)
-        assert (
-            SimulationStatusMessage.model_validate_json(available.payload).status
-            == "available"
-        )
+        start = await read_status(status_client)
+        assert start.status == "available"
 
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/step",
-            '{"seconds": 1}',
-            qos=1,
+        await request_status(
+            controls_client,
+            settings,
+            "stepping",
+            pause_at=start.simulation_time + timedelta(seconds=1),
         )
         logger.info("Waiting on message")
         stepping = await anext(status_client.messages)
@@ -333,10 +334,11 @@ async def test_simulation_run_step(
             if msg.topic.value == outputs_topic:
                 step_1_outputs += 1
 
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/step",
-            '{"seconds": 2}',
-            qos=1,
+        await request_status(
+            controls_client,
+            settings,
+            "stepping",
+            pause_at=start.simulation_time + timedelta(seconds=3),
         )
         logger.info("Waiting on message")
         stepping = await anext(status_client.messages)
@@ -415,11 +417,7 @@ async def test_simulation_controls_automated_control(
             '{"mode":"automatic"}',
             qos=1,
         )
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/play",
-            "{}",
-            qos=1,
-        )
+        await request_status(controls_client, settings, "running")
 
         logger.info("Waiting on message")
         running = await anext(status_client.messages)
@@ -432,11 +430,7 @@ async def test_simulation_controls_automated_control(
         await sleep(5.1)
         assert len(test_client.messages) > 0
 
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/pause",
-            "{}",
-            qos=1,
-        )
+        await request_status(controls_client, settings, "available")
         logger.info("Waiting on message")
         await wait_for_status(status_client, "available")
 
@@ -495,17 +489,14 @@ async def test_simulation_controls_set_parameters(
     run_task = create_task(runtime.start())
     try:
         logger.info("Waiting on message")
-        available = await anext(status_client.messages)
-        assert isinstance(available.payload, str | bytes)
-        assert (
-            SimulationStatusMessage.model_validate_json(available.payload).status
-            == "available"
-        )
+        start = await read_status(status_client)
+        assert start.status == "available"
 
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/step",
-            '{"seconds": 1}',
-            qos=1,
+        await request_status(
+            controls_client,
+            settings,
+            "stepping",
+            pause_at=start.simulation_time + timedelta(seconds=1),
         )
         logger.info("Waiting on message")
         parameters = await anext(test_client.messages)
@@ -520,10 +511,11 @@ async def test_simulation_controls_set_parameters(
             qos=1,
         )
 
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/step",
-            '{"seconds": 1}',
-            qos=1,
+        await request_status(
+            controls_client,
+            settings,
+            "stepping",
+            pause_at=start.simulation_time + timedelta(seconds=2),
         )
 
         async with asyncio.timeout(5.0):
@@ -578,17 +570,14 @@ async def test_simulation_controls_set_simulation_inputs(
     run_task = create_task(runtime.start())
     try:
         logger.info("Waiting on message")
-        available = await anext(status_client.messages)
-        assert isinstance(available.payload, str | bytes)
-        assert (
-            SimulationStatusMessage.model_validate_json(available.payload).status
-            == "available"
-        )
+        start = await read_status(status_client)
+        assert start.status == "available"
 
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/step",
-            '{"seconds": 1}',
-            qos=1,
+        await request_status(
+            controls_client,
+            settings,
+            "stepping",
+            pause_at=start.simulation_time + timedelta(seconds=1),
         )
         logger.info("Waiting on message")
         initial_inputs = await anext(test_client.messages)
@@ -607,11 +596,12 @@ async def test_simulation_controls_set_simulation_inputs(
         )
 
         updated_model = None
-        for _ in range(2):
-            await controls_client.publish(
-                f"{settings.mqtt_simulator_topic_prefix}/step",
-                '{"seconds": 1}',
-                qos=1,
+        for seconds in (2, 3):
+            await request_status(
+                controls_client,
+                settings,
+                "stepping",
+                pause_at=start.simulation_time + timedelta(seconds=seconds),
             )
             logger.info("Waiting on message")
             updated_inputs = await anext(test_client.messages)
@@ -667,11 +657,7 @@ async def test_simulation_controls_simulation_output(
             == "available"
         )
 
-        await controls_client.publish(
-            f"{settings.mqtt_simulator_topic_prefix}/play",
-            "{}",
-            qos=1,
-        )
+        await request_status(controls_client, settings, "running")
         logger.info("Waiting on message")
         running = await anext(status_client.messages)
         assert isinstance(running.payload, str | bytes)
