@@ -6,6 +6,7 @@ from zero_data.asyncapi import (
     JSON_TYPES,
     SCHEMA_REF_PREFIX,
     build_asyncapi,
+    channel,
     component_name,
     extract_schemas,
     key,
@@ -16,7 +17,9 @@ from zero_data.io_list.enums import ENUMS
 from zero_data.io_list.managed_topics import (
     ComponentType,
     ManagedTopic,
+    ValveType,
     extract_managed_topics,
+    extract_parts,
 )
 from zero_data.io_list.types import IOResult, IOTopic, IOValue
 
@@ -97,6 +100,90 @@ def test_enum_fields_have_named_values(component, field, enum):
     assert schemas[enum]["oneOf"] == [
         {"const": member.value, "title": member.name} for member in ENUMS[field]
     ]
+
+
+@pytest.mark.parametrize(
+    ("technical_name", "valve_type"),
+    [
+        ("dhw-mix-boosting", ValveType.MIX),
+        ("dhw-switch-aft", ValveType.SWITCH),
+        ("dhw-flowcontrol-aft", ValveType.FLOW_CONTROL),
+    ],
+)
+def test_valves_carry_their_valve_type(technical_name, valve_type):
+    address = f"marpower/500000-thrs/dhw/{technical_name}"
+    topic = extract_parts(IOTopic(address, [IOValue("PositionRel", "REAL")]))
+
+    assert isinstance(topic, ManagedTopic)
+    assert channel(topic)["x-zero-valve-type"] == valve_type
+
+
+def test_other_components_have_no_valve_type():
+    address = "marpower/500000-thrs/dhw/dhw-flow-dc"
+    topic = extract_parts(IOTopic(address, [IOValue("Flow", "REAL")]))
+
+    assert isinstance(topic, ManagedTopic)
+    assert "x-zero-valve-type" not in channel(topic)
+
+
+def test_flow_meters_that_measure_only_a_flow_have_their_own_schema():
+    meter = "marpower/500000-thrs/dhw/dhw-flow-dc"
+    flow_meter = extract_parts(
+        IOTopic(meter, [IOValue(name, "REAL") for name in ("Flow", "Temperature")])
+    )
+    flow_only_meter = extract_parts(IOTopic(meter, [IOValue("Flow", "REAL")]))
+    assert isinstance(flow_meter, ManagedTopic)
+    assert isinstance(flow_only_meter, ManagedTopic)
+
+    schemas = extract_schemas([flow_meter, flow_only_meter])
+
+    assert flow_meter.component == ComponentType.FLOW
+    assert flow_only_meter.component == ComponentType.FLOW_ONLY
+    assert set(schemas["Flow"]["properties"]) == {"Flow", "Temperature"}
+    assert set(schemas["FlowOnly"]["properties"]) == {"Flow"}
+
+
+@pytest.mark.parametrize(
+    ("channel_key", "address", "component", "fields"),
+    [
+        (
+            "propulsion.drive.pcs-aft-ara1",
+            "marpower/150000-propulsion/pcs-aft-ara1",
+            "Drive",
+            {"VpEnable", "TempPowerStage", "Power"},
+        ),
+        (
+            "dc_ac.converter.05-12-u101",
+            "marpower/450000-dynamic-conv-sb-ara/5-12-u101",
+            "Converter",
+            {"Running", "TempPowerStage", "PvPower"},
+        ),
+        (
+            "dc_700v.shore-converter.07-11-tbc1a",
+            "marpower/450000-dc-distribution-esi/07-11-tbc1a",
+            "ShoreConverter",
+            {
+                "Online",
+                "EsiTransformerTemperature",
+                "EsiIgbtMinTemperature",
+                "EsiIgbtMaxTemperature",
+                "EsiAcBusActivePower3Phase",
+            },
+        ),
+    ],
+)
+def test_extra_devices_are_named_by_the_proposal_at_todays_address(
+    document: dict, channel_key: str, address: str, component: str, fields: set[str]
+):
+    device = document["channels"][channel_key]
+
+    assert device["address"] == address
+    assert device["messages"]["message"]["payload"] == {
+        "$ref": f"{SCHEMA_REF_PREFIX}{component}"
+    }
+    schema = document["components"]["schemas"][component]
+    assert set(schema["properties"]) == fields
+    assert document["operations"][channel_key]["action"] == "send"
 
 
 def test_document_does_not_depend_on_io_list_order(io_result: IOResult):

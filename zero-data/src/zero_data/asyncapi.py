@@ -9,6 +9,7 @@ from typing import Any
 import stringcase  # type: ignore
 
 from zero_data.io_list.enums import ENUMS
+from zero_data.io_list.extra_topics import EXTRA_TOPICS
 from zero_data.io_list.managed_topics import (
     SYSTEMS,
     ManagedTopic,
@@ -193,6 +194,7 @@ def channel(topic: ManagedTopic) -> dict[str, Any]:
         if topic.topic.yard_tag
         else None,
         "x-zero-component-type": topic.component,
+        **({"x-zero-valve-type": topic.valve_type} if topic.valve_type else {}),
         "messages": {
             "message": {
                 "payload": {
@@ -207,7 +209,7 @@ def channel(topic: ManagedTopic) -> dict[str, Any]:
 def build_asyncapi(io_result: IOResult) -> dict[str, Any]:
     managed_topics, _, _ = extract_managed_topics(io_result.topics)
 
-    topics = sorted(managed_topics, key=lambda topic: topic.topic.topic)
+    topics = sorted(managed_topics + EXTRA_TOPICS, key=lambda topic: topic.topic.topic)
 
     subscribe_channels = {
         f"subscribe{system}": {
