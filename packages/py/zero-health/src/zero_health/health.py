@@ -87,13 +87,15 @@ class Health:
                 for name, check in self._checks.items()
             }
         for name, task in tasks.items():
-            reason = task.result()
-            if reason != self._reasons[name]:
-                if reason is None:
-                    logger.info("%s: ready", name)
-                else:
-                    logger.warning("%s: not ready: %s", name, reason)
+            reason, previous = task.result(), self._reasons[name]
             self._reasons[name] = reason
+            if reason is None and previous is not None:
+                logger.info("%s: ready", name)
+            elif reason is not None and reason != previous:
+                # Only losing a dependency warns; not ready is expected at
+                # startup and while it stays down.
+                level = logging.WARNING if previous is None else logging.INFO
+                logger.log(level, "%s: not ready: %s", name, reason)
         self._enforce_deadline(self._clock())
 
     async def _run(self, check: Check) -> str | None:

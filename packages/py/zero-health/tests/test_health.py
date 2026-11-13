@@ -127,6 +127,23 @@ async def test_logs_each_change(settings, clock, caplog):
     assert caplog.messages == ["mqtt: not ready: ping failed", "mqtt: ready"]
 
 
+async def test_warns_only_when_a_dependency_is_lost(settings, clock, caplog):
+    mqtt = Dependency("not connected")
+    health = make_health(settings, clock, mqtt=mqtt)
+    caplog.set_level(logging.INFO, logger="zero_health")
+
+    for reason in ["not connected", None, "not connected", "ping failed"]:
+        mqtt.reason = reason
+        await health.run_checks()
+
+    assert [(r.levelname, r.message) for r in caplog.records] == [
+        ("INFO", "mqtt: not ready: not connected"),
+        ("INFO", "mqtt: ready"),
+        ("WARNING", "mqtt: not ready: not connected"),
+        ("INFO", "mqtt: not ready: ping failed"),
+    ]
+
+
 async def test_exits_when_not_ready_past_the_deadline(settings, clock):
     mqtt = Dependency("ping failed")
     health = make_health(settings, clock, mqtt=mqtt)

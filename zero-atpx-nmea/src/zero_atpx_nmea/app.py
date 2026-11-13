@@ -3,14 +3,16 @@
 Subscribes to A+T's `atpx/nmea0183/#` on the input broker; for each message,
 parses it and republishes the resulting JSON envelope to
 `atpx/processed/nmea/<type>/<sender>` on the output broker. Unparseable
-sentences are logged and dropped. Not unit-tested — all parsing behavior
-lives in and is tested against the pure `parse` function.
+sentences are logged and dropped, and so is everything that arrives while
+the output broker is down. Parsing behavior lives in and is tested against the
+pure `parse` function.
 """
 
 import logging
 
 from faststream import FastStream
 from faststream.mqtt import MQTTBroker, MQTTMessage, QoS
+from zmqtt import MQTTDisconnectedError
 
 from zero_atpx_nmea.parser import parse
 
@@ -27,9 +29,11 @@ def build_app(input_broker: MQTTBroker, output_broker: MQTTBroker) -> FastStream
     the same `vernemq` instance) because in production `ATPX_MQTT_HOST` is a
     different, unauthenticated broker on A+T's side.
     """
+    dropped = 0
 
     @input_broker.subscriber(INPUT_TOPIC, description="Raw A+T NMEA 0183 sentences")
     async def handle(raw_sentence: str, message: MQTTMessage) -> None:
+        nonlocal dropped
         topic = message.raw_message.topic
         envelope = parse(raw_sentence, topic)
         if envelope is None:
@@ -41,7 +45,19 @@ def build_app(input_broker: MQTTBroker, output_broker: MQTTBroker) -> FastStream
         out_topic = OUTPUT_TOPIC_TEMPLATE.format(
             type=envelope["type"], sender=envelope["sender"]
         )
-        await output_broker.publish(envelope, out_topic, qos=QoS.AT_LEAST_ONCE)
+        try:
+            await output_broker.publish(envelope, out_topic, qos=QoS.AT_LEAST_ONCE)
+        except MQTTDisconnectedError as exc:
+            # Raised, FastStream would log every message with a traceback.
+            if not dropped:
+                logger.warning(
+                    "mqtt-output: %s, dropping messages until it is back", exc
+                )
+            dropped += 1
+            return
+        if dropped:
+            logger.info("mqtt-output: publishing again, dropped %d message(s)", dropped)
+            dropped = 0
 
     # FastStream manages only input_broker (which owns the subscriber). These
     # hooks start the output broker before it and stop it after it, so the

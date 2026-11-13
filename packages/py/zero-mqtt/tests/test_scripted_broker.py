@@ -2,6 +2,7 @@
 
 import asyncio
 import gc
+import logging
 from functools import partial
 
 import pytest
@@ -66,11 +67,10 @@ async def _read_packet(reader: asyncio.StreamReader) -> int:
     return packet_type & 0xF0
 
 
-async def _wait_for_reason(check: Check, timeout: float = 5.0) -> str | None:
+async def _wait_for_reason(check: Check, reason: str, timeout: float = 5.0) -> None:
     async with asyncio.timeout(timeout):
-        while (reason := await check()) is None:
+        while await check() != reason:
             await asyncio.sleep(0.05)
-    return reason
 
 
 async def _connected_broker(server: ScriptedServer, monkeypatch: pytest.MonkeyPatch):
@@ -80,7 +80,7 @@ async def _connected_broker(server: ScriptedServer, monkeypatch: pytest.MonkeyPa
     monkeypatch.setattr(
         broker_module, "ReconnectConfig", partial(ReconnectConfig, initial_delay=0.01)
     )
-    return MqttSettings(_env_file=None).make_broker()  # type: ignore[call-arg]
+    return MqttSettings(_env_file=None).make_broker("mqtt-input")  # type: ignore[call-arg]
 
 
 async def test_check_follows_the_connection(monkeypatch: pytest.MonkeyPatch):
@@ -88,7 +88,7 @@ async def test_check_follows_the_connection(monkeypatch: pytest.MonkeyPatch):
     broker = await _connected_broker(server, monkeypatch)
     check = broker_check(broker)
 
-    assert await check() == "ping failed"
+    assert await check() == "not connected"
 
     await broker.connect()
     try:
@@ -96,9 +96,34 @@ async def test_check_follows_the_connection(monkeypatch: pytest.MonkeyPatch):
         assert await check() is None
 
         server.drop()
-        assert await _wait_for_reason(check) == "ping failed"
+        await _wait_for_reason(check, "not connected")
     finally:
         await broker.stop()
+
+
+async def test_client_log_lines_name_the_broker_without_tracebacks(
+    monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+):
+    caplog.set_level(logging.INFO)
+    server = ScriptedServer([NOT_AUTHORIZED, 0])
+    broker = await _connected_broker(server, monkeypatch)
+    await broker.connect()
+    try:
+        server.drop()
+        await _wait_for_reason(broker_check(broker), "not connected")
+        await asyncio.sleep(0.1)  # a few failed reconnects
+    finally:
+        await broker.stop()
+
+    zmqtt_messages = [r.message for r in caplog.records if r.name.startswith("zmqtt")]
+    assert zmqtt_messages[:3] == [
+        "mqtt-input: Connection failed, retrying in 0.0s: "
+        "ConnectionRefusedError: CONNACK refused (return code 135)",
+        "mqtt-input: Connected with session_present=False",
+        "mqtt-input: Connection lost, reconnecting...",
+    ]
+    assert all(m.startswith("mqtt-input: ") for m in zmqtt_messages)
+    assert "Traceback" not in caplog.text
 
 
 async def test_unanswered_ping_leaves_nothing_behind(monkeypatch: pytest.MonkeyPatch):

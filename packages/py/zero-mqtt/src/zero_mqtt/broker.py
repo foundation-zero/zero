@@ -3,9 +3,11 @@
 import asyncio
 import logging
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
+from contextvars import ContextVar
 from secrets import token_hex
-from typing import Any, NoReturn
+from typing import Any, NoReturn, Self
 
 import zmqtt
 from faststream.mqtt import MQTTBroker, ReconnectConfig
@@ -25,6 +27,41 @@ logger = logging.getLogger(__name__)
 # In the 2026-10-13 cutover RabbitMQ refused logins (CONNACK 0x87, not
 # authorized) for up to about a minute after it booted.
 REFUSAL_GRACE_SECONDS = 90.0
+
+# The broker whose zmqtt client is logging. zmqtt logs to module loggers that
+# can't tell two clients apart; the client's background tasks inherit this.
+_broker_name: ContextVar[str | None] = ContextVar("broker_name", default=None)
+
+
+class _ZmqttLogFilter(logging.Filter):
+    """Names the broker in zmqtt's log lines, and keeps its warnings to one line.
+
+    zmqtt logs every failed reconnect attempt with a full traceback.
+    """
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        message = record.getMessage()
+        if record.exc_info and record.levelno < logging.ERROR:
+            exc = record.exc_info[1]
+            message = f"{message}: {type(exc).__name__}: {exc}"
+            record.exc_info = None
+        if name := _broker_name.get():
+            message = f"{name}: {message}"
+        record.msg, record.args = message, ()
+        return True
+
+
+for _logger_name in ("zmqtt.client", "zmqtt.protocol"):
+    logging.getLogger(_logger_name).addFilter(_ZmqttLogFilter())
+
+
+@contextmanager
+def _logging_as(name: str) -> Iterator[None]:
+    token = _broker_name.set(name)
+    try:
+        yield
+    finally:
+        _broker_name.reset(token)
 
 
 class MqttSettings(BaseSettings):
@@ -65,7 +102,10 @@ class MqttSettings(BaseSettings):
 
 
 def broker_check(broker: MQTTBroker, timeout: float = 4.0) -> Check:
-    """Ready while ``broker`` answers a ping within ``timeout`` seconds.
+    """Ready while ``broker`` is connected and answers a ping within ``timeout`` seconds.
+
+    It doesn't ping while the client knows it is disconnected: zmqtt would
+    write to the dead socket, and asyncio warns about every such write.
 
     Keep ``timeout`` below Health's check timeout (5 s): zmqtt only cleans up
     a ping that times out by itself. A ping cancelled from outside leaves its
@@ -74,6 +114,10 @@ def broker_check(broker: MQTTBroker, timeout: float = 4.0) -> Check:
     """
 
     async def check() -> str | None:
+        try:
+            broker.connection_info  # raises while disconnected
+        except MQTTDisconnectedError:
+            return "not connected"
         return None if await broker.ping(timeout=timeout) else "ping failed"
 
     return check
@@ -102,6 +146,15 @@ class RecoveringClient(zmqtt.MQTTClient):
         self._clock = clock
         self._exit_process = exit_process
         self._first_refusal_at: float | None = None
+
+    async def __aenter__(self) -> Self:
+        # The run loop task started here keeps the name for every reconnect.
+        with _logging_as(self._name):
+            return await super().__aenter__()
+
+    async def __aexit__(self, *exc: object) -> None:
+        with _logging_as(self._name):
+            await super().__aexit__(*exc)
 
     async def _connect(self) -> None:
         """One attempt; zmqtt calls it for the initial connect and every reconnect."""

@@ -367,6 +367,7 @@ dependencies = [
     { name = "pynmea2" },
     { name = "zero-health" },
     { name = "zero-mqtt" },
+    { name = "zmqtt" },
 ]
 
 [package.dev-dependencies]
@@ -388,6 +389,7 @@ requires-dist = [
     { name = "pynmea2", specifier = ">=1.19.0,<2.0.0" },
     { name = "zero-health", editable = "../packages/py/zero-health" },
     { name = "zero-mqtt", editable = "../packages/py/zero-mqtt" },
+    { name = "zmqtt", specifier = ">=0.2.2,<0.3.0" },
 ]
 
 [package.metadata.requires-dev]
