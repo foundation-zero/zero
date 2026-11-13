@@ -1,12 +1,12 @@
 use crate::layout::{packet_payload, TopicMap, Variable};
 use crate::metrics::{should_log_repeated, MqttMetrics};
-use crate::readiness::{write_termination_message, Readiness};
 use log::{debug, error, info, warn};
 use rumqttc::{
     AsyncClient, ConnectReturnCode, ConnectionError, Event, EventLoop, Incoming, MqttOptions, QoS,
 };
 use std::sync::Arc;
 use std::time::Duration;
+use zero_readiness::{write_termination_message, Readiness};
 
 /// MQTT keep-alive interval: how quickly a dead connection is noticed.
 const KEEP_ALIVE: Duration = Duration::from_secs(15);

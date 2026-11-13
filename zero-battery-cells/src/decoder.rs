@@ -116,3 +116,166 @@ fn note_preamble(reported: &mut HashSet<u16>, list_id: u16, preamble: &[u8]) {
         );
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::cells::{MILLIVOLTS_PER_VOLT, MODULES_PER_STRING, PAYLOAD_BYTES, STRINGS_PER_PACK};
+    use crate::config::AppConfig;
+    use crate::netvar::{HEADER_LEN, KNOWN_PREAMBLE_PREFIX};
+
+    const DECLARATION: &str = "spec/KEB6_FOX_05_41_1_NVL_Declaration.txt";
+    /// Payload bytes per datagram, as in the bench capture.
+    const FRAGMENT_BYTES: usize = 256;
+
+    fn source() -> SocketAddr {
+        "192.168.102.26:60278".parse().unwrap()
+    }
+
+    fn pipeline(owned_list_ids: Option<Vec<u16>>) -> PipelineConfig {
+        PipelineConfig {
+            app: AppConfig {
+                mqtt_host: "localhost".to_string(),
+                mqtt_port: 1883,
+                mqtt_prefix: "battery".to_string(),
+                udp_port: 50001,
+                mqtt_username: None,
+                mqtt_password: None,
+            },
+            nvl_file: DECLARATION.to_string(),
+            owned_list_ids,
+        }
+    }
+
+    /// One NetVar datagram carrying `payload` as fragment `packet_index` of `list_id`.
+    fn datagram(list_id: u16, packet_index: u16, counter: u32, payload: &[u8]) -> Vec<u8> {
+        let mut datagram = Vec::with_capacity(HEADER_LEN + payload.len());
+        datagram.extend_from_slice(KNOWN_PREAMBLE_PREFIX);
+        datagram.extend_from_slice(&[0u8; 4]);
+        datagram.extend_from_slice(&list_id.to_le_bytes());
+        datagram.extend_from_slice(&packet_index.to_le_bytes());
+        datagram.extend_from_slice(&((payload.len() / 2) as u16).to_le_bytes());
+        datagram.extend_from_slice(&((HEADER_LEN + payload.len()) as u16).to_le_bytes());
+        datagram.extend_from_slice(&counter.to_le_bytes());
+        datagram.extend_from_slice(payload);
+        datagram
+    }
+
+    /// A full pack payload where each value is its flat index, split into datagrams.
+    fn pack_datagrams(list_id: u16) -> Vec<Vec<u8>> {
+        let payload: Vec<u8> = (0..PAYLOAD_BYTES / 2)
+            .flat_map(|index| (index as i16).to_le_bytes())
+            .collect();
+        payload
+            .chunks(FRAGMENT_BYTES)
+            .enumerate()
+            .map(|(packet_index, fragment)| datagram(list_id, packet_index as u16, 1, fragment))
+            .collect()
+    }
+
+    fn owned_lists(decoder: &Decoder) -> Vec<u16> {
+        let mut list_ids: Vec<u16> = decoder.packs.keys().copied().collect();
+        list_ids.sort_unstable();
+        list_ids
+    }
+
+    #[test]
+    fn load_decodes_every_known_list_by_default() {
+        let decoder = Decoder::load(&pipeline(None)).unwrap();
+        let known: Vec<u16> = mapping::KNOWN_PACKS.iter().map(|(id, _)| *id).collect();
+        assert_eq!(owned_lists(&decoder), known);
+        assert_eq!(decoder.packs[&462].pack, "46-2");
+    }
+
+    #[test]
+    fn load_skips_lists_owned_by_another_replica() {
+        let decoder = Decoder::load(&pipeline(Some(vec![413, 411]))).unwrap();
+        assert_eq!(owned_lists(&decoder), vec![411, 413]);
+    }
+
+    #[test]
+    fn load_rejects_unknown_owned_lists() {
+        let error = Decoder::load(&pipeline(Some(vec![411, 999])))
+            .err()
+            .expect("an unknown list should be rejected");
+        assert!(error.to_string().contains("not a known list id"), "{error}");
+    }
+
+    #[test]
+    fn load_fails_on_a_missing_declaration() {
+        let mut config = pipeline(None);
+        config.nvl_file = "spec/missing.txt".to_string();
+        let error = Decoder::load(&config)
+            .err()
+            .expect("a missing file should be rejected");
+        assert!(error.to_string().contains("spec/missing.txt"), "{error}");
+    }
+
+    #[test]
+    fn decode_yields_module_frames_once_the_pack_is_complete() {
+        let mut decoder = Decoder::load(&pipeline(Some(vec![412]))).unwrap();
+        let datagrams = pack_datagrams(412);
+        let (last, fragments) = datagrams.split_last().unwrap();
+        for fragment in fragments {
+            assert!(decoder.decode(source(), fragment).unwrap().is_none());
+        }
+
+        let frames: Vec<_> = decoder
+            .decode(source(), last)
+            .unwrap()
+            .expect("the last fragment completes the pack")
+            .collect();
+        assert_eq!(frames.len(), STRINGS_PER_PACK * MODULES_PER_STRING);
+        assert!(frames.iter().all(|frame| frame.pack == "41-2"));
+        let second = &frames[1];
+        assert_eq!((second.string, second.module), (1, 2));
+        assert_eq!(second.voltages_v[0], 14.0 / MILLIVOLTS_PER_VOLT);
+    }
+
+    #[test]
+    fn decode_rejects_lists_this_process_does_not_own() {
+        let mut decoder = Decoder::load(&pipeline(Some(vec![411]))).unwrap();
+        let error = decoder
+            .decode(source(), &datagram(412, 0, 1, &[0; 4]))
+            .err()
+            .expect("a list owned elsewhere should be rejected");
+        assert!(
+            error.to_string().contains("not decoded by this process"),
+            "{error}"
+        );
+    }
+
+    #[test]
+    fn decode_rejects_datagrams_with_a_broken_header() {
+        let mut decoder = Decoder::load(&pipeline(None)).unwrap();
+        let mut truncated = datagram(411, 0, 1, &[0; 4]);
+        truncated.pop();
+        let error = decoder
+            .decode(source(), &truncated)
+            .err()
+            .expect("a length mismatch should be rejected");
+        assert!(error.to_string().contains("NetVar header"), "{error}");
+    }
+
+    #[test]
+    fn decode_rejects_a_pack_larger_than_declared() {
+        let mut decoder = Decoder::load(&pipeline(Some(vec![411]))).unwrap();
+        let oversized = vec![0u8; PAYLOAD_BYTES + 2];
+        let error = decoder
+            .decode(source(), &datagram(411, 0, 1, &oversized))
+            .err()
+            .expect("an oversized payload should be rejected");
+        assert!(error.to_string().contains("payload of list 411"), "{error}");
+    }
+
+    #[test]
+    fn an_unexpected_preamble_is_reported_once_per_list() {
+        let mut reported = HashSet::new();
+        note_preamble(&mut reported, 411, b"\0-S3\0\0\0\0");
+        assert!(reported.is_empty());
+
+        note_preamble(&mut reported, 411, b"\0-S4\0\0\0\0");
+        note_preamble(&mut reported, 411, b"\0-S4\0\0\0\0");
+        assert_eq!(reported, HashSet::from([411]));
+    }
+}
