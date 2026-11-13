@@ -512,6 +512,15 @@ class ControlChannels[
             ),
             qos=publish_qos,
         )
+        self.send_actuated_control_values = connector._create_publisher(
+            DirectMqttMapping[C].for_module(
+                control_module.control_values_cls,
+                config.mqtt_controller_topic_prefix,
+                module_name,
+                type_topic="control-values",
+            ),
+            qos=publish_qos,
+        )
         self.send_manual_control = connector._create_publisher(
             DirectMqttMapping[C].for_module(
                 control_module.control_values_cls,

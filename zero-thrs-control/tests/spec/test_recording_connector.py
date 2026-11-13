@@ -326,6 +326,14 @@ def test_collect_topics_wires_channels(settings: Config):
             retain=False,
         ),
         TopicMapping(
+            topic="test_controller_topic/test/control-values",
+            payload_type=ThrsValues,
+            direction="send",
+            component_type=None,
+            qos=1,
+            retain=False,
+        ),
+        TopicMapping(
             topic="test_controller_topic/test/manual-values",
             payload_type=ThrsValues,
             direction="send",
