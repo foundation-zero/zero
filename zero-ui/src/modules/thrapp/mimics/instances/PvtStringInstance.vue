@@ -13,7 +13,7 @@ const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
 
 <template>
   <MimicTooltipTrigger :data="props">
-    <PvtString v-bind="forwardedProps">{{ custom.label }}</PvtString>
+    <PvtString v-bind="forwardedProps">{{ tooltip?.yardTag }}</PvtString>
     <slot />
   </MimicTooltipTrigger>
 </template>

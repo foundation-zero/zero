@@ -2144,6 +2144,82 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
   pvtFlowOwnersStrings: {
     componentType: SensorComponentType.CalculatedFlow,
   },
+  pvtMainString10Heat: {
+    yardTag: "10",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString111Heat: {
+    yardTag: "11.1",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString112Heat: {
+    yardTag: "11.2",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString11Heat: {
+    yardTag: "1.1",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString12Heat: {
+    yardTag: "12",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString13Heat: {
+    yardTag: "13",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString21Heat: {
+    yardTag: "2.1",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString22Heat: {
+    yardTag: "2.2",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString3Heat: {
+    yardTag: "3",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString4Heat: {
+    yardTag: "4",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString51Heat: {
+    yardTag: "5.1",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString52Heat: {
+    yardTag: "5.2",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString61Heat: {
+    yardTag: "6.1",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString62Heat: {
+    yardTag: "6.2",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString71Heat: {
+    yardTag: "7.1",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString72Heat: {
+    yardTag: "7.2",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString81Heat: {
+    yardTag: "8.1",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString82Heat: {
+    yardTag: "8.2",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtMainString9Heat: {
+    yardTag: "9",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
   pvtMaxTemperatureMainAftStrings: {
     componentType: SensorComponentType.CalculatedTemperature,
   },
@@ -2172,6 +2248,30 @@ export const PVT_SENSOR_DEFINITION = toSensorDefinition({
     yardTag: "50001043-01",
     componentType: SensorComponentType.Valve,
     valveType: ValveType.Mix,
+  },
+  pvtOwnersString1Heat: {
+    yardTag: "1",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtOwnersString2Heat: {
+    yardTag: "2",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtOwnersString3Heat: {
+    yardTag: "3",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtOwnersString4Heat: {
+    yardTag: "4",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtOwnersString5Heat: {
+    yardTag: "5",
+    componentType: SensorComponentType.HeatTransferDevice,
+  },
+  pvtOwnersString6Heat: {
+    yardTag: "6",
+    componentType: SensorComponentType.HeatTransferDevice,
   },
   pvtPcmHeat: {
     componentType: SensorComponentType.HeatTransferDevice,

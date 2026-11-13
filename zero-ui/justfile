@@ -17,3 +17,6 @@ test:
 
 extract_all_schemas:
     pnpm extract-all-schemas
+
+generate_tooltips:
+    pnpm generate-tooltips

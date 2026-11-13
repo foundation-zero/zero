@@ -1142,6 +1142,554 @@ class PvtSensorValues(AmcsModeSensorValues):
             heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
         )
 
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="1.1"
+        )
+    )
+    @property
+    def pvt_main_string1_1_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string1_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string1_1_return.temperature,
+            flow=self.pvt_flow_main_string1_1.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string1_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string1_1_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string1_1"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="1.2"
+        )
+    )
+    @property
+    def pvt_main_string1_2_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string1_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string1_2_return.temperature,
+            flow=self.pvt_flow_main_string1_2.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string1_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string1_2_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string1_2"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="2.1"
+        )
+    )
+    @property
+    def pvt_main_string2_1_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string2_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string2_1_return.temperature,
+            flow=self.pvt_flow_main_string2_1.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string2_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string2_1_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string2_1"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="2.2"
+        )
+    )
+    @property
+    def pvt_main_string2_2_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string2_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string2_2_return.temperature,
+            flow=self.pvt_flow_main_string2_2.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string2_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string2_2_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string2_2"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="3"
+        )
+    )
+    @property
+    def pvt_main_string3_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string3_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string3_return.temperature,
+            flow=self.pvt_flow_main_string3.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string3_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string3_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string3"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="4"
+        )
+    )
+    @property
+    def pvt_main_string4_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string4_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string4_return.temperature,
+            flow=self.pvt_flow_main_string4.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string4_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string4_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string4"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="5.1"
+        )
+    )
+    @property
+    def pvt_main_string5_1_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string5_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string5_1_return.temperature,
+            flow=self.pvt_flow_main_string5_1.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string5_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string5_1_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string5_1"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="5.2"
+        )
+    )
+    @property
+    def pvt_main_string5_2_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string5_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string5_2_return.temperature,
+            flow=self.pvt_flow_main_string5_2.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string5_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string5_2_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string5_2"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="6.1"
+        )
+    )
+    @property
+    def pvt_main_string6_1_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string6_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string6_1_return.temperature,
+            flow=self.pvt_flow_main_string6_1.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string6_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string6_1_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string6_1"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="6.2"
+        )
+    )
+    @property
+    def pvt_main_string6_2_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string6_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string6_2_return.temperature,
+            flow=self.pvt_flow_main_string6_2.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string6_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string6_2_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string6_2"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="7.1"
+        )
+    )
+    @property
+    def pvt_main_string7_1_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string7_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string7_1_return.temperature,
+            flow=self.pvt_flow_main_string7_1.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string7_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string7_1_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string7_1"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="7.2"
+        )
+    )
+    @property
+    def pvt_main_string7_2_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string7_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string7_2_return.temperature,
+            flow=self.pvt_flow_main_string7_2.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string7_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string7_2_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string7_2"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="8.1"
+        )
+    )
+    @property
+    def pvt_main_string8_1_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string8_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string8_1_return.temperature,
+            flow=self.pvt_flow_main_string8_1.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string8_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string8_1_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string8_1"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="8.2"
+        )
+    )
+    @property
+    def pvt_main_string8_2_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string8_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string8_2_return.temperature,
+            flow=self.pvt_flow_main_string8_2.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string8_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string8_2_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string8_2"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="9"
+        )
+    )
+    @property
+    def pvt_main_string9_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string9_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string9_return.temperature,
+            flow=self.pvt_flow_main_string9.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string9_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string9_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string9"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="10"
+        )
+    )
+    @property
+    def pvt_main_string10_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string10_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string10_return.temperature,
+            flow=self.pvt_flow_main_string10.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string10_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string10_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string10"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="11.1"
+        )
+    )
+    @property
+    def pvt_main_string11_1_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string11_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string11_1_return.temperature,
+            flow=self.pvt_flow_main_string11_1.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string11_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self,
+                "pvt_temperature_main_string11_1_return",
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string11_1"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="11.2"
+        )
+    )
+    @property
+    def pvt_main_string11_2_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string11_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string11_2_return.temperature,
+            flow=self.pvt_flow_main_string11_2.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string11_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self,
+                "pvt_temperature_main_string11_2_return",
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string11_2"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="12"
+        )
+    )
+    @property
+    def pvt_main_string12_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string12_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string12_return.temperature,
+            flow=self.pvt_flow_main_string12.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string12_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string12_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string12"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="13"
+        )
+    )
+    @property
+    def pvt_main_string13_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_main_string13_supply.temperature,
+            temperature_return=self.pvt_temperature_main_string13_return.temperature,
+            flow=self.pvt_flow_main_string13.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string13_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_main_string13_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_main_string13"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="1"
+        )
+    )
+    @property
+    def pvt_owners_string1_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_owners_string1_supply.temperature,
+            temperature_return=self.pvt_temperature_owners_string1_return.temperature,
+            flow=self.pvt_flow_owners_string1.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_string1_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_string1_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_owners_string1"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="2"
+        )
+    )
+    @property
+    def pvt_owners_string2_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_owners_string2_supply.temperature,
+            temperature_return=self.pvt_temperature_owners_string2_return.temperature,
+            flow=self.pvt_flow_owners_string2.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_string2_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_string2_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_owners_string2"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="3"
+        )
+    )
+    @property
+    def pvt_owners_string3_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_owners_string3_supply.temperature,
+            temperature_return=self.pvt_temperature_owners_string3_return.temperature,
+            flow=self.pvt_flow_owners_string3.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_string3_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_string3_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_owners_string3"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="4"
+        )
+    )
+    @property
+    def pvt_owners_string4_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_owners_string4_supply.temperature,
+            temperature_return=self.pvt_temperature_owners_string4_return.temperature,
+            flow=self.pvt_flow_owners_string4.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_string4_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_string4_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_owners_string4"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="5"
+        )
+    )
+    @property
+    def pvt_owners_string5_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_owners_string5_supply.temperature,
+            temperature_return=self.pvt_temperature_owners_string5_return.temperature,
+            flow=self.pvt_flow_owners_string5.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_string5_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_string5_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_owners_string5"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
+    @computed_field(
+        json_schema_extra=computed_meta(
+            component_type="heat_transfer", included_in_fmu=False, yard_tag="6"
+        )
+    )
+    @property
+    def pvt_owners_string6_heat(self) -> sensor.HeatTransferDevice:
+        return sensor.HeatTransferDevice.from_sensors(
+            temperature_supply=self.pvt_temperature_owners_string6_supply.temperature,
+            temperature_return=self.pvt_temperature_owners_string6_return.temperature,
+            flow=self.pvt_flow_owners_string6.flow,
+            temperature_supply_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_string6_supply"
+            ),
+            temperature_return_source=sensor.extract_source_yardtag(
+                self, "pvt_temperature_owners_string6_return"
+            ),
+            flow_source=sensor.extract_source_yardtag(self, "pvt_flow_owners_string6"),
+            heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+        )
+
 
 class PvtControlValues(AmcsWatchdogControlValues):
     model_config = ConfigDict(
