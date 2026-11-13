@@ -762,6 +762,12 @@ class DirectivesApiChannels:
         )
         connector._register_listener(simulation_status_mapping)
 
+        self.send_status_set = connector._create_publisher(
+            DirectMqttMapping(
+                SimulationStatusSetMessage,
+                f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusSetMessage.subscribe_topic()}",
+            )
+        )
         self._send_play = connector._create_publisher(
             DirectMqttMapping(
                 PlayMessage,

@@ -1,4 +1,5 @@
 from collections.abc import Coroutine
+from datetime import timedelta
 from typing import Any, Literal, cast
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
@@ -8,7 +9,7 @@ from thrs.orchestration.comms import (
     DirectivesApiChannels,
     SimulationApiChannels,
 )
-from thrs.runtime.messages import SimulationStatusMessage
+from thrs.runtime.messages import SimulationStatusMessage, SimulationStatusSetMessage
 
 WAIT_TIMEOUT = 5
 
@@ -172,7 +173,11 @@ class DirectiveMessaging:
         expect_status = self._wait_for_simulation_status(
             "running", timeout=WAIT_TIMEOUT
         )
-        await self._directives_channels.send_play(playback_rate)
+        await self._directives_channels.send_status_set(
+            SimulationStatusSetMessage(
+                status="running", playback_rate=playback_rate, pause_at=None
+            )
+        )
         await expect_status
 
     async def pause_simulation(self):
@@ -185,7 +190,13 @@ class DirectiveMessaging:
         expect_status = self._wait_for_simulation_status(
             "available", timeout=WAIT_TIMEOUT
         )
-        await self._directives_channels.send_pause()
+        await self._directives_channels.send_status_set(
+            SimulationStatusSetMessage(
+                status="available",
+                playback_rate=simulation_status.playback_rate,
+                pause_at=None,
+            )
+        )
         await expect_status
 
     async def step_simulation(self, seconds: float):
@@ -198,7 +209,13 @@ class DirectiveMessaging:
         expect_status = self._wait_for_simulation_status(
             "stepping", timeout=WAIT_TIMEOUT
         )
-        await self._directives_channels.send_step(seconds)
+        await self._directives_channels.send_status_set(
+            SimulationStatusSetMessage(
+                status="stepping",
+                playback_rate=simulation_status.playback_rate,
+                pause_at=simulation_status.simulation_time + timedelta(seconds=seconds),
+            )
+        )
         await expect_status
 
     def _wait_for_simulation_status(
