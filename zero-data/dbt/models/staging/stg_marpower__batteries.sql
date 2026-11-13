@@ -951,6 +951,7 @@ select
   "temperature_spread_plausibility_err_3__timestamp",
   "temperature_spread_plausibility_err_3__value",
   "topic",
+  "technical_name",
   "under_temp_charge_msl__has_value",
   "under_temp_charge_msl__is_valid",
   "under_temp_charge_msl__timestamp",
@@ -1095,5 +1096,5 @@ select
   "watchdog_counter__is_valid",
   "watchdog_counter__timestamp",
   "watchdog_counter__value"
-from {{ source('raw', 'marpower__450000_main_power_storage_errors') }}
+from {{ source('raw', 'marpower__battery__pack') }}
 where topic is not null

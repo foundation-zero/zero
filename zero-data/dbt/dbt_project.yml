@@ -24,3 +24,4 @@ models:
 on-run-start:
   - "{{ load_power_tag_metadata() }}"
   - "{{ load_24vdc_metadata() }}"
+  - "{{ load_marpower_device_metadata() }}"
