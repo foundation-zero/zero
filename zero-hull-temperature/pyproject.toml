@@ -7,7 +7,9 @@ authors = [
 requires-python = ">=3.15.1,<4.0"
 readme = "README.md"
 dependencies = [
+    "zero-health",
     "zero-modbus-bridge",
+    "zero-mqtt",
     "aiomqtt>=2.4.0,<3.0.0",
     "jsonpath-ng>=1.7.0,<2.0.0",
     "pydantic>=2.11.7,<3.0.0",
@@ -72,4 +74,6 @@ packages = ["zero_hull_temperature"]
 default-groups = ["dev", "test"]
 
 [tool.uv.sources]
-zero-modbus-bridge = { path = "../zero-modbus-bridge", editable = true }
+zero-health = { path = "../packages/py/zero-health", editable = true }
+zero-modbus-bridge = { path = "../packages/py/zero-modbus-bridge", editable = true }
+zero-mqtt = { path = "../packages/py/zero-mqtt", editable = true }

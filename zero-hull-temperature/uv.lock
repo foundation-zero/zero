@@ -563,6 +563,31 @@ wheels = [
 ]
 
 [[package]]
+name = "zero-health"
+source = { editable = "../packages/py/zero-health" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "pydantic", specifier = ">=2.11.7,<3.0.0" },
+    { name = "pydantic-settings", specifier = ">=2.10.1,<3.0.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pyright", specifier = ">=1.1.403,<2" },
+    { name = "ruff", specifier = ">=0.17.2,<0.18" },
+]
+test = [
+    { name = "pytest", specifier = ">=9.1.1,<10" },
+    { name = "pytest-asyncio", specifier = ">=1.1.0,<2" },
+    { name = "pytest-cov", specifier = ">=7.1.0,<8" },
+]
+
+[[package]]
 name = "zero-hull-temperature"
 source = { editable = "." }
 default-groups = ["dev", "test"]
@@ -571,7 +596,9 @@ dependencies = [
     { name = "jsonpath-ng" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
+    { name = "zero-health" },
     { name = "zero-modbus-bridge" },
+    { name = "zero-mqtt" },
 ]
 
 [package.dev-dependencies]
@@ -593,14 +620,16 @@ requires-dist = [
     { name = "jsonpath-ng", specifier = ">=1.7.0,<2.0.0" },
     { name = "pydantic", specifier = ">=2.11.7,<3.0.0" },
     { name = "pydantic-settings", specifier = ">=2.10.1,<3.0.0" },
-    { name = "zero-modbus-bridge", editable = "../zero-modbus-bridge" },
+    { name = "zero-health", editable = "../packages/py/zero-health" },
+    { name = "zero-modbus-bridge", editable = "../packages/py/zero-modbus-bridge" },
+    { name = "zero-mqtt", editable = "../packages/py/zero-mqtt" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "pyright", specifier = ">=1.1.403,<2" },
     { name = "ruff", specifier = ">=0.17.2,<0.18" },
-    { name = "zero-modbus-bridge", extras = ["tui"], editable = "../zero-modbus-bridge" },
+    { name = "zero-modbus-bridge", extras = ["tui"], editable = "../packages/py/zero-modbus-bridge" },
 ]
 test = [
     { name = "pytest", specifier = ">=9.1.1,<10" },
@@ -611,7 +640,7 @@ test = [
 
 [[package]]
 name = "zero-modbus-bridge"
-source = { editable = "../zero-modbus-bridge" }
+source = { editable = "../packages/py/zero-modbus-bridge" }
 dependencies = [
     { name = "faststream", extra = ["mqtt"] },
     { name = "pydantic" },
@@ -635,6 +664,37 @@ requires-dist = [
     { name = "zmqtt", specifier = ">=0.2.2,<0.3.0" },
 ]
 provides-extras = ["tui"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pyright", specifier = ">=1.1.403,<2" },
+    { name = "ruff", specifier = ">=0.17.2,<0.18" },
+]
+test = [
+    { name = "pytest", specifier = ">=9.1.1,<10" },
+    { name = "pytest-asyncio", specifier = ">=1.1.0,<2" },
+    { name = "pytest-cov", specifier = ">=7.1.0,<8" },
+]
+
+[[package]]
+name = "zero-mqtt"
+source = { editable = "../packages/py/zero-mqtt" }
+dependencies = [
+    { name = "faststream", extra = ["mqtt"] },
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
+    { name = "zero-health" },
+    { name = "zmqtt" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "faststream", extras = ["mqtt"], specifier = ">=0.7.5,<1.0.0" },
+    { name = "pydantic", specifier = ">=2.11.7,<3.0.0" },
+    { name = "pydantic-settings", specifier = ">=2.10.1,<3.0.0" },
+    { name = "zero-health", editable = "../packages/py/zero-health" },
+    { name = "zmqtt", specifier = ">=0.2.2,<0.3.0" },
+]
 
 [package.metadata.requires-dev]
 dev = [

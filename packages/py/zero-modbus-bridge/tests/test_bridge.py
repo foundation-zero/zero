@@ -68,6 +68,7 @@ async def test_bridge_run_once_annotation():
         [topic],
         buffer_size=10,
     )
+    assert await bridge.gateway_check() == "not read yet"
     before = datetime.now(UTC)
     await bridge.run_once()
     after = datetime.now(UTC)
@@ -78,6 +79,7 @@ async def test_bridge_run_once_annotation():
     read_at = datetime.fromisoformat(body.pop("TimeStamp"))
     assert before <= read_at <= after
     assert body == {"value": 50.0, "room": None}
+    assert await bridge.gateway_check() is None
 
 
 @pytest.mark.asyncio
@@ -101,6 +103,7 @@ async def test_bridge_run_once_skips_probe_when_connection_unavailable():
 
     mock_modbus.read_holding_registers.assert_not_called()
     mock_pub.publish.assert_not_called()
+    assert await bridge.gateway_check() == "no connection"
 
 
 async def _bridge_from_settings(broker: MagicMock) -> ModbusBridge:

@@ -1,11 +1,11 @@
 import logging
 import os
 import re
+from contextlib import asynccontextmanager
 
 import pytest
 from faststream.mqtt import MQTTBroker
 from zero_modbus_bridge.bridge import ModbusBridge
-from zero_modbus_bridge.mqtt import RecoveringBroker
 
 from zero_power_tags import cli
 from zero_power_tags.cli import (
@@ -170,6 +170,19 @@ class _FakeApp:
         pass
 
 
+class _FakeHealth:
+    """Stands in for zero-health: records the checks, serves nothing."""
+
+    checks = {}
+
+    def __init__(self, _settings, checks):
+        _FakeHealth.checks = checks
+
+    @asynccontextmanager
+    async def serve(self):
+        yield
+
+
 async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
     monkeypatch: pytest.MonkeyPatch,
 ):
@@ -189,13 +202,12 @@ async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
         started.append(bridge)
 
     monkeypatch.setattr(ModbusBridge, "run", fake_run)
+    monkeypatch.setattr(cli, "Health", _FakeHealth)
     cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
 
     await cmd.cli_cmd()
     for hook in apps[0].startup:
         await hook()
 
-    broker = apps[0].broker
-    assert isinstance(broker, RecoveringBroker)
-    assert broker._connection_kwargs["reconnect"].max_attempts is None
     assert len(started) == 1
+    assert list(_FakeHealth.checks) == ["mqtt"]

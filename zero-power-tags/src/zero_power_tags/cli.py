@@ -15,10 +15,11 @@ from pydantic_settings import (
     CliSubCommand,
     SettingsConfigDict,
 )
+from zero_health import Health, HealthSettings
 from zero_modbus_bridge.bridge import ModbusBridge
 from zero_modbus_bridge.io import ModbusTopic
-from zero_modbus_bridge.settings import MqttSettings
 from zero_modbus_bridge.stub import Stub
+from zero_mqtt import MqttSettings, broker_check
 
 from zero_power_tags.io import (
     BridgeSpec,
@@ -197,7 +198,10 @@ class RunCmd(MqttSettings):
                     task_group.create_task(bridge.run())
 
         app.after_startup(run_bridges)
-        await app.run()
+        # The gateways are optional: the bridges log an unreachable one.
+        health = Health(HealthSettings(), {"mqtt": broker_check(broker)})
+        async with health.serve():
+            await app.run()
 
 
 class StubCmd(BaseSettings):

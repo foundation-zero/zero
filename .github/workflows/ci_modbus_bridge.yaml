@@ -2,14 +2,14 @@ name: "Modbus Bridge: Test"
 on:
   pull_request:
     paths:
-      - zero-modbus-bridge/**
+      - packages/py/zero-modbus-bridge/**
       - .github/workflows/ci_modbus_bridge.yaml
       - .github/actions/coverage-report/**
   push:
     branches:
       - main
     paths:
-      - zero-modbus-bridge/**
+      - packages/py/zero-modbus-bridge/**
       - .github/workflows/ci_modbus_bridge.yaml
       - .github/actions/coverage-report/**
 
@@ -31,15 +31,15 @@ jobs:
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
       - run: uv sync --locked --extra tui
-        working-directory: zero-modbus-bridge
+        working-directory: packages/py/zero-modbus-bridge
       - run: just check_static
-        working-directory: zero-modbus-bridge
+        working-directory: packages/py/zero-modbus-bridge
       - run: just test --cov-report=xml
-        working-directory: zero-modbus-bridge
+        working-directory: packages/py/zero-modbus-bridge
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: coverage-zero-modbus-bridge
-          path: zero-modbus-bridge/coverage.xml
+          path: packages/py/zero-modbus-bridge/coverage.xml
           retention-days: 90
 
   coverage:

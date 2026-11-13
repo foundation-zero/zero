@@ -6,8 +6,9 @@ from typing import Coroutine
 from aiomqtt import Client as MqttClient
 from jsonpath_ng.parser import parse
 from pyModbusTCP.server import ModbusServer
-from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
+from zero_modbus_bridge.settings import ModbusSettings
 from zero_modbus_bridge.stub import MultiUnitDataHandler
+from zero_mqtt import MqttSettings
 
 from zero_hull_temperature.addresses import HULL_TEMPERATURE_TOPIC
 from zero_hull_temperature.mqtt import MqttValue

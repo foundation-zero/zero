@@ -2,7 +2,9 @@ name: "Termodinamica: Test and push Docker image"
 on:
   pull_request:
     paths:
-      - zero-modbus-bridge/**
+      - packages/py/zero-health/**
+      - packages/py/zero-modbus-bridge/**
+      - packages/py/zero-mqtt/**
       - zero-termodinamica/**
       - .github/workflows/ci_termodinamica.yaml
       - .github/actions/coverage-report/**
@@ -12,7 +14,9 @@ on:
     branches:
       - main
     paths:
-      - zero-modbus-bridge/**
+      - packages/py/zero-health/**
+      - packages/py/zero-modbus-bridge/**
+      - packages/py/zero-mqtt/**
       - zero-termodinamica/**
       - .github/workflows/ci_termodinamica.yaml
       - .github/actions/coverage-report/**

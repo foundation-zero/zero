@@ -5,13 +5,13 @@ ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
 
-COPY zero-modbus-bridge/ /app/zero-modbus-bridge/
 COPY zero-power-tags/pyproject.toml zero-power-tags/uv.lock zero-power-tags/README.md ./zero-power-tags/
 COPY zero-power-tags/src ./zero-power-tags/src
 
 WORKDIR /app/zero-power-tags/
 
 RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=packages/py,target=/app/packages/py \
     uv sync --locked --no-dev --no-editable
 
 FROM python:3.15-slim-trixie@sha256:65a65fc7b30b06cb6df4930fd4650697cb23f4c2698ab81fc87e4b031bc36928 AS runtime

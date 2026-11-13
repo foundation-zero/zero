@@ -76,6 +76,20 @@ spec:
               value: {{ .Values.modbus.probe_interval | quote }}
             - name: MODBUS_BRIDGES_PATH
               value: {{ .Values.modbus.bridgesPath | quote }}
+          ports:
+            - name: health
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: health
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health/alive
+              port: health
+            periodSeconds: 10
+            failureThreshold: 3
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

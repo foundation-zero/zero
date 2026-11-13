@@ -5,13 +5,13 @@ ENV UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
 
-COPY zero-modbus-bridge/ /app/zero-modbus-bridge/
 COPY zero-termodinamica/pyproject.toml zero-termodinamica/uv.lock zero-termodinamica/README.md ./zero-termodinamica/
 COPY zero-termodinamica/src ./zero-termodinamica/src
 
 WORKDIR /app/zero-termodinamica
 
 RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=packages/py,target=/app/packages/py \
     uv sync --locked --no-dev --no-editable
 
 FROM python:3.15-slim-trixie@sha256:65a65fc7b30b06cb6df4930fd4650697cb23f4c2698ab81fc87e4b031bc36928 AS runtime

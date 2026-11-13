@@ -1,9 +1,11 @@
 import re
+from contextlib import asynccontextmanager
 from unittest.mock import patch
 
 import pytest
 from pydantic_settings import CliApp
 
+from zero_hull_temperature import cli
 from zero_hull_temperature.cli import (
     ReadWithMqttCmd,
     RunCmd,
@@ -101,3 +103,43 @@ def test_stub_client_id_from_env(required_env, monkeypatch):
     monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
     cmd = StubCmd(_env_file=None)  # type: ignore[call-arg]
     assert cmd.mqtt_client_id == "custom-id"
+
+
+class _FakeApp:
+    def __init__(self, broker):
+        self.broker = broker
+
+    def after_startup(self, hook):
+        pass
+
+    async def run(self):
+        pass
+
+
+class _FakeHealth:
+    checks = {}
+
+    def __init__(self, _settings, checks):
+        _FakeHealth.checks = checks
+
+    @asynccontextmanager
+    async def serve(self):
+        yield
+
+
+async def test_run_cmd_is_ready_on_mqtt_and_the_gateway(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(cli, "FastStream", _FakeApp)
+    monkeypatch.setattr(cli, "Health", _FakeHealth)
+    cmd = RunCmd(
+        _env_file=None,  # type: ignore[call-arg]
+        modbus_host="127.0.0.1",
+        modbus_port=1502,
+        mqtt_host="broker",
+        mqtt_port=1883,
+    )
+
+    await cmd.cli_cmd()
+
+    assert sorted(_FakeHealth.checks) == ["modbus", "mqtt"]

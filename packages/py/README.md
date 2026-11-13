@@ -20,5 +20,7 @@ Each package has its own `pyproject.toml`, `uv.lock`, `justfile` and CI
 workflow (`.github/workflows/ci_<package>.yaml`); there is no uv workspace.
 
 - [zero-health](zero-health): readiness and liveness endpoints.
+- [zero-modbus-bridge](zero-modbus-bridge): reads Modbus TCP gateways and
+  publishes the readings over MQTT.
 - [zero-mqtt](zero-mqtt): an MQTT broker that rides out broker outages, and
   its readiness check.
