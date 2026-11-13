@@ -9,11 +9,7 @@ export const ADSORPTION_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
   [MimicComponentType.SeawaterCircuit]: {
     seawater: toSeawaterCircuit({
       custom: { circuitName: "Seawater" },
-      source: getField(
-        SensorComponentType.Temperature,
-        "adsorption",
-        "adsorptionAvailableSeawaterTemperature",
-      ),
+      source: getField(SensorComponentType.Temperature, "adsorption", "placeholder"),
     }),
   },
   [MimicComponentType.ExchangeCircuit]: {

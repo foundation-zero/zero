@@ -294,7 +294,6 @@
     "adsorption:adsorptionTemperatureWasteReturn": "TemperatureSensor/1038-38",
     "adsorption:adsorptionTemperatureWasteSupply": "TemperatureSensor/1038-39",
     "adsorption:dhwAdsorptionExchanger": "ExchangeCircuit/adsorption:domesticHotWater",
-    "adsorption:seawater": "SeawaterCircuit/adsorption:seawater",
     "aft-string-1.1": "PvtString/pvt:aft-string-1.1",
     "aft-string-10": "PvtString/pvt:aft-string-10",
     "aft-string-11.1": "PvtString/pvt:aft-string-11.1",
@@ -7098,13 +7097,11 @@
         "source": [
           "sensor:temperature",
           "adsorption",
-          "adsorptionAvailableSeawaterTemperature",
+          "placeholder",
           null
         ],
         "tooltip": {
           "title": "Seawater circuit",
-          "technicalName": "adsorption-available-seawater-temperature",
-          "mqttTopic": ".../adsorption-available-seawater-temperature",
           "componentType": "Seawater loop",
           "yardTag": "adsorption:seawater"
         }
