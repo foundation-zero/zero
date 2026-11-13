@@ -3,14 +3,15 @@
 use std::collections::BTreeMap;
 use std::path::Path;
 
-use anyhow::Context;
+use anyhow::{Context, anyhow};
 use jsonschema::Validator;
 use log::{debug, info, warn};
+use roas_asyncapi::common::Resolution;
 
-use super::refs::{resolve_channel, resolve_operation};
 use super::roas::{Channel, Document, Operation, OperationAction};
 use super::schema::{MessagePayload, message_payload};
 use super::ttl::ttl_for_channel;
+use super::unresolved_reason;
 use super::validation::{ValidatorBuilder, payload_validator};
 use crate::api_model::{Direction, GroupDef, MetadataByTopic, TopicDef, TopicKind};
 use crate::topic_map::TopicMap;
@@ -69,7 +70,7 @@ fn operation_channels<'a>(
         .iter()
         .map(|(operation_name, operation_ref)| {
             debug!("Parsing operation {operation_name} from {}", path.display());
-            let (_, operation) = resolve_operation(operation_ref, doc).with_context(|| {
+            let operation = found(operation_ref.get_item(doc)).with_context(|| {
                 format!(
                     "unresolvable operation $ref '{}' ({}) in {}",
                     operation_name,
@@ -79,18 +80,26 @@ fn operation_channels<'a>(
                     path.display()
                 )
             })?;
-            let (pointer, channel) =
-                resolve_channel(&operation.channel, doc).with_context(|| {
-                    format!(
-                        "unresolvable channel $ref '{}' in {}",
-                        operation.channel.reference,
-                        path.display()
-                    )
-                })?;
-            let channel_ref = pointer.unwrap_or_else(|| operation.channel.reference.clone());
+            let channel = found(doc.resolve_channel(&operation.channel)).with_context(|| {
+                format!(
+                    "unresolvable channel $ref '{}' in {}",
+                    operation.channel.reference,
+                    path.display()
+                )
+            })?;
+            let channel_ref = doc.resolved_channel_ref(&operation.channel).to_owned();
             Ok((operation, channel_ref, channel))
         })
         .collect()
+}
+
+/// The object a reference resolved to, or an error saying why there is
+/// none.
+fn found<T>(resolution: Resolution<'_, T>) -> anyhow::Result<&T> {
+    let reason = unresolved_reason(&resolution);
+    resolution
+        .found()
+        .ok_or_else(|| anyhow!("the reference {reason}"))
 }
 
 /// Convert the channel an operation points at, with its own reference (see

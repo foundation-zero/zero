@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::Context;
 use log::{info, warn};
+use roas_asyncapi::common::Resolution;
 use serde_json::Value;
 
 use crate::api_model::{Api, Spec};
@@ -12,7 +13,6 @@ use roas::Document;
 use validation::ValidatorBuilder;
 
 mod channels;
-mod refs;
 mod schema;
 mod ttl;
 mod validation;
@@ -25,6 +25,14 @@ mod roas {
         Items, Schema, SchemaOrMultiFormat, SchemaType, SubSchema,
     };
     pub use roas_asyncapi::v3_0::{Document, Operation, OperationAction};
+}
+
+/// Why a reference did not resolve to an object, to follow "the
+/// reference": `names nothing in this document`, say.
+fn unresolved_reason<T>(resolution: &Resolution<'_, T>) -> &'static str {
+    resolution
+        .problem()
+        .unwrap_or("leads outside the spec document")
 }
 
 /// The paths of the AsyncAPI documents in `spec_dir`: every `.json` file,
