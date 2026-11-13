@@ -329,7 +329,7 @@
         "spec": {
           "id": 4,
           "title": "Shore power converters",
-          "description": "AC active power of the four shore power converters, `esi_ac_bus_active_power_3_phase` × 1000 W (sent in kW). Topic `marpower/450000-dc-distribution-esi/70-1x-tbc1{a,b}`, table `marpower__450000_dc_distribution_esi`.",
+          "description": "AC active power of the four shore power converters, `esi_ac_bus_active_power_3_phase` × 1000 W (sent in kW). Topic `marpower/450000-dc-distribution-esi/07-1x-tbc1{a,b}`, table `marpower__450000_dc_distribution_esi`.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
