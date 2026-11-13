@@ -21,7 +21,7 @@ from thrs.orchestration.comms import (
 )
 from thrs.orchestration.config import Config
 from thrs.orchestration.module import ModuleDescription
-from thrs.runtime.messages import SimulationStatusMessage
+from thrs.runtime.messages import SimulationStatusMessage, SimulationStatusSetMessage
 
 pytestmark = pytest.mark.mqtt
 
@@ -401,25 +401,18 @@ async def test_directives_channels_to_directives_api_channels_roundtrip_all_chan
         try:
             received: dict[str, object] = {}
 
-            directives_channels.on_play(
-                lambda msg: received.update(playback_rate=msg.playback_rate)
+            directives_channels.on_status_set(
+                lambda msg: received.update(status_set=msg)
             )
-            directives_channels.on_step(
-                lambda msg: received.update(seconds=msg.seconds)
+            status_set = SimulationStatusSetMessage(
+                status="stepping",
+                playback_rate=2.0,
+                pause_at=datetime(2026, 11, 13, 10, 10, tzinfo=UTC),
             )
-            directives_channels.on_pause(lambda _msg: received.update(paused=True))
 
-            await api_channels.send_play(1.25)
-            await api_channels.send_step(2.5)
-            await api_channels.send_pause()
+            await api_channels.send_status_set(status_set)
 
-            await _wait_until(
-                lambda: (
-                    received.get("playback_rate") == 1.25
-                    and received.get("seconds") == 2.5
-                    and received.get("paused") is True
-                )
-            )
+            await _wait_until(lambda: received.get("status_set") == status_set)
 
             status = SimulationStatusMessage(
                 mode="thrusters",

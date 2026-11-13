@@ -1,4 +1,7 @@
+from datetime import UTC, datetime, timedelta
 from unittest import mock
+
+import pytest
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
 from thrs.graphql.messaging import (
@@ -7,6 +10,13 @@ from thrs.graphql.messaging import (
     SimulationMessaging,
 )
 from thrs.input_output.base import ThrsValues
+from thrs.runtime.messages import (
+    SimulationStatus,
+    SimulationStatusMessage,
+    SimulationStatusSetMessage,
+)
+
+START = datetime(2026, 11, 13, 10, tzinfo=UTC)
 
 
 class DummyValues(ThrsValues):
@@ -96,11 +106,26 @@ async def test_control_messaging_set_automation_mode():
     ]
 
 
+def simulation_status(
+    status: SimulationStatus,
+    playback_rate: float = 1.0,
+    pause_at: datetime | None = None,
+) -> SimulationStatusMessage:
+    return SimulationStatusMessage(
+        mode="thrs",
+        status=status,
+        control_modules=[],
+        simulation_time=START,
+        playback_rate=playback_rate,
+        pause_at=pause_at,
+    )
+
+
 async def test_directive_messaging_pause_simulation():
     mock_channels = mock.AsyncMock()
     mock_channels.on_simulation_status = mock.Mock()
     mock_channels.get_simulation_status = mock.Mock(
-        return_value=mock.Mock(status="running")
+        return_value=simulation_status("running", playback_rate=2.0)
     )
 
     messaging = DirectiveMessaging([], mock_channels)
@@ -111,21 +136,24 @@ async def test_directive_messaging_pause_simulation():
     assert mock_channels.wait_for_simulation_status_where.call_count == 1
 
     # Waits for the correct condition
-    assert mock_channels.wait_for_simulation_status_where.call_args[0][0](
-        mock.Mock(status="available")
-    )
-    assert not mock_channels.wait_for_simulation_status_where.call_args[0][0](
-        mock.Mock(status="stepping")
-    )
+    condition = mock_channels.wait_for_simulation_status_where.call_args[0][0]
+    assert condition(simulation_status("available", playback_rate=2.0))
+    assert not condition(simulation_status("stepping", playback_rate=2.0))
 
-    assert mock_channels.send_pause.call_args_list == [mock.call()]
+    assert mock_channels.send_status_set.call_args_list == [
+        mock.call(
+            SimulationStatusSetMessage(
+                status="available", playback_rate=2.0, pause_at=None
+            )
+        )
+    ]
 
 
 async def test_directive_messaging_play_simulation():
     mock_channels = mock.AsyncMock()
     mock_channels.on_simulation_status = mock.Mock()
     mock_channels.get_simulation_status = mock.Mock(
-        return_value=mock.Mock(status="available")
+        return_value=simulation_status("available")
     )
 
     messaging = DirectiveMessaging([], mock_channels)
@@ -135,22 +163,28 @@ async def test_directive_messaging_play_simulation():
     assert mock_channels.get_simulation_status.call_count == 1
     assert mock_channels.wait_for_simulation_status_where.call_count == 1
 
-    # Waits for the correct condition
-    assert mock_channels.wait_for_simulation_status_where.call_args[0][0](
-        mock.Mock(status="running")
+    # Waits for the correct condition: running already, at another rate or until a
+    # PauseAt, is not yet what was asked for.
+    condition = mock_channels.wait_for_simulation_status_where.call_args[0][0]
+    assert condition(simulation_status("running", playback_rate=1))
+    assert not condition(simulation_status("running", playback_rate=2.0))
+    assert not condition(
+        simulation_status("running", pause_at=START + timedelta(hours=1))
     )
-    assert not mock_channels.wait_for_simulation_status_where.call_args[0][0](
-        mock.Mock(status="stepping")
-    )
+    assert not condition(simulation_status("stepping"))
 
-    assert mock_channels.send_play.call_args_list == [mock.call(1)]
+    assert mock_channels.send_status_set.call_args_list == [
+        mock.call(
+            SimulationStatusSetMessage(status="running", playback_rate=1, pause_at=None)
+        )
+    ]
 
 
 async def test_directive_messaging_step_simulation():
     mock_channels = mock.AsyncMock()
     mock_channels.on_simulation_status = mock.Mock()
     mock_channels.get_simulation_status = mock.Mock(
-        return_value=mock.Mock(status="available")
+        return_value=simulation_status("available")
     )
 
     messaging = DirectiveMessaging([], mock_channels)
@@ -161,14 +195,40 @@ async def test_directive_messaging_step_simulation():
     assert mock_channels.wait_for_simulation_status_where.call_count == 1
 
     # Waits for the correct condition
-    assert mock_channels.wait_for_simulation_status_where.call_args[0][0](
-        mock.Mock(status="stepping")
+    condition = mock_channels.wait_for_simulation_status_where.call_args[0][0]
+    assert condition(
+        simulation_status("stepping", pause_at=START + timedelta(seconds=1))
     )
-    assert not mock_channels.wait_for_simulation_status_where.call_args[0][0](
-        mock.Mock(status="running")
+    assert not condition(simulation_status("stepping"))
+    assert not condition(
+        simulation_status("running", pause_at=START + timedelta(seconds=1))
     )
 
-    assert mock_channels.send_step.call_args_list == [mock.call(1)]
+    assert mock_channels.send_status_set.call_args_list == [
+        mock.call(
+            SimulationStatusSetMessage(
+                status="stepping",
+                playback_rate=1.0,
+                pause_at=START + timedelta(seconds=1),
+            )
+        )
+    ]
+
+
+@pytest.mark.parametrize("seconds", [0, -1])
+async def test_directive_messaging_step_rejects_no_positive_seconds(seconds: float):
+    mock_channels = mock.AsyncMock()
+    mock_channels.on_simulation_status = mock.Mock()
+    mock_channels.get_simulation_status = mock.Mock(
+        return_value=simulation_status("available")
+    )
+
+    messaging = DirectiveMessaging([], mock_channels)
+
+    with pytest.raises(Exception, match="positive number of seconds"):
+        await messaging.step_simulation(seconds)
+
+    mock_channels.send_status_set.assert_not_called()
 
 
 async def test_control_messaging_set_simulation_input():
