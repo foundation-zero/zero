@@ -11,6 +11,7 @@ from sailpack.max_loads import (
     read_max_loads,
     read_max_loads_cells,
 )
+from sailpack.seed_utils import missing_purchases, read_reference_values_mapping
 
 LOADS_SHEET_ID = "11sE_LaWqBz4rfQrQgS-j8XIEl9pCgsJEX_HSi0XDoxw"
 LOADS_SHEET_EXPORT_URL = f"https://docs.google.com/spreadsheets/d/{LOADS_SHEET_ID}/export?format=csv&gid={{gid}}"
@@ -88,6 +89,17 @@ def max_loads_problems(max_loads_csv: str) -> list[str]:
     return non_numeric
 
 
+def sailpack_mapping_problems(mapping_csv: str) -> list[str]:
+    try:
+        mapping = read_reference_values_mapping(mapping_csv)
+    except ValueError as e:
+        return [f"SailPack mapping: {e}"]
+    return [
+        f"SailPack mapping: {load} has no numeric purchase"
+        for load in missing_purchases(mapping)
+    ]
+
+
 def consistency_problems(sheet: LoadsSheet) -> list[str]:
     technical_names_by_tab = {
         "SailPack mapping": first_column_values(
@@ -103,4 +115,5 @@ def consistency_problems(sheet: LoadsSheet) -> list[str]:
     return [
         *unknown_names,
         *max_loads_problems(sheet.max_loads),
+        *sailpack_mapping_problems(sheet.sailpack_mapping),
     ]

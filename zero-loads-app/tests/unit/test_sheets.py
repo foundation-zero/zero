@@ -4,12 +4,18 @@ from loads.registry.sheets import (
     first_column_values,
     max_loads_problems,
     max_loads_technical_names,
+    sailpack_mapping_problems,
 )
 
 MAX_LOADS_HEADER = (
-    ",,Alarms,,,\n"
+    ",,Alarms,,,,Function\n"
     "Loads app technical name,Lower Warning Setting (kg),Lower Alarm Setting (kg),"
-    "Upper Warning Setting (kg),Upper Alarm Setting (kg)\n"
+    "Upper Warning Setting (kg),Upper Alarm Setting (kg),PLC reference\n"
+)
+
+SAILPACK_MAPPING_HEADER = (
+    "Technical name,Sailpack table name,Sailpack row label,Sailpack column label,"
+    "Purchase (sailpack : function)\n"
 )
 
 
@@ -31,9 +37,9 @@ def test_max_loads_technical_names_finds_the_column_by_header():
     reordered_header = (
         ",,,,,\n"
         "Upper Alarm Setting (kg),Upper Warning Setting (kg),Lower Alarm Setting (kg),"
-        "Lower Warning Setting (kg),Loads app technical name\n"
+        "Lower Warning Setting (kg),Loads app technical name,PLC reference\n"
     )
-    max_loads_csv = reordered_header + '"12,000","11,000",,,main-sheet-load\n'
+    max_loads_csv = reordered_header + '"12,000","11,000",,,main-sheet-load,\n'
 
     assert max_loads_technical_names(max_loads_csv) == {"main-sheet-load"}
 
@@ -56,3 +62,30 @@ def test_max_loads_problems(row: str, problem: str | None):
         assert problems == []
     else:
         assert any(problem.lower() in found.lower() for found in problems), problems
+
+
+def test_sailpack_mapping_problems_report_mapped_loads_without_a_purchase():
+    mapping_csv = (
+        f"{SAILPACK_MAPPING_HEADER}"
+        "main-sheet-load,CABLE DATA,CABLE_MAINSHEET,Load (N),2\n"
+        "main-vang-load,CABLE DATA,CABLE_VANG,Load (N),\n"
+        "main-outhaul-load,CABLE DATA,CABLE_MAIN_OUTHAUL,Load (N),n/a\n"
+        "main-vang-relative-position,CABLE DATA,CABLE_VANG,Unloaded length (m) - After FSIC,\n"
+        "main-halyard-load,,,,\n"
+    )
+
+    assert sailpack_mapping_problems(mapping_csv) == [
+        "SailPack mapping: main-vang-load (CABLE_VANG) has no numeric purchase",
+        "SailPack mapping: main-outhaul-load (CABLE_MAIN_OUTHAUL) has no numeric purchase",
+    ]
+
+
+def test_sailpack_mapping_problems_report_a_missing_purchase_column():
+    mapping_csv = (
+        "Technical name,Sailpack table name,Sailpack row label,Sailpack column label\n"
+    )
+
+    assert sailpack_mapping_problems(mapping_csv) == [
+        "SailPack mapping: Column not found in the SailPack mapping: "
+        "Purchase (sailpack : function)"
+    ]

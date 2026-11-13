@@ -125,10 +125,10 @@ main-runner-tail-ps-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,port,13.385
 main-runner-tail-ps-load,M1R B Rchng TWA70 20261009,port,14.034,13.0,,,13.0,14.0
 main-runner-tail-sb-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,starboard,13.385,13.0,,,13.0,14.0
 main-runner-tail-sb-load,M1R B Rchng TWA70 20261009,starboard,14.034,13.0,,,13.0,14.0
-main-sheet-load,FM B Upwind 20261006,port,12.722,10.9,,,10.9,12.8
-main-sheet-load,FM B Upwind 20261006,starboard,12.722,10.9,,,10.9,12.8
-main-sheet-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,port,11.152,10.9,,,10.9,12.8
-main-sheet-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,starboard,11.152,10.9,,,10.9,12.8
+main-sheet-load,FM B Upwind 20261006,port,25.444,21.8,,,21.8,25.6
+main-sheet-load,FM B Upwind 20261006,starboard,25.444,21.8,,,21.8,25.6
+main-sheet-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,port,22.305,21.8,,,21.8,25.6
+main-sheet-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,starboard,22.305,21.8,,,21.8,25.6
 main-vang-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,port,56.084,40.0,-28.0,-24.0,40.0,43.0
 main-vang-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,starboard,56.084,40.0,-28.0,-24.0,40.0,43.0
 main-vang-load,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,port,56.084,40.0,-28.0,-24.0,40.0,43.0
@@ -159,10 +159,12 @@ mizzen-outhaul-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,port,9.949,9.4,,,9
 mizzen-outhaul-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,starboard,9.949,9.4,,,9.4,11.0
 mizzen-outhaul-load,M1R M12R SS Upwind 20261009,port,9.759,9.4,,,9.4,11.0
 mizzen-outhaul-load,M1R M12R SS Upwind 20261009,starboard,9.759,9.4,,,9.4,11.0
-mizzen-runner-block-ps-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,port,9.755,9.754,,,9.75430851082296,11.475657071556425
-mizzen-runner-block-ps-load,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,port,10.136,9.754,,,9.75430851082296,11.475657071556425
-mizzen-runner-block-sb-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,starboard,9.755,9.754,,,9.75430851082296,11.475657071556425
-mizzen-runner-block-sb-load,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,starboard,10.136,9.754,,,9.75430851082296,11.475657071556425
+mizzen-runner-block-ps-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,port,9.752,9.741,,,9.741,11.46
+mizzen-runner-block-ps-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,port,9.755,9.741,,,9.741,11.46
+mizzen-runner-block-ps-load,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,port,10.136,9.741,,,9.741,11.46
+mizzen-runner-block-sb-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,starboard,9.752,9.741,,,9.741,11.46
+mizzen-runner-block-sb-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,starboard,9.755,9.741,,,9.741,11.46
+mizzen-runner-block-sb-load,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,starboard,10.136,9.741,,,9.741,11.46
 mizzen-runner-tail-ps-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,port,5.101,5.1,,,5.1,6.0
 mizzen-runner-tail-ps-load,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,port,5.3,5.1,,,5.1,6.0
 mizzen-runner-tail-sb-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,starboard,5.101,5.1,,,5.1,6.0

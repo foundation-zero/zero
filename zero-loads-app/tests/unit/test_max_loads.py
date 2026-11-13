@@ -4,7 +4,6 @@ import pytest
 from sailpack.max_loads import (
     clamp_targets_to_thresholds,
     read_max_loads,
-    runner_block_thresholds,
     thresholded_variables,
 )
 
@@ -12,7 +11,7 @@ HEADER = (
     ",,Equipment (Limiting) Specs,,Alarms,,,\n"
     "Loads app technical name,Function #,Max Working Load (kg),"
     "Lower Warning Setting (kg),Lower Alarm Setting (kg),"
-    "Upper Warning Setting (kg),Upper Alarm Setting (kg),Additional Comments\n"
+    "Upper Warning Setting (kg),Upper Alarm Setting (kg),Additional Comments,PLC reference\n"
 )
 
 
@@ -62,9 +61,9 @@ def test_read_max_loads_finds_columns_by_header():
     reordered_header = (
         ",,,,,\n"
         "Upper Alarm Setting (kg),Upper Warning Setting (kg),Lower Alarm Setting (kg),"
-        "Lower Warning Setting (kg),Loads app technical name\n"
+        "Lower Warning Setting (kg),Loads app technical name,PLC reference\n"
     )
-    max_loads_csv = reordered_header + '"12,000","11,000",,,main-sheet-load\n'
+    max_loads_csv = reordered_header + '"12,000","11,000",,,main-sheet-load,\n'
 
     assert read_max_loads(max_loads_csv).to_dicts() == [
         _thresholds("main-sheet-load", warning_high=11.0, alarm_high=12.0)
@@ -175,26 +174,14 @@ def test_thresholded_variables_skips_variables_without_thresholds():
     ]
 
 
-def test_runner_block_thresholds_scale_the_runner_tail_thresholds_on_both_sides():
-    max_loads = pl.DataFrame(
-        [
-            _thresholds("main-runner-tail-ps-load", warning_high=13.0, alarm_high=14.0),
-            _thresholds("main-runner-tail-sb-load", warning_high=13.0, alarm_high=14.0),
-            _thresholds("mizzen-runner-tail-ps-load", warning_high=5.0, alarm_high=5.5),
-            _thresholds("mizzen-runner-tail-sb-load", warning_high=5.0, alarm_high=5.5),
-            _thresholds("main-sheet-load", warning_high=11.0, alarm_high=12.0),
-        ],
-        schema=THRESHOLDS_SCHEMA,
+def test_read_max_loads_skips_the_ignored_rows():
+    max_loads_csv = (
+        HEADER
+        + 'main-sheet-load,,,,,,"25,600",,FE205_MainSheetCaptiveWinch.i_blockLoad\n'
+        + 'main-sheet-load,,,,,,"12,800",,FE205_MainSheetCaptiveWinch.st_load.i_Load\n'
+        + 'main-reef-tack,,,,,,"6,000",,\n'
     )
 
-    block_thresholds = {
-        row["variable"]: (row["warning_high"], row["alarm_high"])
-        for row in runner_block_thresholds(max_loads).iter_rows(named=True)
-    }
-
-    assert block_thresholds == {
-        "main-runner-block-ps-load": (26.0, 28.0),
-        "main-runner-block-sb-load": (26.0, 28.0),
-        "mizzen-runner-block-ps-load": pytest.approx((9.563, 10.519), abs=1e-3),
-        "mizzen-runner-block-sb-load": pytest.approx((9.563, 10.519), abs=1e-3),
-    }
+    assert read_max_loads(max_loads_csv).to_dicts() == [
+        _thresholds("main-sheet-load", alarm_high=25.6)
+    ]
