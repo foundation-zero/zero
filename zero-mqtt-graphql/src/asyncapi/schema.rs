@@ -6,10 +6,10 @@ use log::{info, warn};
 use roas_asyncapi::common::reference::RefOr;
 use serde_json::Value;
 
-use super::refs::{resolve_message, resolve_payload_schema, resolve_ref_to_entry};
 use super::roas::{
     Channel, Document, Items, Message, Schema, SchemaOrMultiFormat, SchemaType, SubSchema,
 };
+use super::unresolved_reason;
 use crate::api_model::{EnumValue, FieldType, Payload};
 use crate::naming::enum_value_name;
 
@@ -48,12 +48,16 @@ pub(super) fn message_payload(
         return None;
     };
 
-    let Some((pointer, schema_or_multi)) = resolve_payload_schema(payload_ref, doc) else {
-        info!("Channel {channel_ref} message payload reference does not resolve");
+    let resolution = payload_ref.get_item(doc);
+    let reason = unresolved_reason(&resolution);
+    let Some(schema_or_multi) = resolution.found() else {
+        info!("Channel {channel_ref} message payload reference {reason}");
         return None;
     };
 
-    let schema_ref = pointer.unwrap_or(format!("{message_ref}/payload"));
+    let schema_ref = payload_ref
+        .resolved_ref(doc)
+        .map_or_else(|| format!("{message_ref}/payload"), ToOwned::to_owned);
     Some(MessagePayload {
         payload: Payload {
             // Named after its schema component; an inline payload after its
@@ -83,11 +87,14 @@ pub(super) fn channel_messages<'a>(
         .filter_map(|(message_key, message_ref)| {
             // Where a `$ref` chain ends, or the channel's own entry for an
             // inline message.
-            let (resolved, message) = resolve_message(message_ref, doc)?;
-            let pointer = resolved.unwrap_or_else(|| {
-                let key = message_key.replace('~', "~0").replace('/', "~1");
-                format!("{channel_ref}/messages/{key}")
-            });
+            let message = message_ref.get_item(doc).found()?;
+            let pointer = message_ref.resolved_ref(doc).map_or_else(
+                || {
+                    let key = message_key.replace('~', "~0").replace('/', "~1");
+                    format!("{channel_ref}/messages/{key}")
+                },
+                ToOwned::to_owned,
+            );
             Some((pointer, message))
         })
         .collect()
@@ -128,17 +135,12 @@ fn extract_fields_from_schema_or_multi(
     schema_or_multi: &SchemaOrMultiFormat,
     doc: &Document,
 ) -> BTreeMap<String, FieldType> {
-    let schema_entries = doc
-        .components
-        .as_ref()
-        .map(|componentens| &componentens.schemas);
-
     match schema_or_multi {
-        SchemaOrMultiFormat::Schema(schema) => extract_fields_from_schema(schema, schema_entries),
+        SchemaOrMultiFormat::Schema(schema) => extract_fields_from_schema(schema, doc),
         SchemaOrMultiFormat::MultiFormat(mf) => {
             // Try to deserialize the raw schema value as a Schema
             if let Ok(schema) = serde_json::from_value::<Schema>(mf.schema.clone()) {
-                extract_fields_from_schema(&schema, schema_entries)
+                extract_fields_from_schema(&schema, doc)
             } else {
                 info!("Payload schema has no fields");
                 BTreeMap::new()
@@ -151,67 +153,48 @@ fn extract_fields_from_schema_or_multi(
     }
 }
 
-fn extract_fields_from_schema(
-    schema: &Schema,
-    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
-) -> BTreeMap<String, FieldType> {
+fn extract_fields_from_schema(schema: &Schema, doc: &Document) -> BTreeMap<String, FieldType> {
     // Fields colliding after lowerCamel sanitization are kept here; building
     // the schema then stops at the duplicate field.
     schema
         .properties
         .iter()
         .filter_map(|(name, subschema)| {
-            let field_type = field_type_for_subschema(name.clone(), subschema, schema_entries)?;
+            let field_type = field_type_for_subschema(name.clone(), subschema, doc)?;
 
             Some((name.clone(), field_type))
         })
         .collect()
 }
 
-/// Derive a field type from a (possibly `$ref`'d) subschema.
-fn field_type_for_subschema(
-    name: String,
-    sub: &SubSchema,
-    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
-) -> Option<FieldType> {
-    match sub {
-        SubSchema::Bool(_) => None,
-        SubSchema::Schema(boxed) => match boxed.as_ref() {
-            RefOr::Item(schema) => type_from_schema(name, schema, schema_entries),
-            RefOr::Reference(r) => {
-                let Some((reference, resolved)) =
-                    resolve_ref_to_entry(r, None, schema_entries, vec![])
-                else {
-                    warn!("Cannot resolve reference {r:?} while determining payload type");
-                    return None;
-                };
-                let name = reference
-                    .and_then(|r| r.rsplit('/').next().map(ToOwned::to_owned))
-                    .unwrap_or(name);
-
-                match resolved {
-                    SchemaOrMultiFormat::Schema(s) => type_from_schema(name, s, schema_entries),
-                    SchemaOrMultiFormat::MultiFormat(mf) => {
-                        let schema: Schema = serde_json::from_value(mf.schema.clone()).ok()?;
-                        type_from_schema(name, &schema, schema_entries)
-                    }
-                    SchemaOrMultiFormat::Bool(_) => None,
-                }
-            }
-        },
-    }
+/// Derive a field type from a (possibly `$ref`'d) subschema. A `$ref`'d
+/// one is named after the last segment of the reference it resolved at.
+fn field_type_for_subschema(name: String, sub: &SubSchema, doc: &Document) -> Option<FieldType> {
+    let SubSchema::Schema(entry) = sub else {
+        return None;
+    };
+    let resolution = entry.get_item(doc);
+    let reason = unresolved_reason(&resolution);
+    let Some(schema) = resolution.found() else {
+        warn!(
+            "Schema reference {:?} of {name} {reason}",
+            entry.reference().map(|r| r.reference.as_str()),
+        );
+        return None;
+    };
+    let name = entry
+        .resolved_ref(doc)
+        .and_then(|r| r.rsplit('/').next())
+        .map_or(name, ToOwned::to_owned);
+    type_from_schema(name, schema, doc)
 }
 
-fn type_from_schema(
-    name: String,
-    schema: &Schema,
-    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
-) -> Option<FieldType> {
+fn type_from_schema(name: String, schema: &Schema, doc: &Document) -> Option<FieldType> {
     if let Some(schema_type) = &schema.schema_type {
         return match schema_type {
-            SchemaType::Single(t) => field_type_for_json_type(name, t, schema, schema_entries),
+            SchemaType::Single(t) => field_type_for_json_type(name, t, schema, doc),
             SchemaType::Multiple(types) => one_type(types.iter().enumerate().map(|(index, t)| {
-                field_type_for_json_type(format!("{name}{index}"), t, schema, schema_entries)
+                field_type_for_json_type(format!("{name}{index}"), t, schema, doc)
             })),
         };
     }
@@ -229,9 +212,10 @@ fn type_from_schema(
     }
     // A union, nullable when one of its arms is `null`.
     for arms in [&schema.any_of, &schema.one_of].into_iter().flatten() {
-        let types = arms.iter().enumerate().map(|(index, sub)| {
-            field_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
-        });
+        let types = arms
+            .iter()
+            .enumerate()
+            .map(|(index, sub)| field_type_for_subschema(format!("{name}{index}"), sub, doc));
         if let Some(field_type) = one_type(types) {
             return Some(field_type);
         }
@@ -239,8 +223,7 @@ fn type_from_schema(
     // An intersection, such as pydantic wrapping a single `$ref`.
     if let Some(all_of) = &schema.all_of {
         for (index, sub) in all_of.iter().enumerate() {
-            if let Some(t) = field_type_for_subschema(format!("{name}{index}"), sub, schema_entries)
-            {
+            if let Some(t) = field_type_for_subschema(format!("{name}{index}"), sub, doc) {
                 return Some(t);
             }
         }
@@ -267,14 +250,14 @@ fn field_type_for_json_type(
     name: String,
     t: &str,
     schema: &Schema,
-    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
+    doc: &Document,
 ) -> Option<FieldType> {
     match t {
         "object" => {
-            let fields = extract_fields_from_schema(schema, schema_entries);
+            let fields = extract_fields_from_schema(schema, doc);
             (!fields.is_empty()).then(|| FieldType::Object(name, Box::new(fields)))
         }
-        "array" => Some(array_field_type(name, schema, schema_entries)),
+        "array" => Some(array_field_type(name, schema, doc)),
         "number" => Some(FieldType::Float),
         "integer" => Some(enum_field_type(name, schema, FieldType::Int)),
         "boolean" => Some(FieldType::Boolean),
@@ -361,13 +344,9 @@ fn named_constants(schema: &Schema) -> Option<Vec<(&Value, &str)>> {
 /// The element type is unknown for a tuple, as draft-07 allows extra items
 /// of any type, and for `prefixItems` (JSON Schema 2020-12), which the
 /// draft-07 parser drops.
-fn array_field_type(
-    name: String,
-    schema: &Schema,
-    schema_entries: Option<&BTreeMap<String, RefOr<SchemaOrMultiFormat>>>,
-) -> FieldType {
+fn array_field_type(name: String, schema: &Schema, doc: &Document) -> FieldType {
     let element = match &schema.items {
-        Some(Items::Single(item)) => field_type_for_subschema(name, item, schema_entries),
+        Some(Items::Single(item)) => field_type_for_subschema(name, item, doc),
         Some(Items::Tuple(_)) | None => None,
     };
     element.map_or(FieldType::Json, |element| {
@@ -390,6 +369,16 @@ mod tests {
             properties,
             ..Default::default()
         }
+    }
+
+    /// A document whose schema components are `schemas`.
+    fn document(schemas: &Value) -> Document {
+        serde_json::from_value(json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "Test", "version": "1.0.0"},
+            "components": {"schemas": schemas}
+        }))
+        .unwrap()
     }
 
     #[test_log::test]
@@ -423,21 +412,18 @@ mod tests {
                 "nested".to_string(),
                 json!({"type": "object", "properties": {"x": {"type": "number"}}}),
             ),
-            ("reffed".to_string(), json!({"$ref": "#/components/nested"})),
+            (
+                "reffed".to_string(),
+                json!({"$ref": "#/components/schemas/nested"}),
+            ),
             ("items".to_string(), json!({"type": "array"})),
         ]);
         let schema = schema_with_properties(props);
-        let schema_entries = BTreeMap::from([(
-            "nested".to_string(),
-            RefOr::Item(
-                serde_json::from_value::<SchemaOrMultiFormat>(
-                    json!({"type": "object", "properties": {"x": {"type": "number"}}}),
-                )
-                .unwrap(),
-            ),
-        )]);
+        let doc = document(&json!({
+            "nested": {"type": "object", "properties": {"x": {"type": "number"}}}
+        }));
 
-        let fields = extract_fields_from_schema(&schema, Some(&schema_entries));
+        let fields = extract_fields_from_schema(&schema, &doc);
         assert_eq!(fields.len(), 12);
         // BTreeMap ordering, so sorted by key
         let get = |name: &str| fields.get(name).unwrap();
@@ -490,7 +476,8 @@ mod tests {
             ),
         ]);
 
-        let fields = extract_fields_from_schema(&schema_with_properties(props), None);
+        let fields =
+            extract_fields_from_schema(&schema_with_properties(props), &document(&json!({})));
 
         let list = |element| FieldType::List(Box::new(element));
         assert_eq!(fields["modules"], list(FieldType::String));
@@ -519,7 +506,8 @@ mod tests {
             ),
         ]);
 
-        let fields = extract_fields_from_schema(&schema_with_properties(props), None);
+        let fields =
+            extract_fields_from_schema(&schema_with_properties(props), &document(&json!({})));
 
         assert_eq!(fields["optional"], FieldType::Float);
         assert_eq!(fields["nullable"], FieldType::Float);
@@ -575,7 +563,8 @@ mod tests {
             ),
         ]);
 
-        let fields = extract_fields_from_schema(&schema_with_properties(props), None);
+        let fields =
+            extract_fields_from_schema(&schema_with_properties(props), &document(&json!({})));
 
         let value = |name: &str, raw: Value| EnumValue {
             name: name.to_string(),
@@ -628,7 +617,7 @@ mod tests {
     #[test_log::test]
     fn test_empty_properties_returns_empty_fields() {
         let schema = Schema::default();
-        let fields = extract_fields_from_schema(&schema, None);
+        let fields = extract_fields_from_schema(&schema, &document(&json!({})));
         assert_eq!(fields.len(), 0);
     }
 
@@ -674,7 +663,7 @@ mod tests {
             json!({"anyOf": [{"type": "number"}, {"type": "null"}]}),
         )]);
         let schema = schema_with_properties(props);
-        let fields = extract_fields_from_schema(&schema, None);
+        let fields = extract_fields_from_schema(&schema, &document(&json!({})));
         assert_eq!(fields.len(), 1);
         assert_eq!(fields.get("current_a"), Some(&FieldType::Float));
     }
