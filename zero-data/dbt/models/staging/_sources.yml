@@ -4551,8 +4551,8 @@ sources:
             description: "Timestamp of the LVDC (low side) voltage in V reading."
           - name: lvdc_voltage__value
             description: "LVDC (low side) voltage in V."
-      - name: marpower__450000_dc_distribution_esi
-        description: "ESI shore power converter telemetry from Marpower, one topic per converter module: PS (07-11) and SB (07-12), modules tbc1a and tbc1b. Topics were named 70-xx until 23 Oct 2026. Only the columns we model are listed."
+      - name: marpower__dc_700v__shore_converter
+        description: "ESI shore power converter telemetry from Marpower, one row per converter module: PS (07-11) and SB (07-12), modules tbc1a and tbc1b. Only the columns we model are listed."
         columns:
           - name: timestamp
             description: "Ingest time index. Always present; the raw-schema assumption we rely on."
@@ -4560,6 +4560,8 @@ sources:
               - not_null
           - name: topic
             description: "MQTT topic associated with the raw message."
+          - name: technical_name
+            description: "The converter module (07-11-tbc1a, 07-11-tbc1b, 07-12-tbc1a, 07-12-tbc1b)."
           - name: esi_ac_bus_active_power_3_phase__has_value
             description: "Indicates whether a value is present for the 3-phase AC bus (shore side) active power in kW."
           - name: esi_ac_bus_active_power_3_phase__is_valid
