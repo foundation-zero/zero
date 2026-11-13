@@ -111,7 +111,11 @@ class RecordingConnector(MqttConnector):
         ):
             self.topics.append(
                 TopicMapping(
-                    topic, payload, "receive", component_type, yard_tag=yard_tag
+                    topic=topic,
+                    payload_type=payload,
+                    direction="receive",
+                    component_type=component_type,
+                    yard_tag=yard_tag,
                 )
             )
 
@@ -123,7 +127,13 @@ class RecordingConnector(MqttConnector):
         ):
             self.topics.append(
                 TopicMapping(
-                    topic, payload, "send", component_type, qos, retain, yard_tag
+                    topic=topic,
+                    payload_type=payload,
+                    direction="send",
+                    component_type=component_type,
+                    qos=qos,
+                    retain=retain,
+                    yard_tag=yard_tag,
                 )
             )
 
