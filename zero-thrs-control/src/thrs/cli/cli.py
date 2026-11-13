@@ -88,7 +88,7 @@ class ControlCmd(BaseSettings):
             await persistence.restore_all(control_modules)
 
             runner = ControlRunner(control_modules, liveness_check, persistence)
-            runtime = Runtime(runner, connector, timedelta(seconds=1))
+            runtime = Runtime(runner, connector, timedelta(seconds=1), datetime.now)
 
             await runtime.loop.play(1)
             logger.info("Running control")
@@ -128,7 +128,12 @@ class SimulationCmd(BaseSettings):
             )
 
             runner = SimulationRunner(simulation_module, liveness_check)
-            runtime = Runtime(runner, connector, simulation_module.tick_duration)
+            runtime = Runtime(
+                runner,
+                connector,
+                simulation_module.tick_duration,
+                simulation_module.time,
+            )
 
             await runtime.loop.play(1)
             logger.info("Running simulation")
@@ -203,6 +208,7 @@ class LockstepCmd(BaseSettings):
             runner,
             connector,
             simulation_module.tick_duration,
+            simulation_module.time,
             directive_handling,
         )
 

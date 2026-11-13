@@ -11,6 +11,7 @@ from thrs.classes.control import ControlMode
 from thrs.control.switching import SwitchingControlMode
 from thrs.input_output.base import ThrsValues, component_meta, computed_meta
 from thrs.orchestration.comms import (
+    DirectivesChannels,
     DirectMqttMapping,
     MergedModuleMqttMapping,
     ModuleMqttMapping,
@@ -229,6 +230,17 @@ def test_recording_connector_create_publisher(settings: Config):
         qos=2,
         retain=True,
     )
+
+
+def test_directives_channels_pair_status_with_status_set(settings: Config):
+    connector = RecordingConnector(settings)
+
+    DirectivesChannels(connector, settings)
+
+    directions = {topic.topic: topic.direction for topic in connector.topics}
+    prefix = settings.mqtt_simulator_topic_prefix
+    assert directions[f"{prefix}/status"] == "send"
+    assert directions[f"{prefix}/status/set"] == "receive"
 
 
 # ---------------------------------------------------------------------------

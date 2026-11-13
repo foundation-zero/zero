@@ -101,6 +101,7 @@ def setup_lockstep(
         runner,
         connector,
         simulation_module.tick_duration,
+        simulation_module.time,
         directive_handling,
     )
 

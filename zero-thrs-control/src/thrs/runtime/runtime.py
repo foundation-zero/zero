@@ -1,5 +1,6 @@
 from asyncio import TaskGroup
-from datetime import timedelta
+from collections.abc import Callable
+from datetime import datetime, timedelta
 
 from thrs.orchestration.comms import MqttConnector
 from thrs.runtime.directives import DirectiveHandling
@@ -13,9 +14,10 @@ class Runtime:
         runner: Runner,
         connector: MqttConnector,
         tick_duration: timedelta,
+        time_fn: Callable[[], datetime],
         directive_handling: DirectiveHandling | None = None,
     ):
-        self._loop = Loop(tick_duration)
+        self._loop = Loop(tick_duration, time_fn)
         self._runner = runner
         self._directive_handling = directive_handling
         self._connector = connector

@@ -28,6 +28,7 @@ from thrs.runtime.messages import (
     PauseMessage,
     PlayMessage,
     SimulationStatusMessage,
+    SimulationStatusSetMessage,
     StepMessage,
 )
 from thrs.utils.string import hyphenize
@@ -730,6 +731,12 @@ class DirectivesChannels:
         )
         connector._register_listener(pause_mapping)
 
+        status_set_mapping = DirectMqttMapping(
+            SimulationStatusSetMessage,
+            f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusSetMessage.subscribe_topic()}",
+        )
+        connector._register_listener(status_set_mapping)
+
         self._status_topic = f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}"
 
         self.send_simulation_status = connector._create_publisher(
@@ -739,6 +746,7 @@ class DirectivesChannels:
         self.on_play = play_mapping.add_hook
         self.on_step = step_mapping.add_hook
         self.on_pause = pause_mapping.add_hook
+        self.on_status_set = status_set_mapping.add_hook
 
     async def clear_simulation_status(self):
         await self._connector._mqtt_client.publish(
