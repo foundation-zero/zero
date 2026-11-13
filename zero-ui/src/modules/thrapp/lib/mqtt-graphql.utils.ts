@@ -1,3 +1,6 @@
+import { capitalizeFirst } from "@/modules/common/lib/utils";
+import { gql } from "@urql/vue";
+import { isThrsApiModule } from "./consts";
 import { MqttGraphqlModules } from "./consts.types";
 import { MQTT_GRAPHQL_DEFINITIONS } from "./definitions.generated";
 
@@ -52,3 +55,35 @@ export function toThrsModules(response: unknown): MqttGraphqlModules {
   // The fragments select exactly each definition's fields, so a value has its definition's type.
   return modules as MqttGraphqlModules;
 }
+
+export type ControllerInput = "parameters" | "controlValues";
+
+const INPUT_TYPES: Record<ControllerInput, string> = {
+  parameters: "Parameters",
+  controlValues: "ControlValues",
+};
+
+// A module's controller takes its parameters and control values on the MQTT GraphQL API, each
+// as one input object; the API returns once the parameters are stored and once the AMCS has
+// actuated the control values. Only modules with a controller have them; the API names their
+// input types after the module. The response is not used: the view's query is refreshed instead.
+export const controllerMutation = (module: string, part: ControllerInput) => {
+  if (!isThrsApiModule(module)) {
+    throw new Error(`${module} has no controller`);
+  }
+  const inputType = `ThrsControl${capitalizeFirst(module)}${INPUT_TYPES[part]}Input`;
+  return gql`
+    mutation ($input: ${inputType}!) {
+      thrs { controller { ${module} { ${part}(input: $input) { __typename } } } }
+    }
+  `;
+};
+
+// A component's control values, each stamped with now, so thrs-control takes them as the newest
+// setpoints.
+export const stampedValues = (values: Record<string, unknown>) => {
+  const timeStamp = new Date().toISOString();
+  return Object.fromEntries(
+    Object.entries(values).map(([name, value]) => [name, { value, timeStamp }]),
+  );
+};

@@ -8,8 +8,8 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/number-field";
-import { ThrsModules } from "@/modules/thrapp/lib/consts";
-import { controlValuesForm, MutationType } from "@/modules/thrsim/stores/thrs";
+import { ThrsApiModule } from "@/modules/thrapp/lib/consts";
+import { controlForm } from "@/modules/thrsim/stores/thrs";
 import { ValveControl } from "@/modules/thrapp/types/thrs";
 import { toUpperCamelCase } from "@common/lib/utils";
 import { RiLoader2Line, RiSendPlaneLine } from "@remixicon/vue";
@@ -17,27 +17,19 @@ import { toRef } from "vue";
 
 const props = defineProps<{
   values: ValveControl;
-  query: string;
   componentName: string;
   yardTag: string;
   valveType: string;
-  module: keyof ThrsModules;
-}>();
-const emit = defineEmits<{
-  (e: "update:controlValues", value: unknown): void;
+  module: ThrsApiModule;
 }>();
 
 const controlValues = toRef(props, "values");
 
-const { submit, isSubmitting, error, setpoint } = controlValuesForm(
+const { submit, isSubmitting, error, setpoint } = controlForm(
   props.module,
-  MutationType.Control,
-  "ValveInputType!",
   props.componentName,
   controlValues,
   ["setpoint"],
-  props.query,
-  emit,
 );
 
 const { t } = useI18n();

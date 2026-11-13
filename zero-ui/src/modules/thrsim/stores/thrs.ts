@@ -1,6 +1,8 @@
 import i18n from "@/i18n";
 import { PID } from "@/modules/common/types";
-import { ThrsModules } from "@/modules/thrapp/lib/consts";
+import { ThrsApiModule } from "@/modules/thrapp/lib/consts";
+import { controllerMutation, stampedValues } from "@/modules/thrapp/lib/mqtt-graphql.utils";
+import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import { ThrsSimulationType } from "@/modules/thrsim/lib/consts";
 import { unstamp } from "@common/lib/utils";
 import { Stamped } from "@common/types";
@@ -43,14 +45,10 @@ const valueWithDirty = <T>(value: Ref<T>): FormValue<Unstamp<T>> => {
 };
 
 export const enum MutationType {
-  Control = "control",
-  Parameter = "parameter",
   Simulation = "simulation",
 }
 
 export type InputType = {
-  [MutationType.Control]: ["PumpInputType!", "ValveInputType!"];
-  [MutationType.Parameter]: ["Float!", "[Float!]!", "Boolean!"];
   [MutationType.Simulation]: [
     "ThrusterInputType!",
     "BoundaryInputType!",
@@ -79,8 +77,72 @@ export type FormValues<
   [key in K]: FormValue<key extends keyof A["value"] ? Unstamp<A["value"][key]> : A["value"]>;
 };
 
+// A control's form on thrsim's Controls page: sends the edited fields as the component's control
+// values to the MQTT GraphQL API, which returns once the AMCS has actuated them, then refreshes
+// the page's data.
+export const controlForm = <
+  A extends Ref<FieldObject>,
+  K extends ExtractRefKeys<A>,
+  Form extends FormValues<A>,
+>(
+  module: ThrsApiModule,
+  componentName: string,
+  values: A,
+  fields: K[],
+): {
+  submit: () => Promise<void>;
+  isSubmitting: Ref<boolean>;
+  error: Ref<null | string>;
+} & Form => {
+  const refs = Object.fromEntries(
+    fields.map((field: K) => [field, valueWithDirty(computed(() => values.value[field]))]),
+  );
+  const isSubmitting = ref(false);
+  const error = ref<null | string>(null);
+
+  const submit = async () => {
+    const edited = Object.fromEntries(
+      Object.entries(refs)
+        .filter(([_, { isDirty }]) => isDirty.value)
+        .map(([key, { value }]) => [key, value.value]),
+    );
+    const history = useThrsHistory();
+    try {
+      isSubmitting.value = true;
+      error.value = null;
+
+      const result = await history.mutate(controllerMutation(module, "controlValues"), {
+        input: { [componentName]: stampedValues(edited) },
+      });
+      if (result.error) {
+        error.value = result.error.message;
+        return;
+      }
+      await history.refresh();
+      // The mutation returns once the AMCS has actuated the values, and the fields stay editable
+      // meanwhile: a field changed during the wait keeps its edit for the next submit.
+      for (const [field, ref] of Object.entries(refs)) {
+        if (field in edited && ref.value.value === edited[field]) {
+          ref.isDirty.value = false;
+        }
+      }
+    } catch (err) {
+      error.value =
+        err instanceof Error ? err.message : i18n.global.t("thrs.labels.failedToSubmit");
+    } finally {
+      isSubmitting.value = false;
+    }
+  };
+
+  return { submit, isSubmitting, error, ...refs } as {
+    submit: () => Promise<void>;
+    isSubmitting: Ref<boolean>;
+    error: Ref<null | string>;
+  } & Form;
+};
+
 export const controlValuesForm = <
-  Module extends keyof ThrsModules | ThrsSimulationType,
+  Module extends ThrsSimulationType,
   Mutation extends MutationType,
   Input extends InputType[Mutation],
   A extends Ref<FieldObject | FieldType>,

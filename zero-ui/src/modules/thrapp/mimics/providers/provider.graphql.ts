@@ -1,10 +1,13 @@
-import { capitalizeFirst } from "@/modules/common/lib/utils";
-import { isThrsApiModule } from "@/modules/thrapp/lib/consts";
 import {
   MqttGraphqlModules,
   ThrsDefinitions,
   ThrsModules,
 } from "@/modules/thrapp/lib/consts.types";
+import {
+  ControllerInput,
+  controllerMutation,
+  stampedValues,
+} from "@/modules/thrapp/lib/mqtt-graphql.utils";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import {
   ControlComponentType,
@@ -17,34 +20,10 @@ import {
   SensorComponentType,
   SensorDefinitionMap,
 } from "@/modules/thrapp/types/thrs";
-import { gql } from "@urql/vue";
 import { computed, Ref, toRefs, unref } from "vue";
 import { MimicDataProvider, ModuleField } from ".";
 import { useAdvisoryEnabled, useAutomaticMode } from "../../state";
 import { MimicComponentState } from "../components";
-
-type ControllerInput = "parameters" | "controlValues";
-
-const INPUT_TYPES: Record<ControllerInput, string> = {
-  parameters: "Parameters",
-  controlValues: "ControlValues",
-};
-
-// A module's controller takes its parameters and control values on the MQTT GraphQL API, each
-// as one input object; the API returns once the parameters are stored and once the AMCS has
-// actuated the control values. Only modules with a controller have them; the API names their
-// input types after the module. The response is not used: the view's query is refreshed instead.
-const controllerMutation = (module: keyof ThrsDefinitions, part: ControllerInput) => {
-  if (!isThrsApiModule(module)) {
-    throw new Error(`${module} has no controller`);
-  }
-  const inputType = `ThrsControl${capitalizeFirst(module)}${INPUT_TYPES[part]}Input`;
-  return gql`
-    mutation ($input: ${inputType}!) {
-      thrs { controller { ${module} { ${part}(input: $input) { __typename } } } }
-    }
-  `;
-};
 
 export const useGraphQLDataProvider = (): MimicDataProvider => {
   const { data } = toRefs(useThrsHistory());
@@ -132,17 +111,10 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
     value: ParameterDefinitionMap[Type],
   ) => send(module, "parameters", { [field]: value });
 
-  // Every value is stamped with now, so thrs-control takes it as the newest setpoint.
   const setControlValue = <Type extends ControlComponentType, Module extends keyof ThrsDefinitions>(
     [_type, module, field]: ModuleField<Type, Module>,
     values: Partial<ControlValues<Type>>,
-  ) => {
-    const timeStamp = new Date().toISOString();
-    const stamped = Object.fromEntries(
-      Object.entries(values).map(([name, value]) => [name, { value, timeStamp }]),
-    );
-    return send(module, "controlValues", { [field]: stamped });
-  };
+  ) => send(module, "controlValues", { [field]: stampedValues(values) });
 
   return {
     getSensorValue,
