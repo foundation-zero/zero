@@ -14,6 +14,7 @@ class VariableDefinition:
     id: str
     name: str
     topic: str
+    payload_key: str | None
     get_actual: Callable[[LoadsModel], float | None]
     unit: str
     scale_min: float | None
@@ -41,6 +42,11 @@ def _variable_id(model: type[LoadsModel], field: str, meta: VariableMeta) -> str
     )
 
 
+def _payload_key(field_info: FieldInfo) -> str | None:
+    alias = field_info.validation_alias
+    return alias if isinstance(alias, str) else None
+
+
 def _actual_variable_ids_by_name(model: type[LoadsModel]) -> dict[str, str]:
     return {
         hyphenize(meta.name or field): _variable_id(model, field, meta)
@@ -58,6 +64,7 @@ def _build_loads_model_variable_definitions(
             id=_variable_id(model, field, meta),
             name=model.field_display_name(field, field_info.metadata),
             topic=model.TOPIC,
+            payload_key=_payload_key(field_info),
             get_actual=partial(
                 lambda field, model_instance: getattr(model_instance, field), field
             ),
@@ -253,6 +260,7 @@ def _build_at_variable_definitions(model: type[LoadsModel]) -> VariableDefinitio
         id=variable_meta.name,
         name=model.class_display_name(),
         topic=model.TOPIC,
+        payload_key=_payload_key(field_info),
         get_actual=lambda model_instance: model_instance.value,  # type: ignore[attr-defined]
         unit=variable_meta.unit,
         scale_min=variable_meta.scale_min,

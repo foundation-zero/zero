@@ -1,5 +1,4 @@
 import io
-import math
 import re
 from typing import Any
 
@@ -30,17 +29,7 @@ SAIL_ABBREVIATION_ALIASES = {"MH0": "C0", "TSONLY": "TS", "M12R": "MZ1R"}
 
 NEWTON_PER_TONNE_FORCE = 9806.65
 
-# Runner tail purchase and tail angle at the mizzen runner block, from the Vitters PLC formulas.
-RUNNER_BLOCK_PURCHASE = 2
-MIZZEN_RUNNER_TAIL_ANGLE_DEGREES = 17
-
-# Port tack runner block load per runner tail load, by runner block and runner tail.
-RUNNER_BLOCK_LOAD_PER_TAIL_LOAD = {
-    ("main-runner-block-ps-load", "main-runner-tail-ps-load"): RUNNER_BLOCK_PURCHASE,
-    ("mizzen-runner-block-ps-load", "mizzen-runner-tail-ps-load"): (
-        RUNNER_BLOCK_PURCHASE * math.cos(math.radians(MIZZEN_RUNNER_TAIL_ANGLE_DEGREES))
-    ),
-}
+PURCHASE_HEADER = "Purchase (sailpack : function)"
 
 
 def escape_dollar_quoted_json(value: str) -> str:
@@ -179,6 +168,7 @@ def extract_reference_values(
                 "Cable name",
                 "value",
                 "Column label",
+                "purchase",
             ]
         )
         .with_columns(
@@ -195,7 +185,7 @@ def extract_reference_values(
 
     reference_values = reference_values_raw.with_columns(
         pl.when(pl.col("type") == "load")
-        .then(pl.col("value") / NEWTON_PER_TONNE_FORCE)
+        .then(pl.col("value") / NEWTON_PER_TONNE_FORCE * pl.col("purchase"))
         .otherwise(pl.col("value"))
         .alias("value")
     )
@@ -224,12 +214,6 @@ def add_derived_loads(port_tack_loads: pl.DataFrame) -> pl.DataFrame:
         (pl.col("blade-adjuster-load") + pl.col("blade-cunningham-load")).alias(
             "main-headstay-combined-load"
         ),
-        *(
-            (block_load_per_tail_load * pl.col(tail)).alias(block)
-            for (block, tail), block_load_per_tail_load in (
-                RUNNER_BLOCK_LOAD_PER_TAIL_LOAD.items()
-            )
-        ),
     )
 
 
@@ -246,7 +230,30 @@ def assert_port_tack(load_cases: pl.DataFrame) -> None:
 
 
 def read_reference_values_mapping(mapping_csv: str) -> pl.DataFrame:
-    return pl.read_csv(io.StringIO(mapping_csv))
+    """Read the SailPack mapping, with the purchase as a number or null where it is not one."""
+    mapping = pl.read_csv(io.StringIO(mapping_csv), infer_schema=False)
+    if PURCHASE_HEADER not in mapping.columns:
+        raise ValueError(f"Column not found in the SailPack mapping: {PURCHASE_HEADER}")
+    return mapping.with_columns(
+        pl.col(PURCHASE_HEADER)
+        .str.strip_chars()
+        .cast(pl.Float64, strict=False)
+        .alias("purchase")
+    )
+
+
+def missing_purchases(mapping: pl.DataFrame) -> list[str]:
+    """Return the technical names and cables of the mapped loads without a purchase."""
+    return [
+        f"{name} ({cable})"
+        for name, cable in mapping.filter(
+            pl.col("Sailpack column label") == "Load (N)",
+            pl.col("Sailpack row label").is_not_null(),
+            pl.col("purchase").is_null(),
+        )
+        .select("Technical name", "Sailpack row label")
+        .iter_rows()
+    ]
 
 
 def resolve_sail_set_id_sql(payload_alias: str = "payload") -> str:
