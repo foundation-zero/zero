@@ -1,6 +1,5 @@
 managed_table = get!(managed_tables, [.topic])
 
-
 if managed_table != null {
   %table = managed_table.table
   if managed_table.yard_tag != null {
@@ -8,10 +7,25 @@ if managed_table != null {
   }
   .technical_name = managed_table.technical_name
 } else {
-  %table = .topic
-  for_each(grouped_topics) -> |_index, group| {
-    if starts_with(string!(.topic), group) {
-      %table = replace(group, r'/$', "")
+  # marpower/<NN>-<system>/<kind>/<instance>, or marpower/<NN>-<system>/<device> for a single
+  # device or a system's general topic: one table per kind.
+  convention = parse_regex(
+    string!(.topic),
+    r'^marpower/\d{2}-(?P<system>[a-z0-9]+(?:-[a-z0-9]+)*)/(?P<second>[a-z0-9]+(?:-[a-z0-9]+)*)(?:/(?P<third>[a-z0-9]+(?:-[a-z0-9]+)*))?$'
+  ) ?? null
+  if convention != null {
+    second = string!(convention.second)
+    third = convention.third
+    # A kind's general topic carries other keys than its devices, so it gets a table of its own.
+    kind_table = if third == "general" { second + "_general" } else { second }
+    %table = "marpower__" + string!(convention.system) + "__" + kind_table
+    .technical_name = if third == null { second } else { third }
+  } else {
+    %table = .topic
+    for_each(grouped_topics) -> |_index, group| {
+      if starts_with(string!(.topic), group) {
+        %table = replace(group, r'/$', "")
+      }
     }
   }
   %table = replace(replace!(%table, "/", "__"), "-", "_")
