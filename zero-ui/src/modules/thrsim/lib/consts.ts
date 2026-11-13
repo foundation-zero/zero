@@ -3,7 +3,6 @@ import { gql } from "@urql/vue";
 import { SimulationComponentType, SimulationDefinitions, SimulationFields } from "../types";
 import * as Definitions from "./consts.generated";
 import { ThrsSimulationType } from "./consts.types";
-import * as Queries from "./queries.generated";
 
 export * from "./consts.types";
 
@@ -74,19 +73,6 @@ export const SIMULATION_FIELDS: SimulationFields = {
   [SimulationComponentType.HvacExchanger]: ["heatFlow", "maximumTemperature"],
   [SimulationComponentType.AdsorptionChiller]: ["freeCooling"],
   [SimulationComponentType.AmcsControlMode]: ["mode"],
-};
-
-export const SIMULATION_INPUT_QUERIES: Record<ThrsSimulationType, string> = {
-  highTemperature: Queries.HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY,
-  thrusters: Queries.THRUSTERS_SIMULATION_INPUTS_QUERY,
-  pcm: Queries.PCM_SIMULATION_INPUTS_QUERY,
-  pvt: Queries.PVT_SIMULATION_INPUTS_QUERY,
-  adsorption: Queries.ADSORPTION_SIMULATION_INPUTS_QUERY,
-  consumers: Queries.CONSUMERS_SIMULATION_INPUTS_QUERY,
-  dc: Queries.DC_SIMULATION_INPUTS_QUERY,
-  dhw: Queries.DHW_SIMULATION_INPUTS_QUERY,
-  drives: Queries.DRIVES_SIMULATION_INPUTS_QUERY,
-  thrs: Queries.THRS_SIMULATION_INPUTS_QUERY,
 };
 
 // Each component with the fields of its type, the timestamp named as thrsim reads it.

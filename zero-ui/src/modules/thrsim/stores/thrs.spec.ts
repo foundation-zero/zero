@@ -4,11 +4,19 @@ import { DocumentNode, print } from "graphql";
 import { setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
-import { controlForm } from "./thrs";
+import { useSimulationStore } from "./simulation";
+import { controlForm, simulationInputsForm } from "./thrs";
 
 vi.mock("@/modules/thrapp/graphql/client", () => ({
   mqttGraphqlClient: { query: vi.fn(), mutation: vi.fn() },
   mqttGraphqlContext: {},
+}));
+
+// used by the simulation store, which the simulation inputs form sends through
+vi.mock(import("@urql/vue"), async (importOriginal) => ({
+  ...(await importOriginal()),
+  useQuery: vi.fn(() => ({ data: ref(), executeQuery: vi.fn() })) as never,
+  useClientHandle: vi.fn(() => ({ client: {} })) as never,
 }));
 
 const stamp = <T>(value: T) => ({ value, timestamp: new Date() });
@@ -59,5 +67,35 @@ describe("control form", () => {
     expect(form.error.value).toBe("Out of range");
     expect(form.dutypoint.isDirty.value).toBe(true);
     expect(form.isSubmitting.value).toBe(false);
+  });
+});
+
+describe("simulation inputs form", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-11-11T12:00:00Z"));
+    setActivePinia(createTestingPinia());
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("sends the edited fields stamped as the component's simulation inputs", async () => {
+    const simulation = useSimulationStore();
+    vi.mocked(simulation.setInputs).mockResolvedValue({} as never);
+    const form = simulationInputsForm(
+      "thrustersSeawaterSupply",
+      ref({ temperature: stamp(20), flow: stamp(3) }),
+      ["temperature", "flow"],
+    );
+
+    form.flow.value.value = 4;
+    await form.submit();
+
+    expect(simulation.setInputs).toHaveBeenCalledWith({
+      thrustersSeawaterSupply: { flow: { value: 4, timeStamp: "2026-11-11T12:00:00.000Z" } },
+    });
+    expect(form.flow.isDirty.value).toBe(false);
   });
 });

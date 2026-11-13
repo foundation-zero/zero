@@ -7,8 +7,7 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/number-field";
-import { ThrsSimulationType } from "@/modules/thrsim/lib/consts";
-import { controlValuesForm, MutationType } from "@/modules/thrsim/stores/thrs";
+import { simulationInputsForm } from "@/modules/thrsim/stores/thrs";
 import { SimulationComponentType, TemperatureSimulation } from "@/modules/thrsim/types";
 import { toUpperCamelCase } from "@common/lib/utils";
 import { RiLoader2Line, RiSendPlaneLine } from "@remixicon/vue";
@@ -20,26 +19,15 @@ const { t } = useI18n();
 const props = defineProps<{
   values: TemperatureSimulation;
   componentName: string;
-  query: string;
-  simulation: ThrsSimulationType;
   componentType: SimulationComponentType;
 }>();
 
 const values = toRef(props, "values");
 
-const emit = defineEmits<{
-  (e: "update:controlValues", value: unknown): void;
-}>();
-
-const { submit, isSubmitting, error, temperature } = controlValuesForm(
-  props.simulation,
-  MutationType.Simulation,
-  "TemperatureBoundaryInputType!",
+const { submit, isSubmitting, error, temperature } = simulationInputsForm(
   props.componentName,
   values,
   ["temperature"],
-  props.query,
-  emit,
 );
 </script>
 

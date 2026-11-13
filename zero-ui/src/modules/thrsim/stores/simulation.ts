@@ -1,5 +1,6 @@
 import i18n from "@/i18n";
-import { context, mqttGraphqlContext } from "@/modules/thrapp/graphql/client";
+import { mqttGraphqlContext } from "@/modules/thrapp/graphql/client";
+import { stampedValues } from "@/modules/thrapp/lib/mqtt-graphql.utils";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 
 import { gql, TypedDocumentNode, useClientHandle, useQuery } from "@urql/vue";
@@ -11,7 +12,7 @@ import { AmcsControlMode } from "@/modules/thrapp/types/thrs";
 import { camelCase } from "lodash";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { SIMULATION_INPUT_QUERIES, SIMULATOR_QUERY } from "../lib/consts";
+import { SIMULATOR_QUERY } from "../lib/consts";
 import { SIMULATION_TYPES, Simulator } from "../lib/consts.types";
 
 // Requests a simulator status on the MQTT GraphQL API, which returns once the simulator has
@@ -22,6 +23,19 @@ export const SET_STATUS = gql`
       simulator {
         status(input: $input) {
           status
+        }
+      }
+    }
+  }
+`;
+
+// The simulator's inputs, as one input object; the response is not used.
+const SIMULATION_INPUTS = gql`
+  mutation ($input: ThrsControlThrsSimulationInputsInput!) {
+    thrs {
+      simulator {
+        simulationInputs(input: $input) {
+          __typename
         }
       }
     }
@@ -74,26 +88,25 @@ export const useSimulationStore = defineStore("simulation", () => {
         ?.value === AmcsControlMode.External,
   );
 
+  // Sets some of the simulator's inputs, each field stamped, then reloads the simulator.
+  const setInputs = async (input: Record<string, unknown>) => {
+    const result = await client.mutation(SIMULATION_INPUTS, { input }, mqttGraphqlContext);
+    if (!result.error) await refreshSimulation();
+    return result;
+  };
+
   const setAdvisory = async (enabled: boolean) => {
-    const type = activeSimulationType.value;
-    if (!type || isProcessing.value) return;
+    if (!activeSimulationType.value || isProcessing.value) return;
     isProcessing.value = true;
     advisoryError.value = null;
     try {
-      const mutation = `${type}SimulationSetMode`;
-      const query = `mutation ($input: AmcsControlModeInputType!) {
-      ${mutation}(value: $input) {
-        ${SIMULATION_INPUT_QUERIES[type]}
-      }
-    }`;
-      const input = { mode: enabled ? AmcsControlMode.External : AmcsControlMode.Manual };
-      const result = await client.mutation(query, { input }, context);
+      const mode = enabled ? AmcsControlMode.External : AmcsControlMode.Manual;
+      const result = await setInputs({ mode: stampedValues({ mode }) });
       if (result.error) {
         advisoryError.value = result.error.message ?? i18n.global.t("thrs.labels.failedToSubmit");
         return;
       }
       await useThrsHistory().refresh();
-      await refreshSimulation();
     } catch (err) {
       advisoryError.value =
         err instanceof Error ? err.message : i18n.global.t("thrs.labels.failedToSubmit");
@@ -143,6 +156,7 @@ export const useSimulationStore = defineStore("simulation", () => {
     pause,
     play,
     step,
+    setInputs,
     setAdvisory,
     isAdvisory,
     advisoryError,
