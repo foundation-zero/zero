@@ -1,6 +1,5 @@
-from collections.abc import Coroutine
 from datetime import timedelta
-from typing import Any, Literal, cast
+from typing import Any, cast
 
 from thrs.control.switching import AutomationMode, SwitchingControlMode
 from thrs.input_output.base import ThrsValues
@@ -170,15 +169,11 @@ class DirectiveMessaging:
         if simulation_status.status not in ("available", "running"):
             raise Exception("Can only play an available or running simulation")
 
-        expect_status = self._wait_for_simulation_status(
-            "running", timeout=WAIT_TIMEOUT
-        )
-        await self._directives_channels.send_status_set(
+        await self._request(
             SimulationStatusSetMessage(
                 status="running", playback_rate=playback_rate, pause_at=None
             )
         )
-        await expect_status
 
     async def pause_simulation(self):
         simulation_status = self._directives_channels.get_simulation_status()
@@ -187,47 +182,44 @@ class DirectiveMessaging:
         if simulation_status.status != "running":
             raise Exception("Can only pause a running simulation")
 
-        expect_status = self._wait_for_simulation_status(
-            "available", timeout=WAIT_TIMEOUT
-        )
-        await self._directives_channels.send_status_set(
+        await self._request(
             SimulationStatusSetMessage(
                 status="available",
                 playback_rate=simulation_status.playback_rate,
                 pause_at=None,
             )
         )
-        await expect_status
 
     async def step_simulation(self, seconds: float):
+        if seconds <= 0:
+            raise Exception("Can only step a positive number of seconds")
         simulation_status = self._directives_channels.get_simulation_status()
         if simulation_status is None:
             raise Exception("No simulation status available, cannot step")
         if simulation_status.status != "available":
             raise Exception("Can only step an available simulation")
 
-        expect_status = self._wait_for_simulation_status(
-            "stepping", timeout=WAIT_TIMEOUT
-        )
-        await self._directives_channels.send_status_set(
+        await self._request(
             SimulationStatusSetMessage(
                 status="stepping",
                 playback_rate=simulation_status.playback_rate,
                 pause_at=simulation_status.simulation_time + timedelta(seconds=seconds),
             )
         )
-        await expect_status
 
-    def _wait_for_simulation_status(
-        self,
-        status: Literal["stepping", "running", "available"],
-        *_args,
-        timeout: float,
-    ) -> Coroutine[None, None, SimulationStatusMessage]:
-        return self._directives_channels.wait_for_simulation_status_where(
-            lambda simulation_status: simulation_status.status == status,
-            timeout,
+    async def _request(self, request: SimulationStatusSetMessage):
+        """Send request, then wait until the status shows all of it: a status that
+        is already running would otherwise confirm a play at another rate."""
+        expect_status = self._directives_channels.wait_for_simulation_status_where(
+            lambda status: (
+                status.status == request.status
+                and status.playback_rate == request.playback_rate
+                and status.pause_at == request.pause_at
+            ),
+            WAIT_TIMEOUT,
         )
+        await self._directives_channels.send_status_set(request)
+        await expect_status
 
     @property
     def simulation_status(self) -> SimulationStatusMessage | None:
