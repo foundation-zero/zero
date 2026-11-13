@@ -2172,6 +2172,16 @@ managed_tables = {
     "yard_tag": null,
     "technical_name": "adsorption-waste-heat"
   },
+  "thrs/controller/adsorption/automation-mode": {
+    "table": "marpower__thrs__automation_modes",
+    "yard_tag": null,
+    "technical_name": "automation-mode"
+  },
+  "thrs/controller/consumers/automation-mode": {
+    "table": "marpower__thrs__automation_modes",
+    "yard_tag": null,
+    "technical_name": "automation-mode"
+  },
   "thrs/controller/consumers/consumers-adsorption-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
@@ -2196,6 +2206,11 @@ managed_tables = {
     "table": "marpower__thrs__pid_controllers",
     "yard_tag": null,
     "technical_name": "consumers-dhw-flow-controller"
+  },
+  "thrs/controller/dc/automation-mode": {
+    "table": "marpower__thrs__automation_modes",
+    "yard_tag": null,
+    "technical_name": "automation-mode"
   },
   "thrs/controller/dc/dc-aft-flow": {
     "table": "marpower__thrs__calculated_flows",
@@ -2282,6 +2297,11 @@ managed_tables = {
     "yard_tag": null,
     "technical_name": "dc-ugrids-warmup-mix-controller"
   },
+  "thrs/controller/dhw/automation-mode": {
+    "table": "marpower__thrs__automation_modes",
+    "yard_tag": null,
+    "technical_name": "automation-mode"
+  },
   "thrs/controller/dhw/dhw-adsorption-exchanger": {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
@@ -2336,6 +2356,11 @@ managed_tables = {
     "table": "marpower__thrs__tank_controllers",
     "yard_tag": null,
     "technical_name": "dhw-tanks-controller"
+  },
+  "thrs/controller/drives/automation-mode": {
+    "table": "marpower__thrs__automation_modes",
+    "yard_tag": null,
+    "technical_name": "automation-mode"
   },
   "thrs/controller/drives/drives-aft-flow-controller": {
     "table": "marpower__thrs__pid_controllers",
@@ -2411,6 +2436,11 @@ managed_tables = {
     "table": "marpower__thrs__heat_transfers",
     "yard_tag": null,
     "technical_name": "drives-shorepower-heat"
+  },
+  "thrs/controller/pcm/automation-mode": {
+    "table": "marpower__thrs__automation_modes",
+    "yard_tag": null,
+    "technical_name": "automation-mode"
   },
   "thrs/controller/pcm/pcm-freshwater-heat": {
     "table": "marpower__thrs__heat_transfers",
@@ -2491,6 +2521,11 @@ managed_tables = {
     "table": "marpower__thrs__calculated_temperatures",
     "yard_tag": null,
     "technical_name": "pcm-temperature-consumers-return"
+  },
+  "thrs/controller/pvt/automation-mode": {
+    "table": "marpower__thrs__automation_modes",
+    "yard_tag": null,
+    "technical_name": "automation-mode"
   },
   "thrs/controller/pvt/pvt-flow-main-aft-strings": {
     "table": "marpower__thrs__calculated_flows",
@@ -2626,6 +2661,11 @@ managed_tables = {
     "table": "marpower__thrs__calculated_flows",
     "yard_tag": null,
     "technical_name": "pvt-total-flow"
+  },
+  "thrs/controller/thrusters/automation-mode": {
+    "table": "marpower__thrs__automation_modes",
+    "yard_tag": null,
+    "technical_name": "automation-mode"
   },
   "thrs/controller/thrusters/thrusters-aft-flow-controller": {
     "table": "marpower__thrs__pid_controllers",

@@ -503,6 +503,15 @@ class ControlChannels[
             ),
             qos=publish_qos,
         )
+        self.send_automation_mode = connector._create_publisher(
+            DirectMqttMapping[AutomationMode].for_module(
+                AutomationMode,
+                config.mqtt_controller_topic_prefix,
+                module_name,
+                type_topic="automation-mode",
+            ),
+            qos=publish_qos,
+        )
         self.send_manual_control = connector._create_publisher(
             DirectMqttMapping[C].for_module(
                 control_module.control_values_cls,
@@ -622,6 +631,14 @@ class ControlApiChannels[
         )
         connector._register_listener(control_modes_mapping)
 
+        automation_mode_mapping = DirectMqttMapping[AutomationMode].for_module(
+            AutomationMode,
+            config.mqtt_controller_topic_prefix,
+            module_name,
+            type_topic="automation-mode",
+        )
+        connector._register_listener(automation_mode_mapping)
+
         parameters_mapping = DirectMqttMapping[P].for_module(
             module_description.parameters_cls,
             config.mqtt_controller_topic_prefix,
@@ -673,6 +690,7 @@ class ControlApiChannels[
         self.wait_for_actuated_control_values = actuated_control_values_mapping.wait_for
         self.wait_for_parameters = parameters_mapping.wait_for
         self.wait_for_control_modes = control_modes_mapping.wait_for
+        self.wait_for_automation_mode = automation_mode_mapping.wait_for
 
 
 class SimulationApiChannels[I: ThrsValues, O: ThrsValues]:

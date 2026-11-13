@@ -177,6 +177,16 @@ THRS_CALCULATED_DEVICES: dict[ComponentType, dict[str, tuple[str, ...]]] = {
             "pcm-module4-charge-controller",
         ),
     },
+    ComponentType.AUTOMATION_MODE: {
+        "adsorption": ("automation-mode",),
+        "consumers": ("automation-mode",),
+        "dc": ("automation-mode",),
+        "dhw": ("automation-mode",),
+        "drives": ("automation-mode",),
+        "pcm": ("automation-mode",),
+        "pvt": ("automation-mode",),
+        "thrusters": ("automation-mode",),
+    },
 }
 
 

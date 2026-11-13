@@ -187,6 +187,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     control_channels.send_controller_state = AsyncMock()
     control_channels.send_parameters = AsyncMock()
     control_channels.send_control_modes = AsyncMock()
+    control_channels.send_automation_mode = AsyncMock()
     control_channels.send_manual_control = AsyncMock()
 
     simulation_channels = Mock()
@@ -225,6 +226,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     assert control_channels.send_parameters.await_count == 3
     assert control_channels.send_manual_control.await_count == 3
     assert control_channels.send_control_modes.await_count == 3
+    assert control_channels.send_automation_mode.await_count == 3
 
     assert control.initial.call_count == 2
     assert simulation.tick.call_count == 3
@@ -327,6 +329,7 @@ async def test_control_runner_ticks_and_uses_channels():
     channels.send_controller_state = AsyncMock()
     channels.send_parameters = AsyncMock()
     channels.send_control_modes = AsyncMock()
+    channels.send_automation_mode = AsyncMock()
     channels.send_manual_control = AsyncMock()
 
     alarms = Mock()
@@ -362,6 +365,7 @@ async def test_control_runner_ticks_and_uses_channels():
     assert channels.send_controller_state.await_count == 2
     assert channels.send_parameters.await_count == 2
     assert channels.send_control_modes.await_count == 2
+    assert channels.send_automation_mode.await_count == 2
     assert channels.send_manual_control.await_count == 2
 
     channels.send_computed_values.assert_has_awaits(

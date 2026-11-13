@@ -136,6 +136,39 @@ async def test_tick_publishes_actuated_echo_when_not_advisory(
     assert mock_channels.send_manual_control.await_args == mock.call(actuated)
 
 
+async def test_tick_publishes_the_automation_mode_it_took(
+    advisory_sensor_values, mock_channels, mock_control, module_factory
+):
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+    mock_control.control.return_value = (simple_control_values(flow=9.0), None)
+
+    module = module_factory()
+    module.set_automation_mode(AutomationMode(mode="automatic"))
+
+    await module.tick(advisory_sensor_values)
+
+    assert mock_channels.send_automation_mode.await_args == mock.call(
+        AutomationMode(mode="automatic")
+    )
+
+
+async def test_tick_publishes_manual_when_automatic_is_refused(
+    manual_values, mock_channels, mock_control, module_factory
+):
+    """Without AMCS advisory a switch to automatic is not taken, and the published
+    automation mode shows it."""
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+
+    module = module_factory()
+    module.set_automation_mode(AutomationMode(mode="automatic"))
+
+    await module.tick(manual_values)
+
+    assert mock_channels.send_automation_mode.await_args == mock.call(
+        AutomationMode(mode="manual")
+    )
+
+
 async def test_automatic_control_resets_and_returns_first_control_tick(
     advisory_sensor_values,
     manual_values,

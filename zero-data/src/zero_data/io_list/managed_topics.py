@@ -28,6 +28,7 @@ class ComponentType(StrEnum):
     PID_CONTROLLER = "pid_controller"
     TANK_CONTROLLER = "tank_controller"
     PCM_CHARGE_CONTROLLER = "pcm_charge_controller"
+    AUTOMATION_MODE = "automation_mode"
     # Devices outside the managed systems, in the Spec only (extra_topics.py).
     DRIVE = "drive"
     CONVERTER = "converter"

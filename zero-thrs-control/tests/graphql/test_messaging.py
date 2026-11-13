@@ -3,7 +3,7 @@ from unittest import mock
 
 import pytest
 
-from thrs.control.switching import AutomationMode, SwitchingControlMode
+from thrs.control.switching import AutomationMode
 from thrs.graphql.messaging import (
     ControlMessaging,
     DirectiveMessaging,
@@ -91,15 +91,12 @@ async def test_control_messaging_set_automation_mode():
     result = await messaging.set_automation_mode(True)
 
     assert result is True
-    assert mock_channels.wait_for_control_modes.call_count == 1
+    assert mock_channels.wait_for_automation_mode.call_count == 1
 
-    # Waits for the correct condition
-    assert mock_channels.wait_for_control_modes.call_args[0][0](
-        SwitchingControlMode(automatic_mode=DummyValues(test=True))
-    )
-    assert not mock_channels.wait_for_control_modes.call_args[0][0](
-        SwitchingControlMode(automatic_mode=None)
-    )
+    # Waits until the module publishes that it took the mode
+    condition = mock_channels.wait_for_automation_mode.call_args[0][0]
+    assert condition(AutomationMode(mode="automatic"))
+    assert not condition(AutomationMode(mode="manual"))
 
     assert mock_channels.send_automation_mode.call_args_list == [
         mock.call(AutomationMode(mode="automatic"))
