@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "marpower__450000_dc_distribution__pv_converter_main_1" (
+CREATE TABLE IF NOT EXISTS "marpower__solar__dc_dc_converter" (
   "timestamp" TIMESTAMP(9) NOT NULL,
   "auto__has_value" BOOLEAN NULL,
   "auto__is_valid" BOOLEAN NULL,
@@ -171,6 +171,7 @@ CREATE TABLE IF NOT EXISTS "marpower__450000_dc_distribution__pv_converter_main_
   "hvdc_current__has_value" BOOLEAN NULL,
   "hvdc_current__is_valid" BOOLEAN NULL,
   "hvdc_current__timestamp" STRING NULL,
+  "hvdc_current__value" DOUBLE NULL,
   "hvdc_discharge_current_limit__has_value" BOOLEAN NULL,
   "hvdc_discharge_current_limit__is_valid" BOOLEAN NULL,
   "hvdc_discharge_current_limit__timestamp" STRING NULL,
@@ -206,6 +207,7 @@ CREATE TABLE IF NOT EXISTS "marpower__450000_dc_distribution__pv_converter_main_
   "hvdc_power__has_value" BOOLEAN NULL,
   "hvdc_power__is_valid" BOOLEAN NULL,
   "hvdc_power__timestamp" STRING NULL,
+  "hvdc_power__value" DOUBLE NULL,
   "hvdc_volt_err_hwd__has_value" BOOLEAN NULL,
   "hvdc_volt_err_hwd__is_valid" BOOLEAN NULL,
   "hvdc_volt_err_hwd__timestamp" STRING NULL,
@@ -217,6 +219,7 @@ CREATE TABLE IF NOT EXISTS "marpower__450000_dc_distribution__pv_converter_main_
   "hvdc_voltage__has_value" BOOLEAN NULL,
   "hvdc_voltage__is_valid" BOOLEAN NULL,
   "hvdc_voltage__timestamp" STRING NULL,
+  "hvdc_voltage__value" DOUBLE NULL,
   "internal_error_1__has_value" BOOLEAN NULL,
   "internal_error_1__is_valid" BOOLEAN NULL,
   "internal_error_1__timestamp" STRING NULL,
@@ -248,6 +251,7 @@ CREATE TABLE IF NOT EXISTS "marpower__450000_dc_distribution__pv_converter_main_
   "lvdc_current__has_value" BOOLEAN NULL,
   "lvdc_current__is_valid" BOOLEAN NULL,
   "lvdc_current__timestamp" STRING NULL,
+  "lvdc_current__value" DOUBLE NULL,
   "lvdc_discharge_current_limit__has_value" BOOLEAN NULL,
   "lvdc_discharge_current_limit__is_valid" BOOLEAN NULL,
   "lvdc_discharge_current_limit__timestamp" STRING NULL,
@@ -279,6 +283,7 @@ CREATE TABLE IF NOT EXISTS "marpower__450000_dc_distribution__pv_converter_main_
   "lvdc_voltage__has_value" BOOLEAN NULL,
   "lvdc_voltage__is_valid" BOOLEAN NULL,
   "lvdc_voltage__timestamp" STRING NULL,
+  "lvdc_voltage__value" DOUBLE NULL,
   "mode__has_value" BOOLEAN NULL,
   "mode__is_valid" BOOLEAN NULL,
   "mode__timestamp" STRING NULL,
@@ -367,6 +372,7 @@ CREATE TABLE IF NOT EXISTS "marpower__450000_dc_distribution__pv_converter_main_
   "stopping_timeout_exception__is_valid" BOOLEAN NULL,
   "stopping_timeout_exception__timestamp" STRING NULL,
   "stopping_timeout_exception__value" BOOLEAN NULL,
+  "technical_name" STRING NULL,
   "topic" STRING NULL,
   "unit_id__has_value" BOOLEAN NULL,
   "unit_id__is_valid" BOOLEAN NULL,
@@ -384,11 +390,6 @@ CREATE TABLE IF NOT EXISTS "marpower__450000_dc_distribution__pv_converter_main_
   "watchdog_counter__is_valid" BOOLEAN NULL,
   "watchdog_counter__timestamp" STRING NULL,
   "watchdog_counter__value" BIGINT NULL,
-  "hvdc_current__value" DOUBLE NULL,
-  "hvdc_power__value" DOUBLE NULL,
-  "hvdc_voltage__value" DOUBLE NULL,
-  "lvdc_current__value" DOUBLE NULL,
-  "lvdc_voltage__value" DOUBLE NULL,
   TIME INDEX ("timestamp")
 )
 
