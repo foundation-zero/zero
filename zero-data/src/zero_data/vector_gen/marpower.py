@@ -40,6 +40,7 @@ COMPONENT_TYPE_TABLE: dict[ComponentType, str] = {
     ComponentType.PID_CONTROLLER: "pid_controllers",
     ComponentType.TANK_CONTROLLER: "tank_controllers",
     ComponentType.PCM_CHARGE_CONTROLLER: "pcm_charge_controllers",
+    ComponentType.AUTOMATION_MODE: "automation_modes",
 }
 
 logger = logging.getLogger(__name__)
