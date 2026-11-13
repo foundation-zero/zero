@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "marpower__450000_dc_distribution_esi" (
+CREATE TABLE IF NOT EXISTS "marpower__dc_700v__shore_converter" (
   "timestamp" TIMESTAMP(9) NOT NULL,
   "auto__has_value" BOOLEAN NULL,
   "auto__is_valid" BOOLEAN NULL,
@@ -186,6 +186,7 @@ CREATE TABLE IF NOT EXISTS "marpower__450000_dc_distribution_esi" (
   "stopping__timestamp" STRING NULL,
   "stopping__value" BOOLEAN NULL,
   "table" STRING NULL,
+  "technical_name" STRING NULL,
   "topic" STRING NULL,
   "watchdog_alarm__has_value" BOOLEAN NULL,
   "watchdog_alarm__is_valid" BOOLEAN NULL,
