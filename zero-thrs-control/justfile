@@ -36,7 +36,7 @@ run module='thrs': run_api (run_lockstep module)
 [parallel]
 run_split module='thrs': run_api (run_control module) (run_simulation module)
 
-check: lint type_check test
+check: lint type_check test test_mqtt
 
 check_static: lint_no_fix format type_check
 
@@ -50,7 +50,11 @@ type_check:
     uv run pyright
 
 test *args:
-    uv run pytest {{ cov }} -m "not io" {{ args }}
+    uv run pytest {{ cov }} -n auto -m "not io and not mqtt" {{ args }}
+
+# MQTT tests share one broker and fixed topic prefixes, so they run serially.
+test_mqtt *args:
+    uv run pytest {{ cov }} -m "mqtt and not io" {{ args }}
 
 test_io *args:
     uv run pytest {{ cov }} -m "io" {{ args }}
