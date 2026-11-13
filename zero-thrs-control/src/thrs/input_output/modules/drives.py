@@ -369,7 +369,7 @@ class DrivesSensorValues(AmcsModeSensorValues):
             yard_tag="45002001",
             component_type="shore_power_converter",
             included_in_fmu=False,
-            topic_override="450000-dc-distribution-esi/07-11-tbc1a",
+            topic_override="45-dc-700v/shore-converter/07-11-tbc1a",
         ),
     ]
 
@@ -379,7 +379,7 @@ class DrivesSensorValues(AmcsModeSensorValues):
             yard_tag="45002001",
             component_type="shore_power_converter",
             included_in_fmu=False,
-            topic_override="450000-dc-distribution-esi/07-11-tbc1b",
+            topic_override="45-dc-700v/shore-converter/07-11-tbc1b",
         ),
     ]
     drives_shorepower2a: Annotated[
@@ -388,7 +388,7 @@ class DrivesSensorValues(AmcsModeSensorValues):
             yard_tag="45002001",
             component_type="shore_power_converter",
             included_in_fmu=False,
-            topic_override="450000-dc-distribution-esi/07-12-tbc1a",
+            topic_override="45-dc-700v/shore-converter/07-12-tbc1a",
         ),
     ]
     drives_shorepower2b: Annotated[
@@ -397,7 +397,7 @@ class DrivesSensorValues(AmcsModeSensorValues):
             yard_tag="45002001",
             component_type="shore_power_converter",
             included_in_fmu=False,
-            topic_override="450000-dc-distribution-esi/07-12-tbc1b",
+            topic_override="45-dc-700v/shore-converter/07-12-tbc1b",
         ),
     ]
 
