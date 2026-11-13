@@ -244,7 +244,17 @@ def test_directives_channels_pair_status_with_status_set(settings: Config):
     assert directions[f"{prefix}/status/set"] == "receive"
 
 
-def test_control_channels_pair_automation_mode_with_its_set(settings: Config):
+@pytest.mark.parametrize(
+    ("state", "payload_type"),
+    [
+        ("automation-mode", AutomationMode),
+        ("control-values", ThrsValues),
+        ("manual-values", ThrsValues),
+    ],
+)
+def test_control_channels_pair_state_with_its_set(
+    settings: Config, state: str, payload_type: type
+):
     connector = RecordingConnector(settings)
     description = ModuleDescription(
         sensor_values_cls=ThrsValues,
@@ -261,10 +271,10 @@ def test_control_channels_pair_automation_mode_with_its_set(settings: Config):
     directions = {
         topic.topic: (topic.direction, topic.payload_type) for topic in connector.topics
     }
-    prefix = f"{settings.mqtt_controller_topic_prefix}/test/automation-mode"
+    prefix = f"{settings.mqtt_controller_topic_prefix}/test/{state}"
     suffix = settings.mqtt_controller_topic_suffix
-    assert directions[prefix] == ("send", AutomationMode)
-    assert directions[f"{prefix}/{suffix}"] == ("receive", AutomationMode)
+    assert directions[prefix] == ("send", payload_type)
+    assert directions[f"{prefix}/{suffix}"] == ("receive", payload_type)
 
 
 # ---------------------------------------------------------------------------
@@ -320,6 +330,14 @@ def test_collect_topics_wires_channels(settings: Config):
         TopicMapping(
             topic="test_controller_topic/test/automation-mode",
             payload_type=AutomationMode,
+            direction="send",
+            component_type=None,
+            qos=1,
+            retain=False,
+        ),
+        TopicMapping(
+            topic="test_controller_topic/test/control-values",
+            payload_type=ThrsValues,
             direction="send",
             component_type=None,
             qos=1,

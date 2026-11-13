@@ -108,7 +108,7 @@ async def test_module_forces_manual_even_without_actuated_values(
     await module.tick(local_sensor_values)
 
     assert module._control.mode.automatic is False
-    assert mock_channels.get_actuated_control_values.call_count == 1
+    assert mock_channels.get_actuated_control_values.called
     # The manual controls keep the initial value: without actuated feedback
     # there is nothing to seed them with.
     assert mock_channels.send_manual_control.await_args == mock.call(
@@ -167,6 +167,49 @@ async def test_tick_publishes_manual_when_automatic_is_refused(
     assert mock_channels.send_automation_mode.await_args == mock.call(
         AutomationMode(mode="manual")
     )
+
+
+async def test_tick_publishes_the_actuated_control_values(
+    advisory_sensor_values, mock_channels, mock_control, module_factory
+):
+    actuated = simple_control_values(flow=6.0)
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+    mock_channels.get_actuated_control_values.return_value = actuated
+
+    module = module_factory()
+
+    await module.tick(advisory_sensor_values)
+
+    assert mock_channels.send_actuated_control_values.await_args == mock.call(actuated)
+
+
+async def test_tick_publishes_no_control_values_before_any_are_actuated(
+    advisory_sensor_values, mock_channels, mock_control, module_factory
+):
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+    mock_channels.get_actuated_control_values.return_value = None
+
+    module = module_factory()
+
+    await module.tick(advisory_sensor_values)
+
+    assert not mock_channels.send_actuated_control_values.called
+
+
+async def test_control_values_set_becomes_the_manual_controls(
+    advisory_sensor_values, mock_channels, mock_control, module_factory
+):
+    requested = simple_control_values(flow=5.0)
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+    mock_channels.get_control_values_set.return_value = requested
+
+    module = module_factory()
+
+    await module.sync_control_channels_state()
+    control_values = await module.tick(advisory_sensor_values)
+
+    assert control_values == requested
+    assert mock_channels.send_manual_control.await_args == mock.call(requested)
 
 
 async def test_automatic_control_resets_and_returns_first_control_tick(
