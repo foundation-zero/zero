@@ -8,8 +8,8 @@ from zero_modbus_bridge.bit_ops import is_finite_float
 from zero_modbus_bridge.io import AnnotationModbusTopic, ModbusField
 from zero_modbus_bridge.publisher import MappingPublisher, MqttPublisher
 
-TOPIC = "marpower/450000-amcs/Command"
-PATH = "$.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF"
+TOPIC = "marpower/45-amcs/plc/keb1/Command"
+PATH = "$.HullTemperatureMeasurementOn"
 
 
 class HullTemperaturesModel(BaseModel):
