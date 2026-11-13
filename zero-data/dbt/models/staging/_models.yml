@@ -4421,7 +4421,7 @@ models:
   - name: stg_marpower__esi
     description: >
       Staging view for the Marpower ESI shore power converters, one topic per converter module:
-      PS (07-11) and SB (07-12), modules tbc1a and tbc1b. Topics were named 70-xx until 23 Oct 2026.
+      PS (07-11) and SB (07-12), modules tbc1a and tbc1b.
     columns:
       - name: ts
         description: "Time index of the measurement record (renamed from timestamp)."
@@ -4431,6 +4431,8 @@ models:
         description: "MQTT topic associated with the raw message, one per ESI converter module."
         tests:
           - not_null
+      - name: technical_name
+        description: "The converter module (07-11-tbc1a, 07-11-tbc1b, 07-12-tbc1a, 07-12-tbc1b)."
       - name: esi_ac_bus_active_power_3_phase__has_value
         description: "Indicates whether a value is present for the 3-phase AC bus (shore side) active power in kW."
       - name: esi_ac_bus_active_power_3_phase__is_valid

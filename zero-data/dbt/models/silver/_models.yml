@@ -166,8 +166,7 @@ models:
           - not_null
   - name: slv_shore_power_converters
     description: >
-      Power the ESI shore power converter modules draw from shore, combined from the 70-xx topics
-      (until 23 Oct 2026 09:30 UTC) and the 07-xx topics (since then).
+      Power the ESI shore power converter modules draw from shore.
       Materialized as a view in the `views` database.
     columns:
       - name: ts
@@ -179,7 +178,7 @@ models:
         tests:
           - not_null
       - name: module
-        description: "The ESI converter module, e.g. 07-11-tbc1a, the same for the 70-xx and the 07-xx topic."
+        description: "The ESI converter module, e.g. 07-11-tbc1a."
         tests:
           - not_null
       - name: converter
