@@ -117,8 +117,6 @@ models:
         description: "Timestamp of the short circuit detection."
       - name: short_circuit__value
         description: "Short circuit detection status (true on short circuit)."
-      - name: source_type
-        description: "Source identifier or protocol type."
       - name: status_hmi_green__has_value
         description: "Indicates whether a value is present for the green HMI status LED."
       - name: status_hmi_green__is_valid
@@ -159,12 +157,12 @@ models:
         description: "Timestamp of the system error report."
       - name: system_error__value
         description: "System error status (true on fault)."
-      - name: table
-        description: "Internal source or storage table name."
       - name: topic
         description: "MQTT topic path for the sensor or channel."
         tests:
           - not_null
+      - name: technical_name
+        description: "The device within its table: the breaker channel, power supply or board (14e1-10f01, 14e1-01v01, 14e1)."
       - name: under_voltage__has_value
         description: "Indicates whether a value is present for under-voltage detection."
       - name: under_voltage__is_valid
@@ -3280,6 +3278,8 @@ models:
         description: "MQTT topic path for the message."
         tests:
           - not_null
+      - name: technical_name
+        description: "The battery pack (05-41-1 … 05-46-4)."
       - name: under_temp_charge_msl__has_value
         description: "Indicates if charging undertemperature MSL state contains a value."
       - name: under_temp_charge_msl__is_valid
@@ -4362,7 +4362,7 @@ models:
   - name: stg_marpower__pv_converters
     description: >
       Staging view for the Marpower solar (PV) EPC converters on the main and owners biminis,
-      one topic per converter, unioned from their per-converter tables (published since 5 Nov 2026 06:07 UTC).
+      one topic per converter.
     columns:
       - name: ts
         description: "Time index of the measurement record (renamed from timestamp)."
@@ -4375,9 +4375,11 @@ models:
           - accepted_values:
               arguments:
                 values:
-                  - "marpower/450000-dc-distribution/pv-converter-main-1"
-                  - "marpower/450000-dc-distribution/pv-converter-main-2"
-                  - "marpower/450000-dc-distribution/pv-converter-owner"
+                  - "marpower/45-solar/dc-dc-converter/04-31-t101"
+                  - "marpower/45-solar/dc-dc-converter/04-32-t101"
+                  - "marpower/45-solar/dc-dc-converter/04-32-t102"
+      - name: technical_name
+        description: "The converter's designation (04-31-t101, 04-32-t101, 04-32-t102)."
       - name: hvdc_current__has_value
         description: "Indicates whether a value is present for the HVDC (high side) current in A."
       - name: hvdc_current__is_valid

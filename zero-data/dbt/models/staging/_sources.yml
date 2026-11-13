@@ -55,6 +55,28 @@ sources:
             description: "The main group classification of the 24V DC component."
           - name: sub_group
             description: "The sub group classification, within the main group, of the 24V DC component."
+      - name: marpower__device_metadata
+        description: "Devices on the Marpower topic convention, one row per topic: the device's yard tag and functional name."
+        database: public
+        schema: public
+        columns:
+          - name: ts
+            description: "Mandatory timestamp without valid value."
+          - name: topic
+            description: "MQTT topic of the device (marpower/<NN>-<system>/<kind>/<instance>)."
+            tests:
+              - unique
+              - not_null
+          - name: system
+            description: "The topic's system, with its two-digit code (45-dc-24v)."
+          - name: kind
+            description: "The topic's kind (breaker); the device itself for a single device or general topic."
+          - name: technical_name
+            description: "The topic's last level, as Vector writes it to the data tables."
+          - name: yard_tag
+            description: "The device's yard tag, where the IO list has one."
+          - name: name
+            description: "The device's functional name (ps, owners-bimini), where one is set."
   - name: raw
     description: >
       Raw telemetry tables in Greptime's `public` database. Vector infers the table name
@@ -1245,13 +1267,17 @@ sources:
             description: "Timestamp when setpoint 3 value was recorded."
           - name: setpoint_3__value
             description: "Target value for setpoint 3."
-      - name: marpower__450000_24vdc_system
-        description: "24V DC system telemetry from Marpower."
+      - name: marpower__dc_24v__breaker
+        description: "24 V DC electronic breaker channels (14E1-10F01 …) from Marpower, one row per channel."
         columns:
           - name: timestamp
             description: "Ingest time index. Always present; the raw-schema assumption we rely on."
             tests:
               - not_null
+          - name: topic
+            description: "MQTT topic path for the sensor or channel."
+          - name: technical_name
+            description: "The device within the table: the topic's last level."
           - name: csetting__has_value
             description: "Indicates whether a value is present for current setting (csetting)."
           - name: csetting__is_valid
@@ -1316,8 +1342,6 @@ sources:
             description: "Timestamp of the short circuit detection."
           - name: short_circuit__value
             description: "Short circuit detection status (true on short circuit)."
-          - name: source_type
-            description: "Source identifier or protocol type."
           - name: status_hmi_green__has_value
             description: "Indicates whether a value is present for the green HMI status LED."
           - name: status_hmi_green__is_valid
@@ -1358,10 +1382,6 @@ sources:
             description: "Timestamp of the system error report."
           - name: system_error__value
             description: "System error status (true on fault)."
-          - name: table
-            description: "Internal source or storage table name."
-          - name: topic
-            description: "MQTT topic path for the sensor or channel."
           - name: under_voltage__has_value
             description: "Indicates whether a value is present for under-voltage detection."
           - name: under_voltage__is_valid
@@ -1370,6 +1390,17 @@ sources:
             description: "Timestamp of the under-voltage detection."
           - name: under_voltage__value
             description: "Under-voltage status (true on low voltage)."
+      - name: marpower__dc_24v__power_supply
+        description: "24 V DC power supplies of boards 14E1 and 14E2 from Marpower, one row per supply."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: topic
+            description: "MQTT topic path for the sensor or channel."
+          - name: technical_name
+            description: "The device within the table: the topic's last level."
           - name: active__has_value
             description: "Indicates whether a value is present for active status."
           - name: active__is_valid
@@ -1418,13 +1449,52 @@ sources:
             description: "Timestamp of the voltage measurement."
           - name: voltage__value
             description: "Measured voltage in Volts (V)."
-      - name: marpower__450000_main_power_storage_errors
-        description: "Main power storage errors and status telemetry from Marpower."
+      - name: marpower__dc_24v__distribution_board
+        description: "24 V DC distribution boards 14E1–14E3 from Marpower, one row per board."
         columns:
           - name: timestamp
             description: "Ingest time index. Always present; the raw-schema assumption we rely on."
             tests:
               - not_null
+          - name: topic
+            description: "MQTT topic path for the sensor or channel."
+          - name: technical_name
+            description: "The device within the table: the topic's last level."
+          - name: current__has_value
+            description: "Indicates whether a current measurement value is present."
+          - name: current__is_valid
+            description: "Indicates whether the current measurement value is valid."
+          - name: current__timestamp
+            description: "Timestamp of the current measurement."
+          - name: current__value
+            description: "Measured electrical current in Amperes (A)."
+          - name: power__has_value
+            description: "Indicates whether a power value is present."
+          - name: power__is_valid
+            description: "Indicates whether the power measurement is valid."
+          - name: power__timestamp
+            description: "Timestamp of the power measurement."
+          - name: power__value
+            description: "Measured power value."
+          - name: voltage__has_value
+            description: "Indicates whether a voltage measurement value is present."
+          - name: voltage__is_valid
+            description: "Indicates whether the voltage measurement is valid."
+          - name: voltage__timestamp
+            description: "Timestamp of the voltage measurement."
+          - name: voltage__value
+            description: "Measured voltage in Volts (V)."
+      - name: marpower__battery__pack
+        description: "Battery packs (22, =05.4x) from Marpower, one row per pack."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: topic
+            description: "MQTT topic path for the message."
+          - name: technical_name
+            description: "The device within the table: the topic's last level."
           - name: alert_mode__has_value
             description: "Indicates if the alert mode attribute contains a value."
           - name: alert_mode__is_valid
@@ -3325,8 +3395,6 @@ sources:
             description: "Timestamp of temperature spread error on string 3."
           - name: temperature_spread_plausibility_err_3__value
             description: "Excessive delta between temperature sensors detected on string 3."
-          - name: topic
-            description: "MQTT topic path for the message."
           - name: under_temp_charge_msl__has_value
             description: "Indicates if charging undertemperature MSL state contains a value."
           - name: under_temp_charge_msl__is_valid
@@ -4404,8 +4472,8 @@ sources:
             description: "Timestamp of the watchdog counter reading."
           - name: watchdog_counter__value
             description: "Watchdog counter."
-      - name: marpower__450000_dc_distribution__pv_converter_main_1
-        description: "Solar (PV) EPC converter telemetry from Marpower for the main bimini converter 1 (04.31-T101), published since 5 Nov 2026 06:07 UTC. Only the columns we model are listed."
+      - name: marpower__solar__dc_dc_converter
+        description: "Solar (PV) DC/DC converters (EPC, =04.31-T101, =04.32-T101, =04.32-T102) from Marpower, one row per converter. Only the columns we model are listed."
         columns:
           - name: timestamp
             description: "Ingest time index. Always present; the raw-schema assumption we rely on."
@@ -4413,104 +4481,8 @@ sources:
               - not_null
           - name: topic
             description: "MQTT topic associated with the raw message."
-          - name: hvdc_current__has_value
-            description: "Indicates whether a value is present for the HVDC (high side) current in A."
-          - name: hvdc_current__is_valid
-            description: "Indicates whether the HVDC (high side) current in A value is valid."
-          - name: hvdc_current__timestamp
-            description: "Timestamp of the HVDC (high side) current in A reading."
-          - name: hvdc_current__value
-            description: "HVDC (high side) current in A."
-          - name: hvdc_power__has_value
-            description: "Indicates whether a value is present for the HVDC (high side) power in W."
-          - name: hvdc_power__is_valid
-            description: "Indicates whether the HVDC (high side) power in W value is valid."
-          - name: hvdc_power__timestamp
-            description: "Timestamp of the HVDC (high side) power in W reading."
-          - name: hvdc_power__value
-            description: "HVDC (high side) power in W."
-          - name: hvdc_voltage__has_value
-            description: "Indicates whether a value is present for the HVDC (high side) voltage in V."
-          - name: hvdc_voltage__is_valid
-            description: "Indicates whether the HVDC (high side) voltage in V value is valid."
-          - name: hvdc_voltage__timestamp
-            description: "Timestamp of the HVDC (high side) voltage in V reading."
-          - name: hvdc_voltage__value
-            description: "HVDC (high side) voltage in V."
-          - name: lvdc_current__has_value
-            description: "Indicates whether a value is present for the LVDC (low side) current in A."
-          - name: lvdc_current__is_valid
-            description: "Indicates whether the LVDC (low side) current in A value is valid."
-          - name: lvdc_current__timestamp
-            description: "Timestamp of the LVDC (low side) current in A reading."
-          - name: lvdc_current__value
-            description: "LVDC (low side) current in A."
-          - name: lvdc_voltage__has_value
-            description: "Indicates whether a value is present for the LVDC (low side) voltage in V."
-          - name: lvdc_voltage__is_valid
-            description: "Indicates whether the LVDC (low side) voltage in V value is valid."
-          - name: lvdc_voltage__timestamp
-            description: "Timestamp of the LVDC (low side) voltage in V reading."
-          - name: lvdc_voltage__value
-            description: "LVDC (low side) voltage in V."
-      - name: marpower__450000_dc_distribution__pv_converter_main_2
-        description: "Solar (PV) EPC converter telemetry from Marpower for the main bimini converter 2 (04.32-T101), published since 5 Nov 2026 06:07 UTC. Only the columns we model are listed."
-        columns:
-          - name: timestamp
-            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
-            tests:
-              - not_null
-          - name: topic
-            description: "MQTT topic associated with the raw message."
-          - name: hvdc_current__has_value
-            description: "Indicates whether a value is present for the HVDC (high side) current in A."
-          - name: hvdc_current__is_valid
-            description: "Indicates whether the HVDC (high side) current in A value is valid."
-          - name: hvdc_current__timestamp
-            description: "Timestamp of the HVDC (high side) current in A reading."
-          - name: hvdc_current__value
-            description: "HVDC (high side) current in A."
-          - name: hvdc_power__has_value
-            description: "Indicates whether a value is present for the HVDC (high side) power in W."
-          - name: hvdc_power__is_valid
-            description: "Indicates whether the HVDC (high side) power in W value is valid."
-          - name: hvdc_power__timestamp
-            description: "Timestamp of the HVDC (high side) power in W reading."
-          - name: hvdc_power__value
-            description: "HVDC (high side) power in W."
-          - name: hvdc_voltage__has_value
-            description: "Indicates whether a value is present for the HVDC (high side) voltage in V."
-          - name: hvdc_voltage__is_valid
-            description: "Indicates whether the HVDC (high side) voltage in V value is valid."
-          - name: hvdc_voltage__timestamp
-            description: "Timestamp of the HVDC (high side) voltage in V reading."
-          - name: hvdc_voltage__value
-            description: "HVDC (high side) voltage in V."
-          - name: lvdc_current__has_value
-            description: "Indicates whether a value is present for the LVDC (low side) current in A."
-          - name: lvdc_current__is_valid
-            description: "Indicates whether the LVDC (low side) current in A value is valid."
-          - name: lvdc_current__timestamp
-            description: "Timestamp of the LVDC (low side) current in A reading."
-          - name: lvdc_current__value
-            description: "LVDC (low side) current in A."
-          - name: lvdc_voltage__has_value
-            description: "Indicates whether a value is present for the LVDC (low side) voltage in V."
-          - name: lvdc_voltage__is_valid
-            description: "Indicates whether the LVDC (low side) voltage in V value is valid."
-          - name: lvdc_voltage__timestamp
-            description: "Timestamp of the LVDC (low side) voltage in V reading."
-          - name: lvdc_voltage__value
-            description: "LVDC (low side) voltage in V."
-      - name: marpower__450000_dc_distribution__pv_converter_owner
-        description: "Solar (PV) EPC converter telemetry from Marpower for the owners bimini converter (04.32-T102), published since 5 Nov 2026 06:07 UTC. Only the columns we model are listed."
-        columns:
-          - name: timestamp
-            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
-            tests:
-              - not_null
-          - name: topic
-            description: "MQTT topic associated with the raw message."
+          - name: technical_name
+            description: "The device within the table: the topic's last level."
           - name: hvdc_current__has_value
             description: "Indicates whether a value is present for the HVDC (high side) current in A."
           - name: hvdc_current__is_valid
