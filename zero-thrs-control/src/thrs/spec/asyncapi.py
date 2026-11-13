@@ -128,12 +128,16 @@ def _build_asyncapi(
             action=topic_data.direction, channel=Reference(**{"$ref": channel_ref})
         )
 
+        yard_tag = (
+            {"x-zero-yard-tag": topic_data.yard_tag} if topic_data.yard_tag else {}
+        )
         channel = Channel(
             address=topic_data.topic,
             messages=Messages(root={"message": Reference(**{"$ref": message_ref})}),
             **{
                 "x-ttl": CHANNEL_TTL,
                 "x-zero-component-type": topic_data.component_type,
+                **yard_tag,
             },  # type: ignore
         )
 
