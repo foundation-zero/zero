@@ -57,14 +57,14 @@ Reads temperatures on a fixed interval and publishes them to an MQTT topic.
 uv run python -m zero_hull_temperature run \
   --modbus-host <host> --modbus-port 502 \
   --mqtt-host <host> --mqtt-port 1883 \
-  --activate-topic marpower/450000-amcs/Command \
-  --activate-json-path '$.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF'
+  --activate-topic marpower/45-amcs/plc/keb1/Command \
+  --activate-json-path '$.HullTemperatureMeasurementOn'
 ```
 
 | Option | Description | Default |
 |---|---|---|
-| `--activate-topic` | MQTT topic used to switch the relay | `marpower/450000-amcs/Command` |
-| `--activate-json-path` | JSONPath within the activate topic payload | `$.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF` |
+| `--activate-topic` | MQTT topic used to switch the relay | `marpower/45-amcs/plc/keb1/Command` |
+| `--activate-json-path` | JSONPath within the activate topic payload | `$.HullTemperatureMeasurementOn` |
 
 #### `read` — Single one-shot read (with MQTT relay activation)
 
