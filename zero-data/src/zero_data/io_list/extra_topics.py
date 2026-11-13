@@ -2,8 +2,9 @@
 
 The propulsion drives, uGrid converters and shore power converters publish outside the managed
 systems, and the converters' values come from the PMS node configuration, which the IO list
-doesn't have. Each is named as the 450000 topic-structure proposal names it (system, kind,
-instance), at the address it publishes on today: the MQTT GraphQL API follows the address. The
+doesn't have. Each is named as the topic-structure proposal names it (system, kind, instance), at
+the address it publishes on: the MQTT GraphQL API follows the address. The uGrid and shore power
+converters publish on the convention's topics; the drives keep today's until the 150000 pass. The
 fields are the ones thrs-control reads.
 """
 
@@ -81,42 +82,42 @@ EXTRA_TOPICS = [
         yard_tag="45002080",
     ),
     extra_topic(
-        address="marpower/450000-dynamic-conv-ps-ara/5-11-u101",
+        address="marpower/45-dc-ac/inverter/05-11-u101",
         system="dc_ac",
         kind=ComponentType.CONVERTER,
         instance="05-11-u101",
         yard_tag="45002082",
     ),
     extra_topic(
-        address="marpower/450000-dynamic-conv-sb-ara/5-12-u101",
+        address="marpower/45-dc-ac/inverter/05-12-u101",
         system="dc_ac",
         kind=ComponentType.CONVERTER,
         instance="05-12-u101",
         yard_tag="45002081",
     ),
     extra_topic(
-        address="marpower/450000-dc-distribution-esi/07-11-tbc1a",
+        address="marpower/45-dc-700v/shore-converter/07-11-tbc1a",
         system="dc_700v",
         kind=ComponentType.SHORE_CONVERTER,
         instance="07-11-tbc1a",
         yard_tag="45002001",
     ),
     extra_topic(
-        address="marpower/450000-dc-distribution-esi/07-11-tbc1b",
+        address="marpower/45-dc-700v/shore-converter/07-11-tbc1b",
         system="dc_700v",
         kind=ComponentType.SHORE_CONVERTER,
         instance="07-11-tbc1b",
         yard_tag="45002001",
     ),
     extra_topic(
-        address="marpower/450000-dc-distribution-esi/07-12-tbc1a",
+        address="marpower/45-dc-700v/shore-converter/07-12-tbc1a",
         system="dc_700v",
         kind=ComponentType.SHORE_CONVERTER,
         instance="07-12-tbc1a",
         yard_tag="45002001",
     ),
     extra_topic(
-        address="marpower/450000-dc-distribution-esi/07-12-tbc1b",
+        address="marpower/45-dc-700v/shore-converter/07-12-tbc1b",
         system="dc_700v",
         kind=ComponentType.SHORE_CONVERTER,
         instance="07-12-tbc1b",
