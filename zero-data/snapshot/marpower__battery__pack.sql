@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "marpower__450000_main_power_storage_errors" (
+CREATE TABLE IF NOT EXISTS "marpower__battery__pack" (
   "timestamp" TIMESTAMP(9) NOT NULL,
   "alert_mode__has_value" BOOLEAN NULL,
   "alert_mode__is_valid" BOOLEAN NULL,
@@ -938,6 +938,7 @@ CREATE TABLE IF NOT EXISTS "marpower__450000_main_power_storage_errors" (
   "system_monitoring_error__timestamp" STRING NULL,
   "system_monitoring_error__value" BOOLEAN NULL,
   "table" STRING NULL,
+  "technical_name" STRING NULL,
   "temperature_spread_plausibility_err_1__has_value" BOOLEAN NULL,
   "temperature_spread_plausibility_err_1__is_valid" BOOLEAN NULL,
   "temperature_spread_plausibility_err_1__timestamp" STRING NULL,
