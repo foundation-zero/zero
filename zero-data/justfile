@@ -1,6 +1,9 @@
 generate-vector:
     uv run zero-data generate-vector
 
+generate-device-metadata:
+    uv run zero-data generate-device-metadata
+
 generate-asyncapi file="../specs/marpower.json":
     uv run zero-data generate-asyncapi {{ file }}
 
