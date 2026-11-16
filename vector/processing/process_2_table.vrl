@@ -17,7 +17,7 @@ if managed_table != null {
     second = string!(convention.second)
     third = convention.third
     # A kind's general topic carries other keys than its devices, so it gets a table of its own.
-    kind_table = if third == "general" { second + "_general" } else { second }
+    kind_table = if third == "general" { second + "/general" } else { second }
     %table = "marpower__" + string!(convention.system) + "__" + kind_table
     .technical_name = if third == null { second } else { third }
   } else {
