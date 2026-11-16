@@ -106,6 +106,29 @@ This creates the `views` database if needed and runs `dbt build` (models and tes
 that tier. Rerunning is safe: views are `CREATE OR REPLACE`d. Each build also drops and
 recreates `public.power_tag_metadata` from `macros/load_power_tag_metadata.sql`.
 
+### Device metadata
+
+`dbt/macros/marpower_device_metadata.csv` lists the devices on the Marpower topic convention
+(`marpower/<NN>-<system>/<kind>/<instance>`), one row per topic, with their yard tag and
+functional name (`ps-aft-1`, `owners-bimini`). It is the one place functional names are kept. Each
+`dbt build` recreates `public.marpower__device_metadata` from it, through the generated
+`macros/load_marpower_device_metadata.sql`.
+
+The PMS, load balance and PCS testing dashboards join the table on `topic` to label each device
+`name · technical name`, or the technical name alone where no name is set. The join is optional: a
+device without a row still shows, under its technical name. So a row is only needed to give a
+device its functional name.
+
+To add or name a device, edit the CSV, then:
+
+```bash
+just generate-device-metadata
+just dbt-deploy zero
+```
+
+`tests/test_device_metadata.py` checks that the macro matches the CSV, that each topic follows the
+convention and appears once, and that names are kebab-case and unique within a system's kind.
+
 ## Release Management
 
 ### Charts
