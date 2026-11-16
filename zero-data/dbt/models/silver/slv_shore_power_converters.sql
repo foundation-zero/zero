@@ -11,6 +11,7 @@ select
     -- to W, remove this conversion (* 1000).
     esi_ac_bus_active_power_3_phase__value * 1000    as power
 from {{ ref('stg_marpower__esi') }}
-where esi_ac_bus_active_power_3_phase__has_value is true
+where technical_name is not null
+and esi_ac_bus_active_power_3_phase__has_value is true
 and esi_ac_bus_active_power_3_phase__is_valid is true
 and esi_ac_bus_active_power_3_phase__value is not null
