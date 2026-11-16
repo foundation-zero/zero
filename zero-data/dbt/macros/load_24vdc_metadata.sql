@@ -45,6 +45,8 @@
             -- Unused converters
             ('1970-01-01 00:00:00', 'Converter db-g-elv-serv', 'db-g-elv-serv', 'marpower/45-dc-24v/distribution-board/g-elv-serv', 'db-g-elv-serv', NULL, NULL, NULL),
             ('1970-01-01 00:00:00', 'Converter db-g-elv-em', 'db-g-elv-em', 'marpower/45-dc-24v/distribution-board/g-elv-em', 'db-g-elv-em', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'Converter db-14e2', 'db-14e2', 'marpower/45-dc-24v/distribution-board/14e2', 'db-14e2', NULL, NULL, NULL),
+            ('1970-01-01 00:00:00', 'Converter db-14e3', 'db-14e3', 'marpower/45-dc-24v/distribution-board/14e3', 'db-14e3', NULL, NULL, NULL),
 
             -- Actuators
             ('1970-01-01 00:00:00', 'Sea Cooling Actuator 38001153-1 & -2', '14E1_10F01', 'marpower/45-dc-24v/breaker/14e1-10f01', 'W14E1_01', NULL, 'Technical', 'THRS'),
