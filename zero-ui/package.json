@@ -73,7 +73,7 @@
     "@types/lodash": "4.17.27",
     "@types/node": "26.6.5",
     "@typescript-eslint/parser": "8.72.1",
-    "@vitejs/plugin-vue": "6.0.10",
+    "@vitejs/plugin-vue": "6.0.11",
     "@vitest/coverage-v8": "5.1.0",
     "@vue/eslint-config-prettier": "10.2.0",
     "@vue/eslint-config-typescript": "14.9.0",
