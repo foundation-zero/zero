@@ -40,8 +40,8 @@
             ('1970-01-01 00:00:00', 'Converter W14E2_01V03', 'W14E2_01V03', 'marpower/45-dc-24v/power-supply/14e2-01v03', 'W14E2_01', 3, NULL, NULL),
             ('1970-01-01 00:00:00', 'Converter W14E2_02V01', 'W14E2_02V01', 'marpower/45-dc-24v/power-supply/14e2-02v01', 'W14E2_02', 1, NULL, NULL),
             ('1970-01-01 00:00:00', 'Converter W14E2_02V02', 'W14E2_02V02', 'marpower/45-dc-24v/power-supply/14e2-02v02', 'W14E2_02', 2, NULL, NULL),
-            ('1970-01-01 00:00:00', 'Converter W14E1_03V01', 'W14E1_03V01', 'marpower/45-dc-24v/power-supply/14e1-01v03', 'W14E1_03', 1, NULL, NULL),
-            ('1970-01-01 00:00:00', 'Converter W14E1_03V02', 'W14E1_03V02', 'marpower/45-dc-24v/power-supply/14e1-02v03', 'W14E1_03', 2, NULL, NULL),
+            ('1970-01-01 00:00:00', 'Converter W14E1_01V03', 'W14E1_01V03', 'marpower/45-dc-24v/power-supply/14e1-01v03', 'W14E1_03', 1, NULL, NULL),
+            ('1970-01-01 00:00:00', 'Converter W14E1_02V03', 'W14E1_02V03', 'marpower/45-dc-24v/power-supply/14e1-02v03', 'W14E1_03', 2, NULL, NULL),
             -- Unused converters
             ('1970-01-01 00:00:00', 'Converter db-g-elv-serv', 'db-g-elv-serv', 'marpower/45-dc-24v/distribution-board/g-elv-serv', 'db-g-elv-serv', NULL, NULL, NULL),
             ('1970-01-01 00:00:00', 'Converter db-g-elv-em', 'db-g-elv-em', 'marpower/45-dc-24v/distribution-board/g-elv-em', 'db-g-elv-em', NULL, NULL, NULL),
