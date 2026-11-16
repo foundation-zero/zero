@@ -8,10 +8,7 @@ from zero_data.io_list.types import Source
 io_lists: list[tuple[Source, list[str]]] = [
     (
         "marpower",
-        [
-            "ZERO mocked IO-List.xlsx",
-            "io-list ~ help ~ totals.xlsx",
-        ],
+        ["io-list ~ help ~ totals.xlsx"],
     ),
     ("sail_system", ["3094_SailPLC.PLC_MAIN.Application.xml"]),
     ("atpx", ["atpx/atpx_fields.json", "atpx/atpx_extra.json"]),
