@@ -1607,7 +1607,7 @@
         "spec": {
           "id": 26,
           "title": "SoC per pack",
-          "description": "Minimum state of charge of the pack's strings, in %. Zero is left out. One series per pack (05_41_1 … 05_46_4), from the pack's BMS.",
+          "description": "Minimum state of charge of the pack's strings, in %. Zero is left out. One series per pack, named by its compartment and technical name (ps-aft-1 · 05-41-1), from the pack's BMS.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -1629,7 +1629,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN technical_name = '05-41-1' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_41_1\",\n  avg(CASE WHEN technical_name = '05-41-2' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_41_2\",\n  avg(CASE WHEN technical_name = '05-41-3' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_41_3\",\n  avg(CASE WHEN technical_name = '05-41-4' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_41_4\",\n  avg(CASE WHEN technical_name = '05-42-1' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_42_1\",\n  avg(CASE WHEN technical_name = '05-42-2' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_42_2\",\n  avg(CASE WHEN technical_name = '05-42-3' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_42_3\",\n  avg(CASE WHEN technical_name = '05-43-1' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_43_1\",\n  avg(CASE WHEN technical_name = '05-43-2' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_43_2\",\n  avg(CASE WHEN technical_name = '05-43-3' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_43_3\",\n  avg(CASE WHEN technical_name = '05-44-1' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_44_1\",\n  avg(CASE WHEN technical_name = '05-44-2' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_44_2\",\n  avg(CASE WHEN technical_name = '05-44-3' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_44_3\",\n  avg(CASE WHEN technical_name = '05-44-4' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_44_4\",\n  avg(CASE WHEN technical_name = '05-45-1' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_45_1\",\n  avg(CASE WHEN technical_name = '05-45-2' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_45_2\",\n  avg(CASE WHEN technical_name = '05-45-3' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_45_3\",\n  avg(CASE WHEN technical_name = '05-45-4' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_45_4\",\n  avg(CASE WHEN technical_name = '05-46-1' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_46_1\",\n  avg(CASE WHEN technical_name = '05-46-2' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_46_2\",\n  avg(CASE WHEN technical_name = '05-46-3' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_46_3\",\n  avg(CASE WHEN technical_name = '05-46-4' THEN NULLIF(minimum_soc__value, 0) END) AS \"05_46_4\"\nFROM public.marpower__battery__pack\nWHERE $__timeFilter(timestamp) AND technical_name IN ('05-41-1', '05-41-2', '05-41-3', '05-41-4', '05-42-1', '05-42-2', '05-42-3', '05-43-1', '05-43-2', '05-43-3', '05-44-1', '05-44-2', '05-44-3', '05-44-4', '05-45-1', '05-45-2', '05-45-3', '05-45-4', '05-46-1', '05-46-2', '05-46-3', '05-46-4')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(NULLIF(minimum_soc__value, 0)) AS \"SoC\"\nFROM public.marpower__battery__pack t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -1639,12 +1639,17 @@
               ],
               "transformations": [
                 {
-                  "group": "renameByRegex",
+                  "group": "partitionByValues",
                   "kind": "Transformation",
                   "spec": {
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "device"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -1709,7 +1714,8 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.device}"
                 },
                 "overrides": []
               }
@@ -1722,7 +1728,7 @@
         "spec": {
           "id": 27,
           "title": "Power per pack",
-          "description": "Battery power per pack, in kW, positive when discharging. One series per pack (05_41_1 … 05_46_4), from the pack's BMS.",
+          "description": "Battery power per pack, in kW, positive when discharging. One series per pack, named by its compartment and technical name (ps-aft-1 · 05-41-1), from the pack's BMS.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -1744,7 +1750,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN technical_name = '05-41-1' THEN battery_power__value END) AS \"05_41_1\",\n  avg(CASE WHEN technical_name = '05-41-2' THEN battery_power__value END) AS \"05_41_2\",\n  avg(CASE WHEN technical_name = '05-41-3' THEN battery_power__value END) AS \"05_41_3\",\n  avg(CASE WHEN technical_name = '05-41-4' THEN battery_power__value END) AS \"05_41_4\",\n  avg(CASE WHEN technical_name = '05-42-1' THEN battery_power__value END) AS \"05_42_1\",\n  avg(CASE WHEN technical_name = '05-42-2' THEN battery_power__value END) AS \"05_42_2\",\n  avg(CASE WHEN technical_name = '05-42-3' THEN battery_power__value END) AS \"05_42_3\",\n  avg(CASE WHEN technical_name = '05-43-1' THEN battery_power__value END) AS \"05_43_1\",\n  avg(CASE WHEN technical_name = '05-43-2' THEN battery_power__value END) AS \"05_43_2\",\n  avg(CASE WHEN technical_name = '05-43-3' THEN battery_power__value END) AS \"05_43_3\",\n  avg(CASE WHEN technical_name = '05-44-1' THEN battery_power__value END) AS \"05_44_1\",\n  avg(CASE WHEN technical_name = '05-44-2' THEN battery_power__value END) AS \"05_44_2\",\n  avg(CASE WHEN technical_name = '05-44-3' THEN battery_power__value END) AS \"05_44_3\",\n  avg(CASE WHEN technical_name = '05-44-4' THEN battery_power__value END) AS \"05_44_4\",\n  avg(CASE WHEN technical_name = '05-45-1' THEN battery_power__value END) AS \"05_45_1\",\n  avg(CASE WHEN technical_name = '05-45-2' THEN battery_power__value END) AS \"05_45_2\",\n  avg(CASE WHEN technical_name = '05-45-3' THEN battery_power__value END) AS \"05_45_3\",\n  avg(CASE WHEN technical_name = '05-45-4' THEN battery_power__value END) AS \"05_45_4\",\n  avg(CASE WHEN technical_name = '05-46-1' THEN battery_power__value END) AS \"05_46_1\",\n  avg(CASE WHEN technical_name = '05-46-2' THEN battery_power__value END) AS \"05_46_2\",\n  avg(CASE WHEN technical_name = '05-46-3' THEN battery_power__value END) AS \"05_46_3\",\n  avg(CASE WHEN technical_name = '05-46-4' THEN battery_power__value END) AS \"05_46_4\"\nFROM public.marpower__battery__pack\nWHERE $__timeFilter(timestamp) AND technical_name IN ('05-41-1', '05-41-2', '05-41-3', '05-41-4', '05-42-1', '05-42-2', '05-42-3', '05-43-1', '05-43-2', '05-43-3', '05-44-1', '05-44-2', '05-44-3', '05-44-4', '05-45-1', '05-45-2', '05-45-3', '05-45-4', '05-46-1', '05-46-2', '05-46-3', '05-46-4')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(battery_power__value) AS \"Power\"\nFROM public.marpower__battery__pack t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -1754,12 +1760,17 @@
               ],
               "transformations": [
                 {
-                  "group": "renameByRegex",
+                  "group": "partitionByValues",
                   "kind": "Transformation",
                   "spec": {
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "device"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -1824,7 +1835,8 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.device}"
                 },
                 "overrides": []
               }
@@ -1837,7 +1849,7 @@
         "spec": {
           "id": 28,
           "title": "Max cell temperature per pack",
-          "description": "Maximum battery cell temperature per pack, in °C. One series per pack (05_41_1 … 05_46_4), from the pack's BMS.",
+          "description": "Maximum battery cell temperature per pack, in °C. One series per pack, named by its compartment and technical name (ps-aft-1 · 05-41-1), from the pack's BMS.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -1859,7 +1871,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN technical_name = '05-41-1' THEN maximum_cell_temperature__value END) AS \"05_41_1\",\n  avg(CASE WHEN technical_name = '05-41-2' THEN maximum_cell_temperature__value END) AS \"05_41_2\",\n  avg(CASE WHEN technical_name = '05-41-3' THEN maximum_cell_temperature__value END) AS \"05_41_3\",\n  avg(CASE WHEN technical_name = '05-41-4' THEN maximum_cell_temperature__value END) AS \"05_41_4\",\n  avg(CASE WHEN technical_name = '05-42-1' THEN maximum_cell_temperature__value END) AS \"05_42_1\",\n  avg(CASE WHEN technical_name = '05-42-2' THEN maximum_cell_temperature__value END) AS \"05_42_2\",\n  avg(CASE WHEN technical_name = '05-42-3' THEN maximum_cell_temperature__value END) AS \"05_42_3\",\n  avg(CASE WHEN technical_name = '05-43-1' THEN maximum_cell_temperature__value END) AS \"05_43_1\",\n  avg(CASE WHEN technical_name = '05-43-2' THEN maximum_cell_temperature__value END) AS \"05_43_2\",\n  avg(CASE WHEN technical_name = '05-43-3' THEN maximum_cell_temperature__value END) AS \"05_43_3\",\n  avg(CASE WHEN technical_name = '05-44-1' THEN maximum_cell_temperature__value END) AS \"05_44_1\",\n  avg(CASE WHEN technical_name = '05-44-2' THEN maximum_cell_temperature__value END) AS \"05_44_2\",\n  avg(CASE WHEN technical_name = '05-44-3' THEN maximum_cell_temperature__value END) AS \"05_44_3\",\n  avg(CASE WHEN technical_name = '05-44-4' THEN maximum_cell_temperature__value END) AS \"05_44_4\",\n  avg(CASE WHEN technical_name = '05-45-1' THEN maximum_cell_temperature__value END) AS \"05_45_1\",\n  avg(CASE WHEN technical_name = '05-45-2' THEN maximum_cell_temperature__value END) AS \"05_45_2\",\n  avg(CASE WHEN technical_name = '05-45-3' THEN maximum_cell_temperature__value END) AS \"05_45_3\",\n  avg(CASE WHEN technical_name = '05-45-4' THEN maximum_cell_temperature__value END) AS \"05_45_4\",\n  avg(CASE WHEN technical_name = '05-46-1' THEN maximum_cell_temperature__value END) AS \"05_46_1\",\n  avg(CASE WHEN technical_name = '05-46-2' THEN maximum_cell_temperature__value END) AS \"05_46_2\",\n  avg(CASE WHEN technical_name = '05-46-3' THEN maximum_cell_temperature__value END) AS \"05_46_3\",\n  avg(CASE WHEN technical_name = '05-46-4' THEN maximum_cell_temperature__value END) AS \"05_46_4\"\nFROM public.marpower__battery__pack\nWHERE $__timeFilter(timestamp) AND technical_name IN ('05-41-1', '05-41-2', '05-41-3', '05-41-4', '05-42-1', '05-42-2', '05-42-3', '05-43-1', '05-43-2', '05-43-3', '05-44-1', '05-44-2', '05-44-3', '05-44-4', '05-45-1', '05-45-2', '05-45-3', '05-45-4', '05-46-1', '05-46-2', '05-46-3', '05-46-4')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(maximum_cell_temperature__value) AS \"Max cell temperature\"\nFROM public.marpower__battery__pack t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -1869,12 +1881,17 @@
               ],
               "transformations": [
                 {
-                  "group": "renameByRegex",
+                  "group": "partitionByValues",
                   "kind": "Transformation",
                   "spec": {
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "device"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -1939,7 +1956,8 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.device}"
                 },
                 "overrides": []
               }
@@ -1952,7 +1970,7 @@
         "spec": {
           "id": 29,
           "title": "Brightloop max channel temperature per pack",
-          "description": "The highest of the four channel temperatures of the pack's brightloop DC/DC converter, in °C. Zero is left out. One series per pack (05_41_1 … 05_46_4), from the pack's BMS.",
+          "description": "The highest of the four channel temperatures of the pack's brightloop DC/DC converter, in °C. Zero is left out. One series per pack, named by its compartment and technical name (ps-aft-1 · 05-41-1), from the pack's BMS.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -1974,7 +1992,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN technical_name = '05-41-1' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_41_1\",\n  avg(CASE WHEN technical_name = '05-41-2' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_41_2\",\n  avg(CASE WHEN technical_name = '05-41-3' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_41_3\",\n  avg(CASE WHEN technical_name = '05-41-4' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_41_4\",\n  avg(CASE WHEN technical_name = '05-42-1' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_42_1\",\n  avg(CASE WHEN technical_name = '05-42-2' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_42_2\",\n  avg(CASE WHEN technical_name = '05-42-3' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_42_3\",\n  avg(CASE WHEN technical_name = '05-43-1' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_43_1\",\n  avg(CASE WHEN technical_name = '05-43-2' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_43_2\",\n  avg(CASE WHEN technical_name = '05-43-3' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_43_3\",\n  avg(CASE WHEN technical_name = '05-44-1' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_44_1\",\n  avg(CASE WHEN technical_name = '05-44-2' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_44_2\",\n  avg(CASE WHEN technical_name = '05-44-3' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_44_3\",\n  avg(CASE WHEN technical_name = '05-44-4' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_44_4\",\n  avg(CASE WHEN technical_name = '05-45-1' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_45_1\",\n  avg(CASE WHEN technical_name = '05-45-2' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_45_2\",\n  avg(CASE WHEN technical_name = '05-45-3' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_45_3\",\n  avg(CASE WHEN technical_name = '05-45-4' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_45_4\",\n  avg(CASE WHEN technical_name = '05-46-1' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_46_1\",\n  avg(CASE WHEN technical_name = '05-46-2' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_46_2\",\n  avg(CASE WHEN technical_name = '05-46-3' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_46_3\",\n  avg(CASE WHEN technical_name = '05-46-4' THEN NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0) END) AS \"05_46_4\"\nFROM public.marpower__battery__pack\nWHERE $__timeFilter(timestamp) AND technical_name IN ('05-41-1', '05-41-2', '05-41-3', '05-41-4', '05-42-1', '05-42-2', '05-42-3', '05-43-1', '05-43-2', '05-43-3', '05-44-1', '05-44-2', '05-44-3', '05-44-4', '05-45-1', '05-45-2', '05-45-3', '05-45-4', '05-46-1', '05-46-2', '05-46-3', '05-46-4')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0)) AS \"Max channel temperature\"\nFROM public.marpower__battery__pack t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -1984,12 +2002,17 @@
               ],
               "transformations": [
                 {
-                  "group": "renameByRegex",
+                  "group": "partitionByValues",
                   "kind": "Transformation",
                   "spec": {
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "device"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -2054,7 +2077,8 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.device}"
                 },
                 "overrides": []
               }
@@ -2089,7 +2113,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT '05_' || split_part(technical_name, '-', 2) AS \"System\",\n  '05_' || split_part(technical_name, '-', 2) || '_' || split_part(technical_name, '-', 3) AS \"Pack\",\n  last_value(minimum_soc__value ORDER BY timestamp) AS \"SoC [%]\",\n  last_value(maximum_cell_temperature__value ORDER BY timestamp) AS \"Max temp [°C]\",\n  round(last_value(battery_power__value ORDER BY timestamp), 1) AS \"Power [kW]\",\n  last_value(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value) ORDER BY timestamp) AS \"DC:DC max [°C]\"\nFROM public.marpower__battery__pack\nWHERE $__timeFilter(timestamp) AND technical_name IN ('05-41-1', '05-41-2', '05-41-3', '05-41-4', '05-42-1', '05-42-2', '05-42-3', '05-43-1', '05-43-2', '05-43-3', '05-44-1', '05-44-2', '05-44-3', '05-44-4', '05-45-1', '05-45-2', '05-45-3', '05-45-4', '05-46-1', '05-46-2', '05-46-3', '05-46-4')\nGROUP BY technical_name ORDER BY 2"
+                        "rawSql": "SELECT '05_' || split_part(t.technical_name, '-', 2) AS \"System\",\n  coalesce(m.name || ' · ', '') || t.technical_name AS \"Pack\",\n  last_value(minimum_soc__value ORDER BY t.timestamp) AS \"SoC [%]\",\n  last_value(maximum_cell_temperature__value ORDER BY t.timestamp) AS \"Max temp [°C]\",\n  round(last_value(battery_power__value ORDER BY t.timestamp), 1) AS \"Power [kW]\",\n  last_value(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value) ORDER BY t.timestamp) AS \"DC:DC max [°C]\"\nFROM public.marpower__battery__pack t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY t.technical_name, m.name ORDER BY t.technical_name"
                       }
                     },
                     "refId": "A",
@@ -2309,7 +2333,7 @@
         "spec": {
           "id": 34,
           "title": "Heat sink temperature",
-          "description": "DC switch heat sink temperatures Hs-0 and Hs-1, declared in °C but published in 0.1 °C: shown corrected, raw × 0.1 °C. One series per heat sink per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+          "description": "DC switch heat sink temperatures Hs-0 and Hs-1, declared in °C but published in 0.1 °C: shown corrected, raw × 0.1 °C. One series per heat sink per DC switch, by technical name: SB.01.P01 05-71-q101, 05-72-q101; SB.01.P02 05-73-q101; SB.01.P03 05-74-q101; SB.01.P04 05-75-q101; SB.02 05-76-q101, 05-77-q101, 05-78-q101.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -2331,7 +2355,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN technical_name = '05-71-q101' THEN heat_sink_0_temperature__value * 0.1 END) AS \"05.71 Hs-0\",\n  avg(CASE WHEN technical_name = '05-71-q101' THEN heat_sink_1_temperature__value * 0.1 END) AS \"05.71 Hs-1\",\n  avg(CASE WHEN technical_name = '05-72-q101' THEN heat_sink_0_temperature__value * 0.1 END) AS \"05.72 Hs-0\",\n  avg(CASE WHEN technical_name = '05-72-q101' THEN heat_sink_1_temperature__value * 0.1 END) AS \"05.72 Hs-1\",\n  avg(CASE WHEN technical_name = '05-73-q101' THEN heat_sink_0_temperature__value * 0.1 END) AS \"05.73 Hs-0\",\n  avg(CASE WHEN technical_name = '05-73-q101' THEN heat_sink_1_temperature__value * 0.1 END) AS \"05.73 Hs-1\",\n  avg(CASE WHEN technical_name = '05-74-q101' THEN heat_sink_0_temperature__value * 0.1 END) AS \"05.74 Hs-0\",\n  avg(CASE WHEN technical_name = '05-74-q101' THEN heat_sink_1_temperature__value * 0.1 END) AS \"05.74 Hs-1\",\n  avg(CASE WHEN technical_name = '05-75-q101' THEN heat_sink_0_temperature__value * 0.1 END) AS \"05.75 Hs-0\",\n  avg(CASE WHEN technical_name = '05-75-q101' THEN heat_sink_1_temperature__value * 0.1 END) AS \"05.75 Hs-1\",\n  avg(CASE WHEN technical_name = '05-76-q101' THEN heat_sink_0_temperature__value * 0.1 END) AS \"05.76 Hs-0\",\n  avg(CASE WHEN technical_name = '05-76-q101' THEN heat_sink_1_temperature__value * 0.1 END) AS \"05.76 Hs-1\",\n  avg(CASE WHEN technical_name = '05-77-q101' THEN heat_sink_0_temperature__value * 0.1 END) AS \"05.77 Hs-0\",\n  avg(CASE WHEN technical_name = '05-77-q101' THEN heat_sink_1_temperature__value * 0.1 END) AS \"05.77 Hs-1\",\n  avg(CASE WHEN technical_name = '05-78-q101' THEN heat_sink_0_temperature__value * 0.1 END) AS \"05.78 Hs-0\",\n  avg(CASE WHEN technical_name = '05-78-q101' THEN heat_sink_1_temperature__value * 0.1 END) AS \"05.78 Hs-1\"\nFROM public.marpower__dc_700v__dc_switch\nWHERE $__timeFilter(timestamp) AND technical_name IN ('05-71-q101', '05-72-q101', '05-73-q101', '05-74-q101', '05-75-q101', '05-76-q101', '05-77-q101', '05-78-q101')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(heat_sink_0_temperature__value * 0.1) AS \"Hs-0\",\n  avg(heat_sink_1_temperature__value * 0.1) AS \"Hs-1\"\nFROM public.marpower__dc_700v__dc_switch t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -2341,12 +2365,17 @@
               ],
               "transformations": [
                 {
-                  "group": "renameByRegex",
+                  "group": "partitionByValues",
                   "kind": "Transformation",
                   "spec": {
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "device"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -2411,7 +2440,8 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.device} ${__field.name}"
                 },
                 "overrides": []
               }
@@ -2424,7 +2454,7 @@
         "spec": {
           "id": 35,
           "title": "Voltage, left section",
-          "description": "DC switch voltage, left section, in V as published. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+          "description": "DC switch voltage, left section, in V as published. One series per DC switch, by technical name: SB.01.P01 05-71-q101, 05-72-q101; SB.01.P02 05-73-q101; SB.01.P03 05-74-q101; SB.01.P04 05-75-q101; SB.02 05-76-q101, 05-77-q101, 05-78-q101.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -2446,7 +2476,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN technical_name = '05-71-q101' THEN dcv_s_0__value END) AS \"05.71\",\n  avg(CASE WHEN technical_name = '05-72-q101' THEN dcv_s_0__value END) AS \"05.72\",\n  avg(CASE WHEN technical_name = '05-73-q101' THEN dcv_s_0__value END) AS \"05.73\",\n  avg(CASE WHEN technical_name = '05-74-q101' THEN dcv_s_0__value END) AS \"05.74\",\n  avg(CASE WHEN technical_name = '05-75-q101' THEN dcv_s_0__value END) AS \"05.75\",\n  avg(CASE WHEN technical_name = '05-76-q101' THEN dcv_s_0__value END) AS \"05.76\",\n  avg(CASE WHEN technical_name = '05-77-q101' THEN dcv_s_0__value END) AS \"05.77\",\n  avg(CASE WHEN technical_name = '05-78-q101' THEN dcv_s_0__value END) AS \"05.78\"\nFROM public.marpower__dc_700v__dc_switch\nWHERE $__timeFilter(timestamp) AND technical_name IN ('05-71-q101', '05-72-q101', '05-73-q101', '05-74-q101', '05-75-q101', '05-76-q101', '05-77-q101', '05-78-q101')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(dcv_s_0__value) AS \"Value\"\nFROM public.marpower__dc_700v__dc_switch t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -2456,12 +2486,17 @@
               ],
               "transformations": [
                 {
-                  "group": "renameByRegex",
+                  "group": "partitionByValues",
                   "kind": "Transformation",
                   "spec": {
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "device"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -2526,7 +2561,8 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.device}"
                 },
                 "overrides": []
               }
@@ -2539,7 +2575,7 @@
         "spec": {
           "id": 36,
           "title": "Voltage, right section",
-          "description": "DC switch voltage, right section, in V as published. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+          "description": "DC switch voltage, right section, in V as published. One series per DC switch, by technical name: SB.01.P01 05-71-q101, 05-72-q101; SB.01.P02 05-73-q101; SB.01.P03 05-74-q101; SB.01.P04 05-75-q101; SB.02 05-76-q101, 05-77-q101, 05-78-q101.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -2561,7 +2597,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN technical_name = '05-71-q101' THEN dcv_s_1__value END) AS \"05.71\",\n  avg(CASE WHEN technical_name = '05-72-q101' THEN dcv_s_1__value END) AS \"05.72\",\n  avg(CASE WHEN technical_name = '05-73-q101' THEN dcv_s_1__value END) AS \"05.73\",\n  avg(CASE WHEN technical_name = '05-74-q101' THEN dcv_s_1__value END) AS \"05.74\",\n  avg(CASE WHEN technical_name = '05-75-q101' THEN dcv_s_1__value END) AS \"05.75\",\n  avg(CASE WHEN technical_name = '05-76-q101' THEN dcv_s_1__value END) AS \"05.76\",\n  avg(CASE WHEN technical_name = '05-77-q101' THEN dcv_s_1__value END) AS \"05.77\",\n  avg(CASE WHEN technical_name = '05-78-q101' THEN dcv_s_1__value END) AS \"05.78\"\nFROM public.marpower__dc_700v__dc_switch\nWHERE $__timeFilter(timestamp) AND technical_name IN ('05-71-q101', '05-72-q101', '05-73-q101', '05-74-q101', '05-75-q101', '05-76-q101', '05-77-q101', '05-78-q101')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(dcv_s_1__value) AS \"Value\"\nFROM public.marpower__dc_700v__dc_switch t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -2571,12 +2607,17 @@
               ],
               "transformations": [
                 {
-                  "group": "renameByRegex",
+                  "group": "partitionByValues",
                   "kind": "Transformation",
                   "spec": {
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "device"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -2641,7 +2682,8 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.device}"
                 },
                 "overrides": []
               }
@@ -2654,7 +2696,7 @@
         "spec": {
           "id": 37,
           "title": "Voltage, external",
-          "description": "DC switch voltage, external, behind the contactor, in V as published. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+          "description": "DC switch voltage, external, behind the contactor, in V as published. One series per DC switch, by technical name: SB.01.P01 05-71-q101, 05-72-q101; SB.01.P02 05-73-q101; SB.01.P03 05-74-q101; SB.01.P04 05-75-q101; SB.02 05-76-q101, 05-77-q101, 05-78-q101.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -2676,7 +2718,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN technical_name = '05-71-q101' THEN dcv_ext__value END) AS \"05.71\",\n  avg(CASE WHEN technical_name = '05-72-q101' THEN dcv_ext__value END) AS \"05.72\",\n  avg(CASE WHEN technical_name = '05-73-q101' THEN dcv_ext__value END) AS \"05.73\",\n  avg(CASE WHEN technical_name = '05-74-q101' THEN dcv_ext__value END) AS \"05.74\",\n  avg(CASE WHEN technical_name = '05-75-q101' THEN dcv_ext__value END) AS \"05.75\",\n  avg(CASE WHEN technical_name = '05-76-q101' THEN dcv_ext__value END) AS \"05.76\",\n  avg(CASE WHEN technical_name = '05-77-q101' THEN dcv_ext__value END) AS \"05.77\",\n  avg(CASE WHEN technical_name = '05-78-q101' THEN dcv_ext__value END) AS \"05.78\"\nFROM public.marpower__dc_700v__dc_switch\nWHERE $__timeFilter(timestamp) AND technical_name IN ('05-71-q101', '05-72-q101', '05-73-q101', '05-74-q101', '05-75-q101', '05-76-q101', '05-77-q101', '05-78-q101')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(dcv_ext__value) AS \"Value\"\nFROM public.marpower__dc_700v__dc_switch t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -2686,12 +2728,17 @@
               ],
               "transformations": [
                 {
-                  "group": "renameByRegex",
+                  "group": "partitionByValues",
                   "kind": "Transformation",
                   "spec": {
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "device"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -2756,7 +2803,8 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.device}"
                 },
                 "overrides": []
               }
@@ -2769,7 +2817,7 @@
         "spec": {
           "id": 38,
           "title": "Current, left section (raw)",
-          "description": "DC switch current, left section, raw as published: the IO list declares it as DcCurrent, without a scale. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+          "description": "DC switch current, left section, raw as published: the IO list declares it as DcCurrent, without a scale. One series per DC switch, by technical name: SB.01.P01 05-71-q101, 05-72-q101; SB.01.P02 05-73-q101; SB.01.P03 05-74-q101; SB.01.P04 05-75-q101; SB.02 05-76-q101, 05-77-q101, 05-78-q101.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -2791,7 +2839,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN technical_name = '05-71-q101' THEN dcc_s_0__value END) AS \"05.71\",\n  avg(CASE WHEN technical_name = '05-72-q101' THEN dcc_s_0__value END) AS \"05.72\",\n  avg(CASE WHEN technical_name = '05-73-q101' THEN dcc_s_0__value END) AS \"05.73\",\n  avg(CASE WHEN technical_name = '05-74-q101' THEN dcc_s_0__value END) AS \"05.74\",\n  avg(CASE WHEN technical_name = '05-75-q101' THEN dcc_s_0__value END) AS \"05.75\",\n  avg(CASE WHEN technical_name = '05-76-q101' THEN dcc_s_0__value END) AS \"05.76\",\n  avg(CASE WHEN technical_name = '05-77-q101' THEN dcc_s_0__value END) AS \"05.77\",\n  avg(CASE WHEN technical_name = '05-78-q101' THEN dcc_s_0__value END) AS \"05.78\"\nFROM public.marpower__dc_700v__dc_switch\nWHERE $__timeFilter(timestamp) AND technical_name IN ('05-71-q101', '05-72-q101', '05-73-q101', '05-74-q101', '05-75-q101', '05-76-q101', '05-77-q101', '05-78-q101')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(dcc_s_0__value) AS \"Value\"\nFROM public.marpower__dc_700v__dc_switch t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -2801,12 +2849,17 @@
               ],
               "transformations": [
                 {
-                  "group": "renameByRegex",
+                  "group": "partitionByValues",
                   "kind": "Transformation",
                   "spec": {
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "device"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -2871,7 +2924,8 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.device}"
                 },
                 "overrides": []
               }
@@ -2884,7 +2938,7 @@
         "spec": {
           "id": 39,
           "title": "Current, right section (raw)",
-          "description": "DC switch current, right section, raw as published: the IO list declares it as DcCurrent, without a scale. One series per DC switch: SB.01.P01 05.71, 05.72; SB.01.P02 05.73; SB.01.P03 05.74; SB.01.P04 05.75; SB.02 05.76, 05.77, 05.78.",
+          "description": "DC switch current, right section, raw as published: the IO list declares it as DcCurrent, without a scale. One series per DC switch, by technical name: SB.01.P01 05-71-q101, 05-72-q101; SB.01.P02 05-73-q101; SB.01.P03 05-74-q101; SB.01.P04 05-75-q101; SB.02 05-76-q101, 05-77-q101, 05-78-q101.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -2906,7 +2960,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN technical_name = '05-71-q101' THEN dcc_s_1__value END) AS \"05.71\",\n  avg(CASE WHEN technical_name = '05-72-q101' THEN dcc_s_1__value END) AS \"05.72\",\n  avg(CASE WHEN technical_name = '05-73-q101' THEN dcc_s_1__value END) AS \"05.73\",\n  avg(CASE WHEN technical_name = '05-74-q101' THEN dcc_s_1__value END) AS \"05.74\",\n  avg(CASE WHEN technical_name = '05-75-q101' THEN dcc_s_1__value END) AS \"05.75\",\n  avg(CASE WHEN technical_name = '05-76-q101' THEN dcc_s_1__value END) AS \"05.76\",\n  avg(CASE WHEN technical_name = '05-77-q101' THEN dcc_s_1__value END) AS \"05.77\",\n  avg(CASE WHEN technical_name = '05-78-q101' THEN dcc_s_1__value END) AS \"05.78\"\nFROM public.marpower__dc_700v__dc_switch\nWHERE $__timeFilter(timestamp) AND technical_name IN ('05-71-q101', '05-72-q101', '05-73-q101', '05-74-q101', '05-75-q101', '05-76-q101', '05-77-q101', '05-78-q101')\nGROUP BY 1 ORDER BY 1"
+                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(dcc_s_1__value) AS \"Value\"\nFROM public.marpower__dc_700v__dc_switch t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -2916,12 +2970,17 @@
               ],
               "transformations": [
                 {
-                  "group": "renameByRegex",
+                  "group": "partitionByValues",
                   "kind": "Transformation",
                   "spec": {
                     "options": {
-                      "regex": "^(.*) Result \\d+$",
-                      "renamePattern": "$1"
+                      "fields": [
+                        "device"
+                      ],
+                      "keepFields": false,
+                      "naming": {
+                        "asLabels": true
+                      }
                     }
                   }
                 }
@@ -2986,7 +3045,8 @@
                     "thresholdsStyle": {
                       "mode": "off"
                     }
-                  }
+                  },
+                  "displayName": "${__field.labels.device}"
                 },
                 "overrides": []
               }
@@ -4274,7 +4334,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT '05_' || split_part(technical_name, '-', 2) AS \"System\",\n  '05_' || split_part(technical_name, '-', 2) || '_' || split_part(technical_name, '-', 3) AS \"Pack\",\n  last_value(minimum_soc__value ORDER BY timestamp) AS \"SoC [%]\",\n  last_value(maximum_cell_temperature__value ORDER BY timestamp) AS \"Max temp [°C]\",\n  round(last_value(battery_power__value ORDER BY timestamp), 1) AS \"Power [kW]\",\n  last_value(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value) ORDER BY timestamp) AS \"DC:DC max [°C]\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__battery__pack\nWHERE timestamp > now() - INTERVAL '$live_window' AND technical_name IN ('05-41-1', '05-41-2', '05-41-3', '05-41-4', '05-42-1', '05-42-2', '05-42-3', '05-43-1', '05-43-2', '05-43-3', '05-44-1', '05-44-2', '05-44-3', '05-44-4', '05-45-1', '05-45-2', '05-45-3', '05-45-4', '05-46-1', '05-46-2', '05-46-3', '05-46-4')\nGROUP BY technical_name ORDER BY 2"
+                        "rawSql": "SELECT '05_' || split_part(t.technical_name, '-', 2) AS \"System\",\n  coalesce(m.name || ' · ', '') || t.technical_name AS \"Pack\",\n  last_value(minimum_soc__value ORDER BY t.timestamp) AS \"SoC [%]\",\n  last_value(maximum_cell_temperature__value ORDER BY t.timestamp) AS \"Max temp [°C]\",\n  round(last_value(battery_power__value ORDER BY t.timestamp), 1) AS \"Power [kW]\",\n  last_value(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value) ORDER BY t.timestamp) AS \"DC:DC max [°C]\",\n  to_unixtime(now()) - to_unixtime(max(t.timestamp)) AS \"Updated\"\nFROM public.marpower__battery__pack t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE t.timestamp > now() - INTERVAL '$live_window'\nGROUP BY t.technical_name, m.name ORDER BY t.technical_name"
                       }
                     },
                     "refId": "A",
@@ -4538,7 +4598,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT CASE split_part(technical_name, '-', 2) WHEN '71' THEN 'SB.01.P01' WHEN '72' THEN 'SB.01.P01' WHEN '73' THEN 'SB.01.P02' WHEN '74' THEN 'SB.01.P03' WHEN '75' THEN 'SB.01.P04' ELSE 'SB.02' END AS \"Switchboard\",\n  '05.' || split_part(technical_name, '-', 2) AS \"DC switch\",\n  round(last_value(heat_sink_0_temperature__value ORDER BY timestamp) * 0.1, 1) AS \"Heat sink Hs-0 [°C]\",\n  round(last_value(heat_sink_1_temperature__value ORDER BY timestamp) * 0.1, 1) AS \"Heat sink Hs-1 [°C]\",\n  last_value(dcv_s_0__value ORDER BY timestamp) AS \"Voltage left [V]\",\n  last_value(dcv_s_1__value ORDER BY timestamp) AS \"Voltage right [V]\",\n  last_value(dcv_ext__value ORDER BY timestamp) AS \"Voltage external [V]\",\n  last_value(dcc_s_0__value ORDER BY timestamp) AS \"Current left (raw)\",\n  last_value(dcc_s_1__value ORDER BY timestamp) AS \"Current right (raw)\",\n  to_unixtime(now()) - to_unixtime(max(timestamp)) AS \"Updated\"\nFROM public.marpower__dc_700v__dc_switch\nWHERE timestamp > now() - INTERVAL '$live_window' AND technical_name IN ('05-71-q101', '05-72-q101', '05-73-q101', '05-74-q101', '05-75-q101', '05-76-q101', '05-77-q101', '05-78-q101')\nGROUP BY technical_name ORDER BY 2"
+                        "rawSql": "SELECT CASE split_part(t.technical_name, '-', 2) WHEN '71' THEN 'SB.01.P01' WHEN '72' THEN 'SB.01.P01' WHEN '73' THEN 'SB.01.P02' WHEN '74' THEN 'SB.01.P03' WHEN '75' THEN 'SB.01.P04' ELSE 'SB.02' END AS \"Switchboard\",\n  coalesce(m.name || ' · ', '') || t.technical_name AS \"DC switch\",\n  round(last_value(heat_sink_0_temperature__value ORDER BY t.timestamp) * 0.1, 1) AS \"Heat sink Hs-0 [°C]\",\n  round(last_value(heat_sink_1_temperature__value ORDER BY t.timestamp) * 0.1, 1) AS \"Heat sink Hs-1 [°C]\",\n  last_value(dcv_s_0__value ORDER BY t.timestamp) AS \"Voltage left [V]\",\n  last_value(dcv_s_1__value ORDER BY t.timestamp) AS \"Voltage right [V]\",\n  last_value(dcv_ext__value ORDER BY t.timestamp) AS \"Voltage external [V]\",\n  last_value(dcc_s_0__value ORDER BY t.timestamp) AS \"Current left (raw)\",\n  last_value(dcc_s_1__value ORDER BY t.timestamp) AS \"Current right (raw)\",\n  to_unixtime(now()) - to_unixtime(max(t.timestamp)) AS \"Updated\"\nFROM public.marpower__dc_700v__dc_switch t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE t.timestamp > now() - INTERVAL '$live_window'\nGROUP BY t.technical_name, m.name ORDER BY t.technical_name"
                       }
                     },
                     "refId": "A",
