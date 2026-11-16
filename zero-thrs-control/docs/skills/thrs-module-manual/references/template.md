@@ -3,10 +3,10 @@
 ## The manual
 
 The manual is an **HTML fragment**: no `<html>`, `<head>` or `<style>`, just the
-body content. The front-end renders it inside its Documentation tab and the PDF
-is printed from the same render, so the fragment carries structure and the
-front-end owns all styling. Use only the elements and classes below; anything
-else renders unstyled.
+body content. The front-end renders it inside its Documentation tab with its own
+styling, and `just manual_publish` prints it plainly in black and white with
+`assets/print.css`, so the fragment carries structure only. Use only the elements
+and classes below; anything else renders unstyled.
 
 Fixed section order, so an engineer who has read one can navigate any of them.
 Headings are literal; the `<!-- … -->` notes are guidance, not content to
@@ -131,7 +131,7 @@ Notes:
   `minimum_tank_temperature`", not the Python condition.
 - **Severity** is `data-severity="warning"` or `"alarm"`, matching the alarm's
   severity in the step-1 output. A warning/alarm pair on one row gets both badges.
-- Leave out the `<p class="version">` line at the end; `just manual_pdf` adds
+- Leave out the `<p class="version">` line at the end; `just manual` adds
   it, and replaces it when you refresh a manual.
 - Escape `<`, `>` and `&` in prose as `&lt;`, `&gt;`, `&amp;`. Inside the
   Mermaid block, `-->` and `<br/>` are fine as they are.
@@ -208,7 +208,7 @@ Rules:
   `<b>On exit</b>`. Leave out a heading with no actions under it.
 - **One action per bullet, one line per bullet.** Physical actions — "open the
   charging valves", not `_set_valves_to_charging`. Text never wraps (the
-  front-end turns Mermaid's wrapping off), so a bullet that needs a second line
+  diagram styling turns Mermaid's wrapping off), so a bullet that needs a second line
   is two actions or too wordy: split or rephrase it. "Hold the return at
   `recovery_temperature` with the pump" beats "enable pump flow control, so the
   pump / holds the return…".
@@ -223,7 +223,7 @@ Rules:
   the starting point.
 - **Colour each state like the mimic**: `class <state> <Mode>` with the same
   mode badge name as in *Mode badges* above. Do not add `classDef` styles; the
-  front-end owns the colours.
+  front-end colours each state from its mode.
 - Leave unreachable states out entirely.
 - `direction LR`: states read left to right, in the order the module moves
   through them. The front-end gives the diagram the full page width, so a wide
