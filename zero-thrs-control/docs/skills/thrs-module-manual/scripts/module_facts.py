@@ -23,6 +23,8 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
+from transitions.extensions import GraphMachine
+
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.input_output.definitions.units import unit_meta
 
@@ -32,7 +34,7 @@ UNITS: dict[str, str] = {
     "C": "°C",
     "K": "K",
     "l_min": "l/min",
-    "ratio": "0–1",
+    "ratio": "0\u20131",
     "Bar": "bar",
     "Watt": "W",
     "s": "s",
@@ -186,10 +188,7 @@ def state_machines(control: Any) -> list[tuple[str, Any]]:
     for attr in sorted(dir(control)):
         if attr.startswith("__"):
             continue
-        try:
-            sub = getattr(control, attr)
-        except Exception:
-            continue
+        sub = inspect.getattr_static(control, attr)
         if sub is not control and getattr(sub, "_states", None):
             subs.append((f"sub-control `{attr}`", sub))
     top = [("top level", control)] if getattr(control, "_states", None) else []
@@ -230,8 +229,6 @@ def describe_state_machines(control: Any) -> None:
 
 
 def draw_diagram(control: Any, states: Any, transitions: Any, path: str) -> None:
-    from transitions.extensions import GraphMachine
-
     GraphMachine(
         model=control,
         states=states,

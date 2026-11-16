@@ -127,6 +127,11 @@ extend-unsafe-fixes = ["COM812"]
   "SLF001", # Allow private member access in tests
 ]
 
+"docs/skills/**/scripts/*.py" = [
+  "T201",   # Command-line scripts print their results
+  "INP001", # Run as scripts, not imported as a package
+]
+
 "**/*.ipynb" = [
   "ERA001", # Allow commented out code in notebooks
 ]
