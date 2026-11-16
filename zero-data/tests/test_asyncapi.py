@@ -153,6 +153,12 @@ def test_flow_meters_that_measure_only_a_flow_have_their_own_schema():
             {"VpEnable", "TempPowerStage", "Power"},
         ),
         (
+            "dc_ac.converter.05-11-u101",
+            "marpower/45-dc-ac/inverter/05-11-u101",
+            "Converter",
+            {"Running", "TempPowerStage", "PvPower"},
+        ),
+        (
             "dc_ac.converter.05-12-u101",
             "marpower/45-dc-ac/inverter/05-12-u101",
             "Converter",
@@ -161,6 +167,42 @@ def test_flow_meters_that_measure_only_a_flow_have_their_own_schema():
         (
             "dc_700v.shore-converter.07-11-tbc1a",
             "marpower/45-dc-700v/shore-converter/07-11-tbc1a",
+            "ShoreConverter",
+            {
+                "Online",
+                "EsiTransformerTemperature",
+                "EsiIgbtMinTemperature",
+                "EsiIgbtMaxTemperature",
+                "EsiAcBusActivePower3Phase",
+            },
+        ),
+        (
+            "dc_700v.shore-converter.07-11-tbc1b",
+            "marpower/45-dc-700v/shore-converter/07-11-tbc1b",
+            "ShoreConverter",
+            {
+                "Online",
+                "EsiTransformerTemperature",
+                "EsiIgbtMinTemperature",
+                "EsiIgbtMaxTemperature",
+                "EsiAcBusActivePower3Phase",
+            },
+        ),
+        (
+            "dc_700v.shore-converter.07-12-tbc1a",
+            "marpower/45-dc-700v/shore-converter/07-12-tbc1a",
+            "ShoreConverter",
+            {
+                "Online",
+                "EsiTransformerTemperature",
+                "EsiIgbtMinTemperature",
+                "EsiIgbtMaxTemperature",
+                "EsiAcBusActivePower3Phase",
+            },
+        ),
+        (
+            "dc_700v.shore-converter.07-12-tbc1b",
+            "marpower/45-dc-700v/shore-converter/07-12-tbc1b",
             "ShoreConverter",
             {
                 "Online",
