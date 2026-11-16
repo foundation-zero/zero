@@ -6,7 +6,7 @@ See also: 6.17 Hull temperature measurement in AMCS FDS, and 9445016 Hull temper
 
 ## Overview
 
-The application reads temperatures from a set of hull-mounted probes via Modbus TCP holding registers. Before reading, it sends an activation command to the AMCS over MQTT (using `KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF`) to switch on the measurement relay. After reading, it publishes the results as a JSON payload to a configurable MQTT topic.
+The application reads temperatures from a set of hull-mounted probes via Modbus TCP holding registers. Before reading, it sends an activation command to the AMCS over MQTT (`HullTemperatureMeasurementOn` on `marpower/45-amcs/plc/keb1/Command`) to switch on the measurement relay. After reading, it publishes the results as a JSON payload to a configurable MQTT topic.
 
 ## Requirements
 
@@ -87,7 +87,7 @@ uv run python -m zero_hull_temperature read-skip-mqtt \
 
 #### `stub` — Run a local Modbus/MQTT stub for testing
 
-Starts a Modbus TCP server pre-loaded with a fixed temperature value, and **subscribes** to MQTT for relay activation commands. The Modbus server only starts serving after it receives a truthy `KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF` message. Useful for integration testing without physical hardware.
+Starts a Modbus TCP server pre-loaded with a fixed temperature value, and **subscribes** to MQTT for relay activation commands. The Modbus server only starts serving after it receives a truthy `HullTemperatureMeasurementOn` message. Useful for integration testing without physical hardware.
 
 ```bash
 uv run python -m zero_hull_temperature stub \
