@@ -8,9 +8,10 @@ from pydantic import computed_field
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.classes.control import ControlMode
-from thrs.control.switching import SwitchingControlMode
+from thrs.control.switching import AutomationMode, SwitchingControlMode
 from thrs.input_output.base import ThrsValues, component_meta, computed_meta
 from thrs.orchestration.comms import (
+    ControlChannels,
     DirectivesChannels,
     DirectMqttMapping,
     MergedModuleMqttMapping,
@@ -243,6 +244,29 @@ def test_directives_channels_pair_status_with_status_set(settings: Config):
     assert directions[f"{prefix}/status/set"] == "receive"
 
 
+def test_control_channels_pair_automation_mode_with_its_set(settings: Config):
+    connector = RecordingConnector(settings)
+    description = ModuleDescription(
+        sensor_values_cls=ThrsValues,
+        control_values_cls=ThrsValues,
+        parameters_cls=ThrsValues,
+        control=None,  # type: ignore
+        control_mode_cls=ThrsValues,
+        controller_state_cls=ThrsValues,
+        alarms=None,  # type: ignore
+    )
+
+    ControlChannels(connector, settings, "test", description)
+
+    directions = {
+        topic.topic: (topic.direction, topic.payload_type) for topic in connector.topics
+    }
+    prefix = f"{settings.mqtt_controller_topic_prefix}/test/automation-mode"
+    suffix = settings.mqtt_controller_topic_suffix
+    assert directions[prefix] == ("send", AutomationMode)
+    assert directions[f"{prefix}/{suffix}"] == ("receive", AutomationMode)
+
+
 # ---------------------------------------------------------------------------
 # collect_topics Orchestration Tests
 # ---------------------------------------------------------------------------
@@ -288,6 +312,14 @@ def test_collect_topics_wires_channels(settings: Config):
         TopicMapping(
             topic="test_controller_topic/test/control-mode",
             payload_type=SwitchingControlMode[ThrsValues],
+            direction="send",
+            component_type=None,
+            qos=1,
+            retain=False,
+        ),
+        TopicMapping(
+            topic="test_controller_topic/test/automation-mode",
+            payload_type=AutomationMode,
             direction="send",
             component_type=None,
             qos=1,

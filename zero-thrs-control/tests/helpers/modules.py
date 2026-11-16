@@ -107,6 +107,7 @@ def make_async_channels() -> mock.Mock:
     channels.send_controller_state = mock.AsyncMock()
     channels.send_parameters = mock.AsyncMock()
     channels.send_control_modes = mock.AsyncMock()
+    channels.send_automation_mode = mock.AsyncMock()
     channels.send_manual_control = mock.AsyncMock()
     return channels
 
