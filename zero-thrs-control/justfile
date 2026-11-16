@@ -41,10 +41,10 @@ check: lint type_check test test_mqtt
 check_static: lint_no_fix format type_check
 
 lint:
-    uv run ruff check src tests
+    uv run ruff check src tests docs/skills
 
 lint_no_fix:
-    uv run ruff check --no-fix src tests
+    uv run ruff check --no-fix src tests docs/skills
 
 type_check:
     uv run pyright
@@ -60,10 +60,10 @@ test_io *args:
     uv run pytest {{ cov }} -m "io" {{ args }}
 
 format:
-    uv run ruff format --check src tests
+    uv run ruff format --check src tests docs/skills
 
 format_fix:
-    uv run ruff format src tests
+    uv run ruff format src tests docs/skills
 
 build_fmu_compile_container:
     docker build . --platform linux/amd64 --tag fmu_compile_image --target fmu_compile
