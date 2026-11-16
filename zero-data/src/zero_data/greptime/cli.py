@@ -1,14 +1,25 @@
+import hashlib
 import logging
+from datetime import datetime
+from pathlib import Path
 from typing import Annotated
 
 from pydantic import BaseModel, Field
-from pydantic_settings import CliApp, CliSubCommand
+from pydantic_settings import CliApp, CliPositionalArg, CliSubCommand
 
 from zero_data.greptime.config import (
     CURATED_TABLES_FILE,
     SNAPSHOT_DIR,
     GreptimeConnection,
 )
+from zero_data.greptime.migrate_history import (
+    Greptime,
+    check_plan,
+    execute_plan,
+    plan_migration,
+    to_nanos,
+)
+from zero_data.greptime.migration_spec import read_spec
 from zero_data.greptime.snapshot import (
     connect,
     ensure_databases,
@@ -68,12 +79,102 @@ class InitCmd(BaseModel):
         logger.info("Ensured dbt databases on %s", self.host or "local")
 
 
+class MigratePlanCmd(BaseModel):
+    """Write, per wave of a migration spec, the SQL to run, its manifest and a dry-run report.
+
+    Only reads Greptime.
+    """
+
+    spec: CliPositionalArg[Path]
+    boundary: Annotated[
+        datetime,
+        Field(
+            description="Cut-over time: the bound of a new topic that has no row yet."
+        ),
+    ]
+    out: Annotated[Path, Field(description="Directory to write the wave files to.")]
+    table: Annotated[
+        list[str], Field(description="Only these old tables (repeat for more).")
+    ] = []
+    host: Annotated[
+        str | None,
+        Field(description="Greptime host to plan against (overrides GREPTIME_HOST)."),
+    ] = None
+
+    def cli_cmd(self) -> None:
+        connection = _connection(self.host)
+        with connect(connection) as handle:
+            plan_migration(
+                Greptime(handle, connection.dbname),
+                read_spec(self.spec),
+                hashlib.sha256(self.spec.read_bytes()).hexdigest(),
+                connection.host,
+                to_nanos(self.boundary),
+                self.table,
+                self.out,
+            )
+
+
+class MigrateExecuteCmd(BaseModel):
+    """Run a planned wave's SQL file as it is, journalling each statement; resumable."""
+
+    sql: CliPositionalArg[Path]
+    pause: Annotated[
+        float, Field(description="Seconds to wait after each copied window.")
+    ] = 1.0
+    host: Annotated[
+        str | None,
+        Field(description="Greptime host to write to (overrides GREPTIME_HOST)."),
+    ] = None
+
+    def cli_cmd(self) -> None:
+        connection = _connection(self.host)
+        with connect(connection) as handle:
+            execute_plan(
+                Greptime(handle, connection.dbname),
+                self.sql,
+                connection.host,
+                self.pause,
+            )
+
+
+class MigrateCheckCmd(BaseModel):
+    """Compare a migrated wave's old and new rows and write the check report."""
+
+    sql: CliPositionalArg[Path]
+    host: Annotated[
+        str | None,
+        Field(description="Greptime host to check (overrides GREPTIME_HOST)."),
+    ] = None
+
+    def cli_cmd(self) -> None:
+        connection = _connection(self.host)
+        with connect(connection) as handle:
+            matched = check_plan(
+                Greptime(handle, connection.dbname), self.sql, connection.host
+            )
+        if not matched:
+            raise SystemExit(1)
+
+
+class MigrateHistoryCmd(BaseModel):
+    """Copy history from old tables into new ones: plan, review, execute, check."""
+
+    plan: CliSubCommand[MigratePlanCmd]
+    execute: CliSubCommand[MigrateExecuteCmd]
+    check: CliSubCommand[MigrateCheckCmd]
+
+    def cli_cmd(self) -> None:
+        CliApp.run_subcommand(self)
+
+
 class GreptimeCmd(BaseModel):
     """Snapshot prod's Greptime schema and replay it into a local Greptime for dbt."""
 
     snapshot: CliSubCommand[SnapshotCmd]
     load: CliSubCommand[LoadCmd]
     init: CliSubCommand[InitCmd]
+    migrate_history: CliSubCommand[MigrateHistoryCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)
