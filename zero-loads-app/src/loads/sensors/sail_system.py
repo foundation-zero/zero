@@ -71,6 +71,14 @@ LoadAlarm: TypeAlias = Annotated[
     VariableMeta(unit="bool", name="max_load_alarm", type="alarm", alarm_for="load"),
 ]
 
+BlockLoad: TypeAlias = Annotated[Load, Field(validation_alias="i_blockLoad")]
+
+# The block load is twice the line load, as is its setting, so the line load alarm
+# (st_Load/x_MaxLimitReached) fires at the block load setting.
+MaxBlockLoad: TypeAlias = Annotated[
+    MaxLoad, Field(validation_alias="i_MaxBlockLoadSetting")
+]
+
 LoadPinLoad: TypeAlias = Annotated[Load, Field(validation_alias="st_LoadLc/i_Load")]
 
 LoadPinMaxLoad: TypeAlias = Annotated[
@@ -814,10 +822,8 @@ class MainCunningham(LoadsModel, ABC):
 
 class MainHalyard(LoadsModel, ABC):
     TOPIC = "sail-systems/fe207-main-halyard-captive-winch"
-    # TODO: Check with Vitters what the PLC calculates for i_Load; it has equalled st_Load/i_Load so far.
     load: Annotated[
         Load,
-        Field(validation_alias="i_Load"),
         VariableMeta(display_name="Halyard"),
     ]
     load_failure: LoadFailure
@@ -940,14 +946,10 @@ class MainRunnerSb(LoadsModel, ABC):
 
 class MainSheet(LoadsModel, ABC):
     TOPIC = "sail-systems/fe205-main-sheet-captive-winch"
-    # TODO: Read the sheet load (i_sheetLoad) once the PLC publishes it, as the IO list does.
-    load: Annotated[
-        Load,
-        VariableMeta(display_name="Sheet"),
-    ]
+    load: Annotated[BlockLoad, VariableMeta(display_name="Sheet")]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
-    max_load: MaxLoad
+    max_load: MaxBlockLoad
 
 
 class MainVang(LoadsModel, ABC):
@@ -1187,10 +1189,8 @@ class MizzenCunningham(LoadsModel, ABC):
 
 class MizzenHalyard(LoadsModel, ABC):
     TOPIC = "sail-systems/fe404-mizzen-halyard-captive-winch"
-    # TODO: Check with Vitters what the PLC calculates for i_Load; it has equalled st_Load/i_Load so far.
     load: Annotated[
         Load,
-        Field(validation_alias="i_Load"),
         VariableMeta(display_name="Halyard"),
     ]
     load_failure: LoadFailure
@@ -1338,13 +1338,10 @@ class MizzenRunnerSb(LoadsModel, ABC):
 
 class MizzenSheet(LoadsModel, ABC):
     TOPIC = "sail-systems/fe504-mizzen-sheet-captive-winch"
-    load: Annotated[
-        Load,
-        VariableMeta(display_name="Sheet"),
-    ]
+    load: Annotated[BlockLoad, VariableMeta(display_name="Sheet")]
     load_failure: LoadFailure
     load_alarm: LoadAlarm
-    max_load: MaxLoad
+    max_load: MaxBlockLoad
 
 
 class MizzenVang(LoadsModel, ABC):

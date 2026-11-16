@@ -2,10 +2,13 @@ import polars as pl
 import pytest
 
 from sailpack.seed_utils import (
+    NEWTON_PER_TONNE_FORCE,
     add_derived_loads,
     assert_port_tack,
+    extract_reference_values,
     extract_sail_abbreviations,
     mirror_side,
+    read_reference_values_mapping,
 )
 
 
@@ -15,16 +18,92 @@ def test_add_derived_loads():
             "Calculation ID": ["LC1"],
             "blade-adjuster-load": [30.0],
             "blade-cunningham-load": [20.0],
-            "main-runner-tail-ps-load": [13.0],
-            "mizzen-runner-tail-ps-load": [5.0],
         }
     )
 
     derived = add_derived_loads(port_tack_loads).row(0, named=True)
 
     assert derived["main-headstay-combined-load"] == 50.0
-    assert derived["main-runner-block-ps-load"] == 26.0
-    assert derived["mizzen-runner-block-ps-load"] == pytest.approx(9.563, abs=1e-3)
+
+
+def _sailpack_row(table_description: str, **cells: str) -> dict[str, str | None]:
+    return {
+        "table_description": table_description,
+        "Calculation ID": "LC1",
+        "Roll/Heel": None,
+        "TWS (Knts)": None,
+        "TWA (°)": None,
+        "AWS (Knts)": None,
+        "AWA (°)": None,
+        "BS (Knts)": None,
+        "Cable name": None,
+        "Trimming mode - FSIC trimmings": None,
+        "Load (N) - After FSIC": None,
+        "Trimming value (N or m) - FSIC trimmings": None,
+        **cells,
+    }
+
+
+def _cable_row(cable: str, tonnes: float) -> dict[str, str | None]:
+    return _sailpack_row(
+        "CABLE DATA",
+        **{
+            "Cable name": cable,
+            "Trimming mode - FSIC trimmings": "Delta length",
+            "Load (N) - After FSIC": str(tonnes * NEWTON_PER_TONNE_FORCE),
+        },
+    )
+
+
+def test_extract_reference_values_multiplies_the_loads_by_their_purchase():
+    sailpack_data = pl.DataFrame(
+        [
+            _sailpack_row("NOTES", **{"Roll/Heel": "20°"}),
+            _sailpack_row(
+                "NAV. PARAMS",
+                **{
+                    "TWS (Knts)": "20",
+                    "TWA (°)": "-45",
+                    "AWS (Knts)": "28",
+                    "AWA (°)": "-30",
+                    "BS (Knts)": "12",
+                },
+            ),
+            _cable_row("CABLE__FS", 30.0),
+            _cable_row("CABLE_BladeTACK", 20.0),
+            _cable_row("RUNNER_TAIL", 10.0),
+        ]
+    )
+    mapping = read_reference_values_mapping(
+        "Technical name,Sailpack table name,Sailpack row label,Sailpack column label,"
+        "Purchase (sailpack : function)\n"
+        "blade-adjuster-load,CABLE DATA,CABLE__FS,Load (N),1\n"
+        "blade-cunningham-load,CABLE DATA,CABLE_BladeTACK,Load (N),1\n"
+        "main-runner-tail-ps-load,CABLE DATA,RUNNER_TAIL,Load (N),1\n"
+        "main-runner-block-ps-load,CABLE DATA,RUNNER_TAIL,Load (N),2\n"
+    )
+
+    reference_values = {
+        (row["variable"], row["tack"]): row["value"]
+        for row in extract_reference_values(sailpack_data, mapping).iter_rows(
+            named=True
+        )
+    }
+
+    assert reference_values == pytest.approx(
+        {
+            ("blade-adjuster-load", "port"): 30.0,
+            ("blade-cunningham-load", "port"): 20.0,
+            ("main-runner-tail-ps-load", "port"): 10.0,
+            ("main-runner-block-ps-load", "port"): 20.0,
+            ("main-headstay-combined-load", "port"): 50.0,
+            ("blade-adjuster-load", "starboard"): 30.0,
+            ("blade-cunningham-load", "starboard"): 20.0,
+            ("main-runner-tail-sb-load", "starboard"): 10.0,
+            ("main-runner-block-sb-load", "starboard"): 20.0,
+            ("main-headstay-combined-load", "starboard"): 50.0,
+        }
+    )
 
 
 @pytest.mark.parametrize(

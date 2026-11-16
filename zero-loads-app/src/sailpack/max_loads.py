@@ -5,13 +5,12 @@ from pathlib import Path
 
 import polars as pl
 
-from sailpack.seed_utils import RUNNER_BLOCK_LOAD_PER_TAIL_LOAD, mirror_side
-
 KILOGRAM_PER_TONNE = 1000.0
 
 # The "Max loads" tab export has a row of column groups above the column headers.
 MAX_LOADS_HEADER_ROWS = 2
 TECHNICAL_NAME_HEADER = "Loads app technical name"
+PLC_REFERENCE_HEADER = "PLC reference"
 THRESHOLD_HEADERS = {
     "alarm_low": "Lower Alarm Setting (kg)",
     "warning_low": "Lower Warning Setting (kg)",
@@ -19,6 +18,15 @@ THRESHOLD_HEADERS = {
     "alarm_high": "Upper Alarm Setting (kg)",
 }
 THRESHOLD_COLUMNS = list(THRESHOLD_HEADERS)
+
+# TODO: Read these rows once the team has settled them: the reef tacks have no PLC reference yet,
+# and the sheet line loads share their technical name with the sheet block loads.
+IGNORED_ROWS = {
+    ("main-reef-tack", ""),
+    ("mizzen-reef-tack", ""),
+    ("main-sheet-load", "FE205_MainSheetCaptiveWinch.st_load.i_Load"),
+    ("mizzen-sheet-load", "FE504_MizzenSheetCaptiveWinch.st_load.i_Load"),
+}
 
 
 def kilogram_to_tonne(cell: str) -> float | None:
@@ -29,13 +37,17 @@ def kilogram_to_tonne(cell: str) -> float | None:
 
 
 def read_max_loads_cells(max_loads_csv: str) -> list[dict[str, str]]:
-    """Return the technical name and raw threshold cells of every named row."""
+    """Return the technical name, PLC reference and raw threshold cells of every named row."""
     rows = list(csv.reader(io.StringIO(max_loads_csv, newline="")))
 
     headers = [header.strip() for header in rows[MAX_LOADS_HEADER_ROWS - 1]]
     missing_headers = [
         header
-        for header in [TECHNICAL_NAME_HEADER, *THRESHOLD_HEADERS.values()]
+        for header in [
+            TECHNICAL_NAME_HEADER,
+            PLC_REFERENCE_HEADER,
+            *THRESHOLD_HEADERS.values(),
+        ]
         if header not in headers
     ]
     if missing_headers:
@@ -43,6 +55,7 @@ def read_max_loads_cells(max_loads_csv: str) -> list[dict[str, str]]:
 
     column_positions = {
         "variable": headers.index(TECHNICAL_NAME_HEADER),
+        "plc_reference": headers.index(PLC_REFERENCE_HEADER),
         **{
             column: headers.index(header)
             for column, header in THRESHOLD_HEADERS.items()
@@ -52,34 +65,21 @@ def read_max_loads_cells(max_loads_csv: str) -> list[dict[str, str]]:
         [*row, *[""] * (len(headers) - len(row))]
         for row in rows[MAX_LOADS_HEADER_ROWS:]
     ]
-    return [
+    named_rows = [
         {column: row[position].strip() for column, position in column_positions.items()}
         for row in padded_rows
         if row[column_positions["variable"]].strip()
     ]
-
-
-def runner_block_thresholds(max_loads: pl.DataFrame) -> pl.DataFrame:
-    """Derive the runner block thresholds on both sides from the runner tail thresholds."""
-    block_load_per_tail_load = pl.DataFrame(
-        [
-            {"block": side_block, "variable": side_tail, "factor": factor}
-            for (block, tail), factor in RUNNER_BLOCK_LOAD_PER_TAIL_LOAD.items()
-            for side_block, side_tail in [
-                (block, tail),
-                (mirror_side(block), mirror_side(tail)),
-            ]
-        ]
-    )
-    return max_loads.join(block_load_per_tail_load, on="variable").select(
-        pl.col("block").alias("variable"),
-        *(pl.col(column) * pl.col("factor") for column in THRESHOLD_COLUMNS),
-    )
+    return [
+        cells
+        for cells in named_rows
+        if (cells["variable"], cells["plc_reference"]) not in IGNORED_ROWS
+    ]
 
 
 def read_max_loads(max_loads_csv: str) -> pl.DataFrame:
-    """Read the max loads in tonnes, including the runner block thresholds derived from the tails."""
-    sheet_max_loads = pl.DataFrame(
+    """Read the max loads in tonnes."""
+    max_loads = pl.DataFrame(
         [
             {
                 "variable": cells["variable"],
@@ -95,7 +95,6 @@ def read_max_loads(max_loads_csv: str) -> pl.DataFrame:
             **{column: pl.Float64 for column in THRESHOLD_COLUMNS},
         },
     )
-    max_loads = pl.concat([sheet_max_loads, runner_block_thresholds(sheet_max_loads)])
 
     out_of_order = max_loads.filter(
         pl.any_horizontal(
