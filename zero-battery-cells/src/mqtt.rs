@@ -1,12 +1,12 @@
 use crate::cells::ModuleFrame;
 use crate::config::AppConfig;
-use crate::readiness::{write_termination_message, Readiness};
 use log::{error, info, warn};
 use rumqttc::{
     AsyncClient, ConnectReturnCode, ConnectionError, Event, EventLoop, Incoming, MqttOptions, QoS,
 };
 use std::time::Duration;
 use tokio::time::timeout;
+use zero_readiness::{write_termination_message, Readiness};
 
 /// MQTT keep-alive interval: how quickly a dead connection is noticed.
 const KEEP_ALIVE: Duration = Duration::from_secs(15);

@@ -166,7 +166,8 @@ services:
 
   battery-cells:
     build:
-      context: ./zero-battery-cells
+      context: .
+      dockerfile: zero-battery-cells/Dockerfile
     restart: unless-stopped
     ports:
       - 50000:50000/udp

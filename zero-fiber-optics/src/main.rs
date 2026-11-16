@@ -5,14 +5,12 @@ mod layout;
 mod metrics;
 mod mqtt;
 mod parser;
-mod readiness;
 
 use crate::app_config::AppConfig;
 use crate::config::{load_config, Port, UdpChannels};
 use crate::layout::{Layout, TopicMap};
 use crate::metrics::{should_log_repeated, MqttMetrics, PortMetrics};
 use crate::mqtt::{MqttConnection, MqttHandler, PublishError};
-use crate::readiness::{write_termination_message, Readiness, NOT_READY_DEADLINE, STATUS_FILE};
 use anyhow::{bail, Context, Result};
 use clap::{Parser, Subcommand};
 use log::{debug, error, info, warn};
@@ -28,6 +26,7 @@ use tokio::sync::mpsc::{Receiver, Sender};
 use tokio::task::{JoinHandle, JoinSet};
 use tokio_stream::wrappers::ReceiverStream;
 use tokio_stream::StreamExt;
+use zero_readiness::{write_termination_message, Readiness, NOT_READY_DEADLINE, STATUS_FILE};
 
 /// How often the watchdog checks that each port is still receiving packets.
 const WATCHDOG_INTERVAL: Duration = Duration::from_secs(10);

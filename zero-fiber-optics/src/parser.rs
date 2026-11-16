@@ -343,6 +343,103 @@ mod tests {
     }
 
     #[test]
+    fn test_parse_every_integer_type_big_endian() {
+        let mut offset = make_var("Offset", "SignedInt64", None, vec![]);
+        offset.offset = Some(-1.0);
+        let port = Port {
+            numport: 50000,
+            channel: "Test".to_string(),
+            frequency: None,
+            mode: None,
+            variables: vec![
+                make_var("Counter", "CounterU32", Some(10.0), vec![]),
+                make_var("Tilt", "SignedInt8", None, vec![]),
+                make_var("Torque", "SignedInt32", Some(10.0), vec![]),
+                offset,
+                make_var("Speed", "UnSignedInt16", Some(100.0), vec![]),
+                make_var("Hours", "UnSignedInt32", None, vec![]),
+                make_var("Energy", "UnSignedInt64", Some(1000.0), vec![]),
+            ],
+        };
+        let layout = Layout::from_port(&port);
+
+        let data: &[u8] = &[
+            0x00, 0x01, 0x00, 0x00, // Counter 65536, never scaled
+            0xFE, // Tilt -2
+            0xFF, 0xFE, 0x79, 0x60, // Torque -100000 / 10
+            0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, // Offset 2^32, then -1
+            0x30, 0x39, // Speed 12345 / 100
+            0xDE, 0xAD, 0xBE, 0xEF, // Hours 3735928559
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x0F, 0x42, 0x40, // Energy 1000000 / 1000
+        ];
+        assert_eq!(expected_packet_len(&port), data.len());
+
+        let (rest, values) = parse_packet(data, &port, &layout).unwrap();
+        assert!(rest.is_empty());
+        assert_eq!(find_number(&values, "Counter"), 65536.0);
+        assert_eq!(find_number(&values, "Tilt"), -2.0);
+        assert_eq!(find_number(&values, "Torque"), -10000.0);
+        assert_eq!(find_number(&values, "Offset"), 4_294_967_295.0);
+        assert!((find_number(&values, "Speed") - 123.45).abs() < 1e-9);
+        assert_eq!(find_number(&values, "Hours"), 3_735_928_559.0);
+        assert_eq!(find_number(&values, "Energy"), 1000.0);
+    }
+
+    #[test]
+    fn test_parse_wide_bool_registers() {
+        let bit = |num: u8, name: &str| Bit {
+            num,
+            name: name.to_string(),
+        };
+        let port = Port {
+            numport: 50000,
+            channel: "Test".to_string(),
+            frequency: None,
+            mode: None,
+            variables: vec![
+                make_var(
+                    "Alarms",
+                    "16BitBoolRegister",
+                    None,
+                    vec![bit(0, "AlarmLow"), bit(15, "AlarmHigh")],
+                ),
+                make_var(
+                    "Status",
+                    "32BitBoolRegister",
+                    None,
+                    vec![bit(1, "StatusLow"), bit(31, "StatusHigh")],
+                ),
+            ],
+        };
+        let layout = Layout::from_port(&port);
+
+        let data: &[u8] = &[0x80, 0x00, 0x80, 0x00, 0x00, 0x02];
+        assert_eq!(expected_packet_len(&port), data.len());
+
+        let (_, values) = parse_packet(data, &port, &layout).unwrap();
+        assert_eq!(find_number(&values, "Alarms"), 32768.0);
+        assert!(!find_bool(&values, "AlarmLow"));
+        assert!(find_bool(&values, "AlarmHigh"));
+        assert_eq!(find_number(&values, "Status"), 2_147_483_650.0);
+        assert!(find_bool(&values, "StatusLow"));
+        assert!(find_bool(&values, "StatusHigh"));
+    }
+
+    #[test]
+    fn test_truncated_packet_is_a_parse_error() {
+        let port = Port {
+            numport: 50000,
+            channel: "Test".to_string(),
+            frequency: None,
+            mode: None,
+            variables: vec![make_var("Hours", "UnSignedInt32", None, vec![])],
+        };
+        let layout = Layout::from_port(&port);
+
+        assert!(parse_packet(&[0x00, 0x01, 0x02], &port, &layout).is_err());
+    }
+
+    #[test]
     fn test_parse_bool_register() {
         let port = Port {
             numport: 50000,

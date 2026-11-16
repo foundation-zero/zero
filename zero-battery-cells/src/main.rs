@@ -5,7 +5,6 @@ mod mapping;
 mod mqtt;
 mod netvar;
 mod nvl;
-mod readiness;
 mod reassembly;
 mod throttle;
 mod udp;
@@ -14,7 +13,6 @@ use crate::cells::ModuleFrame;
 use crate::config::PipelineConfig;
 use crate::decoder::Decoder;
 use crate::mqtt::{MqttGone, MqttPublisher, PublishError};
-use crate::readiness::{write_termination_message, Readiness, NOT_READY_DEADLINE, STATUS_FILE};
 use crate::throttle::log_event;
 use anyhow::{bail, Context, Result};
 use clap::{Parser, Subcommand};
@@ -30,6 +28,7 @@ use tokio::net::UdpSocket;
 use tokio::sync::mpsc::Receiver;
 use tokio::task::JoinSet;
 use tokio_stream::wrappers::ReceiverStream;
+use zero_readiness::{write_termination_message, Readiness, NOT_READY_DEADLINE, STATUS_FILE};
 
 /// Module-frame backlog between the UDP listener and the MQTT publisher, before drops.
 ///

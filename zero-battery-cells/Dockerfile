@@ -2,9 +2,6 @@ FROM --platform=$BUILDPLATFORM rust:1.99.1-trixie@sha256:8a4e90c7946b74626488b14
 
 WORKDIR /app
 
-COPY Cargo.toml Cargo.lock ./
-COPY src ./src
-
 ARG TARGETARCH
 
 RUN apt-get update && \
@@ -24,7 +21,12 @@ ENV CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
 ENV CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc
 ENV CXX_aarch64_unknown_linux_gnu=aarch64-linux-gnu-g++
 
-RUN if [ "$TARGETARCH" = "arm64" ]; then \
+COPY zero-battery-cells/Cargo.toml zero-battery-cells/Cargo.lock ./
+COPY zero-battery-cells/src ./src
+
+# Cargo.toml points at ../packages/rust/zero-readiness, which is /packages from /app.
+RUN --mount=type=bind,source=packages/rust,target=/packages/rust \
+  if [ "$TARGETARCH" = "arm64" ]; then \
   cargo build --release --target aarch64-unknown-linux-gnu && \
   cp target/aarch64-unknown-linux-gnu/release/zero-battery-cells /app/zero-battery-cells; \
   else \
@@ -43,7 +45,7 @@ RUN apt-get update && \
 WORKDIR /app
 
 COPY --from=builder /app/zero-battery-cells /usr/local/bin/zero-battery-cells
-COPY --chown=1001:1001 spec/KEB6_FOX_05_41_1_NVL_Declaration.txt /app/spec/KEB6_FOX_05_41_1_NVL_Declaration.txt
+COPY --chown=1001:1001 zero-battery-cells/spec/KEB6_FOX_05_41_1_NVL_Declaration.txt /app/spec/KEB6_FOX_05_41_1_NVL_Declaration.txt
 
 USER 1001
 

@@ -2,9 +2,6 @@ FROM --platform=$BUILDPLATFORM rust:1.99-trixie@sha256:8a4e90c7946b74626488b1446
 
 WORKDIR /app
 
-COPY Cargo.toml Cargo.lock ./
-COPY src ./src
-
 ARG TARGETARCH
 
 RUN apt-get update && \
@@ -24,7 +21,12 @@ ENV CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
 ENV CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc
 ENV CXX_aarch64_unknown_linux_gnu=aarch64-linux-gnu-g++
 
-RUN if [ "$TARGETARCH" = "arm64" ]; then \
+COPY zero-fiber-optics/Cargo.toml zero-fiber-optics/Cargo.lock ./
+COPY zero-fiber-optics/src ./src
+
+# Cargo.toml points at ../packages/rust/zero-readiness, which is /packages from /app.
+RUN --mount=type=bind,source=packages/rust,target=/packages/rust \
+  if [ "$TARGETARCH" = "arm64" ]; then \
   cargo build --release --target aarch64-unknown-linux-gnu && \
   cp target/aarch64-unknown-linux-gnu/release/zero-fiber-optics /app/zero-fiber-optics; \
   else \
@@ -43,8 +45,8 @@ RUN apt-get update && \
 WORKDIR /app
 
 COPY --from=builder /app/zero-fiber-optics /usr/local/bin/zero-fiber-optics
-COPY --chown=1001:1001 example/config.xml /app/example/config.xml
-COPY --chown=1001:1001 config.xml /app/config.xml
+COPY --chown=1001:1001 zero-fiber-optics/example/config.xml /app/example/config.xml
+COPY --chown=1001:1001 zero-fiber-optics/config.xml /app/config.xml
 
 USER 1001
 

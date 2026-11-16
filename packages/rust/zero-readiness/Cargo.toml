@@ -1,0 +1,12 @@
+[package]
+name = "zero-readiness"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+log = "0.4"
+tokio = { version = "1.43", features = ["time"] }
+
+[dev-dependencies]
+tokio = { version = "=1.54.1", features = ["macros", "rt", "test-util"] }
