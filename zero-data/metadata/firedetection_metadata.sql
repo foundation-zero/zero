@@ -1,4 +1,6 @@
-CREATE TABLE IF NOT EXISTS marpower__firedetection_metadata (
+DROP TABLE IF EXISTS marpower__firedetection_metadata;
+
+CREATE TABLE marpower__firedetection_metadata (
     ts TIMESTAMP TIME INDEX DEFAULT 0,
     topic STRING,
     "section" STRING,
