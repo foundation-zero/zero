@@ -93,6 +93,7 @@ def make_channels() -> mock.Mock:
     channels.get_sensor_values.return_value = None
     channels.get_parameters.return_value = None
     channels.get_manual_controls.return_value = None
+    channels.get_control_values_set.return_value = None
     channels.get_automation_modes.return_value = None
     channels.get_actuated_control_values.return_value = None
     return channels
@@ -108,6 +109,7 @@ def make_async_channels() -> mock.Mock:
     channels.send_parameters = mock.AsyncMock()
     channels.send_control_modes = mock.AsyncMock()
     channels.send_automation_mode = mock.AsyncMock()
+    channels.send_actuated_control_values = mock.AsyncMock()
     channels.send_manual_control = mock.AsyncMock()
     return channels
 

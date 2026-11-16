@@ -447,6 +447,17 @@ class ControlChannels[
             autoclear=True,
         )
         connector._register_listener(manual_controls_mapping)
+        # Writes the manual controls too, but its state is what the AMCS actuated, so
+        # the MQTT GraphQL API confirms such a write once it is carried out.
+        control_values_set_mapping = DirectMqttMapping[C].for_module(
+            control_module.control_values_cls,
+            config.mqtt_controller_topic_prefix,
+            module_name,
+            type_topic="control-values",
+            topic_suffix=config.mqtt_controller_topic_suffix,
+            autoclear=True,
+        )
+        connector._register_listener(control_values_set_mapping)
 
         self.send_control_values = connector._create_publisher(
             PartialMqttMapping[C](
@@ -512,6 +523,15 @@ class ControlChannels[
             ),
             qos=publish_qos,
         )
+        self.send_actuated_control_values = connector._create_publisher(
+            DirectMqttMapping[C].for_module(
+                control_module.control_values_cls,
+                config.mqtt_controller_topic_prefix,
+                module_name,
+                type_topic="control-values",
+            ),
+            qos=publish_qos,
+        )
         self.send_manual_control = connector._create_publisher(
             DirectMqttMapping[C].for_module(
                 control_module.control_values_cls,
@@ -526,6 +546,7 @@ class ControlChannels[
         self.get_parameters = parameters_mapping.result
         self.get_automation_modes = manual_mode_mapping.result
         self.get_manual_controls = manual_controls_mapping.result
+        self.get_control_values_set = control_values_set_mapping.result
         self.get_actuated_control_values = actuated_control_values_mapping.result
 
 
