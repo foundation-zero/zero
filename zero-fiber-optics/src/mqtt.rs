@@ -214,6 +214,7 @@ impl MqttConnection {
                 }
                 Err(e) => {
                     readiness.not_ready(format!("mqtt: {e}"));
+                    drop_collision(&mut self.event_loop);
                     if is_permanent(&e) {
                         refusals += 1;
                         if refusals >= PERMANENT_ERROR_ATTEMPTS {
@@ -235,6 +236,24 @@ impl MqttConnection {
                 }
             }
         }
+    }
+}
+
+/// Drop the publish held back by a packet-id collision, after a connection error.
+///
+/// While a collision is held, rumqttc sends no new publishes until a PUBACK frees
+/// the packet id. On an error rumqttc discards every unacknowledged
+/// publish, as a clean session must, but keeps the collision. No PUBACK can then
+/// free the id, so the client reconnects and sends only pings, while the
+/// connection looks healthy. It fails with `Timeout while waiting to resolve
+/// collision` every two keep-alives, forever. Dropping the held publish loses
+/// one more packet, like the unacknowledged ones the session already lost.
+fn drop_collision(event_loop: &mut EventLoop) {
+    if let Some(publish) = event_loop.state.collision.take() {
+        warn!(
+            "MQTT dropping the publish to '{}' held by a collision on packet id {}",
+            publish.topic, publish.pkid
+        );
     }
 }
 
@@ -350,6 +369,55 @@ mod tests {
         publishing.abort();
         running.abort();
         server.abort();
+    }
+
+    /// The collision fault: with a collision held, the client published nothing
+    /// after reconnecting, only pings.
+    #[tokio::test]
+    async fn publishes_again_after_reconnecting_with_a_collision() {
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let port = listener.local_addr().unwrap().port();
+        // The first connection is closed after its CONNACK, which makes the
+        // client reconnect; the second returns the first packet the client sends.
+        let server = tokio::spawn(async move {
+            let mut buffer = [0u8; 256];
+            for reconnected in [false, true] {
+                let (mut socket, _) = listener.accept().await.unwrap();
+                let _ = socket.read(&mut buffer).await.unwrap();
+                socket.write_all(&CONNACK_ACCEPTED).await.unwrap();
+                if reconnected {
+                    let _ = socket.read(&mut buffer).await.unwrap();
+                }
+            }
+            buffer[0]
+        });
+        let path = status_file("collision");
+        let readiness = Readiness::new(&path, "mqtt: connecting");
+        let (handler, mut connection) = MqttHandler::new("127.0.0.1", port, "test", "fiber", None);
+        let mut held = rumqttc::Publish::new("fiber/held", QoS::AtLeastOnce, "x");
+        held.pkid = 1;
+        connection.event_loop.state.collision = Some(held);
+        let running = tokio::spawn(connection.run(readiness));
+        // Publishes queued before the reconnect are dropped with the old session,
+        // so keep publishing.
+        let publishing = tokio::spawn(async move {
+            loop {
+                let _ = handler
+                    .client
+                    .try_publish("fiber/test", QoS::AtLeastOnce, false, "y");
+                tokio::time::sleep(Duration::from_millis(100)).await;
+            }
+        });
+
+        let first_packet = tokio::time::timeout(Duration::from_secs(10), server)
+            .await
+            .expect("the client sent nothing after reconnecting")
+            .unwrap();
+        // PUBLISH, QoS 1.
+        assert_eq!(first_packet, 0x32);
+
+        publishing.abort();
+        running.abort();
     }
 
     #[test]
