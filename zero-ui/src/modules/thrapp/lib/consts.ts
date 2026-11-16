@@ -2,8 +2,6 @@ import { keysOf } from "@/modules/common/lib/utils";
 import {
   ControlComponentType,
   ControlFields,
-  ControllerStateComponentType,
-  ControllerStateFields,
   ModuleDefinition,
   SensorComponentType,
   SensorFields,
@@ -42,25 +40,6 @@ export const CONTROL_FIELDS: ControlFields = {
   [ControlComponentType.Valve]: ["setpoint"],
   [ControlComponentType.Pcm]: ["on"],
   [ControlComponentType.Heatpump]: ["temperatureSetpoint", "on"],
-};
-
-export const CONTROLLER_STATE_FIELDS: ControllerStateFields = {
-  [ControllerStateComponentType.DhwTanksController]: [
-    "tank1State",
-    "tank2State",
-    "tank3State",
-    "timeToFill",
-    "timeToHot",
-  ],
-  [ControllerStateComponentType.PIDController]: [
-    "target",
-    "measurement",
-    "output",
-    "error",
-    "enabled",
-    "tuning",
-    "components",
-  ],
 };
 
 export const SENSOR_FIELDS: SensorFields = {
