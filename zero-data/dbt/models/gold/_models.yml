@@ -225,3 +225,57 @@ models:
         description: "Solar power delivered to the main DC bus in W, aggregated per minute. Draw from the bus (e.g. standby) counts as zero."
         tests:
           - not_null
+  - name: gld_shore_power_per_minute_per_sub_group
+    description: >
+      Shore power aggregated per minute per sub group (converter), one row per ESI converter module.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the minute interval for the aggregated shore power."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: module
+        description: "The ESI converter module, e.g. 07-11-tbc1a."
+        tests:
+          - not_null
+      - name: main_group
+        description: "The main group classification, always 'Shore'."
+        tests:
+          - not_null
+      - name: sub_group
+        description: "The shore power converter the module belongs to: PS or SB."
+        tests:
+          - not_null
+      - name: power
+        description: "Shore power drawn in W, aggregated per minute. A negative reading counts as zero."
+        tests:
+          - not_null
+  - name: gld_shore_power_per_minute_per_main_group
+    description: >
+      Shore power aggregated per minute per main group, one row per ESI converter module.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the minute interval for the aggregated shore power."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: module
+        description: "The ESI converter module, e.g. 07-11-tbc1a."
+        tests:
+          - not_null
+      - name: main_group
+        description: "The main group classification, always 'Shore'."
+        tests:
+          - not_null
+      - name: power
+        description: "Shore power drawn in W, aggregated per minute. A negative reading counts as zero."
+        tests:
+          - not_null
