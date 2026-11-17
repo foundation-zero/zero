@@ -111,16 +111,17 @@ recreates `public.power_tag_metadata` from `macros/load_power_tag_metadata.sql`.
 `dbt/macros/marpower_device_metadata.csv` lists the devices on the Marpower topic convention
 (`marpower/<NN>-<system>/<kind>[/<instance>]`), one row per topic, with their yard tag and
 functional name (`ps-aft-1`, `owners-bimini`). The instance is left out when a device is the only
-one of its kind, as in `marpower/21-fire-detection/general`; its technical name is then the kind.
-The CSV is the one place functional names are kept. Each `dbt build` recreates
+one of its kind, as in `marpower/21-fire-detection/main-panel`; its technical name is then the kind.
+Such a kind cannot get a second device later without moving the first one to `<kind>/<instance>`,
+which changes the table Vector writes it to. The CSV is the one place functional names are kept. Each `dbt build` recreates
 `public.marpower__device_metadata` from it, through the generated
 `macros/load_marpower_device_metadata.sql`.
 
 The PMS, load balance and PCS testing dashboards join the table on `topic` to label each device
 `name · technical name`, or the technical name alone where no name is set. A device without a row
 still shows, under its technical name, except in the PMS status, command, alarm and transformer
-temperature tables: they put each device under its name (FWD, AFT), so their devices need a row
-with a name.
+temperature tables: they match on the names `aft` and `fwd` exactly, so their devices need a row
+with one of those names.
 
 To add or name a device, edit the CSV, then:
 
@@ -129,8 +130,11 @@ just generate-device-metadata
 just dbt-deploy <tier>
 ```
 
-`tests/test_device_metadata.py` checks that the macro matches the CSV, that each topic follows the
-convention and appears once, and that names are kebab-case and unique within a system's kind.
+`tests/test_device_metadata.py` checks that the macro matches the CSV, that each topic is built from
+its system, kind and technical name and appears once, and that names are kebab-case and unique
+within a system's kind. The dbt test `assert_device_metadata_follows_the_topic_convention` checks
+that each topic follows the convention, that no system has two codes, and that each kind has one
+topic shape.
 
 ## Release Management
 
