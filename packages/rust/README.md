@@ -12,7 +12,8 @@ zero-readiness = { path = "../packages/rust/zero-readiness" }
 A service that depends on a crate also copies it into its Docker build (the
 build context is the repository root) and adds `packages/rust/<crate>/**` to
 the path filters of its CI workflow, so a change to the crate rebuilds and
-retests the service.
+retests the service. `.github/scripts/check_path_filters.py` fails CI when a
+filter is missing.
 
 Each crate has its own `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml`,
 `justfile` and CI workflow (`.github/workflows/ci_<crate>.yaml`); there is no

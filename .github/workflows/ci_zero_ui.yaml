@@ -6,6 +6,7 @@ on:
       - .github/actions/coverage-report/**
       - zero-ui/**
       - zero-loads-app/**
+      - zero-generator/**
       - zero-thrs-control/**
       - docker-compose.yml
       - hasura/**
@@ -19,6 +20,7 @@ on:
       - .github/actions/coverage-report/**
       - zero-ui/**
       - zero-loads-app/**
+      - zero-generator/**
       - zero-thrs-control/**
       - docker-compose.yml
       - hasura/**

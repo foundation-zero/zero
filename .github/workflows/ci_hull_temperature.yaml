@@ -2,7 +2,7 @@ name: "Hull temperature: Test and push Docker image"
 on:
   pull_request:
     paths:
-      - zero-modbus-bridge/**
+      - packages/py/zero-modbus-bridge/**
       - zero-hull-temperature/**
       - docker-compose.yml
       - hass/**
@@ -15,7 +15,7 @@ on:
     branches:
       - main
     paths:
-      - zero-modbus-bridge/**
+      - packages/py/zero-modbus-bridge/**
       - zero-hull-temperature/**
       - docker-compose.yml
       - hass/**

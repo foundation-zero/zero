@@ -28,7 +28,7 @@ test = ["pytest-asyncio>=1.1.0,<2", "pytest>=9.1.1,<10", "pytest-cov>=7.1.0,<8"]
 default-groups = ["dev", "test"]
 
 [tool.uv.sources]
-zero-modbus-bridge = { path = "../zero-modbus-bridge", editable = true }
+zero-modbus-bridge = { path = "../packages/py/zero-modbus-bridge", editable = true }
 
 [tool.ruff]
 fix = true
