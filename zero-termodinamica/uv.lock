@@ -604,7 +604,7 @@ requires-dist = [
     { name = "pymodbustcp", specifier = ">=0.3.0,<0.4.0" },
     { name = "textual", marker = "extra == 'tui'", specifier = ">=8,<9" },
     { name = "uvicorn", specifier = ">=0.54.0,<1.0.0" },
-    { name = "zmqtt", specifier = ">=0.2.2,<0.3.0" },
+    { name = "zmqtt", specifier = ">=0.2.6,<0.3.0" },
 ]
 provides-extras = ["tui"]
 
@@ -670,9 +670,9 @@ test = [
 
 [[package]]
 name = "zmqtt"
-version = "0.2.5"
+version = "0.2.6"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/82/0c/0dd7426a8e919669f2a30ef76fd16c89ae076c8b35f4ef98e434dd019dda/zmqtt-0.2.5.tar.gz", hash = "sha256:737b763d485323afae1dd88646027f2d70b744cbb8098bfdee7de31bbbe721e3", size = 50518, upload-time = "2026-10-07T19:45:05.358Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/48/74/b7c8008f352423d0f48487e4523b269599d1dfcf46fb911af15fb44b692e/zmqtt-0.2.6.tar.gz", hash = "sha256:57bb1c51438b46a503db3416b370ccdced1ed3066a39bf514433190a960629c5", size = 53856, upload-time = "2026-11-12T14:50:41.411Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7b/f6/921a255d54ab8098e3b29a66f6f4d2990fd274d1287607c321bc50963e0f/zmqtt-0.2.5-py3-none-any.whl", hash = "sha256:892ac1ce25effbcbe2caa19dabb4f67bd10ed66ffa6eac1fa8a4f5bb719aca5d", size = 62521, upload-time = "2026-10-07T19:45:04.207Z" },
+    { url = "https://files.pythonhosted.org/packages/54/e9/06c68981ba407db7bd3fe885fb0d2625e925312096f14745e48e21bb41e2/zmqtt-0.2.6-py3-none-any.whl", hash = "sha256:c3fa0f3b96864869aef1cd39a678d88e92dc43a47f566e617704f57bbc869878", size = 63541, upload-time = "2026-11-12T14:50:40.061Z" },
 ]
