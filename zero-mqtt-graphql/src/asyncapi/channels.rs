@@ -240,7 +240,92 @@ mod tests {
 
     /// The payload fields of a topic that must have a payload.
     fn fields(topic: &TopicDef) -> &BTreeMap<String, FieldType> {
-        &topic.payload.as_ref().unwrap().fields
+        topic.payload.as_ref().unwrap().fields().unwrap()
+    }
+
+    /// A Spec whose `sim/inputs` payload is a discriminated union of `Pvt`
+    /// and `Dhw`, with `dhw_kind` as Dhw's discriminator property.
+    fn union_spec(dhw_kind: &Value) -> Value {
+        json!({
+            "asyncapi": "3.0.0",
+            "info": {"title": "Test", "version": "1.0.0"},
+            "channels": {
+                "inputs": {
+                    "address": "sim/inputs",
+                    "messages": {"message": {"$ref": "#/components/messages/Inputs"}}
+                }
+            },
+            "operations": {
+                "inputs": {"action": "send", "channel": {"$ref": "#/channels/inputs"}}
+            },
+            "components": {
+                "messages": {
+                    "Inputs": {"payload": {"$ref": "#/components/schemas/Inputs"}}
+                },
+                "schemas": {
+                    "Inputs": {
+                        "type": "object",
+                        "discriminator": "Kind",
+                        "required": ["Kind"],
+                        "properties": {"Kind": {"type": "string", "enum": ["pvt", "dhw"]}},
+                        "oneOf": [
+                            {"$ref": "#/components/schemas/Pvt"},
+                            {"$ref": "#/components/schemas/Dhw"}
+                        ]
+                    },
+                    "Pvt": {
+                        "type": "object",
+                        "required": ["Kind", "panels"],
+                        "properties": {
+                            "Kind": {"type": "string", "const": "pvt"},
+                            "panels": {"type": "number"}
+                        }
+                    },
+                    "Dhw": {
+                        "type": "object",
+                        "required": ["Kind", "tank"],
+                        "properties": {"Kind": dhw_kind, "tank": {"type": "number"}}
+                    }
+                }
+            }
+        })
+    }
+
+    #[test_log::test]
+    fn test_discriminated_one_of_is_a_payload_of_several_arms() {
+        let topics =
+            loaded_topics(&union_spec(&json!({"type": "string", "const": "dhw"}))).unwrap();
+        let payload = topics[0].payload.as_ref().unwrap();
+
+        assert_eq!(payload.name, "Inputs");
+        assert_eq!(payload.discriminator.as_deref(), Some("Kind"));
+        let arms: Vec<_> = payload
+            .arms
+            .iter()
+            .map(|arm| {
+                (
+                    arm.name.as_str(),
+                    arm.value.clone(),
+                    arm.fields.keys().map(String::as_str).collect::<Vec<_>>(),
+                )
+            })
+            .collect();
+        assert_eq!(
+            arms,
+            vec![
+                ("Pvt", Some(json!("pvt")), vec!["Kind", "panels"]),
+                ("Dhw", Some(json!("dhw")), vec!["Kind", "tank"]),
+            ]
+        );
+    }
+
+    #[test_log::test]
+    fn test_union_with_an_arm_without_a_constant_is_a_plain_object() {
+        let topics = loaded_topics(&union_spec(&json!({"type": "string"}))).unwrap();
+        let payload = topics[0].payload.as_ref().unwrap();
+
+        assert_eq!(payload.discriminator, None);
+        assert_eq!(fields(&topics[0]).keys().collect::<Vec<_>>(), vec!["Kind"]);
     }
 
     #[test_log::test]

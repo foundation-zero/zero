@@ -355,13 +355,10 @@ mod tests {
     fn group(topic: &str) -> Vec<TopicDef> {
         vec![TopicDef {
             topic: topic.to_string(),
-            payload: Some(Payload {
-                name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![(
-                    "active_power_total".to_string(),
-                    FieldType::Float,
-                )]),
-            }),
+            payload: Some(Payload::object(
+                "payload",
+                BTreeMap::from_iter(vec![("active_power_total".to_string(), FieldType::Float)]),
+            )),
             ttl_secs: None,
             operation: Direction::Send,
             setter: None,

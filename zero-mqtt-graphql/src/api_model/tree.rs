@@ -159,10 +159,10 @@ mod tests {
     fn mock_topic(topic: &str, field: &str) -> TopicDef {
         TopicDef {
             topic: topic.to_string(),
-            payload: Some(Payload {
-                name: format!("{field}payload"),
-                fields: BTreeMap::from_iter(vec![(field.to_string(), FieldType::Float)]),
-            }),
+            payload: Some(Payload::object(
+                format!("{field}payload"),
+                BTreeMap::from_iter(vec![(field.to_string(), FieldType::Float)]),
+            )),
             operation: Direction::Send,
             ttl_secs: None,
             setter: None,
@@ -315,10 +315,7 @@ mod tests {
     #[test_log::test]
     fn test_receive_topic_without_payload_fields_is_settable() {
         let mut pause = mock_receive("a/pause");
-        pause.payload = Some(Payload {
-            name: "PauseMessage".to_string(),
-            fields: BTreeMap::new(),
-        });
+        pause.payload = Some(Payload::object("PauseMessage", BTreeMap::new()));
         let mut tree = tree_of(vec![mock_topic("a/b", "x"), pause]).unwrap();
 
         assert_eq!(setter_at(&mut tree, &["a", "pause"]), Some("a/pause"));

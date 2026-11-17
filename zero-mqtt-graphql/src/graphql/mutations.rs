@@ -69,13 +69,20 @@ pub(super) fn mutation_leaf(
         );
         return Leaf::default();
     }
+    let Some(fields) = setter.payload.fields() else {
+        warn!(
+            "Topic {} takes one of several formats, which mutations don't support yet, ignoring",
+            setter.topic
+        );
+        return Leaf::default();
+    };
 
-    let signal = setter.payload.fields.is_empty();
+    let signal = fields.is_empty();
     // GraphQL has no input objects without fields.
     let inputs = if signal {
         Vec::new()
     } else {
-        input_objects(spec, &setter.payload.name, &setter.payload.fields)
+        input_objects(spec, &setter.payload.name, fields)
     };
     // A signal has no input, so nothing to confirm. The State topic is a
     // Query field, so Query has already built its object type.
@@ -90,7 +97,7 @@ pub(super) fn mutation_leaf(
 
     let target = Target {
         topic: setter.topic.clone(),
-        fields: setter.payload.fields.clone(),
+        fields: fields.clone(),
         validator: setter.validator.clone(),
         state_topic: state_type.is_some().then(|| topic.topic.clone()),
         cache: cache.clone(),
@@ -103,7 +110,7 @@ pub(super) fn mutation_leaf(
     let types = inputs
         .into_iter()
         .map(Type::from)
-        .chain(field_enums(spec, &setter.payload.fields))
+        .chain(field_enums(spec, fields))
         .collect();
     (vec![field], types)
 }
@@ -492,13 +499,13 @@ mod tests {
     fn topic(address: &str, operation: Direction, fields: &[(&str, FieldType)]) -> TopicDef {
         TopicDef {
             topic: address.to_string(),
-            payload: Some(Payload {
-                name: address.replace('/', "-"),
-                fields: fields
+            payload: Some(Payload::object(
+                address.replace('/', "-"),
+                fields
                     .iter()
                     .map(|(name, field_type)| ((*name).to_string(), field_type.clone()))
                     .collect(),
-            }),
+            )),
             ttl_secs: None,
             operation,
             setter: None,

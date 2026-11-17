@@ -10,7 +10,7 @@ use super::roas::{
     Channel, Document, Items, Message, Schema, SchemaOrMultiFormat, SchemaType, SubSchema,
 };
 use super::unresolved_reason;
-use crate::api_model::{EnumValue, FieldType, Payload};
+use crate::api_model::{Arm, EnumValue, FieldType, Payload};
 use crate::naming::enum_value_name;
 
 /// The payload of a channel's message, with what else is read from its
@@ -29,7 +29,8 @@ pub(super) struct MessagePayload {
 /// message, no payload, or the payload reference does not resolve.
 ///
 /// Channels with multiple messages are not yet union-typed; only the first
-/// message contributes a payload.
+/// message contributes a payload. That payload may still be one of several
+/// formats, through a discriminated `oneOf` (see [`discriminated_union`]).
 pub(super) fn message_payload(
     channel_ref: &str,
     channel: &Channel,
@@ -58,16 +59,29 @@ pub(super) fn message_payload(
     let schema_ref = payload_ref
         .resolved_ref(doc)
         .map_or_else(|| format!("{message_ref}/payload"), ToOwned::to_owned);
-    Some(MessagePayload {
-        payload: Payload {
-            // Named after its schema component; an inline payload after its
-            // full pointer.
-            name: schema_ref
-                .strip_prefix("#/components/schemas/")
-                .unwrap_or(&schema_ref)
-                .to_string(),
-            fields: extract_fields_from_schema_or_multi(schema_or_multi, doc),
+    // Named after its schema component; an inline payload after its full
+    // pointer.
+    let name = schema_ref
+        .strip_prefix("#/components/schemas/")
+        .unwrap_or(&schema_ref)
+        .to_string();
+    let union = match schema_or_multi {
+        SchemaOrMultiFormat::Schema(schema) => discriminated_union(&name, schema, doc),
+        _ => None,
+    };
+    let payload = match union {
+        Some((discriminator, arms)) => Payload {
+            name,
+            discriminator: Some(discriminator),
+            arms,
         },
+        None => Payload::object(
+            name,
+            extract_fields_from_schema_or_multi(schema_or_multi, doc),
+        ),
+    };
+    Some(MessagePayload {
+        payload,
         field_attributes: serde_json::to_value(schema_or_multi)
             .map(|schema| extensions_from_payload_schema(&schema))
             .unwrap_or_default(),
@@ -338,6 +352,42 @@ fn named_constants(schema: &Schema) -> Option<Vec<(&Value, &str)>> {
             SubSchema::Bool(_) => None,
         })
         .collect()
+}
+
+/// The discriminator and arms of a payload schema written as a discriminated
+/// `oneOf`: AsyncAPI's `discriminator` names the property whose `const` tells
+/// the arms apart. `None` for any other schema, and, with a warning, when an
+/// arm is not an object with such a `const`.
+fn discriminated_union(name: &str, schema: &Schema, doc: &Document) -> Option<(String, Vec<Arm>)> {
+    let discriminator = schema.discriminator.as_ref()?;
+    let arms: Option<Vec<Arm>> = schema
+        .one_of
+        .as_ref()?
+        .iter()
+        .enumerate()
+        .map(|(index, arm)| {
+            let SubSchema::Schema(entry) = arm else {
+                return None;
+            };
+            let arm_schema = entry.get_item(doc).found()?;
+            let SubSchema::Schema(property) = arm_schema.properties.get(discriminator)? else {
+                return None;
+            };
+            Some(Arm {
+                name: entry
+                    .resolved_ref(doc)
+                    .and_then(|r| r.rsplit('/').next())
+                    .map_or_else(|| format!("{name}{index}"), ToOwned::to_owned),
+                value: Some(property.get_item(doc).found()?.const_value.clone()?),
+                fields: extract_fields_from_schema(arm_schema, doc),
+            })
+        })
+        .collect();
+    let Some(arms) = arms else {
+        warn!("Union {name}: an arm is not an object with a `const` {discriminator}, ignoring");
+        return None;
+    };
+    Some((discriminator.clone(), arms))
 }
 
 /// A list when every element has the same known type, otherwise any JSON.

@@ -26,18 +26,19 @@ use anyhow::{Context, bail};
 use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{
-    Enum, Field, FieldValue, Object, Scalar, Schema, SchemaBuilder, Type, TypeRef,
+    Enum, Field, FieldValue, Object, Scalar, Schema, SchemaBuilder, Type, TypeRef, Union,
 };
 use log::{info, warn};
 
 use crate::graphql::groups::register_group_queries;
 pub use crate::graphql::mutations::{Mutations, PublishFuture, Publisher};
 use crate::graphql::mutations::{equal_value, mutation_leaf};
-use crate::graphql::topics::payload_query_field;
+use crate::graphql::topics::{payload_query_field, union_query_field};
 use crate::naming::{pascal_case_graphql_name, sanitize_to_graphql_name};
 use crate::{
     api_model::{
-        Api, Direction, EnumValue, FieldType, GraphqlPath, PathNode, TopicDef, TopicKind, Tree,
+        Api, Direction, EnumValue, FieldType, GraphqlPath, PathNode, Payload, TopicDef, TopicKind,
+        Tree,
     },
     cache::TopicCache,
 };
@@ -264,17 +265,48 @@ fn query_leaf(
     match &topic.kind {
         TopicKind::Single => {
             let type_name = payload_type_name(spec, &payload.name);
+            let Some(fields) = payload.fields() else {
+                return Ok(union_leaf(spec, segment, &topic.topic, payload, cache));
+            };
             let field = payload_query_field(segment, &topic.topic, &type_name, cache);
-            Ok((
-                vec![field],
-                payload_object(spec, &payload.name, &payload.fields),
-            ))
+            Ok((vec![field], payload_object(spec, &payload.name, fields)))
         }
         TopicKind::Group(group) => {
             let leaf = register_group_queries(segment, path, &topic.topic, payload, group, cache)?;
             Ok(leaf.unwrap_or_default())
         }
     }
+}
+
+/// The `<Topic>` query field of a payload of several formats, and its types:
+/// a union of one object per arm, each named after its schema.
+fn union_leaf(
+    spec: &str,
+    segment: &str,
+    topic: &str,
+    payload: &Payload,
+    cache: &Arc<TopicCache>,
+) -> Leaf {
+    let type_name = payload_type_name(spec, &payload.name);
+    let arms: Vec<(Option<serde_json::Value>, String)> = payload
+        .arms
+        .iter()
+        .map(|arm| (arm.value.clone(), payload_type_name(spec, &arm.name)))
+        .collect();
+    let union = arms
+        .iter()
+        .fold(Union::new(type_name.as_str()), |union, (_, arm_type)| {
+            union.possible_type(arm_type.as_str())
+        });
+    let types = payload
+        .arms
+        .iter()
+        .flat_map(|arm| payload_object(spec, &arm.name, &arm.fields))
+        .chain(std::iter::once(union.into()))
+        .collect();
+    let discriminator = payload.discriminator.clone().unwrap_or_default();
+    let field = union_query_field(segment, topic, &type_name, discriminator, arms, cache);
+    (vec![field], types)
 }
 
 /// Type name of what sits at `path` in the Query tree: `Query` plus the
@@ -510,10 +542,10 @@ mod tests {
     fn mock_topic(topic: &str, field: &str) -> TopicDef {
         TopicDef {
             topic: topic.to_string(),
-            payload: Some(Payload {
-                name: format!("{field}payload"),
-                fields: BTreeMap::from_iter(vec![(field.to_string(), FieldType::Float)]),
-            }),
+            payload: Some(Payload::object(
+                format!("{field}payload"),
+                BTreeMap::from_iter(vec![(field.to_string(), FieldType::Float)]),
+            )),
             operation: Direction::Send,
             ttl_secs: None,
             setter: None,
@@ -564,10 +596,10 @@ mod tests {
             mock_topic("a/b", "x"),
             TopicDef {
                 topic: "aB/c".to_string(),
-                payload: Some(Payload {
-                    name: "query-a".to_string(),
-                    fields: BTreeMap::from_iter(vec![("field".to_string(), FieldType::Float)]),
-                }),
+                payload: Some(Payload::object(
+                    "query-a",
+                    BTreeMap::from_iter(vec![("field".to_string(), FieldType::Float)]),
+                )),
                 operation: Direction::Send,
                 ttl_secs: None,
                 setter: None,
@@ -647,9 +679,9 @@ mod tests {
     async fn test_null_or_missing_nested_object_is_null() {
         let topic = TopicDef {
             topic: "a/b".to_string(),
-            payload: Some(Payload {
-                name: "payload".to_string(),
-                fields: BTreeMap::from([
+            payload: Some(Payload::object(
+                "payload",
+                BTreeMap::from([
                     (
                         "inner".to_string(),
                         FieldType::Object(
@@ -659,7 +691,7 @@ mod tests {
                     ),
                     ("y".to_string(), FieldType::Float),
                 ]),
-            }),
+            )),
             operation: Direction::Send,
             ttl_secs: None,
             setter: None,

@@ -9,7 +9,7 @@ use async_graphql::dynamic::{Field, FieldValue, InputValue, Object, Type, TypeRe
 use log::warn;
 use serde_json::Value as JsonValue;
 
-use crate::api_model::{GraphqlPath, GroupDef, Payload};
+use crate::api_model::{FieldType, GraphqlPath, GroupDef, Payload};
 use crate::cache::TopicCache;
 use crate::naming::{is_reserved_name, sanitize_to_graphql_name};
 
@@ -41,7 +41,7 @@ fn build_group_objects(
     name_prefix: &str,
     metadata_fields: &[(String, TypeRef)],
     topic: &str,
-    payload: &Payload,
+    fields: &BTreeMap<String, FieldType>,
     group: &GroupDef,
 ) -> Vec<Type> {
     let item_type = format!("{name_prefix}Topic");
@@ -71,7 +71,7 @@ fn build_group_objects(
             obj.field(field)
         });
 
-    let values_objects = payload_object(name_prefix, "Values", &payload.fields);
+    let values_objects = payload_object(name_prefix, "Values", fields);
 
     let value_meta_obj = value_meta_descriptor_fields(topic, group)
         .fold(Object::new(value_meta_type.as_str()), |obj, field| {
@@ -184,7 +184,12 @@ pub(super) fn register_group_queries(
     group: &GroupDef,
     cache: &Arc<TopicCache>,
 ) -> anyhow::Result<Option<(Vec<Field>, Vec<Type>)>> {
-    if payload.fields.is_empty() {
+    let Some(fields) = payload.fields() else {
+        anyhow::bail!(
+            "topic group '{topic}' takes one of several formats, which groups don't support"
+        );
+    };
+    if fields.is_empty() {
         anyhow::bail!("topic group '{topic}' has no payload fields");
     }
     if is_reserved_name(query_field_name) {
@@ -196,7 +201,7 @@ pub(super) fn register_group_queries(
         warn!("No metadata for this group, ignoring");
         return Ok(None);
     };
-    let value_meta_json = value_metadata_json(payload, group);
+    let value_meta_json = value_metadata_json(fields, group);
     let name_prefix = path_type_name(path);
 
     let (bucket_object, bucket_fields) = register_bucket_queries(
@@ -207,7 +212,7 @@ pub(super) fn register_group_queries(
         cache,
     );
 
-    let mut objects = build_group_objects(&name_prefix, &metadata_fields, topic, payload, group);
+    let mut objects = build_group_objects(&name_prefix, &metadata_fields, topic, fields, group);
     objects.push(bucket_object.into());
 
     let mut fields = vec![group_query_field(
@@ -376,10 +381,9 @@ fn bucket_rows_json(
 
 /// Per-field descriptors for a group: camelCase GraphQL name plus every
 /// field attribute (e.g. `unit`), keyed by sanitized name.
-fn value_metadata_json(payload: &Payload, group: &GroupDef) -> JsonValue {
+fn value_metadata_json(fields: &BTreeMap<String, FieldType>, group: &GroupDef) -> JsonValue {
     JsonValue::Array(
-        payload
-            .fields
+        fields
             .keys()
             .map(|field_name| {
                 let descriptors = group
@@ -495,13 +499,13 @@ mod tests {
     fn power_tag_group(metadata: MetadataByTopic) -> Vec<TopicDef> {
         vec![TopicDef {
             topic: "power-tags/+/+".to_string(),
-            payload: Some(Payload {
-                name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![
+            payload: Some(Payload::object(
+                "payload",
+                BTreeMap::from_iter(vec![
                     ("active_power_total".to_string(), FieldType::Float),
                     ("current_a".to_string(), FieldType::Float),
                 ]),
-            }),
+            )),
             operation: Direction::Send,
             ttl_secs: None,
             setter: None,

@@ -44,14 +44,57 @@ pub struct Setter {
     pub validator: Validator,
 }
 
-/// The format of a topic's payload.
+/// What a topic carries: one of `arms`, told apart by the value of
+/// `discriminator`. Most topics carry a single object; a payload whose schema
+/// is a discriminated `oneOf` has one arm per format.
 #[derive(Debug, Clone)]
 pub struct Payload {
     /// The name of the payload format, shared by topics that publish the
     /// same format.
     pub name: String,
-    /// Payload fields by raw field name.
+    /// Raw name of the property whose value tells the arms apart:
+    /// `SimulationType`. `None` with a single arm.
+    pub discriminator: Option<String>,
+    pub arms: Vec<Arm>,
+}
+
+/// One format a [`Payload`] can have: an object.
+#[derive(Debug, Clone)]
+pub struct Arm {
+    /// The object's name; the payload's own with a single arm.
+    pub name: String,
+    /// The discriminator's value in this format: `"pvt"`. `None` with a
+    /// single arm.
+    pub value: Option<serde_json::Value>,
+    /// Fields by raw field name.
     pub fields: BTreeMap<String, FieldType>,
+}
+
+impl Payload {
+    /// A payload of a single object format, named `name`.
+    #[must_use]
+    pub fn object(name: impl Into<String>, fields: BTreeMap<String, FieldType>) -> Self {
+        let name = name.into();
+        Self {
+            discriminator: None,
+            arms: vec![Arm {
+                name: name.clone(),
+                value: None,
+                fields,
+            }],
+            name,
+        }
+    }
+
+    /// The fields of a payload of a single object format; `None` for one
+    /// with several arms.
+    #[must_use]
+    pub fn fields(&self) -> Option<&BTreeMap<String, FieldType>> {
+        match self.arms.as_slice() {
+            [arm] => Some(&arm.fields),
+            _ => None,
+        }
+    }
 }
 
 /// Which way data flows through a topic, seen from the service whose Spec
@@ -132,7 +175,9 @@ impl TopicDef {
     }
 
     fn has_fields(&self) -> bool {
-        self.payload.as_ref().is_some_and(|p| !p.fields.is_empty())
+        self.payload
+            .as_ref()
+            .is_some_and(|p| p.arms.iter().any(|arm| !arm.fields.is_empty()))
     }
 }
 
@@ -287,10 +332,10 @@ mod tests {
     fn topic(topic: &str, ttl_secs: Option<u64>) -> TopicDef {
         TopicDef {
             topic: topic.to_owned(),
-            payload: Some(Payload {
-                name: "payload".to_owned(),
-                fields: BTreeMap::from([("x".to_owned(), FieldType::Float)]),
-            }),
+            payload: Some(Payload::object(
+                "payload",
+                BTreeMap::from([("x".to_owned(), FieldType::Float)]),
+            )),
             ttl_secs,
             operation: Direction::Send,
             setter: None,

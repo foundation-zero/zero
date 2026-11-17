@@ -319,10 +319,10 @@ mod tests {
     fn sample_api() -> Api {
         let topics = vec![TopicDef {
             topic: "test/topic".to_string(),
-            payload: Some(Payload {
-                name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![("x".to_string(), FieldType::Float)]),
-            }),
+            payload: Some(Payload::object(
+                "payload",
+                BTreeMap::from_iter(vec![("x".to_string(), FieldType::Float)]),
+            )),
             operation: Direction::Send,
             ttl_secs: None,
             setter: None,
