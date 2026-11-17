@@ -39,6 +39,11 @@ Out of scope: zero-ui (browser client), zero-generator (library, not deployed on
 Every flavour needs readiness, the 15 min deadline and a probe. How depends on the app:
 
 - **FastStream apps (F1, F2):** serve `/health` from FastStream itself: `AsgiFastStream` with `make_ping_asgi(broker)`, which returns 204, or 500 when `broker.ping()` fails. An app with more than one required dependency (a second broker, a Modbus gateway) writes a small handler that checks each one. The chart points both probes at `/health`: readiness with the usual short period, liveness with `periodSeconds: 60` and `failureThreshold: 15`, which is the deadline (ADR). The app logs every readiness change with the reason.
+
+  Things to know, from a local test against a stopped broker:
+  - The HTTP server is up before the broker connects, so `/health` answers 500 while the client retries; it turns 204 on the first successful reconnect.
+  - `broker.ping()` sends a real PINGREQ; on a silent broker it takes its full timeout (4 s), so keep the probe's `timeoutSeconds` above that.
+  - Pass `host="0.0.0.0"` and a port through `run_extra_options`; uvicorn defaults to 127.0.0.1, which the kubelet can't reach. Set `access_log=False`, or every probe is logged.
 - **Rust apps (F3):** a status file the app writes, e.g. `not ready: mqtt: CONNACK refused (not authorized) since 13:02`, on an `emptyDir` mount because the charts set `readOnlyRootFilesystem`; an exec readiness probe that prints it; and an in-process deadline that writes the reason to `/dev/termination-log` and exits. Done in phase 1; the shared code is the `zero-readiness` crate in `packages/rust` (ZERO-2612).
 
 Every flavour also has to meet these:
