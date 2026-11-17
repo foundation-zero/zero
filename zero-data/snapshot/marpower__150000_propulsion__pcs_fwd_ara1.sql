@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS "marpower__150000_propulsion__pcs_fwd_ara1" (
   "power__has_value" BOOLEAN NULL,
   "power__is_valid" BOOLEAN NULL,
   "power__timestamp" STRING NULL,
-  "power__value" BIGINT NULL,
+  "power__value" DOUBLE NULL,
   "source_type" STRING NULL,
   "speed__has_value" BOOLEAN NULL,
   "speed__is_valid" BOOLEAN NULL,
