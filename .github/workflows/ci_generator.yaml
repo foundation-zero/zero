@@ -2,7 +2,7 @@ name: "Zero Generator: Test"
 on:
   pull_request:
     paths:
-      - zero-generator/**
+      - packages/py/zero-generator/**
       - zero-loads-app/**
       - docker-compose.yml
       - .github/workflows/ci_generator.yaml
@@ -13,7 +13,7 @@ on:
     branches:
       - main
     paths:
-      - zero-generator/**
+      - packages/py/zero-generator/**
       - zero-loads-app/**
       - docker-compose.yml
       - .github/workflows/ci_generator.yaml
@@ -37,9 +37,9 @@ jobs:
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4
       - run: uv sync --locked
-        working-directory: zero-generator
+        working-directory: packages/py/zero-generator
       - run: just check_static
-        working-directory: zero-generator
+        working-directory: packages/py/zero-generator
       - name: Create .env file from secret in root
         run: |
           echo "${{ secrets.ENV }}" > .env
@@ -47,11 +47,11 @@ jobs:
         run: docker compose --profile zero up -d --quiet-pull --wait vernemq
       - name: Unit Test
         run: just test --cov-report=xml . -vv
-        working-directory: zero-generator
+        working-directory: packages/py/zero-generator
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: coverage-zero-generator
-          path: zero-generator/coverage.xml
+          path: packages/py/zero-generator/coverage.xml
           retention-days: 90
 
   coverage:
