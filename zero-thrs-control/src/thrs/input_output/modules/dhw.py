@@ -188,34 +188,6 @@ class DhwSensorValues(AmcsModeSensorValues):
             topic_override="500000-thrs/drives/drives-flow-recovery",
         ),
     ]
-    drives_temperature_recovery: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(
-            yard_tag="50001038-16",
-            component_type="temperature_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/drives/drives-temperature-recovery",
-        ),
-    ]
-
-    dc_flow_recovery: Annotated[
-        sensor.FlowSensor,
-        component_meta(
-            yard_tag="50001058-04",
-            component_type="flow_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/dc/dc-flow-recovery",
-        ),
-    ]
-    dc_temperature_recovery: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(
-            yard_tag="50001038-52",
-            component_type="temperature_sensor",
-            included_in_fmu=False,
-            topic_override="500000-thrs/dc/dc-temperature-recovery",
-        ),
-    ]
 
     consumers_flow_dhw: Annotated[
         sensor.FlowSensor,
@@ -233,23 +205,6 @@ class DhwSensorValues(AmcsModeSensorValues):
             component_type="temperature_sensor",
             included_in_fmu=False,
             topic_override="500000-thrs/consumers/consumers-temperature-dhw-supply",
-        ),
-    ]
-
-    freshwater_hotwater_flow: Annotated[
-        sensor.FlowOnlySensor,
-        component_meta(
-            yard_tag="25001123-1",
-            included_in_fmu=False,
-            topic_override="250000-fresh-water/hot/hot-flow-from-tank",
-        ),
-    ]
-    freshwater_hotwater_temperature: Annotated[
-        sensor.TemperatureSensor,
-        component_meta(
-            yard_tag="25001038-1",
-            included_in_fmu=False,
-            topic_override="250000-fresh-water/hot/hot-temperature-from-tank",
         ),
     ]
 
