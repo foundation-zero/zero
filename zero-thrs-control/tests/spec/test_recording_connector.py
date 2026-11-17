@@ -307,7 +307,7 @@ def test_collect_topics_wires_channels(settings: Config):
         "_register_listener",
         side_effect=lambda r: None,
     ):
-        topics = collect_topics(settings, mode)
+        topics = collect_topics(settings, mode, [mode])
 
     assert isinstance(topics, list)
     assert topics == [

@@ -258,9 +258,7 @@ class AsyncApiCmd(BaseModel):
             mqtt_simulator_topic_suffix="set",
             mqtt_control_topic_suffix="Command",
         )
-        thrs_mode = lookup_mode("thrs")
-
-        spec = generate_asyncapi(settings, thrs_mode)
+        spec = generate_asyncapi(settings)
 
         with Path(self.output_file).open("w") as result_file:
             result_file.write(spec.model_dump_json(indent=2, by_alias=True))

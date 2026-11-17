@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 from types import NoneType, UnionType
 from typing import Annotated, Any, Literal, Union, get_args, get_origin
@@ -14,6 +15,8 @@ from thrs.input_output.base import (
     get_yard_tag,
 )
 from thrs.orchestration.comms import (
+    SIMULATION_INPUTS_TOPIC,
+    SIMULATION_OUTPUTS_TOPIC,
     ControlChannels,
     DirectivesChannels,
     DirectMqttMapping,
@@ -140,28 +143,43 @@ class RecordingConnector(MqttConnector):
         return _dummy_publish
 
 
-def collect_topics(config: Config, thrs_mode: Mode) -> list[TopicMapping]:
-    modules = thrs_mode.control_modules
-    simulation_description = thrs_mode.simulation_description
-
-    if simulation_description is None:
-        raise RuntimeError(
-            'Mode "thrs" has no simulation description; cannot build the spec.'
-        )
-
+def collect_topics(
+    config: Config, thrs_mode: Mode, simulation_modes: Sequence[Mode]
+) -> list[TopicMapping]:
+    """
+    The topics of the controllers of `thrs_mode`, which has every module, and of the simulator in
+    each of `simulation_modes`. The simulator uses the same topics in every mode, each with its
+    own payload class, so a simulator topic is recorded once per mode.
+    """
     connector = RecordingConnector(config)
 
-    for module_name, description in modules.items():
+    for module_name, description in thrs_mode.control_modules.items():
         ControlChannels(connector, config, module_name, description)
 
-    SimulationChannels(
-        connector,
-        config,
-        {},  # The simulated devices are covered by other specs
-        {},  # The simulated devices are covered by other specs
-        type(simulation_description.simulation_inputs),
-        simulation_description.simulation_outputs_cls,
-    )
+    for mode in simulation_modes:
+        if mode.simulation_description is None:
+            raise RuntimeError(
+                f'Mode "{mode.name}" has no simulation description; cannot build the spec.'
+            )
+        SimulationChannels(
+            connector,
+            config,
+            {},  # The simulated devices are covered by other specs
+            {},  # The simulated devices are covered by other specs
+            type(mode.simulation_description.simulation_inputs),
+            mode.simulation_description.simulation_outputs_cls,
+        )
     DirectivesChannels(connector, config)
 
     return connector.topics
+
+
+def simulation_union_names(config: Config) -> dict[str, str]:
+    """The schema name of the payloads of each simulator topic, one class per simulation mode."""
+    inputs_topic = f"{config.mqtt_simulator_topic_prefix}/{SIMULATION_INPUTS_TOPIC}"
+    outputs_topic = f"{config.mqtt_simulator_topic_prefix}/{SIMULATION_OUTPUTS_TOPIC}"
+    return {
+        inputs_topic: "SimulationInputs",
+        f"{inputs_topic}/{config.mqtt_simulator_topic_suffix}": "SimulationInputs",
+        outputs_topic: "SimulationOutputs",
+    }

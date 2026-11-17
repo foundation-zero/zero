@@ -5,6 +5,7 @@ Channels are recorded from the runtime's own channel wiring, so the document can
 
 from collections.abc import Mapping
 from logging import warning
+from typing import Any
 
 from asyncapi3 import AsyncAPI3
 from asyncapi3.models import (
@@ -32,8 +33,12 @@ from pydantic_core import core_schema
 
 from thrs.input_output.base import ThrsValues
 from thrs.orchestration.config import Config
-from thrs.runtime.descriptions.simulation import Mode
-from thrs.spec.recording_connector import TopicMapping, collect_topics
+from thrs.runtime.descriptions.simulation import MODES, Mode, lookup_mode
+from thrs.spec.recording_connector import (
+    TopicMapping,
+    collect_topics,
+    simulation_union_names,
+)
 
 # As in thrs-api, a served value never expires into null.
 CHANNEL_TTL = "1h"
@@ -69,10 +74,48 @@ def _message_key(payload_type: type[ThrsValues]) -> str:
     return f"{payload_type.__module__.split('.')[-1]}{payload_type.__name__.replace('[', '').replace(']', '')}"
 
 
+# The property that tells the classes of a union apart; every simulation payload names its mode
+# in it (`simulation_type_field`).
+UNION_DISCRIMINATOR = "SimulationType"
+
+
+def _discriminated_union(
+    payload_types: list[type[ThrsValues]],
+    # As models_json_schema returns it: by (model, mode).
+    schema_map: Mapping[Any, JsonSchemaValue],
+    schemas: Mapping[str, JsonSchemaValue],
+) -> JsonSchemaValue:
+    """
+    The schema of a topic that carries payloads of several classes: a `oneOf` of the classes with
+    AsyncAPI's `discriminator`, which the union itself must declare and require.
+    """
+    arms = [
+        schema_map[(payload_type, "serialization")] for payload_type in payload_types
+    ]
+    values = [
+        schemas[arm["$ref"].split("/")[-1]]["properties"][UNION_DISCRIMINATOR]["const"]
+        for arm in arms
+    ]
+    return {
+        "type": "object",
+        "discriminator": UNION_DISCRIMINATOR,
+        "required": [UNION_DISCRIMINATOR],
+        "properties": {UNION_DISCRIMINATOR: {"type": "string", "enum": values}},
+        "oneOf": arms,
+    }
+
+
 def _build_asyncapi(
-    title: str, version: str, mode: Mode, topics: list[TopicMapping]
+    title: str,
+    version: str,
+    mode: Mode,
+    topics: list[TopicMapping],
+    union_names: Mapping[str, str] | None = None,
 ) -> AsyncAPI3:
-    """The document for the registered (template, direction) groups."""
+    """
+    The document for the registered (template, direction) groups. A topic recorded with several
+    payload classes gets one payload, the union `union_names` names for it.
+    """
 
     payloads: list[tuple[type[ThrsValues], JsonSchemaMode]] = [
         (topic_data.payload_type, "serialization") for topic_data in topics
@@ -107,16 +150,38 @@ def _build_asyncapi(
         }
     )
 
+    payload_types: dict[str, list[type[ThrsValues]]] = {}
+    first_topics: dict[str, TopicMapping] = {}
+    for topic_data in topics:
+        first_topics.setdefault(topic_data.topic, topic_data)
+        types = payload_types.setdefault(topic_data.topic, [])
+        if topic_data.payload_type not in types:
+            types.append(topic_data.payload_type)
+
     messages: Mapping[str, Message | Reference] = {}
-    for topic_data in sorted(topics, key=lambda topic: topic.topic):
-        message_key = _message_key(topic_data.payload_type)
+    for topic_data in sorted(first_topics.values(), key=lambda topic: topic.topic):
+        types = payload_types[topic_data.topic]
+        json_schema: JsonSchemaValue
+        if len(types) == 1:
+            message_key = _message_key(topic_data.payload_type)
+            json_schema = schema_map[(topic_data.payload_type, "serialization")]
+        else:
+            message_key = (union_names or {}).get(topic_data.topic, "")
+            if not message_key:
+                raise ValueError(
+                    f"{topic_data.topic} carries {len(types)} payload classes, but no union "
+                    "name for them"
+                )
+            schemas.setdefault(
+                message_key, _discriminated_union(types, schema_map, schemas)
+            )
+            json_schema = {"$ref": f"#/components/schemas/{message_key}"}
         operation_key = _operation_key(topic_data)
         channel_key = _channel_key(topic_data.topic)
         channel_ref = f"#/channels/{channel_key}"
         message_ref = f"#/components/messages/{message_key}"
 
         if message_key not in messages:
-            json_schema = schema_map[(topic_data.payload_type, "serialization")]
             messages[message_key] = Message(
                 payload=Schema(**json_schema),
                 **{
@@ -178,11 +243,18 @@ def _build_asyncapi(
 
 def generate_asyncapi(
     config: Config,
-    mode: Mode,
     *,
     title: str = "THRS Control",
     version: str = "1.0.0",
 ) -> AsyncAPI3:
-    topics = collect_topics(config, mode)
+    """
+    The document of the thrs mode's controllers, which has every module, and of the simulator in
+    every simulation mode.
+    """
+    thrs_mode = lookup_mode("thrs")
+    simulation_modes = [mode for mode in MODES if mode.simulation_description]
+    topics = collect_topics(config, thrs_mode, simulation_modes)
 
-    return _build_asyncapi(title, version, mode, topics)
+    return _build_asyncapi(
+        title, version, thrs_mode, topics, simulation_union_names(config)
+    )

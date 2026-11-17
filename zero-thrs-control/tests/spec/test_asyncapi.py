@@ -5,14 +5,16 @@ import pytest
 from asyncapi3.models import Channel, Operation, Server
 
 # Adjust the import to match your actual module location
-from thrs.input_output.base import ThrsValues
-from thrs.runtime.descriptions.simulation import Mode
+from thrs.input_output.base import ThrsValues, simulation_type_field
+from thrs.orchestration.config import Config
+from thrs.runtime.descriptions.simulation import MODES, Mode
 from thrs.spec.asyncapi import (
     CHANNEL_TTL,
     _build_asyncapi,
     _channel_key,
     _message_key,
     _operation_key,
+    generate_asyncapi,
 )
 from thrs.spec.recording_connector import TopicMapping
 
@@ -211,6 +213,91 @@ def test_build_asyncapi_names_enum_values():
         {"const": 3, "title": "HIGH"},
     ]
     assert "enum" not in level
+
+
+class PvtPayload(ThrsValues):
+    simulation_type = simulation_type_field("pvt")
+    pvt_level: int
+
+
+class DhwPayload(ThrsValues):
+    simulation_type = simulation_type_field("dhw")
+    dhw_level: int
+
+
+def test_build_asyncapi_unions_the_payloads_of_one_topic():
+    topics = [
+        TopicMapping("sim/inputs", PvtPayload, "send", None),
+        TopicMapping("sim/inputs", DhwPayload, "send", None),
+        TopicMapping("sim/inputs/set", PvtPayload, "receive", None),
+        TopicMapping("sim/inputs/set", DhwPayload, "receive", None),
+    ]
+    union_names = {"sim/inputs": "Inputs", "sim/inputs/set": "Inputs"}
+    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics, union_names)  # type: ignore[arg-type]
+
+    assert doc.channels
+    assert set(doc.channels.root) == {"sim_inputs", "sim_inputs_set"}
+    assert doc.components
+    assert doc.components.messages
+    assert set(doc.components.messages.root) == {"Inputs"}
+    message = doc.components.messages.root["Inputs"].model_dump(
+        by_alias=True, exclude_none=True
+    )
+    assert message["payload"] == {"$ref": "#/components/schemas/Inputs"}
+    assert doc.components.schemas
+    union = doc.components.schemas.root["Inputs"].model_dump(
+        by_alias=True, exclude_none=True
+    )
+    assert union == {
+        "type": "object",
+        "discriminator": "SimulationType",
+        "required": ["SimulationType"],
+        "properties": {"SimulationType": {"type": "string", "enum": ["pvt", "dhw"]}},
+        "oneOf": [
+            {"$ref": "#/components/schemas/PvtPayload"},
+            {"$ref": "#/components/schemas/DhwPayload"},
+        ],
+    }
+
+
+def test_build_asyncapi_needs_a_union_name_for_several_payloads():
+    topics = [
+        TopicMapping("sim/inputs", PvtPayload, "send", None),
+        TopicMapping("sim/inputs", DhwPayload, "send", None),
+    ]
+
+    with pytest.raises(ValueError, match="sim/inputs carries 2 payload classes"):
+        _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # type: ignore[arg-type]
+
+
+def test_spec_unions_every_simulation_mode_on_the_simulator_topics():
+    config = Config(
+        mqtt_host="",
+        mqtt_port=0,
+        mqtt_devices_topic_prefix="marpower",
+        mqtt_controller_topic_prefix="thrs/controller",
+        mqtt_controller_topic_suffix="set",
+        mqtt_simulator_topic_prefix="thrs/simulator",
+        mqtt_simulator_topic_suffix="set",
+        mqtt_control_topic_suffix="Command",
+    )
+    spec = generate_asyncapi(config).model_dump(by_alias=True, exclude_none=True)
+
+    channels = spec["channels"]
+    assert channels["thrs_simulator_simulation-inputs"]["messages"] == {
+        "message": {"$ref": "#/components/messages/SimulationInputs"}
+    }
+    assert channels["thrs_simulator_simulation-inputs_set"]["messages"] == {
+        "message": {"$ref": "#/components/messages/SimulationInputs"}
+    }
+    assert channels["thrs_simulator_simulation-outputs"]["messages"] == {
+        "message": {"$ref": "#/components/messages/SimulationOutputs"}
+    }
+    schemas = spec["components"]["schemas"]
+    names = [mode.name for mode in MODES if mode.simulation_description]
+    for union in ("SimulationInputs", "SimulationOutputs"):
+        assert schemas[union]["properties"]["SimulationType"]["enum"] == names
+        assert len(schemas[union]["oneOf"]) == len(names)
 
 
 def test_build_asyncapi_topics_are_sorted():
