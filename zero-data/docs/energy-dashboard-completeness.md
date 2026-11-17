@@ -268,3 +268,160 @@ what is measured; steps 8–9 make the remainder visible; step 10 runs alongside
 | 350 VDC converters | `marpower__450000_dc_distribution__350v_conv_aft_1/2`, `fwd_1/2` | `hvdc_power__value` (W) |
 | 24 VDC converters | `marpower__450000_24vdc_system`, topics `conv/w14e*` | `power__value` (W) |
 | Chiller | `termodinamica__ac_misc` | `watt_ac_compressor_1/2`, `watt_sea_water_pump` |
+
+## Additions
+
+Everything above is the analysis and plan of 11 Nov 2026, kept as it was. New findings (F12 and on), status
+updates and changes to the plan are added below, each with its date. Where an addition differs from the text
+above, the addition applies.
+
+### Status (2026-11-16)
+
+- **PR #996 is merged and deployed** (10 Nov). Step 3 no longer extends it; see the PR grouping below.
+- **The 350 VDC per-output feed is back** since 12 Nov (open item 12 is resolved). The topics are now
+  `marpower/450000-350vdc-system/350vdc-dcopp{1,2}-m{0,1,2}`, with `pos_line_power` and `neg_line_power` per
+  output. The `m2` modules publish far fewer rows than the others (1.5–3k against 11–13k per day).
+- **The chiller feed** (`termodinamica__ac_misc`) is still stopped since 30 Oct (open item 11).
+- **No 10P3 sub-tags publish any more**, `power-tags/10P3/washer-1` included. The 10P3 feeder is the only data
+  for that panel.
+- **The ESI DC current** (`esi_battery_current__value`) publishes on all four modules.
+- **Unchanged:** the Aradex views still fail (F2), and the 10P1/10P2 feeders are still counted twice (F1).
+
+### F12 (added 2026-11-16): a cast doesn't protect a Greptime view against a type change
+
+- **What:** a Greptime view stores its plan with the types of the raw columns it reads. When a column type
+  changes, the view fails, also when it casts the column (`CAST(power__value AS DOUBLE)`). Views on top of
+  it fail too, because they hold the upstream plan inline. `CREATE OR REPLACE VIEW`, which is what our dbt
+  view materialization runs, repairs a view; the views on top of it need the same, which a full `dbt build`
+  does in order.
+- **Why the Aradex views broke:** on Zero, `power__value` in the four `marpower__150000_propulsion__pcs_*_ara*`
+  tables was changed from `BIGINT` to `DOUBLE` in place (the tables date from August). Nothing in this
+  repository changes it. The committed snapshot still had `BIGINT`, so a local build never showed the error.
+- **How found:** reproduced on a local Greptime 1.1.3 (the version on Zero) with a scratch table and views.
+  The Aradex logic, run inline on Zero's raw tables, works: 22.5 kWh propulsion on 9 Nov, 2.2 kWh on 10 Nov.
+- **Meaning:** step 2 changes, see below. A broken view returns an error rather than wrong numbers; the
+  freshness check in the new step 9 makes it visible.
+
+### F13 (added 2026-11-16): the metadata test treats "no main group" as missing metadata
+
+- **What:** `tests/assert_power_tags_have_metadata.sql` failed for every tag whose `main_group` is NULL. With
+  step 1 as planned, `dbt build` would fail on the two feeders.
+- **Meaning:** a tag with `main_group` NULL now means *excluded on purpose*; the test fails only for a tag
+  without a metadata row. Both files say so in a comment.
+- **Also:** the energy report notebook (`notebooks/energy_report.py`) already left out all distribution-panel
+  feeders by name, the 10P3 feeder included. It doesn't change with step 1.
+
+### F14 (added 2026-11-16): the 450000 topic cut-over changes the source tables of steps 3 and 5–8
+
+- **What:** Marpower moves the 450000 devices to a new topic convention. Vector stores those in one table per
+  kind, `marpower__<system>__<kind>`, with the instance in `technical_name` (PR #1050, merged). Open PRs move
+  the dbt models over: #1054 (24 V, batteries, solar converters) and #1057 (shore converters, to
+  `marpower__dc_700v__shore_converter`). The history before the cut-over arrives later with a Greptime
+  migration. On 16 Nov the new tables don't exist on greptime-zero yet.
+- **Not affected:** `power_tags` (step 1), the Aradex tables (`marpower__150000_…`, step 2), the chiller.
+- **Meaning:** steps 3 and 5–8 are built on the new tables, after the cut-over. Their checks need about 7
+  days of data: either after the history migration, or on the days published after the cut-over.
+
+### F15 (added 2026-11-16): orphan views on greptime-zero
+
+- **What:** dbt doesn't drop the view of a model that was renamed or removed. These views on greptime-zero
+  have no model in the repository, and nothing in the repository reads them:
+
+  | View | State on 16 Nov |
+  |---|---|
+  | `views.gld_aradex_power_per_minute` | fails (F12) |
+  | `views.gld_electrical_power_consumption_per_minute` | works |
+  | `views.gld_24vdc_power_per_minute` | works |
+  | `views.gld_power_tags_active_power_per_minute` | works |
+  | `views.slv_power_tags_no_metadata` | works |
+
+- **Action:** drop them by hand after a check that no Grafana panel saved outside this repository uses them:
+
+  ```sql
+  DROP VIEW views.gld_aradex_power_per_minute;
+  DROP VIEW views.gld_electrical_power_consumption_per_minute;
+  DROP VIEW views.gld_24vdc_power_per_minute;
+  DROP VIEW views.gld_power_tags_active_power_per_minute;
+  DROP VIEW views.slv_power_tags_no_metadata;
+  ```
+
+### F16 (added 2026-11-16): the segment remainders add up to the balance gap by definition
+
+- **What:** every ring switch borders two segments, with opposite signs. Summed over all 8 segments, the
+  switch flows cancel. So the sum of all segment remainders (step 8), the two cable segments included,
+  equals production minus the measured consumers, whatever the switches read. The switches decide *where*
+  the unmeasured load is, not *how much* there is.
+- **Meaning:**
+  - Booked anywhere, the cable offset would make production equal consumption + losses by definition.
+    It stays out of every group, Losses included.
+  - After step 8, a stopped feed doesn't show up as a balance gap: its load moves into the unallocated
+    remainder of its segment. Step 9 changes accordingly, see below.
+
+### Changes to the plan (2026-11-16)
+
+**PR grouping.** This replaces "each step is a separate PR". The doc goes to main with PR A; each PR adds
+its line to the work log; PR D deletes the doc, and a comment on ZERO-2619 links its last version.
+
+| PR | When | Steps |
+|---|---|---|
+| A | now | 1, 2, 4 |
+| B | after the cut-over (F14) | 5, 6, chiller |
+| C | after the cut-over | 7 |
+| D | after the cut-over and #1057 | 3, 8, 9 |
+
+All PRs follow the current dbt pattern (staging → silver → gold views, per minute). The performance work
+(ZERO-2620) changes that pattern later; this ticket doesn't anticipate it.
+
+**Step 2.** No cast (F12). Update the four Aradex snapshot files from Zero, and rebuild all views with a full
+`just dbt-deploy zero` after the merge.
+
+**Step 3.** Moves to PR D, on the new shore converter table from #1057. The segment model needs the ESI at
+its DC value, so step 3 belongs with step 8.
+
+**Step 4: Losses.**
+
+- A consumer main group: positive power, shown in every panel with consumer data on both dashboards: the
+  production/consumption graphs, the flow diagram and the treemaps. It is added in PR A and stays empty until
+  its first source arrives.
+- The flow diagram's background image gets a fifth consumer row for Losses.
+- Sub groups are named after the source: *Shore converters* (PR D), *Grid converters* (PR C),
+  *350 VDC converters* (PR B, if the per-output data checks out), *24 VDC converters* (PR D). Losses that may
+  come later and aren't conversion losses (cables, batteries, standby use) go under Losses as well.
+- The measurement offset of the cable segments is not a loss (F16). It replaces "Measurement" in the
+  classification table and is shown only in the balance check.
+
+**Classification.**
+
+- No sub group with a single consumer, unless that consumer is very significant. Exception: the chiller.
+- One unallocated sub group per main group instead of one per segment: *Technical / 700VDC unallocated* for
+  SB.01.P02, P03, SB.02.P01 and P02, and *Propulsion / Thrusters (unallocated)* for SB.01.P01 and P04. The
+  split per segment is shown only in the balance check.
+- The 10P3 feeder becomes *Domestic / Crew & laundry*: one tag can't be split further.
+- *HVAC / Chiller* gets its own sub group. It is modelled in PR B and stays empty until the feed is back; in
+  PR D the segment model subtracts it from SB.01.P02.
+- Water heaters (open item 18): parked until they have a power signal. They are 15–18 units, so either class
+  meets the sub-group rule. PR D puts a comment in the segment metadata at SB.01.P03 and SB.02.P02.
+
+**Step 6.** Includes the split per 350 VDC output, now the feed is back, if the outputs add up to the
+converter total. Input minus outputs becomes *Losses / 350 VDC converters*.
+
+**Step 7.** No metadata for `power-tags/10P3/washer-1`: the topic no longer publishes.
+
+**Step 9.** A plain production minus consumption panel shows the cable offset only (F16). Instead:
+
+1. **Cable offset:** the sum of the two cable segments, as the quality of the switch measurements, within
+   ±1.5 kW.
+2. **Unallocated 700 VDC:** in total and per segment, over time. A sudden step points to a stopped feed, a
+   double count or a type error.
+3. **Freshness:** the age of the last sample for every source of a main group, so a stopped feed or a
+   broken view is named directly.
+
+## Work log
+
+| Date | PR | Step | What |
+|---|---|---|---|
+| 2026-11-16 | – | – | Plan checked against the code and greptime-zero; see the Additions above. |
+| 2026-11-16 | A | 1 | 10P1/10P2 feeders get no main group; metadata test adjusted (F13). Removes 74.7 kWh/day from Technical (Zero, 9–16 Nov). |
+| 2026-11-16 | A | 2 | Aradex snapshot files updated to `DOUBLE` (F12). Aradex logic checked inline on Zero. Views are repaired by the deploy. |
+| 2026-11-16 | A | 4 | Losses added to the graphs and treemaps of both dashboards and to the flow diagram, whose background image gets a fifth consumer row. |
+| 2026-11-17 | A | 4 | Losses icon in the flow diagram is now a corner-right-down arrow; Losses colour `#646464` (Grafana has no named grey). Consumers stack in their own group in both production/consumption graphs, so they show below zero also when there is production. Checked with 2 hours of Zero's data in a local Greptime. |
