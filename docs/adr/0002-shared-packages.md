@@ -6,12 +6,12 @@ Apps share code through packages in `packages/`. Domain logic is always shared. 
 
 - **Domain logic: always share, however small.** Logic that encodes how the yacht or its systems work (yard tag normalisation, Modbus register decoding, unit conversions) lives in one package, even when it is five lines. When copies drift apart, two apps give different answers about the same equipment. A shared version is tested once, in one place.
 - **Infrastructure code: copy by default.** Logging setup, a health endpoint, client configuration: when it is a few lines on top of a library, each app keeps its own copy. Saving a few lines is not a reason to share.
-- **Share infrastructure code once it adds behaviour.** When the code contains logic that would otherwise have to be gotten right in several places, such as a workaround for a client library bug or a retry policy, it moves into a package. Fixing the library upstream comes first. A package for a temporary workaround is only worth it when several apps need it for a long time.
+- **Share infrastructure code once it adds behaviour.** When the code holds logic that several apps would each have to get right, such as a workaround for a client library bug or a retry policy, it moves into a package. Fixing the library upstream comes first. A package for a temporary workaround is only worth it when several apps need it for a long time.
 
 ## Layout
 
 - **Packages** live in `packages/py/<name>` and `packages/rust/<name>`. Apps stay in the repository root.
-- **Path dependencies only.** Apps depend on a package by relative path (`path = "../packages/py/<name>"` for uv, `path = "../packages/rust/<name>"` for Cargo). Nothing is published to a registry, so an app always builds against the package source in the same commit.
+- **Path dependencies only.** Apps depend on a package by relative path: `<name> = { path = "../packages/py/<name>" }` under `[tool.uv.sources]` for uv, `<name> = { path = "../packages/rust/<name>" }` under `[dependencies]` for Cargo. Nothing is published to a registry, so an app always builds against the package source in the same commit.
 - **Docker builds** use the repository root as context and copy or bind-mount `packages/py` or `packages/rust` into the build stage, so the path dependency resolves the same way as locally.
 - **Existing shared code moves into `packages/`.** `zero-modbus-bridge`, which three apps already use as a path dependency from the root, moves to `packages/py` first.
 - **Each package has one purpose** and holds code that changes together. No catch-all `common` or `utils` package.
