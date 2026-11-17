@@ -5,7 +5,7 @@ const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
 /** The value at `path` in a response; `undefined` where the response has nothing there. */
-const valueAt = (response: unknown, path: readonly string[]): unknown =>
+export const valueAt = (response: unknown, path: readonly string[]): unknown =>
   path.reduce<unknown>((node, key) => (isObject(node) ? node[key] : undefined), response);
 
 /**
