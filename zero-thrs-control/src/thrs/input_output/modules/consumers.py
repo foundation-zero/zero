@@ -3,7 +3,13 @@ from typing import Annotated
 from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import ThrsValues, component_meta, computed_meta, valve_meta
+from thrs.input_output.base import (
+    ThrsValues,
+    component_meta,
+    computed_meta,
+    simulation_type_field,
+    valve_meta,
+)
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import (
@@ -170,6 +176,7 @@ class ConsumersControlValues(AmcsWatchdogControlValues):
 
 
 class ConsumersSimulationInputs(ThrsValues):
+    simulation_type = simulation_type_field("consumers")
     consumers_adsorption_supply: simulation.Boundary
     consumers_dhw_supply: simulation.Boundary
     consumers_pcm_supply: simulation.Boundary
@@ -177,6 +184,7 @@ class ConsumersSimulationInputs(ThrsValues):
 
 
 class ConsumersSimulationOutputs(ThrsValues):
+    simulation_type = simulation_type_field("consumers")
     consumers_adsorption_exchanger: simulation.ExchangerBoundary
     consumers_adsorption_return: simulation.TemperatureBoundary
     consumers_dhw_exchanger: simulation.ExchangerBoundary

@@ -9,6 +9,7 @@ from thrs.input_output.base import (
     ThrsValues,
     component_meta,
     computed_meta,
+    simulation_type_field,
     valve_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
@@ -594,6 +595,7 @@ class DhwControlValues(AmcsWatchdogControlValues):
 
 
 class DhwSimulationInputs(ThrsValues):
+    simulation_type = simulation_type_field("dhw")
     dhw_drives_supply: simulation.Boundary
     dhw_dc_supply: simulation.Boundary
     dhw_adsorption_supply: simulation.Boundary
@@ -674,6 +676,7 @@ class DhwSimulationInputs(ThrsValues):
 
 
 class DhwSimulationOutputs(ThrsValues):
+    simulation_type = simulation_type_field("dhw")
     dhw_drives_exchanger: simulation.ExchangerBoundary
     dhw_drives_return: simulation.TemperatureBoundary
     dhw_dc_exchanger: simulation.ExchangerBoundary

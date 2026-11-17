@@ -9,6 +9,7 @@ from thrs.input_output.base import (
     ThrsValues,
     component_meta,
     computed_meta,
+    simulation_type_field,
     valve_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
@@ -393,6 +394,7 @@ class AdsorptionControlValues(AmcsWatchdogControlValues):
 
 
 class AdsorptionSimulationInputs(ThrsValues):
+    simulation_type = simulation_type_field("adsorption")
     adsorption_cooling_supply: simulation.TemperatureBoundary
     adsorption_seawater_supply: simulation.Boundary
     adsorption_available_hot_temperature: Annotated[
@@ -420,6 +422,7 @@ class AdsorptionSimulationInputs(ThrsValues):
 
 
 class AdsorptionSimulationOutputs(ThrsValues):
+    simulation_type = simulation_type_field("adsorption")
     adsorption_cooling_return: simulation.Boundary
     adsorption_seawater_return: simulation.TemperatureBoundary
     adsorption_dhw_exchanger: simulation.ExchangerBoundary

@@ -34,6 +34,12 @@ def _field_type(field: FieldInfo | ComputedFieldInfo) -> type[ThrsValues]:
     return cast(type[ThrsValues], annotation)
 
 
+def _is_component(field: FieldInfo | ComputedFieldInfo) -> bool:
+    """Whether the field holds a component, whose fields the FMU knows, and not a plain value."""
+    field_type = _field_type(field)
+    return isinstance(field_type, type) and issubclass(field_type, ThrsValues)
+
+
 def _fmu_key_for_field(
     component_name: str, field_name: str, field: FieldInfo | ComputedFieldInfo
 ) -> str:
@@ -60,7 +66,8 @@ def build_fmu_key_mapping(
     component_fields = [
         (component_name, field_name, field)
         for component_name, component in components.items()
-        if fmu_only is False or included_in_fmu(component)
+        if _is_component(component)
+        and (fmu_only is False or included_in_fmu(component))
         for field_name, field in {
             **_field_type(component).model_fields,
             **_field_type(component).model_computed_fields,

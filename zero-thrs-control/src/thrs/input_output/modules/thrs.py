@@ -2,7 +2,13 @@ from typing import Annotated
 
 from pydantic import computed_field
 
-from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
+from thrs.input_output.base import (
+    Stamped,
+    ThrsValues,
+    component_meta,
+    computed_meta,
+    simulation_type_field,
+)
 from thrs.input_output.definitions import sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.modules.adsorption import (
@@ -69,6 +75,7 @@ from thrs.simulation.models.fmu_paths import (
 
 
 class ThrsSimulationInputs(ThrsValues):
+    simulation_type = simulation_type_field("thrs")
     # thrusters
     thrusters_thruster_aft: simulation.Thruster
     thrusters_thruster_fwd: simulation.Thruster
@@ -295,7 +302,7 @@ class ThrsSimulationOutputs(
     DcSimulationOutputs,
     DrivesSimulationOutputs,
 ):
-    pass
+    simulation_type = simulation_type_field("thrs")
 
 
 participants = [

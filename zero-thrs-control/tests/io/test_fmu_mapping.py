@@ -9,6 +9,7 @@ from thrs.input_output.base import (
     component_meta,
     computed_meta,
     field_meta,
+    simulation_type_field,
 )
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.input_output.definitions.units import Ratio
@@ -123,6 +124,18 @@ def test_fmu_input_ignore_excluded():
         excluded_simulation_inputs,
         build_fmu_key_mapping(ExcludedSimulationInputs),
     ) == {"excluded_field_component__included_field__ratio": 1.0}
+
+
+class ModelWithSimulationType(ThrsValues):
+    simulation_type = simulation_type_field("pvt")
+    flow_sensor: FlowSensor
+
+
+def test_fmu_mapping_leaves_out_plain_values():
+    # fmu_only=False, as the co-simulation builds it, takes every component, but no plain value.
+    assert build_fmu_key_mapping(
+        ModelWithSimulationType, fmu_only=False
+    ) == build_fmu_key_mapping(MiniModel, fmu_only=False)
 
 
 def test_fmu_computed_field():

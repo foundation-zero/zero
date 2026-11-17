@@ -9,6 +9,7 @@ from thrs.input_output.base import (
     ThrsValues,
     component_meta,
     computed_meta,
+    simulation_type_field,
     valve_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
@@ -348,6 +349,7 @@ class ThrustersControlValues(AmcsWatchdogControlValues):
 
 
 class ThrustersSimulationInputs(ThrsValues):
+    simulation_type = simulation_type_field("thrusters")
     thrusters_thruster_aft: simulation.Thruster
     thrusters_thruster_fwd: simulation.Thruster
     thrusters_seawater_supply: simulation.Boundary
@@ -364,6 +366,7 @@ class ThrustersSimulationInputs(ThrsValues):
 
 
 class ThrustersSimulationOutputs(ThrsValues):
+    simulation_type = simulation_type_field("thrusters")
     thrusters_seawater_return: simulation.TemperatureBoundary
     thrusters_pcm_supply: simulation.FlowBoundary
     thrusters_pcm_return: simulation.Boundary

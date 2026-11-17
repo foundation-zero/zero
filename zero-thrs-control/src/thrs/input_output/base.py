@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Annotated, Any, Literal, Self, cast
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, computed_field
 from pydantic.alias_generators import to_pascal
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
@@ -243,6 +243,21 @@ def field_meta(*args, **kwargs):
     return Field(
         json_schema_extra=FieldMeta(*args, **kwargs).model_dump(exclude_none=True)
     )
+
+
+def simulation_type_field(mode: str) -> Any:
+    """
+    The `SimulationType` of a simulation mode's inputs and outputs: the mode's name, as the
+    simulator status spells it. All modes publish on the same topics, so it tells a reader which
+    mode's payload it has. It is only written, never read, and the FMU doesn't see it.
+    """
+    return computed_field(
+        # A Literal per mode, so the Spec gives each payload its own constant.
+        return_type=Literal[mode],  # pyright: ignore[reportInvalidTypeForm]
+        json_schema_extra=FieldMeta(included_in_fmu=False).model_dump(
+            exclude_none=True
+        ),
+    )(property(lambda _: mode))
 
 
 @dataclass

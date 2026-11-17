@@ -9,6 +9,7 @@ from thrs.input_output.base import (
     ThrsValues,
     component_meta,
     computed_meta,
+    simulation_type_field,
     valve_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
@@ -1738,6 +1739,7 @@ class PvtControlValues(AmcsWatchdogControlValues):
 
 
 class PvtSimulationInputs(ThrsValues):
+    simulation_type = simulation_type_field("pvt")
     pvt_main_fwd: simulation.HeatSource
     pvt_main_aft: simulation.HeatSource
     pvt_owners: simulation.HeatSource
@@ -1765,6 +1767,7 @@ class PvtSimulationInputs(ThrsValues):
 
 
 class PvtSimulationOutputs(ThrsValues):
+    simulation_type = simulation_type_field("pvt")
     pvt_pcm_return: simulation.Boundary
     pvt_pcm_supply: simulation.FlowBoundary
     pvt_seawater_return: simulation.TemperatureBoundary

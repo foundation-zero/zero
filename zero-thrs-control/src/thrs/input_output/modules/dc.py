@@ -8,6 +8,7 @@ from thrs.input_output.base import (
     ThrsValues,
     component_meta,
     computed_meta,
+    simulation_type_field,
     valve_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
@@ -832,6 +833,7 @@ class DcControlValues(AmcsWatchdogControlValues):
 
 
 class DcSimulationInputs(ThrsValues):
+    simulation_type = simulation_type_field("dc")
     dc_ugrid1: simulation.Ugrid
     dc_ugrid2: simulation.Ugrid
     dc_seawater_supply: simulation.Boundary
@@ -956,6 +958,7 @@ class DcSimulationInputs(ThrsValues):
 
 
 class DcSimulationOutputs(ThrsValues):
+    simulation_type = simulation_type_field("dc")
     dc_seawater_return: simulation.TemperatureBoundary
     dc_dhw_exchanger: simulation.ExchangerBoundary
     dc_dhw_return: simulation.TemperatureBoundary

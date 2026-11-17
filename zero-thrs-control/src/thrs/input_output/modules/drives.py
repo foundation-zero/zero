@@ -8,6 +8,7 @@ from thrs.input_output.base import (
     ThrsValues,
     component_meta,
     computed_meta,
+    simulation_type_field,
     valve_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
@@ -572,6 +573,7 @@ class DrivesControlValues(AmcsWatchdogControlValues):
 
 
 class DrivesSimulationInputs(ThrsValues):
+    simulation_type = simulation_type_field("drives")
     drives_oil_cooler_aft: simulation.HeatSource
     drives_oil_cooler_fwd: simulation.HeatSource
     drives_propdrive_aft1: simulation.PropulsionDrive
@@ -605,6 +607,7 @@ class DrivesSimulationInputs(ThrsValues):
 
 
 class DrivesSimulationOutputs(ThrsValues):
+    simulation_type = simulation_type_field("drives")
     drives_seawater_return: simulation.TemperatureBoundary
     drives_dhw_exchanger: simulation.ExchangerBoundary
     drives_dhw_return: simulation.TemperatureBoundary

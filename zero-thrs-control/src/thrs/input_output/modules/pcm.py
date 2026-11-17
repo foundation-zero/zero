@@ -9,6 +9,7 @@ from thrs.input_output.base import (
     ThrsValues,
     component_meta,
     computed_meta,
+    simulation_type_field,
     valve_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
@@ -439,6 +440,7 @@ class PcmControlValues(AmcsWatchdogControlValues):
 
 
 class PcmSimulationInputs(ThrsValues):
+    simulation_type = simulation_type_field("pcm")
     pcm_pvt_supply: simulation.Boundary
     pcm_thrusters_supply: simulation.Boundary
     pcm_freshwater_supply: simulation.Boundary
@@ -469,6 +471,7 @@ class PcmSimulationInputs(ThrsValues):
 
 
 class PcmSimulationOutputs(ThrsValues):
+    simulation_type = simulation_type_field("pcm")
     pcm_consumers_return: simulation.Boundary
     pcm_thrusters_return: simulation.Boundary
     pcm_pvt_return: simulation.Boundary
