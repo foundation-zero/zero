@@ -13,7 +13,7 @@ Apps share code through packages in `packages/`. Domain logic is always shared. 
 - **Packages** live in `packages/py/<name>` and `packages/rust/<name>`. Apps stay in the repository root.
 - **Path dependencies only.** Apps depend on a package by relative path (`path = "../packages/py/<name>"` for uv, `path = "../packages/rust/<name>"` for Cargo). Nothing is published to a registry, so an app always builds against the package source in the same commit.
 - **Docker builds** use the repository root as context and copy or bind-mount `packages/py` or `packages/rust` into the build stage, so the path dependency resolves the same way as locally.
-- **Existing shared code moves into `packages/`.** `zero-modbus-bridge`, which four apps already use as a path dependency from the root, moves to `packages/py`.
+- **Existing shared code moves into `packages/`.** `zero-modbus-bridge`, which three apps already use as a path dependency from the root, moves to `packages/py` first.
 - **Each package has one purpose** and holds code that changes together. No catch-all `common` or `utils` package.
 
 ## CI
@@ -29,6 +29,6 @@ Apps share code through packages in `packages/`. Domain logic is always shared. 
 
 **One shared package for everything.** Simpler to set up, but it couples unrelated apps: every change to it runs CI for every app, and apps pull in dependencies they don't use.
 
-**Publish packages to a registry with version numbers.** Apps could upgrade one at a time, but a fix needs a release and a bump in each app. With all apps in one repository, path dependencies give the same isolation through CI with less process.
+**Publish packages to a registry with version numbers.** Apps could upgrade one at a time, but a fix needs a release and a bump in each app. With all apps in one repository, path dependencies plus CI on every dependent app catch a breaking change without that release step.
 
 **Move apps into an `apps/` folder.** It would make the split between apps and packages visible, but it changes every app, chart, workflow and Dockerfile, and nothing else improves.
