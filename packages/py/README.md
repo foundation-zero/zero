@@ -13,7 +13,6 @@ A service that depends on a package bind-mounts `packages/py` into the
 `uv sync` step of its Docker build (the build context is the repository root)
 and adds `packages/py/<package>/**` to the path filters of its CI workflow, so
 a change to the package rebuilds and retests the service.
-`.github/scripts/check_path_filters.py` fails CI when a filter is missing.
 
 Each package has its own `pyproject.toml`, `uv.lock`, `justfile` and CI
 workflow in `.github/workflows`; there is no uv workspace.
