@@ -11,7 +11,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
       controllerState: {},
       custom: { group: "fwd", mimic: "pvt-main" },
       parameters: {},
-      source: getField(SensorComponentType.Pvt, "pvt", "pvtPvtMainFwd"),
+      source: getField(SensorComponentType.Pvt, "pvt", "placeholder"),
       sensors: {
         heatTransfer: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtPvtMainFwdHeat"),
       },
@@ -27,7 +27,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
       controllerState: {},
       custom: { group: "aft", mimic: "pvt-main" },
       parameters: {},
-      source: getField(SensorComponentType.Pvt, "pvt", "pvtPvtMainAft"),
+      source: getField(SensorComponentType.Pvt, "pvt", "placeholder"),
 
       sensors: {
         heatTransfer: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtPvtMainAftHeat"),
@@ -44,7 +44,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
       controllerState: {},
       custom: { group: "owners" },
       parameters: {},
-      source: getField(SensorComponentType.Pvt, "pvt", "pvtPvtOwners"),
+      source: getField(SensorComponentType.Pvt, "pvt", "placeholder"),
 
       sensors: {
         heatTransfer: getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtPvtOwnersHeat"),

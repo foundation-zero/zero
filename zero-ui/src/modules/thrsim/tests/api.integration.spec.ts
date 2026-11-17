@@ -1,6 +1,10 @@
 import { keysOf } from "@/modules/common/lib/utils";
 import { mutationWithoutValue, mutationWithValue } from "@/modules/thrapp/graphql";
-import { DEFINITIONS, QUERY_MODULES, THRS } from "@/modules/thrapp/lib/consts";
+import {
+  THRS_API_DEFINITIONS as DEFINITIONS,
+  QUERY_MODULES,
+  THRS,
+} from "@/modules/thrapp/lib/consts";
 import { CONTROL_QUERY, ControlStatus } from "@/modules/thrapp/stores/automation";
 import { ParameterDefinitions } from "@/modules/thrapp/types/thrs";
 import { ENV } from "@/settings";

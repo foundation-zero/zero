@@ -9,7 +9,7 @@ import {
 } from "@/modules/thrapp/types/thrs";
 import { gql } from "@urql/vue";
 import * as Definitions from "./consts.generated";
-import { ThrsQueries } from "./consts.types";
+import { MQTT_GRAPHQL_DEFINITIONS } from "./definitions.generated";
 import * as Queries from "./queries.generated";
 
 export * from "./consts.types";
@@ -20,7 +20,51 @@ type ModuleDefinitions = Record<string, ModuleDefinition>;
 
 export const toDefinitions = <T extends ModuleDefinitions>(input: T): T => input;
 
-export const DEFINITIONS = toDefinitions({
+// The modules as the MQTT GraphQL API serves them, generated from the AsyncAPI Specs.
+export const DEFINITIONS = toDefinitions(MQTT_GRAPHQL_DEFINITIONS);
+
+export type ThrsDefinitions = typeof DEFINITIONS;
+
+export const CONTROL_FIELDS: ControlFields = {
+  [ControlComponentType.Pump]: ["dutypoint", "on"],
+  [ControlComponentType.Valve]: ["setpoint"],
+  [ControlComponentType.Pcm]: ["on"],
+  [ControlComponentType.Heatpump]: ["temperatureSetpoint", "on"],
+};
+
+export const CONTROLLER_STATE_FIELDS: ControllerStateFields = {
+  [ControllerStateComponentType.DhwTanksController]: [
+    "tank1State",
+    "tank2State",
+    "tank3State",
+    "timeToFill",
+    "timeToHot",
+  ],
+  [ControllerStateComponentType.PIDController]: [
+    "target",
+    "measurement",
+    "output",
+    "error",
+    "enabled",
+    "tuning",
+    "components",
+  ],
+};
+
+export const SENSOR_FIELDS: SensorFields = {
+  [SensorComponentType.Pump]: ["flow", "speed", "opTime"],
+  [SensorComponentType.Valve]: ["positionRel"],
+  [SensorComponentType.Pressure]: ["pressure"],
+  [SensorComponentType.Temperature]: ["temperature"],
+  [SensorComponentType.Thruster]: ["active"],
+  [SensorComponentType.Pcs]: ["mode"],
+  [SensorComponentType.Flow]: ["flow", "temperature", "quantity"],
+  [SensorComponentType.Level]: ["level"],
+  [SensorComponentType.LevelSwitch]: ["empty"],
+};
+
+// thrs-api's own definitions of its modules, which its integration test checks its answer against.
+export const THRS_API_DEFINITIONS = toDefinitions({
   thrusters: {
     sensorValues: Definitions.THRUSTERS_SENSOR_DEFINITION,
     controlValues: Definitions.THRUSTERS_CONTROL_DEFINITION,
@@ -71,54 +115,9 @@ export const DEFINITIONS = toDefinitions({
   },
 });
 
-export type ThrsDefinitions = typeof DEFINITIONS;
-
-export const CONTROL_FIELDS: ControlFields = {
-  [ControlComponentType.Pump]: ["dutypoint", "on"],
-  [ControlComponentType.Valve]: ["setpoint"],
-  [ControlComponentType.Pcm]: ["on"],
-  [ControlComponentType.Heatpump]: ["temperatureSetpoint", "on"],
-};
-
-export const CONTROLLER_STATE_FIELDS: ControllerStateFields = {
-  [ControllerStateComponentType.DhwTanksController]: [
-    "tank1State",
-    "tank2State",
-    "tank3State",
-    "timeToFill",
-    "timeToHot",
-  ],
-  [ControllerStateComponentType.PIDController]: [
-    "target",
-    "measurement",
-    "output",
-    "error",
-    "enabled",
-    "tuning",
-    "components",
-  ],
-};
-
-export const SENSOR_FIELDS: SensorFields = {
-  [SensorComponentType.Pump]: ["flow", "speed", "opTime"],
-  [SensorComponentType.Valve]: ["positionRel"],
-  [SensorComponentType.Pressure]: ["pressure"],
-  [SensorComponentType.Temperature]: ["temperature"],
-  [SensorComponentType.Thruster]: ["active"],
-  [SensorComponentType.Pcs]: ["mode"],
-  [SensorComponentType.Flow]: ["flow", "temperature", "quantity"],
-  [SensorComponentType.Level]: ["level"],
-  [SensorComponentType.LevelSwitch]: ["empty"],
-};
-
-export const toQueries = <
-  TDefinitions extends ModuleDefinitions = typeof DEFINITIONS,
-  Queries extends ThrsQueries<TDefinitions> = ThrsQueries<TDefinitions>,
->(
-  input: Queries,
-): Queries => input;
-
-export const QUERIES = toQueries({
+// thrs-api's selections of its modules, for the responses of the mutations until they move to MQTT
+// GraphQL too.
+export const QUERIES = {
   thrusters: {
     controlValues: Queries.THRUSTERS_CONTROL_QUERY,
     parameters: Queries.THRUSTERS_PARAMETERS_QUERY,
@@ -167,7 +166,11 @@ export const QUERIES = toQueries({
     sensorValues: Queries.DRIVES_SENSOR_QUERY,
     controllerState: Queries.DRIVES_CONTROLLER_STATE_QUERY,
   },
-});
+};
+
+export type ThrsApiModule = keyof typeof QUERIES;
+
+export const isThrsApiModule = (module: string): module is ThrsApiModule => module in QUERIES;
 
 export const QUERY_MODULES = gql`
   query QueryModules {

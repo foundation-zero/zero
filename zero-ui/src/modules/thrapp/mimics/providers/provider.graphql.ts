@@ -1,5 +1,5 @@
 import { capitalizeFirst } from "@/modules/common/lib/utils";
-import { QUERIES } from "@/modules/thrapp/lib/consts";
+import { isThrsApiModule, QUERIES } from "@/modules/thrapp/lib/consts";
 import {
   MqttGraphqlModules,
   ThrsDefinitions,
@@ -41,6 +41,14 @@ const CONTROL_INPUT_TYPES: Partial<Record<ControlComponentType, string>> = {
   [ControlComponentType.Pump]: "PumpInputType!",
   [ControlComponentType.Valve]: "ValveInputType!",
   [ControlComponentType.Heatpump]: "HeatPumpInputType!",
+};
+
+// The mutations still go to thrs-api, which has only its own modules.
+const thrsApiQuery = (module: keyof ThrsDefinitions, part: "parameters" | "controlValues") => {
+  if (!isThrsApiModule(module)) {
+    throw new Error(`thrs-api has no module ${module}`);
+  }
+  return QUERIES[module][part];
 };
 
 export const useGraphQLDataProvider = (): MimicDataProvider => {
@@ -123,7 +131,7 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
     const mutation = `${source[1]}ParameterSet${capitalizeFirst(source[2])}`;
     const query = gql`mutation ($input: ${inputType}) {
           ${mutation}(value: $input) {
-            ${QUERIES[source[1]].parameters}
+            ${thrsApiQuery(source[1], "parameters")}
           }
       }`;
 
@@ -154,7 +162,7 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
     const mutation = `${source[1]}ControlSet${capitalizeFirst(source[2])}`;
     const query = gql`mutation ($input: ${inputType}) {
           ${mutation}(value: $input) {
-            ${QUERIES[source[1]].controlValues}
+            ${thrsApiQuery(source[1], "controlValues")}
           }
       }`;
 

@@ -2,7 +2,7 @@
   setup
   lang="ts"
   generic="
-    K extends keyof ThrsModules,
+    K extends ThrsApiModule,
     Definitions extends ControlDefinitions,
     Values extends ExtractAllValues<Definitions>
   "
@@ -10,7 +10,7 @@
 import { ExtractAllValues } from "@/modules/thrsim/types";
 import { ControlComponentType, ControlDefinitions } from "@/modules/thrapp/types/thrs";
 
-import { QUERIES, ThrsModules } from "@/modules/thrapp/lib/consts";
+import { QUERIES, ThrsApiModule } from "@/modules/thrapp/lib/consts";
 import { type Component, computed, toRefs } from "vue";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import ModuleControls from "./controls/ModuleControls.vue";

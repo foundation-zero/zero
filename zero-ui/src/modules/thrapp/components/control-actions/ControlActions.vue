@@ -9,11 +9,11 @@ import { useAutomationStore } from "@/modules/thrapp/stores/automation";
 import { ENV } from "@/settings";
 import { RiLock2Fill } from "@remixicon/vue";
 import { ref, toRefs } from "vue";
-import { ThrsModules } from "@/modules/thrapp/lib/consts";
+import { ThrsApiModule } from "@/modules/thrapp/lib/consts";
 import AdvisoryModeTooltip from "./AdvisoryModeTooltip.vue";
 
 defineProps<{
-  activeModule: keyof ThrsModules;
+  activeModule: ThrsApiModule;
   modules?: string[];
 }>();
 

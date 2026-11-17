@@ -48,8 +48,8 @@ export const DC_CONVERTER_DATA = toFieldsMap({
     ugrid: dcConverter(
       getField(SensorComponentType.UgridGroup, "dc", "dcUgrids"),
       [
-        getField(SensorComponentType.Ugrid, "dc", "dcUgrid1"),
-        getField(SensorComponentType.Ugrid, "dc", "dcUgrid2"),
+        getField(SensorComponentType.Ugrid, "dcAcConverter", "_5_11U101"),
+        getField(SensorComponentType.Ugrid, "dcAcConverter", "_5_12U101"),
       ],
       getField(SensorComponentType.HeatTransferDevice, "dc", "dcUgridHeat"),
       "ugrids",

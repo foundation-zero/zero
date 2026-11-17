@@ -22,8 +22,6 @@
     "1025": "Pump/1025",
     "1028": "Pump/1028",
     "1029": "Pump/1029",
-    "1034": "AdsorptionChiller/1034",
-    "1035": "HeatPump/1035",
     "1049": "Pcm/1049",
     "1050": "Pcm/1050",
     "1051": "Pcm/1051",
@@ -202,10 +200,8 @@
     "1214-01": "MixValve/1214-01",
     "1218-01": "FlowSensor/1218-01",
     "1218-02": "FlowSensor/1218-02",
-    "9001-01": "Pvt/9001-01",
-    "9001-03": "Pvt/9001-03",
-    "9002-01": "Pvt/9002-01",
     "9005-01": "TemperatureSensor/9005-01",
+    "9005-02": "TemperatureSensor/9005-02",
     "9005-03": "TemperatureSensor/9005-03",
     "9005-04": "TemperatureSensor/9005-04",
     "9005-05": "TemperatureSensor/9005-05",
@@ -250,6 +246,7 @@
     "9005-44": "TemperatureSensor/9005-44",
     "9005-45": "TemperatureSensor/9005-45",
     "9006-01": "FlowSensor/9006-01",
+    "9006-02": "FlowSensor/9006-02",
     "9006-03": "FlowSensor/9006-03",
     "9006-04": "FlowSensor/9006-04",
     "9006-05": "FlowSensor/9006-05",
@@ -274,7 +271,6 @@
     "9009-10": "FlowSensor/9009-10",
     "9009-11": "FlowSensor/9009-11",
     "9009-12": "FlowSensor/9009-12",
-    "adsorption:adsorptionChiller": "AdsorptionChiller/1034",
     "adsorption:adsorptionDhwExchanger": "HeatExchanger/1004",
     "adsorption:adsorptionFlowcontrolWaste": "FlowControlValve/1062-03",
     "adsorption:adsorptionFlowDhw": "FlowSensor/1058-10",
@@ -295,6 +291,7 @@
     "adsorption:adsorptionTemperatureWasteSupply": "TemperatureSensor/1038-39",
     "adsorption:dhwAdsorptionExchanger": "ExchangeCircuit/adsorption:domesticHotWater",
     "aft-string-1.1": "PvtString/pvt:aft-string-1.1",
+    "aft-string-1.2": "PvtString/pvt:aft-string-1.2",
     "aft-string-10": "PvtString/pvt:aft-string-10",
     "aft-string-11.1": "PvtString/pvt:aft-string-11.1",
     "aft-string-11.2": "PvtString/pvt:aft-string-11.2",
@@ -358,7 +355,6 @@
     "dhw:dhwFlowcontrolDrives": "FlowControlValve/1064-08",
     "dhw:dhwFlowDc": "FlowSensor/1057-17",
     "dhw:dhwFlowDrives": "FlowSensor/1057-24",
-    "dhw:dhwHeatpump": "HeatPump/1035",
     "dhw:dhwHvacExchanger": "HVAC/41001001",
     "dhw:dhwLevelSwitchTank1": "LevelSwitch/1098-01",
     "dhw:dhwLevelSwitchTank2": "LevelSwitch/1098-02",
@@ -410,10 +406,6 @@
     "drives:drivesMixExchanger": "MixValve/1046-01",
     "drives:drivesMixRecovery": "MixValve/1046-03",
     "drives:drivesPressure": "PressureSensor/1097-10",
-    "drives:drivesPropdriveAft1": "PropulsionDrive/drives:propdriveAft1",
-    "drives:drivesPropdriveAft2": "PropulsionDrive/drives:propdriveAft2",
-    "drives:drivesPropdriveFwd1": "PropulsionDrive/drives:propdriveFwd1",
-    "drives:drivesPropdriveFwd2": "PropulsionDrive/drives:propdriveFwd2",
     "drives:drivesPump1": "Pump/1028",
     "drives:drivesPump2": "Pump/1029",
     "drives:drivesSeawaterExchanger": "HeatExchanger/1011",
@@ -435,6 +427,10 @@
     "drives:drivesTemperatureRecoveryReturn": "TemperatureSensor/1038-59",
     "drives:drivesTemperatureShorepowerReturn": "TemperatureSensor/1038-11",
     "drives:drivesTemperatureSupply": "TemperatureSensor/1038-14",
+    "drives:pcsAftAra1": "PropulsionDrive/drives:propdriveAft1",
+    "drives:pcsAftAra2": "PropulsionDrive/drives:propdriveAft2",
+    "drives:pcsFwdAra1": "PropulsionDrive/drives:propdriveFwd1",
+    "drives:pcsFwdAra2": "PropulsionDrive/drives:propdriveFwd2",
     "highTemperature": "ExchangeCircuit/adsorption:highTemperature",
     "highTempLoop": "ExchangeCircuit/dhw:highTempLoop",
     "owners": "ConnectingCircuit/pvt:owners",
@@ -494,24 +490,25 @@
     "pvt:pcm": "ConnectingCircuit/pvt:pcm",
     "pvt:pvtFlowMainAftRecovery": "FlowSensor/1058-13",
     "pvt:pvtFlowMainFwdRecovery": "FlowSensor/1058-12",
+    "pvt:pvtFlowMainString1_1": "FlowSensor/9006-01",
+    "pvt:pvtFlowMainString1_2": "FlowSensor/9006-02",
     "pvt:pvtFlowMainString10": "FlowSensor/9009-04",
-    "pvt:pvtFlowMainString11": "FlowSensor/9006-01",
-    "pvt:pvtFlowMainString111": "FlowSensor/9006-13",
-    "pvt:pvtFlowMainString112": "FlowSensor/9006-14",
+    "pvt:pvtFlowMainString11_1": "FlowSensor/9006-13",
+    "pvt:pvtFlowMainString11_2": "FlowSensor/9006-14",
     "pvt:pvtFlowMainString12": "FlowSensor/9009-05",
     "pvt:pvtFlowMainString13": "FlowSensor/9009-06",
-    "pvt:pvtFlowMainString21": "FlowSensor/9006-03",
-    "pvt:pvtFlowMainString22": "FlowSensor/9006-04",
+    "pvt:pvtFlowMainString2_1": "FlowSensor/9006-03",
+    "pvt:pvtFlowMainString2_2": "FlowSensor/9006-04",
     "pvt:pvtFlowMainString3": "FlowSensor/9009-01",
     "pvt:pvtFlowMainString4": "FlowSensor/9009-02",
-    "pvt:pvtFlowMainString51": "FlowSensor/9006-05",
-    "pvt:pvtFlowMainString52": "FlowSensor/9006-06",
-    "pvt:pvtFlowMainString61": "FlowSensor/9006-07",
-    "pvt:pvtFlowMainString62": "FlowSensor/9006-08",
-    "pvt:pvtFlowMainString71": "FlowSensor/9006-09",
-    "pvt:pvtFlowMainString72": "FlowSensor/9006-10",
-    "pvt:pvtFlowMainString81": "FlowSensor/9006-11",
-    "pvt:pvtFlowMainString82": "FlowSensor/9006-12",
+    "pvt:pvtFlowMainString5_1": "FlowSensor/9006-05",
+    "pvt:pvtFlowMainString5_2": "FlowSensor/9006-06",
+    "pvt:pvtFlowMainString6_1": "FlowSensor/9006-07",
+    "pvt:pvtFlowMainString6_2": "FlowSensor/9006-08",
+    "pvt:pvtFlowMainString7_1": "FlowSensor/9006-09",
+    "pvt:pvtFlowMainString7_2": "FlowSensor/9006-10",
+    "pvt:pvtFlowMainString8_1": "FlowSensor/9006-11",
+    "pvt:pvtFlowMainString8_2": "FlowSensor/9006-12",
     "pvt:pvtFlowMainString9": "FlowSensor/9009-03",
     "pvt:pvtFlowOwnersRecovery": "FlowSensor/1057-03",
     "pvt:pvtFlowOwnersString1": "FlowSensor/9009-07",
@@ -520,24 +517,25 @@
     "pvt:pvtFlowOwnersString4": "FlowSensor/9009-10",
     "pvt:pvtFlowOwnersString5": "FlowSensor/9009-11",
     "pvt:pvtFlowOwnersString6": "FlowSensor/9009-12",
+    "pvt:pvtMainString1_1Heat": "PvtString/pvt:aft-string-1.1",
+    "pvt:pvtMainString1_2Heat": "PvtString/pvt:aft-string-1.2",
     "pvt:pvtMainString10Heat": "PvtString/pvt:aft-string-10",
-    "pvt:pvtMainString111Heat": "PvtString/pvt:aft-string-11.1",
-    "pvt:pvtMainString112Heat": "PvtString/pvt:aft-string-11.2",
-    "pvt:pvtMainString11Heat": "PvtString/pvt:aft-string-1.1",
+    "pvt:pvtMainString11_1Heat": "PvtString/pvt:aft-string-11.1",
+    "pvt:pvtMainString11_2Heat": "PvtString/pvt:aft-string-11.2",
     "pvt:pvtMainString12Heat": "PvtString/pvt:aft-string-12",
     "pvt:pvtMainString13Heat": "PvtString/pvt:aft-string-13",
-    "pvt:pvtMainString21Heat": "PvtString/pvt:aft-string-2.1",
-    "pvt:pvtMainString22Heat": "PvtString/pvt:aft-string-2.2",
+    "pvt:pvtMainString2_1Heat": "PvtString/pvt:aft-string-2.1",
+    "pvt:pvtMainString2_2Heat": "PvtString/pvt:aft-string-2.2",
     "pvt:pvtMainString3Heat": "PvtString/pvt:aft-string-3",
     "pvt:pvtMainString4Heat": "PvtString/pvt:aft-string-4",
-    "pvt:pvtMainString51Heat": "PvtString/pvt:aft-string-5.1",
-    "pvt:pvtMainString52Heat": "PvtString/pvt:aft-string-5.2",
-    "pvt:pvtMainString61Heat": "PvtString/pvt:aft-string-6.1",
-    "pvt:pvtMainString62Heat": "PvtString/pvt:aft-string-6.2",
-    "pvt:pvtMainString71Heat": "PvtString/pvt:aft-string-7.1",
-    "pvt:pvtMainString72Heat": "PvtString/pvt:aft-string-7.2",
-    "pvt:pvtMainString81Heat": "PvtString/pvt:aft-string-8.1",
-    "pvt:pvtMainString82Heat": "PvtString/pvt:aft-string-8.2",
+    "pvt:pvtMainString5_1Heat": "PvtString/pvt:aft-string-5.1",
+    "pvt:pvtMainString5_2Heat": "PvtString/pvt:aft-string-5.2",
+    "pvt:pvtMainString6_1Heat": "PvtString/pvt:aft-string-6.1",
+    "pvt:pvtMainString6_2Heat": "PvtString/pvt:aft-string-6.2",
+    "pvt:pvtMainString7_1Heat": "PvtString/pvt:aft-string-7.1",
+    "pvt:pvtMainString7_2Heat": "PvtString/pvt:aft-string-7.2",
+    "pvt:pvtMainString8_1Heat": "PvtString/pvt:aft-string-8.1",
+    "pvt:pvtMainString8_2Heat": "PvtString/pvt:aft-string-8.2",
     "pvt:pvtMainString9Heat": "PvtString/pvt:aft-string-9",
     "pvt:pvtMixExchanger": "MixValve/1047-02",
     "pvt:pvtMixMainAft": "MixValve/1044-02",
@@ -556,9 +554,6 @@
     "pvt:pvtPumpMainAft": "Pump/1019",
     "pvt:pvtPumpMainFwd": "Pump/1018",
     "pvt:pvtPumpOwners": "Pump/1021",
-    "pvt:pvtPvtMainAft": "Pvt/9002-01",
-    "pvt:pvtPvtMainFwd": "Pvt/9001-01",
-    "pvt:pvtPvtOwners": "Pvt/9001-03",
     "pvt:pvtPvtOwnersHeat": "ConnectingCircuit/pvt:owners",
     "pvt:pvtPyranometerPs": "Pyranometer/9043",
     "pvt:pvtPyranometerSb": "Pyranometer/9044",
@@ -570,35 +565,36 @@
     "pvt:pvtTemperatureMainAftSupply": "TemperatureSensor/1038-22",
     "pvt:pvtTemperatureMainFwdReturn": "TemperatureSensor/1038-03",
     "pvt:pvtTemperatureMainFwdSupply": "TemperatureSensor/1038-23",
+    "pvt:pvtTemperatureMainString1_1Return": "TemperatureSensor/9005-01",
+    "pvt:pvtTemperatureMainString1_2Return": "TemperatureSensor/9005-02",
     "pvt:pvtTemperatureMainString10Return": "TemperatureSensor/9005-16",
     "pvt:pvtTemperatureMainString10Supply": "TemperatureSensor/9005-30",
-    "pvt:pvtTemperatureMainString111Return": "TemperatureSensor/9005-17",
-    "pvt:pvtTemperatureMainString112Return": "TemperatureSensor/9005-18",
-    "pvt:pvtTemperatureMainString11Return": "TemperatureSensor/9005-01",
+    "pvt:pvtTemperatureMainString11_1Return": "TemperatureSensor/9005-17",
+    "pvt:pvtTemperatureMainString11_2Return": "TemperatureSensor/9005-18",
     "pvt:pvtTemperatureMainString11Supply": "TemperatureSensor/9005-31",
     "pvt:pvtTemperatureMainString12Return": "TemperatureSensor/9005-19",
     "pvt:pvtTemperatureMainString12Supply": "TemperatureSensor/9005-32",
     "pvt:pvtTemperatureMainString13Return": "TemperatureSensor/9005-20",
     "pvt:pvtTemperatureMainString13Supply": "TemperatureSensor/9005-33",
     "pvt:pvtTemperatureMainString1Supply": "TemperatureSensor/9005-26",
-    "pvt:pvtTemperatureMainString21Return": "TemperatureSensor/9005-03",
-    "pvt:pvtTemperatureMainString22Return": "TemperatureSensor/9005-04",
+    "pvt:pvtTemperatureMainString2_1Return": "TemperatureSensor/9005-03",
+    "pvt:pvtTemperatureMainString2_2Return": "TemperatureSensor/9005-04",
     "pvt:pvtTemperatureMainString2Supply": "TemperatureSensor/9005-25",
     "pvt:pvtTemperatureMainString3Return": "TemperatureSensor/9005-05",
     "pvt:pvtTemperatureMainString3Supply": "TemperatureSensor/9005-24",
     "pvt:pvtTemperatureMainString4Return": "TemperatureSensor/9005-06",
     "pvt:pvtTemperatureMainString4Supply": "TemperatureSensor/9005-23",
-    "pvt:pvtTemperatureMainString51Return": "TemperatureSensor/9005-07",
-    "pvt:pvtTemperatureMainString52Return": "TemperatureSensor/9005-08",
+    "pvt:pvtTemperatureMainString5_1Return": "TemperatureSensor/9005-07",
+    "pvt:pvtTemperatureMainString5_2Return": "TemperatureSensor/9005-08",
     "pvt:pvtTemperatureMainString5Supply": "TemperatureSensor/9005-22",
-    "pvt:pvtTemperatureMainString61Return": "TemperatureSensor/9005-09",
-    "pvt:pvtTemperatureMainString62Return": "TemperatureSensor/9005-10",
+    "pvt:pvtTemperatureMainString6_1Return": "TemperatureSensor/9005-09",
+    "pvt:pvtTemperatureMainString6_2Return": "TemperatureSensor/9005-10",
     "pvt:pvtTemperatureMainString6Supply": "TemperatureSensor/9005-21",
-    "pvt:pvtTemperatureMainString71Return": "TemperatureSensor/9005-11",
-    "pvt:pvtTemperatureMainString72Return": "TemperatureSensor/9005-12",
+    "pvt:pvtTemperatureMainString7_1Return": "TemperatureSensor/9005-11",
+    "pvt:pvtTemperatureMainString7_2Return": "TemperatureSensor/9005-12",
     "pvt:pvtTemperatureMainString7Supply": "TemperatureSensor/9005-27",
-    "pvt:pvtTemperatureMainString81Return": "TemperatureSensor/9005-13",
-    "pvt:pvtTemperatureMainString82Return": "TemperatureSensor/9005-14",
+    "pvt:pvtTemperatureMainString8_1Return": "TemperatureSensor/9005-13",
+    "pvt:pvtTemperatureMainString8_2Return": "TemperatureSensor/9005-14",
     "pvt:pvtTemperatureMainString8Supply": "TemperatureSensor/9005-28",
     "pvt:pvtTemperatureMainString9Return": "TemperatureSensor/9005-15",
     "pvt:pvtTemperatureMainString9Supply": "TemperatureSensor/9005-29",
@@ -638,9 +634,7 @@
     "thrusters:thrustersTemperatureAft": "TemperatureSensor/1038-01",
     "thrusters:thrustersTemperatureFwd": "TemperatureSensor/1038-02",
     "thrusters:thrustersTemperatureRecoveryMix": "TemperatureSensor/1038-30",
-    "thrusters:thrustersTemperatureSupply": "TemperatureSensor/1038-28",
-    "thrusters:thrustersThrusterAft": "Thruster/15001001",
-    "thrusters:thrustersThrusterFwd": "Thruster/15001002"
+    "thrusters:thrustersTemperatureSupply": "TemperatureSensor/1038-28"
   },
   "contexts": {
     "AdsorptionChiller": {
@@ -649,14 +643,14 @@
           "chiller": [
             "control:adsorptionChiller",
             "adsorption",
-            "adsorptionChiller",
+            "placeholder",
             null
           ]
         },
         "source": [
           "sensor:adsorptionChiller",
           "adsorption",
-          "adsorptionChiller",
+          "placeholder",
           null
         ],
         "sensors": {
@@ -681,10 +675,8 @@
         },
         "tooltip": {
           "title": "Fahrenheit",
-          "yardTag": "1034",
-          "technicalName": "adsorption-chiller",
-          "mqttTopic": ".../adsorption-chiller",
-          "componentType": "Adsorption chiller"
+          "componentType": "Adsorption chiller",
+          "yardTag": "1034"
         }
       }
     },
@@ -1395,14 +1387,14 @@
           "converters": [
             [
               "sensor:ugrid",
-              "dc",
-              "dcUgrid1",
+              "dcAcConverter",
+              "_5_11U101",
               null
             ],
             [
               "sensor:ugrid",
-              "dc",
-              "dcUgrid2",
+              "dcAcConverter",
+              "_5_12U101",
               null
             ]
           ],
@@ -2824,14 +2816,14 @@
         "source": [
           "sensor:flow",
           "pvt",
-          "pvtFlowMainString11",
+          "pvtFlowMainString1_1",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "9006-01",
-          "technicalName": "pvt-flow-main-string-11",
-          "mqttTopic": ".../pvt-flow-main-string-11",
+          "technicalName": "pvt-flow-main-string-1-1",
+          "mqttTopic": ".../pvt-flow-main-string-1-1",
           "componentType": "Flow sensor"
         }
       },
@@ -2839,27 +2831,29 @@
         "source": [
           "sensor:flow",
           "pvt",
-          "placeholder",
+          "pvtFlowMainString1_2",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
-          "componentType": "Flow sensor",
-          "yardTag": "9006-02"
+          "yardTag": "9006-02",
+          "technicalName": "pvt-flow-main-string-1-2",
+          "mqttTopic": ".../pvt-flow-main-string-1-2",
+          "componentType": "Flow sensor"
         }
       },
       "9006-03": {
         "source": [
           "sensor:flow",
           "pvt",
-          "pvtFlowMainString21",
+          "pvtFlowMainString2_1",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "9006-03",
-          "technicalName": "pvt-flow-main-string-21",
-          "mqttTopic": ".../pvt-flow-main-string-21",
+          "technicalName": "pvt-flow-main-string-2-1",
+          "mqttTopic": ".../pvt-flow-main-string-2-1",
           "componentType": "Flow sensor"
         }
       },
@@ -2867,14 +2861,14 @@
         "source": [
           "sensor:flow",
           "pvt",
-          "pvtFlowMainString22",
+          "pvtFlowMainString2_2",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "9006-04",
-          "technicalName": "pvt-flow-main-string-22",
-          "mqttTopic": ".../pvt-flow-main-string-22",
+          "technicalName": "pvt-flow-main-string-2-2",
+          "mqttTopic": ".../pvt-flow-main-string-2-2",
           "componentType": "Flow sensor"
         }
       },
@@ -2882,14 +2876,14 @@
         "source": [
           "sensor:flow",
           "pvt",
-          "pvtFlowMainString51",
+          "pvtFlowMainString5_1",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "9006-05",
-          "technicalName": "pvt-flow-main-string-51",
-          "mqttTopic": ".../pvt-flow-main-string-51",
+          "technicalName": "pvt-flow-main-string-5-1",
+          "mqttTopic": ".../pvt-flow-main-string-5-1",
           "componentType": "Flow sensor"
         }
       },
@@ -2897,14 +2891,14 @@
         "source": [
           "sensor:flow",
           "pvt",
-          "pvtFlowMainString52",
+          "pvtFlowMainString5_2",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "9006-06",
-          "technicalName": "pvt-flow-main-string-52",
-          "mqttTopic": ".../pvt-flow-main-string-52",
+          "technicalName": "pvt-flow-main-string-5-2",
+          "mqttTopic": ".../pvt-flow-main-string-5-2",
           "componentType": "Flow sensor"
         }
       },
@@ -2912,14 +2906,14 @@
         "source": [
           "sensor:flow",
           "pvt",
-          "pvtFlowMainString61",
+          "pvtFlowMainString6_1",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "9006-07",
-          "technicalName": "pvt-flow-main-string-61",
-          "mqttTopic": ".../pvt-flow-main-string-61",
+          "technicalName": "pvt-flow-main-string-6-1",
+          "mqttTopic": ".../pvt-flow-main-string-6-1",
           "componentType": "Flow sensor"
         }
       },
@@ -2927,14 +2921,14 @@
         "source": [
           "sensor:flow",
           "pvt",
-          "pvtFlowMainString62",
+          "pvtFlowMainString6_2",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "9006-08",
-          "technicalName": "pvt-flow-main-string-62",
-          "mqttTopic": ".../pvt-flow-main-string-62",
+          "technicalName": "pvt-flow-main-string-6-2",
+          "mqttTopic": ".../pvt-flow-main-string-6-2",
           "componentType": "Flow sensor"
         }
       },
@@ -2942,14 +2936,14 @@
         "source": [
           "sensor:flow",
           "pvt",
-          "pvtFlowMainString71",
+          "pvtFlowMainString7_1",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "9006-09",
-          "technicalName": "pvt-flow-main-string-71",
-          "mqttTopic": ".../pvt-flow-main-string-71",
+          "technicalName": "pvt-flow-main-string-7-1",
+          "mqttTopic": ".../pvt-flow-main-string-7-1",
           "componentType": "Flow sensor"
         }
       },
@@ -2957,14 +2951,14 @@
         "source": [
           "sensor:flow",
           "pvt",
-          "pvtFlowMainString72",
+          "pvtFlowMainString7_2",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "9006-10",
-          "technicalName": "pvt-flow-main-string-72",
-          "mqttTopic": ".../pvt-flow-main-string-72",
+          "technicalName": "pvt-flow-main-string-7-2",
+          "mqttTopic": ".../pvt-flow-main-string-7-2",
           "componentType": "Flow sensor"
         }
       },
@@ -2972,14 +2966,14 @@
         "source": [
           "sensor:flow",
           "pvt",
-          "pvtFlowMainString81",
+          "pvtFlowMainString8_1",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "9006-11",
-          "technicalName": "pvt-flow-main-string-81",
-          "mqttTopic": ".../pvt-flow-main-string-81",
+          "technicalName": "pvt-flow-main-string-8-1",
+          "mqttTopic": ".../pvt-flow-main-string-8-1",
           "componentType": "Flow sensor"
         }
       },
@@ -2987,14 +2981,14 @@
         "source": [
           "sensor:flow",
           "pvt",
-          "pvtFlowMainString82",
+          "pvtFlowMainString8_2",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "9006-12",
-          "technicalName": "pvt-flow-main-string-82",
-          "mqttTopic": ".../pvt-flow-main-string-82",
+          "technicalName": "pvt-flow-main-string-8-2",
+          "mqttTopic": ".../pvt-flow-main-string-8-2",
           "componentType": "Flow sensor"
         }
       },
@@ -3002,14 +2996,14 @@
         "source": [
           "sensor:flow",
           "pvt",
-          "pvtFlowMainString111",
+          "pvtFlowMainString11_1",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "9006-13",
-          "technicalName": "pvt-flow-main-string-111",
-          "mqttTopic": ".../pvt-flow-main-string-111",
+          "technicalName": "pvt-flow-main-string-11-1",
+          "mqttTopic": ".../pvt-flow-main-string-11-1",
           "componentType": "Flow sensor"
         }
       },
@@ -3017,14 +3011,14 @@
         "source": [
           "sensor:flow",
           "pvt",
-          "pvtFlowMainString112",
+          "pvtFlowMainString11_2",
           null
         ],
         "tooltip": {
           "title": "Flow sensor",
           "yardTag": "9006-14",
-          "technicalName": "pvt-flow-main-string-112",
-          "mqttTopic": ".../pvt-flow-main-string-112",
+          "technicalName": "pvt-flow-main-string-11-2",
+          "mqttTopic": ".../pvt-flow-main-string-11-2",
           "componentType": "Flow sensor"
         }
       },
@@ -3223,25 +3217,25 @@
         "sensors": {
           "flowIn": [
             "sensor:flow",
-            "adsorption",
+            "cooling",
             "coolingFlowAdsorption",
             null
           ],
           "tIn": [
             "sensor:temperature",
-            "adsorption",
+            "cooling",
             "coolingTemperatureAdsorptionReturn",
             null
           ],
           "flowOut": [
             "sensor:flow",
-            "adsorption",
+            "cooling",
             "coolingFlowAdsorption",
             null
           ],
           "tOut": [
             "sensor:temperature",
-            "adsorption",
+            "cooling",
             "coolingTemperatureAdsorptionSupply",
             null
           ]
@@ -3264,14 +3258,14 @@
         "sensors": {
           "flowIn": [
             "sensor:flowOnly",
-            "dhw",
-            "freshwaterHotwaterFlow",
+            "freshWaterHot",
+            "hotFlowFromTank",
             null
           ],
           "tIn": [
             "sensor:temperature",
-            "dhw",
-            "freshwaterHotwaterTemperature",
+            "freshWaterHot",
+            "hotTemperatureFromTank",
             null
           ],
           "flowOut": [
@@ -3656,7 +3650,7 @@
           "heatpump": [
             "control:heatpump",
             "dhw",
-            "dhwHeatpump",
+            "placeholder",
             null
           ]
         },
@@ -3680,7 +3674,7 @@
         "source": [
           "sensor:heatPump",
           "dhw",
-          "dhwHeatpump",
+          "placeholder",
           null
         ],
         "custom": {
@@ -3718,10 +3712,8 @@
         },
         "tooltip": {
           "title": "Heat pump",
-          "yardTag": "1035",
-          "technicalName": "dhw-heatpump",
-          "mqttTopic": ".../dhw-heatpump",
-          "componentType": "Heat pump"
+          "componentType": "Heat pump",
+          "yardTag": "1035"
         }
       }
     },
@@ -6025,15 +6017,15 @@
         },
         "source": [
           "sensor:propulsionDrive",
-          "drives",
-          "drivesPropdriveAft1",
+          "propulsionDrive",
+          "pcsAftAra1",
           null
         ],
         "tooltip": {
           "title": "propdrive",
           "yardTag": "45002079",
-          "technicalName": "drives-propdrive-aft-1",
-          "mqttTopic": ".../drives-propdrive-aft-1"
+          "technicalName": "pcs-aft-ara-1",
+          "mqttTopic": ".../pcs-aft-ara-1"
         }
       },
       "drives:propdriveAft2": {
@@ -6047,15 +6039,15 @@
         },
         "source": [
           "sensor:propulsionDrive",
-          "drives",
-          "drivesPropdriveAft2",
+          "propulsionDrive",
+          "pcsAftAra2",
           null
         ],
         "tooltip": {
           "title": "propdrive",
           "yardTag": "45002079",
-          "technicalName": "drives-propdrive-aft-2",
-          "mqttTopic": ".../drives-propdrive-aft-2"
+          "technicalName": "pcs-aft-ara-2",
+          "mqttTopic": ".../pcs-aft-ara-2"
         }
       },
       "drives:propdriveFwd1": {
@@ -6069,15 +6061,15 @@
         },
         "source": [
           "sensor:propulsionDrive",
-          "drives",
-          "drivesPropdriveFwd1",
+          "propulsionDrive",
+          "pcsFwdAra1",
           null
         ],
         "tooltip": {
           "title": "propdrive",
           "yardTag": "45002080",
-          "technicalName": "drives-propdrive-fwd-1",
-          "mqttTopic": ".../drives-propdrive-fwd-1"
+          "technicalName": "pcs-fwd-ara-1",
+          "mqttTopic": ".../pcs-fwd-ara-1"
         }
       },
       "drives:propdriveFwd2": {
@@ -6091,15 +6083,15 @@
         },
         "source": [
           "sensor:propulsionDrive",
-          "drives",
-          "drivesPropdriveFwd2",
+          "propulsionDrive",
+          "pcsFwdAra2",
           null
         ],
         "tooltip": {
           "title": "propdrive",
           "yardTag": "45002080",
-          "technicalName": "drives-propdrive-fwd-2",
-          "mqttTopic": ".../drives-propdrive-fwd-2"
+          "technicalName": "pcs-fwd-ara-2",
+          "mqttTopic": ".../pcs-fwd-ara-2"
         }
       }
     },
@@ -6594,7 +6586,7 @@
         "source": [
           "sensor:pvt",
           "pvt",
-          "pvtPvtMainFwd",
+          "placeholder",
           null
         ],
         "sensors": {
@@ -6607,10 +6599,8 @@
         },
         "tooltip": {
           "title": "PVT FWD",
-          "yardTag": "9001-01",
-          "technicalName": "pvt-pvt-main-fwd",
-          "mqttTopic": ".../pvt-pvt-main-fwd",
-          "componentType": "PVT"
+          "componentType": "PVT",
+          "yardTag": "9001-01"
         }
       },
       "9001-03": {
@@ -6620,7 +6610,7 @@
         "source": [
           "sensor:pvt",
           "pvt",
-          "pvtPvtOwners",
+          "placeholder",
           null
         ],
         "sensors": {
@@ -6633,10 +6623,8 @@
         },
         "tooltip": {
           "title": "PVT OWNERS",
-          "yardTag": "9001-03",
-          "technicalName": "pvt-pvt-owners",
-          "mqttTopic": ".../pvt-pvt-owners",
-          "componentType": "PVT"
+          "componentType": "PVT",
+          "yardTag": "9001-03"
         }
       },
       "9002-01": {
@@ -6647,7 +6635,7 @@
         "source": [
           "sensor:pvt",
           "pvt",
-          "pvtPvtMainAft",
+          "placeholder",
           null
         ],
         "sensors": {
@@ -6660,10 +6648,8 @@
         },
         "tooltip": {
           "title": "PVT AFT",
-          "yardTag": "9002-01",
-          "technicalName": "pvt-pvt-main-aft",
-          "mqttTopic": ".../pvt-pvt-main-aft",
-          "componentType": "PVT"
+          "componentType": "PVT",
+          "yardTag": "9002-01"
         }
       }
     },
@@ -6672,14 +6658,14 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtMainString11Heat",
+          "pvtMainString1_1Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 1.1",
           "yardTag": "1.1",
-          "technicalName": "pvt-main-string-11-heat",
-          "mqttTopic": ".../pvt-main-string-11-heat",
+          "technicalName": "pvt-main-string-1-1-heat",
+          "mqttTopic": ".../pvt-main-string-1-1-heat",
           "componentType": "PVT string"
         }
       },
@@ -6687,13 +6673,15 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "placeholder",
+          "pvtMainString1_2Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 1.2",
-          "componentType": "PVT string",
-          "yardTag": "1.2"
+          "yardTag": "1.2",
+          "technicalName": "pvt-main-string-1-2-heat",
+          "mqttTopic": ".../pvt-main-string-1-2-heat",
+          "componentType": "PVT string"
         }
       },
       "pvt:aft-string-10": {
@@ -6715,14 +6703,14 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtMainString111Heat",
+          "pvtMainString11_1Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 11.1",
           "yardTag": "11.1",
-          "technicalName": "pvt-main-string-111-heat",
-          "mqttTopic": ".../pvt-main-string-111-heat",
+          "technicalName": "pvt-main-string-11-1-heat",
+          "mqttTopic": ".../pvt-main-string-11-1-heat",
           "componentType": "PVT string"
         }
       },
@@ -6730,14 +6718,14 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtMainString112Heat",
+          "pvtMainString11_2Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 11.2",
           "yardTag": "11.2",
-          "technicalName": "pvt-main-string-112-heat",
-          "mqttTopic": ".../pvt-main-string-112-heat",
+          "technicalName": "pvt-main-string-11-2-heat",
+          "mqttTopic": ".../pvt-main-string-11-2-heat",
           "componentType": "PVT string"
         }
       },
@@ -6775,14 +6763,14 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtMainString21Heat",
+          "pvtMainString2_1Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 2.1",
           "yardTag": "2.1",
-          "technicalName": "pvt-main-string-21-heat",
-          "mqttTopic": ".../pvt-main-string-21-heat",
+          "technicalName": "pvt-main-string-2-1-heat",
+          "mqttTopic": ".../pvt-main-string-2-1-heat",
           "componentType": "PVT string"
         }
       },
@@ -6790,14 +6778,14 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtMainString22Heat",
+          "pvtMainString2_2Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 2.2",
           "yardTag": "2.2",
-          "technicalName": "pvt-main-string-22-heat",
-          "mqttTopic": ".../pvt-main-string-22-heat",
+          "technicalName": "pvt-main-string-2-2-heat",
+          "mqttTopic": ".../pvt-main-string-2-2-heat",
           "componentType": "PVT string"
         }
       },
@@ -6835,14 +6823,14 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtMainString51Heat",
+          "pvtMainString5_1Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 5.1",
           "yardTag": "5.1",
-          "technicalName": "pvt-main-string-51-heat",
-          "mqttTopic": ".../pvt-main-string-51-heat",
+          "technicalName": "pvt-main-string-5-1-heat",
+          "mqttTopic": ".../pvt-main-string-5-1-heat",
           "componentType": "PVT string"
         }
       },
@@ -6850,14 +6838,14 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtMainString52Heat",
+          "pvtMainString5_2Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 5.2",
           "yardTag": "5.2",
-          "technicalName": "pvt-main-string-52-heat",
-          "mqttTopic": ".../pvt-main-string-52-heat",
+          "technicalName": "pvt-main-string-5-2-heat",
+          "mqttTopic": ".../pvt-main-string-5-2-heat",
           "componentType": "PVT string"
         }
       },
@@ -6865,14 +6853,14 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtMainString61Heat",
+          "pvtMainString6_1Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 6.1",
           "yardTag": "6.1",
-          "technicalName": "pvt-main-string-61-heat",
-          "mqttTopic": ".../pvt-main-string-61-heat",
+          "technicalName": "pvt-main-string-6-1-heat",
+          "mqttTopic": ".../pvt-main-string-6-1-heat",
           "componentType": "PVT string"
         }
       },
@@ -6880,14 +6868,14 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtMainString62Heat",
+          "pvtMainString6_2Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 6.2",
           "yardTag": "6.2",
-          "technicalName": "pvt-main-string-62-heat",
-          "mqttTopic": ".../pvt-main-string-62-heat",
+          "technicalName": "pvt-main-string-6-2-heat",
+          "mqttTopic": ".../pvt-main-string-6-2-heat",
           "componentType": "PVT string"
         }
       },
@@ -6895,14 +6883,14 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtMainString71Heat",
+          "pvtMainString7_1Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 7.1",
           "yardTag": "7.1",
-          "technicalName": "pvt-main-string-71-heat",
-          "mqttTopic": ".../pvt-main-string-71-heat",
+          "technicalName": "pvt-main-string-7-1-heat",
+          "mqttTopic": ".../pvt-main-string-7-1-heat",
           "componentType": "PVT string"
         }
       },
@@ -6910,14 +6898,14 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtMainString72Heat",
+          "pvtMainString7_2Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 7.2",
           "yardTag": "7.2",
-          "technicalName": "pvt-main-string-72-heat",
-          "mqttTopic": ".../pvt-main-string-72-heat",
+          "technicalName": "pvt-main-string-7-2-heat",
+          "mqttTopic": ".../pvt-main-string-7-2-heat",
           "componentType": "PVT string"
         }
       },
@@ -6925,14 +6913,14 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtMainString81Heat",
+          "pvtMainString8_1Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 8.1",
           "yardTag": "8.1",
-          "technicalName": "pvt-main-string-81-heat",
-          "mqttTopic": ".../pvt-main-string-81-heat",
+          "technicalName": "pvt-main-string-8-1-heat",
+          "mqttTopic": ".../pvt-main-string-8-1-heat",
           "componentType": "PVT string"
         }
       },
@@ -6940,14 +6928,14 @@
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtMainString82Heat",
+          "pvtMainString8_2Heat",
           null
         ],
         "tooltip": {
           "title": "PVT string 8.2",
           "yardTag": "8.2",
-          "technicalName": "pvt-main-string-82-heat",
-          "mqttTopic": ".../pvt-main-string-82-heat",
+          "technicalName": "pvt-main-string-8-2-heat",
+          "mqttTopic": ".../pvt-main-string-8-2-heat",
           "componentType": "PVT string"
         }
       },
@@ -7067,10 +7055,10 @@
         ],
         "tooltip": {
           "title": "Pyranometer",
-          "yardTag": "9043",
           "technicalName": "pvt-pyranometer-ps",
           "mqttTopic": ".../pvt-pyranometer-ps",
-          "componentType": "Pyranometer"
+          "componentType": "Pyranometer",
+          "yardTag": "9043"
         }
       },
       "9044": {
@@ -7082,10 +7070,10 @@
         ],
         "tooltip": {
           "title": "Pyranometer",
-          "yardTag": "9044",
           "technicalName": "pvt-pyranometer-sb",
           "mqttTopic": ".../pvt-pyranometer-sb",
-          "componentType": "Pyranometer"
+          "componentType": "Pyranometer",
+          "yardTag": "9044"
         }
       }
     },
@@ -7185,26 +7173,26 @@
           "converters": [
             [
               "sensor:shorePowerConverter",
-              "drives",
-              "drivesShorepower1a",
+              "dc700VShoreConverter",
+              "_07_11Tbc1A",
               null
             ],
             [
               "sensor:shorePowerConverter",
-              "drives",
-              "drivesShorepower1b",
+              "dc700VShoreConverter",
+              "_07_11Tbc1B",
               null
             ],
             [
               "sensor:shorePowerConverter",
-              "drives",
-              "drivesShorepower2a",
+              "dc700VShoreConverter",
+              "_07_12Tbc1A",
               null
             ],
             [
               "sensor:shorePowerConverter",
-              "drives",
-              "drivesShorepower2b",
+              "dc700VShoreConverter",
+              "_07_12Tbc1B",
               null
             ]
           ]
@@ -10777,14 +10765,14 @@
         "source": [
           "sensor:temperature",
           "pvt",
-          "pvtTemperatureMainString11Return",
+          "pvtTemperatureMainString1_1Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "9005-01",
-          "technicalName": "pvt-temperature-main-string-11-return",
-          "mqttTopic": ".../pvt-temperature-main-string-11-return",
+          "technicalName": "pvt-temperature-main-string-1-1-return",
+          "mqttTopic": ".../pvt-temperature-main-string-1-1-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -10792,27 +10780,29 @@
         "source": [
           "sensor:temperature",
           "pvt",
-          "placeholder",
+          "pvtTemperatureMainString1_2Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
-          "componentType": "Temperature sensor",
-          "yardTag": "9005-02"
+          "yardTag": "9005-02",
+          "technicalName": "pvt-temperature-main-string-1-2-return",
+          "mqttTopic": ".../pvt-temperature-main-string-1-2-return",
+          "componentType": "Temperature sensor"
         }
       },
       "9005-03": {
         "source": [
           "sensor:temperature",
           "pvt",
-          "pvtTemperatureMainString21Return",
+          "pvtTemperatureMainString2_1Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "9005-03",
-          "technicalName": "pvt-temperature-main-string-21-return",
-          "mqttTopic": ".../pvt-temperature-main-string-21-return",
+          "technicalName": "pvt-temperature-main-string-2-1-return",
+          "mqttTopic": ".../pvt-temperature-main-string-2-1-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -10820,14 +10810,14 @@
         "source": [
           "sensor:temperature",
           "pvt",
-          "pvtTemperatureMainString22Return",
+          "pvtTemperatureMainString2_2Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "9005-04",
-          "technicalName": "pvt-temperature-main-string-22-return",
-          "mqttTopic": ".../pvt-temperature-main-string-22-return",
+          "technicalName": "pvt-temperature-main-string-2-2-return",
+          "mqttTopic": ".../pvt-temperature-main-string-2-2-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -10865,14 +10855,14 @@
         "source": [
           "sensor:temperature",
           "pvt",
-          "pvtTemperatureMainString51Return",
+          "pvtTemperatureMainString5_1Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "9005-07",
-          "technicalName": "pvt-temperature-main-string-51-return",
-          "mqttTopic": ".../pvt-temperature-main-string-51-return",
+          "technicalName": "pvt-temperature-main-string-5-1-return",
+          "mqttTopic": ".../pvt-temperature-main-string-5-1-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -10880,14 +10870,14 @@
         "source": [
           "sensor:temperature",
           "pvt",
-          "pvtTemperatureMainString52Return",
+          "pvtTemperatureMainString5_2Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "9005-08",
-          "technicalName": "pvt-temperature-main-string-52-return",
-          "mqttTopic": ".../pvt-temperature-main-string-52-return",
+          "technicalName": "pvt-temperature-main-string-5-2-return",
+          "mqttTopic": ".../pvt-temperature-main-string-5-2-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -10895,14 +10885,14 @@
         "source": [
           "sensor:temperature",
           "pvt",
-          "pvtTemperatureMainString61Return",
+          "pvtTemperatureMainString6_1Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "9005-09",
-          "technicalName": "pvt-temperature-main-string-61-return",
-          "mqttTopic": ".../pvt-temperature-main-string-61-return",
+          "technicalName": "pvt-temperature-main-string-6-1-return",
+          "mqttTopic": ".../pvt-temperature-main-string-6-1-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -10910,14 +10900,14 @@
         "source": [
           "sensor:temperature",
           "pvt",
-          "pvtTemperatureMainString62Return",
+          "pvtTemperatureMainString6_2Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "9005-10",
-          "technicalName": "pvt-temperature-main-string-62-return",
-          "mqttTopic": ".../pvt-temperature-main-string-62-return",
+          "technicalName": "pvt-temperature-main-string-6-2-return",
+          "mqttTopic": ".../pvt-temperature-main-string-6-2-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -10925,14 +10915,14 @@
         "source": [
           "sensor:temperature",
           "pvt",
-          "pvtTemperatureMainString71Return",
+          "pvtTemperatureMainString7_1Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "9005-11",
-          "technicalName": "pvt-temperature-main-string-71-return",
-          "mqttTopic": ".../pvt-temperature-main-string-71-return",
+          "technicalName": "pvt-temperature-main-string-7-1-return",
+          "mqttTopic": ".../pvt-temperature-main-string-7-1-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -10940,14 +10930,14 @@
         "source": [
           "sensor:temperature",
           "pvt",
-          "pvtTemperatureMainString72Return",
+          "pvtTemperatureMainString7_2Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "9005-12",
-          "technicalName": "pvt-temperature-main-string-72-return",
-          "mqttTopic": ".../pvt-temperature-main-string-72-return",
+          "technicalName": "pvt-temperature-main-string-7-2-return",
+          "mqttTopic": ".../pvt-temperature-main-string-7-2-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -10955,14 +10945,14 @@
         "source": [
           "sensor:temperature",
           "pvt",
-          "pvtTemperatureMainString81Return",
+          "pvtTemperatureMainString8_1Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "9005-13",
-          "technicalName": "pvt-temperature-main-string-81-return",
-          "mqttTopic": ".../pvt-temperature-main-string-81-return",
+          "technicalName": "pvt-temperature-main-string-8-1-return",
+          "mqttTopic": ".../pvt-temperature-main-string-8-1-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -10970,14 +10960,14 @@
         "source": [
           "sensor:temperature",
           "pvt",
-          "pvtTemperatureMainString82Return",
+          "pvtTemperatureMainString8_2Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "9005-14",
-          "technicalName": "pvt-temperature-main-string-82-return",
-          "mqttTopic": ".../pvt-temperature-main-string-82-return",
+          "technicalName": "pvt-temperature-main-string-8-2-return",
+          "mqttTopic": ".../pvt-temperature-main-string-8-2-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -11015,14 +11005,14 @@
         "source": [
           "sensor:temperature",
           "pvt",
-          "pvtTemperatureMainString111Return",
+          "pvtTemperatureMainString11_1Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "9005-17",
-          "technicalName": "pvt-temperature-main-string-111-return",
-          "mqttTopic": ".../pvt-temperature-main-string-111-return",
+          "technicalName": "pvt-temperature-main-string-11-1-return",
+          "mqttTopic": ".../pvt-temperature-main-string-11-1-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -11030,14 +11020,14 @@
         "source": [
           "sensor:temperature",
           "pvt",
-          "pvtTemperatureMainString112Return",
+          "pvtTemperatureMainString11_2Return",
           null
         ],
         "tooltip": {
           "title": "Temperature sensor",
           "yardTag": "9005-18",
-          "technicalName": "pvt-temperature-main-string-112-return",
-          "mqttTopic": ".../pvt-temperature-main-string-112-return",
+          "technicalName": "pvt-temperature-main-string-11-2-return",
+          "mqttTopic": ".../pvt-temperature-main-string-11-2-return",
           "componentType": "Temperature sensor"
         }
       },
@@ -11503,14 +11493,14 @@
         "source": [
           "sensor:thruster",
           "thrusters",
-          "thrustersThrusterAft",
+          "placeholder",
           null
         ],
         "sensors": {
           "pcs": [
             "sensor:pcs",
             "thrusters",
-            "thrustersPcs",
+            "placeholder",
             null
           ],
           "heatTransfer": [
@@ -11522,10 +11512,8 @@
         },
         "tooltip": {
           "title": "Thruster AFT",
-          "yardTag": "15001001",
-          "technicalName": "thrusters-thruster-aft",
-          "mqttTopic": ".../thrusters-thruster-aft",
-          "componentType": "thrusters"
+          "componentType": "thrusters",
+          "yardTag": "15001001"
         }
       },
       "15001002": {
@@ -11535,14 +11523,14 @@
         "source": [
           "sensor:thruster",
           "thrusters",
-          "thrustersThrusterFwd",
+          "placeholder",
           null
         ],
         "sensors": {
           "pcs": [
             "sensor:pcs",
             "thrusters",
-            "thrustersPcs",
+            "placeholder",
             null
           ],
           "heatTransfer": [
@@ -11554,10 +11542,8 @@
         },
         "tooltip": {
           "title": "Thruster FWD",
-          "yardTag": "15001002",
-          "technicalName": "thrusters-thruster-fwd",
-          "mqttTopic": ".../thrusters-thruster-fwd",
-          "componentType": "thrusters"
+          "componentType": "thrusters",
+          "yardTag": "15001002"
         }
       }
     }

@@ -3,19 +3,18 @@ import { getField } from "../../../providers";
 import { toTemperatureSensor } from "../../helpers";
 
 // Supply and return temperatures of the PVT AFT strings.
-// 9005-02 (string 1.2 return) has no thrsim field yet.
 export const PVT_AFT_TEMPERATURE_SENSORS = {
   "9005-01": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString11Return"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString1_1Return"),
   }),
   "9005-02": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "placeholder"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString1_2Return"),
   }),
   "9005-03": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString21Return"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString2_1Return"),
   }),
   "9005-04": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString22Return"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString2_2Return"),
   }),
   "9005-05": toTemperatureSensor({
     source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString3Return"),
@@ -24,28 +23,28 @@ export const PVT_AFT_TEMPERATURE_SENSORS = {
     source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString4Return"),
   }),
   "9005-07": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString51Return"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString5_1Return"),
   }),
   "9005-08": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString52Return"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString5_2Return"),
   }),
   "9005-09": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString61Return"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString6_1Return"),
   }),
   "9005-10": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString62Return"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString6_2Return"),
   }),
   "9005-11": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString71Return"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString7_1Return"),
   }),
   "9005-12": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString72Return"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString7_2Return"),
   }),
   "9005-13": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString81Return"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString8_1Return"),
   }),
   "9005-14": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString82Return"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString8_2Return"),
   }),
   "9005-15": toTemperatureSensor({
     source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString9Return"),
@@ -54,10 +53,10 @@ export const PVT_AFT_TEMPERATURE_SENSORS = {
     source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString10Return"),
   }),
   "9005-17": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString111Return"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString11_1Return"),
   }),
   "9005-18": toTemperatureSensor({
-    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString112Return"),
+    source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString11_2Return"),
   }),
   "9005-19": toTemperatureSensor({
     source: getField(SensorComponentType.Temperature, "pvt", "pvtTemperatureMainString12Return"),

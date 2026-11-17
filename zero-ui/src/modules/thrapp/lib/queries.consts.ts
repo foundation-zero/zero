@@ -1,11 +1,12 @@
 import { gql, TypedDocumentNode } from "@urql/vue";
-import { ThrsModules } from "./consts.types";
+import { ThrsApiModule } from "./consts";
 import * as F from "./mqtt-graphql-queries.generated";
 
 // Queries per view on the MQTT GraphQL API, holding only the module parts the view shows. A
 // device shown in a module's view may live in another module (by its topic), so that module's
 // part is queried too: `pcmTemperatureProducersSupply` in pcm, the fresh water sensors in
-// freshWaterHot, the cooling devices in cooling.
+// freshWaterHot, the cooling devices in cooling, the drives in propulsionDrive, the shore power
+// converters in dc700VShoreConverter and the uGrids in dcAcConverter.
 
 // Mimics
 
@@ -108,10 +109,12 @@ export const DC_MIMIC_QUERY = gql`
     ...DcSensorValues
     ...DcControlValues
     ...DhwSensorValues
+    ...DcAcConverterSensorValues
   }
   ${F.DC_SENSOR_VALUES_FRAGMENT}
   ${F.DC_CONTROL_VALUES_FRAGMENT}
   ${F.DHW_SENSOR_VALUES_FRAGMENT}
+  ${F.DC_AC_CONVERTER_SENSOR_VALUES_FRAGMENT}
 `;
 
 export const ADSORPTION_MIMIC_QUERY = gql`
@@ -135,11 +138,15 @@ export const DRIVES_MIMIC_QUERY = gql`
     ...DrivesControlValues
     ...DcSensorValues
     ...DhwSensorValues
+    ...PropulsionDriveSensorValues
+    ...Dc700VShoreConverterSensorValues
   }
   ${F.DRIVES_SENSOR_VALUES_FRAGMENT}
   ${F.DRIVES_CONTROL_VALUES_FRAGMENT}
   ${F.DC_SENSOR_VALUES_FRAGMENT}
   ${F.DHW_SENSOR_VALUES_FRAGMENT}
+  ${F.PROPULSION_DRIVE_SENSOR_VALUES_FRAGMENT}
+  ${F.DC700_V_SHORE_CONVERTER_SENSOR_VALUES_FRAGMENT}
 `;
 
 // Parameters pages
@@ -209,9 +216,10 @@ export const DRIVES_PARAMETERS_PAGE_QUERY = gql`
   ${F.DRIVES_CONTROLLER_STATE_FRAGMENT}
 `;
 
-// Simulator monitoring pages (sensor and control values of one module)
+// Simulator monitoring pages (sensor and control values of one module), for the modules thrsim's
+// menu has.
 
-export const MONITORING_PAGE_QUERIES: Record<keyof ThrsModules, TypedDocumentNode> = {
+export const MONITORING_PAGE_QUERIES: Record<ThrsApiModule, TypedDocumentNode> = {
   thrusters: gql`
     query ThrustersMonitoring {
       ...ThrustersSensorValues
@@ -280,7 +288,7 @@ export const MONITORING_PAGE_QUERIES: Record<keyof ThrsModules, TypedDocumentNod
 
 // Simulator controls pages (control values of one module)
 
-export const CONTROLS_PAGE_QUERIES: Record<keyof ThrsModules, TypedDocumentNode> = {
+export const CONTROLS_PAGE_QUERIES: Record<ThrsApiModule, TypedDocumentNode> = {
   thrusters: gql`
     query ThrustersControls {
       ...ThrustersControlValues

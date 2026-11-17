@@ -1,11 +1,6 @@
 import { ChartDataType, RecordIndex, Stamped } from "@/modules/common/types";
-import {
-  ModuleDefinition,
-  SchemaDefinition,
-  SchemaDefinitions,
-  THRSModule,
-} from "@/modules/thrapp/types/thrs";
-import { DEFINITIONS } from "./consts";
+import { ModuleDefinition, THRSModule } from "@/modules/thrapp/types/thrs";
+import { DEFINITIONS, THRS_API_DEFINITIONS } from "./consts";
 import { MQTT_GRAPHQL_DEFINITIONS } from "./definitions.generated";
 
 export type ThrsDefinitions<T extends Record<string, ModuleDefinition> = typeof DEFINITIONS> = T;
@@ -24,23 +19,9 @@ export type ComponentRecord<
   T extends Record<string, Stamped<ChartDataType>> = Record<string, Stamped<ChartDataType>>,
 > = T;
 
-export type ThrsQueries<
-  TDefinitions extends Record<string, ModuleDefinition> = typeof DEFINITIONS,
-> = {
-  [Module in keyof TDefinitions]: {
-    [QueryGroup in keyof TDefinitions[Module]]: TDefinitions[Module][QueryGroup] extends Record<
-      string,
-      SchemaDefinitions<SchemaDefinition<unknown>>
-    >
-      ? {
-          [DefinitionPart in keyof TDefinitions[Module][QueryGroup]]: string;
-        }
-      : string;
-  };
-};
-
+// thrs-api's answer to QUERY_MODULES.
 export type THRS = {
-  modules: ThrsModules;
+  modules: ThrsModules<typeof THRS_API_DEFINITIONS>;
 };
 
 type MqttGraphqlThrsModules = ThrsModules<typeof MQTT_GRAPHQL_DEFINITIONS>;

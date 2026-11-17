@@ -1,5 +1,5 @@
 import { tScoped } from "@/modules/common/lib/utils";
-import { ThrsModules } from "@/modules/thrapp/lib/consts";
+import { isThrsApiModule, ThrsModules } from "@/modules/thrapp/lib/consts";
 import { DcConverterGroup, PvtGroup } from "@/modules/thrapp/state/state.types";
 import {
   ControlStatus,
@@ -76,13 +76,18 @@ const AMCS_MODES = [AmcsControlMode.Local, AmcsControlMode.Manual, AmcsControlMo
 
 /**
  * The mode badges of a module: one per target of its automatic mode, or the reason it is not
- * under control (AMCS mode, or one "Manual control" badge per target).
+ * under control (AMCS mode, or one "Manual control" badge per target). A module without a
+ * controller has no modes.
  */
 export function getModuleModes(
   module: keyof ThrsModules,
   control: ControlStatus | undefined,
   t: Translate,
 ): ModuleModeBadge[] {
+  if (!isThrsApiModule(module)) {
+    return [];
+  }
+
   const status = control?.modules?.[module as keyof ControlStatus["modules"]];
   const automaticMode = status?.controlMode?.automaticMode;
   const amcsMode = status?.sensorValues?.mode?.mode.value;
