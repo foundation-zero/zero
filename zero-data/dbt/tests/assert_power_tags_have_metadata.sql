@@ -1,5 +1,6 @@
 /*
  * This test asserts that all active power tags have corresponding metadata records.
+ * A record with main_group NULL is a deliberate exclusion (see load_power_tag_metadata), not missing metadata.
  */
 
 {% set query %}
@@ -15,7 +16,7 @@
     from power_tag_data as pt
     left join {{ source('metadata', 'power_tag_metadata') }} as meta
         on pt.topic = meta.topic
-    where meta.main_group is null
+    where meta.topic is null
 {% endset %}
 
 {% if execute %}
