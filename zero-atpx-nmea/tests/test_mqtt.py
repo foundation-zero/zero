@@ -33,6 +33,12 @@ def _exit(reason: str) -> NoReturn:
     raise Exited(reason)
 
 
+@pytest.fixture
+def exits() -> list[str]:
+    """The reasons the client exited with, in order."""
+    return []
+
+
 class FakeClock:
     def __init__(self) -> None:
         self.now = 0.0
@@ -55,10 +61,14 @@ def attempt(monkeypatch: pytest.MonkeyPatch) -> AsyncMock:
 
 
 @pytest.fixture
-def client(clock: FakeClock) -> RecoveringClient:
+def client(clock: FakeClock, exits: list[str]) -> RecoveringClient:
+    def exit_process(reason: str) -> NoReturn:
+        exits.append(reason)
+        _exit(reason)
+
     return RecoveringClient(
         clock=clock,
-        exit_process=_exit,
+        exit_process=exit_process,
         host="broker",
         reconnect=ReconnectConfig(initial_delay=0, max_attempts=None),
     )
@@ -101,12 +111,16 @@ async def test_broken_handshake_is_retried(
     assert attempt.await_count == 2
 
 
-async def test_gives_up_when_still_refused_after_grace(
-    client: RecoveringClient, attempt: AsyncMock, clock: FakeClock
+async def test_exits_when_refused_past_grace_on_first_connect(
+    client: RecoveringClient,
+    attempt: AsyncMock,
+    clock: FakeClock,
+    exits: list[str],
 ):
     attempt.side_effect = _attempts(clock)
-    with pytest.raises(MQTTConnectError):
+    with pytest.raises(Exited):
         await client._connect_with_retry()
+    assert exits == ["mqtt: CONNACK refused 0x87, still refused after 90 s"]
     refused_for = clock.now - ATTEMPT_INTERVAL  # since the first attempt
     assert refused_for == REFUSAL_GRACE_SECONDS
 
@@ -132,7 +146,10 @@ async def test_refusal_grace_restarts_after_another_failure(
 
 
 async def test_exits_when_refused_past_grace_on_reconnect(
-    client: RecoveringClient, attempt: AsyncMock, clock: FakeClock
+    client: RecoveringClient,
+    attempt: AsyncMock,
+    clock: FakeClock,
+    exits: list[str],
 ):
     protocol = MagicMock()
     protocol.run = AsyncMock(side_effect=ConnectionResetError("Connection lost"))
@@ -140,8 +157,11 @@ async def test_exits_when_refused_past_grace_on_reconnect(
     protocol._transport.close = AsyncMock()
     client._protocol = protocol
     attempt.side_effect = _attempts(clock)
-    with pytest.raises(Exited, match="^mqtt: client stopped: MQTTConnectError"):
+    with pytest.raises(Exited):
         await client._run_loop()
+    # The run loop's own catch-all sees the Exited that stands in for os._exit,
+    # so the refusal is the first reason, not the last.
+    assert exits[0] == "mqtt: CONNACK refused 0x87, still refused after 90 s"
     assert attempt.await_count == REFUSAL_GRACE_SECONDS / ATTEMPT_INTERVAL + 1
 
 

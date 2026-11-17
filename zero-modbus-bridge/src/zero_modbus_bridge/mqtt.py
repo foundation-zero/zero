@@ -50,8 +50,8 @@ class RecoveringClient(zmqtt.MQTTClient):
 
     zmqtt retries a refused CONNACK when ``retry_refusal`` says so. This client
     says so until the refusals have gone on for ``REFUSAL_GRACE_SECONDS``. Then
-    zmqtt gives up: through ``on_connection_recovery_failed`` on a reconnect,
-    or with an exception from ``connect`` on the first connect.
+    it exits with the refusal as the termination message, on the first connect
+    and on a reconnect alike.
 
     TODO(ZERO-2532): drop the handshake and run loop handling once zMQTT#137
     is released.
@@ -90,7 +90,15 @@ class RecoveringClient(zmqtt.MQTTClient):
         now = self._clock()
         if self._refused_since is None:
             self._refused_since = now
-        return now - self._refused_since < REFUSAL_GRACE_SECONDS
+        if now - self._refused_since >= REFUSAL_GRACE_SECONDS:
+            # Exit here rather than return False: zmqtt's own give-up loses the
+            # refusal (the reconnect path only says "gave up reconnecting", the
+            # first connect raises without a termination message).
+            self._exit_process(
+                f"{self._name}: CONNACK refused {refusal.return_code:#04x}, "
+                f"still refused after {REFUSAL_GRACE_SECONDS:.0f} s"
+            )
+        return True
 
     async def _run_loop(self) -> None:
         # zmqtt doesn't restart a run loop that fails on a live connection,
