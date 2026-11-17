@@ -29,7 +29,7 @@ dynamic = ["version"]
 license-files = ["LICENSE"]
 
 [dependency-groups]
-dev = ["ruff==0.17.4", "pygraphviz~=2.0.4", "pyright~=1.1.414"]
+dev = ["ruff==0.17.5", "pygraphviz~=2.0.4", "pyright~=1.1.414"]
 
 # Notebooks and plotting for the analysis/ folder; not installed in the images.
 analysis = [
