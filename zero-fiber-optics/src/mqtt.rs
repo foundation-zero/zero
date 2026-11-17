@@ -239,15 +239,12 @@ impl MqttConnection {
     }
 }
 
-/// Drop the publish held back by a packet-id collision, after a connection error.
+/// Drop the publish held by a packet-id collision, after a connection error.
 ///
-/// While a collision is held, rumqttc sends no new publishes until a PUBACK frees
-/// the packet id. On an error rumqttc discards every unacknowledged
-/// publish, as a clean session must, but keeps the collision. No PUBACK can then
-/// free the id, so the client reconnects and sends only pings, while the
-/// connection looks healthy. It fails with `Timeout while waiting to resolve
-/// collision` every two keep-alives, forever. Dropping the held publish loses
-/// one more packet, like the unacknowledged ones the session already lost.
+/// rumqttc sends nothing new while a collision is held, and on an error it
+/// discards the unacknowledged publishes but keeps the collision. No PUBACK can
+/// free the id then, so the client would only ping after reconnecting, forever.
+/// The dropped publish is one more loss, like the ones the session already lost.
 fn drop_collision(event_loop: &mut EventLoop) {
     if let Some(publish) = event_loop.state.collision.take() {
         warn!(
