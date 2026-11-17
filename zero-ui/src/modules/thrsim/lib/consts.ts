@@ -1,8 +1,8 @@
 import { ThrusterMode } from "@/modules/thrapp/types/thrs";
 import { gql } from "@urql/vue";
 import { SimulationComponentType, SimulationDefinitions, SimulationFields } from "../types";
-import * as Definitions from "./consts.generated";
 import { ThrsSimulationType } from "./consts.types";
+import * as Definitions from "./simulation.consts";
 
 export * from "./consts.types";
 

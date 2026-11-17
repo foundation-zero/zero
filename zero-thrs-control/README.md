@@ -98,11 +98,3 @@ Start the API with:
 ```bash
 just run_api
 ```
-
-### Exporting the Schema
-
-Export the GraphQL schema to `zero-ui`:
-
-```bash
-just export_schema
-```

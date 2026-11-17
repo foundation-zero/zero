@@ -9,7 +9,7 @@ import {
   NumberFieldInput,
 } from "@/components/ui/number-field";
 import { Switch } from "@/components/ui/switch";
-import { ThrsApiModule } from "@/modules/thrapp/lib/consts";
+import { ControlledModule } from "@/modules/thrapp/lib/consts";
 import { controlForm } from "@/modules/thrsim/stores/thrs";
 import { PumpControl } from "@/modules/thrapp/types/thrs";
 import { toUpperCamelCase } from "@common/lib/utils";
@@ -20,7 +20,7 @@ const props = defineProps<{
   values: PumpControl;
   componentName: string;
   yardTag: string;
-  module: ThrsApiModule;
+  module: ControlledModule;
 }>();
 
 const controlValues = toRef(props, "values");

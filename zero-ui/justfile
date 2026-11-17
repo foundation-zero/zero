@@ -14,10 +14,6 @@ type_check:
 test:
     pnpm test:unit
 
-
-extract_all_schemas:
-    pnpm extract-all-schemas
-
 generate_tooltips:
     pnpm generate-tooltips
 

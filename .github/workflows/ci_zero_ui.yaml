@@ -116,8 +116,7 @@ jobs:
         timeout-minutes: 2
         run: |
           until curl --silent --fail --output /dev/null --get http://localhost:5101/graphql --data-urlencode 'query={__typename}' \
-            && curl --silent --get http://localhost:5102/graphql --data-urlencode 'query={simulation{status}}' | grep --quiet '"status"' \
-            && curl --silent --fail --output /dev/null --header 'Content-Type: application/json' --data '{"query":"{__typename}"}' http://localhost:5103/graphql; do
+            && curl --silent --header 'Content-Type: application/json' --data '{"query":"{thrs{simulator{status{status}}}}"}' http://localhost:5103/graphql | grep --quiet '"status":"'; do
             sleep 1
           done
 
@@ -220,7 +219,6 @@ jobs:
         working-directory: zero-ui/dist
         run: |
           echo '{
-            "VITE_THRS_API_SERVER_URL": "https://thrs-control-singel.tail0b4840.ts.net/graphql",
             "VITE_MQTT_GRAPHQL_API_SERVER_URL": "https://api-singel.tail0b4840.ts.net/graphql",
             "VITE_LOADS_API_SERVER_URL": "https://loads-app-singel.tail0b4840.ts.net/graphql",
             "VITE_GRAPHQL_URL": "https://hasura-singel.tail0b4840.ts.net/v1/graphql",

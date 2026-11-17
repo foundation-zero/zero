@@ -1,6 +1,6 @@
 import { capitalizeFirst } from "@/modules/common/lib/utils";
 import { gql } from "@urql/vue";
-import { isThrsApiModule, ThrsApiModule } from "./consts";
+import { ControlledModule, isControlledModule } from "./consts";
 import { MqttGraphqlModules } from "./consts.types";
 import { MQTT_GRAPHQL_DEFINITIONS } from "./definitions.generated";
 
@@ -64,8 +64,8 @@ const INPUT_TYPES: Record<ControllerInput, string> = {
 };
 
 // Only modules with a controller take parameters, control values and an automation mode.
-function assertController(module: string): asserts module is ThrsApiModule {
-  if (!isThrsApiModule(module)) {
+function assertController(module: string): asserts module is ControlledModule {
+  if (!isControlledModule(module)) {
     throw new Error(`${module} has no controller`);
   }
 }
