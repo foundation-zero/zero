@@ -12,9 +12,9 @@ Three ways the apps break the ADR today:
 - **Crash:** the app exits when the broker goes away and comes back through `CrashLoopBackOff`. That is safe, but it is red in k9s and adds minutes of restart backoff.
 - **Slow:** the app reconnects by itself, but its 60 s backoff cap delays it by up to a minute after the broker is back.
 
-No app reports MQTT connectivity through readiness, and none has the 15 min deadline.
+No app reports MQTT connectivity through readiness, and none restarts after 15 min not ready.
 
-Phase 1 (#971, #974–#977) fixed the reconnects, backoff caps, keepalives and refusals, and gave battery-cells and fiber-optics readiness and the deadline. This section and the table below describe the state before it.
+Phase 1 (#971, #974–#977) fixed the reconnects, backoff caps, keepalives and refusals, and gave battery-cells and fiber-optics readiness and the restart after 15 minutes not ready. This section and the table below describe the state before it.
 
 What the logs of the 2026-10-13 RabbitMQ cutover show:
 
@@ -28,7 +28,7 @@ What the logs of the 2026-10-13 RabbitMQ cutover show:
 | --- | --- | --- | --- |
 | **F1** FastStream/zmqtt through `zero-modbus-bridge` | power-tags, termodinamica, hull-temperature | Slow (power-tags) or crash (others); stuck possible on a refusal during reconnect | Retry refusals and handle give-up once, in the bridge |
 | **F2** FastStream/zmqtt, standalone | atpx-nmea | Stuck | Same as F1, plus a second broker and a zmqtt/FastStream upgrade |
-| **F3** rumqttc (Rust) | fiber-optics, battery-cells, mqtt-graphql | fiber-optics stuck; the other two reconnect | Readiness and deadline; move fiber-optics to MQTT 3.1.1 |
+| **F3** rumqttc (Rust) | fiber-optics, battery-cells, mqtt-graphql | fiber-optics stuck; the other two reconnect | Readiness and restart after 15 min not ready; move fiber-optics to MQTT 3.1.1 |
 | **F4** aiomqtt, exits on error | loads-app (api, control), thrs-control (control, simulation, api), domestic-control, data-gen | Crash | Follow-up ticket |
 | **F5** third party | vector | Stuck (doesn't re-subscribe) | Existing alert only |
 
@@ -36,15 +36,15 @@ Out of scope: zero-ui (browser client), zero-generator (library, not deployed on
 
 ## Shared pieces
 
-Every flavour needs readiness, the 15 min deadline and a probe. How depends on the app:
+Every flavour needs readiness, a restart after 15 minutes not ready, and the probes. How depends on the app:
 
-- **FastStream apps (F1, F2):** serve `/health` from FastStream itself: `AsgiFastStream` with `make_ping_asgi(broker)`, which returns 204, or 500 when `broker.ping()` fails. An app with more than one required dependency (a second broker, a Modbus gateway) writes a small handler that checks each one. The chart points both probes at `/health`: readiness with the usual short period, liveness with `periodSeconds: 60` and `failureThreshold: 15`, which is the deadline (ADR). The app logs every readiness change with the reason.
+- **FastStream apps (F1, F2):** serve `/health` from FastStream itself: `AsgiFastStream` with `make_ping_asgi(broker)`, which returns 204, or 500 when `broker.ping()` fails. An app with more than one required dependency (a second broker, a Modbus gateway) writes a small handler that checks each one. The chart points both probes at `/health`: readiness with the usual short period, liveness with `periodSeconds: 60` and `failureThreshold: 15`, so Kubernetes restarts a pod that has been not ready for 15 minutes (ADR). The app logs every readiness change with the reason.
 
   Things to know, from a local test against a stopped broker:
   - The HTTP server is up before the broker connects, so `/health` answers 500 while the client retries; it turns 204 on the first successful reconnect.
-  - `broker.ping()` sends a real PINGREQ; on a silent broker it takes its full timeout (4 s), so keep the probe's `timeoutSeconds` above that.
+  - `broker.ping()` sends a real PINGREQ; on a silent broker it takes its full timeout (4 s), so set the probe's `timeoutSeconds` higher than that.
   - Pass `host="0.0.0.0"` and a port through `run_extra_options`; uvicorn defaults to 127.0.0.1, which the kubelet can't reach. Set `access_log=False`, or every probe is logged.
-- **Rust apps (F3):** a status file the app writes, e.g. `not ready: mqtt: CONNACK refused (not authorized) since 13:02`, on an `emptyDir` mount because the charts set `readOnlyRootFilesystem`; an exec readiness probe that prints it; and an in-process deadline that writes the reason to `/dev/termination-log` and exits. Done in phase 1; the shared code is the `zero-readiness` crate in `packages/rust` (ZERO-2612).
+- **Rust apps (F3):** a status file the app writes, e.g. `not ready: mqtt: CONNACK refused (not authorized) since 13:02`, on an `emptyDir` mount because the charts set `readOnlyRootFilesystem`; an exec readiness probe that prints it; and the app exits by itself after 15 minutes not ready, writing the reason to `/dev/termination-log`. Done in phase 1; the shared code is the `zero-readiness` crate in `packages/rust` (ZERO-2612).
 
 Every flavour also has to meet these:
 
@@ -89,7 +89,7 @@ Proposed: **the A+T input broker is required.** Without it the pod has nothing t
 
 **fiber-optics root cause:** it was our only app on rumqttc's MQTT 5 client, whose event loop writes and flushes the socket without a timeout (`rumqttc v5/eventloop.rs`, 0.24 and 0.25; upstream issue [bytebeamio/rumqtt#1078](https://github.com/bytebeamio/rumqtt/issues/1078)). The MQTT 3.1.1 client wraps the flush in a timeout. In the cutover RabbitMQ's pod IP disappeared without a TCP reset, fiber-optics' send buffer filled with ~16 KB publishes at 10 Hz, and the flush never returned. No error was logged, and the keepalive check never ran. There was no RabbitMQ memory or disk alarm.
 
-Done: battery-cells (#971) and fiber-optics (#976, now on the MQTT 3.1.1 client) report readiness through a status file and exit on the deadline; their shared code is the `zero-readiness` crate (#1020). mqtt-graphql (#975) caps its backoff and exits on refusals; its MQTT is optional, so it has no readiness.
+Done: battery-cells (#971) and fiber-optics (#976, now on the MQTT 3.1.1 client) report readiness through a status file and exit after 15 minutes not ready; their shared code is the `zero-readiness` crate (#1020). mqtt-graphql (#975) caps its backoff and exits on refusals; its MQTT is optional, so it has no readiness.
 
 A not-ready fiber-optics or battery-cells pod drops out of its UDP `LoadBalancer` Service, so packets stop reaching it during an outage. We accept that; the packets can't be published anyway.
 
@@ -110,7 +110,7 @@ The `mqtt` source does not re-subscribe when the broker has lost the session (up
 
 **Decided: the existing alert until Vector is upgraded to 0.62 (ZERO-2533).** `VectorSourceNoEvents` in edge-flux (`infrastructure/shared/observability/rules/vector/vector.yml`) fires after about 6 min without MQTT intake and pages through Alertmanager to PagerDuty. Until then, a human restarts Vector. No liveness probe or sidecar: an intake check can't tell a stuck source from a quiet one or a broker outage, so it would restart healthy pods. Known gap: a source that has never received anything never fires.
 
-**This is a temporary exception to the ADR's 15 minute deadline:** a stale source keeps Vector `Running` until a human restarts it. Owner: Floris Smit. It ends when Vector is upgraded; until then the alert bounds how long it goes unnoticed, not how long it lasts.
+**This is a temporary exception to the ADR:** a stale source keeps Vector `Running` until a human restarts it. Owner: Floris Smit. It ends when Vector is upgraded; until then the alert bounds how long it goes unnoticed, not how long it lasts.
 
 ## Not in this plan
 
@@ -118,7 +118,7 @@ These are outside the ADR's scope, but the work above touches them:
 
 - **Replay policy:** which buffered data is sent after an outage. Telemetry should be; commands should not.
 - **QoS 1 in-flight messages:** these can be lost or duplicated on reconnect. For telemetry stamped with `TimeStamp` that is probably acceptable.
-- **Alerting:** pods not ready for more than about 5 min, restarts caused by the 15 min deadline, and readings dropped because the #716 buffer filled.
+- **Alerting:** pods not ready for more than about 5 min, restarts after 15 min not ready, and readings dropped because the #716 buffer filled.
 - **zero-ui offline detection** on the client side: suggested for a separate ticket.
 
 ## Order
