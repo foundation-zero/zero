@@ -26,6 +26,12 @@ ours. The service reconnects without a limit, at most 30 s apart. It exits after
 90 s of a broker refusing the login, or when a client stops on an error it
 doesn't retry, so Kubernetes restarts it.
 
+`GET /health` on port 8080 returns 204 while both brokers answer a ping, and
+500 otherwise. The pod is ready only while it returns 204, and Kubernetes
+restarts it after 15 minutes not ready. Each change in readiness is logged once,
+naming the broker that did not answer, e.g.
+`Not ready: atpx-mqtt did not answer a ping`.
+
 ## Consumer contract (AsyncAPI specification)
 
 The service's MQTT interface is documented in a committed **AsyncAPI 3.0.0**

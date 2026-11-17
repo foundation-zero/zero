@@ -9,9 +9,10 @@ lives in and is tested against the pure `parse` function.
 
 import logging
 
-from faststream import FastStream
+from faststream.asgi import AsgiFastStream
 from faststream.mqtt import MQTTMessage, QoS
 
+from zero_atpx_nmea.health import make_health_asgi
 from zero_atpx_nmea.parser import parse
 from zero_atpx_nmea.settings import InputMqttSettings, OutputMqttSettings
 
@@ -24,7 +25,7 @@ OUTPUT_TOPIC_TEMPLATE = "atpx/processed/nmea/{type}/{sender}"
 def build_app(
     input_settings: InputMqttSettings | None = None,
     output_settings: OutputMqttSettings | None = None,
-) -> FastStream:
+) -> AsgiFastStream:
     """Wire up the input subscriber and output broker, and return the app.
 
     Two separate `MQTTBroker`s are used (even though locally they point at
@@ -54,19 +55,21 @@ def build_app(
         )
         await output_broker.publish(envelope, out_topic, qos=QoS.AT_LEAST_ONCE)
 
-    # FastStream manages only input_broker (which owns the subscriber). These
-    # hooks start the output broker before it and stop it after it, so the
-    # output producer stays connected for as long as a handler might publish —
-    # otherwise a message could be handled before output_broker finishes
-    # connecting, or after it has disconnected.
-    async def start_output_broker() -> None:
-        await output_broker.start()
+    # Both brokers start after the HTTP server is up, so /health answers while
+    # they connect. FastStream starts and stops them in the order given; the
+    # input broker is stopped first by hand, so the output broker outlives any
+    # handler that publishes to it.
+    async def stop_input_broker() -> None:
+        await input_broker.stop()
 
-    async def stop_output_broker() -> None:
-        await output_broker.stop()
-
-    return FastStream(
+    return AsgiFastStream(
+        output_broker,
         input_broker,
-        on_startup=[start_output_broker],
-        after_shutdown=[stop_output_broker],
+        asgi_routes=[
+            (
+                "/health",
+                make_health_asgi({"atpx-mqtt": input_broker, "mqtt": output_broker}),
+            )
+        ],
+        on_shutdown=[stop_input_broker],
     )

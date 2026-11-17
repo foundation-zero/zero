@@ -20,9 +20,22 @@ logging.basicConfig(
 )
 
 
+# The chart's probes call /health on this port.
+HEALTH_PORT = 8080
+
+
 class RunCmd(BaseModel):
     async def cli_cmd(self) -> None:
-        await build_app().run()
+        await build_app().run(
+            run_extra_options={
+                # uvicorn's default, 127.0.0.1, is out of the kubelet's reach.
+                "host": "0.0.0.0",
+                "port": HEALTH_PORT,
+                # Or every probe is logged. A string: FastStream parses it
+                # like a CLI flag.
+                "access_log": "false",
+            }
+        )
 
 
 class AsyncApiCmd(BaseModel):
