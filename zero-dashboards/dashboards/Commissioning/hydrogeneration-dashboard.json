@@ -9408,6 +9408,18 @@
                         }
                       }
                     ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Propeller speed rate"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.insertNulls",
+                        "value": 120000
+                      }
+                    ]
                   }
                 ]
               }
@@ -9770,6 +9782,18 @@
                           "tooltip": true,
                           "viz": false
                         }
+                      }
+                    ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Propeller speed rate"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.insertNulls",
+                        "value": 120000
                       }
                     ]
                   }

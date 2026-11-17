@@ -6205,6 +6205,18 @@
                         }
                       }
                     ]
+                  },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "Propeller speed rate"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.insertNulls",
+                        "value": 120000
+                      }
+                    ]
                   }
                 ]
               }
