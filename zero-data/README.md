@@ -126,7 +126,7 @@ To add or name a device, edit the CSV, then:
 
 ```bash
 just generate-device-metadata
-just dbt-deploy zero
+just dbt-deploy <tier>
 ```
 
 `tests/test_device_metadata.py` checks that the macro matches the CSV, that each topic follows the
