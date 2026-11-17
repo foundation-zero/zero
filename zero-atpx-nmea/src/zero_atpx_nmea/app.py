@@ -3,14 +3,16 @@
 Subscribes to A+T's `atpx/nmea0183/#` on the input broker; for each message,
 parses it and republishes the resulting JSON envelope to
 `atpx/processed/nmea/<type>/<sender>` on the output broker. Unparseable
-sentences are logged and dropped. Not unit-tested — all parsing behavior
-lives in and is tested against the pure `parse` function.
+sentences are logged and dropped, and so is everything that arrives while
+the output broker is down. Parsing behavior lives in and is tested against the
+pure `parse` function.
 """
 
 import logging
 
 from faststream.asgi import AsgiFastStream
 from faststream.mqtt import MQTTMessage, QoS
+from zmqtt import MQTTDisconnectedError
 
 from zero_atpx_nmea.health import make_health_asgi
 from zero_atpx_nmea.parser import parse
@@ -39,9 +41,11 @@ def build_app(
 
     input_broker = input_settings.make_broker()
     output_broker = output_settings.make_broker()
+    dropped = 0
 
     @input_broker.subscriber(INPUT_TOPIC, description="Raw A+T NMEA 0183 sentences")
     async def handle(raw_sentence: str, message: MQTTMessage) -> None:
+        nonlocal dropped
         topic = message.raw_message.topic
         envelope = parse(raw_sentence, topic)
         if envelope is None:
@@ -53,7 +57,21 @@ def build_app(
         out_topic = OUTPUT_TOPIC_TEMPLATE.format(
             type=envelope["type"], sender=envelope["sender"]
         )
-        await output_broker.publish(envelope, out_topic, qos=QoS.AT_LEAST_ONCE)
+        try:
+            await output_broker.publish(envelope, out_topic, qos=QoS.AT_LEAST_ONCE)
+        except MQTTDisconnectedError as exc:
+            # Left to FastStream, every dropped message logs a traceback.
+            if not dropped:
+                logger.warning(
+                    "Publishing to the output broker failed (%s), "
+                    "dropping messages until it is back",
+                    exc,
+                )
+            dropped += 1
+            return
+        if dropped:
+            logger.info("Publishing again, dropped %d message(s)", dropped)
+            dropped = 0
 
     # Both brokers start after the HTTP server is up, so /health answers while
     # they connect. FastStream starts and stops them in the order given; the
