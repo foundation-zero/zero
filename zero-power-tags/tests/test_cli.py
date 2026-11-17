@@ -1,6 +1,7 @@
 import logging
 import os
 import re
+from unittest.mock import MagicMock
 
 import pytest
 from faststream.mqtt import MQTTBroker
@@ -11,6 +12,7 @@ from zero_power_tags import cli
 from zero_power_tags.cli import (
     PowerTagsSettings,
     RunCmd,
+    StubCmd,
     configured_modbus_ports,
     deployed_specs,
     local_topic_groups,
@@ -188,3 +190,25 @@ async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
     assert isinstance(broker, RecoveringBroker)
     assert broker._connection_kwargs["reconnect"].max_attempts is None
     assert len(started) == 1
+
+
+def test_stub_serves_only_the_deployed_panels(monkeypatch: pytest.MonkeyPatch):
+    deployed, *_ = read_modbus_bridge_specs()
+    settings = _settings(
+        **{
+            cli._panel_field_key(deployed.panel, "host"): "stub",
+            cli._panel_field_key(deployed.panel, "port"): "11502",
+        }
+    )
+    monkeypatch.setattr(cli, "PowerTagsSettings", lambda: settings)
+    stub = MagicMock(servers=[])
+    monkeypatch.setattr(cli.Stub, "from_topic_groups", stub.from_topic_groups)
+
+    StubCmd(_env_file=None).cli_cmd()  # type: ignore[call-arg]
+
+    [[(topics, port)]] = stub.from_topic_groups.call_args.args
+    assert [topic.topic for topic in topics] == [
+        topic.topic for topic in deployed.topics
+    ]
+    assert port == 11502
+    stub.from_topic_groups.return_value.run.assert_called_once_with()
