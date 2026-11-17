@@ -14,6 +14,8 @@ Three ways the apps break the ADR today:
 
 No app reports MQTT connectivity through readiness, and none has the 15 min deadline.
 
+Phase 1 (#971, #974–#977) fixed the reconnects, backoff caps, keepalives and refusals, and gave battery-cells and fiber-optics readiness and the deadline. This section and the table below describe the state before it.
+
 What the logs of the 2026-10-13 RabbitMQ cutover show:
 
 - **RabbitMQ refuses connections with CONNACK 0x87 "Not authorized"** (MQTT 3.1.1 code 5) for 25–65 s after it boots, probably until the topology operator has provisioned the users again. Clients that exit on the first refusal crash-loop through that window.
@@ -34,17 +36,16 @@ Out of scope: zero-ui (browser client), zero-generator (library, not deployed on
 
 ## Shared pieces
 
-Every flavour needs the same three things:
+Every flavour needs readiness, the 15 min deadline and a probe. How depends on the app:
 
-- **Status file:** the app writes its readiness and the reason, e.g. `not ready: mqtt: CONNACK refused (not authorized) since 13:02`. All charts set `readOnlyRootFilesystem`, so the file lives on an `emptyDir` mount (for example `/run/health`), with its path passed in through config.
-- **Deadline:** after 15 min of continuous not-ready time, the app writes the reason to `/dev/termination-log` and exits. The timer resets whenever the app becomes ready. `/dev/termination-log` is writable without extra configuration.
-- **Probe:** an exec readiness probe in each chart that prints the status file and fails when the app is not ready. All images are Debian slim, so `sh` is available.
+- **FastStream apps (F1, F2):** serve `/health` from FastStream itself: `AsgiFastStream` with `make_ping_asgi(broker)`, which returns 204, or 500 when `broker.ping()` fails. An app with more than one required dependency (a second broker, a Modbus gateway) writes a small handler that checks each one. The chart points both probes at `/health`: readiness with the usual short period, liveness with `periodSeconds: 60` and `failureThreshold: 15`, which is the deadline (ADR). The app logs every readiness change with the reason.
+- **Rust apps (F3):** a status file the app writes, e.g. `not ready: mqtt: CONNACK refused (not authorized) since 13:02`, on an `emptyDir` mount because the charts set `readOnlyRootFilesystem`; an exec readiness probe that prints it; and an in-process deadline that writes the reason to `/dev/termination-log` and exits. Done in phase 1; the shared code is the `zero-readiness` crate in `packages/rust` (ZERO-2612).
 
 Every flavour also has to meet these:
 
-- **Backoff cap of 30 s.** All our clients cap at 60 s today: the three Rust apps, and zmqtt's default `max_delay`. With a 60 s cap a client can wait a full minute after the broker is back, which misses the "reconnect within about 1 min" target.
-- **Keepalive of 15 s.** It detects a dead connection; RabbitMQ's keepalive window races the 60 s default (see power-tags).
-- **Refusals, permanent errors such as bad credentials:** retry a few times over about 60–90 s, then exit (ADR). This includes 0x87, because RabbitMQ sends it while booting. The Rust clients retry these forever today, so only the 15 min deadline would stop them.
+- **Backoff cap of 30 s.** With zmqtt's and our Rust apps' old 60 s cap, a client could wait a full minute after the broker is back, which misses the "reconnect within about 1 min" target. Done in phase 1.
+- **Keepalive of 15 s.** It detects a dead connection; RabbitMQ's keepalive window races the 60 s default. Done in phase 1.
+- **Refusals, permanent errors such as bad credentials:** retry a few times, then exit (ADR). This includes 0x87, because RabbitMQ sends it while booting. Done in phase 1: the Python apps exit after about 90 s, the Rust apps after 10 refusals (about 3 min).
 - **Required or optional:** each app decides this for each of its dependencies, not only MQTT. MQTT is required for worker pods and optional for pods that serve an HTTP API, so the API stays in its Service and reports values as missing (#905).
 
 Things to know before rolling this out:
@@ -52,39 +53,40 @@ Things to know before rolling this out:
 - **k9s colours `0/1 Running` the same red as `CrashLoopBackOff`.** Only the STATUS text differs, so a broker outage will still look red. It just won't restart pods.
 - **A rollout stalls while a required dependency is down,** because new pods never become ready. It resumes once the dependency is back.
 
-**Decided: the shared code is copied per app** (about 50 lines). The F1 apps get it once, in `zero-modbus-bridge`; every other app has its own copy, Python and Rust alike. There is no shared chart library, so the probe snippet is copied into each chart.
+**Decided: no new packages for health.** The Python health code is a few lines per app on top of FastStream, so each app has its own; the F1 apps share theirs through `zero-modbus-bridge`, as they already share the broker setup. The zmqtt workaround (`RecoveringClient`) stays where phase 1 put it, in the bridge and a copy in atpx-nmea, until the upstream fixes are released. There is no shared chart library, so the probe block is copied into each chart.
 
 ## F1: power-tags, termodinamica, hull-temperature
 
-Requirements:
-- **CONNACK refusals:** zmqtt never retries them, even with `max_attempts=None`. On the first connect the app exits; during a reconnect the refusal ends zmqtt's reconnect task and leaves the pod `Running`. The bridge wraps the client so it retries every refusal a few times, on the first connect and on reconnect, then exits. The wrapper is temporary: drop it once zmqtt retries refusals itself (see below).
-- **Give-up:** exit from `on_connection_recovery_failed` (zmqtt ≥0.2 and FastStream 0.7.5 have it).
-- **Defaults** in `MqttSettings.make_broker`: `ReconnectConfig(max_attempts=None)`, the 30 s backoff cap and a 15 s keepalive. No app sets the 30 s cap yet. power-tags sets `max_attempts=None` and the 15 s keepalive; termodinamica and hull-temperature set neither, so termodinamica gives up after the default 5 attempts.
-- **Modbus gateways:** optional (logged only) for power-tags, which reads many; required for termodinamica and hull-temperature, which each read one.
+Done in #974: `make_broker` sets `max_attempts=None`, the 30 s cap and the 15 s keepalive, exits from `on_connection_recovery_failed`, and wraps the client in `RecoveringClient`. The wrapper retries CONNACK refusals and catches two ways zmqtt's run loop dies silently. All three apps use it.
+
+Left:
+- **Health:** `AsgiFastStream` with `/health` and both probes, as above.
+- **Modbus gateways:** optional (logged only) for power-tags, which reads many; required for termodinamica and hull-temperature, which each read one, so their `/health` also checks the gateway.
+
+Upstream:
+- **Refusals:** fixed in zMQTT#129, released in zmqtt 0.2.6. ZERO-2532 bumps zmqtt and drops that part of the wrapper.
+- **Silent run-loop exits:** a broker that closes the connection before CONNACK, and a protocol error, end zmqtt's run loop without calling `on_connection_recovery_failed` (zMQTT#135, #136; fix in zMQTT#137). Once released, `RecoveringClient` goes away.
 
 Open:
-- **zmqtt upstream fix:** neither MQTT spec says whether a client should retry a refusal. Clients differ: Paho, HiveMQ and aiomqtt retry every refusal; MQTT.js retries none unless you opt in; gmqtt retries only the "server unavailable"-type codes. RabbitMQ sends 0x87 while a vhost is still starting or a user's permissions aren't set up yet. Proposed: by default retry 3, 0x88, 0x89, 0x97 and 0x9F within `max_attempts`, plus an opt-in `ReconnectConfig` hook that decides per refusal, which we use to add 0x87.
 - **Replay buffer (#716):** the ADR leaves replay out of scope. hull-temperature also publishes a relay command, which should not be replayed after an outage. Does that need its own ticket?
 
 ## F2: atpx-nmea
 
-Requirements:
-- **zmqtt and FastStream upgrade:** zmqtt from 0.1.1 to ≥0.2.2 and FastStream from 0.7.4 to ≥0.7.5 (raise the minimum in `pyproject.toml` and update `uv.lock`), to get `on_connection_recovery_failed`.
-- **Both brokers:** the same handling as F1, copied from the bridge, for the A+T input broker and the RabbitMQ output broker.
+Done in #977: the zmqtt and FastStream upgrade, and the F1 handling for both brokers, through a copy of the bridge's `mqtt.py`.
+
+Left:
+- **Health:** `AsgiFastStream` with a `/health` handler that checks both brokers, and both probes.
 - **Verification** also covers an outage of the A+T input broker. That broker is outside our control, so simulate it rather than touch it.
 
 Proposed: **the A+T input broker is required.** Without it the pod has nothing to do, so it shows `0/1` whenever A+T's broker is down. That is outside our control, but it is the honest signal.
 
 ## F3: fiber-optics, battery-cells, mqtt-graphql
 
-**fiber-optics root cause:** it is our only app on rumqttc's MQTT 5 client, whose event loop writes and flushes the socket without a timeout (`rumqttc v5/eventloop.rs`, 0.24 and 0.25; upstream issue [bytebeamio/rumqtt#1078](https://github.com/bytebeamio/rumqtt/issues/1078)). The MQTT 3.1.1 client wraps the flush in a timeout. In the cutover RabbitMQ's pod IP disappeared without a TCP reset, fiber-optics' send buffer filled with ~16 KB publishes at 10 Hz, and the flush never returned. No error was logged, and the keepalive check never ran. There was no RabbitMQ memory or disk alarm.
+**fiber-optics root cause:** it was our only app on rumqttc's MQTT 5 client, whose event loop writes and flushes the socket without a timeout (`rumqttc v5/eventloop.rs`, 0.24 and 0.25; upstream issue [bytebeamio/rumqtt#1078](https://github.com/bytebeamio/rumqtt/issues/1078)). The MQTT 3.1.1 client wraps the flush in a timeout. In the cutover RabbitMQ's pod IP disappeared without a TCP reset, fiber-optics' send buffer filled with ~16 KB publishes at 10 Hz, and the flush never returned. No error was logged, and the keepalive check never ran. There was no RabbitMQ memory or disk alarm.
 
-Requirements:
-- **battery-cells** sets the Rust pattern: readiness from the client's own connection state, the status file, the deadline, the backoff cap, the keepalive and the probe. mqtt-graphql and fiber-optics copy it.
-- **fiber-optics** moves to the MQTT 3.1.1 client, which has the flush timeout. It loses the MQTT 5 PUBACK reason codes, which only fed logs and metrics (#630), and uses `clean_session=true` instead of a session expiry of 0. "Connected" must not require a recent PUBACK while the app is idle.
-- **mqtt-graphql:** MQTT is optional for readiness, so the API keeps serving and reports values as missing.
-- **UDP input (fiber-optics, battery-cells):** a not-ready pod drops out of its UDP `LoadBalancer` Service, so packets stop reaching it during an outage. We accept that; the packets can't be published anyway.
-- **Verification for fiber-optics:** fiber-optics isn't deployed on singel, and deleting RabbitMQ pods usually resets connections cleanly. Test locally against a TCP listener that answers CONNACK and then stops reading.
+Done: battery-cells (#971) and fiber-optics (#976, now on the MQTT 3.1.1 client) report readiness through a status file and exit on the deadline; their shared code is the `zero-readiness` crate (#1020). mqtt-graphql (#975) caps its backoff and exits on refusals; its MQTT is optional, so it has no readiness.
+
+A not-ready fiber-optics or battery-cells pod drops out of its UDP `LoadBalancer` Service, so packets stop reaching it during an outage. We accept that; the packets can't be published anyway.
 
 ## F4: loads-app, thrs-control, domestic-control, data-gen
 
@@ -99,11 +101,11 @@ For that ticket:
 
 ## F5: vector
 
-The `mqtt` source does not re-subscribe when the broker has lost the session (upstream: vectordotdev/vector#26730). The fix is our upstream PR [vectordotdev/vector#26731](https://github.com/vectordotdev/vector/pull/26731): it subscribes again when a reconnect's CONNACK has `session_present = 0`. It is open and waiting for a maintainer's review.
+The `mqtt` source does not re-subscribe when the broker has lost the session (upstream: vectordotdev/vector#26730). The fix is our upstream PR [vectordotdev/vector#26731](https://github.com/vectordotdev/vector/pull/26731): it subscribes again when a reconnect's CONNACK has `session_present = 0`. It was released in Vector 0.62.0.
 
-**Decided: the existing alert until #26731 is released, then upgrade Vector.** `VectorSourceNoEvents` in edge-flux (`infrastructure/shared/observability/rules/vector/vector.yml`) fires after about 6 min without MQTT intake and pages through Alertmanager to PagerDuty. Until then, a human restarts Vector. No liveness probe or sidecar: an intake check can't tell a stuck source from a quiet one or a broker outage, so it would restart healthy pods. Known gap: a source that has never received anything never fires.
+**Decided: the existing alert until Vector is upgraded to 0.62 (ZERO-2533).** `VectorSourceNoEvents` in edge-flux (`infrastructure/shared/observability/rules/vector/vector.yml`) fires after about 6 min without MQTT intake and pages through Alertmanager to PagerDuty. Until then, a human restarts Vector. No liveness probe or sidecar: an intake check can't tell a stuck source from a quiet one or a broker outage, so it would restart healthy pods. Known gap: a source that has never received anything never fires.
 
-**This is a temporary exception to the ADR's 15 minute deadline:** a stale source keeps Vector `Running` until a human restarts it. Owner: Floris Smit. It ends when #26731 is released and Vector is upgraded; until then the alert bounds how long it goes unnoticed, not how long it lasts.
+**This is a temporary exception to the ADR's 15 minute deadline:** a stale source keeps Vector `Running` until a human restarts it. Owner: Floris Smit. It ends when Vector is upgraded; until then the alert bounds how long it goes unnoticed, not how long it lasts.
 
 ## Not in this plan
 
@@ -116,13 +118,20 @@ These are outside the ADR's scope, but the work above touches them:
 
 ## Order
 
-1. **F1 bridge and charts, and battery-cells:** they set the Python and Rust patterns.
-2. **atpx-nmea, mqtt-graphql and fiber-optics:** they copy those patterns once reviewed.
-3. **Upstream:** the zmqtt refusal fix, then drop the bridge wrapper once it is released; follow rumqtt#1078; get vector#26731 merged, then upgrade Vector.
-4. **F4:** in ZERO-2531.
+Phase 1 (reconnects for all flavours, Rust readiness) is done. Python health, in [ZERO-2605](https://foundationzero-team.atlassian.net/browse/ZERO-2605):
+
+1. **This ADR amendment and plan.**
+2. **zmqtt 0.2.6** (ZERO-2532): bump it and drop the refusal retry from `RecoveringClient`.
+3. **F1:** `/health` and both probes for power-tags, termodinamica and hull-temperature.
+4. **F2:** the same for atpx-nmea, both brokers required.
+
+Then:
+
+1. **Upstream:** delete `RecoveringClient` once zMQTT#137 is released; follow rumqtt#1078; upgrade Vector to 0.62 (ZERO-2533).
+2. **F4:** in ZERO-2531.
 
 **Verification for each step:** the test from ZERO-2406. On singel, delete all RabbitMQ pods and check that every converted app:
-- shows `0/1 Running` with the reason in `kubectl describe`,
+- shows `0/1 Running`, with the reason in `kubectl describe` (exec probes) or the app logs (HTTP probes),
 - reconnects within about 1 min of the broker being Ready, without restarting.
 
 Then keep the broker down for more than 15 min and check that the pods restart once and do not enter `CrashLoopBackOff`.
