@@ -3744,7 +3744,7 @@
           "id": 18,
           "links": [],
           "title": "uGrid AFT breaker, synchronization and control",
-          "description": "uGrid 05.11 AFT and its AC 400V tie breaker 10P0.1: breaker and synchronization status, digital inputs from KEB7, and the enable signals from the uGrid AFT topic. Transitions only. Red: alarm, green: status, blue: command.",
+          "description": "uGrid 05.11 AFT and its AC 400V tie breaker 10P0.1: breaker and synchronization status, and the enable signals from the uGrid AFT topic. Transitions only. Red: alarm, green: status, blue: command.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -3815,29 +3815,6 @@
                       }
                     },
                     "refId": "E",
-                    "hidden": false
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "${datasource}"
-                      },
-                      "spec": {
-                        "editorType": "sql",
-                        "format": 1,
-                        "pluginVersion": "2.1.4",
-                        "queryType": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT time, \"Digital input 1\", \"Digital input 2\" FROM (\n  SELECT timestamp AS time,\n    CAST(keb_7_ugrid_aft_digin_1__value AS INT) AS \"Digital input 1\", LAG(CAST(keb_7_ugrid_aft_digin_1__value AS INT)) OVER (ORDER BY timestamp) AS \"prev Digital input 1\",\n    CAST(keb_7_ugrid_aft_digin_2__value AS INT) AS \"Digital input 2\", LAG(CAST(keb_7_ugrid_aft_digin_2__value AS INT)) OVER (ORDER BY timestamp) AS \"prev Digital input 2\"\n  FROM public.marpower__450000_dc_distribution_general\n  WHERE $__timeFilter(timestamp)\n) t\nWHERE (\"prev Digital input 1\" IS DISTINCT FROM \"Digital input 1\")\n  OR (\"prev Digital input 2\" IS DISTINCT FROM \"Digital input 2\")\nORDER BY time"
-                      }
-                    },
-                    "refId": "B",
                     "hidden": false
                   }
                 },
@@ -3991,9 +3968,7 @@
                           "Sync device status",
                           "Sync speed up",
                           "Sync speed down",
-                          "Rotating field",
-                          "Digital input 1",
-                          "Digital input 2"
+                          "Rotating field"
                         ]
                       }
                     },
@@ -4071,7 +4046,7 @@
           "id": 19,
           "links": [],
           "title": "uGrid FWD breaker, synchronization and control",
-          "description": "uGrid 05.12 FWD and its AC 400V tie breaker 10P0.3: breaker and synchronization status, digital inputs from KEB9, and the enable signals from the uGrid FWD topic. Transitions only. Red: alarm, green: status, blue: command.",
+          "description": "uGrid 05.12 FWD and its AC 400V tie breaker 10P0.3: breaker and synchronization status, and the enable signals from the uGrid FWD topic. Transitions only. Red: alarm, green: status, blue: command.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -4142,29 +4117,6 @@
                       }
                     },
                     "refId": "E",
-                    "hidden": false
-                  }
-                },
-                {
-                  "kind": "PanelQuery",
-                  "spec": {
-                    "query": {
-                      "kind": "DataQuery",
-                      "group": "info8fcc-greptimedb-datasource",
-                      "version": "v0",
-                      "datasource": {
-                        "name": "${datasource}"
-                      },
-                      "spec": {
-                        "editorType": "sql",
-                        "format": 1,
-                        "pluginVersion": "2.1.4",
-                        "queryType": "table",
-                        "rawQuery": true,
-                        "rawSql": "SELECT time, \"Digital input 1\", \"Digital input 2\" FROM (\n  SELECT timestamp AS time,\n    CAST(keb_9_ugrid_fwd_digin_1__value AS INT) AS \"Digital input 1\", LAG(CAST(keb_9_ugrid_fwd_digin_1__value AS INT)) OVER (ORDER BY timestamp) AS \"prev Digital input 1\",\n    CAST(keb_9_ugrid_fwd_digin_2__value AS INT) AS \"Digital input 2\", LAG(CAST(keb_9_ugrid_fwd_digin_2__value AS INT)) OVER (ORDER BY timestamp) AS \"prev Digital input 2\"\n  FROM public.marpower__450000_dc_distribution_general\n  WHERE $__timeFilter(timestamp)\n) t\nWHERE (\"prev Digital input 1\" IS DISTINCT FROM \"Digital input 1\")\n  OR (\"prev Digital input 2\" IS DISTINCT FROM \"Digital input 2\")\nORDER BY time"
-                      }
-                    },
-                    "refId": "B",
                     "hidden": false
                   }
                 },
@@ -4318,9 +4270,7 @@
                           "Sync device status",
                           "Sync speed up",
                           "Sync speed down",
-                          "Rotating field",
-                          "Digital input 1",
-                          "Digital input 2"
+                          "Rotating field"
                         ]
                       }
                     },
@@ -7291,7 +7241,7 @@
           "id": 41,
           "links": [],
           "title": "Status",
-          "description": "Breaker and synchronization status, and the uGrid's digital inputs. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
+          "description": "Breaker and synchronization status. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since each source's latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -7312,7 +7262,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH sides (side) AS (VALUES ('aft'), ('fwd')),\nboard AS (\n  SELECT m.name AS side, last_value(auto_mode__value ORDER BY t.timestamp) AS auto_mode, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__distribution_board t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\nbreaker AS (\n  SELECT m.name AS side, last_value(opened__value ORDER BY t.timestamp) AS opened, last_value(closed__value ORDER BY t.timestamp) AS closed, last_value(rotating_field__value ORDER BY t.timestamp) AS rotating_field, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__breaker t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\nsync AS (\n  SELECT m.name AS side, last_value(device_status__value ORDER BY t.timestamp) AS device_status, last_value(speed_up__value ORDER BY t.timestamp) AS speed_up, last_value(speed_down__value ORDER BY t.timestamp) AS speed_down, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__synchroniser t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name)\nSELECT sides.side AS \"uGrid\",\n  CAST(board.auto_mode AS INT) AS \"Auto mode\",\n  CAST(breaker.opened AS INT) AS \"Breaker opened\",\n  CAST(breaker.closed AS INT) AS \"Breaker closed\",\n  CAST(sync.device_status AS INT) AS \"Sync device status\",\n  CAST(sync.speed_up AS INT) AS \"Sync speed up\",\n  CAST(sync.speed_down AS INT) AS \"Sync speed down\",\n  CAST(breaker.rotating_field AS INT) AS \"Rotating field\",\n  CAST(CASE sides.side WHEN 'aft' THEN general.aft_digin_1 ELSE general.fwd_digin_1 END AS INT) AS \"Digital input 1\",\n  CAST(CASE sides.side WHEN 'aft' THEN general.aft_digin_2 ELSE general.fwd_digin_2 END AS INT) AS \"Digital input 2\",\n  to_unixtime(now()) - to_unixtime(least(board.updated, breaker.updated, sync.updated)) AS \"Updated\"\nFROM sides\nLEFT JOIN board ON board.side = sides.side\nLEFT JOIN breaker ON breaker.side = sides.side\nLEFT JOIN sync ON sync.side = sides.side\nCROSS JOIN (SELECT last_value(keb_7_ugrid_aft_digin_1__value ORDER BY timestamp) AS aft_digin_1, last_value(keb_7_ugrid_aft_digin_2__value ORDER BY timestamp) AS aft_digin_2, last_value(keb_9_ugrid_fwd_digin_1__value ORDER BY timestamp) AS fwd_digin_1, last_value(keb_9_ugrid_fwd_digin_2__value ORDER BY timestamp) AS fwd_digin_2 FROM public.marpower__450000_dc_distribution_general WHERE timestamp > now() - INTERVAL '$live_window') general\nORDER BY sides.side"
+                        "rawSql": "WITH sides (side) AS (VALUES ('aft'), ('fwd')),\nboard AS (\n  SELECT m.name AS side, last_value(auto_mode__value ORDER BY t.timestamp) AS auto_mode, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__distribution_board t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\nbreaker AS (\n  SELECT m.name AS side, last_value(opened__value ORDER BY t.timestamp) AS opened, last_value(closed__value ORDER BY t.timestamp) AS closed, last_value(rotating_field__value ORDER BY t.timestamp) AS rotating_field, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__breaker t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\nsync AS (\n  SELECT m.name AS side, last_value(device_status__value ORDER BY t.timestamp) AS device_status, last_value(speed_up__value ORDER BY t.timestamp) AS speed_up, last_value(speed_down__value ORDER BY t.timestamp) AS speed_down, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__synchroniser t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name)\nSELECT sides.side AS \"uGrid\",\n  CAST(board.auto_mode AS INT) AS \"Auto mode\",\n  CAST(breaker.opened AS INT) AS \"Breaker opened\",\n  CAST(breaker.closed AS INT) AS \"Breaker closed\",\n  CAST(sync.device_status AS INT) AS \"Sync device status\",\n  CAST(sync.speed_up AS INT) AS \"Sync speed up\",\n  CAST(sync.speed_down AS INT) AS \"Sync speed down\",\n  CAST(breaker.rotating_field AS INT) AS \"Rotating field\",\n  to_unixtime(now()) - to_unixtime(board.updated) AS \"Board updated\",\n  to_unixtime(now()) - to_unixtime(breaker.updated) AS \"Breaker updated\",\n  to_unixtime(now()) - to_unixtime(sync.updated) AS \"Synchroniser updated\"\nFROM sides\nLEFT JOIN board ON board.side = sides.side\nLEFT JOIN breaker ON breaker.side = sides.side\nLEFT JOIN sync ON sync.side = sides.side\nORDER BY sides.side"
                       }
                     },
                     "refId": "A",
@@ -7371,9 +7321,7 @@
                           "Sync device status",
                           "Sync speed up",
                           "Sync speed down",
-                          "Rotating field",
-                          "Digital input 1",
-                          "Digital input 2"
+                          "Rotating field"
                         ]
                       }
                     },
@@ -7408,8 +7356,8 @@
                   },
                   {
                     "matcher": {
-                      "id": "byName",
-                      "options": "Updated"
+                      "id": "byRegexp",
+                      "options": " updated$"
                     },
                     "properties": [
                       {
@@ -7472,7 +7420,7 @@
           "id": 42,
           "links": [],
           "title": "Commands",
-          "description": "Non pref trips 1 to 3 are AFT, 4 to 6 FWD. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
+          "description": "Non pref trips 1 to 3 are AFT, 4 to 6 FWD. The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since each source's latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -7493,7 +7441,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH sides (side) AS (VALUES ('aft'), ('fwd')),\nsync AS (\n  SELECT m.name AS side, last_value(sync_command__value ORDER BY t.timestamp) AS sync_command, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__synchroniser t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\nbreaker AS (\n  SELECT m.name AS side, last_value(open_command__value ORDER BY t.timestamp) AS open_command, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__breaker t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\nboard AS (\n  SELECT m.name AS side, last_value(non_preferential_trip_1__value ORDER BY t.timestamp) AS trip_1, last_value(non_preferential_trip_2__value ORDER BY t.timestamp) AS trip_2, last_value(non_preferential_trip_3__value ORDER BY t.timestamp) AS trip_3, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__distribution_board t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\ninverter AS (\n  SELECT m.name AS side, last_value(enable__value ORDER BY t.timestamp) AS enable, last_value(enable_firmware__value ORDER BY t.timestamp) AS enable_firmware, max(t.timestamp) AS updated\n  FROM public.marpower__dc_ac__inverter t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name)\nSELECT sides.side AS \"uGrid\",\n  CAST(sync.sync_command AS INT) AS \"Sync cmd\",\n  CAST(breaker.open_command AS INT) AS \"Open breaker cmd\",\n  CAST(board.trip_1 AS INT) AS \"Non pref trip 1/4\",\n  CAST(board.trip_2 AS INT) AS \"Non pref trip 2/5\",\n  CAST(board.trip_3 AS INT) AS \"Non pref trip 3/6\",\n  CAST(inverter.enable AS INT) AS \"Enable\",\n  CAST(inverter.enable_firmware AS INT) AS \"Enable firmware update\",\n  to_unixtime(now()) - to_unixtime(least(sync.updated, breaker.updated, board.updated, inverter.updated)) AS \"Updated\"\nFROM sides\nLEFT JOIN sync ON sync.side = sides.side\nLEFT JOIN breaker ON breaker.side = sides.side\nLEFT JOIN board ON board.side = sides.side\nLEFT JOIN inverter ON inverter.side = sides.side\nORDER BY sides.side"
+                        "rawSql": "WITH sides (side) AS (VALUES ('aft'), ('fwd')),\nsync AS (\n  SELECT m.name AS side, last_value(sync_command__value ORDER BY t.timestamp) AS sync_command, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__synchroniser t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\nbreaker AS (\n  SELECT m.name AS side, last_value(open_command__value ORDER BY t.timestamp) AS open_command, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__breaker t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\nboard AS (\n  SELECT m.name AS side, last_value(non_preferential_trip_1__value ORDER BY t.timestamp) AS trip_1, last_value(non_preferential_trip_2__value ORDER BY t.timestamp) AS trip_2, last_value(non_preferential_trip_3__value ORDER BY t.timestamp) AS trip_3, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__distribution_board t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\ninverter AS (\n  SELECT m.name AS side, last_value(enable__value ORDER BY t.timestamp) AS enable, last_value(enable_firmware__value ORDER BY t.timestamp) AS enable_firmware, max(t.timestamp) AS updated\n  FROM public.marpower__dc_ac__inverter t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name)\nSELECT sides.side AS \"uGrid\",\n  CAST(sync.sync_command AS INT) AS \"Sync cmd\",\n  CAST(breaker.open_command AS INT) AS \"Open breaker cmd\",\n  CAST(board.trip_1 AS INT) AS \"Non pref trip 1/4\",\n  CAST(board.trip_2 AS INT) AS \"Non pref trip 2/5\",\n  CAST(board.trip_3 AS INT) AS \"Non pref trip 3/6\",\n  CAST(inverter.enable AS INT) AS \"Enable\",\n  CAST(inverter.enable_firmware AS INT) AS \"Enable firmware update\",\n  to_unixtime(now()) - to_unixtime(sync.updated) AS \"Synchroniser updated\",\n  to_unixtime(now()) - to_unixtime(breaker.updated) AS \"Breaker updated\",\n  to_unixtime(now()) - to_unixtime(board.updated) AS \"Board updated\",\n  to_unixtime(now()) - to_unixtime(inverter.updated) AS \"Inverter updated\"\nFROM sides\nLEFT JOIN sync ON sync.side = sides.side\nLEFT JOIN breaker ON breaker.side = sides.side\nLEFT JOIN board ON board.side = sides.side\nLEFT JOIN inverter ON inverter.side = sides.side\nORDER BY sides.side"
                       }
                     },
                     "refId": "A",
@@ -7587,8 +7535,8 @@
                   },
                   {
                     "matcher": {
-                      "id": "byName",
-                      "options": "Updated"
+                      "id": "byRegexp",
+                      "options": " updated$"
                     },
                     "properties": [
                       {
@@ -7651,7 +7599,7 @@
           "id": 43,
           "links": [],
           "title": "Alarms",
-          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since each source's latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -7672,7 +7620,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH sides (side) AS (VALUES ('aft'), ('fwd')),\nbreaker AS (\n  SELECT m.name AS side, last_value(tripped__value ORDER BY t.timestamp) AS tripped, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__breaker t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\nboard AS (\n  SELECT m.name AS side, last_value(control_failure__value ORDER BY t.timestamp) AS control_failure, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__distribution_board t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name)\nSELECT sides.side AS \"uGrid\",\n  CAST(breaker.tripped AS INT) AS \"Breaker tripped\",\n  CAST(board.control_failure AS INT) AS \"Control failure\",\n  to_unixtime(now()) - to_unixtime(least(breaker.updated, board.updated)) AS \"Updated\"\nFROM sides\nLEFT JOIN breaker ON breaker.side = sides.side\nLEFT JOIN board ON board.side = sides.side\nORDER BY sides.side"
+                        "rawSql": "WITH sides (side) AS (VALUES ('aft'), ('fwd')),\nbreaker AS (\n  SELECT m.name AS side, last_value(tripped__value ORDER BY t.timestamp) AS tripped, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__breaker t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\nboard AS (\n  SELECT m.name AS side, last_value(control_failure__value ORDER BY t.timestamp) AS control_failure, max(t.timestamp) AS updated\n  FROM public.marpower__ac_400v__distribution_board t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name)\nSELECT sides.side AS \"uGrid\",\n  CAST(breaker.tripped AS INT) AS \"Breaker tripped\",\n  CAST(board.control_failure AS INT) AS \"Control failure\",\n  to_unixtime(now()) - to_unixtime(breaker.updated) AS \"Breaker updated\",\n  to_unixtime(now()) - to_unixtime(board.updated) AS \"Board updated\"\nFROM sides\nLEFT JOIN breaker ON breaker.side = sides.side\nLEFT JOIN board ON board.side = sides.side\nORDER BY sides.side"
                       }
                     },
                     "refId": "A",
@@ -7761,8 +7709,8 @@
                   },
                   {
                     "matcher": {
-                      "id": "byName",
-                      "options": "Updated"
+                      "id": "byRegexp",
+                      "options": " updated$"
                     },
                     "properties": [
                       {
@@ -8444,7 +8392,7 @@
           "id": 48,
           "links": [],
           "title": "Transformer temperatures",
-          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since each source's latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -8465,7 +8413,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "WITH sides (side) AS (VALUES ('aft'), ('fwd')),\ntransformer AS (\n  SELECT m.name AS side, last_value(winding_temperature_u_1__value ORDER BY t.timestamp) AS w_u_1, last_value(winding_temperature_v_1__value ORDER BY t.timestamp) AS w_v_1, last_value(winding_temperature_w_1__value ORDER BY t.timestamp) AS w_w_1, last_value(winding_temperature_u_2__value ORDER BY t.timestamp) AS w_u_2, last_value(winding_temperature_v_2__value ORDER BY t.timestamp) AS w_v_2, last_value(winding_temperature_w_2__value ORDER BY t.timestamp) AS w_w_2, max(t.timestamp) AS updated\n  FROM public.marpower__dc_ac__transformer t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\nfilter AS (\n  SELECT m.name AS side, last_value(temperature_u__value ORDER BY t.timestamp) AS u, last_value(temperature_v__value ORDER BY t.timestamp) AS v, last_value(temperature_w__value ORDER BY t.timestamp) AS w, max(t.timestamp) AS updated\n  FROM public.marpower__dc_ac__lc_filter t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name)\nSELECT sides.side AS \"uGrid\",\n  round(transformer.w_u_1, 1) AS \"Winding U1 [°C]\",\n  round(transformer.w_v_1, 1) AS \"Winding V1 [°C]\",\n  round(transformer.w_w_1, 1) AS \"Winding W1 [°C]\",\n  round(transformer.w_u_2, 1) AS \"Winding U2 [°C]\",\n  round(transformer.w_v_2, 1) AS \"Winding V2 [°C]\",\n  round(transformer.w_w_2, 1) AS \"Winding W2 [°C]\",\n  round(filter.u, 1) AS \"LC filter U [°C]\",\n  round(filter.v, 1) AS \"LC filter V [°C]\",\n  round(filter.w, 1) AS \"LC filter W [°C]\",\n  to_unixtime(now()) - to_unixtime(least(transformer.updated, filter.updated)) AS \"Updated\"\nFROM sides\nLEFT JOIN transformer ON transformer.side = sides.side\nLEFT JOIN filter ON filter.side = sides.side\nORDER BY sides.side"
+                        "rawSql": "WITH sides (side) AS (VALUES ('aft'), ('fwd')),\ntransformer AS (\n  SELECT m.name AS side, last_value(winding_temperature_u_1__value ORDER BY t.timestamp) AS w_u_1, last_value(winding_temperature_v_1__value ORDER BY t.timestamp) AS w_v_1, last_value(winding_temperature_w_1__value ORDER BY t.timestamp) AS w_w_1, last_value(winding_temperature_u_2__value ORDER BY t.timestamp) AS w_u_2, last_value(winding_temperature_v_2__value ORDER BY t.timestamp) AS w_v_2, last_value(winding_temperature_w_2__value ORDER BY t.timestamp) AS w_w_2, max(t.timestamp) AS updated\n  FROM public.marpower__dc_ac__transformer t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name),\nfilter AS (\n  SELECT m.name AS side, last_value(temperature_u__value ORDER BY t.timestamp) AS u, last_value(temperature_v__value ORDER BY t.timestamp) AS v, last_value(temperature_w__value ORDER BY t.timestamp) AS w, max(t.timestamp) AS updated\n  FROM public.marpower__dc_ac__lc_filter t\n  JOIN public.marpower__device_metadata m ON m.topic = t.topic\n  WHERE t.timestamp > now() - INTERVAL '$live_window'\n  GROUP BY m.name)\nSELECT sides.side AS \"uGrid\",\n  round(transformer.w_u_1, 1) AS \"Winding U1 [°C]\",\n  round(transformer.w_v_1, 1) AS \"Winding V1 [°C]\",\n  round(transformer.w_w_1, 1) AS \"Winding W1 [°C]\",\n  round(transformer.w_u_2, 1) AS \"Winding U2 [°C]\",\n  round(transformer.w_v_2, 1) AS \"Winding V2 [°C]\",\n  round(transformer.w_w_2, 1) AS \"Winding W2 [°C]\",\n  round(filter.u, 1) AS \"LC filter U [°C]\",\n  round(filter.v, 1) AS \"LC filter V [°C]\",\n  round(filter.w, 1) AS \"LC filter W [°C]\",\n  to_unixtime(now()) - to_unixtime(transformer.updated) AS \"Transformer updated\",\n  to_unixtime(now()) - to_unixtime(filter.updated) AS \"LC filter updated\"\nFROM sides\nLEFT JOIN transformer ON transformer.side = sides.side\nLEFT JOIN filter ON filter.side = sides.side\nORDER BY sides.side"
                       }
                     },
                     "refId": "A",
@@ -8514,8 +8462,8 @@
                 "overrides": [
                   {
                     "matcher": {
-                      "id": "byName",
-                      "options": "Updated"
+                      "id": "byRegexp",
+                      "options": " updated$"
                     },
                     "properties": [
                       {
@@ -9720,7 +9668,7 @@
           "id": 53,
           "links": [],
           "title": "Converters",
-          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since the latest sample. Same sources as the trends of this section.",
+          "description": "The latest value within the live window ($live_window), independent of the selected time range; empty when nothing was published in that window. Updated: seconds since each source's latest sample. Same sources as the trends of this section.",
           "data": {
             "kind": "QueryGroup",
             "spec": {
@@ -9741,7 +9689,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT 'AFT' AS \"Converter\",\n  CAST(im.warning AS INT) AS \"Isolation warning\",\n  CAST(im.fault AS INT) AS \"Isolation fault\",\n  CAST(cv.aux_700_24 AS INT) AS \"Aux power 700/24V failure\",\n  CAST(cv.aux_24_24 AS INT) AS \"Aux power 24/24V failure\",\n  CAST(sw.bus AS INT) AS \"Bus voltage present\",\n  CAST(sw.operating AS INT) AS \"Operating voltage present\",\n  CAST(im.disabled AS INT) AS \"Isolation monitoring disabled\",\n  CAST(im.disable_command AS INT) AS \"Disable isolation monitoring\",\n  to_unixtime(now()) - to_unixtime(least(im.updated, cv.updated, sw.updated)) AS \"Updated\"\nFROM (SELECT last_value(warning__value ORDER BY timestamp) AS warning, last_value(fault__value ORDER BY timestamp) AS fault, last_value(disabled__value ORDER BY timestamp) AS disabled, last_value(disable_command__value ORDER BY timestamp) AS disable_command, max(timestamp) AS updated FROM public.marpower__dc_700v__isolation_monitor WHERE timestamp > now() - INTERVAL '$live_window' AND technical_name = '01-24-b101') im\n  CROSS JOIN (SELECT last_value(CASE WHEN technical_name = '01-25-t101' THEN failure__value END ORDER BY technical_name = '01-25-t101', timestamp) AS aux_700_24, last_value(CASE WHEN technical_name = '01-25-t102' THEN failure__value END ORDER BY technical_name = '01-25-t102', timestamp) AS aux_24_24, max(timestamp) AS updated FROM public.marpower__dc_700v__dc_dc_converter WHERE timestamp > now() - INTERVAL '$live_window' AND technical_name IN ('01-25-t101', '01-25-t102')) cv\n  CROSS JOIN (SELECT last_value(bus_voltage_present__value ORDER BY timestamp) AS bus, last_value(operating_voltage_present__value ORDER BY timestamp) AS operating, max(timestamp) AS updated FROM public.marpower__dc_700v__switchboard WHERE timestamp > now() - INTERVAL '$live_window' AND technical_name = 'sb01-p04') sw\nUNION ALL\nSELECT 'FWD' AS \"Converter\",\n  CAST(im.warning AS INT) AS \"Isolation warning\",\n  CAST(im.fault AS INT) AS \"Isolation fault\",\n  CAST(cv.aux_700_24 AS INT) AS \"Aux power 700/24V failure\",\n  CAST(cv.aux_24_24 AS INT) AS \"Aux power 24/24V failure\",\n  CAST(sw.bus AS INT) AS \"Bus voltage present\",\n  CAST(sw.operating AS INT) AS \"Operating voltage present\",\n  CAST(im.disabled AS INT) AS \"Isolation monitoring disabled\",\n  CAST(im.disable_command AS INT) AS \"Disable isolation monitoring\",\n  to_unixtime(now()) - to_unixtime(least(im.updated, cv.updated, sw.updated)) AS \"Updated\"\nFROM (SELECT last_value(warning__value ORDER BY timestamp) AS warning, last_value(fault__value ORDER BY timestamp) AS fault, last_value(disabled__value ORDER BY timestamp) AS disabled, last_value(disable_command__value ORDER BY timestamp) AS disable_command, max(timestamp) AS updated FROM public.marpower__dc_700v__isolation_monitor WHERE timestamp > now() - INTERVAL '$live_window' AND technical_name = '01-34-b101') im\n  CROSS JOIN (SELECT last_value(CASE WHEN technical_name = '01-35-t101' THEN failure__value END ORDER BY technical_name = '01-35-t101', timestamp) AS aux_700_24, last_value(CASE WHEN technical_name = '01-35-t102' THEN failure__value END ORDER BY technical_name = '01-35-t102', timestamp) AS aux_24_24, max(timestamp) AS updated FROM public.marpower__dc_700v__dc_dc_converter WHERE timestamp > now() - INTERVAL '$live_window' AND technical_name IN ('01-35-t101', '01-35-t102')) cv\n  CROSS JOIN (SELECT last_value(bus_voltage_present__value ORDER BY timestamp) AS bus, last_value(operating_voltage_present__value ORDER BY timestamp) AS operating, max(timestamp) AS updated FROM public.marpower__dc_700v__switchboard WHERE timestamp > now() - INTERVAL '$live_window' AND technical_name = 'sb02') sw\nORDER BY 1"
+                        "rawSql": "SELECT 'AFT' AS \"Converter\",\n  CAST(im.warning AS INT) AS \"Isolation warning\",\n  CAST(im.fault AS INT) AS \"Isolation fault\",\n  CAST(cv.aux_700_24 AS INT) AS \"Aux power 700/24V failure\",\n  CAST(cv.aux_24_24 AS INT) AS \"Aux power 24/24V failure\",\n  CAST(sw.bus AS INT) AS \"Bus voltage present\",\n  CAST(sw.operating AS INT) AS \"Operating voltage present\",\n  CAST(im.disabled AS INT) AS \"Isolation monitoring disabled\",\n  CAST(im.disable_command AS INT) AS \"Disable isolation monitoring\",\n  to_unixtime(now()) - to_unixtime(im.updated) AS \"Isolation monitor updated\",\n  to_unixtime(now()) - to_unixtime(cv.updated) AS \"DC/DC converters updated\",\n  to_unixtime(now()) - to_unixtime(sw.updated) AS \"Switchboard updated\"\nFROM (SELECT last_value(warning__value ORDER BY timestamp) AS warning, last_value(fault__value ORDER BY timestamp) AS fault, last_value(disabled__value ORDER BY timestamp) AS disabled, last_value(disable_command__value ORDER BY timestamp) AS disable_command, max(timestamp) AS updated FROM public.marpower__dc_700v__isolation_monitor WHERE timestamp > now() - INTERVAL '$live_window' AND technical_name = '01-24-b101') im\n  CROSS JOIN (SELECT last_value(CASE WHEN technical_name = '01-25-t101' THEN failure__value END ORDER BY technical_name = '01-25-t101', timestamp) AS aux_700_24, last_value(CASE WHEN technical_name = '01-25-t102' THEN failure__value END ORDER BY technical_name = '01-25-t102', timestamp) AS aux_24_24, max(timestamp) AS updated FROM public.marpower__dc_700v__dc_dc_converter WHERE timestamp > now() - INTERVAL '$live_window' AND technical_name IN ('01-25-t101', '01-25-t102')) cv\n  CROSS JOIN (SELECT last_value(bus_voltage_present__value ORDER BY timestamp) AS bus, last_value(operating_voltage_present__value ORDER BY timestamp) AS operating, max(timestamp) AS updated FROM public.marpower__dc_700v__switchboard WHERE timestamp > now() - INTERVAL '$live_window' AND technical_name = 'sb01-p04') sw\nUNION ALL\nSELECT 'FWD' AS \"Converter\",\n  CAST(im.warning AS INT) AS \"Isolation warning\",\n  CAST(im.fault AS INT) AS \"Isolation fault\",\n  CAST(cv.aux_700_24 AS INT) AS \"Aux power 700/24V failure\",\n  CAST(cv.aux_24_24 AS INT) AS \"Aux power 24/24V failure\",\n  CAST(sw.bus AS INT) AS \"Bus voltage present\",\n  CAST(sw.operating AS INT) AS \"Operating voltage present\",\n  CAST(im.disabled AS INT) AS \"Isolation monitoring disabled\",\n  CAST(im.disable_command AS INT) AS \"Disable isolation monitoring\",\n  to_unixtime(now()) - to_unixtime(im.updated) AS \"Isolation monitor updated\",\n  to_unixtime(now()) - to_unixtime(cv.updated) AS \"DC/DC converters updated\",\n  to_unixtime(now()) - to_unixtime(sw.updated) AS \"Switchboard updated\"\nFROM (SELECT last_value(warning__value ORDER BY timestamp) AS warning, last_value(fault__value ORDER BY timestamp) AS fault, last_value(disabled__value ORDER BY timestamp) AS disabled, last_value(disable_command__value ORDER BY timestamp) AS disable_command, max(timestamp) AS updated FROM public.marpower__dc_700v__isolation_monitor WHERE timestamp > now() - INTERVAL '$live_window' AND technical_name = '01-34-b101') im\n  CROSS JOIN (SELECT last_value(CASE WHEN technical_name = '01-35-t101' THEN failure__value END ORDER BY technical_name = '01-35-t101', timestamp) AS aux_700_24, last_value(CASE WHEN technical_name = '01-35-t102' THEN failure__value END ORDER BY technical_name = '01-35-t102', timestamp) AS aux_24_24, max(timestamp) AS updated FROM public.marpower__dc_700v__dc_dc_converter WHERE timestamp > now() - INTERVAL '$live_window' AND technical_name IN ('01-35-t101', '01-35-t102')) cv\n  CROSS JOIN (SELECT last_value(bus_voltage_present__value ORDER BY timestamp) AS bus, last_value(operating_voltage_present__value ORDER BY timestamp) AS operating, max(timestamp) AS updated FROM public.marpower__dc_700v__switchboard WHERE timestamp > now() - INTERVAL '$live_window' AND technical_name = 'sb02') sw\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -9912,8 +9860,8 @@
                   },
                   {
                     "matcher": {
-                      "id": "byName",
-                      "options": "Updated"
+                      "id": "byRegexp",
+                      "options": " updated$"
                     },
                     "properties": [
                       {
