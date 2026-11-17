@@ -21,26 +21,6 @@ postgresql:
   existingSecret: postgres-cluster-app
   existingSecretPasswordKey: password
 
-api:
-  mqtt:
-    existingSecret: ""
-  enabled: true
-  image:
-    repository: europe-west1-docker.pkg.dev/common-449414/common/zero-thrs-api
-    # This sets the pull policy for images.
-    pullPolicy: IfNotPresent
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
-  resources: {}
-  service:
-    labels: {}
-    annotations: {}
-    externalIP: ""
-  ingress:
-    enabled: false
-    hostname: ""
-    className: tailscale
-
 control:
   mqtt:
     existingSecret: ""

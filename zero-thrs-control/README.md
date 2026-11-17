@@ -88,13 +88,3 @@ export CFLAGS="-I $(brew --prefix graphviz)/include"
 export LDFLAGS="-L $(brew --prefix graphviz)/lib"
 uv sync --locked
 ```
-
-## GraphQL
-
-### Running the API
-
-Start the API with:
-
-```bash
-just run_api
-```

@@ -18,9 +18,6 @@ fmu_files := (
 
 default: run
 
-run_api:
-    uv run fastapi dev src/thrs/graphql/asgi.py
-
 run_control module='thrs':
     uv run python -m thrs.cli control --mode {{ module }}
 
@@ -30,11 +27,10 @@ run_simulation module='thrs':
 run_lockstep module='thrs':
     uv run python -m thrs.cli lockstep --mode {{ module }}
 
-[parallel]
-run module='thrs': run_api (run_lockstep module)
+run module='thrs': (run_lockstep module)
 
 [parallel]
-run_split module='thrs': run_api (run_control module) (run_simulation module)
+run_split module='thrs': (run_control module) (run_simulation module)
 
 check: lint type_check test test_mqtt
 

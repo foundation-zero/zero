@@ -4,7 +4,6 @@
     "title": "Values",
     "required": [
         "mqtt",
-        "api",
         "control",
         "postgresql"
     ],
@@ -83,34 +82,6 @@
                 "existingSecret": {
                     "type": "string",
                     "description": "Name of existing secret containing PostgreSQL password"
-                }
-            }
-        },
-        "api": {
-            "type": "object",
-            "properties": {
-                "mqtt": {
-                    "type": "object",
-                    "properties": {
-                        "existingSecret": {
-                            "type": "string",
-                            "description": "Name of existing secret containing MQTT username (key `username`) and password for this component; falls back to mqtt.existingSecret"
-                        }
-                    }
-                },
-                "enabled": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "service": {
-                    "type": "object",
-                    "properties": {
-                        "externalIP": {
-                            "type": "string",
-                            "default": "",
-                            "description": "Optional external IP for the API service; empty means not set"
-                        }
-                    }
                 }
             }
         },

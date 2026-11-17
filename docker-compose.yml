@@ -408,18 +408,17 @@ services:
         condition: service_healthy
 
   # ---- THRS ----
-  thrs-api:
+  thrs-control-thrusters: &thrs_control
+    pull_policy: never
     build:
       context: ./zero-thrs-control
       dockerfile: Dockerfile
-      target: api
+      target: control
       cache_from:
-        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-thrs-api:main
+        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-thrs-control:main
     profiles:
       - thrs
-    ports:
-      - "127.0.0.1:5102:5102"
-    environment: &thrs_env
+    environment:
       MACHINE_STATE_LOGGING: ${MACHINE_STATE_LOGGING:-true}
       MODULE_PERSISTENCE: ${MODULE_PERSISTENCE:-false}
       ALLOW_BOOT_WITHOUT_PERSISTENCE_HAVING_ACTIVE_POSTGRES: ${ALLOW_BOOT_WITHOUT_PERSISTENCE_HAVING_ACTIVE_POSTGRES:-false}
@@ -437,24 +436,6 @@ services:
       PG_USER: ${PG_USER}
       PG_PASSWORD: ${PG_PASSWORD}
       PG_DB: ${PG_DB}
-    depends_on:
-      vernemq:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-
-  thrs-control-thrusters: &thrs_control
-    pull_policy: never
-    build:
-      context: ./zero-thrs-control
-      dockerfile: Dockerfile
-      target: control
-      cache_from:
-        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-thrs-control:main
-    profiles:
-      - thrs
-    environment:
-      <<: *thrs_env
     depends_on:
       vernemq:
         condition: service_healthy

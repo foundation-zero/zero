@@ -97,18 +97,15 @@ jobs:
           report-dir: ${{ runner.temp }}/coverage
 
   docker-push:
-    strategy:
-      matrix:
-        target: [control, api]
     uses: "./.github/workflows/job_docker_push.yaml"
     permissions:
       contents: "read"
       id-token: "write"
     secrets: inherit
     with:
-      image: "zero-thrs-${{ matrix.target }}"
+      image: "zero-thrs-control"
       context: "zero-thrs-control"
-      target: "${{ matrix.target }}"
+      target: "control"
   helm-push:
     if: ${{ github.event_name == 'release' ||  github.ref == 'refs/heads/main' }}
     needs: [test, docker-push]
