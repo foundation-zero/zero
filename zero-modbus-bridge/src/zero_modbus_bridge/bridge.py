@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import time
 from collections import deque
 from datetime import UTC, datetime
 from typing import Any
@@ -56,6 +57,14 @@ class ModbusBridge:
         if probe_interval <= 0:
             raise ValueError("probe_interval must be > 0")
         self._probe_interval = probe_interval
+        self._last_read_at: float | None = None
+
+    def has_read_recently(self) -> bool:
+        """Whether a probe read at least one topic in the last three probe intervals."""
+        return (
+            self._last_read_at is not None
+            and time.monotonic() - self._last_read_at <= 3 * self._probe_interval
+        )
 
     @property
     def buffered_count(self) -> int:
@@ -128,6 +137,8 @@ class ModbusBridge:
         # One worker-thread call per probe: keeps the loop responsive to MQTT
         # keepalives, and the client on one thread (pyModbusTCP isn't thread-safe).
         readings = await asyncio.to_thread(self._probe)
+        if readings:
+            self._last_read_at = time.monotonic()
         # Replay the backlog before queueing this probe, so a full buffer only
         # drops readings while the broker is still refusing.
         drained = await self._flush()

@@ -418,3 +418,34 @@ def test_from_address_accepts_timeout_on_real_client():
         "10.0.0.1", 502, MagicMock(), [], modbus_timeout=0.5, buffer_size=10
     )
     assert isinstance(bridge, ModbusBridge)
+
+
+@pytest.mark.asyncio
+async def test_has_read_recently_until_three_probe_intervals_without_a_reading(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    now = 1000.0
+    monkeypatch.setattr("zero_modbus_bridge.bridge.time.monotonic", lambda: now)
+    bridge, reader = _bridge(RecordingPublisher())
+    assert not bridge.has_read_recently()
+
+    _probe_yields(reader, 1)
+    await bridge.run_once()
+    assert bridge.has_read_recently()
+
+    reader.ensure_open.return_value = False
+    await bridge.run_once()
+    now += 30
+    assert bridge.has_read_recently()
+    now += 0.1
+    assert not bridge.has_read_recently()
+
+
+@pytest.mark.asyncio
+async def test_a_probe_that_reads_nothing_is_not_a_reading():
+    bridge, reader = _bridge(RecordingPublisher())
+    _probe_yields(reader)
+
+    await bridge.run_once()
+
+    assert not bridge.has_read_recently()

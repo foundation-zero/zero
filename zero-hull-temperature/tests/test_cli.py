@@ -4,6 +4,7 @@ from unittest.mock import patch
 import pytest
 from pydantic_settings import CliApp
 
+from zero_hull_temperature import cli
 from zero_hull_temperature.cli import (
     ReadWithMqttCmd,
     RunCmd,
@@ -101,3 +102,17 @@ def test_stub_client_id_from_env(required_env, monkeypatch):
     monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
     cmd = StubCmd(_env_file=None)  # type: ignore[call-arg]
     assert cmd.mqtt_client_id == "custom-id"
+
+
+async def test_run_requires_the_gateway_for_health(required_env, monkeypatch):
+    runs = []
+
+    async def fake_run_with_health(broker, after_startup, *, required_bridges=()):
+        runs.append((after_startup, required_bridges))
+
+    monkeypatch.setattr(cli, "run_with_health", fake_run_with_health)
+
+    await RunCmd(_env_file=None).cli_cmd()  # type: ignore[call-arg]
+
+    [(after_startup, [bridge])] = runs
+    assert after_startup == bridge.run

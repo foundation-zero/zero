@@ -76,6 +76,27 @@ spec:
               value: {{ .Values.hullTemperature.activateTopic | quote }}
             - name: ACTIVATE_JSON_PATH
               value: {{ .Values.hullTemperature.activateJsonPath | quote }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          # /health returns 204 while the MQTT broker and the Modbus gateway
+          # are up, 500 otherwise. The app logs the reason. Liveness restarts
+          # the pod after 15 minutes not ready
+          # (docs/adr/0001-dependency-outages.md).
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 60
+            timeoutSeconds: 5
+            failureThreshold: 15
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

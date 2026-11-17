@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from pydantic_settings import CliApp
 
+from zero_termodinamica import cli
 from zero_termodinamica.cli import RunCmd, StubCmd, ZeroTermodinamica
 from zero_termodinamica.io import read_modbus_topics
 
@@ -113,3 +114,23 @@ def test_stub_cmd_serves_termodinamica_topics():
     ]
     assert default_value == 7
     mock_stub.from_settings.return_value.run.assert_called_once_with()
+
+
+async def test_run_requires_the_gateway_for_health(monkeypatch):
+    runs = []
+
+    async def fake_run_with_health(broker, after_startup, *, required_bridges=()):
+        runs.append((after_startup, required_bridges))
+
+    monkeypatch.setattr(cli, "run_with_health", fake_run_with_health)
+
+    await RunCmd(
+        _env_file=None,  # type: ignore[call-arg]
+        modbus_host="127.0.0.1",
+        modbus_port=502,
+        mqtt_host="localhost",
+        mqtt_port=1883,
+    ).cli_cmd()
+
+    [(after_startup, [bridge])] = runs
+    assert after_startup == bridge.run

@@ -156,20 +156,6 @@ def test_local_topic_groups():
     assert local_topic_groups(_settings(), [_spec("10P1")], 1000) == [([], 1000)]
 
 
-class _FakeApp:
-    """Stands in for FastStream: records the broker and startup hooks, runs nothing."""
-
-    def __init__(self, broker):
-        self.broker = broker
-        self.startup = []
-
-    def after_startup(self, hook):
-        self.startup.append(hook)
-
-    async def run(self):
-        pass
-
-
 async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
     monkeypatch: pytest.MonkeyPatch,
 ):
@@ -179,10 +165,12 @@ async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
         "PowerTagsSettings",
         lambda: _settings(**{cli._panel_field_key(panel, "host"): "192.168.0.10"}),
     )
-    apps: list[_FakeApp] = []
-    monkeypatch.setattr(
-        cli, "FastStream", lambda broker: apps.append(_FakeApp(broker)) or apps[-1]
-    )
+    runs = []
+
+    async def fake_run_with_health(broker, after_startup, **kwargs) -> None:
+        runs.append((broker, after_startup, kwargs))
+
+    monkeypatch.setattr(cli, "run_with_health", fake_run_with_health)
     started: list[ModbusBridge] = []
 
     async def fake_run(bridge: ModbusBridge) -> None:
@@ -192,10 +180,11 @@ async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
     cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
 
     await cmd.cli_cmd()
-    for hook in apps[0].startup:
-        await hook()
+    [(broker, after_startup, kwargs)] = runs
+    await after_startup()
 
-    broker = apps[0].broker
+    # Gateways are optional for power-tags, so /health checks only the broker.
+    assert kwargs == {}
     assert isinstance(broker, RecoveringBroker)
     assert broker._connection_kwargs["reconnect"].max_attempts is None
     assert len(started) == 1
