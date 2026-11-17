@@ -265,21 +265,6 @@ class TestDirectMqttMappingAutoclear:
         assert result is not None
         assert result.go_with_the.flow.value == 1.0
 
-    async def test_wait_for_consumes_on_match(self):
-        mapping = DirectMqttMapping(SimpleInOut, "sensors/data", autoclear=True)
-        model = _simple_model(1.0)
-        mapping.handle_message("sensors/data", model.model_dump_json(by_alias=True))
-        assert await mapping.wait_for(lambda v: v == model, timeout_s=1.0) == model
-        assert mapping.result() is None
-
-    async def test_wait_for_preserves_non_matching(self):
-        mapping = DirectMqttMapping(SimpleInOut, "sensors/data", autoclear=True)
-        model = _simple_model(1.0)
-        mapping.handle_message("sensors/data", model.model_dump_json(by_alias=True))
-        with pytest.raises(TimeoutError):
-            await mapping.wait_for(lambda v: v == _simple_model(2.0), timeout_s=0.05)
-        assert mapping.result() == model
-
     async def test_wait_for_result_consumes(self):
         mapping = DirectMqttMapping(SimpleInOut, "sensors/data", autoclear=True)
         first = _simple_model(1.0)

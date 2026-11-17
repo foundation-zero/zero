@@ -1,6 +1,6 @@
 import json
 import logging
-from asyncio import Event, TaskGroup, gather, timeout
+from asyncio import Event, TaskGroup, gather
 from collections import defaultdict
 from collections.abc import Awaitable, Callable, Coroutine, Iterable, Mapping
 from functools import partial
@@ -120,7 +120,6 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
             for field_name, field in message_type.model_fields.items()
         }
         self._builder = PartialModelBuilder(self._cls, context)
-        self._update_event = Event()
 
     @staticmethod
     def only_computed_fields[T: ThrsValues](
@@ -164,7 +163,6 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
             return
 
         self._builder.input(self._topic_to_field[topic], json)
-        self._update_event.set()
 
     def result(self) -> M | None:
         return self._builder.result()
@@ -172,24 +170,13 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
     async def wait_for_result(self) -> M:
         return await self._builder.wait_for_result()
 
-    async def wait_for_update(self):
-        await self._update_event.wait()
-        self._update_event.clear()
-
-    async def wait_for(self, condition: Callable[[M], bool], timeout_s: float) -> M:
-        async with timeout(timeout_s):
-            while True:
-                if (result := self.result()) and condition(result):
-                    return result
-                await self.wait_for_update()
-
 
 class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
     """MQTT mapping that maps the entire model to a single topic"""
 
     def __init__(
         self,
-        cls: type[M] | tuple[type[M], ...],
+        cls: type[M],
         topic: str,
         topic_suffix: str | None = None,
         *,
@@ -197,18 +184,14 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         context: WireContext | None = None,
     ):
         self._context = context
-        self._types = cls if isinstance(cls, tuple) else (cls,)
-        validate_type: type[M] | object = self._types[0]
-        for extra_type in self._types[1:]:
-            validate_type = validate_type | extra_type
-        self._adapter: TypeAdapter[M] = TypeAdapter(validate_type)
+        self._cls = cls
+        self._adapter: TypeAdapter[M] = TypeAdapter(cls)
         self._topic = f"{topic}{f'/{topic_suffix}' if topic_suffix else ''}"
         self._value = None
         # An Event rather than a Future: since Python 3.14 a Future needs a running loop,
         # and mappings are fed outside one.
         self._first_value: M | None = None
         self._first_received = Event()
-        self._update_event = Event()
         self._hooks: list[Callable[[M], object]] = []
         self._autoclear = autoclear
 
@@ -249,7 +232,6 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
             if not self._first_received.is_set():
                 self._first_value = self._value
                 self._first_received.set()
-            self._update_event.set()
             for hook in self._hooks:
                 result = hook(self._value)
                 if isawaitable(result):
@@ -268,20 +250,6 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         if self._autoclear:
             self._value = None
         return result
-
-    async def wait_for_update(self):
-        await self._update_event.wait()
-        self._update_event.clear()
-
-    async def wait_for(self, condition: Callable[[M], bool], timeout_s: float) -> M:
-        async with timeout(timeout_s):
-            while True:
-                peek = self._value
-                if peek is not None and condition(peek):
-                    if self._autoclear:
-                        self._value = None
-                    return peek
-                await self.wait_for_update()
 
     def add_hook(self, hook: Callable[[M], object]):
         self._hooks.append(hook)
