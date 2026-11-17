@@ -5,12 +5,61 @@ import {
   QUERY_MODULES,
   THRS,
 } from "@/modules/thrapp/lib/consts";
-import { CONTROL_QUERY, ControlStatus } from "@/modules/thrapp/stores/automation";
+import { ControlStatus } from "@/modules/thrapp/stores/automation";
 import { ParameterDefinitions } from "@/modules/thrapp/types/thrs";
 import { ENV } from "@/settings";
-import { Client, fetchExchange, OperationResult, TypedDocumentNode } from "@urql/vue";
+import { Client, fetchExchange, gql, OperationResult, TypedDocumentNode } from "@urql/vue";
 import { describe, expect, test } from "vitest";
 import { SimulationStatus, STATUS_QUERY } from "../stores/simulation";
+
+// thrs-api's control status. The automation store's query is for the MQTT GraphQL API, so this
+// test has its own.
+const CONTROL_QUERY = gql`
+  query ControlStatus {
+    modules {
+      thrusters {
+        controlMode {
+          automatic
+        }
+      }
+      pcm {
+        controlMode {
+          automatic
+        }
+      }
+      pvt {
+        controlMode {
+          automatic
+        }
+      }
+      adsorption {
+        controlMode {
+          automatic
+        }
+      }
+      consumers {
+        controlMode {
+          automatic
+        }
+      }
+      dc {
+        controlMode {
+          automatic
+        }
+      }
+      dhw {
+        controlMode {
+          automatic
+        }
+      }
+      drives {
+        controlMode {
+          automatic
+        }
+      }
+    }
+  }
+`;
 
 const client = new Client({
   url: ENV.VITE_THRS_API_SERVER,

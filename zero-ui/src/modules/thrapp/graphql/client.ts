@@ -1,8 +1,7 @@
 import { ENV } from "@env";
 import { Client, fetchExchange, OperationContext } from "@urql/vue";
 
-// thrs-api: thrsim's simulator and control values and the automation mode, until they move to
-// MQTT GraphQL too.
+// thrs-api: thrsim's simulator, until it moves to MQTT GraphQL too.
 export const context: Partial<OperationContext> = {
   url: ENV.VITE_THRS_API_SERVER_URL ?? "/api/thrs/graphql",
 };
