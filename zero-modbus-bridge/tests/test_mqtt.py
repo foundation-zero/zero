@@ -1,4 +1,6 @@
 import asyncio
+import os
+from pathlib import Path
 from typing import NoReturn
 from unittest.mock import AsyncMock, MagicMock
 
@@ -11,10 +13,12 @@ from zmqtt import (
     ReconnectConfig,
 )
 
+from zero_modbus_bridge import mqtt
 from zero_modbus_bridge.mqtt import (
     REFUSAL_GRACE_SECONDS,
     RecoveringBroker,
     RecoveringClient,
+    exit_with_reason,
 )
 
 REFUSED = MQTTConnectError(0x87)  # not authorized
@@ -170,3 +174,14 @@ async def test_broker_connects_through_recovering_client(
 
     await broker.connect()
     connect.assert_awaited_once()
+
+
+def test_exit_writes_termination_message(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+):
+    termination_log = tmp_path / "termination-log"
+    monkeypatch.setattr(mqtt, "TERMINATION_LOG", termination_log)
+    monkeypatch.setattr(os, "_exit", _exit)
+    with pytest.raises(Exited):
+        exit_with_reason("mqtt: client gave up reconnecting")
+    assert termination_log.read_text() == "mqtt: client gave up reconnecting"
