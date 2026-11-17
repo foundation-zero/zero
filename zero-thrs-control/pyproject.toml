@@ -29,7 +29,7 @@ dynamic = ["version"]
 license-files = ["LICENSE"]
 
 [dependency-groups]
-dev = ["ruff==0.17.4", "pygraphviz~=2.0.4", "pyright~=1.1.414"]
+dev = ["ruff==0.17.4", "pygraphviz~=2.0.4", "pyright~=1.1.414", "playwright==1.64.1"]
 
 # Notebooks and plotting for the analysis/ folder; not installed in the images.
 analysis = [
@@ -117,6 +117,11 @@ extend-unsafe-fixes = ["COM812"]
 "tests/**" = [
   "S101",   # We do want asserts in tests 
   "SLF001", # Allow private member access in tests
+]
+
+"docs/skills/**/scripts/*.py" = [
+  "T201",   # Command-line scripts print their results
+  "INP001", # Run as scripts, not imported as a package
 ]
 
 "**/*.ipynb" = [

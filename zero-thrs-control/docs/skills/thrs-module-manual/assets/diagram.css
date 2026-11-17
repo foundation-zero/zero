@@ -1,0 +1,166 @@
+/* Mermaid themeCSS: scoped to the diagram's SVG and shipped inside it. Colours are
+   zero-ui's CSS variables, so the diagram follows the front-end's light and dark theme;
+   the front-end also outlines each state in its mode's colour. */
+
+.node rect {
+  fill: var(--background);
+  stroke: var(--border);
+  rx: 12px;
+  ry: 12px;
+}
+
+.node .nodeLabel,
+.node .nodeLabel p {
+  text-align: left;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--foreground);
+}
+
+.node foreignObject:first-child .nodeLabel {
+  font-family: "Urbanist", sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.node .nodeLabel b {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+}
+
+.transition {
+  stroke: var(--muted-foreground);
+  stroke-width: 1.25px;
+}
+
+marker path,
+#statediagram-barbEnd {
+  fill: var(--muted-foreground);
+  stroke: var(--muted-foreground);
+}
+
+.edgeLabel,
+.edgeLabel p,
+.edgeLabel rect,
+.labelBkg {
+  background-color: var(--background);
+  fill: var(--background);
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+
+.state-start,
+circle.state-start {
+  fill: var(--foreground);
+  stroke: var(--foreground);
+}
+
+.edgeLabel div,
+.node .nodeLabel,
+.node foreignObject div {
+  max-width: none !important;
+  white-space: nowrap !important;
+}
+
+/* Mermaid's base theme paints the rest in fixed light colours; repaint everything a
+   state diagram can draw. manual_render.py fails on any colour this leaves behind. */
+& {
+  fill: var(--foreground);
+}
+
+marker,
+.marker,
+[id$="-barbEnd"],
+defs [id$="-barbEnd"],
+[id$="-dependencyStart"],
+[id$="-dependencyEnd"] {
+  fill: var(--muted-foreground);
+  stroke: var(--muted-foreground);
+}
+
+.marker.cross {
+  stroke: var(--muted-foreground);
+}
+
+.divider,
+.statediagram-state .divider,
+g.stateGroup line {
+  stroke: var(--border);
+}
+
+.statediagram-state rect.divider,
+.statediagram-cluster .inner,
+.statediagram-cluster.statediagram-cluster .inner,
+.statediagram-cluster.statediagram-cluster-alt .inner,
+.stateGroup .composit,
+.stateGroup .alt-composit {
+  fill: var(--background);
+}
+
+.node circle.state-start,
+.node .fork-join {
+  fill: var(--foreground);
+  stroke: var(--foreground);
+}
+
+.node circle.state-end {
+  fill: var(--foreground);
+  stroke: var(--background);
+}
+
+.end-state-inner {
+  fill: var(--foreground);
+}
+
+.node polygon,
+.statediagram-cluster rect,
+.statediagram-note rect,
+.state-note,
+.stateLabel .box {
+  fill: var(--background);
+  stroke: var(--border);
+}
+
+.cluster-label,
+.nodeLabel,
+.label div .edgeLabel,
+.statediagram-note .nodeLabel {
+  color: var(--foreground);
+}
+
+.statediagram .edgeLabel {
+  color: var(--muted-foreground);
+}
+
+g.stateGroup text,
+g.stateGroup .state-title,
+.state-note text,
+.statediagram-note text,
+.stateLabel text,
+.edgeLabel .label text,
+.statediagramTitleText {
+  fill: var(--foreground);
+}
+
+/* End states, forks, joins and notes are paths with fixed fill and stroke attributes. */
+.node .outer-path > path[fill]:not([fill="none"]) {
+  fill: var(--background);
+}
+
+.node .outer-path > path[stroke]:not([stroke="none"]) {
+  stroke: var(--foreground);
+}
+
+.node g:not([class]) > path[fill]:not([fill="none"]),
+.node g:not([class]) > path[stroke]:not([stroke="none"]) {
+  fill: var(--foreground);
+  stroke: var(--foreground);
+}
+
+.statediagram-note .outer-path > path[stroke]:not([stroke="none"]) {
+  stroke: var(--border);
+}
