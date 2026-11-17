@@ -21,6 +21,8 @@ from zmqtt import (
     MQTTTimeoutError,
 )
 
+from zero_atpx_nmea.logs import log_prefix
+
 logger = logging.getLogger(__name__)
 
 TERMINATION_LOG = Path("/dev/termination-log")
@@ -121,6 +123,8 @@ class RecoveringBroker(MQTTBroker):
     async def _connect(self) -> zmqtt.MQTTClient:
         # Same as MQTTBroker._connect, with our client class.
         client = RecoveringClient(name=self._name, **self._connection_kwargs)
-        await client.connect()
+        # The run loop started here keeps the prefix through every reconnect.
+        with log_prefix(self._name):
+            await client.connect()
         self.config.connect(client)
         return client
