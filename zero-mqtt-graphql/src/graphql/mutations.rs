@@ -1,6 +1,7 @@
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
 use std::future::Future;
+use std::iter::once;
 use std::pin::Pin;
 use std::str::FromStr;
 use std::sync::Arc;
@@ -19,7 +20,7 @@ use serde_json::{Map, Value as JsonValue};
 use tokio::sync::broadcast::{Receiver, error::RecvError};
 use tokio::time::Instant;
 
-use crate::api_model::{Direction, FieldType, GraphqlPath, TopicDef};
+use crate::api_model::{Arm, Direction, FieldType, GraphqlPath, Payload, TopicDef};
 use crate::cache::TopicCache;
 use crate::graphql::{
     DATE_SCALAR, DATE_TIME_SCALAR, DURATION_SCALAR, JSON_SCALAR, Leaf, TIME_SCALAR, enum_type,
@@ -69,37 +70,61 @@ pub(super) fn mutation_leaf(
         );
         return Leaf::default();
     }
-    let Some(fields) = setter.payload.fields() else {
-        warn!(
-            "Topic {} takes one of several formats, which mutations don't support yet, ignoring",
-            setter.topic
-        );
-        return Leaf::default();
-    };
+    let payload = &setter.payload;
+    let discriminator = payload.discriminator.as_deref();
+    // The client never sends the discriminator: the arm it picks says it.
+    let arm_fields: Vec<BTreeMap<String, FieldType>> = payload
+        .arms
+        .iter()
+        .map(|arm| {
+            let mut fields = arm.fields.clone();
+            if let Some(discriminator) = discriminator {
+                fields.remove(discriminator);
+            }
+            fields
+        })
+        .collect();
 
-    let signal = fields.is_empty();
+    let signal = discriminator.is_none() && arm_fields.iter().all(BTreeMap::is_empty);
     // GraphQL has no input objects without fields.
-    let inputs = if signal {
-        Vec::new()
-    } else {
-        input_objects(spec, &setter.payload.name, fields)
+    let inputs = match (signal, discriminator) {
+        (true, _) => Vec::new(),
+        (false, None) => input_objects(spec, &payload.name, &arm_fields[0]),
+        (false, Some(_)) => union_inputs(spec, payload, &arm_fields),
     };
     // A signal has no input, so nothing to confirm. The State topic is a
-    // Query field, so Query has already built its object type.
-    let state_type = match (topic.operation, &topic.payload) {
+    // Query field, so Query has already built its object or union type.
+    let state = match (topic.operation, &topic.payload) {
         (Direction::Send, Some(state)) if !signal && !state.name.is_empty() => {
             info!("Mutation '{path}' confirms through '{}'", topic.topic);
-            Some(payload_type_name(spec, &state.name))
+            Some(state)
         }
         _ => None,
     };
+    let state_type = state.map(|state| payload_type_name(spec, &state.name));
     let return_type = TypeRef::named_nn(state_type.as_deref().unwrap_or(TypeRef::BOOLEAN));
 
+    let arms = payload
+        .arms
+        .iter()
+        .zip(&arm_fields)
+        .map(|(arm, fields)| TargetArm {
+            input_name: arm_input_name(arm),
+            value: arm.value.clone(),
+            fields: fields.clone(),
+            // A union State returns as its arm of the same value.
+            state_type: state
+                .filter(|state| state.discriminator.is_some())
+                .and_then(|state| state.arms.iter().find(|other| other.value == arm.value))
+                .map(|other| payload_type_name(spec, &other.name)),
+        })
+        .collect();
     let target = Target {
         topic: setter.topic.clone(),
-        fields: fields.clone(),
+        discriminator: discriminator.map(ToOwned::to_owned),
+        arms,
         validator: setter.validator.clone(),
-        state_topic: state_type.is_some().then(|| topic.topic.clone()),
+        state_topic: state.is_some().then(|| topic.topic.clone()),
         cache: cache.clone(),
         mutations: mutations.clone(),
     };
@@ -110,9 +135,49 @@ pub(super) fn mutation_leaf(
     let types = inputs
         .into_iter()
         .map(Type::from)
-        .chain(field_enums(spec, fields))
+        .chain(
+            arm_fields
+                .iter()
+                .flat_map(|fields| field_enums(spec, fields)),
+        )
         .collect();
     (vec![field], types)
+}
+
+/// The `@oneOf` input of a payload of several formats: one field per arm,
+/// named after its discriminator value, taking that arm's input object.
+/// Followed by the arms' input types.
+fn union_inputs(
+    spec: &str,
+    payload: &Payload,
+    arm_fields: &[BTreeMap<String, FieldType>],
+) -> Vec<InputObject> {
+    let mut union =
+        InputObject::new(format!("{}Input", payload_type_name(spec, &payload.name))).oneof();
+    let mut arm_inputs = Vec::new();
+    for (arm, fields) in payload.arms.iter().zip(arm_fields) {
+        let objects = input_objects(spec, &arm.name, fields);
+        union = union.field(InputValue::new(
+            arm_input_name(arm),
+            TypeRef::named(objects[0].type_name()),
+        ));
+        arm_inputs.extend(objects);
+    }
+    once(union).chain(arm_inputs).collect()
+}
+
+/// The field of the `@oneOf` input that picks `arm`: its discriminator value
+/// as a GraphQL name, `high_temperature` → `highTemperature`.
+fn arm_input_name(arm: &Arm) -> String {
+    let value = arm.value.as_ref().map_or_else(
+        || arm.name.clone(),
+        |value| {
+            value
+                .as_str()
+                .map_or_else(|| value.to_string(), ToOwned::to_owned)
+        },
+    );
+    sanitize_to_graphql_name(&value)
 }
 
 /// The Mutation field `name`: takes an `input` of `input_type`, if any, sets
@@ -131,7 +196,7 @@ fn set_field(name: &str, input_type: Option<&str>, return_type: TypeRef, target:
                 .set(&input)
                 .await
                 .map_err(|e| async_graphql::Error::new(format!("{e:#}")))?;
-            Ok(Some(FieldValue::value(value)))
+            Ok(Some(value))
         })
     });
     match input_type {
@@ -216,42 +281,74 @@ fn field_type_enums(spec: &str, field_type: &FieldType) -> Vec<Type> {
 /// One mutable Receive Topic, as its resolver needs it.
 struct Target {
     topic: String,
-    fields: BTreeMap<String, FieldType>,
+    /// Raw name of the property that tells the arms apart, when the topic
+    /// takes one of several formats.
+    discriminator: Option<String>,
+    arms: Vec<TargetArm>,
     validator: Validator,
     state_topic: Option<String>,
     cache: Arc<TopicCache>,
     mutations: Mutations,
 }
 
+/// One format a [`Target`] takes.
+struct TargetArm {
+    /// The `@oneOf` input field that picks it.
+    input_name: String,
+    /// Its discriminator value, which the input doesn't carry.
+    value: Option<JsonValue>,
+    /// The fields the client sets.
+    fields: BTreeMap<String, FieldType>,
+    /// The object type a union State value of this format returns as.
+    state_type: Option<String>,
+}
+
 impl Target {
     /// Publish `input`. Without a State topic, returns `true` once handed to
     /// the MQTT client. With one, fills omitted fields from the State value
     /// first (see [`merge`]), then returns the first State value that shows
-    /// every given leaf.
-    async fn set(&self, input: &GraphQlValue) -> anyhow::Result<GraphQlValue> {
-        let given = input_payload(input, &self.fields)?;
+    /// every given leaf. Of a topic of several formats, `input` picks one;
+    /// the State must be in that format, if it has a value.
+    async fn set(&self, input: &GraphQlValue) -> anyhow::Result<FieldValue<'static>> {
+        let (arm, input) = self.arm(input)?;
+        let given = input_payload(input, &arm.fields)?;
         let Some(state_topic) = &self.state_topic else {
-            self.publish(&given).await?;
-            return Ok(GraphQlValue::Boolean(true));
+            self.publish(&self.with_discriminator(given, arm)).await?;
+            return Ok(FieldValue::value(GraphQlValue::Boolean(true)));
         };
         if given.as_object().is_none_or(Map::is_empty) {
             bail!("input for '{}' sets no fields", self.topic);
         }
+        let given = self.with_discriminator(given, arm);
 
         // Listen before publishing, so the confirming update can't be missed.
         let mut updates = self.cache.updates();
-        let base = self.cache.get(state_topic).map_or_else(
+        let state = self.cache.get(state_topic);
+        if let (Some(discriminator), Some(state)) = (&self.discriminator, &state) {
+            let found = state.get(discriminator).unwrap_or(&JsonValue::Null);
+            if Some(found) != arm.value.as_ref() {
+                bail!(
+                    "'{state_topic}' is {discriminator} {found}, so it can't be set as {}",
+                    arm.input_name
+                );
+            }
+        }
+        let base = state.map_or_else(
             || JsonValue::Object(Map::new()),
-            |state| project(&state, &self.fields),
+            |state| project(&state, &arm.fields),
         );
         self.publish(&merge(base, &given)).await?;
 
         let deadline = Instant::now() + self.mutations.timeout;
         loop {
             if let Some(state) = self.cache.get(state_topic)
-                && equal_fields(&state, &given, Some(&self.fields))
+                && equal_fields(&state, &given, Some(&arm.fields))
             {
-                return Ok(GraphQlValue::from_json(state)?);
+                let value = FieldValue::value(GraphQlValue::from_json(state)?);
+                return Ok(match &arm.state_type {
+                    Some(state_type) => FieldValue::with_type(value, state_type.clone()),
+                    None => value,
+                });
             }
             if !next_update(&mut updates, state_topic, deadline).await {
                 bail!(
@@ -261,6 +358,39 @@ impl Target {
                 );
             }
         }
+    }
+
+    /// The arm `input` sets, and that arm's input: the only arm, or the one
+    /// the `@oneOf` input names.
+    fn arm<'a>(
+        &'a self,
+        input: &'a GraphQlValue,
+    ) -> anyhow::Result<(&'a TargetArm, &'a GraphQlValue)> {
+        if self.discriminator.is_none() {
+            return Ok((&self.arms[0], input));
+        }
+        let GraphQlValue::Object(input) = input else {
+            bail!("input is not an object");
+        };
+        // `@oneOf` lets the client set exactly one field.
+        let (name, value) = input.iter().next().context("input picks no format")?;
+        let arm = self
+            .arms
+            .iter()
+            .find(|arm| arm.input_name == name.as_str())
+            .with_context(|| format!("{name} is not one of the formats of '{}'", self.topic))?;
+        Ok((arm, value))
+    }
+
+    /// `given` with the discriminator value of `arm`, for a topic of several
+    /// formats.
+    fn with_discriminator(&self, mut given: JsonValue, arm: &TargetArm) -> JsonValue {
+        if let (Some(discriminator), Some(value), Some(given)) =
+            (&self.discriminator, &arm.value, given.as_object_mut())
+        {
+            given.insert(discriminator.clone(), value.clone());
+        }
+        given
     }
 
     /// Validate `payload` against the topic's JSON Schema, then publish it.
@@ -736,6 +866,205 @@ mod tests {
             .unwrap()
             .execute(query)
             .await
+    }
+
+    /// `room/sim` and its setter, one of a `Pvt` and a `HighTemperature`,
+    /// told apart by `Kind`.
+    fn union_api() -> Api {
+        let arm = |name: &str, value: &str, field: &str| Arm {
+            name: name.to_string(),
+            value: Some(json!(value)),
+            fields: BTreeMap::from([
+                ("Kind".to_string(), FieldType::String),
+                (field.to_string(), FieldType::Float),
+                ("Note".to_string(), FieldType::String),
+            ]),
+        };
+        let union_topic = |address: &str, operation| TopicDef {
+            topic: address.to_string(),
+            payload: Some(Payload {
+                name: "Inputs".to_string(),
+                discriminator: Some("Kind".to_string()),
+                arms: vec![
+                    arm("Pvt", "pvt", "panels"),
+                    arm("HighTemperature", "high_temperature", "tank"),
+                ],
+            }),
+            ttl_secs: None,
+            operation,
+            setter: None,
+            kind: TopicKind::Single,
+        };
+        let schema = json!({"oneOf": [
+            {
+                "type": "object",
+                "properties": {
+                    "Kind": {"const": "pvt"},
+                    "panels": {"type": "number"},
+                    "Note": {"type": "string"},
+                },
+                "required": ["Kind", "panels", "Note"],
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "Kind": {"const": "high_temperature"},
+                    "tank": {"type": "number"},
+                    "Note": {"type": "string"},
+                },
+                "required": ["Kind", "tank", "Note"],
+            },
+        ]});
+        let validators = [(
+            "room/sim/set".to_string(),
+            jsonschema::validator_for(&schema).unwrap(),
+        )]
+        .into_iter()
+        .collect();
+        Api::new(vec![
+            Spec::new(
+                "room".to_string(),
+                vec![
+                    union_topic("room/sim", Direction::Send),
+                    union_topic("room/sim/set", Direction::Receive),
+                ],
+                validators,
+            )
+            .unwrap(),
+        ])
+    }
+
+    async fn execute_union(
+        cache: &Arc<TopicCache>,
+        service: &Arc<Service>,
+        query: &str,
+    ) -> async_graphql::Response {
+        let mutations = mutations_through(service.clone());
+        build_schema(&union_api(), cache, Some(&mutations))
+            .unwrap()
+            .execute(query)
+            .await
+    }
+
+    #[test_log::test]
+    fn test_union_setter_takes_one_input_per_format() {
+        let cache = Arc::new(TopicCache::new());
+        let mutations = mutations_through(service(&cache, None));
+        let sdl = build_schema(&union_api(), &cache, Some(&mutations))
+            .unwrap()
+            .sdl();
+
+        assert!(sdl.contains("input RoomInputsInput @oneOf {"), "{sdl}");
+        assert!(
+            sdl.contains("highTemperature: RoomHighTemperatureInput"),
+            "{sdl}"
+        );
+        assert!(sdl.contains("pvt: RoomPvtInput"), "{sdl}");
+        // The format picked says the discriminator; the client doesn't set it.
+        assert!(
+            sdl.contains("input RoomPvtInput {\n\tnote: String\n\tpanels: Float\n}"),
+            "{sdl}"
+        );
+        assert!(
+            sdl.contains("sim(input: RoomInputsInput!): RoomInputs!"),
+            "{sdl}"
+        );
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_union_mutation_writes_its_format_and_merges_the_same_format() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "room/sim",
+            json!({"Kind": "pvt", "panels": 1.0, "Note": "a"}),
+        );
+        let service = service(&cache, Some(Clone::clone));
+
+        let response = execute_union(
+            &cache,
+            &service,
+            "mutation { room { sim(input: {pvt: {panels: 2}}) { __typename ... on RoomPvt { panels note } } } }",
+        )
+        .await;
+
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        let data = response.data.into_json().unwrap();
+        assert_eq!(
+            data["room"]["sim"],
+            json!({"__typename": "RoomPvt", "panels": 2, "note": "a"})
+        );
+        assert_eq!(
+            *service.published.lock().unwrap(),
+            [(
+                "room/sim/set".to_string(),
+                json!({"Kind": "pvt", "panels": 2, "Note": "a"})
+            )]
+        );
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_union_mutation_rejects_another_format_than_the_state() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "room/sim",
+            json!({"Kind": "high_temperature", "tank": 50.0, "Note": "a"}),
+        );
+        let service = service(&cache, Some(Clone::clone));
+
+        let response = execute_union(
+            &cache,
+            &service,
+            "mutation { room { sim(input: {pvt: {panels: 2}}) { __typename } } }",
+        )
+        .await;
+
+        assert_eq!(response.errors.len(), 1, "{:?}", response.errors);
+        assert!(
+            response.errors[0]
+                .message
+                .contains("'room/sim' is Kind \"high_temperature\", so it can't be set as pvt"),
+            "{:?}",
+            response.errors
+        );
+        assert!(service.published.lock().unwrap().is_empty());
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_union_mutation_without_state_needs_the_whole_format() {
+        let cache = Arc::new(TopicCache::new());
+        let service = service(&cache, Some(Clone::clone));
+
+        let partial = execute_union(
+            &cache,
+            &service,
+            "mutation { room { sim(input: {highTemperature: {tank: 60}}) { __typename } } }",
+        )
+        .await;
+        assert_eq!(partial.errors.len(), 1, "{:?}", partial.errors);
+        assert!(service.published.lock().unwrap().is_empty());
+
+        let whole = execute_union(
+            &cache,
+            &service,
+            r#"mutation { room { sim(input: {highTemperature: {tank: 60, note: "b"}}) { __typename } } }"#,
+        )
+        .await;
+        assert!(whole.errors.is_empty(), "{:?}", whole.errors);
+        let data = whole.data.into_json().unwrap();
+        assert_eq!(
+            data["room"]["sim"],
+            json!({"__typename": "RoomHighTemperature"})
+        );
+        assert_eq!(
+            *service.published.lock().unwrap(),
+            [(
+                "room/sim/set".to_string(),
+                json!({"Kind": "high_temperature", "tank": 60, "Note": "b"})
+            )]
+        );
     }
 
     #[test_log::test]
