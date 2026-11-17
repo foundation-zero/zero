@@ -600,6 +600,21 @@
           },
           {
             "matcher": {
+              "id": "byRegexp",
+              "options": "^(Domestic|Technical|HVAC|Propulsion|Losses)$"
+            },
+            "properties": [
+              {
+                "id": "custom.stacking",
+                "value": {
+                  "group": "B",
+                  "mode": "normal"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
               "id": "byName",
               "options": "Hydrogeneration"
             },
