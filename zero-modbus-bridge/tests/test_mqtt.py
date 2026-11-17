@@ -1,6 +1,6 @@
 import asyncio
 from typing import NoReturn
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 import zmqtt
@@ -17,7 +17,8 @@ from zero_modbus_bridge.mqtt import (
     RecoveringClient,
 )
 
-NOT_AUTHORIZED = 0x87
+REFUSED = MQTTConnectError(0x87)  # not authorized
+ATTEMPT_INTERVAL = 30.0
 
 
 class Exited(Exception):
@@ -59,9 +60,24 @@ def client(clock: FakeClock) -> RecoveringClient:
     )
 
 
+def _attempts(clock: FakeClock, *outcomes: Exception | None):
+    """Connect attempts ``ATTEMPT_INTERVAL`` apart that end as ``outcomes`` says (``None`` connects).
+
+    Once ``outcomes`` runs out, every attempt is refused."""
+    remaining = list(outcomes)
+
+    async def attempt() -> None:
+        clock.now += ATTEMPT_INTERVAL
+        outcome = remaining.pop(0) if remaining else REFUSED
+        if outcome is not None:
+            raise outcome
+
+    return attempt
+
+
 async def test_refusal_is_retried(client: RecoveringClient, attempt: AsyncMock):
-    """zmqtt alone would give up on the first CONNACK refusal."""
-    attempt.side_effect = [MQTTConnectError(NOT_AUTHORIZED), None]
+    """zmqtt alone would give up on the first "not authorized" refusal."""
+    attempt.side_effect = [REFUSED, None]
     await client._connect_with_retry()
     assert attempt.await_count == 2
 
@@ -81,48 +97,48 @@ async def test_broken_handshake_is_retried(
     assert attempt.await_count == 2
 
 
-async def test_exits_when_still_refused_after_grace(
+async def test_gives_up_when_still_refused_after_grace(
     client: RecoveringClient, attempt: AsyncMock, clock: FakeClock
 ):
-    attempt.side_effect = MQTTConnectError(NOT_AUTHORIZED)
-    with pytest.raises(ConnectionRefusedError, match=r"return code 135"):
-        await client._connect()
-
-    clock.now = REFUSAL_GRACE_SECONDS
-    with pytest.raises(
-        Exited, match="^mqtt: CONNACK refused .* still refused after 90 s"
-    ):
-        await client._connect()
+    attempt.side_effect = _attempts(clock)
+    with pytest.raises(MQTTConnectError):
+        await client._connect_with_retry()
+    refused_for = clock.now - ATTEMPT_INTERVAL  # since the first attempt
+    assert refused_for == REFUSAL_GRACE_SECONDS
 
 
 async def test_refusal_grace_restarts_after_connecting(
     client: RecoveringClient, attempt: AsyncMock, clock: FakeClock
 ):
-    attempt.side_effect = [MQTTConnectError(NOT_AUTHORIZED), None]
-    with pytest.raises(ConnectionRefusedError):
-        await client._connect()
-    await client._connect()
+    attempt.side_effect = _attempts(clock, REFUSED, REFUSED, None)
+    await client._connect_with_retry()
 
-    clock.now = REFUSAL_GRACE_SECONDS
-    attempt.side_effect = MQTTConnectError(NOT_AUTHORIZED)
-    with pytest.raises(ConnectionRefusedError):
-        await client._connect()
+    attempt.side_effect = _attempts(clock, REFUSED, REFUSED, REFUSED, None)
+    await client._connect_with_retry()
 
 
 async def test_refusal_grace_restarts_after_another_failure(
     client: RecoveringClient, attempt: AsyncMock, clock: FakeClock
 ):
-    attempt.side_effect = MQTTConnectError(NOT_AUTHORIZED)
-    with pytest.raises(ConnectionRefusedError):
-        await client._connect()
-    attempt.side_effect = ConnectionRefusedError(111, "Connect call failed")
-    with pytest.raises(ConnectionRefusedError):
-        await client._connect()
+    transport_error = ConnectionRefusedError(111, "Connect call failed")
+    attempt.side_effect = _attempts(
+        clock, REFUSED, REFUSED, REFUSED, transport_error, REFUSED, REFUSED, None
+    )
+    await client._connect_with_retry()
 
-    clock.now = REFUSAL_GRACE_SECONDS
-    attempt.side_effect = MQTTConnectError(NOT_AUTHORIZED)
-    with pytest.raises(ConnectionRefusedError):
-        await client._connect()
+
+async def test_exits_when_refused_past_grace_on_reconnect(
+    client: RecoveringClient, attempt: AsyncMock, clock: FakeClock
+):
+    protocol = MagicMock()
+    protocol.run = AsyncMock(side_effect=ConnectionResetError("Connection lost"))
+    protocol.started_event.wait = AsyncMock()
+    protocol._transport.close = AsyncMock()
+    client._protocol = protocol
+    attempt.side_effect = _attempts(clock)
+    with pytest.raises(Exited, match="^mqtt: client stopped: MQTTConnectError"):
+        await client._run_loop()
+    assert attempt.await_count == REFUSAL_GRACE_SECONDS / ATTEMPT_INTERVAL + 1
 
 
 async def test_exits_when_run_loop_fails(

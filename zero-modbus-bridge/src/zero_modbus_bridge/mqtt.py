@@ -9,6 +9,7 @@ import logging
 import os
 import time
 from collections.abc import Callable
+from dataclasses import replace
 from pathlib import Path
 from typing import Any, NoReturn
 
@@ -18,7 +19,6 @@ from zmqtt import (
     MQTTConnectError,
     MQTTDisconnectedError,
     MQTTProtocolError,
-    MQTTTimeoutError,
 )
 
 logger = logging.getLogger(__name__)
@@ -46,13 +46,15 @@ def exit_with_reason(reason: str) -> NoReturn:
 
 
 class RecoveringClient(zmqtt.MQTTClient):
-    """zmqtt client that retries what zmqtt gives up on, and exits when it can't.
+    """zmqtt client that retries refusals for a while and exits if its run loop dies.
 
-    TODO(ZERO-2532): drop the refusal handling once zMQTT#129 is released.
-    Today a refusal ends zmqtt's reconnect task even with max_attempts=None;
-    replace it with ReconnectConfig(retry_refusal=lambda e: e.is_transient or
-    e.return_code in {0x05, 0x87}).
-    https://github.com/faststream-community/zMQTT/issues/128
+    zmqtt retries a refused CONNACK when ``retry_refusal`` says so. This client
+    says so until the refusals have gone on for ``REFUSAL_GRACE_SECONDS``. Then
+    zmqtt gives up: through ``on_connection_recovery_failed`` on a reconnect,
+    or with an exception from ``connect`` on the first connect.
+
+    TODO(ZERO-2532): drop the handshake and run loop handling once zMQTT#137
+    is released.
     """
 
     def __init__(
@@ -64,26 +66,31 @@ class RecoveringClient(zmqtt.MQTTClient):
         **kwargs: Any,
     ):
         super().__init__(**kwargs)
+        self._reconnect = replace(self._reconnect, retry_refusal=self._retry_refusal)
         self._name = name
         self._clock = clock
         self._exit_process = exit_process
-        self._first_refusal_at: float | None = None
+        self._refused_since: float | None = None
 
     async def _connect(self) -> None:
         """One attempt; zmqtt calls it for the initial connect and every reconnect."""
+        # Anything but another refusal restarts the grace period.
+        refused_since, self._refused_since = self._refused_since, None
         try:
             await super()._connect()
-        except MQTTConnectError as exc:
-            self._on_refused(exc)
-        except OSError, MQTTTimeoutError:
-            self._first_refusal_at = None
+        except MQTTConnectError:
+            self._refused_since = refused_since
             raise
         except (MQTTDisconnectedError, MQTTProtocolError) as exc:
             # The broker closed the socket or answered with something other
-            # than CONNACK. zmqtt retries only OSErrors.
-            self._first_refusal_at = None
+            # than CONNACK. zmqtt doesn't retry those.
             raise ConnectionResetError(f"{type(exc).__name__}: {exc}") from exc
-        self._first_refusal_at = None
+
+    def _retry_refusal(self, refusal: MQTTConnectError) -> bool:
+        now = self._clock()
+        if self._refused_since is None:
+            self._refused_since = now
+        return now - self._refused_since < REFUSAL_GRACE_SECONDS
 
     async def _run_loop(self) -> None:
         # zmqtt doesn't restart a run loop that fails on a live connection,
@@ -96,19 +103,6 @@ class RecoveringClient(zmqtt.MQTTClient):
             self._exit_process(
                 f"{self._name}: client stopped: {type(exc).__name__}: {exc}"
             )
-
-    def _on_refused(self, exc: MQTTConnectError) -> NoReturn:
-        reason = f"CONNACK refused (return code {exc.return_code})"
-        now = self._clock()
-        if self._first_refusal_at is None:
-            self._first_refusal_at = now
-        if now - self._first_refusal_at >= REFUSAL_GRACE_SECONDS:
-            self._exit_process(
-                f"{self._name}: {reason}, still refused after {REFUSAL_GRACE_SECONDS:g} s"
-            )
-        logger.warning("%s: %s, retrying", self._name, reason)
-        # zmqtt retries OSErrors with its normal backoff.
-        raise ConnectionRefusedError(reason) from exc
 
 
 class RecoveringBroker(MQTTBroker):
