@@ -351,8 +351,6 @@ async def test_control_runner_ticks_and_uses_channels():
     assert alarms.check.call_count == 2
 
     assert control.update_parameters.call_count == 2
-    # Engaging automatic resets the automatic control, and return to manual uses actuated values
-    assert module._control._manual_control._control_values == control_values_new
 
     assert channels.send_control_values.await_count == 2
     assert channels.send_controller_state.await_count == 2

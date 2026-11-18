@@ -8,7 +8,7 @@ from pydantic import computed_field
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.classes.control import ControlMode
-from thrs.control.switching import AutomationMode, SwitchingControlMode
+from thrs.control.switching import AutomationMode
 from thrs.input_output.base import ThrsValues, component_meta, computed_meta
 from thrs.orchestration.comms import (
     ControlChannels,
@@ -321,7 +321,7 @@ def test_collect_topics_wires_channels(settings: Config):
         ),
         TopicMapping(
             topic="test_controller_topic/test/control-mode",
-            payload_type=SwitchingControlMode[ThrsValues],
+            payload_type=ThrsValues,
             direction="send",
             component_type=None,
             qos=1,
