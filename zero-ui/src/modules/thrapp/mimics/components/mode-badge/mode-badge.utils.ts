@@ -1,5 +1,5 @@
 import { tScoped } from "@/modules/common/lib/utils";
-import { isThrsApiModule, ThrsModules } from "@/modules/thrapp/lib/consts";
+import { isControlledModule, ThrsModules } from "@/modules/thrapp/lib/consts";
 import { DcConverterGroup, PvtGroup } from "@/modules/thrapp/state/state.types";
 import {
   ControlStatus,
@@ -84,7 +84,7 @@ export function getModuleModes(
   control: ControlStatus | undefined,
   t: Translate,
 ): ModuleModeBadge[] {
-  if (!isThrsApiModule(module)) {
+  if (!isControlledModule(module)) {
     return [];
   }
 

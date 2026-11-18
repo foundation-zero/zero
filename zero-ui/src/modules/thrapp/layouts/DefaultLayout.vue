@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ThrappHeader } from "@/modules/thrapp/components/navigation";
 import { getControlModule } from "@/modules/thrapp/components/sub-navigation";
-import { client } from "@/modules/thrapp/graphql/client";
+import { mqttGraphqlClient } from "@/modules/thrapp/graphql/client";
 import { MimicKey } from "@/modules/thrapp/router/mimics";
 import { provideClient } from "@urql/vue";
 import { computed, provide } from "vue";
 import { useRoute } from "vue-router";
 
 // Provide the URL client to inner scope. Pinia stores have their own scope, so they need to manually provide the correct context.
-provideClient(client);
+provideClient(mqttGraphqlClient);
 
 const currentRoute = useRoute();
 const modules: Array<MimicKey> = [

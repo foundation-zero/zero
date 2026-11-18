@@ -1,5 +1,5 @@
 import { gql, TypedDocumentNode } from "@urql/vue";
-import { ThrsApiModule } from "./consts";
+import { ControlledModule } from "./consts";
 import * as F from "./mqtt-graphql-queries.generated";
 
 // Queries per view on the MQTT GraphQL API, holding only the module parts the view shows. A
@@ -219,7 +219,7 @@ export const DRIVES_PARAMETERS_PAGE_QUERY = gql`
 // Simulator monitoring pages (sensor and control values of one module), for the modules thrsim's
 // menu has.
 
-export const MONITORING_PAGE_QUERIES: Record<ThrsApiModule, TypedDocumentNode> = {
+export const MONITORING_PAGE_QUERIES: Record<ControlledModule, TypedDocumentNode> = {
   thrusters: gql`
     query ThrustersMonitoring {
       ...ThrustersSensorValues
@@ -288,7 +288,7 @@ export const MONITORING_PAGE_QUERIES: Record<ThrsApiModule, TypedDocumentNode> =
 
 // Simulator controls pages (control values of one module)
 
-export const CONTROLS_PAGE_QUERIES: Record<ThrsApiModule, TypedDocumentNode> = {
+export const CONTROLS_PAGE_QUERIES: Record<ControlledModule, TypedDocumentNode> = {
   thrusters: gql`
     query ThrustersControls {
       ...ThrustersControlValues

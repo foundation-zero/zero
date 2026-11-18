@@ -101,11 +101,6 @@ export type ControlFields = {
   [ControlComponentType.Heatpump]: (keyof HeatpumpControl)[];
 };
 
-export type ControllerStateFields = {
-  [ControllerStateComponentType.DhwTanksController]: (keyof DhwTankController)[];
-  [ControllerStateComponentType.PIDController]: (keyof PIDController)[];
-};
-
 export type ControllerFields = keyof DhwTankController | keyof PIDController;
 
 export type SensorValueFields =

@@ -1,6 +1,6 @@
 import i18n from "@/i18n";
 import { PID } from "@/modules/common/types";
-import { ThrsApiModule } from "@/modules/thrapp/lib/consts";
+import { ControlledModule } from "@/modules/thrapp/lib/consts";
 import { controllerMutation, stampedValues } from "@/modules/thrapp/lib/mqtt-graphql.utils";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import { unstamp } from "@common/lib/utils";
@@ -114,7 +114,7 @@ export const controlForm = <
   K extends ExtractRefKeys<A>,
   Form extends FormValues<A>,
 >(
-  module: ThrsApiModule,
+  module: ControlledModule,
   componentName: string,
   values: A,
   fields: K[],
