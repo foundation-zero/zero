@@ -11,7 +11,8 @@ export type MimicKey =
   | "pvt-main-heat"
   | "dc-aft"
   | "dc-ugrid"
-  | "dc-fwd";
+  | "dc-fwd"
+  | "drives-shorepower";
 
 type LayerFilters = Partial<Record<LayerFilterOption, true>>;
 
@@ -132,5 +133,12 @@ export const MIMICS: Partial<Record<MimicKey, MimicDefinition>> = {
     ),
     query: Queries.DRIVES_MIMIC_QUERY,
     layerFilters: BYPASS_FILTERS,
+  },
+  "drives-shorepower": {
+    component: defineAsyncComponent(
+      () => import("@/modules/thrapp/mimics/modules/drives-shorepower/DrivesShorepowerModule.vue"),
+    ),
+    query: Queries.DRIVES_SHOREPOWER_MIMIC_QUERY,
+    layerFilters: BASE_FILTERS,
   },
 };

@@ -711,7 +711,8 @@
         },
         "sections": {
           "aftManualFlowBypass": "AFT Manual flow bypass",
-          "fwdManualFlowBypass": "FWD Manual flow bypass"
+          "fwdManualFlowBypass": "FWD Manual flow bypass",
+          "oneUnit": "One unit"
         }
       },
       "modeBadge": {
@@ -1003,6 +1004,7 @@
       "dc-aft": "DC/DC group 1",
       "dc-ugrid": "DC/AC group 1",
       "dc-fwd": "DC/DC group 2",
+      "drives-shorepower": "Shorepower converters",
       "thrusters": "Thrusters"
     }
   }

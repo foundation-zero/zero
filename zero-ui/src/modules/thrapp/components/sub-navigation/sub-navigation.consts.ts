@@ -6,7 +6,7 @@ export const MODULE_GROUPS: ModuleGroup[] = [
     key: "producers",
     modules: [
       { key: "dc", subModules: ["dc-aft", "dc-ugrid", "dc-fwd"] },
-      { key: "drives", subModules: [] },
+      { key: "drives", subModules: ["drives-shorepower"] },
       { key: "pvt", subModules: ["pvt-main", "pvt-owners", "pvt-main-heat"] },
       { key: "thrusters", subModules: [] },
     ],

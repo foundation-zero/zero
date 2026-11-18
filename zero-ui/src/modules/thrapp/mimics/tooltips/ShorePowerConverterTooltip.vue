@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { RiRepeatLine } from "@remixicon/vue";
+import { useRouter } from "vue-router";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
   NoopTooltipProvider,
   TooltipComponentContext,
 } from "../../components/tooltip";
-import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
+import { TooltipList, TooltipListHeader, TooltipListItem } from "../../components/tooltip-list";
+import TooltipListItemActionButton from "../../components/tooltip-list/TooltipListItemActionButton.vue";
 import { MimicComponentType } from "../../types";
 import { SensorGraph } from "../components/sensor-graph";
 import { ShorePowerConverterInstance } from "../instances";
@@ -16,7 +19,9 @@ import Circuit from "./partials/ExchangeCircuitPartial.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.ShorePowerConverter>>();
 
-const { labels, items } = useTranslations();
+const { actions, labels, items } = useTranslations();
+
+const { currentRoute } = useRouter();
 </script>
 
 <template>
@@ -37,6 +42,20 @@ const { labels, items } = useTranslations();
     </TooltipList>
 
     <TooltipList>
+      <TooltipListItem v-if="props.custom.mimic">
+        &nbsp;
+        <RouterLink
+          v-slot="{ navigate }"
+          custom
+          :to="{ name: currentRoute.name, params: { module: props.custom.mimic } }"
+        >
+          <TooltipListItemActionButton @click="navigate">
+            <RiRepeatLine />
+            {{ actions("viewCircuitMimic") }}
+          </TooltipListItemActionButton>
+        </RouterLink>
+      </TooltipListItem>
+
       <TooltipListHeader>
         {{ labels("heatExchange") }}
       </TooltipListHeader>

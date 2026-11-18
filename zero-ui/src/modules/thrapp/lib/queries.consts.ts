@@ -161,6 +161,15 @@ export const DRIVES_MIMIC_QUERY = gql`
   ${F.DC700_V_SHORE_CONVERTER_SENSOR_VALUES_FRAGMENT}
 `;
 
+export const DRIVES_SHOREPOWER_MIMIC_QUERY = gql`
+  query DrivesShorepowerMimic {
+    ...DrivesSensorValues
+    ...Dc700VShoreConverterSensorValues
+  }
+  ${F.DRIVES_SENSOR_VALUES_FRAGMENT}
+  ${F.DC700_V_SHORE_CONVERTER_SENSOR_VALUES_FRAGMENT}
+`;
+
 // Parameters pages
 
 export const ADSORPTION_PARAMETERS_PAGE_QUERY = gql`
