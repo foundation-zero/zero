@@ -1,10 +1,10 @@
 import asyncio
 import contextlib
-import logging
 import socket
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
+from faststream.asgi import make_ping_asgi
 from faststream.mqtt import ReconnectConfig
 
 from zero_modbus_bridge import health
@@ -32,53 +32,23 @@ def _bridge(*, reading: bool) -> MagicMock:
     return MagicMock(has_read_recently=MagicMock(return_value=reading))
 
 
-async def test_healthy_when_broker_answers_and_gateway_reads(caplog):
-    caplog.set_level(logging.INFO)
-    broker = _broker(answers=True)
-    handler = make_health_asgi(broker, [_bridge(reading=True)])
+@pytest.mark.parametrize(
+    ("answers", "reading", "status"),
+    [(True, True, 204), (False, True, 500), (True, False, 500)],
+)
+async def test_ready_while_broker_answers_and_gateway_reads(answers, reading, status):
+    broker = _broker(answers=answers)
+    handler = make_health_asgi(broker, _bridge(reading=reading))
 
-    assert await _probe(handler) == 204
+    assert await _probe(handler) == status
+
+
+async def test_pings_with_a_timeout_below_the_probe_timeout():
+    broker = _broker(answers=True)
+
+    await _probe(make_health_asgi(broker, _bridge(reading=True)))
+
     broker.ping.assert_awaited_once_with(4.0)
-    assert caplog.messages == ["Ready"]
-
-
-async def test_broker_down_is_not_ready():
-    handler = make_health_asgi(_broker(answers=False), [_bridge(reading=True)])
-
-    assert await _probe(handler) == 500
-
-
-async def test_gateway_down_is_not_ready():
-    handler = make_health_asgi(_broker(answers=True), [_bridge(reading=False)])
-
-    assert await _probe(handler) == 500
-
-
-async def test_without_required_bridges_only_the_broker_counts():
-    assert await _probe(make_health_asgi(_broker(answers=True))) == 204
-
-
-async def test_logs_only_when_readiness_changes(caplog: pytest.LogCaptureFixture):
-    caplog.set_level(logging.INFO)
-    broker = _broker(answers=True)
-    bridge = _bridge(reading=False)
-    handler = make_health_asgi(broker, [bridge])
-
-    await _probe(handler)
-    await _probe(handler)
-    broker.ping.return_value = False
-    await _probe(handler)
-    broker.ping.return_value = True
-    bridge.has_read_recently.return_value = True
-    await _probe(handler)
-    await _probe(handler)
-
-    assert caplog.messages == [
-        "Not ready: modbus: no reading in the last 3 probe intervals",
-        "Not ready: mqtt: broker not connected or not answering pings; "
-        "modbus: no reading in the last 3 probe intervals",
-        "Ready",
-    ]
 
 
 def _free_port() -> int:
@@ -107,7 +77,9 @@ async def test_serves_health_while_the_broker_is_unreachable(
     async def after_startup() -> None:
         raise AssertionError("ran without a broker")
 
-    server = asyncio.create_task(run_with_health(broker, after_startup))
+    server = asyncio.create_task(
+        run_with_health(broker, after_startup, make_ping_asgi(broker, timeout=1.0))
+    )
     try:
         for _ in range(50):
             try:

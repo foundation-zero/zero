@@ -107,12 +107,20 @@ def test_stub_client_id_from_env(required_env, monkeypatch):
 async def test_run_requires_the_gateway_for_health(required_env, monkeypatch):
     runs = []
 
-    async def fake_run_with_health(broker, after_startup, *, required_bridges=()):
-        runs.append((after_startup, required_bridges))
+    async def fake_run_with_health(broker, after_startup, health):
+        runs.append(after_startup)
+
+    health_bridges = []
+    monkeypatch.setattr(
+        cli,
+        "make_health_asgi",
+        lambda broker, bridge: health_bridges.append(bridge),
+    )
 
     monkeypatch.setattr(cli, "run_with_health", fake_run_with_health)
 
     await RunCmd(_env_file=None).cli_cmd()  # type: ignore[call-arg]
 
-    [(after_startup, [bridge])] = runs
+    [after_startup] = runs
+    [bridge] = health_bridges
     assert after_startup == bridge.run

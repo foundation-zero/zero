@@ -1,7 +1,7 @@
 import logging
 import os
 import re
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from faststream.mqtt import MQTTBroker
@@ -169,8 +169,8 @@ async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
     )
     runs = []
 
-    async def fake_run_with_health(broker, after_startup, **kwargs) -> None:
-        runs.append((broker, after_startup, kwargs))
+    async def fake_run_with_health(broker, after_startup, health) -> None:
+        runs.append((broker, after_startup, health))
 
     monkeypatch.setattr(cli, "run_with_health", fake_run_with_health)
     started: list[ModbusBridge] = []
@@ -182,11 +182,16 @@ async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
     cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
 
     await cmd.cli_cmd()
-    [(broker, after_startup, kwargs)] = runs
+    [(broker, after_startup, health)] = runs
     await after_startup()
 
-    # Gateways are optional for power-tags, so /health checks only the broker.
-    assert kwargs == {}
+    # Gateways are optional for power-tags, so /health only pings the broker.
+    broker.ping = AsyncMock(return_value=True)
+    send = AsyncMock()
+    await health({"type": "http", "method": "GET"}, AsyncMock(), send)
+    assert send.await_args_list[0].args[0]["status"] == 204
+    broker.ping.assert_awaited_once_with(4.0)
+
     assert isinstance(broker, RecoveringBroker)
     assert broker._connection_kwargs["reconnect"].max_attempts is None
     assert len(started) == 1

@@ -119,8 +119,15 @@ def test_stub_cmd_serves_termodinamica_topics():
 async def test_run_requires_the_gateway_for_health(monkeypatch):
     runs = []
 
-    async def fake_run_with_health(broker, after_startup, *, required_bridges=()):
-        runs.append((after_startup, required_bridges))
+    async def fake_run_with_health(broker, after_startup, health):
+        runs.append(after_startup)
+
+    health_bridges = []
+    monkeypatch.setattr(
+        cli,
+        "make_health_asgi",
+        lambda broker, bridge: health_bridges.append(bridge),
+    )
 
     monkeypatch.setattr(cli, "run_with_health", fake_run_with_health)
 
@@ -132,5 +139,6 @@ async def test_run_requires_the_gateway_for_health(monkeypatch):
         mqtt_port=1883,
     ).cli_cmd()
 
-    [(after_startup, [bridge])] = runs
+    [after_startup] = runs
+    [bridge] = health_bridges
     assert after_startup == bridge.run

@@ -6,6 +6,7 @@ from pathlib import Path
 from secrets import token_hex
 from typing import Annotated, Literal
 
+from faststream.asgi import make_ping_asgi
 from pydantic import BaseModel, Field
 from pydantic_settings import (
     BaseSettings,
@@ -15,7 +16,7 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 from zero_modbus_bridge.bridge import ModbusBridge
-from zero_modbus_bridge.health import run_with_health
+from zero_modbus_bridge.health import PING_TIMEOUT_SECONDS, run_with_health
 from zero_modbus_bridge.io import ModbusTopic
 from zero_modbus_bridge.settings import MqttSettings
 from zero_modbus_bridge.stub import Stub
@@ -195,8 +196,11 @@ class RunCmd(MqttSettings):
                     task_group.create_task(bridge.run())
 
         # The gateways are optional: one unreachable gateway out of many must
-        # not make the pod not ready or restart it. The bridges log it.
-        await run_with_health(broker, run_bridges)
+        # not make the pod not ready. The bridges log it.
+        health = make_ping_asgi(
+            broker, timeout=PING_TIMEOUT_SECONDS, include_in_schema=False
+        )
+        await run_with_health(broker, run_bridges, health)
 
 
 class StubCmd(BaseSettings):

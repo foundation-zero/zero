@@ -14,7 +14,7 @@ from pydantic_settings import (
     CliSubCommand,
     SettingsConfigDict,
 )
-from zero_modbus_bridge.health import run_with_health
+from zero_modbus_bridge.health import make_health_asgi, run_with_health
 from zero_modbus_bridge.io import ModbusTopic
 from zero_modbus_bridge.reader import ModbusReader
 from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
@@ -122,7 +122,7 @@ class RunCmd(ModbusSettings, MqttSettings):
             self.activate_topic,
             self.activate_json_path,
         )
-        await run_with_health(broker, bridge.run, required_bridges=[bridge])
+        await run_with_health(broker, bridge.run, make_health_asgi(broker, bridge))
 
 
 class SchemaCmd(BaseModel):
