@@ -11,6 +11,7 @@ from thrs.control.switching import (
     AutomationMode,
     Switching,
 )
+from thrs.input_output.actuated import actuated_as_commanded
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.definitions.system import AmcsExternalAvailable
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
@@ -198,6 +199,12 @@ class Module[
         )
         actuated_control_values = self._channels.get_actuated_control_values()
         if actuated_control_values is not None:
+            # Only manual commands are what a client set; automatic ones are restamped
+            # every tick and would make stale actuated values look live.
+            if self._control.manual:
+                actuated_control_values = actuated_as_commanded(
+                    actuated_control_values, control_values
+                )
             await self._channels.send_actuated_control_values(actuated_control_values)
         await self._channels.send_manual_control(self._control.manual_controls)
 

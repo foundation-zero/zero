@@ -1,4 +1,5 @@
 import logging
+from datetime import UTC, datetime
 from unittest import mock
 
 from tests.helpers.modules import (
@@ -12,6 +13,7 @@ from tests.orchestration.simples import (
 )
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.switching import AutomationMode
+from thrs.input_output.base import Stamped
 from thrs.input_output.root_types import AmcsWatchdogControlValues
 
 
@@ -75,9 +77,9 @@ async def test_module_forces_manual_and_seeds_actuated_when_not_advisory(
     """Non-advisory means the AMCS is in control: the module must force manual
     mode and seed the manual controls with the actuated control values so a
     later takeover is bumpless."""
-    actuated = mock.sentinel.actuated_control_values
+    actuated = simple_control_values(flow=6.0)
 
-    mock_control.initial.return_value = (mock.sentinel.initial_control_values, None)
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
 
     mock_channels.get_actuated_control_values.return_value = actuated
 
@@ -169,14 +171,45 @@ async def test_tick_publishes_manual_when_automatic_is_refused(
     )
 
 
-async def test_tick_publishes_the_actuated_control_values(
+async def test_tick_publishes_actuated_values_with_the_command_where_they_match(
     advisory_sensor_values, mock_channels, mock_control, module_factory
 ):
+    """A leaf actuated as commanded carries the command's stamp, so a client sees
+    what it set; a leaf that differs keeps the AMCS's value and stamp."""
+    commanded = simple_control_values(flow=1.0)
     actuated = simple_control_values(flow=6.0)
-    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+    actuated.go_with_the.temperature = Stamped(
+        value=commanded.go_with_the.temperature.value,
+        timestamp=datetime(2026, 11, 18, 12, 0, 7, tzinfo=UTC),
+    )
+    mock_control.initial.return_value = (commanded, None)
     mock_channels.get_actuated_control_values.return_value = actuated
 
     module = module_factory()
+
+    await module.tick(advisory_sensor_values)
+
+    (published,) = mock_channels.send_actuated_control_values.await_args.args
+    assert published.go_with_the.flow == actuated.go_with_the.flow
+    assert published.go_with_the.temperature == commanded.go_with_the.temperature
+
+
+async def test_tick_publishes_actuated_values_as_is_when_automatic(
+    advisory_sensor_values, mock_channels, mock_control, module_factory
+):
+    """Automatic commands are restamped every tick, so taking their stamp would
+    make stale actuated values look live."""
+    commanded = simple_control_values(flow=1.0)
+    actuated = simple_control_values(flow=1.0)
+    actuated.go_with_the.flow = Stamped(
+        value=1.0, timestamp=datetime(2026, 11, 18, 12, 0, 7, tzinfo=UTC)
+    )
+    mock_control.initial.return_value = (simple_control_values(flow=1.0), None)
+    mock_control.control.return_value = (commanded, None)
+    mock_channels.get_actuated_control_values.return_value = actuated
+
+    module = module_factory()
+    module.set_automation_mode(AutomationMode(mode="automatic"))
 
     await module.tick(advisory_sensor_values)
 

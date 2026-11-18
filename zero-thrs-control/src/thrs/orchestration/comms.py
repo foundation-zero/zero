@@ -447,8 +447,9 @@ class ControlChannels[
             autoclear=True,
         )
         connector._register_listener(manual_controls_mapping)
-        # Writes the manual controls too, but its state is what the AMCS actuated, so
-        # the MQTT GraphQL API confirms such a write once it is carried out.
+        # Writes the manual controls too, but its state is what the AMCS actuated, with
+        # each value that matches the manual command carrying the command's value and
+        # stamp, so the MQTT GraphQL API confirms such a write once it is carried out.
         control_values_set_mapping = DirectMqttMapping[C].for_module(
             control_module.control_values_cls,
             config.mqtt_controller_topic_prefix,
