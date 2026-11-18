@@ -28,7 +28,7 @@ use tokio::net::UdpSocket;
 use tokio::sync::mpsc::Receiver;
 use tokio::task::JoinSet;
 use tokio_stream::wrappers::ReceiverStream;
-use zero_readiness::{write_termination_message, Readiness, NOT_READY_DEADLINE, STATUS_FILE};
+use zero_readiness::{Readiness, STATUS_FILE};
 
 /// Module-frame backlog between the UDP listener and the MQTT publisher, before drops.
 ///
@@ -82,13 +82,7 @@ async fn run() -> Result<()> {
     let (frame_tx, frame_rx) = tokio::sync::mpsc::channel(FRAME_QUEUE);
 
     let mut tasks = JoinSet::new();
-    tasks.spawn(connection.run(readiness.clone()));
-    tasks.spawn(async move {
-        let status = readiness.deadline(NOT_READY_DEADLINE).await;
-        let message = format!("{status}; exiting after {NOT_READY_DEADLINE:?} not ready");
-        error!("{message}");
-        write_termination_message(&message);
-    });
+    tasks.spawn(connection.run(readiness));
     tasks.spawn(udp::run(config.app.udp_port, decoder, frame_tx));
     tasks.spawn(publish_task(publisher, frame_rx));
     await_tasks(&mut tasks).await

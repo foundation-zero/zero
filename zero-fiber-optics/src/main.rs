@@ -26,7 +26,7 @@ use tokio::sync::mpsc::{Receiver, Sender};
 use tokio::task::{JoinHandle, JoinSet};
 use tokio_stream::wrappers::ReceiverStream;
 use tokio_stream::StreamExt;
-use zero_readiness::{write_termination_message, Readiness, NOT_READY_DEADLINE, STATUS_FILE};
+use zero_readiness::{Readiness, STATUS_FILE};
 
 /// How often the watchdog checks that each port is still receiving packets.
 const WATCHDOG_INTERVAL: Duration = Duration::from_secs(10);
@@ -88,18 +88,10 @@ async fn main() -> Result<()> {
             // restarts. Detached, it only runs as long as the port tasks do.
             let _watchdog = spawn_watchdog_task(port_metrics, mqtt_metrics);
 
-            let mut mqtt_tasks = JoinSet::new();
-            mqtt_tasks.spawn(connection.run(readiness.clone()));
-            mqtt_tasks.spawn(async move {
-                let status = readiness.deadline(NOT_READY_DEADLINE).await;
-                let message = format!("{status}; exiting after {NOT_READY_DEADLINE:?} not ready");
-                error!("{message}");
-                write_termination_message(&message);
-            });
             tokio::select! {
                 () = await_tasks(handles) => {}
-                // Either task has logged why it stopped.
-                _ = mqtt_tasks.join_next() => bail!("MQTT connection given up"),
+                // The connection task has logged why it stopped.
+                _ = tokio::spawn(connection.run(readiness)) => bail!("MQTT connection given up"),
             }
         }
         Commands::SendExample => {

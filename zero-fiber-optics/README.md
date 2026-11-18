@@ -72,9 +72,11 @@ Follows `docs/adr/0001-dependency-outages.md`; MQTT is a required dependency.
   `not ready: mqtt: Flush timeout since 13:02:05 UTC`, which the chart's exec
   readiness probe prints. A not-ready pod drops out of the UDP Service, so
   datagrams are not delivered to it during an outage.
-- Exits, with the reason in `/dev/termination-log`, after 15 min not ready, or
-  after 10 refusals in a row that retrying will not fix (bad credentials, not
-  authorised, bad client id or protocol).
+- Stays running while not ready, however long the outage; alerting covers a
+  long one, not restarts.
+- Exits, with the reason in `/dev/termination-log`, after 10 refusals in a row
+  that retrying will not fix (bad credentials, not authorised, bad client id or
+  protocol).
 
 ## Running
 
