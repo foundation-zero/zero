@@ -83,11 +83,6 @@ def build_app(
     return AsgiFastStream(
         output_broker,
         input_broker,
-        asgi_routes=[
-            (
-                "/health",
-                make_health_asgi({"atpx-mqtt": input_broker, "mqtt": output_broker}),
-            )
-        ],
+        asgi_routes=[("/health", make_health_asgi(input_broker, output_broker))],
         on_shutdown=[stop_input_broker],
     )

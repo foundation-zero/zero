@@ -20,7 +20,7 @@ logging.basicConfig(
 )
 
 
-# The chart's probes call /health on this port.
+# The chart's readiness probe calls /health on this port.
 HEALTH_PORT = 8080
 
 

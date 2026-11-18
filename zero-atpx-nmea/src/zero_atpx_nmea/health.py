@@ -1,46 +1,29 @@
-"""`/health` for the Kubernetes probes (docs/adr/0001-dependency-outages.md).
+"""`/health` for the readiness probe (docs/adr/0001-dependency-outages.md).
 
-Kubernetes discards the bodies of HTTP probes, so the reason a pod is not
-ready goes to the log instead, once per change.
+The reason a pod is not ready is in zmqtt's log, which names the broker.
 """
 
 import asyncio
-import logging
 
 from faststream.asgi import AsgiResponse, HttpHandler, get
 from faststream.mqtt import MQTTBroker
 
-logger = logging.getLogger(__name__)
-
-# Below the probes' timeoutSeconds in the chart.
+# Below the probe's timeoutSeconds in the chart.
 PING_TIMEOUT_SECONDS = 4.0
 
 
-def make_health_asgi(brokers: dict[str, MQTTBroker]) -> HttpHandler:
+def make_health_asgi(*brokers: MQTTBroker) -> HttpHandler:
     """204 while every broker answers a ping, else 500.
 
-    ``brokers`` maps the name used in the log to the broker."""
-    healthy = AsgiResponse(b"", 204)
-    unhealthy = AsgiResponse(b"", 500)
-    last_down: list[str] | None = None
+    FastStream's `make_ping_asgi` pings only one broker."""
 
     @get(include_in_schema=False)
     async def health(scope: object) -> AsgiResponse:
-        nonlocal last_down
         async with asyncio.TaskGroup() as tg:
-            pings = {
-                name: tg.create_task(broker.ping(PING_TIMEOUT_SECONDS))
-                for name, broker in brokers.items()
-            }
-        down = [name for name, ping in pings.items() if not ping.result()]
-
-        if down != last_down:
-            if down:
-                logger.warning(f"Not ready: {', '.join(down)} did not answer a ping")
-            else:
-                logger.info(f"Ready: {', '.join(brokers)} answer pings")
-            last_down = down
-
-        return unhealthy if down else healthy
+            pings = [
+                tg.create_task(broker.ping(PING_TIMEOUT_SECONDS)) for broker in brokers
+            ]
+        ready = all(ping.result() for ping in pings)
+        return AsgiResponse(b"", 204 if ready else 500)
 
     return health

@@ -1,4 +1,3 @@
-import logging
 from collections.abc import MutableMapping
 from typing import Any
 from unittest.mock import AsyncMock
@@ -10,23 +9,10 @@ from faststream.mqtt import MQTTBroker
 from zero_atpx_nmea.health import make_health_asgi
 
 
-class Brokers:
-    """The two brokers, with their pings answering or not as a test sets."""
-
-    def __init__(self) -> None:
-        self.input_ping = AsyncMock(return_value=True)
-        self.output_ping = AsyncMock(return_value=True)
-        input_broker, output_broker = MQTTBroker(), MQTTBroker()
-        input_broker.ping = self.input_ping
-        output_broker.ping = self.output_ping
-        self.health = make_health_asgi(
-            {"atpx-mqtt": input_broker, "mqtt": output_broker}
-        )
-
-
-@pytest.fixture
-def brokers() -> Brokers:
-    return Brokers()
+def broker(*, answers: bool) -> MQTTBroker:
+    mqtt_broker = MQTTBroker()
+    mqtt_broker.ping = AsyncMock(return_value=answers)
+    return mqtt_broker
 
 
 async def get_status(health: HttpHandler) -> int:
@@ -42,41 +28,15 @@ async def get_status(health: HttpHandler) -> int:
     return next(m["status"] for m in sent if m["type"] == "http.response.start")
 
 
-async def test_both_brokers_up_is_ready(brokers: Brokers) -> None:
-    assert await get_status(brokers.health) == 204
-
-
 @pytest.mark.parametrize(
-    ("failing_ping", "name"), [("input_ping", "atpx-mqtt"), ("output_ping", "mqtt")]
+    ("input_answers", "output_answers", "status"),
+    [(True, True, 204), (False, True, 500), (True, False, 500)],
 )
-async def test_either_broker_down_is_not_ready(
-    brokers: Brokers, failing_ping: str, name: str, caplog: pytest.LogCaptureFixture
+async def test_ready_only_while_both_brokers_answer(
+    input_answers: bool, output_answers: bool, status: int
 ) -> None:
-    getattr(brokers, failing_ping).return_value = False
+    health = make_health_asgi(
+        broker(answers=input_answers), broker(answers=output_answers)
+    )
 
-    assert await get_status(brokers.health) == 500
-    assert caplog.messages == [f"Not ready: {name} did not answer a ping"]
-
-
-async def test_logs_only_changes_in_readiness(
-    brokers: Brokers, caplog: pytest.LogCaptureFixture
-) -> None:
-    caplog.set_level(logging.INFO)
-
-    await get_status(brokers.health)
-    await get_status(brokers.health)
-    brokers.output_ping.return_value = False
-    await get_status(brokers.health)
-    await get_status(brokers.health)
-    brokers.input_ping.return_value = False
-    await get_status(brokers.health)
-    brokers.input_ping.return_value = True
-    brokers.output_ping.return_value = True
-    await get_status(brokers.health)
-
-    assert caplog.messages == [
-        "Ready: atpx-mqtt, mqtt answer pings",
-        "Not ready: mqtt did not answer a ping",
-        "Not ready: atpx-mqtt, mqtt did not answer a ping",
-        "Ready: atpx-mqtt, mqtt answer pings",
-    ]
+    assert await get_status(health) == status
