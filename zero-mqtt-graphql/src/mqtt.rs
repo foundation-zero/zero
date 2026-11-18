@@ -173,9 +173,9 @@ impl MqttSubscriber {
         });
     }
 
-    /// Decode and dispatch one incoming publish: non-UTF8, empty, and
-    /// non-JSON payloads are logged and dropped; JSON values go to
-    /// [`Self::handle_json_payload`].
+    /// Decode and dispatch one incoming publish: non-UTF8 and non-JSON
+    /// payloads are logged and dropped, an empty payload clears the topic,
+    /// and JSON values go to [`Self::handle_json_payload`].
     ///
     /// Takes `&mut self` because `EventLoop` (owned by the same struct) is
     /// `!Sync`; a shared borrow would make the polling future non-`Send`.
@@ -188,8 +188,9 @@ impl MqttSubscriber {
             }
         };
 
-        if payload.trim().is_empty() {
-            debug!("Empty payload on topic '{topic}', skipping");
+        if payload.is_empty() {
+            debug!("Empty payload on topic '{topic}', clearing it");
+            self.cache.remove(topic);
             return;
         }
 
@@ -522,6 +523,26 @@ mod tests {
             api.validators(),
         )
         .unwrap()
+    }
+
+    #[test_log::test]
+    fn test_empty_payload_clears_the_topic() {
+        let connection = MqttConnection {
+            host: "localhost",
+            port: 1883,
+            username: None,
+            password: None,
+        };
+        let cache = Arc::new(TopicCache::new());
+        let mut sub =
+            MqttSubscriber::new_with_mode(&connection, cache.clone(), false, TopicMap::new())
+                .unwrap();
+
+        sub.handle_publish("some/topic", br#"{"v": 1}"#);
+        assert_eq!(cache.get("some/topic"), Some(json!({"v": 1})));
+
+        sub.handle_publish("some/topic", b"");
+        assert_eq!(cache.get("some/topic"), None);
     }
 
     #[test_log::test]
