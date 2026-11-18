@@ -6,8 +6,9 @@ import { useClientHandle, useQuery } from "@urql/vue";
 import { DocumentNode, print } from "graphql";
 import { setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { QUERY_SIMULATION } from "../lib/consts";
-import { SimulationStatus, STATUS_QUERY, useSimulationStore } from "./simulation";
+import { SIMULATOR_QUERY } from "../lib/consts";
+import { Simulator, SimulatorStatus } from "../lib/consts.types";
+import { useSimulationStore } from "./simulation";
 
 vi.mock(import("@urql/vue"), async (importOriginal) => ({
   ...(await importOriginal()),
@@ -23,12 +24,18 @@ vi.mock("@/modules/thrapp/graphql/client", () => ({
 }));
 
 const queries = createUseQueryFake();
-const statusQuery = () => queries.resultOf<SimulationStatus>(STATUS_QUERY);
-const simulationQuery = () => queries.resultOf(QUERY_SIMULATION);
+const simulatorQuery = () => queries.resultOf<Simulator>(SIMULATOR_QUERY);
 const mutation = vi.fn();
 
-const withInputs = (inputs: Record<string, unknown>) => {
-  simulationQuery().data.value = { simulation: { inputs } };
+const running: SimulatorStatus = { status: "RUNNING", mode: "thrusters", simulationTime: "" };
+
+const withSimulator = (
+  status: SimulatorStatus | null,
+  simulationInputs: Record<string, unknown> = {},
+) => {
+  simulatorQuery().data.value = {
+    thrs: { simulator: { status, simulationInputs, simulationOutputs: {} } },
+  } as Simulator;
 };
 
 describe("simulation store", () => {
@@ -46,63 +53,94 @@ describe("simulation store", () => {
     vi.useRealTimers();
   });
 
-  it("polls the simulation and its status only while polling is started", () => {
+  it("polls the simulator only while polling is started", () => {
     const simulation = useSimulationStore();
 
     vi.advanceTimersByTime(10000);
-    expect(simulationQuery().executeQuery).not.toHaveBeenCalled();
-    expect(statusQuery().executeQuery).not.toHaveBeenCalled();
+    expect(simulatorQuery().executeQuery).not.toHaveBeenCalled();
 
     simulation.startPolling();
     vi.advanceTimersByTime(10000);
-    expect(simulationQuery().executeQuery).toHaveBeenCalledTimes(3);
-    expect(statusQuery().executeQuery).toHaveBeenCalledTimes(3);
+    expect(simulatorQuery().executeQuery).toHaveBeenCalledTimes(3);
 
     simulation.stopPolling();
     vi.advanceTimersByTime(10000);
-    expect(simulationQuery().executeQuery).toHaveBeenCalledTimes(3);
-    expect(statusQuery().executeQuery).toHaveBeenCalledTimes(3);
+    expect(simulatorQuery().executeQuery).toHaveBeenCalledTimes(3);
   });
 
   it.each([
-    { status: "available", isAvailable: true, isRunning: false, isStepping: false },
-    { status: "running", isAvailable: false, isRunning: true, isStepping: false },
-    { status: "stepping", isAvailable: false, isRunning: false, isStepping: true },
+    { status: "AVAILABLE", isAvailable: true, isRunning: false, isStepping: false },
+    { status: "RUNNING", isAvailable: false, isRunning: true, isStepping: false },
+    { status: "STEPPING", isAvailable: false, isRunning: false, isStepping: true },
   ] as const)("reports a $status simulation", ({ status, ...flags }) => {
     const simulation = useSimulationStore();
 
-    statusQuery().data.value = { simulation: { status, time: 0 } };
+    withSimulator({ ...running, status });
 
     expect(simulation).toMatchObject(flags);
   });
 
-  it("derives the simulation type from the inputs' GraphQL type name", () => {
+  it("takes the simulation type from the status' mode", () => {
     const simulation = useSimulationStore();
 
-    withInputs({ __typename: "HighTemperatureSimulationInputs" });
+    withSimulator({ ...running, mode: "high_temperature" });
 
     expect(simulation.activeSimulationType).toBe("highTemperature");
   });
 
-  it("plays at the given rate and then reloads the status", async () => {
+  it("has no simulation without a status, as from a simulator apart from the controller", () => {
+    const simulation = useSimulationStore();
+
+    withSimulator(null, { thrustersThrusterAft: {} });
+
+    expect(simulation.simulation).toBeUndefined();
+    expect(simulation.activeSimulationType).toBeUndefined();
+  });
+
+  it("plays at the given rate and then reloads the simulator", async () => {
     const simulation = useSimulationStore();
 
     await simulation.play(2);
 
     const [query, variables] = mutation.mock.lastCall as [DocumentNode, unknown];
-    expect(print(query)).toContain("simulationPlay(playbackRate: $value)");
-    expect(variables).toEqual({ value: 2 });
-    expect(statusQuery().executeQuery).toHaveBeenCalledWith({ requestPolicy: "network-only" });
+    expect(print(query)).toContain("status(input: $input)");
+    expect(variables).toEqual({ input: { status: "RUNNING", playbackRate: 2, pauseAt: null } });
+    expect(simulatorQuery().executeQuery).toHaveBeenCalledWith({ requestPolicy: "network-only" });
+  });
+
+  it("pauses the simulator now", async () => {
+    await useSimulationStore().pause();
+
+    const [, variables] = mutation.mock.lastCall as [DocumentNode, unknown];
+    expect(variables).toEqual({ input: { status: "AVAILABLE", pauseAt: null } });
+  });
+
+  it("steps until the given seconds after the simulation time", async () => {
+    const simulation = useSimulationStore();
+    withSimulator({ ...running, status: "AVAILABLE", simulationTime: "2026-11-13T10:00:00Z" });
+
+    await simulation.step(30);
+
+    const [, variables] = mutation.mock.lastCall as [DocumentNode, unknown];
+    expect(variables).toEqual({
+      input: { status: "STEPPING", pauseAt: "2026-11-13T10:00:30.000Z" },
+    });
+  });
+
+  it("does not step without a simulation time", async () => {
+    await useSimulationStore().step(30);
+
+    expect(mutation.mock.calls).toEqual([]);
   });
 
   describe("advisory mode", () => {
     it("is on when the simulated AMCS hands over control", () => {
       const simulation = useSimulationStore();
 
-      withInputs({ mode: { mode: { value: AmcsControlMode.External } } });
+      withSimulator(running, { mode: { mode: { value: AmcsControlMode.External } } });
       expect(simulation.isAdvisory).toBe(true);
 
-      withInputs({ mode: { mode: { value: AmcsControlMode.Manual } } });
+      withSimulator(running, { mode: { mode: { value: AmcsControlMode.Manual } } });
       expect(simulation.isAdvisory).toBe(false);
     });
 
@@ -110,23 +148,26 @@ describe("simulation store", () => {
       { enabled: true, mode: AmcsControlMode.External },
       { enabled: false, mode: AmcsControlMode.Manual },
     ])("sets the AMCS mode to $mode when enabled=$enabled", async ({ enabled, mode }) => {
+      vi.setSystemTime(new Date("2026-11-11T12:00:00Z"));
       const simulation = useSimulationStore();
       const refreshHistory = vi.spyOn(useThrsHistory(), "refresh");
-      withInputs({ __typename: "ThrustersSimulationInputs" });
+      withSimulator(running);
 
       await simulation.setAdvisory(enabled);
 
-      const [query, variables] = mutation.mock.lastCall as [string, unknown];
-      expect(query).toContain("thrustersSimulationSetMode(value: $input)");
-      expect(variables).toEqual({ input: { mode } });
+      const [query, variables] = mutation.mock.lastCall as [DocumentNode, unknown];
+      expect(print(query)).toContain("simulationInputs(input: $input)");
+      expect(variables).toEqual({
+        input: { mode: { mode: { value: mode, timeStamp: "2026-11-11T12:00:00.000Z" } } },
+      });
       expect(refreshHistory).toHaveBeenCalled();
-      expect(simulationQuery().executeQuery).toHaveBeenCalled();
+      expect(simulatorQuery().executeQuery).toHaveBeenCalled();
       expect(simulation.advisoryError).toBeNull();
     });
 
     it("shows why switching failed", async () => {
       const simulation = useSimulationStore();
-      withInputs({ __typename: "ThrustersSimulationInputs" });
+      withSimulator(running);
       mutation.mockResolvedValue({ error: { message: "Simulation not running" } });
 
       await simulation.setAdvisory(true);

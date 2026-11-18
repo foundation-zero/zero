@@ -162,6 +162,8 @@ services:
     environment:
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
+      # The local broker only; thrsim's play, pause and step and the integration tests use them.
+      ENABLE_MUTATIONS: "true"
     depends_on:
       vernemq:
         condition: service_healthy

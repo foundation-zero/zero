@@ -2,8 +2,7 @@ import { ThrusterMode } from "@/modules/thrapp/types/thrs";
 import { gql } from "@urql/vue";
 import { SimulationComponentType, SimulationDefinitions, SimulationFields } from "../types";
 import * as Definitions from "./consts.generated";
-import { SimulationInputsType, SimulationOutputsType, ThrsSimulationType } from "./consts.types";
-import * as Queries from "./queries.generated";
+import { ThrsSimulationType } from "./consts.types";
 
 export * from "./consts.types";
 
@@ -73,56 +72,36 @@ export const SIMULATION_FIELDS: SimulationFields = {
   [SimulationComponentType.Flow]: ["flow"],
   [SimulationComponentType.HvacExchanger]: ["heatFlow", "maximumTemperature"],
   [SimulationComponentType.AdsorptionChiller]: ["freeCooling"],
+  [SimulationComponentType.AmcsControlMode]: ["mode"],
 };
 
-export const SIMULATION_INPUT_QUERIES: Record<ThrsSimulationType, string> = {
-  highTemperature: Queries.HIGH_TEMPERATURE_SIMULATION_INPUTS_QUERY,
-  thrusters: Queries.THRUSTERS_SIMULATION_INPUTS_QUERY,
-  pcm: Queries.PCM_SIMULATION_INPUTS_QUERY,
-  pvt: Queries.PVT_SIMULATION_INPUTS_QUERY,
-  adsorption: Queries.ADSORPTION_SIMULATION_INPUTS_QUERY,
-  consumers: Queries.CONSUMERS_SIMULATION_INPUTS_QUERY,
-  dc: Queries.DC_SIMULATION_INPUTS_QUERY,
-  dhw: Queries.DHW_SIMULATION_INPUTS_QUERY,
-  drives: Queries.DRIVES_SIMULATION_INPUTS_QUERY,
-  thrs: Queries.THRS_SIMULATION_INPUTS_QUERY,
-};
-
-export const SIMULATION_OUTPUT_QUERIES: Record<ThrsSimulationType, string> = {
-  highTemperature: Queries.HIGH_TEMPERATURE_SIMULATION_OUTPUTS_QUERY,
-  thrusters: Queries.THRUSTERS_SIMULATION_OUTPUTS_QUERY,
-  pcm: Queries.PCM_SIMULATION_OUTPUTS_QUERY,
-  pvt: Queries.PVT_SIMULATION_OUTPUTS_QUERY,
-  adsorption: Queries.ADSORPTION_SIMULATION_OUTPUTS_QUERY,
-  consumers: Queries.CONSUMERS_SIMULATION_OUTPUTS_QUERY,
-  dc: Queries.DC_SIMULATION_OUTPUTS_QUERY,
-  dhw: Queries.DHW_SIMULATION_OUTPUTS_QUERY,
-  drives: Queries.DRIVES_SIMULATION_OUTPUTS_QUERY,
-  thrs: Queries.THRS_SIMULATION_OUTPUTS_QUERY,
-};
-
-const toInputType = <K extends string>(key: K): SimulationInputsType<K> =>
-  `${key.charAt(0).toUpperCase()}${key.slice(1)}SimulationInputsType` as SimulationInputsType<K>;
-
-const toOutputType = <K extends string>(key: K): SimulationOutputsType<K> =>
-  `${key.charAt(0).toUpperCase()}${key.slice(1)}SimulationOutputsType` as SimulationOutputsType<K>;
-
-const toUnionQueries = <K extends string, T extends Record<K, string>>(
-  queries: T,
-  keyMapFn: (key: string) => string,
-): string =>
-  Object.entries(queries)
-    .map(([key, query]) => `... on ${keyMapFn(key)} { __typename ${query} }`)
+// Each component with the fields of its type, the timestamp named as thrsim reads it.
+const selection = (definitions: SimulationDefinitions): string =>
+  Object.entries(definitions)
+    .map(
+      ([component, { componentType }]) =>
+        `${component} { ${SIMULATION_FIELDS[componentType]
+          .map((field) => `${field} { value timestamp: timeStamp }`)
+          .join(" ")} }`,
+    )
     .join("\n");
 
-export const QUERY_SIMULATION = gql`
-  query QuerySimulation {
-    simulation {
-      inputs {
-        ${toUnionQueries(SIMULATION_INPUT_QUERIES, toInputType)}
-      }
-      outputs {
-        ${toUnionQueries(SIMULATION_OUTPUT_QUERIES, toOutputType)}
+// The simulator on the MQTT GraphQL API. It has one inputs and one outputs type, the whole
+// THRS simulation's, which every simulation type publishes a part of; the status says which
+// type runs. Only a simulator in lockstep publishes a status.
+// TODO: generate from the thrs-control Spec, like thrapp's definitions; for now from thrsim's
+// own definitions of the THRS simulation.
+export const SIMULATOR_QUERY = gql`
+  query Simulator {
+    thrs {
+      simulator {
+        status { status mode simulationTime }
+        simulationInputs {
+          ${selection(SIMULATION.inputs.thrs)}
+        }
+        simulationOutputs {
+          ${selection(SIMULATION.outputs.thrs)}
+        }
       }
     }
   }

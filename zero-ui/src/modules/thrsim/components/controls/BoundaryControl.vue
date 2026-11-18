@@ -7,37 +7,26 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/number-field";
-import { controlValuesForm, MutationType } from "@/modules/thrsim/stores/thrs";
+import { simulationInputsForm } from "@/modules/thrsim/stores/thrs";
 import { BoundarySimulation } from "@/modules/thrsim/types";
 import { toUpperCamelCase } from "@common/lib/utils";
 import { RiLoader2Line, RiSendPlaneLine } from "@remixicon/vue";
 import { toRef } from "vue";
 import { useI18n } from "vue-i18n";
-import { ThrsSimulationType } from "../../lib/consts";
 
 const { t } = useI18n();
 
 const props = defineProps<{
   values: BoundarySimulation;
   componentName: string;
-  query: string;
-  simulation: ThrsSimulationType;
-}>();
-const emit = defineEmits<{
-  (e: "update:controlValues", value: unknown): void;
 }>();
 
 const controlValues = toRef(props, "values");
 
-const { submit, isSubmitting, error, flow, temperature } = controlValuesForm(
-  props.simulation,
-  MutationType.Simulation,
-  "BoundaryInputType!",
+const { submit, isSubmitting, error, flow, temperature } = simulationInputsForm(
   props.componentName,
   controlValues,
   ["flow", "temperature"],
-  props.query,
-  emit,
 );
 </script>
 <template>

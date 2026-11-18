@@ -9,7 +9,7 @@
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "test:unit": "vitest --exclude **/api.integration.spec.ts --coverage --coverage.reportsDirectory=../coverage/unit",
-    "test:api": "vitest api.integration.spec.ts --coverage --coverage.reportsDirectory=../coverage/api",
+    "test:api": "vitest api.integration.spec.ts --no-file-parallelism --coverage --coverage.reportsDirectory=../coverage/api",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "codegen": "graphql-codegen --require dotenv/config --config codegen.ts dotenv_config_path=.env.local",

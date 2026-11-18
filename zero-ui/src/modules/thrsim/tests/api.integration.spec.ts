@@ -10,7 +10,22 @@ import { ParameterDefinitions } from "@/modules/thrapp/types/thrs";
 import { ENV } from "@/settings";
 import { Client, fetchExchange, gql, OperationResult, TypedDocumentNode } from "@urql/vue";
 import { describe, expect, test } from "vitest";
-import { SimulationStatus, STATUS_QUERY } from "../stores/simulation";
+
+type SimulationStatus = {
+  simulation: {
+    status: "running" | "available" | "stepping";
+    time: number;
+  };
+};
+
+const STATUS_QUERY = gql`
+  query SimulationStatus {
+    simulation {
+      status
+      time
+    }
+  }
+`;
 
 // thrs-api's control status. The automation store's query is for the MQTT GraphQL API, so this
 // test has its own.
