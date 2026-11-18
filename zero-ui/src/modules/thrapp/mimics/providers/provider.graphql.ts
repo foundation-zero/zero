@@ -1,10 +1,13 @@
-import { capitalizeFirst } from "@/modules/common/lib/utils";
-import { isThrsApiModule, QUERIES } from "@/modules/thrapp/lib/consts";
 import {
   MqttGraphqlModules,
   ThrsDefinitions,
   ThrsModules,
 } from "@/modules/thrapp/lib/consts.types";
+import {
+  ControllerInput,
+  controllerMutation,
+  stampedValues,
+} from "@/modules/thrapp/lib/mqtt-graphql.utils";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import {
   ControlComponentType,
@@ -17,39 +20,10 @@ import {
   SensorComponentType,
   SensorDefinitionMap,
 } from "@/modules/thrapp/types/thrs";
-import { gql } from "@urql/vue";
 import { computed, Ref, toRefs, unref } from "vue";
 import { MimicDataProvider, ModuleField } from ".";
 import { useAdvisoryEnabled, useAutomaticMode } from "../../state";
 import { MimicComponentState } from "../components";
-
-const PARAMETER_INPUT_TYPES: Partial<Record<ParametersType, string>> = {
-  [ParametersType.Enabled]: "Boolean!",
-  [ParametersType.Flow]: "Float!",
-  [ParametersType.FlowControl]: "Float!",
-  [ParametersType.Level]: "Float!",
-  [ParametersType.Ratio]: "Float!",
-  [ParametersType.Temperature]: "Float!",
-  [ParametersType.Tuning]: "[Float!]!",
-  [ParametersType.Dutypoint]: "Float!",
-  [ParametersType.dT]: "Float!",
-  [ParametersType.Duration]: "Float!",
-  [ParametersType.Power]: "Float!",
-};
-
-const CONTROL_INPUT_TYPES: Partial<Record<ControlComponentType, string>> = {
-  [ControlComponentType.Pump]: "PumpInputType!",
-  [ControlComponentType.Valve]: "ValveInputType!",
-  [ControlComponentType.Heatpump]: "HeatPumpInputType!",
-};
-
-// The mutations still go to thrs-api, which has only its own modules.
-const thrsApiQuery = (module: keyof ThrsDefinitions, part: "parameters" | "controlValues") => {
-  if (!isThrsApiModule(module)) {
-    throw new Error(`thrs-api has no module ${module}`);
-  }
-  return QUERIES[module][part];
-};
 
 export const useGraphQLDataProvider = (): MimicDataProvider => {
   const { data } = toRefs(useThrsHistory());
@@ -118,64 +92,29 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
         ],
     );
 
-  const setParameter = async <Type extends ParametersType, Module extends keyof ThrsDefinitions>(
-    source: ModuleField<Type, Module>,
+  const send = async (
+    module: keyof ThrsDefinitions,
+    part: ControllerInput,
+    input: Record<string, unknown>,
+  ) => {
+    const result = await mutate(controllerMutation(module, part), { input });
+
+    await refresh();
+
+    if (result.error) {
+      throw result.error;
+    }
+  };
+
+  const setParameter = <Type extends ParametersType, Module extends keyof ThrsDefinitions>(
+    [_type, module, field]: ModuleField<Type, Module>,
     value: ParameterDefinitionMap[Type],
-  ) => {
-    const inputType = PARAMETER_INPUT_TYPES[source[0]];
+  ) => send(module, "parameters", { [field]: value });
 
-    if (!inputType) {
-      throw new Error(`No input type defined for parameter type ${source[0]}`);
-    }
-
-    const mutation = `${source[1]}ParameterSet${capitalizeFirst(source[2])}`;
-    const query = gql`mutation ($input: ${inputType}) {
-          ${mutation}(value: $input) {
-            ${thrsApiQuery(source[1], "parameters")}
-          }
-      }`;
-
-    const result = await mutate(query, {
-      input: value,
-    });
-
-    await refresh();
-
-    if (result.error) {
-      throw result.error;
-    }
-  };
-
-  const setControlValue = async <
-    Type extends ControlComponentType,
-    Module extends keyof ThrsDefinitions,
-  >(
-    source: ModuleField<Type, Module>,
-    value: ControlValues<Type>,
-  ) => {
-    const inputType = CONTROL_INPUT_TYPES[source[0]];
-
-    if (!inputType) {
-      throw new Error(`No input type defined for control type ${source[0]}`);
-    }
-
-    const mutation = `${source[1]}ControlSet${capitalizeFirst(source[2])}`;
-    const query = gql`mutation ($input: ${inputType}) {
-          ${mutation}(value: $input) {
-            ${thrsApiQuery(source[1], "controlValues")}
-          }
-      }`;
-
-    const result = await mutate(query, {
-      input: { ...value, __typename: undefined },
-    });
-
-    await refresh();
-
-    if (result.error) {
-      throw result.error;
-    }
-  };
+  const setControlValue = <Type extends ControlComponentType, Module extends keyof ThrsDefinitions>(
+    [_type, module, field]: ModuleField<Type, Module>,
+    values: Partial<ControlValues<Type>>,
+  ) => send(module, "controlValues", { [field]: stampedValues(values) });
 
   return {
     getSensorValue,

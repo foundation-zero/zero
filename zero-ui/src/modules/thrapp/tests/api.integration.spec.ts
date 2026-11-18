@@ -1,6 +1,8 @@
+import { CONTROLLED_MODULES } from "@/modules/thrapp/lib/consts";
 import { MQTT_GRAPHQL_DEFINITIONS } from "@/modules/thrapp/lib/definitions.generated";
 import * as Fragments from "@/modules/thrapp/lib/mqtt-graphql-queries.generated";
 import { valueAt } from "@/modules/thrapp/lib/mqtt-graphql.utils";
+import { CONTROL_QUERY, ControlResponse } from "@/modules/thrapp/stores/automation";
 import { ENV } from "@/settings";
 import { Client, fetchExchange, gql, OperationResult } from "@urql/vue";
 import { describe, expect, test } from "vitest";
@@ -43,6 +45,32 @@ describe("MQTT GraphQL API", () => {
       const definitions = await getAll();
 
       expect(definitions.data).toBeDefined();
+    });
+
+    // thrapp's automation mode: every module with a controller, null until it has published one.
+    describe("Automatic control", () => {
+      let _status: OperationResult<ControlResponse>;
+
+      const getStatus = async () =>
+        (_status ??= await client.query<ControlResponse>(CONTROL_QUERY, {}));
+
+      test("query does not return errors", async () => {
+        const status = await getStatus();
+
+        expect(status.error).toBeUndefined();
+      });
+
+      test("query returns data", async () => {
+        const status = await getStatus();
+
+        expect(status.data?.thrs?.controller).toBeDefined();
+      });
+
+      test.each(CONTROLLED_MODULES)("answers %s's automation mode", async (module) => {
+        const status = await getStatus();
+
+        expect(status.data?.thrs?.controller).toHaveProperty([module, "automationMode"]);
+      });
     });
 
     describe.each(Object.keys(DEFINITIONS))("%s", (moduleName) => {

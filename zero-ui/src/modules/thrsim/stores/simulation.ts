@@ -100,14 +100,12 @@ export const useSimulationStore = defineStore("simulation", () => {
       }
     }`;
       const input = { mode: enabled ? AmcsControlMode.External : AmcsControlMode.Manual };
-      const history = useThrsHistory();
-      const result = await history.mutate(query, { input });
-      const resultError = (result as { error?: { message?: string } })?.error;
-      if (resultError) {
-        advisoryError.value = resultError.message ?? i18n.global.t("thrs.labels.failedToSubmit");
+      const result = await client.mutation(query, { input }, context);
+      if (result.error) {
+        advisoryError.value = result.error.message ?? i18n.global.t("thrs.labels.failedToSubmit");
         return;
       }
-      await history.refresh();
+      await useThrsHistory().refresh();
       await refreshSimulation();
       await updateStatus();
     } catch (err) {

@@ -1,4 +1,4 @@
-import { client, mqttGraphqlClient } from "@/modules/thrapp/graphql/client";
+import { mqttGraphqlClient } from "@/modules/thrapp/graphql/client";
 import { createTestingPinia } from "@pinia/testing";
 import { setActivePinia } from "pinia";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -8,8 +8,7 @@ import { DHW_MIMIC_QUERY, PVT_MIMIC_QUERY } from "../lib/queries.consts";
 import { useThrsHistory } from "./history";
 
 vi.mock("@/modules/thrapp/graphql/client", () => ({
-  client: { mutation: vi.fn() },
-  mqttGraphqlClient: { query: vi.fn() },
+  mqttGraphqlClient: { query: vi.fn(), mutation: vi.fn() },
   mqttGraphqlContext: {},
 }));
 
@@ -101,14 +100,14 @@ describe("THRS history store", () => {
     expect(history.lastUpdate).toBeNull();
   });
 
-  it("sends mutations through the THRS client", async () => {
+  it("sends mutations to the MQTT GraphQL API", async () => {
     const result = { data: { ok: true } };
-    vi.mocked(client.mutation).mockReturnValue({
+    vi.mocked(mqttGraphqlClient.mutation).mockReturnValue({
       toPromise: () => Promise.resolve(result),
     } as never);
 
     await expect(useThrsHistory().mutate("mutation { x }", { input: 1 })).resolves.toBe(result);
-    expect(client.mutation).toHaveBeenCalledWith("mutation { x }", { input: 1 });
+    expect(mqttGraphqlClient.mutation).toHaveBeenCalledWith("mutation { x }", { input: 1 }, {});
   });
 
   describe("getHistory", () => {

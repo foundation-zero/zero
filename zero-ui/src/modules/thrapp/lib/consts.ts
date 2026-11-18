@@ -1,3 +1,4 @@
+import { keysOf } from "@/modules/common/lib/utils";
 import {
   ControlComponentType,
   ControlFields,
@@ -24,6 +25,17 @@ export const toDefinitions = <T extends ModuleDefinitions>(input: T): T => input
 export const DEFINITIONS = toDefinitions(MQTT_GRAPHQL_DEFINITIONS);
 
 export type ThrsDefinitions = typeof DEFINITIONS;
+
+// The modules with a controller: those thrs-control takes parameters for.
+export type ControlledModule = {
+  [Module in keyof ThrsDefinitions]: keyof ThrsDefinitions[Module]["parameters"] extends never
+    ? never
+    : Module;
+}[keyof ThrsDefinitions];
+
+export const CONTROLLED_MODULES = keysOf(DEFINITIONS).filter(
+  (module): module is ControlledModule => Object.keys(DEFINITIONS[module].parameters).length > 0,
+);
 
 export const CONTROL_FIELDS: ControlFields = {
   [ControlComponentType.Pump]: ["dutypoint", "on"],
