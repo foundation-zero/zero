@@ -20,7 +20,6 @@ class Config(BaseSettings):
     mqtt_port: int
     mqtt_username: str | None = None
     mqtt_password: str | None = None
-    mqtt_api_client_id: str = Field(default_factory=lambda: f"thrs-api-{token_hex(4)}")
     mqtt_control_client_id: str = Field(
         default_factory=lambda: f"thrs-control-{token_hex(4)}"
     )

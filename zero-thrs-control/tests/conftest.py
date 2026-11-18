@@ -24,13 +24,6 @@ def settings():
     return Config()  # type: ignore
 
 
-@pytest.fixture(scope="session")
-def app(settings):
-    from thrs.graphql.strawberry import create_app  # noqa: PLC0415
-
-    return create_app(settings)
-
-
 @pytest.fixture(scope="session", autouse=True)
 def ensure_default_event_loop():
     loop = asyncio.new_event_loop()
