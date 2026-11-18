@@ -38,6 +38,7 @@ const modules: Array<MimicKey> = [
   "dc-ugrid",
   "dc-fwd",
   "drives",
+  "drives-shorepower",
   "adsorption",
 ];
 const currentModuleKey = computed(() => (currentRoute.params.module as string) ?? "simulation");
