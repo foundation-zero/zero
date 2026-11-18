@@ -1,4 +1,5 @@
-"""``/health`` for the bridge apps' readiness probes (docs/adr/0001-dependency-outages.md).
+"""``/health`` and ``/live`` for the bridge apps' readiness and liveness probes
+(docs/adr/0001-dependency-outages.md).
 
 The reason a pod is not ready is in the logs of zmqtt and the bridge.
 """
@@ -31,16 +32,23 @@ def make_health_asgi(broker: MQTTBroker, bridge: ModbusBridge) -> HttpHandler:
     return health
 
 
+@get(include_in_schema=False)
+async def live(scope: Scope) -> AsgiResponse:
+    """204 whenever it gets to run: the liveness probe restarts a pod whose
+    event loop is stuck. It checks no dependency (ADR 0001)."""
+    return AsgiResponse(b"", 204)
+
+
 async def run_with_health(
     broker: MQTTBroker,
     after_startup: Callable[[], Awaitable[None]],
     health: HttpHandler,
 ) -> None:
     """Run ``after_startup`` once the broker is connected, serving ``health``
-    at ``/health`` on ``HEALTH_PORT`` from the start."""
+    at ``/health`` and ``live`` at ``/live`` on ``HEALTH_PORT`` from the start."""
     app = AsgiFastStream(
         broker,
-        asgi_routes=[("/health", health)],
+        asgi_routes=[("/health", health), ("/live", live)],
         after_startup=[after_startup],
     )
     # uvicorn listens on 127.0.0.1 by default, which the kubelet can't reach;

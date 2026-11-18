@@ -8,7 +8,7 @@ from faststream.asgi import make_ping_asgi
 from faststream.mqtt import ReconnectConfig
 
 from zero_modbus_bridge import health
-from zero_modbus_bridge.health import make_health_asgi, run_with_health
+from zero_modbus_bridge.health import live, make_health_asgi, run_with_health
 from zero_modbus_bridge.mqtt import RecoveringBroker
 
 
@@ -51,21 +51,27 @@ async def test_pings_with_a_timeout_below_the_probe_timeout():
     broker.ping.assert_awaited_once_with(4.0)
 
 
+async def test_live_without_checking_the_broker():
+    assert await _probe(live) == 204
+
+
 def _free_port() -> int:
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", 0))
         return sock.getsockname()[1]
 
 
-async def _health_status(port: int) -> int:
+async def _status(port: int, path: str) -> int:
     reader, writer = await asyncio.open_connection("127.0.0.1", port)
-    writer.write(b"GET /health HTTP/1.1\r\nHost: test\r\nConnection: close\r\n\r\n")
+    writer.write(
+        f"GET {path} HTTP/1.1\r\nHost: test\r\nConnection: close\r\n\r\n".encode()
+    )
     status_line = await reader.readline()
     writer.close()
     return int(status_line.split()[1])
 
 
-async def test_serves_health_while_the_broker_is_unreachable(
+async def test_serves_both_probes_while_the_broker_is_unreachable(
     monkeypatch: pytest.MonkeyPatch,
 ):
     port = _free_port()
@@ -83,7 +89,8 @@ async def test_serves_health_while_the_broker_is_unreachable(
     try:
         for _ in range(50):
             try:
-                assert await _health_status(port) == 500
+                assert await _status(port, "/health") == 500
+                assert await _status(port, "/live") == 204
                 break
             except ConnectionRefusedError:
                 await asyncio.sleep(0.1)
