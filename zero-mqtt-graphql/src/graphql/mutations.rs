@@ -116,7 +116,7 @@ fn set_field(name: &str, input_type: Option<&str>, return_type: TypeRef, target:
         // A signal has no `input` argument: it sets no fields.
         let given = ctx.args.get("input").map_or_else(
             || Ok(JsonValue::Object(Map::new())),
-            |input| input_payload(&input, &target.fields),
+            |input| input_fields(&target.fields, &input),
         );
         FieldFuture::new(async move {
             let value = async { target.set(given?).await }
@@ -215,7 +215,7 @@ struct Target {
 }
 
 impl Target {
-    /// Publish `given`, the input as a payload (see [`input_payload`]).
+    /// Publish `given`, the input as a payload (see [`input_fields`]).
     /// Without a State topic, returns `true` once handed to the MQTT client.
     /// With one, fills omitted fields from the State value first (see
     /// [`merge`]), then returns the first State value that shows every given
@@ -289,33 +289,33 @@ async fn next_update(updates: &mut Receiver<String>, topic: &str, deadline: Inst
     }
 }
 
-/// The client-given input as a payload keyed by raw field names. Omitted
-/// fields stay out; explicit nulls are kept.
-fn input_payload(
-    input: &ValueAccessor<'_>,
+/// `value`, an input object of `fields`, as a payload keyed by raw field
+/// names. Omitted fields stay out; explicit nulls are kept.
+fn input_fields(
     fields: &BTreeMap<String, FieldType>,
+    value: &ValueAccessor<'_>,
 ) -> anyhow::Result<JsonValue> {
-    let input = input.object().map_err(graphql_error)?;
+    let object = value.object().map_err(graphql_error)?;
     fields
         .iter()
         .filter_map(|(raw_name, field_type)| {
-            let value = input.get(sanitize_to_graphql_name(raw_name).as_str())?;
-            Some(input_json(field_type, &value).map(|json| (raw_name.clone(), json)))
+            let value = object.get(sanitize_to_graphql_name(raw_name).as_str())?;
+            Some(input_value(field_type, &value).map(|json| (raw_name.clone(), json)))
         })
         .collect::<anyhow::Result<Map<_, _>>>()
         .map(JsonValue::Object)
 }
 
-/// One client-given value as JSON, with objects, also inside lists, keyed
-/// by raw field names, and enum values as their raw value. async-graphql's
-/// accessors read a value written in the query and one given in the
-/// variables alike.
-fn input_json(field_type: &FieldType, value: &ValueAccessor<'_>) -> anyhow::Result<JsonValue> {
+/// `value` as the input of a field of `field_type`, as JSON: objects, also
+/// inside lists, keyed by raw field names, and enum values as their raw
+/// value. async-graphql's accessors read a value written in the query and one
+/// given in the variables alike.
+fn input_value(field_type: &FieldType, value: &ValueAccessor<'_>) -> anyhow::Result<JsonValue> {
     if value.is_null() {
         return Ok(JsonValue::Null);
     }
     match field_type {
-        FieldType::Object(_, nested) => input_payload(value, nested),
+        FieldType::Object(_, nested) => input_fields(nested, value),
         FieldType::Enum(name, values) => {
             let graphql_name = value.enum_name().map_err(graphql_error)?;
             values
@@ -328,7 +328,7 @@ fn input_json(field_type: &FieldType, value: &ValueAccessor<'_>) -> anyhow::Resu
             .list()
             .map_err(graphql_error)?
             .iter()
-            .map(|item| input_json(element, &item))
+            .map(|item| input_value(element, &item))
             .collect::<anyhow::Result<Vec<_>>>()
             .map(JsonValue::Array),
         _ => Ok(value.as_value().clone().into_json()?),
