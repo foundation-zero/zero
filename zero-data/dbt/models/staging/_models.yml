@@ -4439,3 +4439,22 @@ models:
         description: "Timestamp of the 3-phase AC bus (shore side) active power in kW reading."
       - name: esi_ac_bus_active_power_3_phase__value
         description: "3-phase AC bus (shore side) active power in kW."
+  - name: stg_termodinamica__ac_misc
+    description: >
+      Staging view for the Termodinamica compression chiller: the power of its two compressors and its
+      seawater pump, in kW.
+    columns:
+      - name: ts
+        description: "Time index of the measurement record (renamed from timestamp)."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: watt_ac_compressor_1
+        description: "Power of AC compressor 1 in kW."
+      - name: watt_ac_compressor_2
+        description: "Power of AC compressor 2 in kW."
+      - name: watt_sea_water_pump
+        description: "Power of the AC seawater pump in kW."
