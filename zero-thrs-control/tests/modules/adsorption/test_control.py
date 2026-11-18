@@ -3,8 +3,13 @@ from datetime import datetime, timedelta
 from pytest import approx
 
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.control.modules.adsorption import (
-    AdsorptionControl,
+from thrs.control.modules.adsorption.control import AdsorptionControl
+from thrs.control.modules.adsorption.io import (
+    AdsorptionSensorValues,
+    AdsorptionSimulationInputs,
+    AdsorptionSimulationOutputs,
+)
+from thrs.control.modules.adsorption.state import (
     AdsorptionControlMode,
     AdsorptionParameters,
 )
@@ -15,11 +20,6 @@ from thrs.input_output.definitions.simulation import (
     TemperatureBoundary,
 )
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
-from thrs.input_output.modules.adsorption import (
-    AdsorptionSensorValues,
-    AdsorptionSimulationInputs,
-    AdsorptionSimulationOutputs,
-)
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import adsorption_path

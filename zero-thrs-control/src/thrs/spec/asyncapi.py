@@ -66,7 +66,7 @@ def _operation_key(topic: TopicMapping) -> str:
 
 
 def _message_key(payload_type: type[ThrsValues]) -> str:
-    return f"{payload_type.__module__.split('.')[-1]}{payload_type.__name__.replace('[', '').replace(']', '')}"
+    return payload_type.__name__.replace("[", "").replace("]", "")
 
 
 def _build_asyncapi(

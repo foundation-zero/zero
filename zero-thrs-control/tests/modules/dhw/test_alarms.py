@@ -1,6 +1,7 @@
-from thrs.control.modules.dhw import DhwAlarms, DhwControllerState, DhwParameters
+from thrs.control.modules.dhw.control import DhwAlarms
+from thrs.control.modules.dhw.io import DhwControlValues, DhwSensorValues
+from thrs.control.modules.dhw.state import DhwControllerState, DhwParameters
 from thrs.input_output.definitions.units import TankState
-from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
 
 WARNING_CODE = "Tank in use below minimum temperature"
 

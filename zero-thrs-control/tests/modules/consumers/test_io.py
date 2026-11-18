@@ -5,7 +5,7 @@ from tests.modules.conftest import (
     compare_modelica_names,
     compare_yard_tags,
 )
-from thrs.input_output.modules.consumers import (
+from thrs.control.modules.consumers.io import (
     ConsumersControlValues,
     ConsumersSensorValues,
     ConsumersSimulationInputs,

@@ -7,14 +7,14 @@ from tests.modules.conftest import (
     compare_yard_tags,
 )
 from tests.modules.thrusters.conftest import ThrustersSimulation
-from thrs.control.modules.thrusters import ThrustersControl
-from thrs.input_output.definitions.control import Valve
-from thrs.input_output.modules.thrusters import (
+from thrs.control.modules.thrusters.control import ThrustersControl
+from thrs.control.modules.thrusters.io import (
     ThrustersControlValues,
     ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
+from thrs.input_output.definitions.control import Valve
 from thrs.simulation.models.fmu_paths import thrusters_path
 
 

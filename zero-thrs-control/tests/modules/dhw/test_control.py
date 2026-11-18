@@ -4,17 +4,14 @@ import pytest
 from pytest import approx
 
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.control.modules.dhw import (
-    DhwControl,
-    DhwParameters,
-    TanksController,
-)
-from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.units import TankState
-from thrs.input_output.modules.dhw import (
+from thrs.control.modules.dhw.control import DhwControl, TanksController
+from thrs.control.modules.dhw.io import (
     DhwSensorValues,
     DhwSimulationInputs,
 )
+from thrs.control.modules.dhw.state import DhwParameters
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.units import TankState
 from thrs.orchestration.simulation import Simulation
 
 
