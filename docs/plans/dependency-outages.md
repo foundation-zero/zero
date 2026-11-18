@@ -46,6 +46,12 @@ Every flavour needs readiness and a readiness probe. No liveness probe checks a 
   - Pass `host="0.0.0.0"` and a port through `run_extra_options`; uvicorn defaults to 127.0.0.1, which the kubelet can't reach. Set `access_log=False`, or every probe is logged.
 - **Rust apps (F3):** a status file the app writes, e.g. `not ready: mqtt: CONNACK refused (not authorized) since 13:02`, on an `emptyDir` mount because the charts set `readOnlyRootFilesystem`; and an exec readiness probe that prints it. Done in phase 1; the shared code is the `zero-readiness` crate in `packages/rust` (ZERO-2612).
 
+What counts as ready, per kind of dependency:
+
+- **Long-lived connections** (MQTT): ready while the client is connected. Read the client's own state, or send an MQTT ping (PINGREQ), which is what `broker.ping()` does. Nothing heavier on every probe.
+- **Pooled or per-request connections** (databases): ready while the last query or connection attempt succeeded. Add a cheap periodic `SELECT 1` when there is little traffic.
+- **Where the reason shows up:** the kubelet copies an exec probe's output into the `Readiness probe failed` event, so `kubectl describe` shows it. It discards the body of an HTTP probe response, so with an HTTP probe the reason is only in the app's logs.
+
 Every flavour also has to meet these:
 
 - **Backoff cap of 30 s.** With zmqtt's and our Rust apps' old 60 s cap, a client could wait a full minute after the broker is back, which misses the "reconnect within about 1 min" target. Done in phase 1.
