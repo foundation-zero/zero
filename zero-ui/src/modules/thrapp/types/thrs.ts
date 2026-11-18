@@ -3,6 +3,8 @@ import { Ref, WritableComputedRef } from "vue";
 
 export type SchemaDefinition<T> = {
   componentType: T;
+  /** Where the MQTT GraphQL API answers the component, in the generated fragments' response. */
+  path?: readonly string[];
 };
 
 // Number between 0 and 1 representing a ratio (e.g., for flow distribution)
@@ -527,7 +529,7 @@ export type HeatPumpSensorDefinition = SensorDefinition<SensorComponentType.Heat
 export type PvtSensorDefinition = SensorDefinition<SensorComponentType.Pvt>;
 export type CalculatedFlowSensorDefinition = SensorDefinition<SensorComponentType.CalculatedFlow>;
 
-export type SensorDefinitions = SchemaDefinitions<SensorDefinition>;
+export type SensorDefinitions = SchemaDefinitions<SensorDefinition | ValveSensorDefinition>;
 
 export type SensorDefinitionMap = {
   [SensorComponentType.Temperature]: TemperatureSensor;

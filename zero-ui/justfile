@@ -20,3 +20,7 @@ extract_all_schemas:
 
 generate_tooltips:
     pnpm generate-tooltips
+
+# Regenerate the AsyncAPI Specs, then thrapp's definitions and MQTT GraphQL queries from them
+generate_mqtt_graphql_queries:
+    pnpm generate-mqtt-graphql-queries
