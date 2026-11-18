@@ -1,6 +1,10 @@
 import { capitalizeFirst } from "@/modules/common/lib/utils";
-import { QUERIES } from "@/modules/thrapp/lib/consts";
-import { ThrsDefinitions, ThrsModules } from "@/modules/thrapp/lib/consts.types";
+import { isThrsApiModule, QUERIES } from "@/modules/thrapp/lib/consts";
+import {
+  MqttGraphqlModules,
+  ThrsDefinitions,
+  ThrsModules,
+} from "@/modules/thrapp/lib/consts.types";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import {
   ControlComponentType,
@@ -39,15 +43,26 @@ const CONTROL_INPUT_TYPES: Partial<Record<ControlComponentType, string>> = {
   [ControlComponentType.Heatpump]: "HeatPumpInputType!",
 };
 
+// The mutations still go to thrs-api, which has only its own modules.
+const thrsApiQuery = (module: keyof ThrsDefinitions, part: "parameters" | "controlValues") => {
+  if (!isThrsApiModule(module)) {
+    throw new Error(`thrs-api has no module ${module}`);
+  }
+  return QUERIES[module][part];
+};
+
 export const useGraphQLDataProvider = (): MimicDataProvider => {
   const { data } = toRefs(useThrsHistory());
   const { refresh, mutate } = useThrsHistory();
   // Each view queries only the module parts it shows (see `queries.consts.ts`); flag missing parts.
   const missingWarnings = new Set<string>();
-  const modulePart = <Module extends keyof ThrsDefinitions, Part extends keyof ThrsModules[Module]>(
+  const modulePart = <
+    Module extends keyof ThrsDefinitions,
+    Part extends keyof MqttGraphqlModules[Module],
+  >(
     module: Module,
     part: Part,
-  ): ThrsModules[Module][Part] | undefined => {
+  ): MqttGraphqlModules[Module][Part] | undefined => {
     const value = data.value?.modules?.[module]?.[part];
     const key = `${module}.${String(part)}`;
 
@@ -116,7 +131,7 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
     const mutation = `${source[1]}ParameterSet${capitalizeFirst(source[2])}`;
     const query = gql`mutation ($input: ${inputType}) {
           ${mutation}(value: $input) {
-            ${QUERIES[source[1]].parameters}
+            ${thrsApiQuery(source[1], "parameters")}
           }
       }`;
 
@@ -147,7 +162,7 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
     const mutation = `${source[1]}ControlSet${capitalizeFirst(source[2])}`;
     const query = gql`mutation ($input: ${inputType}) {
           ${mutation}(value: $input) {
-            ${QUERIES[source[1]].controlValues}
+            ${thrsApiQuery(source[1], "controlValues")}
           }
       }`;
 

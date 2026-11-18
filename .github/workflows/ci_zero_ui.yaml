@@ -7,6 +7,8 @@ on:
       - zero-ui/**
       - zero-loads-app/**
       - zero-thrs-control/**
+      - zero-data/**
+      - zero-mqtt-graphql/**
       - docker-compose.yml
       - hasura/**
   release:
@@ -20,6 +22,8 @@ on:
       - zero-ui/**
       - zero-loads-app/**
       - zero-thrs-control/**
+      - zero-data/**
+      - zero-mqtt-graphql/**
       - docker-compose.yml
       - hasura/**
 
@@ -66,6 +70,27 @@ jobs:
           echo "${{ secrets.ENV_THRS }}" > .env
         working-directory: zero-thrs-control
 
+      # The MQTT GraphQL API serves the Specs thrapp's queries are generated from: marpower and
+      # thrs-control, in ./specs and in the API's Docker build context.
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: 3.15
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+
+      - name: Create the specs folder
+        run: mkdir -p specs
+
+      - name: Generate the marpower Spec
+        working-directory: zero-data
+        run: uv run --locked python -m zero_data generate-asyncapi ../specs/marpower.json
+
+      - name: Generate the thrs-control Spec
+        working-directory: zero-thrs-control
+        run: uv run --locked python -m thrs.cli generate-asyncapi ../specs/thrs-control.json
+
+      - name: Copy the Specs into the MQTT GraphQL API's build context
+        run: cp -r specs zero-mqtt-graphql/specs
+
       # Set up in https://github.com/foundation-zero/gcp-common
       - id: auth
         name: Authenticate with Google Cloud
@@ -91,7 +116,8 @@ jobs:
         timeout-minutes: 2
         run: |
           until curl --silent --fail --output /dev/null --get http://localhost:5101/graphql --data-urlencode 'query={__typename}' \
-            && curl --silent --get http://localhost:5102/graphql --data-urlencode 'query={simulation{status}}' | grep --quiet '"status"'; do
+            && curl --silent --get http://localhost:5102/graphql --data-urlencode 'query={simulation{status}}' | grep --quiet '"status"' \
+            && curl --silent --fail --output /dev/null --header 'Content-Type: application/json' --data '{"query":"{__typename}"}' http://localhost:5103/graphql; do
             sleep 1
           done
 
@@ -195,6 +221,7 @@ jobs:
         run: |
           echo '{
             "VITE_THRS_API_SERVER_URL": "https://thrs-control-singel.tail0b4840.ts.net/graphql",
+            "VITE_MQTT_GRAPHQL_API_SERVER_URL": "https://api-singel.tail0b4840.ts.net/graphql",
             "VITE_LOADS_API_SERVER_URL": "https://loads-app-singel.tail0b4840.ts.net/graphql",
             "VITE_GRAPHQL_URL": "https://hasura-singel.tail0b4840.ts.net/v1/graphql",
             "VITE_GRAPHQL_WS_URL": "ws://hasura-singel.tail0b4840.ts.net/v1/graphql",

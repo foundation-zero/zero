@@ -11,10 +11,10 @@ import { pumpFlowController } from "../controllers";
 
 export default toInstance<MimicComponentType.HeatPump>({
   controls: {
-    heatpump: getField(ControlComponentType.Heatpump, "dhw", "dhwHeatpump"),
+    heatpump: getField(ControlComponentType.Heatpump, "dhw", "placeholder"),
   },
   controllerState: { controller: pumpFlowController },
-  source: getField(SensorComponentType.HeatPump, "dhw", "dhwHeatpump"),
+  source: getField(SensorComponentType.HeatPump, "dhw", "placeholder"),
   custom: { controller: pumpFlowController },
   parameters: {
     temperatureSetpoint: getField(ParametersType.Temperature, "dhw", "heatpumpTemperatureSetpoint"),

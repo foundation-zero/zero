@@ -148,13 +148,17 @@ services:
       postgres:
         condition: service_healthy
 
+  # Serves ./specs; its build context needs them too (`just docker_specs` in zero-mqtt-graphql).
   mqtt-graphql:
     build:
       context: ./zero-mqtt-graphql
+      cache_from:
+        - type=registry,ref=europe-west1-docker.pkg.dev/common-449414/buildcache/zero-mqtt-graphql:main
     ports:
       - 127.0.0.1:5103:5103
     profiles:
       - data
+      - thrs
     environment:
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
@@ -419,9 +423,10 @@ services:
       ALLOW_BOOT_WITHOUT_PERSISTENCE_HAVING_ACTIVE_POSTGRES: ${ALLOW_BOOT_WITHOUT_PERSISTENCE_HAVING_ACTIVE_POSTGRES:-false}
       MQTT_HOST: vernemq
       MQTT_PORT: 1883
-      MQTT_DEVICES_TOPIC_PREFIX: devices_topic
-      MQTT_CONTROLLER_TOPIC_PREFIX: controller_topic
-      MQTT_SIMULATOR_TOPIC_PREFIX: simulation_topic
+      # The addresses of the thrs-control Spec, so the MQTT GraphQL API sees the simulated THRS.
+      MQTT_DEVICES_TOPIC_PREFIX: marpower
+      MQTT_CONTROLLER_TOPIC_PREFIX: thrs/controller
+      MQTT_SIMULATOR_TOPIC_PREFIX: thrs/simulator
       MQTT_CONTROL_TOPIC_SUFFIX: Command
       MQTT_CONTROLLER_TOPIC_SUFFIX: set
       MQTT_SIMULATOR_TOPIC_SUFFIX: set

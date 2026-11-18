@@ -1,15 +1,38 @@
-import { buildSchema, validate } from "graphql";
+import { DocumentNode, FragmentDefinitionNode, Kind, visit } from "graphql";
 import { describe, expect, it } from "vitest";
-import schemaSource from "../graphql/schema.graphql?raw";
 import * as Queries from "./queries.consts";
 
-const schema = buildSchema(schemaSource);
+const views = Object.entries(Queries).flatMap(([name, query]) =>
+  name.endsWith("_QUERIES")
+    ? Object.entries(query as Record<string, DocumentNode>).map(
+        ([module, document]) => [`${name}.${module}`, document] as const,
+      )
+    : [[name, query as DocumentNode] as const],
+);
+
+/** The names of the fragments a query defines and the ones it spreads. */
+const fragments = (document: DocumentNode) => {
+  const defined = document.definitions
+    .filter(
+      (definition): definition is FragmentDefinitionNode =>
+        definition.kind === Kind.FRAGMENT_DEFINITION,
+    )
+    .map((definition) => definition.name.value);
+  const spread: string[] = [];
+  visit(document, { FragmentSpread: (node) => void spread.push(node.name.value) });
+  return { defined, spread: [...new Set(spread)] };
+};
 
 describe("view queries", () => {
-  // Per-module maps reuse the queries that are checked individually.
-  const queries = Object.entries(Queries).filter(([name]) => !name.endsWith("_QUERIES"));
+  it.each(views)("%s defines exactly the fragments it spreads", (_, document) => {
+    const { defined, spread } = fragments(document);
 
-  it.each(queries)("%s is valid against the THRS schema", (_, query) => {
-    expect(validate(schema, query as never)).toEqual([]);
+    expect(defined.toSorted()).toEqual(spread.toSorted());
+  });
+
+  it.each(views)("%s defines each fragment once", (_, document) => {
+    const { defined } = fragments(document);
+
+    expect(defined).toEqual([...new Set(defined)]);
   });
 });

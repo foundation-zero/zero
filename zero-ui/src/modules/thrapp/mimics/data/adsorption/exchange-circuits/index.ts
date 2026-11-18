@@ -40,16 +40,16 @@ export const ADSORPTION_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
       parameters: {},
       source: getCustomField("adsorption", {}),
       sensors: {
-        flowIn: getField(SensorComponentType.Flow, "adsorption", "coolingFlowAdsorption"),
+        flowIn: getField(SensorComponentType.Flow, "cooling", "coolingFlowAdsorption"),
         tIn: getField(
           SensorComponentType.Temperature,
-          "adsorption",
+          "cooling",
           "coolingTemperatureAdsorptionReturn",
         ),
-        flowOut: getField(SensorComponentType.Flow, "adsorption", "coolingFlowAdsorption"),
+        flowOut: getField(SensorComponentType.Flow, "cooling", "coolingFlowAdsorption"),
         tOut: getField(
           SensorComponentType.Temperature,
-          "adsorption",
+          "cooling",
           "coolingTemperatureAdsorptionSupply",
         ),
       },

@@ -9,7 +9,7 @@ import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.
 import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
 import ControlActions from "@/modules/thrapp/components/control-actions/ControlActions.vue";
 import { client } from "@/modules/thrapp/graphql/client";
-import { ThrsModules } from "@/modules/thrapp/lib/consts.types";
+import { ThrsApiModule } from "@/modules/thrapp/lib/consts";
 import { MimicKey } from "@/modules/thrapp/router/mimics";
 import { provideClient } from "@urql/vue";
 import { computed, onMounted, onUnmounted, provide } from "vue";
@@ -95,7 +95,7 @@ onUnmounted(stopPolling);
         v-if="currentRoute.params.module"
         #right
       >
-        <ControlActions :active-module="currentModuleKey as keyof ThrsModules" />
+        <ControlActions :active-module="currentModuleKey as ThrsApiModule" />
       </template>
     </TopNavToolbar>
   </TopNav>

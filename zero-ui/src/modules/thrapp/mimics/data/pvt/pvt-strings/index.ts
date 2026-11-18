@@ -1,14 +1,10 @@
-import { TooltipContent } from "@/modules/thrapp/components/tooltip";
 import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { MimicComponentType } from "../../../../types";
 import { toFieldsMap, toInstance } from "../../../modules";
 import { fieldTooltip } from "../../../modules/shared";
 import { getField, ModuleField } from "../../../providers";
 
-const toPvtString = (
-  source: ModuleField<SensorComponentType.HeatTransferDevice, "pvt">,
-  tooltip?: Partial<TooltipContent>,
-) =>
+const toPvtString = (source: ModuleField<SensorComponentType.HeatTransferDevice, "pvt">) =>
   toInstance<MimicComponentType.PvtString>({
     controls: {},
     controllerState: {},
@@ -17,26 +13,24 @@ const toPvtString = (
     source: source,
     sensors: {},
     get tooltip() {
-      const content = fieldTooltip(source, { componentType: "PVT string", ...tooltip });
+      const content = fieldTooltip(source, { componentType: "PVT string" });
       return { ...content, title: `PVT string ${content.yardTag ?? ""}` };
     },
   });
 
-// String 1.2 has a naming conflict with string 12 and thus does not exist yet
 export const PVT_STRING_DATA = toFieldsMap({
   [MimicComponentType.PvtString]: {
     "aft-string-1.1": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString11Heat"),
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString1_1Heat"),
     ),
     "aft-string-1.2": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "placeholder"),
-      { yardTag: "1.2" },
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString1_2Heat"),
     ),
     "aft-string-2.1": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString21Heat"),
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString2_1Heat"),
     ),
     "aft-string-2.2": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString22Heat"),
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString2_2Heat"),
     ),
     "aft-string-3": toPvtString(
       getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString3Heat"),
@@ -45,28 +39,28 @@ export const PVT_STRING_DATA = toFieldsMap({
       getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString4Heat"),
     ),
     "aft-string-5.1": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString51Heat"),
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString5_1Heat"),
     ),
     "aft-string-5.2": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString52Heat"),
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString5_2Heat"),
     ),
     "aft-string-6.1": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString61Heat"),
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString6_1Heat"),
     ),
     "aft-string-6.2": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString62Heat"),
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString6_2Heat"),
     ),
     "aft-string-7.1": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString71Heat"),
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString7_1Heat"),
     ),
     "aft-string-7.2": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString72Heat"),
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString7_2Heat"),
     ),
     "aft-string-8.1": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString81Heat"),
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString8_1Heat"),
     ),
     "aft-string-8.2": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString82Heat"),
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString8_2Heat"),
     ),
     "aft-string-9": toPvtString(
       getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString9Heat"),
@@ -75,10 +69,10 @@ export const PVT_STRING_DATA = toFieldsMap({
       getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString10Heat"),
     ),
     "aft-string-11.1": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString111Heat"),
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString11_1Heat"),
     ),
     "aft-string-11.2": toPvtString(
-      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString112Heat"),
+      getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString11_2Heat"),
     ),
     "aft-string-12": toPvtString(
       getField(SensorComponentType.HeatTransferDevice, "pvt", "pvtMainString12Heat"),

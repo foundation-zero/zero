@@ -6,16 +6,16 @@ import { getField } from "../../../providers";
 
 export const THRUSTERS_ASSET_DATA = toFieldsMap({
   [MimicComponentType.Thruster]: {
-    "9001-01": toInstance<MimicComponentType.Thruster>({
+    "15001002": toInstance<MimicComponentType.Thruster>({
       controls: {},
       controllerState: {},
       custom: {
         titleKey: "fwdTitle",
       },
       parameters: {},
-      source: getField(SensorComponentType.Thruster, "thrusters", "thrustersThrusterFwd"),
+      source: getField(SensorComponentType.Thruster, "thrusters", "placeholder"),
       sensors: {
-        pcs: getField(SensorComponentType.Pcs, "thrusters", "thrustersPcs"),
+        pcs: getField(SensorComponentType.Pcs, "thrusters", "placeholder"),
         heatTransfer: getField(
           SensorComponentType.HeatTransferDevice,
           "thrusters",
@@ -29,17 +29,17 @@ export const THRUSTERS_ASSET_DATA = toFieldsMap({
         });
       },
     }),
-    "9002-01": toInstance<MimicComponentType.Thruster>({
+    "15001001": toInstance<MimicComponentType.Thruster>({
       controls: {},
       controllerState: {},
       custom: {
         titleKey: "aftTitle",
       },
       parameters: {},
-      source: getField(SensorComponentType.Thruster, "thrusters", "thrustersThrusterAft"),
+      source: getField(SensorComponentType.Thruster, "thrusters", "placeholder"),
 
       sensors: {
-        pcs: getField(SensorComponentType.Pcs, "thrusters", "thrustersPcs"),
+        pcs: getField(SensorComponentType.Pcs, "thrusters", "placeholder"),
         heatTransfer: getField(
           SensorComponentType.HeatTransferDevice,
           "thrusters",
