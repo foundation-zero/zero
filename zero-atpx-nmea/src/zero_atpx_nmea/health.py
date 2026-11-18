@@ -1,4 +1,5 @@
-"""`/health` for the readiness probe (docs/adr/0001-dependency-outages.md).
+"""`/health` and `/live` for the readiness and liveness probes
+(docs/adr/0001-dependency-outages.md).
 
 The reason a pod is not ready is in zmqtt's log, which names the broker.
 """
@@ -27,3 +28,10 @@ def make_health_asgi(*brokers: MQTTBroker) -> HttpHandler:
         return AsgiResponse(b"", 204 if ready else 500)
 
     return health
+
+
+@get(include_in_schema=False)
+async def live(scope: object) -> AsgiResponse:
+    """204 whenever it gets to run: the liveness probe restarts a pod whose
+    event loop is stuck. It checks no dependency (ADR 0001)."""
+    return AsgiResponse(b"", 204)

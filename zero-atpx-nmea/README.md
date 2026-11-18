@@ -27,7 +27,9 @@ ours. The service reconnects without a limit, at most 30 s apart. It exits after
 doesn't retry, so Kubernetes restarts it.
 
 `GET /health` on port 8080 returns 204 while both brokers answer a ping, and
-500 otherwise. The pod is ready only while it returns 204.
+500 otherwise. The pod is ready only while it returns 204. `GET /live` returns
+204 whenever the event loop runs; the liveness probe restarts a pod whose loop
+is stuck.
 
 ## Consumer contract (AsyncAPI specification)
 

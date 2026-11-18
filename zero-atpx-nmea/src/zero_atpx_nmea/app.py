@@ -14,7 +14,7 @@ from faststream.asgi import AsgiFastStream
 from faststream.mqtt import MQTTMessage, QoS
 from zmqtt import MQTTDisconnectedError
 
-from zero_atpx_nmea.health import make_health_asgi
+from zero_atpx_nmea.health import live, make_health_asgi
 from zero_atpx_nmea.parser import parse
 from zero_atpx_nmea.settings import InputMqttSettings, OutputMqttSettings
 
@@ -83,6 +83,9 @@ def build_app(
     return AsgiFastStream(
         output_broker,
         input_broker,
-        asgi_routes=[("/health", make_health_asgi(input_broker, output_broker))],
+        asgi_routes=[
+            ("/health", make_health_asgi(input_broker, output_broker)),
+            ("/live", live),
+        ],
         on_shutdown=[stop_input_broker],
     )

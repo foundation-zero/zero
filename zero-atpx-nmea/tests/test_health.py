@@ -6,7 +6,7 @@ import pytest
 from faststream.asgi import HttpHandler
 from faststream.mqtt import MQTTBroker
 
-from zero_atpx_nmea.health import make_health_asgi
+from zero_atpx_nmea.health import live, make_health_asgi
 
 
 def broker(*, answers: bool) -> MQTTBroker:
@@ -40,3 +40,7 @@ async def test_ready_only_while_both_brokers_answer(
     )
 
     assert await get_status(health) == status
+
+
+async def test_live_without_checking_the_brokers() -> None:
+    assert await get_status(live) == 204
