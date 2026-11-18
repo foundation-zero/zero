@@ -8,7 +8,7 @@ import urllib.parse
 import urllib.request
 import zipfile
 from collections import defaultdict
-from datetime import date, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import NamedTuple
 from zoneinfo import ZoneInfo
@@ -602,11 +602,18 @@ def total(values: list[float | None]) -> float:
     return sum(value for value in values if value is not None)
 
 
+def energy_unit(bus: str) -> tuple[str, float]:
+    return ("Wh", 1000.0) if bus == "24V" else ("kWh", 1.0)
+
+
 def write_csv(path: Path, period: Period, series: list[Series]) -> None:
     with path.open("w", newline="") as handle:
         writer = csv.writer(handle)
         writer.writerow(
-            ["time (ship time)", *[f"{item.header} [kWh]" for item in series]]
+            [
+                "time (ship time)",
+                *[f"{item.header} [{energy_unit(item.bus)[0]}]" for item in series],
+            ]
         )
         for index, hour in enumerate(period.hours):
             writer.writerow(
@@ -615,7 +622,7 @@ def write_csv(path: Path, period: Period, series: list[Series]) -> None:
                     *[
                         ""
                         if (value := period.values[item][index]) is None
-                        else f"{value:.3f}"
+                        else f"{value * energy_unit(item.bus)[1]:.3f}"
                         for item in series
                     ],
                 ]
@@ -657,17 +664,21 @@ def chart_groups(
 
 
 def chart_lines(
-    period: Period, group: dict[str, list[Series]]
+    period: Period, chart: str, group: dict[str, list[Series]]
 ) -> dict[str, list[float | None]]:
+    scale = energy_unit(chart.split(" ")[0])[1]
     other = [
-        sum(period.values[item][index] or 0 for item in group["other"])
+        scale * sum(period.values[item][index] or 0 for item in group["other"])
         for index in range(len(period.hours))
     ]
     return {
         **{
             (
                 item.label if not item.direction else f"{item.label} ({item.direction})"
-            ): period.values[item]
+            ): [
+                None if value is None else value * scale
+                for value in period.values[item]
+            ]
             for item in group["top"]
         },
         **(
@@ -711,7 +722,7 @@ def write_png(
         ha="right",
         fontsize=8,
     )
-    axes.set_ylabel("kWh per hour")
+    axes.set_ylabel(f"{energy_unit(title.split(' ')[0])[0]} per hour")
     axes.set_title(f"{CHART_TITLES[title]} — {period.label}")
     axes.grid(alpha=0.3)
     axes.legend(fontsize=7, loc="upper left", bbox_to_anchor=(1.01, 1))
@@ -747,7 +758,10 @@ def missing_devices(series: list[Series], periods: list[Period]) -> list[str]:
         "24V: not all 24V consumption is measured. Many outgoing groups have no Leuze module; on 14E1 about 36 A of the 61 A from the power supplies passes no Leuze module (7–8 Nov).",
         "24V: most Leuze modules on 14E2 and 14E3 read 0 mA, also where the module is switched on (e.g. AIS 14e2-60f01, autopilot 14e2-61f01, gyrocompass 2 14e2-63f01), while the 14E2 power supplies deliver about 32 A.",
         *sorted(
-            {f"{item.bus} | {item.label}: no data in any weekend." for item in no_data}
+            {
+                f"{item.bus} | {item.label}: no data in any weekend; {history_note(series_by_label(series, item.bus, item.label))}."
+                for item in no_data
+            }
         ),
         *sorted(
             {
@@ -758,7 +772,7 @@ def missing_devices(series: list[Series], periods: list[Period]) -> list[str]:
         ),
         *sorted(
             {
-                f"{bus} | {label}: reads 0 throughout."
+                f"{bus} | {label}: reads 0 in all three weekends; {history_note(series_by_label(series, bus, label))}."
                 for (bus, label), energy in device_energy(
                     series, periods, no_data
                 ).items()
@@ -769,6 +783,89 @@ def missing_devices(series: list[Series], periods: list[Period]) -> list[str]:
     return sorted(
         points, key=lambda point: BUSES.index(point.split(" ")[0].rstrip(":"))
     )
+
+
+def series_by_label(series: list[Series], bus: str, label: str) -> list[Series]:
+    return [item for item in series if item.bus == bus and item.label == label]
+
+
+def history_sources(item: Series) -> list[tuple[str, str, str]]:
+    kind, _, ident = item.key.partition(":")
+    epic_tables = {
+        "02-71-t101": "350v_conv_aft_1",
+        "02-71-t102": "350v_conv_aft_2",
+        "02-72-t101": "350v_conv_fwd_1",
+        "02-72-t102": "350v_conv_fwd_2",
+    }
+    sources = {
+        "powertag": [("power_tags", f"topic = '{ident}'", "active_power_total")],
+        "leuze": [
+            (
+                "marpower__450000_24vdc_system",
+                f"topic = 'marpower/450000-24vdc-system/{ident}'",
+                "output_current__value",
+            )
+        ],
+        "weidmuller": [
+            (
+                "marpower__450000_24vdc_system",
+                f"topic = 'marpower/450000-24vdc-system/conv/{ident}'",
+                "power__value",
+            )
+        ],
+        "brightloop-in": [
+            (
+                "marpower__450000_main_power_storage_errors",
+                f"topic = 'marpower/450000-main-power-storage-errors/{ident[1:]}'",
+                "pv_power__value",
+            )
+        ],
+        "shore": [
+            (
+                "marpower__450000_dc_distribution_esi",
+                f"topic = 'marpower/450000-dc-distribution-esi/{ident}'",
+                "esi_ac_bus_active_power_3_phase__value",
+            )
+        ],
+        "epic-in": [
+            (
+                "marpower__busbar",
+                f"topic = 'marpower/busbar/epc-{ident[3:]}'",
+                "hvdc_power__value",
+            ),
+            (
+                f"marpower__450000_dc_distribution__{epic_tables.get(ident, '')}",
+                "true",
+                "hvdc_power__value",
+            ),
+        ],
+    }
+    same_device = {"brightloop-out": "brightloop-in", "epic-out": "epic-in"}
+    return sources.get(same_device.get(kind, kind), [])
+
+
+def history_note(items: list[Series]) -> str:
+    sources = [source for item in items for source in history_sources(item)]
+    rows = [
+        row
+        for table, condition, column in sources
+        for row in query(
+            f"SELECT min(timestamp), max(timestamp), max(CASE WHEN abs({column}) > 1 THEN timestamp END) FROM {table} WHERE {condition}"
+        )
+    ]
+    first = [row[0] for row in rows if row[0] is not None]
+    last_nonzero = [row[2] for row in rows if row[2] is not None]
+    if not first:
+        return "never published"
+    if last_nonzero:
+        return f"last reading above 0 on {history_date(max(last_nonzero))}"
+    return f"has read 0 ever since it started publishing on {history_date(min(first))}"
+
+
+def history_date(timestamp: int) -> str:
+    seconds = timestamp / 1e9 if timestamp > 1e14 else timestamp / 1e3
+    moment = datetime.fromtimestamp(seconds, tz=UTC)
+    return f"{moment.day} {moment:%b %Y}"
 
 
 def device_energy(
@@ -874,13 +971,16 @@ def device_rows(series: list[Series]) -> list[tuple[str, str, str, str]]:
 
 METHOD = [
     "Source: GreptimeDB on board Zero (raw MQTT messages), tables from before the 450000 topic change of 17 Nov 2026. Device names and technical names follow the 450000 device metadata.",
-    "Each value is the mean of all power samples in the hour, in kW, which equals the energy in kWh for that hour. Times are ship time (CET, UTC+1); a weekend runs Saturday 00:00 to Monday 00:00.",
+    "Each value is the mean of all power samples in the hour, in kW (W for 24 V), which equals the energy in kWh (Wh for 24 V) for that hour. Times are ship time (CET, UTC+1); a weekend runs Saturday 00:00 to Monday 00:00.",
     "Average: for each hour of the day, the mean over the six days of the three weekends.",
     "uGrid inverters (05-11-u101, 05-12-u101), Brightloops and shore converters publish kW; multiplied by 1000 to W.",
     "Brightloops: pv_power has no sign. Each sample counts as 'to battery' while that pack's charging flag is set, and as 'from battery' otherwise.",
     "Epic converters, 700 V side: hvdc_power in W (hvdc_voltage × hvdc_current matches hvdc_power). Positive samples count as 'to 350V', negative as 'from 350V'. Until 5 Nov the converters published on marpower/busbar/epc-*, after that on the 450000 tables; both are used.",
     "DC switches: P = DcvS0 × DccS0, with DccS0 taken as A (the IO list gives no scale). These are flows along the 700 V bus, not consumption. Positive and negative current are split per sample. On 5 Nov, with the aft thrusters running, 05-72 went positive and 05-74 negative in step with thruster power: the sign shows the direction of flow along the bus.",
     "400 V: power tags, W. Feeders 10P0-1 135Q01 (to 10P1) and 10P0-3 335Q01 (to 10P2) are left out because the 10P1 and 10P2 circuits are measured individually. 10P0-3 336Q01 (to 10P3) is kept as the only measurement of 10P3.",
+    "400 V supply: uGrid AC meters 10P0-1 100Q01 and 10P0-3 300Q01, total active power measured on the 400 V AC side of each uGrid.",
+    "24 V supply: Weidmuller power supplies, power measured at their 24 V output (about 27–28 V).",
+    "Suppliers are drawn below zero in the charts; that sign is a chart convention, not the measured sign. The CSV files give all values as positive energy with the direction in the column name.",
     "24 V: Leuze modules publish output current in mA; power = current / 1000 × the hourly mean output voltage of the bus's power supplies (14E1 supplies for 14E1; 14E2 supplies for 14E2 and 14E3).",
     "350 V: Epic converter output, lvdc_voltage × lvdc_current (W), per converter.",
     "Propulsion drives and solar converters are not included.",
@@ -905,7 +1005,8 @@ def write_html(
             "label": period.label,
             "hours": period.hours,
             "charts": {
-                chart: chart_lines(period, group) for chart, group in groups.items()
+                chart: chart_lines(period, chart, group)
+                for chart, group in groups.items()
             },
         }
         for period in periods
@@ -914,6 +1015,7 @@ def write_html(
         *[
             {
                 "title": BUS_TITLES[bus],
+                "unit": energy_unit(bus)[0],
                 "bars": [
                     panel
                     for panel in (f"{bus} consumers", f"{bus} suppliers")
@@ -922,7 +1024,7 @@ def write_html(
             }
             for bus in BUSES
         ],
-        {"title": CHART_TITLES[SWITCH_PANEL], "lines": SWITCH_PANEL},
+        {"title": CHART_TITLES[SWITCH_PANEL], "unit": "kWh", "lines": SWITCH_PANEL},
     ]
     devices = "".join(
         f"<tr><td>{escape(bus)}</td><td>{escape(name)}</td><td>{escape(technical)}</td><td>{escape(source)}</td></tr>"
@@ -951,7 +1053,7 @@ table {{ border-collapse: collapse; width: 100%; font-size: 12px; }} td, th {{ b
 ul {{ padding-left: 18px; }} .note {{ font-size: 12px; }}
 </style></head><body>
 <h1>S/Y Zero — electrical energy per consumer, weekends Oct–Nov 2026</h1>
-<p class="note">Hourly energy (kWh) per device on the 700 V, 400 V, 350 V and 24 V buses. Consumers are stacked above zero, suppliers below zero. Each side shows its {TOP_SERIES_PER_CHART} largest devices; the rest are summed as "other". All devices are in the CSV files.</p>
+<p class="note">Hourly energy per device (kWh; 24 V in Wh) on the 700 V, 400 V, 350 V and 24 V buses. Consumers are stacked above zero, suppliers below zero. Each side shows its {TOP_SERIES_PER_CHART} largest devices; the rest are summed as "other". All devices are in the CSV files.</p>
 <div class="controls"><div class="group">{period_buttons}</div><div class="group" id="days"><button data-day="both">Sat + Sun</button><button data-day="sat">Saturday</button><button data-day="sun">Sunday</button></div></div>
 {sections}
 <h2>Calculations and corrections</h2><ul>{"".join(f"<li>{escape(item)}</li>" for item in METHOD)}</ul>
@@ -974,19 +1076,19 @@ function render() {{
     const traces = lines
       ? Object.entries(period.charts[chart.lines]).map(([name, values]) => ({{
           x: hours, y: values.slice(...range), name, type: "scatter", mode: "lines", line: {{ shape: "hv", width: 1.5 }},
-          hovertemplate: "%{{y:.2f}} kWh<extra>%{{fullData.name}}</extra>",
+          hovertemplate: `%{{y:.2f}} ${{chart.unit}}<extra>%{{fullData.name}}</extra>`,
         }}))
       : chart.bars.flatMap(panel => {{
           const sign = panel.endsWith("suppliers") ? -1 : 1;
           return Object.entries(period.charts[panel]).map(([name, values]) => ({{
             x: hours, y: values.slice(...range).map(value => value === null ? null : sign * value), name: sign < 0 && !name.endsWith(")") ? `${{name}} (supply)` : name,
-            type: "bar", legendgroup: panel, hovertemplate: "%{{fullData.name}}<br>%{{x}}<br>%{{y:.2f}} kWh<extra></extra>",
+            type: "bar", legendgroup: panel, hovertemplate: `%{{fullData.name}}<br>%{{x}}<br>%{{y:.2f}} ${{chart.unit}}<extra></extra>`,
           }}));
         }});
     Plotly.react(`chart-${{index}}`, traces, {{
       barmode: "relative", bargap: 0.05,
       margin: {{ l: 56, r: 8, t: 8, b: 48 }}, hovermode: lines ? "x unified" : "closest", paper_bgcolor: "#fff", plot_bgcolor: "#fff",
-      yaxis: {{ title: lines ? "kWh per hour" : "kWh per hour (consumers up, suppliers down)", gridcolor: "#ddd", zerolinecolor: "#000" }},
+      yaxis: {{ title: lines ? `${{chart.unit}} per hour` : `${{chart.unit}} per hour (consumers up, suppliers down)`, gridcolor: "#ddd", zerolinecolor: "#000" }},
       xaxis: {{ gridcolor: "#eee", type: isAverage ? "category" : "date" }},
       legend: {{ font: {{ size: 10 }} }}, font: {{ color: "#000" }},
     }}, {{ displaylogo: false, responsive: true }});
@@ -1040,7 +1142,7 @@ def main() -> None:
     for path, (period, chart) in zip(
         png_paths, [(period, chart) for period in periods for chart in groups]
     ):
-        write_png(path, chart, period, chart_lines(period, groups[chart]))
+        write_png(path, chart, period, chart_lines(period, chart, groups[chart]))
     html_path = OUT / "report.html"
     write_html(
         html_path,
