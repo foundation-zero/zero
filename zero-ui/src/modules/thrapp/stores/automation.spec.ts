@@ -56,9 +56,10 @@ describe("automation store", () => {
         controller: {
           dhw: {
             automationMode: { mode: "AUTOMATIC" },
-            controlMode: { automaticMode: { boostingMode: "idle", fillingMode: "filling" } },
+            controlMode: { boostingMode: "idle", fillingMode: "filling" },
           },
-          thrusters: { automationMode: { mode: "MANUAL" }, controlMode: { automaticMode: null } },
+          // A control mode left over from before the switch to manual.
+          thrusters: { automationMode: { mode: "MANUAL" }, controlMode: { mode: "warmup" } },
           consumers: { automationMode: { mode: "AUTOMATIC" } },
         },
       },
