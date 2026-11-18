@@ -7,9 +7,14 @@ from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.classes.persistence.engine import NoopPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
-from thrs.control.modules.thrusters import (
-    ThrustersAlarms,
-    ThrustersControl,
+from thrs.control.modules.thrusters.control import ThrustersAlarms, ThrustersControl
+from thrs.control.modules.thrusters.io import (
+    ThrustersControlValues,
+    ThrustersSensorValues,
+    ThrustersSimulationInputs,
+    ThrustersSimulationOutputs,
+)
+from thrs.control.modules.thrusters.state import (
     ThrustersControllerState,
     ThrustersParameters,
 )
@@ -17,12 +22,6 @@ from thrs.control.switching import AutomationMode
 from thrs.input_output.base import CombinedValues, Stamped
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
-from thrs.input_output.modules.thrusters import (
-    ThrustersControlValues,
-    ThrustersSensorValues,
-    ThrustersSimulationInputs,
-    ThrustersSimulationOutputs,
-)
 from thrs.orchestration.module import Module
 from thrs.orchestration.simulation import Simulation, SimulationUnit
 from thrs.runtime.descriptions.simulation import SIMULATION_INPUTS

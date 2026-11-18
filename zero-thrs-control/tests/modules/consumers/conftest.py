@@ -4,9 +4,14 @@ from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.control.modules.consumers import (
-    ConsumersAlarms,
-    ConsumersControl,
+from thrs.control.modules.consumers.control import ConsumersAlarms, ConsumersControl
+from thrs.control.modules.consumers.io import (
+    ConsumersControlValues,
+    ConsumersSensorValues,
+    ConsumersSimulationInputs,
+    ConsumersSimulationOutputs,
+)
+from thrs.control.modules.consumers.state import (
     ConsumersControllerState,
     ConsumersControlMode,
     ConsumersParameters,
@@ -14,12 +19,6 @@ from thrs.control.modules.consumers import (
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
-from thrs.input_output.modules.consumers import (
-    ConsumersControlValues,
-    ConsumersSensorValues,
-    ConsumersSimulationInputs,
-    ConsumersSimulationOutputs,
-)
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import consumers_path

@@ -1,16 +1,16 @@
 from tests.modules.conftest import compare_fmu_to_classes
 from tests.modules.pcm.test_io import PCM_IGNORED_FMU_CHARGED_OUTPUTS
-from thrs.input_output.modules.consumers import (
+from thrs.control.modules.consumers.io import (
     ConsumersControlValues,
     ConsumersSensorValues,
 )
-from thrs.input_output.modules.high_temperature import (
+from thrs.control.modules.high_temperature.io import (
     HighTemperatureSimulationInputs,
     HighTemperatureSimulationOutputs,
 )
-from thrs.input_output.modules.pcm import PcmControlValues, PcmSensorValues
-from thrs.input_output.modules.pvt import PvtControlValues, PvtSensorValues
-from thrs.input_output.modules.thrusters import (
+from thrs.control.modules.pcm.io import PcmControlValues, PcmSensorValues
+from thrs.control.modules.pvt.io import PvtControlValues, PvtSensorValues
+from thrs.control.modules.thrusters.io import (
     ThrustersControlValues,
     ThrustersSensorValues,
 )

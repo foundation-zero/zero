@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 
 from thrs.control.controllers import PcmChargeController
-from thrs.control.modules.pcm import PcmControllerState
+from thrs.control.modules.pcm.state import PcmControllerState
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions import sensor
 from thrs.input_output.definitions.controllers import PcmChargingState

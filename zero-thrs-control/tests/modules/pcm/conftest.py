@@ -6,9 +6,14 @@ from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.control.modules.pcm import (
-    PcmAlarms,
-    PcmControl,
+from thrs.control.modules.pcm.control import PcmAlarms, PcmControl
+from thrs.control.modules.pcm.io import (
+    PcmControlValues,
+    PcmSensorValues,
+    PcmSimulationInputs,
+    PcmSimulationOutputs,
+)
+from thrs.control.modules.pcm.state import (
     PcmControllerState,
     PcmControlMode,
     PcmParameters,
@@ -17,12 +22,6 @@ from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.simulation import Boundary, TemperatureBoundary
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
-from thrs.input_output.modules.pcm import (
-    PcmControlValues,
-    PcmSensorValues,
-    PcmSimulationInputs,
-    PcmSimulationOutputs,
-)
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu, FmuLike
 from thrs.simulation.models.fmu_paths import pcm_path

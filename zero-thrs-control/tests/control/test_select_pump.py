@@ -1,4 +1,4 @@
-from thrs.input_output.modules.thrusters import ThrustersSensorValues
+from thrs.control.modules.thrusters.io import ThrustersSensorValues
 
 
 def test_activate_pump(thrusters_control):

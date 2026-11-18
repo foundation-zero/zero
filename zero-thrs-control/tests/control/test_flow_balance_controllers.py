@@ -1,5 +1,5 @@
-from thrs.control.modules.thrusters import ThrustersControl
-from thrs.input_output.modules.thrusters import ThrustersSensorValues
+from thrs.control.modules.thrusters.control import ThrustersControl
+from thrs.control.modules.thrusters.io import ThrustersSensorValues
 
 
 def test_all_valves_active(thrusters_control: ThrustersControl):

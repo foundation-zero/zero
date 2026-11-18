@@ -4,7 +4,13 @@ from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.control.modules.dc import DcAlarms, DcControl, DcParameters
+from thrs.control.modules.dc.control import DcAlarms, DcControl
+from thrs.control.modules.dc.io import (
+    DcSensorValues,
+    DcSimulationInputs,
+    DcSimulationOutputs,
+)
+from thrs.control.modules.dc.state import DcParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
     ActiveHeatSource,
@@ -12,11 +18,6 @@ from thrs.input_output.definitions.simulation import (
     Ugrid,
 )
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
-from thrs.input_output.modules.dc import (
-    DcSensorValues,
-    DcSimulationInputs,
-    DcSimulationOutputs,
-)
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import dc_path

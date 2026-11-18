@@ -1,102 +1,32 @@
 from collections.abc import Callable
 from datetime import datetime
-from typing import Annotated, Literal, NoReturn
+from typing import Literal, NoReturn
 
-from pydantic import model_validator
 from transitions import Machine, State
 
-from thrs.classes.control import Control, ControlMode
+from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import FlowBalanceController, PidController
+from thrs.control.modules.thrusters.io import (
+    ThrustersControlValues,
+    ThrustersSensorValues,
+)
+from thrs.control.modules.thrusters.state import (
+    ThrustersControllerState,
+    ThrustersControlMode,
+    ThrustersParameters,
+)
 from thrs.db.models.machine_state import (
     MachineStateEvent,
 )
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
-from thrs.input_output.base import Stamped, ThrsValues, component_meta
+from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Pump, Valve
-from thrs.input_output.definitions.controllers import PidControllerValues
-from thrs.input_output.definitions.units import Celsius, LMin, PcsMode, Ratio, Tuning
-from thrs.input_output.modules.thrusters import (
-    ThrustersControlValues,
-    ThrustersSensorValues,
-)
+from thrs.input_output.definitions.units import Celsius, LMin, PcsMode, Ratio
 from thrs.orchestration.module import ModuleDescription
 
 RECOVERY_MIX_UPPER_BOUND: Ratio = 0.2
 RECOVERY_MIX_LOWER_BOUND: Ratio = 0.05
-
-
-class ThrustersControlMode(ControlMode):
-    mode: str
-
-    @property
-    def is_idle(self) -> bool:
-        return self.mode == "idle"
-
-    @property
-    def is_warmup(self) -> bool:
-        return self.mode == "warmup"
-
-    @property
-    def is_recovery(self) -> bool:
-        return self.mode == "recovery"
-
-
-class ThrustersControllerState(ThrsValues):
-    thrusters_heat_dump_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    thrusters_warmup_mix_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    thrusters_pump_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    thrusters_aft_recovery_temperature_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    thrusters_fwd_recovery_temperature_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    thrusters_aft_flow_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    thrusters_fwd_flow_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-
-
-class ThrustersParameters(ThrsValues):
-    maximum_supply_temperature: Celsius = 75
-    cooling_temperature: Celsius = 38
-    cooling_flow: LMin = 25
-    recovery_temperature: Celsius = 65
-    warmup_temperature: Celsius = 60
-    thrusters_minimum_flow: LMin = 5
-    thrusters_maximum_flow: LMin = 30
-    pump_tuning: Tuning = (0.01, 0.001, 0)
-    warmup_mix_tuning: Tuning = (-0.05, -0.001, 0)
-    heat_dump_tuning: Tuning = (0.05, 0.01, 0)
-    aft_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
-    fwd_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
-    aft_temperature_tuning: Tuning = (-0.01, -0.001, 0)
-    fwd_temperature_tuning: Tuning = (-0.01, -0.001, 0)
-
-    @model_validator(mode="after")
-    def check_temperature_setpoints(self):
-        if self.maximum_supply_temperature < self.recovery_temperature:
-            raise ValueError(
-                "Maximum recovery temperature must be greater than recovery temperature"
-            )
-        if self.recovery_temperature < self.warmup_temperature:
-            raise ValueError(
-                "Recovery temperature must be greater than warmup temperature"
-            )
-        if self.warmup_temperature < self.cooling_temperature:
-            raise ValueError(
-                "Warmup temperature must be greater than cooling temperature"
-            )
-        return self
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ThrustersControlValues:  # noqa: N802

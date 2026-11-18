@@ -20,14 +20,14 @@ from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.classes.persistence.engine import InMemoryPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
-from thrs.control.modules.adsorption import ADSORPTION_MODULE_DESCRIPTION
-from thrs.control.modules.consumers import CONSUMERS_MODULE_DESCRIPTION
-from thrs.control.modules.dc import DC_MODULE_DESCRIPTION
-from thrs.control.modules.dhw import DHW_MODULE_DESCRIPTION
-from thrs.control.modules.drives import DRIVES_MODULE_DESCRIPTION
-from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
-from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
-from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
+from thrs.control.modules.adsorption.control import ADSORPTION_MODULE_DESCRIPTION
+from thrs.control.modules.consumers.control import CONSUMERS_MODULE_DESCRIPTION
+from thrs.control.modules.dc.control import DC_MODULE_DESCRIPTION
+from thrs.control.modules.dhw.control import DHW_MODULE_DESCRIPTION
+from thrs.control.modules.drives.control import DRIVES_MODULE_DESCRIPTION
+from thrs.control.modules.pcm.control import PCM_MODULE_DESCRIPTION
+from thrs.control.modules.pvt.control import PVT_MODULE_DESCRIPTION
+from thrs.control.modules.thrusters.control import THRUSTERS_MODULE_DESCRIPTION
 from thrs.orchestration.module import Module, ModuleDescription
 
 ALL_MODULE_DESCRIPTIONS: dict[str, ModuleDescription] = {

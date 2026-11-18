@@ -92,14 +92,14 @@ def test_operation_key_generation(topic: Mock, expected: str):
 
 
 def test_message_key_standard_class():
-    assert _message_key(SimplePayload) == "test_asyncapiSimplePayload"
+    assert _message_key(SimplePayload) == "SimplePayload"
 
 
 def test_message_key_removes_brackets():
     class MockGeneric[T](ThrsValues):
         pass
 
-    assert _message_key(MockGeneric[int]) == "test_asyncapiMockGenericint"
+    assert _message_key(MockGeneric[int]) == "MockGenericint"
 
 
 def test_build_asyncapi_top_level_metadata():
@@ -178,8 +178,8 @@ def test_build_asyncapi_message_deduplication(sample_topics: list[TopicMapping])
 
     # SimplePayload is shared between actuators/valve and sensors/pressure
     expected_message_keys = {
-        "test_asyncapiSimplePayload",
-        "test_asyncapiComplexPayload",
+        "SimplePayload",
+        "ComplexPayload",
     }
     assert set(doc.components.messages.root.keys()) == expected_message_keys
 

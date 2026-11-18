@@ -1,9 +1,10 @@
 from pytest import approx
 
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.control.modules.drives import DrivesControl, DrivesParameters
+from thrs.control.modules.drives.control import DrivesControl
+from thrs.control.modules.drives.io import DrivesSensorValues, DrivesSimulationInputs
+from thrs.control.modules.drives.state import DrivesParameters
 from thrs.input_output.definitions.control import Valve
-from thrs.input_output.modules.drives import DrivesSensorValues, DrivesSimulationInputs
 
 
 def test_idle(
