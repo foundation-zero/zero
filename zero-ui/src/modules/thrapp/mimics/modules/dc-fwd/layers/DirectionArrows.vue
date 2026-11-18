@@ -1,0 +1,72 @@
+<script setup lang="ts">
+import LayerFilter from "../../../components/layer-filter/LayerFilter.vue";
+import { LayerFilterOption } from "../../../components/layer-filter/layer-filter.provider";
+</script>
+
+<template>
+  <LayerFilter :filter="LayerFilterOption.DirectionArrows">
+    <defs>
+      <marker
+        id="dc-fwd-dir-arrow"
+        markerWidth="6"
+        markerHeight="7"
+        refX="3.5"
+        refY="3.5"
+        orient="auto"
+        markerUnits="userSpaceOnUse"
+      >
+        <path
+          d="M0.75 0.75L4.25 3.5L0.75 6.25"
+          class="stroke-flows-pipe-arrow"
+          fill="none"
+          stroke-width="1"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </marker>
+    </defs>
+    <g
+      class="stroke-flows-pipe-arrow"
+      stroke-width="1"
+      fill="none"
+      marker-end="url(#dc-fwd-dir-arrow)"
+    >
+      <line
+        x1="385"
+        y1="53"
+        x2="445"
+        y2="53"
+      />
+      <line
+        x1="445"
+        y1="173"
+        x2="385"
+        y2="173"
+      />
+      <line
+        x1="385"
+        y1="272"
+        x2="445"
+        y2="272"
+      />
+      <line
+        x1="781"
+        y1="272"
+        x2="841"
+        y2="272"
+      />
+      <line
+        x1="445"
+        y1="392"
+        x2="385"
+        y2="392"
+      />
+      <line
+        x1="841"
+        y1="392"
+        x2="781"
+        y2="392"
+      />
+    </g>
+  </LayerFilter>
+</template>

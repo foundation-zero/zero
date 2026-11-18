@@ -40,6 +40,15 @@ export const isInLegend = <Key extends LegendKey>(
   return (entry as string[]).includes(subType);
 };
 
+/** Shared by the converter group sub-mimics of the DC module. */
+const DC_GROUP_LEGEND: LegendMap = {
+  [MimicComponentType.ConnectingCircuit]: true,
+  [MimicComponentType.SwitchValve]: true,
+  [MimicComponentType.TemperatureSensor]: true,
+  [MimicComponentType.FlowSensor]: true,
+  [MimicComponentType.ManualValve]: [ManualValveType.Switch],
+};
+
 export const MIMIC_LEGEND_MAP: Partial<Record<MimicKey, LegendMap>> = {
   dhw: {
     [MimicComponentType.ExchangeCircuit]: true,
@@ -175,4 +184,7 @@ export const MIMIC_LEGEND_MAP: Partial<Record<MimicKey, LegendMap>> = {
     [MimicComponentType.FlowSensor]: true,
     [MimicComponentType.ManualValve]: [ManualValveType.Switch],
   },
+  "dc-aft": DC_GROUP_LEGEND,
+  "dc-ugrid": DC_GROUP_LEGEND,
+  "dc-fwd": DC_GROUP_LEGEND,
 };

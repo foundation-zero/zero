@@ -4,7 +4,14 @@ import { LayerFilterOption } from "@/modules/thrapp/mimics/components/layer-filt
 import { TypedDocumentNode } from "@urql/vue";
 import { Component, defineAsyncComponent } from "vue";
 
-export type MimicKey = keyof ThrsModules | "pvt-main" | "pvt-owners" | "pvt-main-heat";
+export type MimicKey =
+  | keyof ThrsModules
+  | "pvt-main"
+  | "pvt-owners"
+  | "pvt-main-heat"
+  | "dc-aft"
+  | "dc-ugrid"
+  | "dc-fwd";
 
 type LayerFilters = Partial<Record<LayerFilterOption, true>>;
 
@@ -90,6 +97,27 @@ export const MIMICS: Partial<Record<MimicKey, MimicDefinition>> = {
     ),
     query: Queries.DC_MIMIC_QUERY,
     layerFilters: BYPASS_FILTERS,
+  },
+  "dc-aft": {
+    component: defineAsyncComponent(
+      () => import("@/modules/thrapp/mimics/modules/dc-aft/DcAftModule.vue"),
+    ),
+    query: Queries.DC_SECTION_MIMIC_QUERY,
+    layerFilters: BASE_FILTERS,
+  },
+  "dc-ugrid": {
+    component: defineAsyncComponent(
+      () => import("@/modules/thrapp/mimics/modules/dc-ugrid/DcUgridModule.vue"),
+    ),
+    query: Queries.DC_SECTION_MIMIC_QUERY,
+    layerFilters: BASE_FILTERS,
+  },
+  "dc-fwd": {
+    component: defineAsyncComponent(
+      () => import("@/modules/thrapp/mimics/modules/dc-fwd/DcFwdModule.vue"),
+    ),
+    query: Queries.DC_SECTION_MIMIC_QUERY,
+    layerFilters: BASE_FILTERS,
   },
   adsorption: {
     component: defineAsyncComponent(

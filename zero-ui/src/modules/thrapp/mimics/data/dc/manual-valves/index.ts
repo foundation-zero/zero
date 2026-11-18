@@ -18,6 +18,15 @@ const manualValveTags = [
   "1170-03",
   "1167-13",
   "1068-22",
+  // Converter branches, shown in the group sub-mimics
+  "1067-01",
+  "1067-02",
+  "1067-03",
+  "1067-04",
+  "1067-05",
+  "1067-06",
+  "1168-10",
+  "1168-11",
 ];
 
 export const DC_MANUAL_VALVE_DATA = toFieldsMap({

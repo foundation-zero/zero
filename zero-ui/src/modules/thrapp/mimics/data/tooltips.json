@@ -40,7 +40,15 @@
     "1038-02": "TemperatureSensor/1038-02",
     "1038-03": "TemperatureSensor/1038-03",
     "1038-04": "TemperatureSensor/1038-04",
+    "1038-05": "TemperatureSensor/1038-05",
+    "1038-06": "TemperatureSensor/1038-06",
+    "1038-07": "TemperatureSensor/1038-07",
+    "1038-08": "TemperatureSensor/1038-08",
+    "1038-09": "TemperatureSensor/1038-09",
+    "1038-10": "TemperatureSensor/1038-10",
     "1038-11": "TemperatureSensor/1038-11",
+    "1038-12": "TemperatureSensor/1038-12",
+    "1038-13": "TemperatureSensor/1038-13",
     "1038-14": "TemperatureSensor/1038-14",
     "1038-15": "TemperatureSensor/1038-15",
     "1038-16": "TemperatureSensor/1038-16",
@@ -112,7 +120,15 @@
     "1056-02": "LevelSensor/1056-02",
     "1056-03": "LevelSensor/1056-03",
     "1057-03": "FlowSensor/1057-03",
+    "1057-04": "FlowSensor/1057-04",
+    "1057-05": "FlowSensor/1057-05",
+    "1057-06": "FlowSensor/1057-06",
+    "1057-07": "FlowSensor/1057-07",
+    "1057-08": "FlowSensor/1057-08",
+    "1057-09": "FlowSensor/1057-09",
     "1057-10": "FlowSensor/1057-10",
+    "1057-11": "FlowSensor/1057-11",
+    "1057-12": "FlowSensor/1057-12",
     "1057-13": "FlowSensor/1057-13",
     "1057-14": "FlowSensor/1057-14",
     "1057-15": "FlowSensor/1057-15",
@@ -171,7 +187,15 @@
     "1067-16": "SwitchValve/1067-16",
     "1067-17": "SwitchValve/1067-17",
     "1067-18": "SwitchValve/1067-18",
+    "1068-01": "SwitchValve/1068-01",
+    "1068-02": "SwitchValve/1068-02",
+    "1068-03": "SwitchValve/1068-03",
+    "1068-04": "SwitchValve/1068-04",
+    "1068-05": "SwitchValve/1068-05",
+    "1068-06": "SwitchValve/1068-06",
     "1069-01": "SwitchValve/1069-01",
+    "1069-02": "SwitchValve/1069-02",
+    "1069-03": "SwitchValve/1069-03",
     "1069-04": "SwitchValve/1069-04",
     "1069-05": "SwitchValve/1069-05",
     "1069-06": "SwitchValve/1069-06",
@@ -290,6 +314,10 @@
     "adsorption:adsorptionTemperatureWasteReturn": "TemperatureSensor/1038-38",
     "adsorption:adsorptionTemperatureWasteSupply": "TemperatureSensor/1038-39",
     "adsorption:dhwAdsorptionExchanger": "ExchangeCircuit/adsorption:domesticHotWater",
+    "aft-1": "PowerConverter/dc:aft-1",
+    "aft-2": "PowerConverter/dc:aft-2",
+    "aft-3": "PowerConverter/dc:aft-3",
+    "aft-4": "PowerConverter/dc:aft-4",
     "aft-string-1.1": "PvtString/pvt:aft-string-1.1",
     "aft-string-1.2": "PvtString/pvt:aft-string-1.2",
     "aft-string-10": "PvtString/pvt:aft-string-10",
@@ -310,11 +338,27 @@
     "aft-string-8.1": "PvtString/pvt:aft-string-8.1",
     "aft-string-8.2": "PvtString/pvt:aft-string-8.2",
     "aft-string-9": "PvtString/pvt:aft-string-9",
+    "dc:_5_11U101": "PowerConverter/dc:ugrid-1",
+    "dc:_5_12U101": "PowerConverter/dc:ugrid-2",
     "dc:aft": "DcConverter/dc:aft",
+    "dc:dcBrightloopAft1": "PowerConverter/dc:aft-1",
+    "dc:dcBrightloopAft2": "PowerConverter/dc:aft-2",
+    "dc:dcBrightloopAft3": "PowerConverter/dc:aft-3",
+    "dc:dcBrightloopAft4": "PowerConverter/dc:aft-4",
+    "dc:dcBrightloopFwd1": "PowerConverter/dc:fwd-1",
+    "dc:dcBrightloopFwd2": "PowerConverter/dc:fwd-2",
     "dc:dcDhwExchanger": "HeatExchanger/1008",
+    "dc:dcFlowAft1": "FlowSensor/1057-07",
+    "dc:dcFlowAft2": "FlowSensor/1057-06",
+    "dc:dcFlowAft3": "FlowSensor/1057-05",
+    "dc:dcFlowAft4": "FlowSensor/1057-04",
     "dc:dcFlowAftReturn": "FlowSensor/1057-25",
+    "dc:dcFlowFwd1": "FlowSensor/1057-12",
+    "dc:dcFlowFwd2": "FlowSensor/1057-11",
     "dc:dcFlowFwdReturn": "FlowSensor/1057-26",
     "dc:dcFlowRecovery": "FlowSensor/1058-04",
+    "dc:dcFlowUgrid1": "FlowSensor/1057-09",
+    "dc:dcFlowUgrid2": "FlowSensor/1057-08",
     "dc:dcFlowUgridReturn": "FlowSensor/1058-06",
     "dc:dcMixAft": "MixValve/1043-02",
     "dc:dcMixExchanger": "MixValve/1046-05",
@@ -328,14 +372,30 @@
     "dc:dcPumpFwd": "Pump/1025",
     "dc:dcPumpUgrid": "Pump/1023",
     "dc:dcSeawaterExchanger": "HeatExchanger/1006",
+    "dc:dcSwitchAft1": "SwitchValve/1068-04",
+    "dc:dcSwitchAft2": "SwitchValve/1068-03",
+    "dc:dcSwitchAft3": "SwitchValve/1068-02",
+    "dc:dcSwitchAft4": "SwitchValve/1068-01",
+    "dc:dcSwitchFwd1": "SwitchValve/1068-06",
+    "dc:dcSwitchFwd2": "SwitchValve/1068-05",
+    "dc:dcSwitchUgrid1": "SwitchValve/1069-03",
+    "dc:dcSwitchUgrid2": "SwitchValve/1069-02",
+    "dc:dcTemperatureAft1Return": "TemperatureSensor/1038-08",
+    "dc:dcTemperatureAft2Return": "TemperatureSensor/1038-07",
+    "dc:dcTemperatureAft3Return": "TemperatureSensor/1038-06",
+    "dc:dcTemperatureAft4Return": "TemperatureSensor/1038-05",
     "dc:dcTemperatureAftReturn": "TemperatureSensor/1038-20",
     "dc:dcTemperatureAftSupply": "TemperatureSensor/1038-15",
+    "dc:dcTemperatureFwd1Return": "TemperatureSensor/1038-13",
+    "dc:dcTemperatureFwd2Return": "TemperatureSensor/1038-12",
     "dc:dcTemperatureFwdReturn": "TemperatureSensor/1038-19",
     "dc:dcTemperatureFwdSupply": "TemperatureSensor/1038-69",
     "dc:dcTemperatureRecovery": "TemperatureSensor/1038-52",
     "dc:dcTemperatureRecoveryMix": "TemperatureSensor/1038-17",
     "dc:dcTemperatureRecoveryReturn": "TemperatureSensor/1038-58",
     "dc:dcTemperatureSupply": "TemperatureSensor/1038-18",
+    "dc:dcTemperatureUgrid1Return": "TemperatureSensor/1038-10",
+    "dc:dcTemperatureUgrid2Return": "TemperatureSensor/1038-09",
     "dc:dcTemperatureUgridReturn": "TemperatureSensor/1038-71",
     "dc:dcTemperatureUgridSupply": "TemperatureSensor/1038-70",
     "dc:dhwDcExchanger": "ExchangeCircuit/dc:domesticHotWater",
@@ -431,6 +491,8 @@
     "drives:pcsAftAra2": "PropulsionDrive/drives:propdriveAft2",
     "drives:pcsFwdAra1": "PropulsionDrive/drives:propdriveFwd1",
     "drives:pcsFwdAra2": "PropulsionDrive/drives:propdriveFwd2",
+    "fwd-1": "PowerConverter/dc:fwd-1",
+    "fwd-2": "PowerConverter/dc:fwd-2",
     "highTemperature": "ExchangeCircuit/adsorption:highTemperature",
     "highTempLoop": "ExchangeCircuit/dhw:highTempLoop",
     "owners": "ConnectingCircuit/pvt:owners",
@@ -634,7 +696,9 @@
     "thrusters:thrustersTemperatureAft": "TemperatureSensor/1038-01",
     "thrusters:thrustersTemperatureFwd": "TemperatureSensor/1038-02",
     "thrusters:thrustersTemperatureRecoveryMix": "TemperatureSensor/1038-30",
-    "thrusters:thrustersTemperatureSupply": "TemperatureSensor/1038-28"
+    "thrusters:thrustersTemperatureSupply": "TemperatureSensor/1038-28",
+    "ugrid-1": "PowerConverter/dc:ugrid-1",
+    "ugrid-2": "PowerConverter/dc:ugrid-2"
   },
   "contexts": {
     "AdsorptionChiller": {
@@ -1156,6 +1220,63 @@
       }
     },
     "ConnectingCircuit": {
+      "dc:aft": {
+        "custom": {
+          "circuitName": "DC converters",
+          "modeModule": "dc"
+        },
+        "source": [
+          "sensor:heatTransferDevice",
+          "dc",
+          "dcAftHeat",
+          null
+        ],
+        "tooltip": {
+          "title": "Connecting circuit",
+          "technicalName": "dc-aft-heat",
+          "mqttTopic": ".../dc-aft-heat",
+          "componentType": "DC/DC group 1 loop",
+          "yardTag": "dc:aft"
+        }
+      },
+      "dc:fwd": {
+        "custom": {
+          "circuitName": "DC converters",
+          "modeModule": "dc"
+        },
+        "source": [
+          "sensor:heatTransferDevice",
+          "dc",
+          "dcFwdHeat",
+          null
+        ],
+        "tooltip": {
+          "title": "Connecting circuit",
+          "technicalName": "dc-fwd-heat",
+          "mqttTopic": ".../dc-fwd-heat",
+          "componentType": "DC/DC group 2 loop",
+          "yardTag": "dc:fwd"
+        }
+      },
+      "dc:ugrid": {
+        "custom": {
+          "circuitName": "DC converters",
+          "modeModule": "dc"
+        },
+        "source": [
+          "sensor:heatTransferDevice",
+          "dc",
+          "dcUgridHeat",
+          null
+        ],
+        "tooltip": {
+          "title": "Connecting circuit",
+          "technicalName": "dc-ugrid-heat",
+          "mqttTopic": ".../dc-ugrid-heat",
+          "componentType": "DC/AC group 1 loop",
+          "yardTag": "dc:ugrid"
+        }
+      },
       "pcm:freshwater": {
         "custom": {
           "circuitName": "Fresh water"
@@ -1318,7 +1439,8 @@
               null
             ]
           ],
-          "group": "brightloopsAft"
+          "group": "brightloopsAft",
+          "mimic": "dc-aft"
         },
         "sensors": {
           "heatTransfer": [
@@ -1358,7 +1480,8 @@
               null
             ]
           ],
-          "group": "brightloopsFwd"
+          "group": "brightloopsFwd",
+          "mimic": "dc-fwd"
         },
         "sensors": {
           "heatTransfer": [
@@ -1398,7 +1521,8 @@
               null
             ]
           ],
-          "group": "ugrids"
+          "group": "ugrids",
+          "mimic": "dc-ugrid"
         },
         "sensors": {
           "heatTransfer": [
@@ -2198,6 +2322,96 @@
           "componentType": "Flow sensor"
         }
       },
+      "1057-04": {
+        "source": [
+          "sensor:flow",
+          "dc",
+          "dcFlowAft4",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-04",
+          "technicalName": "dc-flow-aft-4",
+          "mqttTopic": ".../dc-flow-aft-4",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-05": {
+        "source": [
+          "sensor:flow",
+          "dc",
+          "dcFlowAft3",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-05",
+          "technicalName": "dc-flow-aft-3",
+          "mqttTopic": ".../dc-flow-aft-3",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-06": {
+        "source": [
+          "sensor:flow",
+          "dc",
+          "dcFlowAft2",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-06",
+          "technicalName": "dc-flow-aft-2",
+          "mqttTopic": ".../dc-flow-aft-2",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-07": {
+        "source": [
+          "sensor:flow",
+          "dc",
+          "dcFlowAft1",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-07",
+          "technicalName": "dc-flow-aft-1",
+          "mqttTopic": ".../dc-flow-aft-1",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-08": {
+        "source": [
+          "sensor:flow",
+          "dc",
+          "dcFlowUgrid2",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-08",
+          "technicalName": "dc-flow-ugrid-2",
+          "mqttTopic": ".../dc-flow-ugrid-2",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-09": {
+        "source": [
+          "sensor:flow",
+          "dc",
+          "dcFlowUgrid1",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-09",
+          "technicalName": "dc-flow-ugrid-1",
+          "mqttTopic": ".../dc-flow-ugrid-1",
+          "componentType": "Flow sensor"
+        }
+      },
       "1057-10": {
         "source": [
           "sensor:flow",
@@ -2210,6 +2424,36 @@
           "yardTag": "1057-10",
           "technicalName": "drives-flow-shorepower",
           "mqttTopic": ".../drives-flow-shorepower",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-11": {
+        "source": [
+          "sensor:flow",
+          "dc",
+          "dcFlowFwd2",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-11",
+          "technicalName": "dc-flow-fwd-2",
+          "mqttTopic": ".../dc-flow-fwd-2",
+          "componentType": "Flow sensor"
+        }
+      },
+      "1057-12": {
+        "source": [
+          "sensor:flow",
+          "dc",
+          "dcFlowFwd1",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "1057-12",
+          "technicalName": "dc-flow-fwd-1",
+          "mqttTopic": ".../dc-flow-fwd-1",
           "componentType": "Flow sensor"
         }
       },
@@ -3852,6 +4096,48 @@
           "componentType": "2 way valve DN 15"
         }
       },
+      "1067-01": {
+        "tooltip": {
+          "yardTag": "1067-01",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1067-02": {
+        "tooltip": {
+          "yardTag": "1067-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1067-03": {
+        "tooltip": {
+          "yardTag": "1067-03",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1067-04": {
+        "tooltip": {
+          "yardTag": "1067-04",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1067-05": {
+        "tooltip": {
+          "yardTag": "1067-05",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1067-06": {
+        "tooltip": {
+          "yardTag": "1067-06",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
       "1067-07": {
         "tooltip": {
           "yardTag": "1067-07",
@@ -4142,6 +4428,20 @@
       "1168-06": {
         "tooltip": {
           "yardTag": "1168-06",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-10": {
+        "tooltip": {
+          "yardTag": "1168-10",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1168-11": {
+        "tooltip": {
+          "yardTag": "1168-11",
           "title": "Manual valve",
           "componentType": "2 way valve DN 15"
         }
@@ -5509,6 +5809,192 @@
           "technicalName": "pcm-heat-module-4",
           "mqttTopic": ".../pcm-heat-module-4",
           "componentType": "PCM"
+        }
+      }
+    },
+    "PowerConverter": {
+      "dc:aft-1": {
+        "sensors": {
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "dc",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:brightloop",
+          "dc",
+          "dcBrightloopAft1",
+          null
+        ],
+        "tooltip": {
+          "title": "Brightloop AFT 1",
+          "yardTag": "45002076",
+          "technicalName": "dc-brightloop-aft-1",
+          "mqttTopic": ".../dc-brightloop-aft-1",
+          "componentType": "DC converter"
+        }
+      },
+      "dc:aft-2": {
+        "sensors": {
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "dc",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:brightloop",
+          "dc",
+          "dcBrightloopAft2",
+          null
+        ],
+        "tooltip": {
+          "title": "Brightloop AFT 2",
+          "yardTag": "45002075",
+          "technicalName": "dc-brightloop-aft-2",
+          "mqttTopic": ".../dc-brightloop-aft-2",
+          "componentType": "DC converter"
+        }
+      },
+      "dc:aft-3": {
+        "sensors": {
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "dc",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:brightloop",
+          "dc",
+          "dcBrightloopAft3",
+          null
+        ],
+        "tooltip": {
+          "title": "Brightloop AFT 3",
+          "yardTag": "45002074",
+          "technicalName": "dc-brightloop-aft-3",
+          "mqttTopic": ".../dc-brightloop-aft-3",
+          "componentType": "DC converter"
+        }
+      },
+      "dc:aft-4": {
+        "sensors": {
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "dc",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:brightloop",
+          "dc",
+          "dcBrightloopAft4",
+          null
+        ],
+        "tooltip": {
+          "title": "Brightloop AFT 4",
+          "yardTag": "45002073",
+          "technicalName": "dc-brightloop-aft-4",
+          "mqttTopic": ".../dc-brightloop-aft-4",
+          "componentType": "DC converter"
+        }
+      },
+      "dc:fwd-1": {
+        "sensors": {
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "dc",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:brightloop",
+          "dc",
+          "dcBrightloopFwd1",
+          null
+        ],
+        "tooltip": {
+          "title": "Brightloop FWD 1",
+          "yardTag": "45002078",
+          "technicalName": "dc-brightloop-fwd-1",
+          "mqttTopic": ".../dc-brightloop-fwd-1",
+          "componentType": "DC converter"
+        }
+      },
+      "dc:fwd-2": {
+        "sensors": {
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "dc",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:brightloop",
+          "dc",
+          "dcBrightloopFwd2",
+          null
+        ],
+        "tooltip": {
+          "title": "Brightloop FWD 2",
+          "yardTag": "45002077",
+          "technicalName": "dc-brightloop-fwd-2",
+          "mqttTopic": ".../dc-brightloop-fwd-2",
+          "componentType": "DC converter"
+        }
+      },
+      "dc:ugrid-1": {
+        "sensors": {
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "dc",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:ugrid",
+          "dcAcConverter",
+          "_5_11U101",
+          null
+        ],
+        "tooltip": {
+          "title": "U-Grid 1",
+          "yardTag": "45002082",
+          "technicalName": "5-11-u-101",
+          "mqttTopic": ".../5-11-u-101",
+          "componentType": "DC converter"
+        }
+      },
+      "dc:ugrid-2": {
+        "sensors": {
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "dc",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:ugrid",
+          "dcAcConverter",
+          "_5_12U101",
+          null
+        ],
+        "tooltip": {
+          "title": "U-Grid 2",
+          "yardTag": "45002081",
+          "technicalName": "5-12-u-101",
+          "mqttTopic": ".../5-12-u-101",
+          "componentType": "DC converter"
         }
       }
     },
@@ -9023,6 +9509,144 @@
           "componentType": "2 way valve DN 25"
         }
       },
+      "1068-01": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "dc",
+            "dcSwitchAft4",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "dc",
+          "dcSwitchAft4",
+          null
+        ],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1068-01",
+          "technicalName": "dc-switch-aft-4",
+          "mqttTopic": ".../dc-switch-aft-4",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1068-02": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "dc",
+            "dcSwitchAft3",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "dc",
+          "dcSwitchAft3",
+          null
+        ],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1068-02",
+          "technicalName": "dc-switch-aft-3",
+          "mqttTopic": ".../dc-switch-aft-3",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1068-03": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "dc",
+            "dcSwitchAft2",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "dc",
+          "dcSwitchAft2",
+          null
+        ],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1068-03",
+          "technicalName": "dc-switch-aft-2",
+          "mqttTopic": ".../dc-switch-aft-2",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1068-04": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "dc",
+            "dcSwitchAft1",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "dc",
+          "dcSwitchAft1",
+          null
+        ],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1068-04",
+          "technicalName": "dc-switch-aft-1",
+          "mqttTopic": ".../dc-switch-aft-1",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1068-05": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "dc",
+            "dcSwitchFwd2",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "dc",
+          "dcSwitchFwd2",
+          null
+        ],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1068-05",
+          "technicalName": "dc-switch-fwd-2",
+          "mqttTopic": ".../dc-switch-fwd-2",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1068-06": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "dc",
+            "dcSwitchFwd1",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "dc",
+          "dcSwitchFwd1",
+          null
+        ],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1068-06",
+          "technicalName": "dc-switch-fwd-1",
+          "mqttTopic": ".../dc-switch-fwd-1",
+          "componentType": "2 way valve DN 25"
+        }
+      },
       "1069-01": {
         "controls": {
           "valve": [
@@ -9043,6 +9667,52 @@
           "yardTag": "1069-01",
           "technicalName": "pvt-switch-owners",
           "mqttTopic": ".../pvt-switch-owners",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1069-02": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "dc",
+            "dcSwitchUgrid2",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "dc",
+          "dcSwitchUgrid2",
+          null
+        ],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1069-02",
+          "technicalName": "dc-switch-ugrid-2",
+          "mqttTopic": ".../dc-switch-ugrid-2",
+          "componentType": "2 way valve DN 25"
+        }
+      },
+      "1069-03": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "dc",
+            "dcSwitchUgrid1",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "dc",
+          "dcSwitchUgrid1",
+          null
+        ],
+        "tooltip": {
+          "title": "Switch valve",
+          "yardTag": "1069-03",
+          "technicalName": "dc-switch-ugrid-1",
+          "mqttTopic": ".../dc-switch-ugrid-1",
           "componentType": "2 way valve DN 25"
         }
       },
@@ -9428,6 +10098,144 @@
           "componentType": "Temperature sensor"
         }
       },
+      "1038-05": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "dc",
+            "dcTemperatureAft4Return",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "dc",
+          "dcTemperatureAft4Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-05",
+          "technicalName": "dc-temperature-aft-4-return",
+          "mqttTopic": ".../dc-temperature-aft-4-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-06": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "dc",
+            "dcTemperatureAft3Return",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "dc",
+          "dcTemperatureAft3Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-06",
+          "technicalName": "dc-temperature-aft-3-return",
+          "mqttTopic": ".../dc-temperature-aft-3-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-07": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "dc",
+            "dcTemperatureAft2Return",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "dc",
+          "dcTemperatureAft2Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-07",
+          "technicalName": "dc-temperature-aft-2-return",
+          "mqttTopic": ".../dc-temperature-aft-2-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-08": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "dc",
+            "dcTemperatureAft1Return",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "dc",
+          "dcTemperatureAft1Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-08",
+          "technicalName": "dc-temperature-aft-1-return",
+          "mqttTopic": ".../dc-temperature-aft-1-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-09": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "dc",
+            "dcTemperatureUgrid2Return",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "dc",
+          "dcTemperatureUgrid2Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-09",
+          "technicalName": "dc-temperature-ugrid-2-return",
+          "mqttTopic": ".../dc-temperature-ugrid-2-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-10": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "dc",
+            "dcTemperatureUgrid1Return",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "dc",
+          "dcTemperatureUgrid1Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-10",
+          "technicalName": "dc-temperature-ugrid-1-return",
+          "mqttTopic": ".../dc-temperature-ugrid-1-return",
+          "componentType": "Temperature sensor"
+        }
+      },
       "1038-11": {
         "sensors": {
           "measurement": [
@@ -9448,6 +10256,52 @@
           "yardTag": "1038-11",
           "technicalName": "drives-temperature-shorepower-return",
           "mqttTopic": ".../drives-temperature-shorepower-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-12": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "dc",
+            "dcTemperatureFwd2Return",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "dc",
+          "dcTemperatureFwd2Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-12",
+          "technicalName": "dc-temperature-fwd-2-return",
+          "mqttTopic": ".../dc-temperature-fwd-2-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "1038-13": {
+        "sensors": {
+          "measurement": [
+            "sensor:temperature",
+            "dc",
+            "dcTemperatureFwd1Return",
+            null
+          ]
+        },
+        "source": [
+          "sensor:temperature",
+          "dc",
+          "dcTemperatureFwd1Return",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "1038-13",
+          "technicalName": "dc-temperature-fwd-1-return",
+          "mqttTopic": ".../dc-temperature-fwd-1-return",
           "componentType": "Temperature sensor"
         }
       },

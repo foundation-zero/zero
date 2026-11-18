@@ -33,6 +33,9 @@ const modules: Array<MimicKey> = [
   "pvt-main-heat",
   "pcm",
   "dc",
+  "dc-aft",
+  "dc-ugrid",
+  "dc-fwd",
   "drives",
   "adsorption",
 ];
