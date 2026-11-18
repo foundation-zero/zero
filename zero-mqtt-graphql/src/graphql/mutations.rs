@@ -6,12 +6,11 @@ use std::str::FromStr;
 use std::sync::Arc;
 use std::time::Duration;
 
-use anyhow::{Context, bail};
+use anyhow::{Context, anyhow, bail};
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{
-    Field, FieldFuture, FieldValue, InputObject, InputValue, Type, TypeRef,
+    Field, FieldFuture, FieldValue, InputObject, InputValue, Type, TypeRef, ValueAccessor,
 };
-use async_graphql::indexmap::IndexMap;
 use jiff::{Span, SpanCompare, Timestamp, civil};
 use jsonschema::Validator;
 use log::{info, warn};
@@ -114,14 +113,13 @@ fn set_field(name: &str, input_type: Option<&str>, return_type: TypeRef, target:
     let target = Arc::new(target);
     let field = Field::new(name, return_type, move |ctx| {
         let target = target.clone();
+        // A signal has no `input` argument: it sets no fields.
+        let given = ctx.args.get("input").map_or_else(
+            || Ok(JsonValue::Object(Map::new())),
+            |input| input_payload(&input, &target.fields),
+        );
         FieldFuture::new(async move {
-            // A signal has no `input` argument: it sets no fields.
-            let input = ctx.args.get("input").map_or_else(
-                || GraphQlValue::Object(IndexMap::default()),
-                |input| input.as_value().clone(),
-            );
-            let value = target
-                .set(&input)
+            let value = async { target.set(given?).await }
                 .await
                 .map_err(|e| async_graphql::Error::new(format!("{e:#}")))?;
             Ok(Some(FieldValue::value(value)))
@@ -217,12 +215,12 @@ struct Target {
 }
 
 impl Target {
-    /// Publish `input`. Without a State topic, returns `true` once handed to
-    /// the MQTT client. With one, fills omitted fields from the State value
-    /// first (see [`merge`]), then returns the first State value that shows
-    /// every given leaf.
-    async fn set(&self, input: &GraphQlValue) -> anyhow::Result<GraphQlValue> {
-        let given = input_payload(input, &self.fields)?;
+    /// Publish `given`, the input as a payload (see [`input_payload`]).
+    /// Without a State topic, returns `true` once handed to the MQTT client.
+    /// With one, fills omitted fields from the State value first (see
+    /// [`merge`]), then returns the first State value that shows every given
+    /// leaf.
+    async fn set(&self, given: JsonValue) -> anyhow::Result<GraphQlValue> {
         let Some(state_topic) = &self.state_topic else {
             self.publish(&given).await?;
             return Ok(GraphQlValue::Boolean(true));
@@ -294,39 +292,52 @@ async fn next_update(updates: &mut Receiver<String>, topic: &str, deadline: Inst
 /// The client-given input as a payload keyed by raw field names. Omitted
 /// fields stay out; explicit nulls are kept.
 fn input_payload(
-    input: &GraphQlValue,
+    input: &ValueAccessor<'_>,
     fields: &BTreeMap<String, FieldType>,
 ) -> anyhow::Result<JsonValue> {
-    let GraphQlValue::Object(input) = input else {
-        bail!("input is not an object");
-    };
+    let input = input.object().map_err(graphql_error)?;
     fields
         .iter()
         .filter_map(|(raw_name, field_type)| {
             let value = input.get(sanitize_to_graphql_name(raw_name).as_str())?;
-            Some(input_json(field_type, value).map(|json| (raw_name.clone(), json)))
+            Some(input_json(field_type, &value).map(|json| (raw_name.clone(), json)))
         })
         .collect::<anyhow::Result<Map<_, _>>>()
         .map(JsonValue::Object)
 }
 
 /// One client-given value as JSON, with objects, also inside lists, keyed
-/// by raw field names, and enum values as their raw value.
-fn input_json(field_type: &FieldType, value: &GraphQlValue) -> anyhow::Result<JsonValue> {
-    match (field_type, value) {
-        (FieldType::Object(_, nested), GraphQlValue::Object(_)) => input_payload(value, nested),
-        (FieldType::Enum(name, values), GraphQlValue::Enum(graphql_name)) => values
+/// by raw field names, and enum values as their raw value. async-graphql's
+/// accessors read a value written in the query and one given in the
+/// variables alike.
+fn input_json(field_type: &FieldType, value: &ValueAccessor<'_>) -> anyhow::Result<JsonValue> {
+    if value.is_null() {
+        return Ok(JsonValue::Null);
+    }
+    match field_type {
+        FieldType::Object(_, nested) => input_payload(value, nested),
+        FieldType::Enum(name, values) => {
+            let graphql_name = value.enum_name().map_err(graphql_error)?;
+            values
+                .iter()
+                .find(|enum_value| enum_value.name == graphql_name)
+                .map(|enum_value| enum_value.raw.clone())
+                .with_context(|| format!("{graphql_name} is not one of the values of enum {name}"))
+        }
+        FieldType::List(element) => value
+            .list()
+            .map_err(graphql_error)?
             .iter()
-            .find(|enum_value| enum_value.name == graphql_name.as_str())
-            .map(|enum_value| enum_value.raw.clone())
-            .with_context(|| format!("{graphql_name} is not one of the values of enum {name}")),
-        (FieldType::List(element), GraphQlValue::List(items)) => items
-            .iter()
-            .map(|item| input_json(element, item))
+            .map(|item| input_json(element, &item))
             .collect::<anyhow::Result<Vec<_>>>()
             .map(JsonValue::Array),
-        _ => value.clone().into_json().map_err(Into::into),
+        _ => Ok(value.as_value().clone().into_json()?),
     }
+}
+
+/// An async-graphql error, which is no `std::error::Error`, as an `anyhow` one.
+fn graphql_error(error: async_graphql::Error) -> anyhow::Error {
+    anyhow!(error.message)
 }
 
 /// The part of a State value that the Receive Topic's `fields` describe,
@@ -722,12 +733,12 @@ mod tests {
     async fn execute(
         cache: &Arc<TopicCache>,
         service: &Arc<Service>,
-        query: &str,
+        request: impl Into<async_graphql::Request>,
     ) -> async_graphql::Response {
         let mutations = mutations_through(service.clone());
         build_schema(&api(), cache, Some(&mutations))
             .unwrap()
-            .execute(query)
+            .execute(request)
             .await
     }
 
@@ -1251,6 +1262,36 @@ mod tests {
             data["room"]["fan"],
             json!({"mode": "HIGH_SPEED", "speeds": ["AUTO", "HIGH_SPEED"]})
         );
+        assert_eq!(
+            *service.published.lock().unwrap(),
+            [(
+                "room/fan/set".to_string(),
+                json!({"mode": "high speed", "speeds": ["auto", "high speed"]})
+            )]
+        );
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_mutation_publishes_the_raw_value_of_an_enum_given_in_variables() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert("room/fan", json!({"mode": "auto", "speeds": ["auto"]}));
+        let service = service(&cache, Some(Clone::clone));
+
+        // Variables come as JSON, so an enum value in them is a string.
+        let response = execute(
+            &cache,
+            &service,
+            async_graphql::Request::new(
+                "mutation ($input: RoomRoomFanSetInput!) { room { fan(input: $input) { mode } } }",
+            )
+            .variables(async_graphql::Variables::from_json(json!({
+                "input": {"mode": "HIGH_SPEED", "speeds": ["AUTO", "HIGH_SPEED"]}
+            }))),
+        )
+        .await;
+
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
         assert_eq!(
             *service.published.lock().unwrap(),
             [(
