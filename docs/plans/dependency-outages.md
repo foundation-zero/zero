@@ -36,7 +36,7 @@ Out of scope: zero-ui (browser client), zero-generator (library, not deployed on
 
 ## Shared pieces
 
-Every flavour needs readiness and a readiness probe. No liveness probe checks a dependency (ADR); the 15 minute restart that phase 1 and #1074 added is removed. How depends on the app:
+Every app with a required dependency needs readiness and a readiness probe (mqtt-graphql has none, and Vector is an exception, see F3 and F5). No liveness probe checks a dependency (ADR); the 15 minute restart that phase 1 and #1074 added is removed. How depends on the app:
 
 - **FastStream apps (F1, F2):** serve `/health` from FastStream itself: `AsgiFastStream` with `make_ping_asgi(broker)`, which returns 204, or 500 when `broker.ping()` fails. An app with more than one required dependency (a second broker, a Modbus gateway) writes a small handler that checks each one. The chart points a readiness probe at `/health`, and no liveness probe: the apps exit by themselves when their client gives up. The reason is in the logs of zmqtt and the bridge.
 

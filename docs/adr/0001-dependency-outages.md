@@ -18,7 +18,7 @@ And for the app itself:
 
 1. **Stay up and retry.** A dependency outage is not a reason to exit. Retry with capped backoff for as long as it lasts.
 2. **Start without your dependencies.** Come up, answer probes, and connect in the background.
-3. **Exit only when retrying is pointless:** the client has given up, or the configuration is wrong. Say why on the way out.
+3. **Exit only when retrying is pointless:** the client has given up, or the configuration is wrong. A refusal such as bad credentials counts as wrong configuration only once it persists past a few retries, since a booting broker can refuse logins too. Say why on the way out.
 4. **Each app decides which dependencies are required.** A required dependency is one without which the app cannot do its job. Only required dependencies affect readiness; an optional one is logged and retried.
 5. **Log when a dependency goes away and when it comes back.**
 6. **A long outage is for people, not restarts.** An alert on pods that stay not ready tells someone to look.
