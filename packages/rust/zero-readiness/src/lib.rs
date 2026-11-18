@@ -150,6 +150,41 @@ mod tests {
     }
 
     #[test]
+    fn a_new_reason_keeps_when_the_outage_started() {
+        let path = status_file("since");
+        let readiness = Readiness::new(&path, "mqtt: connecting");
+        let since = |line: String| line.rsplit_once(" since ").unwrap().1.to_owned();
+        let first = since(read(&path));
+
+        // Past the next whole second, so a reset `since` would show.
+        std::thread::sleep(Duration::from_millis(1100));
+        readiness.not_ready("mqtt: connection refused");
+
+        assert!(read(&path).starts_with("not ready: mqtt: connection refused since "));
+        assert_eq!(since(read(&path)), first);
+    }
+
+    #[test]
+    fn an_unchanged_status_is_not_rewritten() {
+        let path = status_file("unchanged");
+        let readiness = Readiness::new(&path, "mqtt: connecting");
+        std::fs::remove_file(&path).unwrap();
+
+        readiness.not_ready("mqtt: connecting");
+
+        assert!(!path.exists());
+    }
+
+    #[test]
+    fn a_status_file_that_cannot_be_written_does_not_panic() {
+        let path = status_file("missing-directory").join("ready");
+        let readiness = Readiness::new(&path, "mqtt: connecting");
+        readiness.ready("mqtt connected");
+
+        assert!(!path.exists());
+    }
+
+    #[test]
     fn utc_clock_formats_the_time_of_day() {
         let time = UNIX_EPOCH + Duration::from_secs(3 * 86_400 + 13 * 3600 + 2 * 60 + 5);
         assert_eq!(utc_clock(time), "13:02:05");
