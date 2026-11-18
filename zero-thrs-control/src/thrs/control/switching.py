@@ -11,14 +11,6 @@ type ControlModes = Literal["manual", "automatic"]
 logger = logging.getLogger(__name__)
 
 
-class SwitchingControlMode[Mode](ThrsValues):
-    automatic_mode: Mode | None
-
-    @property
-    def automatic(self) -> bool:
-        return self.automatic_mode is not None
-
-
 class AutomationMode(ThrsValues):
     mode: ControlModes
 
@@ -122,12 +114,9 @@ class Switching[
         return AutomationMode(mode="manual")
 
     @property
-    def mode(self) -> SwitchingControlMode[ControlMode]:
-        return (
-            SwitchingControlMode(automatic_mode=None)
-            if self.control_mode == "manual"
-            else SwitchingControlMode(automatic_mode=self._automatic_control.mode)
-        )
+    def mode(self) -> ControlMode | None:
+        """The automatic control's mode, `None` while manual."""
+        return self._automatic_control.mode if self.automatic else None
 
     @property
     def automatic(self) -> bool:

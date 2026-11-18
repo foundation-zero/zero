@@ -46,7 +46,7 @@ class DirectiveHandling:
         )
 
     async def clear_previous(self):
-        await self._channels.clear_simulation_status()
+        await self._channels.send_simulation_status(None)
 
     async def send_status(self, loop: Loop, status: SimulationStatus):
         msg = SimulationStatusMessage(

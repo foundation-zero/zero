@@ -182,6 +182,11 @@ class TestDirectMqttMapping:
         assert "sensors/data" in topics
         assert topics["sensors/data"] == model.model_dump_json(by_alias=True)
 
+    def test_split_none_clears_the_topic(self):
+        mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
+
+        assert mapping.split_to_topics(None) == {"sensors/data": ""}
+
     def test_subscribe_topic(self):
         mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
 

@@ -14,7 +14,6 @@ from thrs.control.manual import ManualControl
 from thrs.control.switching import (
     AutomationMode,
     Switching,
-    SwitchingControlMode,
 )
 
 
@@ -23,7 +22,7 @@ def test_switching_control(switching):
 
     control_values, controller_state = switching_control.initial()
 
-    assert switching_control.mode == SwitchingControlMode(automatic_mode=None)
+    assert switching_control.mode is None
     assert not switching_control.automatic
     assert controller_state
 
@@ -40,6 +39,7 @@ def test_switching_control(switching):
     )
 
     assert switching_control.automatic
+    assert switching_control.mode == switching_control.automatic_control.mode
     assert controller_state
     assert control_values.go_with_the.flow.value == 30.0
 
