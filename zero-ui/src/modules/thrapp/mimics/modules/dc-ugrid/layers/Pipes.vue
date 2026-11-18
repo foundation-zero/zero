@@ -1,7 +1,7 @@
 <template>
   <g>
     <path
-      d="M201.25 253.13H906.89"
+      d="M201.25 253.13H910"
       class="stroke-flows-pipe"
     />
     <path

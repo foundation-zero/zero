@@ -8,7 +8,7 @@ import { getTooltipContexts } from "../../../data";
 import { ManualValveInstance } from "../../../instances";
 import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
 
-const manualValves = getTooltipContexts(MimicComponentType.ManualValve, ["1067-05", "1067-06"]);
+const manualValves = getTooltipContexts(MimicComponentType.ManualValve, ["1167-05", "1167-06"]);
 </script>
 
 <template>
@@ -18,13 +18,13 @@ const manualValves = getTooltipContexts(MimicComponentType.ManualValve, ["1067-0
       y="21"
       :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
-      v-bind="manualValves['1067-05']"
+      v-bind="manualValves['1167-05']"
     >
       <TagLabelInstance
         target-x="296"
         :target-width="MANUAL_VALVE_WIDTH"
         y="3"
-        :tag-id="manualValves['1067-05'].tooltip?.yardTag"
+        :tag-id="manualValves['1167-05'].tooltip?.yardTag"
       />
     </ManualValveInstance>
     <ManualValveInstance
@@ -32,13 +32,13 @@ const manualValves = getTooltipContexts(MimicComponentType.ManualValve, ["1067-0
       y="235"
       :valve-type="ManualValveType.Switch"
       :orientation="ComponentOrientation.Up"
-      v-bind="manualValves['1067-06']"
+      v-bind="manualValves['1167-06']"
     >
       <TagLabelInstance
         target-x="297"
         :target-width="MANUAL_VALVE_WIDTH"
         y="219"
-        :tag-id="manualValves['1067-06'].tooltip?.yardTag"
+        :tag-id="manualValves['1167-06'].tooltip?.yardTag"
       />
     </ManualValveInstance>
   </LayerFilter>

@@ -313,7 +313,6 @@
     "adsorption:adsorptionTemperatureHtSupply": "TemperatureSensor/1038-50",
     "adsorption:adsorptionTemperatureWasteReturn": "TemperatureSensor/1038-38",
     "adsorption:adsorptionTemperatureWasteSupply": "TemperatureSensor/1038-39",
-    "adsorption:dhwAdsorptionExchanger": "ExchangeCircuit/adsorption:domesticHotWater",
     "aft-1": "PowerConverter/dc:aft-1",
     "aft-2": "PowerConverter/dc:aft-2",
     "aft-3": "PowerConverter/dc:aft-3",
@@ -338,8 +337,20 @@
     "aft-string-8.1": "PvtString/pvt:aft-string-8.1",
     "aft-string-8.2": "PvtString/pvt:aft-string-8.2",
     "aft-string-9": "PvtString/pvt:aft-string-9",
-    "dc:_5_11U101": "PowerConverter/dc:ugrid-1",
-    "dc:_5_12U101": "PowerConverter/dc:ugrid-2",
+    "consumers:consumersAdsorptionExchanger": "HeatExchanger/1003",
+    "consumers:consumersDhwExchanger": "ExchangeCircuit/dhw:highTempLoop",
+    "consumers:consumersFlowAdsorption": "FlowSensor/1058-08",
+    "consumers:consumersFlowBypass": "FlowSensor/1192",
+    "consumers:consumersFlowcontrolAdsorption": "FlowControlValve/1061",
+    "consumers:consumersFlowcontrolBypass": "FlowControlValve/1062-01",
+    "consumers:consumersFlowcontrolDhw": "FlowControlValve/1065-01",
+    "consumers:consumersFlowDhw": "FlowSensor/1058-07",
+    "consumers:consumersSwitchAdsorption": "SwitchValve/1066-02",
+    "consumers:consumersSwitchDhw": "SwitchValve/1067-15",
+    "consumers:consumersTemperatureAdsorptionReturn": "TemperatureSensor/1038-49",
+    "consumers:consumersTemperatureAdsorptionSupply": "TemperatureSensor/1038-54",
+    "consumers:consumersTemperatureDhwReturn": "TemperatureSensor/1038-48",
+    "consumers:consumersTemperatureDhwSupply": "TemperatureSensor/1038-53",
     "dc:aft": "DcConverter/dc:aft",
     "dc:dcBrightloopAft1": "PowerConverter/dc:aft-1",
     "dc:dcBrightloopAft2": "PowerConverter/dc:aft-2",
@@ -398,14 +409,12 @@
     "dc:dcTemperatureUgrid2Return": "TemperatureSensor/1038-09",
     "dc:dcTemperatureUgridReturn": "TemperatureSensor/1038-71",
     "dc:dcTemperatureUgridSupply": "TemperatureSensor/1038-70",
-    "dc:dhwDcExchanger": "ExchangeCircuit/dc:domesticHotWater",
     "dc:fwd": "DcConverter/dc:fwd",
     "dc:ugrid": "DcConverter/dc:ugrid",
+    "dcAcConverter:_5_11U101": "PowerConverter/dc:ugrid-1",
+    "dcAcConverter:_5_12U101": "PowerConverter/dc:ugrid-2",
     "dcConverters": "ExchangeCircuit/dhw:dcConverters",
     "dhw": "ExchangeCircuit/pcm:dhw",
-    "dhw:adsorptionDhwExchanger": "ExchangeCircuit/dhw:adsorption",
-    "dhw:consumersDhwExchanger": "ExchangeCircuit/dhw:highTempLoop",
-    "dhw:dcDhwExchanger": "ExchangeCircuit/dhw:dcConverters",
     "dhw:dhwAdsorptionExchanger": "HeatExchanger/1004",
     "dhw:dhwConsumersExchanger": "HeatExchanger/1007",
     "dhw:dhwDcExchanger": "HeatExchanger/1008",
@@ -449,9 +458,7 @@
     "dhw:dhwTemperatureTank1": "TemperatureSensor/1038-45",
     "dhw:dhwTemperatureTank2": "TemperatureSensor/1038-44",
     "dhw:dhwTemperatureTank3": "TemperatureSensor/1038-27",
-    "dhw:drivesDhwExchanger": "ExchangeCircuit/dhw:drives",
     "drives": "ExchangeCircuit/dhw:drives",
-    "drives:dhwDrivesExchanger": "ExchangeCircuit/drives:domesticHotWater",
     "drives:drivesAftOilCoolerHeat": "PropulsionCooler/1012",
     "drives:drivesDhwExchanger": "HeatExchanger/1009",
     "drives:drivesFlowcontrolPropdriveAft": "FlowControlValve/1065-02",
@@ -487,10 +494,6 @@
     "drives:drivesTemperatureRecoveryReturn": "TemperatureSensor/1038-59",
     "drives:drivesTemperatureShorepowerReturn": "TemperatureSensor/1038-11",
     "drives:drivesTemperatureSupply": "TemperatureSensor/1038-14",
-    "drives:pcsAftAra1": "PropulsionDrive/drives:propdriveAft1",
-    "drives:pcsAftAra2": "PropulsionDrive/drives:propdriveAft2",
-    "drives:pcsFwdAra1": "PropulsionDrive/drives:propdriveFwd1",
-    "drives:pcsFwdAra2": "PropulsionDrive/drives:propdriveFwd2",
     "fwd-1": "PowerConverter/dc:fwd-1",
     "fwd-2": "PowerConverter/dc:fwd-2",
     "highTemperature": "ExchangeCircuit/adsorption:highTemperature",
@@ -502,22 +505,6 @@
     "owners-string-4": "PvtString/pvt:owners-string-4",
     "owners-string-5": "PvtString/pvt:owners-string-5",
     "owners-string-6": "PvtString/pvt:owners-string-6",
-    "pcm:adsorptionHtExchanger": "ExchangeCircuit/pcm:adsorption",
-    "pcm:consumersAdsorptionExchanger": "HeatExchanger/1003",
-    "pcm:consumersDhwExchanger": "HeatExchanger/1007",
-    "pcm:consumersFlowAdsorption": "FlowSensor/1058-08",
-    "pcm:consumersFlowBypass": "FlowSensor/1192",
-    "pcm:consumersFlowcontrolAdsorption": "FlowControlValve/1061",
-    "pcm:consumersFlowcontrolBypass": "FlowControlValve/1062-01",
-    "pcm:consumersFlowcontrolDhw": "FlowControlValve/1065-01",
-    "pcm:consumersFlowDhw": "FlowSensor/1058-07",
-    "pcm:consumersSwitchAdsorption": "SwitchValve/1066-02",
-    "pcm:consumersSwitchDhw": "SwitchValve/1067-15",
-    "pcm:consumersTemperatureAdsorptionReturn": "TemperatureSensor/1038-49",
-    "pcm:consumersTemperatureAdsorptionSupply": "TemperatureSensor/1038-54",
-    "pcm:consumersTemperatureDhwReturn": "TemperatureSensor/1038-48",
-    "pcm:consumersTemperatureDhwSupply": "TemperatureSensor/1038-53",
-    "pcm:dhwConsumersExchanger": "ExchangeCircuit/pcm:dhw",
     "pcm:freshwater": "ConnectingCircuit/pcm:freshwater",
     "pcm:pcmFlowcontrolModule1": "FlowControlValve/1064-04",
     "pcm:pcmFlowcontrolModule2": "FlowControlValve/1064-05",
@@ -548,6 +535,10 @@
     "propdriveAft2": "PropulsionDrive/drives:propdriveAft2",
     "propdriveFwd1": "PropulsionDrive/drives:propdriveFwd1",
     "propdriveFwd2": "PropulsionDrive/drives:propdriveFwd2",
+    "propulsionDrive:pcsAftAra1": "PropulsionDrive/drives:propdriveAft1",
+    "propulsionDrive:pcsAftAra2": "PropulsionDrive/drives:propdriveAft2",
+    "propulsionDrive:pcsFwdAra1": "PropulsionDrive/drives:propdriveFwd1",
+    "propulsionDrive:pcsFwdAra2": "PropulsionDrive/drives:propdriveFwd2",
     "pvt:main": "ConnectingCircuit/pvt:main",
     "pvt:pcm": "ConnectingCircuit/pvt:pcm",
     "pvt:pvtFlowMainAftRecovery": "FlowSensor/1058-13",
@@ -677,7 +668,6 @@
     "pvt:pvtTemperatureSupply": "TemperatureSensor/1038-24",
     "shorepower": "ShorePowerConverter/drives:shorepower",
     "thrusters:pcm": "ConnectingCircuit/thrusters:pcm",
-    "thrusters:pvtPressureSystem": "PressureSensor/1097-06",
     "thrusters:thrustersFlowAft": "FlowSensor/1218-02",
     "thrusters:thrustersFlowcontrolAft": "FlowControlValve/1215",
     "thrusters:thrustersFlowcontrolFwd": "FlowControlValve/1064-02",
@@ -4096,48 +4086,6 @@
           "componentType": "2 way valve DN 15"
         }
       },
-      "1067-01": {
-        "tooltip": {
-          "yardTag": "1067-01",
-          "title": "Manual valve",
-          "componentType": "2 way valve DN 15"
-        }
-      },
-      "1067-02": {
-        "tooltip": {
-          "yardTag": "1067-02",
-          "title": "Manual valve",
-          "componentType": "2 way valve DN 15"
-        }
-      },
-      "1067-03": {
-        "tooltip": {
-          "yardTag": "1067-03",
-          "title": "Manual valve",
-          "componentType": "2 way valve DN 15"
-        }
-      },
-      "1067-04": {
-        "tooltip": {
-          "yardTag": "1067-04",
-          "title": "Manual valve",
-          "componentType": "2 way valve DN 15"
-        }
-      },
-      "1067-05": {
-        "tooltip": {
-          "yardTag": "1067-05",
-          "title": "Manual valve",
-          "componentType": "2 way valve DN 15"
-        }
-      },
-      "1067-06": {
-        "tooltip": {
-          "yardTag": "1067-06",
-          "title": "Manual valve",
-          "componentType": "2 way valve DN 15"
-        }
-      },
       "1067-07": {
         "tooltip": {
           "yardTag": "1067-07",
@@ -4386,6 +4334,48 @@
       "1087-08": {
         "tooltip": {
           "yardTag": "1087-08",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1167-01": {
+        "tooltip": {
+          "yardTag": "1167-01",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1167-02": {
+        "tooltip": {
+          "yardTag": "1167-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1167-03": {
+        "tooltip": {
+          "yardTag": "1167-03",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1167-04": {
+        "tooltip": {
+          "yardTag": "1167-04",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1167-05": {
+        "tooltip": {
+          "yardTag": "1167-05",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1167-06": {
+        "tooltip": {
+          "yardTag": "1167-06",
           "title": "Manual valve",
           "componentType": "2 way valve DN 15"
         }
