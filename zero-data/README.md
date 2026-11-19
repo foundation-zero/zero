@@ -129,13 +129,19 @@ uv run zero-data greptime migrate-history check migration/wave-1.sql --host <hos
 - Rows are copied only before a unit's bound: the new topic's first row at plan time, or
   `--boundary` for a topic that has none. `execute` and `check` read the bounds from the
   manifest, so plan once; after a copy, the new topic's first row is the copied history.
-- `plan` adds missing columns (`ALTER TABLE … ADD COLUMN`, typed as the old column), casts
+- `plan` copies the suffixes the spec lists for each key (`value`, `timestamp`, …). It adds
+  missing columns (`ALTER TABLE … ADD COLUMN`, typed as the old column), casts
   where no value is lost, and refuses a unit that would need a lossy cast, whose new table
   holds rows before the boundary from topics outside the spec, or whose period overlaps
   another old topic of the same new topic. Refused units are listed in the report.
-- `execute` refuses a SQL file whose sha256 or host isn't the plan's, or when a column it
-  touches changed since the plan. It copies one window (a unit's day) at a time, skips a
-  window whose rows are all there, and stops on one that holds only part of them.
+- `execute` refuses a SQL file whose sha256 or endpoint (host, port and database) isn't the
+  plan's, or when a column it touches changed since the plan, or while another `execute` of
+  the same file runs. It copies one window (a unit's day) at a time and skips a window whose
+  rows are all there. Each INSERT leaves out timestamps the new topic already holds in that
+  window, so a window copied in part (a restart mid-INSERT) gets only its missing rows: the
+  new tables are append-only, and rows can't be deleted. A window that ends up with another
+  count than planned is journalled as `short` and stops the run, again on every rerun.
+- `check` lists the units the plan refused next to its findings.
 - Resume a wave from the checkout that started it, or with its journal: without it,
   `execute` refuses the columns its earlier run added.
 

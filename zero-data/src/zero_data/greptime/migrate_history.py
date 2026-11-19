@@ -17,6 +17,7 @@ after a copy the new topic's first row is the copied history, so `execute` and `
 the bounds from the manifest.
 """
 
+import fcntl
 import hashlib
 import json
 import logging
@@ -195,7 +196,10 @@ class UnitPlan(BaseModel):
             f"INSERT INTO {quote_ident(self.new_table)} ({', '.join(targets)})\n"
             f"SELECT {', '.join(sources)}\n"
             f"FROM {quote_ident(self.old_table)}\n"
-            f"WHERE {self.old_rows_in(window.start, window.end)};"
+            f"WHERE {self.old_rows_in(window.start, window.end)}\n"
+            f'AND "timestamp" NOT IN (SELECT "timestamp" '
+            f"FROM {quote_ident(self.new_table)} "
+            f"WHERE {self.new_rows_in(window.start, window.end)});"
         )
 
 
@@ -218,7 +222,7 @@ class Statement(BaseModel):
 
 class WavePlan(BaseModel):
     wave: int
-    host: str
+    endpoint: str
     boundary: int
     spec_sha256: str
     sql_sha256: str
@@ -273,25 +277,31 @@ def _column_pairs(
 ) -> tuple[list[tuple[str, str]], list[str], list[str]]:
     """The (old column, new column) pairs of a unit, its live keys and its absent old columns.
 
-    A one-to-one unit also copies every old key whose name already exists in the new table:
-    node keys keep their names, so such a key is the same signal on the new topic.
+    A mapped key copies the suffixes the spec lists. A one-to-one unit also copies every old
+    key whose name already exists in the new table, with all its suffixes: node keys keep
+    their names, so such a key is the same signal on the new topic.
     """
-    mapped = [(column.old, column.new) for column in unit.columns]
     live_keys = (
         sorted(
             _base_columns(old_schema)
             & _base_columns(new_schema)
-            - {old for old, _ in mapped}
-            - {new for _, new in mapped}
+            - {column.old for column in unit.columns}
+            - {column.new for column in unit.columns}
         )
         if one_to_one
         else []
     )
-    keys = [*mapped, *((key, key) for key in live_keys)]
     candidates = [
-        (f"{old}__{suffix}", f"{new}__{suffix}")
-        for old, new in keys
-        for suffix in SUFFIXES
+        *(
+            (f"{column.old}__{suffix}", f"{column.new}__{suffix}")
+            for column in unit.columns
+            for suffix in column.suffixes
+        ),
+        *(
+            (f"{key}__{suffix}", f"{key}__{suffix}")
+            for key in live_keys
+            for suffix in SUFFIXES
+        ),
     ]
     pairs = [(old, new) for old, new in candidates if old in old_schema]
     absent = sorted(
@@ -356,7 +366,11 @@ def _overlapping(drafts: list[_Draft]) -> dict[int, str]:
     refused: dict[int, str] = {}
     for indices in by_topic.values():
         ordered = sorted(indices, key=lambda i: drafts[i].windows[0].start)
-        for before, after in zip(ordered, ordered[1:], strict=False):
+        furthest = ordered[0]
+        for after in ordered[1:]:
+            before = furthest
+            if drafts[after].windows[-1].end > drafts[furthest].windows[-1].end:
+                furthest = after
             if drafts[after].windows[0].start < drafts[before].windows[-1].end:
                 for index in (before, after):
                     others = sorted(
@@ -399,7 +413,7 @@ def plan_migration(
     greptime: Greptime,
     spec: MigrationSpec,
     spec_sha256: str,
-    host: str,
+    endpoint: str,
     boundary: int,
     old_tables: Iterable[str],
     out_dir: Path,
@@ -430,7 +444,7 @@ def plan_migration(
             )
         }
         for table in sorted({u.new_table for u in units})
-        if table in present
+        if table in schemas and "topic" in schemas[table]
     }
     spec_topics: dict[str, set[str]] = defaultdict(set)
     for unit in spec.units:
@@ -446,6 +460,9 @@ def plan_migration(
         if unit.new_table not in schemas:
             refused.append(_refusal(unit, "The new table doesn't exist yet"))
             continue
+        if "topic" not in schemas[unit.new_table]:
+            refused.append(_refusal(unit, "The new table has no topic column"))
+            continue
         foreign = sorted(
             topic
             for topic, first in first_rows[unit.new_table].items()
@@ -459,9 +476,6 @@ def plan_migration(
                     f"the spec: {', '.join(foreign)}",
                 )
             )
-            continue
-        if "topic" not in schemas[unit.new_table]:
-            refused.append(_refusal(unit, "The new table has no topic column"))
             continue
         pairs, live_keys, absent = _column_pairs(
             unit,
@@ -567,7 +581,7 @@ def plan_migration(
             _write_wave(
                 out_dir,
                 wave,
-                host,
+                endpoint,
                 boundary,
                 spec_sha256,
                 plans[wave],
@@ -586,7 +600,7 @@ def plan_migration(
 def _write_wave(
     out_dir: Path,
     wave: int,
-    host: str,
+    endpoint: str,
     boundary: int,
     spec_sha256: str,
     units: list[UnitPlan],
@@ -624,7 +638,7 @@ def _write_wave(
             )
 
     header = (
-        f"-- migrate-history wave {wave} on {host}, boundary {timestamp_literal(boundary)}\n"
+        f"-- migrate-history wave {wave} on {endpoint}, boundary {timestamp_literal(boundary)}\n"
         f"-- spec sha256 {spec_sha256}\n"
         f"-- {len(units)} units, {sum(len(u.windows) for u in units)} windows, "
         f"{sum(len(c) for c in added.values())} columns to add"
@@ -644,7 +658,7 @@ def _write_wave(
         expected[unit.old_table]["topic"] = schemas[unit.old_table]["topic"]
     manifest = WavePlan(
         wave=wave,
-        host=host,
+        endpoint=endpoint,
         boundary=boundary,
         spec_sha256=spec_sha256,
         sql_sha256=sha256(sql_text),
@@ -696,7 +710,7 @@ def _plan_report(plan: WavePlan) -> str:
     ]
     sections = [
         f"# Migrate history, wave {plan.wave}",
-        f"Host `{plan.host}`, boundary {_moment(plan.boundary)}, spec sha256 "
+        f"Endpoint `{plan.endpoint}`, boundary {_moment(plan.boundary)}, spec sha256 "
         f"`{plan.spec_sha256}`. {len(plan.units)} units copy "
         f"{sum(u.rows for u in plan.units):,} rows in {len(plan.statements)} statements.",
         f"## Refused ({len(plan.refused)})",
@@ -780,7 +794,7 @@ def read_statements(sql_text: str) -> list[str]:
     return statements
 
 
-def load_plan(sql_path: Path, host: str) -> tuple[WavePlan, list[str]]:
+def load_plan(sql_path: Path, endpoint: str) -> tuple[WavePlan, list[str]]:
     """The manifest and statements of a planned SQL file, refused unless both are unchanged."""
     manifest_path, _, _ = wave_paths(sql_path)
     plan = WavePlan.model_validate_json(manifest_path.read_bytes())
@@ -789,8 +803,10 @@ def load_plan(sql_path: Path, host: str) -> tuple[WavePlan, list[str]]:
         raise MigrationRefused(
             f"{sql_path} isn't the file the plan wrote (sha256 differs)"
         )
-    if host != plan.host:
-        raise MigrationRefused(f"{sql_path} was planned for {plan.host}, not {host}")
+    if endpoint != plan.endpoint:
+        raise MigrationRefused(
+            f"{sql_path} was planned for {plan.endpoint}, not {endpoint}"
+        )
     statements = read_statements(sql_text)
     if [sha256(s) for s in statements] != [s.sha256 for s in plan.statements]:
         raise MigrationRefused(f"{sql_path}'s statements don't match its manifest")
@@ -834,22 +850,29 @@ def _check_schema(greptime: Greptime, plan: WavePlan, done: set[int]) -> None:
 def execute_plan(
     greptime: Greptime,
     sql_path: Path,
-    host: str,
+    endpoint: str,
     pause: float,
     sleep: Callable[[float], None] = time.sleep,
 ) -> dict[str, int]:
     """Run a planned SQL file statement by statement; returns how many ended in each status."""
-    plan, statements = load_plan(sql_path, host)
+    plan, statements = load_plan(sql_path, endpoint)
     _, journal_path, _ = wave_paths(sql_path)
-    journal = read_journal(journal_path)
-    done = {
-        index
-        for index, entry in journal.items()
-        if entry["sha256"] == plan.statements[index].sha256
-    }
-    _check_schema(greptime, plan, done)
     statuses: Counter[str] = Counter()
     with journal_path.open("a") as journal_file:
+        try:
+            fcntl.flock(journal_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise MigrationRefused(
+                f"Another execute of {sql_path.name} is running"
+            ) from None
+        journal = read_journal(journal_path)
+        done = {
+            index
+            for index, entry in journal.items()
+            if entry["sha256"] == plan.statements[index].sha256
+            and entry["status"] != "short"
+        }
+        _check_schema(greptime, plan, done)
         for index, (statement, sql) in enumerate(
             zip(plan.statements, statements, strict=True)
         ):
@@ -862,6 +885,11 @@ def execute_plan(
             journal_file.write(json.dumps(entry) + "\n")
             journal_file.flush()
             statuses[entry["status"]] += 1
+            if entry["status"] == "short":
+                raise MigrationRefused(
+                    f"{entry['new_topic']} holds {entry['rows']} of {entry['expected']} "
+                    f"rows from {entry['start']} after statement {index}"
+                )
             if entry["status"] == "copied":
                 logger.info("%d/%d %s", index + 1, len(statements), entry)
                 sleep(pause)
@@ -897,19 +925,10 @@ def _run_statement(
     present = greptime.count(count_sql)
     if present == window.rows:
         return {**located, "status": "present", "rows": present}
-    if present:
-        raise MigrationRefused(
-            f"{unit.new_topic} holds {present} of {window.rows} rows from "
-            f"{_moment(window.start)} to {_moment(window.end)}: a partial copy, to be "
-            "cleared by hand"
-        )
     greptime.run(sql)
     copied = greptime.count(count_sql)
-    if copied != window.rows:
-        logger.warning(
-            "%s: copied %d rows, the plan counted %d", unit.label, copied, window.rows
-        )
-    return {**located, "status": "copied", "rows": copied}
+    status = "copied" if copied == window.rows else "short"
+    return {**located, "status": status, "rows": copied, "present_before": present}
 
 
 # ---- check -----------------------------------------------------------------------------------
@@ -919,9 +938,9 @@ def _daily(rows: list[tuple[Any, ...]]) -> dict[int, int]:
     return {int(day): int(count) for day, count in rows}
 
 
-def check_plan(greptime: Greptime, sql_path: Path, host: str) -> bool:
+def check_plan(greptime: Greptime, sql_path: Path, endpoint: str) -> bool:
     """Compare old and new rows per unit and write the check report; True when all match."""
-    plan, _ = load_plan(sql_path, host)
+    plan, _ = load_plan(sql_path, endpoint)
     _, _, report_path = wave_paths(sql_path)
     findings: list[tuple[int, str]] = []
     by_topic: dict[tuple[str, str], list[int]] = defaultdict(list)
@@ -992,21 +1011,40 @@ def check_plan(greptime: Greptime, sql_path: Path, host: str) -> bool:
             )
 
     checked = sum(len(indices) for indices in by_topic.values())
-    summary = (
+    matched = (
         f"All {checked} units match."
         if not findings
         else f"{len({i for i, _ in findings})} of {checked} units differ."
     )
+    summary = (
+        f"{matched} {len(plan.refused)} units were refused by the plan and not copied."
+        if plan.refused
+        else matched
+    )
     report = "\n\n".join(
         [
             f"# Check of migrate-history wave {plan.wave}",
-            f"Host `{plan.host}`. Per unit: old rows with a mapped value against new rows, "
+            f"Endpoint `{plan.endpoint}`. Per unit: old rows with a mapped value against new rows, "
             f"per day within the unit's span; `count`, `min` and `max` of up to "
             f"{SAMPLED_COLUMNS} value columns; and per new topic, all rows before the bound "
             f"against the rows copied. {summary}",
             _table(
                 ["#", "Unit", "Finding"],
                 ((i, plan.units[i].label, finding) for i, finding in findings),
+            ),
+            *(
+                [
+                    f"## Refused by the plan ({len(plan.refused)})",
+                    _table(
+                        ["Old topic", "New topic", "Reason"],
+                        (
+                            (f"`{r.old_topic}`", f"`{r.new_topic}`", r.reason)
+                            for r in plan.refused
+                        ),
+                    ),
+                ]
+                if plan.refused
+                else []
             ),
         ]
     )

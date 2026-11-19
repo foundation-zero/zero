@@ -4,18 +4,24 @@ The old table holds a sounder that was renamed on day 2 (a chain), and a catch-a
 keys belong to two devices in two new tables.
 """
 
+import fcntl
 import json
 from collections.abc import Iterator
 from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
+from pydantic import ValidationError
 
 from tests.greptime.conftest import Greptime as Query
+from zero_data.greptime.cli import MigratePlanCmd
 from zero_data.greptime.config import GreptimeConnection
 from zero_data.greptime.migrate_history import (
     Greptime,
     MigrationRefused,
+    Window,
+    _Draft,
+    _overlapping,
     check_plan,
     execute_plan,
     plan_migration,
@@ -32,7 +38,7 @@ GENERAL = "zz_mh_fire__general"
 PANEL = "zz_mh_fire__main_panel"
 TABLES = (OLD, OLD_GENERAL, SOUNDER, GENERAL, PANEL)
 BOUNDARY = datetime(2026, 8, 10, tzinfo=UTC)
-HOST = "127.0.0.1"
+ENDPOINT = "127.0.0.1:4003/public"
 
 
 def column(old: str, new: str) -> ColumnMap:
@@ -192,7 +198,9 @@ def greptime(connection: GreptimeConnection) -> Iterator[Greptime]:
 
 
 def plan(greptime: Greptime, out: Path, spec: MigrationSpec = SPEC) -> list[Path]:
-    return plan_migration(greptime, spec, "spec-sha", HOST, to_nanos(BOUNDARY), [], out)
+    return plan_migration(
+        greptime, spec, "spec-sha", ENDPOINT, to_nanos(BOUNDARY), [], out
+    )
 
 
 def no_sleep(_: float) -> None:
@@ -204,7 +212,7 @@ def test_execute_copies_the_chain_and_its_successor_under_the_new_names(
 ) -> None:
     plan(greptime, tmp_path)
 
-    statuses = execute_plan(greptime, tmp_path / "wave-1.sql", HOST, 0, no_sleep)
+    statuses = execute_plan(greptime, tmp_path / "wave-1.sql", ENDPOINT, 0, no_sleep)
 
     assert statuses == {"added": 2, "copied": 4}
     rows = tables.fetch(
@@ -225,7 +233,7 @@ def test_execute_copies_the_chain_and_its_successor_under_the_new_names(
         ("test__timestamp", "string"),
         ("test__value", "boolean"),
     ]
-    assert check_plan(greptime, tmp_path / "wave-1.sql", HOST)
+    assert check_plan(greptime, tmp_path / "wave-1.sql", ENDPOINT)
 
 
 def test_a_catch_all_topic_splits_into_one_topic_per_device(
@@ -233,7 +241,7 @@ def test_a_catch_all_topic_splits_into_one_topic_per_device(
 ) -> None:
     plan(greptime, tmp_path)
 
-    execute_plan(greptime, tmp_path / "wave-2.sql", HOST, 0, no_sleep)
+    execute_plan(greptime, tmp_path / "wave-2.sql", ENDPOINT, 0, no_sleep)
 
     assert tables.fetch(
         f'SELECT "topic", "technical_name", "muster__value" FROM "{GENERAL}" ORDER BY "timestamp"'
@@ -247,7 +255,7 @@ def test_a_catch_all_topic_splits_into_one_topic_per_device(
         ("marpower/21-fire/main-panel", "main-panel", 2),
         ("marpower/21-fire/main-panel", "main-panel", 3),
     ]
-    assert check_plan(greptime, tmp_path / "wave-2.sql", HOST)
+    assert check_plan(greptime, tmp_path / "wave-2.sql", ENDPOINT)
 
 
 def test_the_plan_names_its_bounds_columns_and_live_keys(
@@ -279,9 +287,9 @@ def test_a_second_execute_copies_nothing(
 ) -> None:
     plan(greptime, tmp_path)
     sql_path = tmp_path / "wave-1.sql"
-    execute_plan(greptime, sql_path, HOST, 0, no_sleep)
+    execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep)
 
-    assert execute_plan(greptime, sql_path, HOST, 0, no_sleep) == {"journalled": 6}
+    assert execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep) == {"journalled": 6}
 
     _, journal, _ = wave_paths(sql_path)
     journal.write_text(
@@ -291,24 +299,48 @@ def test_a_second_execute_copies_nothing(
             if '"added"' in line
         )
     )
-    assert execute_plan(greptime, sql_path, HOST, 0, no_sleep) == {
+    assert execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep) == {
         "journalled": 2,
         "present": 4,
     }
     assert tables.fetch(f'SELECT count(*) FROM "{SOUNDER}"') == [(6,)]
 
 
-def test_a_window_holding_part_of_its_rows_stops_the_run(
+def test_a_window_holding_part_of_its_rows_gets_the_rest(
     tables: Query, greptime: Greptime, tmp_path: Path
 ) -> None:
     plan(greptime, tmp_path)
     tables.execute(
-        f'INSERT INTO "{SOUNDER}" ("timestamp", "topic") '
-        f"VALUES ({ts(6, 10)}, 'marpower/21-fire/sounder/201h1-s')"
+        f'INSERT INTO "{SOUNDER}" ("timestamp", "topic", "alarm__value") '
+        f"VALUES ({ts(6, 10)}, 'marpower/21-fire/sounder/201h1-s', true)"
     )
 
-    with pytest.raises(MigrationRefused, match="holds 1 of 2 rows"):
-        execute_plan(greptime, tmp_path / "wave-1.sql", HOST, 0, no_sleep)
+    statuses = execute_plan(greptime, tmp_path / "wave-1.sql", ENDPOINT, 0, no_sleep)
+
+    assert statuses["copied"] == 4
+    assert tables.fetch(
+        f'SELECT "timestamp", "alarm__value" FROM "{SOUNDER}" '
+        f'WHERE "timestamp" < {ts(7, 0)} ORDER BY 1'
+    ) == [
+        (datetime(2026, 8, 6, 10), True),
+        (datetime(2026, 8, 6, 11), False),
+    ]
+
+
+def test_a_window_that_ends_up_with_other_than_its_rows_stops_the_run_again(
+    tables: Query, greptime: Greptime, tmp_path: Path
+) -> None:
+    plan(greptime, tmp_path)
+    sql_path = tmp_path / "wave-1.sql"
+    tables.execute(
+        f'INSERT INTO "{SOUNDER}" ("timestamp", "topic") '
+        f"VALUES ({ts(6, 12)}, 'marpower/21-fire/sounder/201h1-s')"
+    )
+
+    with pytest.raises(MigrationRefused, match="holds 3 of 2 rows"):
+        execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep)
+    with pytest.raises(MigrationRefused, match="holds 3 of 2 rows"):
+        execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep)
 
 
 def test_execute_refuses_a_changed_sql_file_or_another_host(
@@ -317,12 +349,12 @@ def test_execute_refuses_a_changed_sql_file_or_another_host(
     plan(greptime, tmp_path)
     sql_path = tmp_path / "wave-1.sql"
 
-    with pytest.raises(MigrationRefused, match="planned for 127.0.0.1"):
-        execute_plan(greptime, sql_path, "greptime-zero", 0, no_sleep)
+    with pytest.raises(MigrationRefused, match="planned for 127.0.0.1:4003/public"):
+        execute_plan(greptime, sql_path, "127.0.0.1:4003/other", 0, no_sleep)
 
     sql_path.write_text(sql_path.read_text().replace("2026-08-06", "2026-08-05"))
     with pytest.raises(MigrationRefused, match="sha256 differs"):
-        execute_plan(greptime, sql_path, HOST, 0, no_sleep)
+        execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep)
 
 
 def test_execute_refuses_a_column_that_appeared_since_the_plan(
@@ -334,7 +366,7 @@ def test_execute_refuses_a_column_that_appeared_since_the_plan(
     with pytest.raises(
         MigrationRefused, match="test__value has appeared since the plan"
     ):
-        execute_plan(greptime, tmp_path / "wave-1.sql", HOST, 0, no_sleep)
+        execute_plan(greptime, tmp_path / "wave-1.sql", ENDPOINT, 0, no_sleep)
 
 
 def test_a_plan_built_twice_is_byte_identical(
@@ -405,3 +437,89 @@ def test_plan_refuses_old_topics_whose_periods_overlap_on_one_new_topic(
     assert manifest["units"] == []
     assert len(manifest["refused"]) == 2
     assert all("overlaps" in r["reason"] for r in manifest["refused"])
+
+
+def draft(old_topic: str, start: int, end: int) -> _Draft:
+    unit = SPEC.units[0].model_copy(update={"old_topic": old_topic})
+    return _Draft(
+        unit=unit,
+        pairs=[],
+        filter_columns=[],
+        live_keys=[],
+        absent_old_columns=[],
+        bound=100,
+        bound_from="first row",
+        old_rows=0,
+        windows=[Window(start=start, end=end, rows=1)],
+    )
+
+
+def test_a_period_inside_a_long_one_overlaps_it_even_after_a_gap() -> None:
+    drafts = [draft("long", 0, 50), draft("early", 10, 20), draft("late", 30, 40)]
+
+    assert sorted(_overlapping(drafts)) == [0, 1, 2]
+
+
+def test_execute_refuses_while_another_execute_holds_the_journal(
+    tables: Query, greptime: Greptime, tmp_path: Path
+) -> None:
+    plan(greptime, tmp_path)
+    sql_path = tmp_path / "wave-1.sql"
+    _, journal_path, _ = wave_paths(sql_path)
+
+    with journal_path.open("a") as held:
+        fcntl.flock(held, fcntl.LOCK_EX)
+        with pytest.raises(MigrationRefused, match="Another execute"):
+            execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep)
+
+
+def test_check_reports_the_units_the_plan_refused(
+    tables: Query, greptime: Greptime, tmp_path: Path
+) -> None:
+    tables.execute(
+        f'INSERT INTO "{PANEL}" ("timestamp", "topic") '
+        f"VALUES ({ts(1, 0)}, 'marpower/someone-else')"
+    )
+    plan(greptime, tmp_path)
+    sql_path = tmp_path / "wave-2.sql"
+    execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep)
+
+    check_plan(greptime, sql_path, ENDPOINT)
+
+    _, _, report_path = wave_paths(sql_path)
+    assert "1 units were refused by the plan and not copied" in report_path.read_text()
+
+
+def test_plan_refuses_a_boundary_without_a_timezone() -> None:
+    with pytest.raises(ValidationError, match="timezone"):
+        MigratePlanCmd.model_validate(
+            {"spec": "spec.json", "boundary": "2026-11-17T10:00:00", "out": "out"}
+        )
+
+
+def test_plan_copies_only_the_suffixes_the_spec_lists(
+    tables: Query, greptime: Greptime, tmp_path: Path
+) -> None:
+    value_only = ColumnMap(old="fire_muster", new="muster", suffixes=["value"])
+    spec = MigrationSpec(
+        units=[SPEC.units[2].model_copy(update={"columns": [value_only]})]
+    )
+
+    plan(greptime, tmp_path, spec)
+
+    manifest = json.loads((tmp_path / "wave-2.plan.json").read_text())
+    assert [c["new"] for c in manifest["units"][0]["copies"]] == ["muster__value"]
+
+
+def test_plan_refuses_a_unit_whose_new_table_does_not_exist_yet(
+    tables: Query, greptime: Greptime, tmp_path: Path
+) -> None:
+    tables.drop_table(PANEL)
+
+    plan(greptime, tmp_path)
+
+    manifest = json.loads((tmp_path / "wave-2.plan.json").read_text())
+    assert [(r["new_table"], r["reason"]) for r in manifest["refused"]] == [
+        (PANEL, "The new table doesn't exist yet")
+    ]
+    assert [u["new_table"] for u in manifest["units"]] == [GENERAL]

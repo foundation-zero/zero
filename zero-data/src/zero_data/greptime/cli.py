@@ -1,10 +1,9 @@
 import hashlib
 import logging
-from datetime import datetime
 from pathlib import Path
 from typing import Annotated
 
-from pydantic import BaseModel, Field
+from pydantic import AwareDatetime, BaseModel, Field
 from pydantic_settings import CliApp, CliPositionalArg, CliSubCommand
 
 from zero_data.greptime.config import (
@@ -28,6 +27,10 @@ from zero_data.greptime.snapshot import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _endpoint(connection: GreptimeConnection) -> str:
+    return f"{connection.host}:{connection.pg_port}/{connection.dbname}"
 
 
 def _connection(host: str | None) -> GreptimeConnection:
@@ -87,9 +90,10 @@ class MigratePlanCmd(BaseModel):
 
     spec: CliPositionalArg[Path]
     boundary: Annotated[
-        datetime,
+        AwareDatetime,
         Field(
-            description="Cut-over time: the bound of a new topic that has no row yet."
+            description="Cut-over time, with its timezone: the bound of a new topic "
+            "that has no row yet."
         ),
     ]
     out: Annotated[Path, Field(description="Directory to write the wave files to.")]
@@ -108,7 +112,7 @@ class MigratePlanCmd(BaseModel):
                 Greptime(handle, connection.dbname),
                 read_spec(self.spec),
                 hashlib.sha256(self.spec.read_bytes()).hexdigest(),
-                connection.host,
+                _endpoint(connection),
                 to_nanos(self.boundary),
                 self.table,
                 self.out,
@@ -133,7 +137,7 @@ class MigrateExecuteCmd(BaseModel):
             execute_plan(
                 Greptime(handle, connection.dbname),
                 self.sql,
-                connection.host,
+                _endpoint(connection),
                 self.pause,
             )
 
@@ -151,7 +155,7 @@ class MigrateCheckCmd(BaseModel):
         connection = _connection(self.host)
         with connect(connection) as handle:
             matched = check_plan(
-                Greptime(handle, connection.dbname), self.sql, connection.host
+                Greptime(handle, connection.dbname), self.sql, _endpoint(connection)
             )
         if not matched:
             raise SystemExit(1)
