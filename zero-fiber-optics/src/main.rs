@@ -21,6 +21,7 @@ use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::net::UdpSocket;
+use tokio::signal::unix::{signal, SignalKind};
 use tokio::sync::mpsc::error::TrySendError;
 use tokio::sync::mpsc::{Receiver, Sender};
 use tokio::task::{JoinHandle, JoinSet};
@@ -88,8 +89,8 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-/// Run the port tasks and the MQTT connection until the port tasks end or the
-/// connection gives up.
+/// Run the port tasks and the MQTT connection until the port tasks end, a
+/// shutdown signal arrives, or the connection gives up.
 ///
 /// A broker outage alone never ends it (ADR 0001): the connection task retries
 /// for as long as the outage lasts and only returns once it gives up.
@@ -111,6 +112,7 @@ async fn run_adapter(
 
     tokio::select! {
         () = await_tasks(handles) => Ok(()),
+        result = shutdown_signal() => result,
         // The connection task has logged why it stopped.
         _ = tokio::spawn(connection.run(readiness)) => bail!("MQTT connection given up"),
     }
@@ -468,6 +470,17 @@ fn spawn_watchdog_task(ports: PortMetricsByPort, mqtt_metrics: Arc<MqttMetrics>)
             }
         }
     })
+}
+
+/// Wait for SIGINT or SIGTERM; as PID 1 the process ignores an unhandled SIGTERM.
+async fn shutdown_signal() -> Result<()> {
+    let mut terminate = signal(SignalKind::terminate())?;
+    let name = tokio::select! {
+        result = tokio::signal::ctrl_c() => result.map(|()| "SIGINT")?,
+        _ = terminate.recv() => "SIGTERM",
+    };
+    info!("Shutting down on {name}");
+    Ok(())
 }
 
 async fn await_tasks(handles: Vec<JoinHandle<()>>) {
