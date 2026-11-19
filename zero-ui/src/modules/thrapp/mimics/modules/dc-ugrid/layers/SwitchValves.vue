@@ -20,7 +20,7 @@ const switchValves = getTooltipContexts(MimicComponentType.SwitchValve, ["1069-0
       <TagLabelInstance
         target-x="300"
         :target-width="ACTUATED_VALVE_WIDTH"
-        y="119"
+        y="123"
         :tag-id="switchValves['1069-02'].tooltip?.yardTag"
       />
     </SwitchValveInstance>
@@ -33,7 +33,7 @@ const switchValves = getTooltipContexts(MimicComponentType.SwitchValve, ["1069-0
       <TagLabelInstance
         target-x="300"
         :target-width="ACTUATED_VALVE_WIDTH"
-        y="329"
+        y="333"
         :tag-id="switchValves['1069-03'].tooltip?.yardTag"
       />
     </SwitchValveInstance>

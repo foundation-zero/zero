@@ -23,7 +23,7 @@ const manualValves = getTooltipContexts(MimicComponentType.ManualValve, ["1168-1
       <TagLabelInstance
         target-x="296"
         :target-width="MANUAL_VALVE_WIDTH"
-        y="3"
+        y="7"
         :tag-id="manualValves['1168-10'].tooltip?.yardTag"
       />
     </ManualValveInstance>
@@ -37,7 +37,7 @@ const manualValves = getTooltipContexts(MimicComponentType.ManualValve, ["1168-1
       <TagLabelInstance
         target-x="297"
         :target-width="MANUAL_VALVE_WIDTH"
-        y="219"
+        y="223"
         :tag-id="manualValves['1168-11'].tooltip?.yardTag"
       />
     </ManualValveInstance>
