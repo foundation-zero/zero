@@ -25,16 +25,11 @@ export const resetSplashEntry = () => {
   hasEntered = false;
 };
 
-const prefersReducedMotion = () =>
-  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-
 export const rippleDelay = (distance: number, entry: SplashEntry) =>
   distance * RIPPLE_DELAY_PER_PIXEL * SPLASH_ENTRY_MOTION[entry].delay;
 
 /** Group headings fade in while tiles scale up from the screen centre outward. */
 export const playRipple = (root: HTMLElement, entry: SplashEntry): Animation[] => {
-  if (prefersReducedMotion()) return [];
-
   const motion = SPLASH_ENTRY_MOTION[entry];
   const originX = window.innerWidth * RIPPLE_ORIGIN.x;
   const originY = window.innerHeight * RIPPLE_ORIGIN.y;
@@ -134,11 +129,9 @@ export const fitSplash = (screen: HTMLElement, header: HTMLElement, area: HTMLEl
 };
 
 /** Writes the wordmark by drawing the pen stroke that masks it. */
-export const drawWordmark = (pen: SVGPathElement): Animation | undefined => {
-  if (prefersReducedMotion()) return undefined;
-  return pen.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], {
+export const drawWordmark = (pen: SVGPathElement): Animation =>
+  pen.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], {
     duration: WORDMARK_DURATION,
     easing: WORDMARK_EASING,
     fill: "both",
   });
-};

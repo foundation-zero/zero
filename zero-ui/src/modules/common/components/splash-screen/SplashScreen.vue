@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useResizeObserver } from "@vueuse/core";
+import { usePreferredReducedMotion, useResizeObserver } from "@vueuse/core";
 import { onBeforeUnmount, onMounted, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 import SplashDarkModeToggle from "./SplashDarkModeToggle.vue";
@@ -12,6 +12,7 @@ import SplashScreenWordmark from "./SplashScreenWordmark.vue";
 
 const { t } = useI18n();
 const entry = takeSplashEntry();
+const reducedMotion = usePreferredReducedMotion();
 const root = useTemplateRef<HTMLElement>("root");
 const header = useTemplateRef<HTMLElement>("header");
 const area = useTemplateRef<HTMLElement>("area");
@@ -24,7 +25,7 @@ const fit = () => {
 useResizeObserver(root, fit);
 onMounted(() => {
   fit();
-  if (root.value) animations = playRipple(root.value, entry);
+  if (root.value && reducedMotion.value !== "reduce") animations = playRipple(root.value, entry);
 });
 onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
 </script>
@@ -41,7 +42,7 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
       class="relative flex justify-center px-(--splash-margin) pt-(--splash-head-top)"
     >
       <SplashScreenWordmark
-        :animated="entry === 'cold'"
+        :animated="entry === 'cold' && reducedMotion !== 'reduce'"
         class="w-(--splash-wordmark)"
       />
       <SplashDarkModeToggle
