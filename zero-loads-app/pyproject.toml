@@ -60,7 +60,7 @@ test = [
 default-groups = ["dev", "test"]
 
 [tool.uv.sources]
-generator = { path = "../zero-generator", editable = true }
+generator = { path = "../packages/py/zero-generator", editable = true }
 
 [tool.mypy]
 plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"

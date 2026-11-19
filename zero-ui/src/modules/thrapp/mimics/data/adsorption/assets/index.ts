@@ -8,16 +8,12 @@ export const ADSORPTION_ASSET_DATA = toFieldsMap({
   [MimicComponentType.AdsorptionChiller]: {
     "1034": toInstance<MimicComponentType.AdsorptionChiller>({
       controls: {
-        chiller: getField(
-          ControlComponentType.AdsorptionChiller,
-          "adsorption",
-          "adsorptionChiller",
-        ),
+        chiller: getField(ControlComponentType.AdsorptionChiller, "adsorption", "placeholder"),
       },
       controllerState: {},
       custom: {},
       parameters: {},
-      source: getField(SensorComponentType.AdsorptionChiller, "adsorption", "adsorptionChiller"),
+      source: getField(SensorComponentType.AdsorptionChiller, "adsorption", "placeholder"),
       sensors: {
         highTemperature: getField(
           SensorComponentType.HeatTransferDevice,

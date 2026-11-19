@@ -109,9 +109,6 @@ generate_asyncapi output="../specs/thrs-control.json":
 test_spec *args:
     uv run pytest {{ cov }} tests/spec {{ args }}
 
-export_schema:
-    uv run strawberry export-schema thrs.graphql.strawberry --output ../zero-ui/src/modules/thrapp/graphql/schema.graphql
-
 manual_scripts := "docs/skills/thrs-module-manual/scripts"
 manuals := "../zero-ui/src/modules/thrapp/documentation"
 

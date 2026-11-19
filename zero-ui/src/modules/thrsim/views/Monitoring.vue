@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatInt } from "@/modules/common/lib/utils";
-import { CONTROL_FIELDS, DEFINITIONS, SENSOR_FIELDS } from "@/modules/thrapp/lib/consts";
+import { CONTROL_FIELDS, ControlledModule, SENSOR_FIELDS } from "@/modules/thrapp/lib/consts";
 import { inject, Ref, toRef, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 import {
@@ -19,7 +19,7 @@ const { t } = useI18n();
 const data = toRef(useThrsHistory(), "data");
 const SENSOR_VALUES = Array.from(new Set(Object.values(SENSOR_FIELDS).flat()));
 const CONTROL_VALUES = Array.from(new Set(Object.values(CONTROL_FIELDS).flat()));
-const currentDefinition = inject<Ref<keyof typeof DEFINITIONS>>("currentModule")!;
+const currentDefinition = inject<Ref<ControlledModule>>("currentModule")!;
 
 const { activeQuery } = storeToRefs(useThrsHistory());
 watchEffect(() => (activeQuery.value = MONITORING_PAGE_QUERIES[currentDefinition.value]));

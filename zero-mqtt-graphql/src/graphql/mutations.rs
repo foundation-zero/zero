@@ -6,12 +6,11 @@ use std::str::FromStr;
 use std::sync::Arc;
 use std::time::Duration;
 
-use anyhow::{Context, bail};
+use anyhow::{Context, anyhow, bail};
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{
-    Field, FieldFuture, FieldValue, InputObject, InputValue, Type, TypeRef,
+    Field, FieldFuture, FieldValue, InputObject, InputValue, Type, TypeRef, ValueAccessor,
 };
-use async_graphql::indexmap::IndexMap;
 use jiff::{Span, SpanCompare, Timestamp, civil};
 use jsonschema::Validator;
 use log::{info, warn};
@@ -114,14 +113,13 @@ fn set_field(name: &str, input_type: Option<&str>, return_type: TypeRef, target:
     let target = Arc::new(target);
     let field = Field::new(name, return_type, move |ctx| {
         let target = target.clone();
+        // A signal has no `input` argument: it sets no fields.
+        let given = ctx.args.get("input").map_or_else(
+            || Ok(JsonValue::Object(Map::new())),
+            |input| input_fields(&target.fields, &input),
+        );
         FieldFuture::new(async move {
-            // A signal has no `input` argument: it sets no fields.
-            let input = ctx.args.get("input").map_or_else(
-                || GraphQlValue::Object(IndexMap::default()),
-                |input| input.as_value().clone(),
-            );
-            let value = target
-                .set(&input)
+            let value = async { target.set(given?).await }
                 .await
                 .map_err(|e| async_graphql::Error::new(format!("{e:#}")))?;
             Ok(Some(FieldValue::value(value)))
@@ -158,7 +156,7 @@ fn input_objects(spec: &str, name: &str, fields: &BTreeMap<String, FieldType>) -
 /// to `nested`.
 fn input_type_ref(spec: &str, field_type: &FieldType, nested: &mut Vec<InputObject>) -> TypeRef {
     match field_type {
-        FieldType::Float => TypeRef::named(TypeRef::FLOAT),
+        FieldType::Float | FieldType::Float32 => TypeRef::named(TypeRef::FLOAT),
         FieldType::Int => TypeRef::named(TypeRef::INT),
         FieldType::Boolean => TypeRef::named(TypeRef::BOOLEAN),
         FieldType::String => TypeRef::named(TypeRef::STRING),
@@ -199,6 +197,7 @@ fn field_type_enums(spec: &str, field_type: &FieldType) -> Vec<Type> {
         | FieldType::Duration
         | FieldType::String
         | FieldType::Float
+        | FieldType::Float32
         | FieldType::Int
         | FieldType::Boolean => {
             vec![]
@@ -217,12 +216,12 @@ struct Target {
 }
 
 impl Target {
-    /// Publish `input`. Without a State topic, returns `true` once handed to
-    /// the MQTT client. With one, fills omitted fields from the State value
-    /// first (see [`merge`]), then returns the first State value that shows
-    /// every given leaf.
-    async fn set(&self, input: &GraphQlValue) -> anyhow::Result<GraphQlValue> {
-        let given = input_payload(input, &self.fields)?;
+    /// Publish `given`, the input as a payload (see [`input_fields`]).
+    /// Without a State topic, returns `true` once handed to the MQTT client.
+    /// With one, fills omitted fields from the State value first (see
+    /// [`merge`]), then returns the first State value that shows every given
+    /// leaf.
+    async fn set(&self, given: JsonValue) -> anyhow::Result<GraphQlValue> {
         let Some(state_topic) = &self.state_topic else {
             self.publish(&given).await?;
             return Ok(GraphQlValue::Boolean(true));
@@ -291,42 +290,55 @@ async fn next_update(updates: &mut Receiver<String>, topic: &str, deadline: Inst
     }
 }
 
-/// The client-given input as a payload keyed by raw field names. Omitted
-/// fields stay out; explicit nulls are kept.
-fn input_payload(
-    input: &GraphQlValue,
+/// `value`, an input object of `fields`, as a payload keyed by raw field
+/// names. Omitted fields stay out; explicit nulls are kept.
+fn input_fields(
     fields: &BTreeMap<String, FieldType>,
+    value: &ValueAccessor<'_>,
 ) -> anyhow::Result<JsonValue> {
-    let GraphQlValue::Object(input) = input else {
-        bail!("input is not an object");
-    };
+    let object = value.object().map_err(graphql_error)?;
     fields
         .iter()
         .filter_map(|(raw_name, field_type)| {
-            let value = input.get(sanitize_to_graphql_name(raw_name).as_str())?;
-            Some(input_json(field_type, value).map(|json| (raw_name.clone(), json)))
+            let value = object.get(sanitize_to_graphql_name(raw_name).as_str())?;
+            Some(input_value(field_type, &value).map(|json| (raw_name.clone(), json)))
         })
         .collect::<anyhow::Result<Map<_, _>>>()
         .map(JsonValue::Object)
 }
 
-/// One client-given value as JSON, with objects, also inside lists, keyed
-/// by raw field names, and enum values as their raw value.
-fn input_json(field_type: &FieldType, value: &GraphQlValue) -> anyhow::Result<JsonValue> {
-    match (field_type, value) {
-        (FieldType::Object(_, nested), GraphQlValue::Object(_)) => input_payload(value, nested),
-        (FieldType::Enum(name, values), GraphQlValue::Enum(graphql_name)) => values
+/// `value` as the input of a field of `field_type`, as JSON: objects, also
+/// inside lists, keyed by raw field names, and enum values as their raw
+/// value. async-graphql's accessors read a value written in the query and one
+/// given in the variables alike.
+fn input_value(field_type: &FieldType, value: &ValueAccessor<'_>) -> anyhow::Result<JsonValue> {
+    if value.is_null() {
+        return Ok(JsonValue::Null);
+    }
+    match field_type {
+        FieldType::Object(_, nested) => input_fields(nested, value),
+        FieldType::Enum(name, values) => {
+            let graphql_name = value.enum_name().map_err(graphql_error)?;
+            values
+                .iter()
+                .find(|enum_value| enum_value.name == graphql_name)
+                .map(|enum_value| enum_value.raw.clone())
+                .with_context(|| format!("{graphql_name} is not one of the values of enum {name}"))
+        }
+        FieldType::List(element) => value
+            .list()
+            .map_err(graphql_error)?
             .iter()
-            .find(|enum_value| enum_value.name == graphql_name.as_str())
-            .map(|enum_value| enum_value.raw.clone())
-            .with_context(|| format!("{graphql_name} is not one of the values of enum {name}")),
-        (FieldType::List(element), GraphQlValue::List(items)) => items
-            .iter()
-            .map(|item| input_json(element, item))
+            .map(|item| input_value(element, &item))
             .collect::<anyhow::Result<Vec<_>>>()
             .map(JsonValue::Array),
-        _ => value.clone().into_json().map_err(Into::into),
+        _ => Ok(value.as_value().clone().into_json()?),
     }
+}
+
+/// An async-graphql error, which is no `std::error::Error`, as an `anyhow` one.
+fn graphql_error(error: async_graphql::Error) -> anyhow::Error {
+    anyhow!(error.message)
 }
 
 /// The part of a State value that the Receive Topic's `fields` describe,
@@ -397,22 +409,24 @@ fn equal_fields(
 /// type when `None`. An object compares as in [`equal_fields`], a list
 /// element by element at the same length, and a string as in
 /// [`equal_string`]. Numbers compare by value, so `21` and `21.0` are equal,
-/// but a rounded or clamped value is not.
+/// but a rounded or clamped value is not; a [`FieldType::Float32`] compares
+/// at 32-bit precision, so `0.3` equals the `0.30000001192092896` its source
+/// keeps.
 #[allow(clippy::float_cmp)]
 pub(super) fn equal_value(
     state: &JsonValue,
     given: &JsonValue,
     field_type: Option<&FieldType>,
 ) -> bool {
-    match (state, given) {
-        (_, JsonValue::Object(_)) => {
+    match (state, given, field_type) {
+        (_, JsonValue::Object(_), _) => {
             let fields = match field_type {
                 Some(FieldType::Object(_, fields)) => Some(fields.as_ref()),
                 _ => None,
             };
             equal_fields(state, given, fields)
         }
-        (JsonValue::Array(state), JsonValue::Array(given)) => {
+        (JsonValue::Array(state), JsonValue::Array(given), _) => {
             let element = match field_type {
                 Some(FieldType::List(element)) => Some(element.as_ref()),
                 _ => None,
@@ -423,8 +437,11 @@ pub(super) fn equal_value(
                     .zip(given)
                     .all(|(state, given)| equal_value(state, given, element))
         }
-        (JsonValue::Number(state), JsonValue::Number(given)) => state.as_f64() == given.as_f64(),
-        (JsonValue::String(state), JsonValue::String(given)) => {
+        (JsonValue::Number(state), JsonValue::Number(given), Some(FieldType::Float32)) => {
+            as_f32(state) == as_f32(given)
+        }
+        (JsonValue::Number(state), JsonValue::Number(given), _) => state.as_f64() == given.as_f64(),
+        (JsonValue::String(state), JsonValue::String(given), _) => {
             equal_string(state, given, field_type)
         }
         _ => state == given,
@@ -456,6 +473,15 @@ fn equal_string(state: &str, given: &str, field_type: Option<&FieldType>) -> boo
         _ => None,
     };
     equal.unwrap_or(state == given)
+}
+
+/// `number` rounded to the nearest 32-bit float.
+#[allow(
+    clippy::cast_possible_truncation,
+    reason = "rounding to 32 bits is the point"
+)]
+fn as_f32(number: &serde_json::Number) -> Option<f32> {
+    number.as_f64().map(|number| number as f32)
 }
 
 #[cfg(test)]
@@ -722,12 +748,12 @@ mod tests {
     async fn execute(
         cache: &Arc<TopicCache>,
         service: &Arc<Service>,
-        query: &str,
+        request: impl Into<async_graphql::Request>,
     ) -> async_graphql::Response {
         let mutations = mutations_through(service.clone());
         build_schema(&api(), cache, Some(&mutations))
             .unwrap()
-            .execute(query)
+            .execute(request)
             .await
     }
 
@@ -1262,6 +1288,36 @@ mod tests {
 
     #[tokio::test]
     #[test_log::test]
+    async fn test_mutation_publishes_the_raw_value_of_an_enum_given_in_variables() {
+        let cache = Arc::new(TopicCache::new());
+        cache.insert("room/fan", json!({"mode": "auto", "speeds": ["auto"]}));
+        let service = service(&cache, Some(Clone::clone));
+
+        // Variables come as JSON, so an enum value in them is a string.
+        let response = execute(
+            &cache,
+            &service,
+            async_graphql::Request::new(
+                "mutation ($input: RoomRoomFanSetInput!) { room { fan(input: $input) { mode } } }",
+            )
+            .variables(async_graphql::Variables::from_json(json!({
+                "input": {"mode": "HIGH_SPEED", "speeds": ["AUTO", "HIGH_SPEED"]}
+            }))),
+        )
+        .await;
+
+        assert!(response.errors.is_empty(), "{:?}", response.errors);
+        assert_eq!(
+            *service.published.lock().unwrap(),
+            [(
+                "room/fan/set".to_string(),
+                json!({"mode": "high speed", "speeds": ["auto", "high speed"]})
+            )]
+        );
+    }
+
+    #[tokio::test]
+    #[test_log::test]
     async fn test_integer_enums_are_named_in_queries_and_mutations() {
         let cache = Arc::new(TopicCache::new());
         // As published by a service that writes integers as floats.
@@ -1327,6 +1383,27 @@ mod tests {
             &label("2026-11-10T09:30:00.123000Z"),
             label("2026-11-10T09:30:00.123Z")
         ));
+    }
+
+    #[test_log::test]
+    fn test_equal_fields_compares_float32_at_32_bit_precision() {
+        let fields = BTreeMap::from([
+            (
+                "dutypoint".to_string(),
+                stamped("StampedFloat32", FieldType::Float32),
+            ),
+            ("measured".to_string(), FieldType::Float),
+        ]);
+        let equal =
+            |state: &JsonValue, given: JsonValue| equal_fields(state, &given, Some(&fields));
+        let dutypoint = |value: f64| json!({"dutypoint": {"Value": value}});
+        let measured = |value: f64| json!({"measured": value});
+
+        // What the AMCS reports for a duty point written as 0.3.
+        assert!(equal(&dutypoint(0.300_000_011_920_928_96), dutypoint(0.3)));
+        assert!(!equal(&dutypoint(0.300_000_1), dutypoint(0.3)));
+        // Other numbers still compare exactly.
+        assert!(!equal(&measured(0.300_000_011_920_928_96), measured(0.3)));
     }
 
     #[test_log::test]

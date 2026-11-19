@@ -121,13 +121,11 @@ async def test_control_channels_to_control_api_channels_roundtrip_all_channels(
                 automatic_mode=DemoMode(mode="automatic")
             )
 
-            await simulation_channels.send_sensor_values(
+            await simulation_channels.send_device_values(
                 CombinedValues(
                     {"thrusters": DemoMqttSensorValues(value=DemoComponent(value=1.0))}
-                )
-            )
-            await simulation_channels.send_actuated_control_values(
-                CombinedValues({"thrusters": expected_control_values})
+                ),
+                CombinedValues({"thrusters": expected_control_values}),
             )
             await control_channels.send_control_values(expected_control_values)
             await control_channels.send_parameters(expected_parameters)
@@ -218,9 +216,8 @@ async def test_actuated_control_values_roundtrip(
 ):
     """The simulator merges sensor values and actuated control values into one
     payload per component topic, like the AMCS publishes them. The control and
-    API sides pick both halves out of that shared payload, while sensors-only
-    payloads and plain-key commands on the Command topics must not complete
-    the actuated mapping."""
+    API sides pick both halves out of that shared payload, while plain-key
+    commands on the Command topics must not complete the actuated mapping."""
 
     class SharedDemoSensorValues(ThrsValues):
         pump: sensor.Pump
@@ -307,16 +304,7 @@ async def test_actuated_control_values_roundtrip(
         connector_task = create_task(await connector.run())
 
         try:
-            await simulation_channels.send_sensor_values(sensor_values)
-            await asyncio.sleep(0.1)
-            # Assert sensor values are not received, because the actuated control values have not been sent yet, so the merged payload is not complete.
-            assert control_channels.get_sensor_values() is None
-            assert api_channels.get_sensor_values() is None
-            assert control_channels.get_actuated_control_values() is None
-            assert api_channels.get_actuated_control_values() is None
-
-            # The merged publish completes both mappings on both sides.
-            await simulation_channels.send_actuated_control_values(actuated)
+            await simulation_channels.send_device_values(sensor_values, actuated)
             await _wait_until(
                 lambda: (
                     control_channels.get_sensor_values() == shared_sensor_model

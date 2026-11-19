@@ -1,5 +1,9 @@
 import { SimulationComponentType, SimulationDefinitions } from "@/modules/thrsim/types";
 
+// TODO: open, generate from the thrs-control Spec's simulation inputs and outputs, like thrapp's
+// definitions. Kept by hand until then: the last ones generated from thrs-api's schema, a type of
+// simulation each.
+
 const toSimulationDefinition = <T extends SimulationDefinitions>(input: T): T => input;
 
 export const ADSORPTION_SIMULATION_INPUTS = toSimulationDefinition({

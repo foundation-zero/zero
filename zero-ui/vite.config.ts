@@ -23,20 +23,6 @@ export default defineConfig(({ mode }) => {
             return path.replace(/^\/graphql-ws/, "graphql");
           },
         },
-        "/thrs-ws": {
-          target: env.VITE_THRS_WS_SERVER,
-          ws: true,
-          rewrite(path) {
-            return path.replace(/^\/thrs-ws/, "");
-          },
-        },
-        "/api/thrs": {
-          target: env.VITE_THRS_API_SERVER,
-          changeOrigin: true,
-          rewrite(path) {
-            return path.replace(/^\/api\/thrs/, "");
-          },
-        },
         "/api/loads": {
           target: env.VITE_LOADS_API_SERVER,
           changeOrigin: true,

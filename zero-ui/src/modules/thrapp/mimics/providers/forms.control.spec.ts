@@ -65,15 +65,21 @@ describe("control value form", () => {
     expect(form.isDirty.value).toBe(false);
   });
 
-  it("submits the live values merged with the edits and clears the edits", async () => {
+  it("submits only the edited fields and clears the edits", async () => {
     const form = createFormContext(source);
 
     form.update("dutypoint", 0.8);
     await form.submit();
 
-    expect(setControlValue).toHaveBeenCalledWith(source, { dutypoint: 0.8, on: true });
+    expect(setControlValue).toHaveBeenCalledWith(source, { dutypoint: 0.8 });
     expect(form.isDirty.value).toBe(false);
     expect(form.isPending.value).toBe(false);
+  });
+
+  it("does not submit without edits", async () => {
+    await createFormContext(source).submit();
+
+    expect(setControlValue).not.toHaveBeenCalled();
   });
 
   it("does not submit in automatic mode", async () => {

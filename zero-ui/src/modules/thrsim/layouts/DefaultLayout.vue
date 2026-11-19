@@ -8,8 +8,8 @@ import TopNav from "@/modules/common/components/navigation/TopNav.vue";
 import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.vue";
 import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
 import ControlActions from "@/modules/thrapp/components/control-actions/ControlActions.vue";
-import { client } from "@/modules/thrapp/graphql/client";
-import { ThrsModules } from "@/modules/thrapp/lib/consts.types";
+import { mqttGraphqlClient } from "@/modules/thrapp/graphql/client";
+import { ControlledModule } from "@/modules/thrapp/lib/consts";
 import { MimicKey } from "@/modules/thrapp/router/mimics";
 import { provideClient } from "@urql/vue";
 import { computed, onMounted, onUnmounted, provide } from "vue";
@@ -19,7 +19,7 @@ import SubNavTabs from "../components/SubNavTabs.vue";
 import { useSimulationStore } from "../stores/simulation";
 
 // Provide the URL client to inner scope. Pinia stores have their own scope, so they need to manually provide the correct context.
-provideClient(client);
+provideClient(mqttGraphqlClient);
 
 const { t } = useI18n();
 
@@ -95,7 +95,7 @@ onUnmounted(stopPolling);
         v-if="currentRoute.params.module"
         #right
       >
-        <ControlActions :active-module="currentModuleKey as keyof ThrsModules" />
+        <ControlActions :active-module="currentModuleKey as ControlledModule" />
       </template>
     </TopNavToolbar>
   </TopNav>

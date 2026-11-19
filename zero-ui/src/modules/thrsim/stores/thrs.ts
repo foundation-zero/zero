@@ -1,22 +1,18 @@
 import i18n from "@/i18n";
 import { PID } from "@/modules/common/types";
-import { ThrsModules } from "@/modules/thrapp/lib/consts";
-import { ThrsSimulationType } from "@/modules/thrsim/lib/consts";
+import { ControlledModule } from "@/modules/thrapp/lib/consts";
+import { controllerMutation, valueInputs } from "@/modules/thrapp/lib/mqtt-graphql.utils";
+import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import { unstamp } from "@common/lib/utils";
 import { Stamped } from "@common/types";
-import { useClientHandle } from "@urql/vue";
 import { computed, ref, Ref, WritableComputedRef } from "vue";
+import { useSimulationStore } from "./simulation";
 
 type FormValue<T> = {
   value: WritableComputedRef<T>;
   isDirty: Ref<boolean>;
 };
 type Unstamp<T> = T extends Stamped<infer U> ? U : T;
-
-const capitalizeFirst = (a: string) => {
-  const f = a.substring(0, 1).toUpperCase();
-  return `${f}${a.substring(1)}`;
-};
 
 const valueWithDirty = <T>(value: Ref<T>): FormValue<Unstamp<T>> => {
   const dirtyValue = ref<Unstamp<T> | null>(null);
@@ -42,30 +38,6 @@ const valueWithDirty = <T>(value: Ref<T>): FormValue<Unstamp<T>> => {
   } as FormValue<Unstamp<T>>;
 };
 
-export const enum MutationType {
-  Control = "control",
-  Parameter = "parameter",
-  Simulation = "simulation",
-}
-
-export type InputType = {
-  [MutationType.Control]: ["PumpInputType!", "ValveInputType!"];
-  [MutationType.Parameter]: ["Float!", "[Float!]!", "Boolean!"];
-  [MutationType.Simulation]: [
-    "ThrusterInputType!",
-    "BoundaryInputType!",
-    "FlowBoundaryInputType!",
-    "PcsInputType!",
-    "TemperatureBoundaryInputType!",
-    "OverpressureTemperatureBoundaryInputType!",
-    "HeatSourceInputType!",
-    "ActiveHeatSourceInputType!",
-    "UgridInputType!",
-    "PropulsionDriveInputType!",
-    "HvacExchangerInputType!",
-  ];
-};
-
 export type FieldObject = Record<string, unknown>;
 export type FieldType = boolean | string | number | PID;
 
@@ -79,72 +51,50 @@ export type FormValues<
   [key in K]: FormValue<key extends keyof A["value"] ? Unstamp<A["value"][key]> : A["value"]>;
 };
 
-export const controlValuesForm = <
-  Module extends keyof ThrsModules | ThrsSimulationType,
-  Mutation extends MutationType,
-  Input extends InputType[Mutation],
-  A extends Ref<FieldObject | FieldType>,
-  K extends ExtractRefKeys<A>,
-  Form extends FormValues<A>,
->(
-  module: Module,
-  mutationType: Mutation,
-  inputType: Input[number],
-  componentName: string,
-  values: A,
-  fields: K[],
-  returnValuesQuery: string,
-  emit: (event: "update:controlValues", value: A["value"]) => void,
-): {
+type ValuesForm<Form> = {
   submit: () => Promise<void>;
   isSubmitting: Ref<boolean>;
   error: Ref<null | string>;
-} & Form => {
+} & Form;
+
+// A form over some fields of a component's values. Submitting sends the edited fields and clears
+// the edits once sent; the sender reloads what the page shows.
+const editedValuesForm = <
+  A extends Ref<FieldObject>,
+  K extends ExtractRefKeys<A>,
+  Form extends FormValues<A>,
+>(
+  values: A,
+  fields: K[],
+  send: (inputs: Record<string, unknown>) => Promise<{ error?: { message: string } }>,
+): ValuesForm<Form> => {
   const refs = Object.fromEntries(
-    fields.map((field: K) => [
-      field,
-      valueWithDirty(
-        computed(() =>
-          typeof values.value === "object" && !Array.isArray(values.value)
-            ? values.value[field]
-            : values.value,
-        ),
-      ),
-    ]),
+    fields.map((field: K) => [field, valueWithDirty(computed(() => values.value[field]))]),
   );
   const isSubmitting = ref(false);
   const error = ref<null | string>(null);
-  const { client } = useClientHandle();
 
   const submit = async () => {
-    const input =
-      typeof values.value === "object" && !Array.isArray(values.value)
-        ? Object.fromEntries(Object.entries(refs).map(([key, { value }]) => [key, value.value]))
-        : refs["value"].value.value;
-
-    const mutation = `${module}${capitalizeFirst(mutationType)}Set${capitalizeFirst(componentName)}`;
-    const query = `mutation ($input: ${inputType}) {
-      ${mutation}(value: $input) {
-        ${returnValuesQuery}
-      }
-    }`;
+    const edited = Object.fromEntries(
+      Object.entries(refs)
+        .filter(([_, { isDirty }]) => isDirty.value)
+        .map(([key, { value }]) => [key, value.value]),
+    );
     try {
       isSubmitting.value = true;
       error.value = null;
 
-      const result = await client.mutation(query, { input });
+      const result = await send(valueInputs(edited));
       if (result.error) {
         error.value = result.error.message;
         return;
       }
-      const newControlValues = result.data?.[mutation];
-      if (newControlValues === undefined) {
-        error.value = i18n.global.t("thrs.labels.failedToSubmit");
-        return;
-      }
-      emit("update:controlValues", newControlValues);
-      for (const ref in refs) {
-        refs[ref].isDirty.value = false;
+      // The mutation returns once the change is confirmed, and the fields stay editable
+      // meanwhile: a field changed during the wait keeps its edit for the next submit.
+      for (const [field, ref] of Object.entries(refs)) {
+        if (field in edited && ref.value.value === edited[field]) {
+          ref.isDirty.value = false;
+        }
       }
     } catch (err) {
       error.value =
@@ -154,9 +104,41 @@ export const controlValuesForm = <
     }
   };
 
-  return { submit, isSubmitting, error, ...refs } as {
-    submit: () => Promise<void>;
-    isSubmitting: Ref<boolean>;
-    error: Ref<null | string>;
-  } & Form;
+  return { submit, isSubmitting, error, ...refs } as ValuesForm<Form>;
 };
+
+// A control's form on thrsim's Controls page: the edits go to the module controller's control
+// values on the MQTT GraphQL API, which returns once the AMCS has actuated them.
+export const controlForm = <
+  A extends Ref<FieldObject>,
+  K extends ExtractRefKeys<A>,
+  Form extends FormValues<A>,
+>(
+  module: ControlledModule,
+  componentName: string,
+  values: A,
+  fields: K[],
+): ValuesForm<Form> =>
+  editedValuesForm<A, K, Form>(values, fields, async (stamped) => {
+    const history = useThrsHistory();
+    const result = await history.mutate(controllerMutation(module, "controlValues"), {
+      input: { [componentName]: stamped },
+    });
+    if (!result.error) await history.refresh();
+    return result;
+  });
+
+// A simulation input's form on thrsim's Simulation page: the edits go to the simulator's inputs
+// on the MQTT GraphQL API.
+export const simulationInputsForm = <
+  A extends Ref<FieldObject>,
+  K extends ExtractRefKeys<A>,
+  Form extends FormValues<A>,
+>(
+  componentName: string,
+  values: A,
+  fields: K[],
+): ValuesForm<Form> =>
+  editedValuesForm<A, K, Form>(values, fields, (stamped) =>
+    useSimulationStore().setInputs({ [componentName]: stamped }),
+  );

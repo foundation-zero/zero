@@ -15,8 +15,8 @@
               "description": "Main GraphQL (Hasura) websocket (subscriptions)",
               "type": "string"
             },
-            "VITE_THRS_API_SERVER_URL": {
-              "description": "THRS API GraphQL endpoint",
+            "VITE_MQTT_GRAPHQL_API_SERVER_URL": {
+              "description": "MQTT GraphQL API endpoint (THRS views, power tags); defaults to /api/mqtt-graphql/graphql",
               "type": "string"
             },
             "VITE_LOADS_API_SERVER_URL": {
@@ -35,7 +35,6 @@
           "required": [
             "VITE_GRAPHQL_URL",
             "VITE_GRAPHQL_WS_URL",
-            "VITE_THRS_API_SERVER_URL",
             "VITE_LOADS_API_SERVER_URL"
           ]
         }

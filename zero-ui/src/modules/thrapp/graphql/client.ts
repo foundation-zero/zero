@@ -1,11 +1,12 @@
 import { ENV } from "@env";
 import { Client, fetchExchange, OperationContext } from "@urql/vue";
 
-export const context: Partial<OperationContext> = {
-  url: ENV.VITE_THRS_API_SERVER_URL ?? "/api/thrs/graphql",
-};
+// The MQTT GraphQL API (zero-mqtt-graphql), which thrapp and thrsim read from and write to.
+const mqttGraphqlUrl = ENV.VITE_MQTT_GRAPHQL_API_SERVER_URL ?? "/api/mqtt-graphql/graphql";
 
-export const client = new Client({
-  url: context.url!,
+export const mqttGraphqlContext: Partial<OperationContext> = { url: mqttGraphqlUrl };
+
+export const mqttGraphqlClient = new Client({
+  url: mqttGraphqlUrl,
   exchanges: [fetchExchange],
 });

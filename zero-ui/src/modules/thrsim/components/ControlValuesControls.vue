@@ -2,7 +2,7 @@
   setup
   lang="ts"
   generic="
-    K extends keyof ThrsModules,
+    K extends ControlledModule,
     Definitions extends ControlDefinitions,
     Values extends ExtractAllValues<Definitions>
   "
@@ -10,7 +10,7 @@
 import { ExtractAllValues } from "@/modules/thrsim/types";
 import { ControlComponentType, ControlDefinitions } from "@/modules/thrapp/types/thrs";
 
-import { QUERIES, ThrsModules } from "@/modules/thrapp/lib/consts";
+import { ControlledModule } from "@/modules/thrapp/lib/consts";
 import { type Component, computed, toRefs } from "vue";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import ModuleControls from "./controls/ModuleControls.vue";
@@ -44,14 +44,13 @@ const COMPONENTS: Record<ControlComponentType, Component | null> = {
     :data="controlsData"
     :disabled="false"
   >
-    <template #default="{ componentName, componentDefinition, setControlValues, values }">
+    <template #default="{ componentName, componentDefinition, values }">
       <component
         :is="COMPONENTS[componentDefinition.componentType]"
         v-if="COMPONENTS[componentDefinition.componentType]"
         :definition="componentDefinition"
         :module="module"
         :values="values"
-        :query="QUERIES[module].controlValues"
         :component-name="componentName"
         :component-type="componentDefinition.componentType"
         :yard-tag="componentDefinition.yardTag"
@@ -60,7 +59,6 @@ const COMPONENTS: Record<ControlComponentType, Component | null> = {
             ? componentDefinition.valveType
             : undefined
         "
-        @update:control-values="setControlValues"
       />
     </template>
   </ModuleControls>

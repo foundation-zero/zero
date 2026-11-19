@@ -26,7 +26,9 @@ from thrs.input_output.definitions.sensor import (
     TemperatureDelta,
     TemperatureSensor,
 )
+from thrs.input_output.definitions.wire_context import WireContext
 from thrs.orchestration.comms import (
+    PENDING_PUBLISHES_WARNING_THRESHOLD,
     ControlChannels,
     DirectMqttMapping,
     MergedModuleMqttMapping,
@@ -244,6 +246,24 @@ class TestDirectMqttMappingAutoclear:
         mapping.handle_message(topic, model.model_dump_json(by_alias=True))
         assert mapping.result() == model
         assert mapping.result() is None
+
+    def test_for_module_passes_context(self):
+        """A /set mapping takes a client's values without timestamps."""
+        mapping = DirectMqttMapping.for_module(
+            SimpleInOut,
+            "prefix",
+            "module",
+            type_topic="values",
+            context=WireContext.SET,
+        )
+        topic = next(iter(mapping.subscribe_topics()))
+        mapping.handle_message(
+            topic,
+            '{"GoWithThe": {"Flow": {"Value": 1.0}, "Temperature": {"Value": 20.0}}}',
+        )
+        result = mapping.result()
+        assert result is not None
+        assert result.go_with_the.flow.value == 1.0
 
     async def test_wait_for_consumes_on_match(self):
         mapping = DirectMqttMapping(SimpleInOut, "sensors/data", autoclear=True)
@@ -481,6 +501,14 @@ async def test_mqtt_connector_dispatches_only_received_topics(mock_mqtt_client):
     ]
 
 
+async def test_mqtt_connector_raises_pending_publishes_warning_threshold():
+    client = Client("localhost")
+
+    MqttConnector(client)
+
+    assert client.pending_calls_threshold == PENDING_PUBLISHES_WARNING_THRESHOLD
+
+
 async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):
     connector = MqttConnector(mock_mqtt_client)
     publisher = connector._create_publisher(
@@ -613,10 +641,3 @@ class TestMergedModuleMqttMapping:
         # sensor-only components keep their plain payload
         temperature_payload = json.loads(topics["base/500000-thrs/module/temperature"])
         assert set(temperature_payload) == {"Temperature"}
-
-    def test_split_to_topics_handles_absent_sides(self):
-        sensor_only = merged_mapping().split_to_topics((merged_sensor_values(), None))
-        assert sensor_only == {}
-
-        control_only = merged_mapping().split_to_topics((None, merged_control_values()))
-        assert control_only == {}

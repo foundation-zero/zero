@@ -5,8 +5,8 @@ import SelectContent from "@/components/ui/select/SelectContent.vue";
 import SelectItem from "@/components/ui/select/SelectItem.vue";
 import SelectTrigger from "@/components/ui/select/SelectTrigger.vue";
 import SelectValue from "@/components/ui/select/SelectValue.vue";
-import { ThrsSimulationType, THRUSTER_MODES } from "@/modules/thrsim/lib/consts";
-import { controlValuesForm, MutationType } from "@/modules/thrsim/stores/thrs";
+import { THRUSTER_MODES } from "@/modules/thrsim/lib/consts";
+import { simulationInputsForm } from "@/modules/thrsim/stores/thrs";
 import { PcsSimulation, SimulationComponentType } from "@/modules/thrsim/types";
 import { toUpperCamelCase } from "@common/lib/utils";
 import { RiLoader2Line, RiSendPlaneLine } from "@remixicon/vue";
@@ -18,27 +18,14 @@ const { t } = useI18n();
 const props = defineProps<{
   values: PcsSimulation;
   componentName: string;
-  query: string;
-  simulation: ThrsSimulationType;
   componentType: SimulationComponentType;
 }>();
 
 const values = toRef(props, "values");
 
-const emit = defineEmits<{
-  (e: "update:controlValues", value: unknown): void;
-}>();
-
-const { submit, isSubmitting, error, mode } = controlValuesForm(
-  props.simulation,
-  MutationType.Simulation,
-  "PcsInputType!",
-  props.componentName,
-  values,
-  ["mode"],
-  props.query,
-  emit,
-);
+const { submit, isSubmitting, error, mode } = simulationInputsForm(props.componentName, values, [
+  "mode",
+]);
 </script>
 
 <template>

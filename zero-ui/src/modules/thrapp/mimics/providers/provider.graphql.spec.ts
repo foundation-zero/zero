@@ -118,23 +118,25 @@ describe("GraphQL mimic data provider", () => {
       null,
     ];
 
-    it("sends the module's parameter mutation with the typed input, then refreshes", async () => {
+    it("sends the parameter in the module controller's parameters, then refreshes", async () => {
       await useGraphQLDataProvider().setParameter(source, 62);
 
       const { query, input } = lastMutation();
-      expect(query).toContain("mutation ($input: Float!)");
-      expect(query).toContain("thrustersParameterSetCoolingTemperature(value: $input)");
-      expect(input).toBe(62);
+      expect(query).toContain("mutation ($input: ThrsControlThrustersParametersInput!)");
+      expect(query).toContain("thrusters {");
+      expect(query).toContain("parameters(input: $input)");
+      expect(input).toEqual({ coolingTemperature: 62 });
       expect(history.refresh).toHaveBeenCalledOnce();
     });
 
-    it("uses a list input type for tuning parameters", async () => {
-      await useGraphQLDataProvider().setParameter(
-        [ParametersType.Tuning, "thrusters", "aftTemperatureTuning", null],
-        [1, 0.1, 0],
-      );
-
-      expect(lastMutation().query).toContain("mutation ($input: [Float!]!)");
+    it("rejects a module without a controller, without sending anything", async () => {
+      await expect(
+        useGraphQLDataProvider().setParameter(
+          [ParametersType.Temperature, "cooling", "placeholder", null],
+          60,
+        ),
+      ).rejects.toThrow("cooling has no controller");
+      expect(history.mutate).not.toHaveBeenCalled();
     });
 
     it("refreshes and then throws when the mutation fails", async () => {
@@ -147,27 +149,19 @@ describe("GraphQL mimic data provider", () => {
   });
 
   describe("setting a control value", () => {
-    it("sends the module's control mutation without the GraphQL typename", async () => {
+    it("sends the values without a timeStamp in the module controller's control values", async () => {
       await useGraphQLDataProvider().setControlValue(
-        [ControlComponentType.Pump, "thrusters", "pump", null],
-        { dutypoint: 0.8, on: true, __typename: "Pump" } as never,
+        [ControlComponentType.Pump, "thrusters", "thrustersPump1", null],
+        { dutypoint: 0.8, on: true },
       );
 
       const { query, input } = lastMutation();
-      expect(query).toContain("mutation ($input: PumpInputType!)");
-      expect(query).toContain("thrustersControlSetPump(value: $input)");
-      expect(input).toEqual({ dutypoint: 0.8, on: true, __typename: undefined });
+      expect(query).toContain("mutation ($input: ThrsControlThrustersControlValuesInput!)");
+      expect(query).toContain("controlValues(input: $input)");
+      expect(input).toEqual({
+        thrustersPump1: { dutypoint: { value: 0.8 }, on: { value: true } },
+      });
       expect(history.refresh).toHaveBeenCalledOnce();
-    });
-
-    it("rejects control types that have no input type, without sending anything", async () => {
-      await expect(
-        useGraphQLDataProvider().setControlValue(
-          [ControlComponentType.Pcm, "thrusters", "pcm", null],
-          { on: true },
-        ),
-      ).rejects.toThrow(`No input type defined for control type ${ControlComponentType.Pcm}`);
-      expect(history.mutate).not.toHaveBeenCalled();
     });
   });
 

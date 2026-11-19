@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import {
-  SIMULATION,
-  SIMULATION_INPUT_QUERIES,
-  ThrsSimulationType,
-} from "@/modules/thrsim/lib/consts.ts";
+import { SIMULATION, ThrsSimulationType } from "@/modules/thrsim/lib/consts.ts";
 import {
   ExtractAllValues,
   SimulationComponentType,
@@ -54,15 +50,12 @@ const simulationInputsData = computed(
     :data="simulationInputsData"
     :disabled="false"
   >
-    <template #default="{ componentName, componentDefinition, setControlValues, values }">
+    <template #default="{ componentName, componentDefinition, values }">
       <component
         :is="COMPONENTS[componentDefinition.componentType]"
         :values="values"
-        :query="SIMULATION_INPUT_QUERIES[type]"
         :component-name="componentName"
         :component-type="componentDefinition.componentType"
-        :simulation="type"
-        @update:control-values="setControlValues"
       />
     </template>
   </ModuleControls>

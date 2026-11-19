@@ -5,8 +5,7 @@ import { fieldTooltip } from "../../../modules/shared";
 import { getField } from "../../../providers";
 
 const propdrive = (
-  field:
-    "drivesPropdriveAft1" | "drivesPropdriveAft2" | "drivesPropdriveFwd1" | "drivesPropdriveFwd2",
+  field: "pcsAftAra1" | "pcsAftAra2" | "pcsFwdAra1" | "pcsFwdAra2",
   heatField:
     | "drivesPropdriveAft1Heat"
     | "drivesPropdriveAft2Heat"
@@ -21,7 +20,7 @@ const propdrive = (
     sensors: {
       heatTransfer: getField(SensorComponentType.HeatTransferDevice, "drives", heatField),
     },
-    source: getField(SensorComponentType.PropulsionDrive, "drives", field),
+    source: getField(SensorComponentType.PropulsionDrive, "propulsionDrive", field),
     get tooltip() {
       return fieldTooltip(this.source, {
         title: "propdrive",
@@ -59,10 +58,10 @@ export const DRIVES_ASSET_DATA = toFieldsMap({
     }),
   },
   [MimicComponentType.PropulsionDrive]: {
-    propdriveAft1: propdrive("drivesPropdriveAft1", "drivesPropdriveAft1Heat"),
-    propdriveAft2: propdrive("drivesPropdriveAft2", "drivesPropdriveAft2Heat"),
-    propdriveFwd1: propdrive("drivesPropdriveFwd1", "drivesPropdriveFwd1Heat"),
-    propdriveFwd2: propdrive("drivesPropdriveFwd2", "drivesPropdriveFwd2Heat"),
+    propdriveAft1: propdrive("pcsAftAra1", "drivesPropdriveAft1Heat"),
+    propdriveAft2: propdrive("pcsAftAra2", "drivesPropdriveAft2Heat"),
+    propdriveFwd1: propdrive("pcsFwdAra1", "drivesPropdriveFwd1Heat"),
+    propdriveFwd2: propdrive("pcsFwdAra2", "drivesPropdriveFwd2Heat"),
   },
   [MimicComponentType.ShorePowerConverter]: {
     shorepower: toInstance<MimicComponentType.ShorePowerConverter>({
@@ -70,10 +69,10 @@ export const DRIVES_ASSET_DATA = toFieldsMap({
       controllerState: {},
       custom: {
         converters: [
-          getField(SensorComponentType.ShorePowerConverter, "drives", "drivesShorepower1a"),
-          getField(SensorComponentType.ShorePowerConverter, "drives", "drivesShorepower1b"),
-          getField(SensorComponentType.ShorePowerConverter, "drives", "drivesShorepower2a"),
-          getField(SensorComponentType.ShorePowerConverter, "drives", "drivesShorepower2b"),
+          getField(SensorComponentType.ShorePowerConverter, "dc700VShoreConverter", "_07_11Tbc1A"),
+          getField(SensorComponentType.ShorePowerConverter, "dc700VShoreConverter", "_07_11Tbc1B"),
+          getField(SensorComponentType.ShorePowerConverter, "dc700VShoreConverter", "_07_12Tbc1A"),
+          getField(SensorComponentType.ShorePowerConverter, "dc700VShoreConverter", "_07_12Tbc1B"),
         ],
       },
       parameters: {},

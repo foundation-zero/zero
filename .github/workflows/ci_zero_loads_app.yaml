@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - zero-loads-app/**
-      - zero-generator/**
+      - packages/py/zero-generator/**
       - zero-ui/src/modules/loads/lib/consts.dashboards.ts
       - docker-compose.yml
       - hasura/**
@@ -16,7 +16,7 @@ on:
       - main
     paths:
       - zero-loads-app/**
-      - zero-generator/**
+      - packages/py/zero-generator/**
       - zero-ui/src/modules/loads/lib/consts.dashboards.ts
       - docker-compose.yml
       - hasura/**

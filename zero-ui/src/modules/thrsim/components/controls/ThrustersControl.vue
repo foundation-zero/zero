@@ -7,8 +7,7 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "@/components/ui/number-field";
-import { ThrsSimulationType } from "@/modules/thrsim/lib/consts";
-import { controlValuesForm, MutationType } from "@/modules/thrsim/stores/thrs";
+import { simulationInputsForm } from "@/modules/thrsim/stores/thrs";
 import { ThrusterSimulation } from "@/modules/thrsim/types";
 import { toUpperCamelCase } from "@common/lib/utils";
 import { RiLoader2Line, RiSendPlaneLine } from "@remixicon/vue";
@@ -20,24 +19,14 @@ const { t } = useI18n();
 const props = defineProps<{
   values: ThrusterSimulation;
   componentName: string;
-  query: string;
-  simulation: ThrsSimulationType;
-}>();
-const emit = defineEmits<{
-  (e: "update:controlValues", value: unknown): void;
 }>();
 
 const controlValues = toRef(props, "values");
 
-const { submit, isSubmitting, error, heatFlow } = controlValuesForm(
-  props.simulation,
-  MutationType.Simulation,
-  "ThrusterInputType!",
+const { submit, isSubmitting, error, heatFlow } = simulationInputsForm(
   props.componentName,
   controlValues,
   ["heatFlow"],
-  props.query,
-  emit,
 );
 </script>
 <template>
