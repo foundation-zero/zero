@@ -152,7 +152,8 @@ const { t } = useI18n();
 
 @media (prefers-reduced-motion: reduce) {
   .tile,
-  .tile::before {
+  .tile::before,
+  .icon {
     transition: none;
   }
 }
