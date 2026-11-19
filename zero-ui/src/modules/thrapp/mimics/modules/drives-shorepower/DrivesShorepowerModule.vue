@@ -10,7 +10,7 @@ import Sections from "./layers/Sections.vue";
 
 <template>
   <svg
-    viewBox="0 0 1135 851"
+    viewBox="-20 -15 1175 881"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
