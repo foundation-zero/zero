@@ -8,6 +8,7 @@ export const enum ZeroApps {
   domestic = "domestic",
   sailSystem = "sailSystem",
   powerTags = "powerTags",
+  alarms = "alarms",
 }
 
 const DEFAULT_INCLUDED_APPS: ZeroApps[] = [ZeroApps.loads, ZeroApps.thrs, ZeroApps.domestic];
@@ -20,6 +21,7 @@ const VALID_APPS = new Set<ZeroApps>([
   ZeroApps.domestic,
   ZeroApps.sailSystem,
   ZeroApps.powerTags,
+  ZeroApps.alarms,
 ]);
 
 const envIncludedApps = String(ENV.VITE_INCLUDE_APPS)

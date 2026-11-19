@@ -10,6 +10,7 @@ on:
       - zero-atpx-nmea/**
       - zero-data/**
       - zero-thrs-control/**
+      - zero-alert-forwarder/**
       - .github/workflows/ci_mqtt_graphql.yaml
       - .github/actions/coverage-report/**
   push:
@@ -24,6 +25,7 @@ on:
       - zero-atpx-nmea/**
       - zero-data/**
       - zero-thrs-control/**
+      - zero-alert-forwarder/**
       - .github/workflows/ci_mqtt_graphql.yaml
       - .github/actions/coverage-report/**
   release:
@@ -71,6 +73,9 @@ jobs:
       - name: Sync data
         run: uv sync --locked
         working-directory: zero-data
+      - name: Sync alert-forwarder
+        run: uv sync --locked
+        working-directory: zero-alert-forwarder
       - name: Aggregate AsyncAPI specs
         run: bash scripts/aggregate-specs.sh
         env:

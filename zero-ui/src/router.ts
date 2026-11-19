@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { INCLUDED_APPS, ZeroApps } from "./apps";
+import { alarmRoutes } from "./modules/alarms/router";
 import { grafanaRoute, sailSystemRoute, sharedRoutes } from "./modules/common/router";
 import { domesticRoutes } from "./modules/domestic/router";
 import { loadsRoutes } from "./modules/loads/router";
@@ -15,6 +16,7 @@ const appRoutes: Record<ZeroApps, RouteRecordRaw> = {
   [ZeroApps.loads]: loadsRoutes,
   [ZeroApps.thrs]: thrappRoutes,
   [ZeroApps.powerTags]: powerRoutes,
+  [ZeroApps.alarms]: alarmRoutes,
 };
 
 const includedRoutes = INCLUDED_APPS.map((app) => appRoutes[app]);

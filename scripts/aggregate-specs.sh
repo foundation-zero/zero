@@ -56,6 +56,11 @@ if ! (cd "$REPO_ROOT/zero-thrs-control" && uv run python -m thrs.cli generate-as
   fail_or_warn "thrs-control" || exit 1
 fi
 
+echo "  -> alert-forwarder"
+if ! (cd "$REPO_ROOT/zero-alert-forwarder" && uv run python -m zero_alert_forwarder print-asyncapi) > "$SPECS_DIR/alert-forwarder.json"; then
+  fail_or_warn "alert-forwarder" || exit 1
+fi
+
 if [ "$warnings" -gt 0 ]; then
   echo "Done with $warnings warning(s). Specs in $SPECS_DIR/" >&2
   ls -la "$SPECS_DIR/" >&2

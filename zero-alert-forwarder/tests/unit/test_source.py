@@ -1,4 +1,5 @@
 import asyncio
+from collections.abc import Iterable
 from datetime import UTC, date, datetime, timedelta
 from unittest.mock import Mock
 
@@ -18,6 +19,7 @@ class FakeTables:
         self.days = days or {}
         self.failing = False
         self.hanging = False
+        self.slow = timedelta(0)
 
     def raise_alert(self, day: date, alert: Alert):
         self.days.setdefault(day, []).append(alert)
@@ -31,6 +33,8 @@ class FakeTables:
         return [alert for alert in self.days.get(day, []) if alert.id > after_id]
 
     async def _misbehave(self):
+        if self.slow:
+            await asyncio.sleep(self.slow.total_seconds())
         if self.failing:
             raise ConnectionError("database is gone")
         if self.hanging:
@@ -351,3 +355,84 @@ async def test_signals_liveness_between_forwarded_alerts(
         [alert async for alert in source.alerts()]
 
     assert liveness.signal.call_count == 3
+
+
+class RecordingHistory:
+    def __init__(self):
+        self.alerts: list[Alert] = []
+
+    def apply_all(self, alerts: Iterable[Alert]) -> None:
+        self.alerts.extend(alerts)
+
+
+async def test_first_poll_hands_today_to_the_history(clock: FakeClock):
+    tables = FakeTables({MONDAY: [make_alert(1), make_alert(2)]})
+    history = RecordingHistory()
+    source = PollingAlertSource([tables], timedelta(seconds=1), clock, history=history)
+
+    assert await source.poll() == []
+    assert ids(history.alerts) == [1, 2]
+
+    tables.raise_alert(MONDAY, make_alert(3))
+    assert ids(await source.poll()) == [3]
+    assert ids(history.alerts) == [1, 2]
+
+
+async def test_history_reaches_into_the_previous_day_within_the_window(
+    clock: FakeClock,
+):
+    clock.now = datetime(2026, 10, 20, 0, 30, tzinfo=UTC)
+    tables = FakeTables({MONDAY: [make_alert(7)], TUESDAY: [make_alert(1)]})
+    history = RecordingHistory()
+    source = PollingAlertSource(
+        [tables],
+        timedelta(seconds=1),
+        clock,
+        history=history,
+        history_window=timedelta(hours=1),
+    )
+
+    await source.poll()
+    assert ids(history.alerts) == [7, 1]
+
+    # A mirror that lags on the previous day's last alerts is still read.
+    tables.raise_alert(MONDAY, make_alert(8))
+    tables.raise_alert(TUESDAY, make_alert(2))
+    assert ids(await source.poll()) == [8, 2]
+
+
+async def test_history_stays_on_today_outside_the_window(clock: FakeClock):
+    tables = FakeTables({MONDAY - timedelta(days=1): [make_alert(7)]})
+    history = RecordingHistory()
+    source = PollingAlertSource(
+        [tables],
+        timedelta(seconds=1),
+        clock,
+        history=history,
+        history_window=timedelta(hours=1),
+    )
+
+    await source.poll()
+
+    assert history.alerts == []
+
+
+async def test_first_poll_with_history_gets_the_history_timeout(clock: FakeClock):
+    tables = FakeTables({MONDAY: [make_alert(1)]})
+    tables.slow = timedelta(seconds=0.05)
+    history = RecordingHistory()
+    source = PollingAlertSource(
+        [tables],
+        timedelta(seconds=1),
+        clock,
+        poll_timeout=timedelta(seconds=0.01),
+        history=history,
+        history_timeout=timedelta(seconds=1),
+    )
+
+    await source.poll()
+    assert ids(history.alerts) == [1]
+
+    # Later polls are bounded by the regular timeout again.
+    tables.raise_alert(MONDAY, make_alert(2))
+    assert await source.poll() == []

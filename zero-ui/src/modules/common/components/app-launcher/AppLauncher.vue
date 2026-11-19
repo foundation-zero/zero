@@ -35,6 +35,10 @@ const APPS: App[] = [
     link: "/power-tags",
   },
   {
+    name: ZeroApps.alarms,
+    link: "/alarms",
+  },
+  {
     name: ZeroApps.grafana,
     link: "/grafana",
   },
