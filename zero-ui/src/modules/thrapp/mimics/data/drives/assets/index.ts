@@ -28,6 +28,25 @@ const propdrive = (
     },
   });
 
+const shorePowerConverter = (
+  field: "_07_11Tbc1A" | "_07_11Tbc1B" | "_07_12Tbc1A" | "_07_12Tbc1B",
+  title: string,
+) =>
+  toInstance<MimicComponentType.PowerConverter>({
+    controls: {},
+    controllerState: {},
+    custom: {},
+    parameters: {},
+    sensors: {
+      // The converters only report their power and temperatures; heat is measured per group.
+      heatTransfer: getField(SensorComponentType.HeatTransferDevice, "drives", "placeholder"),
+    },
+    source: getField(SensorComponentType.ShorePowerConverter, "dc700VShoreConverter", field),
+    get tooltip() {
+      return fieldTooltip(this.source, { title, componentType: "Shorepower converter" });
+    },
+  });
+
 export const DRIVES_ASSET_DATA = toFieldsMap({
   [MimicComponentType.PropulsionCooler]: {
     "1012": toInstance<MimicComponentType.PropulsionCooler>({
@@ -68,6 +87,7 @@ export const DRIVES_ASSET_DATA = toFieldsMap({
       controls: {},
       controllerState: {},
       custom: {
+        mimic: "drives-shorepower",
         converters: [
           getField(SensorComponentType.ShorePowerConverter, "dc700VShoreConverter", "_07_11Tbc1A"),
           getField(SensorComponentType.ShorePowerConverter, "dc700VShoreConverter", "_07_11Tbc1B"),
@@ -92,5 +112,11 @@ export const DRIVES_ASSET_DATA = toFieldsMap({
         });
       },
     }),
+  },
+  [MimicComponentType.PowerConverter]: {
+    "shorepower-1a": shorePowerConverter("_07_11Tbc1A", "Shore power converter 1A"),
+    "shorepower-1b": shorePowerConverter("_07_11Tbc1B", "Shore power converter 1B"),
+    "shorepower-2a": shorePowerConverter("_07_12Tbc1A", "Shore power converter 2A"),
+    "shorepower-2b": shorePowerConverter("_07_12Tbc1B", "Shore power converter 2B"),
   },
 });

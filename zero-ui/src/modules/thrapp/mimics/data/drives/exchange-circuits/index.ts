@@ -2,7 +2,7 @@ import { MimicComponentType } from "@/modules/thrapp/types";
 import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { toFieldsMap } from "../../../modules";
 import { getField } from "../../../providers";
-import { toExchangeCircuit, toSeawaterCircuit } from "../../helpers";
+import { toConnectingCircuit, toExchangeCircuit, toSeawaterCircuit } from "../../helpers";
 
 export const DRIVES_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
   [MimicComponentType.SeawaterCircuit]: {
@@ -18,6 +18,16 @@ export const DRIVES_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
         source: getField(SensorComponentType.HeatTransferDevice, "dhw", "dhwDrivesExchanger"),
       },
       { componentType: "Domestic Hot Water loop" },
+    ),
+  },
+  // The shore power converters as their sub-mimic sees them.
+  [MimicComponentType.ConnectingCircuit]: {
+    shorepower: toConnectingCircuit(
+      {
+        custom: { circuitName: "Drives shorepower", modeModule: "drives" },
+        source: getField(SensorComponentType.HeatTransferDevice, "drives", "drivesShorepowerHeat"),
+      },
+      { componentType: "Shorepower loop" },
     ),
   },
 });

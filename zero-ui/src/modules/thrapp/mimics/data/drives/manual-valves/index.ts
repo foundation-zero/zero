@@ -23,6 +23,11 @@ const manualValveTags = [
   "1087-01",
   "1073-02",
   "1073-01",
+  // Shore power converter bypasses, shown in the shorepower sub-mimic
+  "1080-02",
+  "1080-03",
+  "1080-04",
+  "1080-05",
 ];
 
 export const DRIVES_MANUAL_VALVE_DATA = toFieldsMap({

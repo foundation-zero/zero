@@ -187,4 +187,9 @@ export const MIMIC_LEGEND_MAP: Partial<Record<MimicKey, LegendMap>> = {
   "dc-aft": DC_GROUP_LEGEND,
   "dc-ugrid": DC_GROUP_LEGEND,
   "dc-fwd": DC_GROUP_LEGEND,
+  "drives-shorepower": {
+    [MimicComponentType.ConnectingCircuit]: true,
+    [MimicComponentType.ManualValve]: [ManualValveType.Flow],
+    [LegendFeature.SectionArea]: true,
+  },
 };
