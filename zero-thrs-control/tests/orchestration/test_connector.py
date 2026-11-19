@@ -613,10 +613,3 @@ class TestMergedModuleMqttMapping:
         # sensor-only components keep their plain payload
         temperature_payload = json.loads(topics["base/500000-thrs/module/temperature"])
         assert set(temperature_payload) == {"Temperature"}
-
-    def test_split_to_topics_handles_absent_sides(self):
-        sensor_only = merged_mapping().split_to_topics((merged_sensor_values(), None))
-        assert sensor_only == {}
-
-        control_only = merged_mapping().split_to_topics((None, merged_control_values()))
-        assert control_only == {}

@@ -349,9 +349,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
         )
 
 
-class MergedModuleMqttMapping(
-    MqttSendMapping[tuple[CombinedValues | None, CombinedValues | None]]
-):
+class MergedModuleMqttMapping(MqttSendMapping[tuple[CombinedValues, CombinedValues]]):
     """Publish-only mapping that merges sensor values and actuated control
     values into a single JSON payload per component topic. (like the AMCS does)
     """
@@ -362,8 +360,6 @@ class MergedModuleMqttMapping(
         control_values_clss: ModuleClassMap,
         topic_prefix: str,
     ):
-        self._sensor_values: CombinedValues | None = None
-        self._control_values: CombinedValues | None = None
         self._sensor_values_mapping = ModuleMqttMapping(
             sensor_values_clss, PartialMqttMapping, topic_prefix
         )
@@ -374,16 +370,12 @@ class MergedModuleMqttMapping(
         )
 
     def split_to_topics(
-        self, model: tuple[CombinedValues | None, CombinedValues | None]
+        self, model: tuple[CombinedValues, CombinedValues]
     ) -> dict[str, str]:
         sensor_values, control_values = model
-        self._sensor_values = sensor_values or self._sensor_values
-        self._control_values = control_values or self._control_values
-        if self._sensor_values is None or self._control_values is None:
-            return {}
         merged: dict[str, dict[str, object]] = defaultdict(dict)
-        self._merge_payloads(merged, self._sensor_values, self._sensor_values_mapping)
-        self._merge_payloads(merged, self._control_values, self._control_values_mapping)
+        self._merge_payloads(merged, sensor_values, self._sensor_values_mapping)
+        self._merge_payloads(merged, control_values, self._control_values_mapping)
         return {topic: json.dumps(payload) for topic, payload in merged.items()}
 
     def _merge_payloads(
@@ -603,13 +595,10 @@ class SimulationChannels[
         self.wait_for_control_values = control_values_mapping.wait_for_result
         self.get_simulation_inputs = simulation_inputs_mapping.result
 
-    async def send_sensor_values(self, sensor_values: CombinedValues) -> None:
-        await self._publish_merged((sensor_values, None))
-
-    async def send_actuated_control_values(
-        self, control_values: CombinedValues
+    async def send_device_values(
+        self, sensor_values: CombinedValues, control_values: CombinedValues
     ) -> None:
-        await self._publish_merged((None, control_values))
+        await self._publish_merged((sensor_values, control_values))
 
 
 class ControlApiChannels[
