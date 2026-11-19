@@ -109,7 +109,7 @@ const { t } = useI18n();
 }
 
 .icon {
-  fill: var(--brand);
+  color: var(--brand);
   transition: opacity 0.15s ease;
 }
 
