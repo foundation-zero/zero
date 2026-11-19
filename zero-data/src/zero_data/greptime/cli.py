@@ -1,9 +1,9 @@
-import hashlib
 import logging
+from datetime import date
 from pathlib import Path
 from typing import Annotated
 
-from pydantic import AwareDatetime, BaseModel, Field
+from pydantic import BaseModel, Field
 from pydantic_settings import CliApp, CliPositionalArg, CliSubCommand
 
 from zero_data.greptime.config import (
@@ -13,12 +13,14 @@ from zero_data.greptime.config import (
 )
 from zero_data.greptime.migrate_history import (
     Greptime,
-    check_plan,
-    execute_plan,
-    plan_migration,
-    to_nanos,
+    check,
+    drop,
+    leftover,
+    load,
+    report,
+    run,
 )
-from zero_data.greptime.migration_spec import read_spec
+from zero_data.greptime.migration_spec import build_spec, read_mapping, read_spec
 from zero_data.greptime.snapshot import (
     connect,
     ensure_databases,
@@ -27,10 +29,6 @@ from zero_data.greptime.snapshot import (
 )
 
 logger = logging.getLogger(__name__)
-
-
-def _endpoint(connection: GreptimeConnection) -> str:
-    return f"{connection.host}:{connection.pg_port}/{connection.dbname}"
 
 
 def _connection(host: str | None) -> GreptimeConnection:
@@ -82,91 +80,110 @@ class InitCmd(BaseModel):
         logger.info("Ensured dbt databases on %s", self.host or "local")
 
 
-class MigratePlanCmd(BaseModel):
-    """Write, per wave of a migration spec, the SQL to run, its manifest and a dry-run report.
-
-    Only reads Greptime.
-    """
-
+class _MigrateCmd(BaseModel):
     spec: CliPositionalArg[Path]
-    boundary: Annotated[
-        AwareDatetime,
-        Field(
-            description="Cut-over time, with its timezone: the bound of a new topic "
-            "that has no row yet."
-        ),
-    ]
-    out: Annotated[Path, Field(description="Directory to write the wave files to.")]
     table: Annotated[
         list[str], Field(description="Only these old tables (repeat for more).")
     ] = []
     host: Annotated[
         str | None,
-        Field(description="Greptime host to plan against (overrides GREPTIME_HOST)."),
+        Field(description="Greptime host (overrides GREPTIME_HOST)."),
     ] = None
+
+
+class MigrateBuildSpecCmd(BaseModel):
+    """Turn a mapping of old and new topics and keys into a spec, by running Vector in Docker."""
+
+    mapping: CliPositionalArg[Path]
+    out: Annotated[Path, Field(description="The spec file to write.")]
+
+    def cli_cmd(self) -> None:
+        spec = build_spec(read_mapping(self.mapping))
+        self.out.write_text(spec.model_dump_json(indent=1))
+        logger.info("Wrote %d units to %s", len(spec.units), self.out)
+
+
+class MigrateRunCmd(_MigrateCmd):
+    """Copy the history day by day, newest first. Safe to stop and to run again."""
+
+    until: Annotated[
+        date | None,
+        Field(description="Copy back to and including this day (default: everything)."),
+    ] = None
+    dry_run: Annotated[
+        bool, Field(description="Only read, and print what a run would do.")
+    ] = False
+    pause: Annotated[
+        float, Field(description="Seconds to wait after each copied topic and day.")
+    ] = 1.0
+
+    def cli_cmd(self) -> None:
+        connection = _connection(self.host)
+        spec = read_spec(self.spec)
+        with connect(connection) as handle:
+            greptime = Greptime(handle, connection.dbname)
+            migration = load(greptime, spec, self.table)
+            if self.dry_run:
+                leftovers = {
+                    table: leftover(greptime, spec, table)
+                    for table in self.table or spec.old_tables
+                    if table in greptime.tables()
+                }
+                print(report(migration, leftovers))
+                return
+            for refusal in migration.refused:
+                logger.warning("Left out %s: %s", refusal.unit.label, refusal.reason)
+            copied = run(greptime, migration, self.until, self.pause)
+        logger.info("Copied %d rows", copied)
+
+
+class MigrateCheckCmd(_MigrateCmd):
+    """Compare the old and new rows of every unit; exits 1 when they differ."""
 
     def cli_cmd(self) -> None:
         connection = _connection(self.host)
         with connect(connection) as handle:
-            plan_migration(
+            greptime = Greptime(handle, connection.dbname)
+            findings = check(greptime, load(greptime, read_spec(self.spec), self.table))
+        for finding in findings:
+            print(finding)
+        if findings:
+            raise SystemExit(1)
+        logger.info("Old and new match")
+
+
+class MigrateDropCmd(_MigrateCmd):
+    """Drop the old tables whose history is checked. Prints what it would do unless --execute."""
+
+    accept_unmigrated: Annotated[
+        bool,
+        Field(description="Also drop the named tables that hold data no unit copies."),
+    ] = False
+    execute: Annotated[bool, Field(description="Drop the tables.")] = False
+
+    def cli_cmd(self) -> None:
+        if self.accept_unmigrated and not self.table:
+            raise SystemExit("--accept-unmigrated needs the tables named with --table")
+        connection = _connection(self.host)
+        with connect(connection) as handle:
+            outcomes = drop(
                 Greptime(handle, connection.dbname),
                 read_spec(self.spec),
-                hashlib.sha256(self.spec.read_bytes()).hexdigest(),
-                _endpoint(connection),
-                to_nanos(self.boundary),
                 self.table,
-                self.out,
+                self.accept_unmigrated,
+                self.execute,
             )
-
-
-class MigrateExecuteCmd(BaseModel):
-    """Run a planned wave's SQL file as it is, journalling each statement; resumable."""
-
-    sql: CliPositionalArg[Path]
-    pause: Annotated[
-        float, Field(description="Seconds to wait after each copied window.")
-    ] = 1.0
-    host: Annotated[
-        str | None,
-        Field(description="Greptime host to write to (overrides GREPTIME_HOST)."),
-    ] = None
-
-    def cli_cmd(self) -> None:
-        connection = _connection(self.host)
-        with connect(connection) as handle:
-            execute_plan(
-                Greptime(handle, connection.dbname),
-                self.sql,
-                _endpoint(connection),
-                self.pause,
-            )
-
-
-class MigrateCheckCmd(BaseModel):
-    """Compare a migrated wave's old and new rows and write the check report."""
-
-    sql: CliPositionalArg[Path]
-    host: Annotated[
-        str | None,
-        Field(description="Greptime host to check (overrides GREPTIME_HOST)."),
-    ] = None
-
-    def cli_cmd(self) -> None:
-        connection = _connection(self.host)
-        with connect(connection) as handle:
-            matched = check_plan(
-                Greptime(handle, connection.dbname), self.sql, _endpoint(connection)
-            )
-        if not matched:
-            raise SystemExit(1)
+        for table, outcome in outcomes.items():
+            print(f"{table}: {outcome}")
 
 
 class MigrateHistoryCmd(BaseModel):
-    """Copy history from old tables into new ones: plan, review, execute, check."""
+    """Copy history from old tables into renamed ones, check it, and drop the old tables."""
 
-    plan: CliSubCommand[MigratePlanCmd]
-    execute: CliSubCommand[MigrateExecuteCmd]
+    build_spec: CliSubCommand[MigrateBuildSpecCmd]
+    run: CliSubCommand[MigrateRunCmd]
     check: CliSubCommand[MigrateCheckCmd]
+    drop: CliSubCommand[MigrateDropCmd]
 
     def cli_cmd(self) -> None:
         CliApp.run_subcommand(self)

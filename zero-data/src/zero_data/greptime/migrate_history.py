@@ -1,55 +1,35 @@
-"""Copy history from old Greptime tables into new ones, through a reviewed SQL file.
+"""Copy history from old Greptime tables into renamed ones, check it, and drop the old tables.
 
-`plan` only reads. Per wave of the spec it writes the SQL to run (`wave-<n>.sql`), a manifest
-(`wave-<n>.plan.json`) and a dry-run report (`wave-<n>.report.md`). The same spec and the same
-Greptime state give byte-identical files.
+A spec lists units: one old topic in one old table, copied to one new topic in one new table,
+with its columns renamed. Old and new topics never publish side by side, so every row of an
+old topic is history of its new topic.
 
-`execute` runs a planned SQL file as it is, one statement at a time, and appends each to
-`wave-<n>.journal.jsonl`. A restart skips what the journal shows as done, and a window whose
-rows are already all in the new table.
-
-`check` compares, per unit, the old rows with a mapped value against the new rows, day by day,
-and `count`, `min` and `max` of a sample of columns, and writes `wave-<n>.check.md`.
-
-Rows are copied only before a unit's bound: the new topic's first row in the new table at plan
-time, or the cut-over boundary for a topic that has none. The bounds are read once, by `plan`;
-after a copy the new topic's first row is the copied history, so `execute` and `check` read
-the bounds from the manifest.
+Nothing is kept outside Greptime. Each insert leaves out the timestamps the new topic already
+holds, so a run can be stopped and started again, and a second run copies nothing. The new
+tables are append-only: a copied row can't be changed or deleted afterwards, so a unit is
+either copied with all its columns or left out and reported.
 """
 
-import fcntl
-import hashlib
-import json
 import logging
 import time
-from collections import Counter, defaultdict
-from collections.abc import Callable, Iterable
-from datetime import UTC, datetime
-from pathlib import Path
-from typing import Any, Literal
+from collections import defaultdict
+from collections.abc import Callable, Iterable, Iterator
+from datetime import UTC, date, datetime
+from typing import Any
 
 import psycopg
 from pydantic import BaseModel
 
-from zero_data.greptime.migration_spec import SUFFIXES, MigrationSpec, Unit
+from zero_data.greptime.migration_spec import MigrationSpec, Unit
 
 logger = logging.getLogger(__name__)
 
+SUFFIXES = ("value", "timestamp", "is_valid", "has_value")
 DAY_NS = 86_400 * 10**9
-SAMPLED_COLUMNS = 3
-
-# Casts that keep every value. Anything else (string to number, double to bigint) stops the unit.
-LOSSLESS_CASTS = {
-    ("boolean", "bigint"),
-    ("boolean", "double"),
-    ("boolean", "string"),
-    ("bigint", "double"),
-    ("bigint", "string"),
-    ("double", "string"),
-}
+COLUMNS_PER_QUERY = 100
 
 
-class MigrationRefused(Exception):
+class MigrationFailed(Exception):
     pass
 
 
@@ -68,12 +48,17 @@ def timestamp_literal(nanos: int) -> str:
     return f"'{datetime.fromtimestamp(seconds, UTC):%Y-%m-%dT%H:%M:%S}.{fraction:09d}Z'"
 
 
-def to_nanos(moment: datetime) -> int:
-    return int(moment.timestamp()) * 10**9 + moment.microsecond * 1000
+def day_label(nanos: int) -> str:
+    return f"{datetime.fromtimestamp(nanos // 10**9, UTC):%Y-%m-%d}"
 
 
-def sha256(text: str) -> str:
-    return hashlib.sha256(text.encode()).hexdigest()
+def day_start(day: date) -> int:
+    return int(datetime(day.year, day.month, day.day, tzinfo=UTC).timestamp()) * 10**9
+
+
+def _chunks(columns: list[str]) -> Iterator[list[str]]:
+    for start in range(0, len(columns), COLUMNS_PER_QUERY):
+        yield columns[start : start + COLUMNS_PER_QUERY]
 
 
 class Greptime:
@@ -112,942 +97,574 @@ class Greptime:
         return {name: data_type for name, data_type in found}
 
 
-class ColumnCopy(BaseModel):
-    old: str
-    new: str
-    type: str
-    cast: bool
-
-    @property
-    def expression(self) -> str:
-        if self.cast:
-            return f"CAST({quote_ident(self.old)} AS {self.type.upper()})"
-        return quote_ident(self.old)
+def _rows_with_a_value(old_topic: str, pairs: list[tuple[str, str]]) -> str:
+    values = [old for old, _ in pairs if old.endswith("__value")]
+    has_value = " OR ".join(f"{quote_ident(c)} IS NOT NULL" for c in values)
+    return f"{quote_ident('topic')} = {quote_literal(old_topic)} AND ({has_value})"
 
 
-class Window(BaseModel):
-    """A day of one unit, clipped to the unit's span; `rows` is the old rows to copy."""
+class Copy(BaseModel):
+    """A unit with the columns it copies, as found in the old table."""
 
-    start: int
-    end: int
-    rows: int
-
-
-class UnitPlan(BaseModel):
-    old_table: str
-    old_topic: str
-    new_table: str
-    new_topic: str
-    chain: str | None
-    bound: int
-    bound_from: Literal["first row", "boundary"]
+    unit: Unit
+    pairs: list[tuple[str, str]]
     constants: dict[str, str]
-    copies: list[ColumnCopy]
-    filter_columns: list[str]
-    live_keys: list[str]
-    absent_old_columns: list[str]
-    old_rows: int
-    windows: list[Window]
+    days: dict[int, int]
+    last: int
 
     @property
     def rows(self) -> int:
-        return sum(window.rows for window in self.windows)
+        return sum(self.days.values())
 
-    @property
-    def span(self) -> tuple[int, int]:
-        return self.windows[0].start, self.windows[-1].end
+    def old_rows(self) -> str:
+        return _rows_with_a_value(self.unit.old_topic, self.pairs)
 
-    @property
-    def label(self) -> str:
-        return f"{self.old_topic} -> {self.new_topic}"
-
-    def value_filter(self) -> str:
-        return " OR ".join(
-            f"{quote_ident(column)} IS NOT NULL" for column in self.filter_columns
+    def insert_sql(self, day: int) -> str:
+        in_day = (
+            f'"timestamp" >= {timestamp_literal(day)} '
+            f'AND "timestamp" < {timestamp_literal(day + DAY_NS)}'
         )
-
-    def old_rows_in(self, start: int, end: int) -> str:
-        return (
-            f"{quote_ident('topic')} = {quote_literal(self.old_topic)} "
-            f'AND "timestamp" >= {timestamp_literal(start)} '
-            f'AND "timestamp" < {timestamp_literal(end)} '
-            f"AND ({self.value_filter()})"
-        )
-
-    def new_rows_in(self, start: int, end: int) -> str:
-        return (
-            f"{quote_ident('topic')} = {quote_literal(self.new_topic)} "
-            f'AND "timestamp" >= {timestamp_literal(start)} '
-            f'AND "timestamp" < {timestamp_literal(end)}'
-        )
-
-    def insert_sql(self, window: Window) -> str:
         targets = [
             '"timestamp"',
             *(quote_ident(column) for column in self.constants),
-            *(quote_ident(copy.new) for copy in self.copies),
+            *(quote_ident(new) for _, new in self.pairs),
         ]
         sources = [
             '"timestamp"',
             *(quote_literal(value) for value in self.constants.values()),
-            *(copy.expression for copy in self.copies),
+            *(quote_ident(old) for old, _ in self.pairs),
         ]
         return (
-            f"INSERT INTO {quote_ident(self.new_table)} ({', '.join(targets)})\n"
+            f"INSERT INTO {quote_ident(self.unit.new_table)} ({', '.join(targets)})\n"
             f"SELECT {', '.join(sources)}\n"
-            f"FROM {quote_ident(self.old_table)}\n"
-            f"WHERE {self.old_rows_in(window.start, window.end)}\n"
+            f"FROM {quote_ident(self.unit.old_table)}\n"
+            f"WHERE {self.old_rows()} AND {in_day}\n"
             f'AND "timestamp" NOT IN (SELECT "timestamp" '
-            f"FROM {quote_ident(self.new_table)} "
-            f"WHERE {self.new_rows_in(window.start, window.end)});"
+            f"FROM {quote_ident(self.unit.new_table)} "
+            f"WHERE {quote_ident('topic')} = {quote_literal(self.unit.new_topic)} "
+            f"AND {in_day})"
         )
+
+
+class Mismatch(BaseModel):
+    old_table: str
+    old_column: str
+    old_type: str
+    new_table: str
+    new_column: str
+    new_type: str
 
 
 class Refusal(BaseModel):
-    old_table: str
-    old_topic: str
-    new_table: str
-    new_topic: str
+    unit: Unit
     reason: str
 
 
-class Statement(BaseModel):
-    sha256: str
-    table: str
-    column: str | None = None
-    type: str | None = None
-    unit: int | None = None
-    window: int | None = None
+class History(BaseModel):
+    """Everything that goes to one new topic: usually one unit, more for earlier names."""
 
+    new_table: str
+    new_topic: str
+    copies: list[Copy]
+    present: dict[int, int]
 
-class WavePlan(BaseModel):
-    wave: int
-    endpoint: str
-    boundary: int
-    spec_sha256: str
-    sql_sha256: str
-    expected_columns: dict[str, dict[str, str]]
-    added_columns: dict[str, dict[str, str]]
-    units: list[UnitPlan]
-    refused: list[Refusal]
-    statements: list[Statement]
+    @property
+    def expected(self) -> dict[int, int]:
+        days: dict[int, int] = defaultdict(int)
+        for copy in self.copies:
+            for day, rows in copy.days.items():
+                days[day] += rows
+        return dict(days)
 
+    @property
+    def last(self) -> int:
+        return max(copy.last for copy in self.copies)
 
-def wave_paths(sql_path: Path) -> tuple[Path, Path, Path]:
-    """The manifest, journal and check report that belong to a wave's SQL file."""
-    stem = sql_path.with_suffix("")
-    return (
-        stem.with_suffix(".plan.json"),
-        stem.with_suffix(".journal.jsonl"),
-        stem.with_suffix(".check.md"),
-    )
-
-
-# ---- plan ------------------------------------------------------------------------------------
-
-
-class _Draft(BaseModel):
-    """A unit between reading Greptime and resolving its column types."""
-
-    unit: Unit
-    pairs: list[tuple[str, str]]
-    filter_columns: list[str]
-    live_keys: list[str]
-    absent_old_columns: list[str]
-    bound: int
-    bound_from: Literal["first row", "boundary"]
-    old_rows: int
-    windows: list[Window]
-
-
-def _base_columns(schema: dict[str, str]) -> set[str]:
-    return {
-        column.removesuffix(f"__{suffix}")
-        for column in schema
-        for suffix in SUFFIXES
-        if column.endswith(f"__{suffix}")
-    }
-
-
-def _column_pairs(
-    unit: Unit,
-    old_schema: dict[str, str],
-    new_schema: dict[str, str],
-    one_to_one: bool,
-) -> tuple[list[tuple[str, str]], list[str], list[str]]:
-    """The (old column, new column) pairs of a unit, its live keys and its absent old columns.
-
-    A mapped key copies the suffixes the spec lists. A one-to-one unit also copies every old
-    key whose name already exists in the new table, with all its suffixes: node keys keep
-    their names, so such a key is the same signal on the new topic.
-    """
-    live_keys = (
-        sorted(
-            _base_columns(old_schema)
-            & _base_columns(new_schema)
-            - {column.old for column in unit.columns}
-            - {column.new for column in unit.columns}
+    def new_rows(self) -> str:
+        return (
+            f"{quote_ident('topic')} = {quote_literal(self.new_topic)} "
+            f'AND "timestamp" <= {timestamp_literal(self.last)}'
         )
-        if one_to_one
-        else []
-    )
-    candidates = [
-        *(
-            (f"{column.old}__{suffix}", f"{column.new}__{suffix}")
-            for column in unit.columns
-            for suffix in column.suffixes
-        ),
-        *(
-            (f"{key}__{suffix}", f"{key}__{suffix}")
-            for key in live_keys
-            for suffix in SUFFIXES
-        ),
-    ]
-    pairs = [(old, new) for old, new in candidates if old in old_schema]
-    absent = sorted(
-        f"{column.old}__{suffix}"
-        for column in unit.columns
-        for suffix in column.suffixes
-        if f"{column.old}__{suffix}" not in old_schema
-    )
-    return pairs, live_keys, absent
 
 
-def _filter_columns(pairs: list[tuple[str, str]]) -> list[str]:
-    values = [old for old, _ in pairs if old.endswith("__value")]
-    return values or [old for old, _ in pairs]
+class Leftover(BaseModel):
+    """What an old table holds that no unit copies."""
+
+    topics: dict[str, int]
+    columns: dict[str, list[str]]
+
+    def __bool__(self) -> bool:
+        return bool(self.topics or self.columns)
 
 
-def _day_windows(
-    greptime: Greptime, unit: Unit, filter_columns: list[str], bound: int
-) -> tuple[int, list[Window]]:
-    condition = " OR ".join(f"{quote_ident(c)} IS NOT NULL" for c in filter_columns)
-    days = greptime.rows(
+class Migration(BaseModel):
+    histories: list[History]
+    additions: dict[str, dict[str, str]]
+    mismatches: list[Mismatch]
+    refused: list[Refusal]
+
+    def touching(self, old_table: str) -> list[History]:
+        return [
+            history
+            for history in self.histories
+            if any(copy.unit.old_table == old_table for copy in history.copies)
+        ]
+
+
+def _days(greptime: Greptime, table: str, where: str) -> list[tuple[int, int, int]]:
+    found = greptime.rows(
         "SELECT CAST(date_trunc('day', \"timestamp\") AS BIGINT), count(*), "
-        f"sum(CASE WHEN {condition} THEN 1 ELSE 0 END), "
-        f'CAST(min(CASE WHEN {condition} THEN "timestamp" END) AS BIGINT), '
-        f'CAST(max(CASE WHEN {condition} THEN "timestamp" END) AS BIGINT) '
-        f"FROM {quote_ident(unit.old_table)} "
-        f"WHERE {quote_ident('topic')} = {quote_literal(unit.old_topic)} "
-        f'AND "timestamp" < {timestamp_literal(bound)} '
-        "GROUP BY 1 ORDER BY 1"
+        f'CAST(max("timestamp") AS BIGINT) FROM {quote_ident(table)} '
+        f"WHERE {where} GROUP BY 1"
     )
-    old_rows = sum(int(all_rows) for _, all_rows, _, _, _ in days)
-    copied = [
-        (int(d), int(n), int(first), int(last)) for d, _, n, first, last in days if n
-    ]
-    if not copied:
-        return old_rows, []
-    span_start = copied[0][2]
-    span_end = copied[-1][3] + 1
-    windows = [
-        Window(start=max(day, span_start), end=min(day + DAY_NS, span_end), rows=rows)
-        for day, rows, _, _ in copied
-    ]
-    return old_rows, windows
+    return [(int(day), int(rows), int(last)) for day, rows, last in found]
 
 
-def _refusal(unit: Unit, reason: str) -> Refusal:
-    return Refusal(
-        old_table=unit.old_table,
-        old_topic=unit.old_topic,
-        new_table=unit.new_table,
-        new_topic=unit.new_topic,
-        reason=reason,
-    )
-
-
-def _overlapping(drafts: list[_Draft]) -> dict[int, str]:
-    """Units of one new topic whose spans overlap, by draft index: their rows would mix."""
-    by_topic: dict[tuple[str, str], list[int]] = defaultdict(list)
-    for index, draft in enumerate(drafts):
-        if draft.windows:
-            by_topic[(draft.unit.new_table, draft.unit.new_topic)].append(index)
-    refused: dict[int, str] = {}
-    for indices in by_topic.values():
-        ordered = sorted(indices, key=lambda i: drafts[i].windows[0].start)
-        furthest = ordered[0]
-        for after in ordered[1:]:
-            before = furthest
-            if drafts[after].windows[-1].end > drafts[furthest].windows[-1].end:
-                furthest = after
-            if drafts[after].windows[0].start < drafts[before].windows[-1].end:
-                for index in (before, after):
-                    others = sorted(
-                        drafts[i].unit.old_topic for i in indices if i != index
-                    )
-                    refused[index] = (
-                        f"Its period overlaps another old topic of {drafts[index].unit.new_topic}: "
-                        f"{', '.join(others)}"
-                    )
-    return refused
-
-
-def _resolve(
-    pairs: list[tuple[str, str]], old_schema: dict[str, str], new_types: dict[str, str]
-) -> tuple[list[ColumnCopy], dict[str, str]] | str:
-    """The typed column copies of a unit and the columns it adds, or why it can't be copied.
-
-    `new_types` is the new table's columns, including those earlier units add.
-    """
-    copies = []
-    added: dict[str, str] = {}
-    for old, new in pairs:
-        old_type = old_schema[old]
-        new_type = new_types.get(new) or added.get(new)
-        if new_type is None:
-            added[new] = old_type
-            copies.append(ColumnCopy(old=old, new=new, type=old_type, cast=False))
-        elif new_type == old_type:
-            copies.append(ColumnCopy(old=old, new=new, type=new_type, cast=False))
-        elif (old_type, new_type) in LOSSLESS_CASTS:
-            copies.append(ColumnCopy(old=old, new=new, type=new_type, cast=True))
-        else:
-            return (
-                f"{old} is {old_type} and {new} is {new_type}: a cast would lose values"
-            )
-    return copies, added
-
-
-def plan_migration(
-    greptime: Greptime,
-    spec: MigrationSpec,
-    spec_sha256: str,
-    endpoint: str,
-    boundary: int,
-    old_tables: Iterable[str],
-    out_dir: Path,
-) -> list[Path]:
-    """Write the SQL file, manifest and report of each wave of the spec's units."""
-    overwritten = sorted({unit.new_table for unit in spec.units} & spec.old_tables)
-    if overwritten:
-        raise MigrationRefused(f"New tables that are also old tables: {overwritten}")
-    selected_tables = set(old_tables)
-    units = [
-        unit
-        for unit in spec.units
-        if not selected_tables or unit.old_table in selected_tables
-    ]
-    unknown = selected_tables - spec.old_tables
+def load(
+    greptime: Greptime, spec: MigrationSpec, old_tables: Iterable[str] = ()
+) -> Migration:
+    """Read what there is to copy and what is already there. Only reads."""
+    selected = set(old_tables)
+    unknown = sorted(selected - set(spec.old_tables))
     if unknown:
-        raise MigrationRefused(f"Not an old table of the spec: {sorted(unknown)}")
-
-    present = greptime.tables()
-    involved = sorted({u.old_table for u in units} | {u.new_table for u in units})
-    schemas = {table: greptime.columns(table) for table in involved if table in present}
-    first_rows = {
-        table: {
-            topic: int(first)
-            for topic, first in greptime.rows(
-                f'SELECT {quote_ident("topic")}, CAST(min("timestamp") AS BIGINT) '
-                f"FROM {quote_ident(table)} GROUP BY 1"
-            )
-        }
-        for table in sorted({u.new_table for u in units})
-        if table in schemas and "topic" in schemas[table]
+        raise MigrationFailed(f"Not an old table of the spec: {unknown}")
+    wanted_topics = {
+        (unit.new_table, unit.new_topic)
+        for unit in spec.units
+        if not selected or unit.old_table in selected
     }
-    spec_topics: dict[str, set[str]] = defaultdict(set)
-    for unit in spec.units:
-        spec_topics[unit.new_table].add(unit.new_topic)
-    units_per_old_topic = Counter((u.old_table, u.old_topic) for u in spec.units)
+    units = [u for u in spec.units if (u.new_table, u.new_topic) in wanted_topics]
+    present_tables = greptime.tables()
+    schemas = {
+        table: greptime.columns(table)
+        for table in sorted({u.old_table for u in units} | {u.new_table for u in units})
+        if table in present_tables
+    }
 
+    additions: dict[str, dict[str, str]] = defaultdict(dict)
+    mismatches: list[Mismatch] = []
     refused: list[Refusal] = []
-    drafts: list[_Draft] = []
-    for unit in sorted(units, key=lambda u: u.wave):
+    copies: dict[tuple[str, str], list[Copy]] = defaultdict(list)
+    for unit in units:
         if unit.old_table not in schemas:
-            refused.append(_refusal(unit, "The old table doesn't exist"))
+            refused.append(Refusal(unit=unit, reason="The old table doesn't exist"))
             continue
         if unit.new_table not in schemas:
-            refused.append(_refusal(unit, "The new table doesn't exist yet"))
+            refused.append(Refusal(unit=unit, reason="The new table doesn't exist"))
             continue
-        if "topic" not in schemas[unit.new_table]:
-            refused.append(_refusal(unit, "The new table has no topic column"))
-            continue
-        foreign = sorted(
-            topic
-            for topic, first in first_rows[unit.new_table].items()
-            if topic not in spec_topics[unit.new_table] and first < boundary
-        )
-        if foreign:
+        old_schema, new_schema = schemas[unit.old_table], schemas[unit.new_table]
+        missing = sorted({"topic", "technical_name"} - set(new_schema))
+        if missing:
             refused.append(
-                _refusal(
-                    unit,
-                    f"The new table holds rows before the boundary from topics outside "
-                    f"the spec: {', '.join(foreign)}",
-                )
+                Refusal(unit=unit, reason=f"The new table has no {missing} column")
             )
             continue
-        pairs, live_keys, absent = _column_pairs(
-            unit,
-            schemas[unit.old_table],
-            schemas[unit.new_table],
-            units_per_old_topic[(unit.old_table, unit.old_topic)] == 1,
-        )
-        if not pairs:
-            refused.append(
-                _refusal(unit, "None of its old columns is in the old table")
-            )
+        pairs = [
+            (f"{column.old}__{suffix}", f"{column.new}__{suffix}")
+            for column in unit.columns
+            for suffix in SUFFIXES
+            if f"{column.old}__{suffix}" in old_schema
+        ]
+        if not any(old.endswith("__value") for old, _ in pairs):
             continue
-        first_row = first_rows[unit.new_table].get(unit.new_topic)
-        bound = boundary if first_row is None else first_row
-        old_rows, windows = _day_windows(greptime, unit, _filter_columns(pairs), bound)
-        drafts.append(
-            _Draft(
-                unit=unit,
-                pairs=pairs,
-                filter_columns=_filter_columns(pairs),
-                live_keys=live_keys,
-                absent_old_columns=absent,
-                bound=bound,
-                bound_from="boundary" if first_row is None else "first row",
-                old_rows=old_rows,
-                windows=windows,
-            )
-        )
-
-    overlapping = _overlapping(drafts)
-    pending: dict[str, dict[str, str]] = defaultdict(dict)
-    added_in_wave: dict[int, dict[str, dict[str, str]]] = defaultdict(
-        lambda: defaultdict(dict)
-    )
-    plans: dict[int, list[UnitPlan]] = defaultdict(list)
-    for index, draft in enumerate(drafts):
-        unit = draft.unit
-        if index in overlapping:
-            refused.append(_refusal(unit, overlapping[index]))
-            continue
-        old_schema = schemas[unit.old_table]
-        new_types = {**schemas[unit.new_table], **pending[unit.new_table]}
-        constants = {"topic": unit.new_topic, "technical_name": unit.technical_name}
-        if "table" in new_types:
-            constants["table"] = unit.new_table
-        identity_added = (
-            {} if "technical_name" in new_types else {"technical_name": "string"}
-        )
         source_type = (
             [("source_type", "source_type")]
-            if "source_type" in new_types and "source_type" in old_schema
+            if "source_type" in old_schema and "source_type" in new_schema
             else []
         )
-        resolved = (
-            _resolve([*draft.pairs, *source_type], old_schema, new_types)
-            if draft.windows
-            else ([], {})
-        )
-        if isinstance(resolved, str):
-            refused.append(_refusal(unit, resolved))
-            continue
-        copies, added = resolved
-        unit_added = {**identity_added, **added} if draft.windows else {}
-        if unit_added:
-            pending[unit.new_table].update(unit_added)
-            added_in_wave[unit.wave][unit.new_table].update(unit_added)
-        plans[unit.wave].append(
-            UnitPlan(
+        known = {**new_schema, **additions[unit.new_table]}
+        unit_mismatches = [
+            Mismatch(
                 old_table=unit.old_table,
-                old_topic=unit.old_topic,
+                old_column=old,
+                old_type=old_schema[old],
                 new_table=unit.new_table,
-                new_topic=unit.new_topic,
-                chain=unit.chain,
-                bound=draft.bound,
-                bound_from=draft.bound_from,
-                constants=constants,
-                copies=copies,
-                filter_columns=draft.filter_columns,
-                live_keys=draft.live_keys,
-                absent_old_columns=draft.absent_old_columns,
-                old_rows=draft.old_rows,
-                windows=draft.windows,
+                new_column=new,
+                new_type=known[new],
             )
-        )
-
-    refused_by_wave: dict[int, list[Refusal]] = defaultdict(list)
-    wave_of = {
-        (u.old_table, u.old_topic, u.new_table, u.new_topic): u.wave for u in units
-    }
-    for refusal in refused:
-        key = (
-            refusal.old_table,
-            refusal.old_topic,
-            refusal.new_table,
-            refusal.new_topic,
-        )
-        refused_by_wave[wave_of[key]].append(refusal)
-
-    out_dir.mkdir(parents=True, exist_ok=True)
-    written: list[Path] = []
-    for wave in sorted({u.wave for u in units}):
-        written.extend(
-            _write_wave(
-                out_dir,
-                wave,
-                endpoint,
-                boundary,
-                spec_sha256,
-                plans[wave],
-                refused_by_wave[wave],
-                {
-                    t: dict(sorted(c.items()))
-                    for t, c in sorted(added_in_wave[wave].items())
-                },
-                schemas,
-                pending,
-            )
-        )
-    return written
-
-
-def _write_wave(
-    out_dir: Path,
-    wave: int,
-    endpoint: str,
-    boundary: int,
-    spec_sha256: str,
-    units: list[UnitPlan],
-    refused: list[Refusal],
-    added: dict[str, dict[str, str]],
-    schemas: dict[str, dict[str, str]],
-    pending: dict[str, dict[str, str]],
-) -> list[Path]:
-    blocks: list[tuple[str, str]] = []
-    statements: list[Statement] = []
-    for table, columns in added.items():
-        for column, column_type in columns.items():
-            sql = (
-                f"ALTER TABLE {quote_ident(table)} ADD COLUMN "
-                f"{quote_ident(column)} {column_type.upper()} NULL;"
-            )
-            blocks.append((f"-- add {column} to {table}", sql))
-            statements.append(
-                Statement(
-                    sha256=sha256(sql), table=table, column=column, type=column_type
+            for old, new in pairs
+            if new in known and known[new] != old_schema[old]
+        ]
+        if unit_mismatches:
+            mismatches.extend(unit_mismatches)
+            refused.append(
+                Refusal(
+                    unit=unit,
+                    reason=f"{len(unit_mismatches)} columns differ in type",
                 )
             )
-    for unit_index, unit in enumerate(units):
-        for window_index, window in enumerate(unit.windows):
-            sql = unit.insert_sql(window)
-            day = timestamp_literal(window.start)[1:11]
-            blocks.append((f"-- unit {unit_index}: {unit.label}, {day}", sql))
-            statements.append(
-                Statement(
-                    sha256=sha256(sql),
-                    table=unit.new_table,
-                    unit=unit_index,
-                    window=window_index,
-                )
-            )
-
-    header = (
-        f"-- migrate-history wave {wave} on {endpoint}, boundary {timestamp_literal(boundary)}\n"
-        f"-- spec sha256 {spec_sha256}\n"
-        f"-- {len(units)} units, {sum(len(u.windows) for u in units)} windows, "
-        f"{sum(len(c) for c in added.values())} columns to add"
-    )
-    sql_text = "\n\n".join([header, *(f"{c}\n{s}" for c, s in blocks)]) + "\n"
-
-    expected: dict[str, dict[str, str]] = defaultdict(dict)
-    for unit in units:
-        new_types = {**schemas[unit.new_table], **pending[unit.new_table]}
-        if not unit.windows:
             continue
-        for column in unit.constants:
-            expected[unit.new_table][column] = new_types[column]
-        for copy in unit.copies:
-            expected[unit.new_table][copy.new] = copy.type
-            expected[unit.old_table][copy.old] = schemas[unit.old_table][copy.old]
-        expected[unit.old_table]["topic"] = schemas[unit.old_table]["topic"]
-    manifest = WavePlan(
-        wave=wave,
-        endpoint=endpoint,
-        boundary=boundary,
-        spec_sha256=spec_sha256,
-        sql_sha256=sha256(sql_text),
-        expected_columns={
-            t: dict(sorted(c.items())) for t, c in sorted(expected.items())
+        copy_days = _days(
+            greptime, unit.old_table, _rows_with_a_value(unit.old_topic, pairs)
+        )
+        if not copy_days:
+            continue
+        additions[unit.new_table].update(
+            {new: old_schema[old] for old, new in pairs if new not in known}
+        )
+        copies[(unit.new_table, unit.new_topic)].append(
+            Copy(
+                unit=unit,
+                pairs=[*pairs, *source_type],
+                constants={
+                    "topic": unit.new_topic,
+                    "technical_name": unit.technical_name,
+                    **({"table": unit.new_table} if "table" in new_schema else {}),
+                },
+                days={day: rows for day, rows, _ in copy_days},
+                last=max(last for _, _, last in copy_days),
+            )
+        )
+
+    histories = []
+    for (new_table, new_topic), topic_copies in sorted(copies.items()):
+        history = History(
+            new_table=new_table, new_topic=new_topic, copies=topic_copies, present={}
+        )
+        present = {
+            day: rows for day, rows, _ in _days(greptime, new_table, history.new_rows())
+        }
+        expected = history.expected
+        surplus = sorted(
+            day_label(day)
+            for day, rows in present.items()
+            if rows > expected.get(day, 0)
+        )
+        if surplus:
+            refused.extend(
+                Refusal(
+                    unit=copy.unit,
+                    reason="The new topic holds more rows than the old one on "
+                    f"{', '.join(surplus[:5])}: old and new overlap",
+                )
+                for copy in topic_copies
+            )
+            continue
+        histories.append(history.model_copy(update={"present": present}))
+    return Migration(
+        histories=histories,
+        additions={
+            table: dict(sorted(columns.items()))
+            for table, columns in sorted(additions.items())
+            if columns
         },
-        added_columns=added,
-        units=units,
+        mismatches=mismatches,
         refused=refused,
-        statements=statements,
     )
 
-    sql_path = out_dir / f"wave-{wave}.sql"
-    manifest_path, _, _ = wave_paths(sql_path)
-    report_path = sql_path.with_suffix(".report.md")
-    sql_path.write_text(sql_text)
-    manifest_path.write_text(manifest.model_dump_json(indent=1) + "\n")
-    report_path.write_text(_plan_report(manifest))
-    logger.info(
-        "Wave %d: %d units, %d statements, %d refused -> %s",
-        wave,
-        len(units),
-        len(statements),
-        len(refused),
-        sql_path,
+
+def leftover(greptime: Greptime, spec: MigrationSpec, old_table: str) -> Leftover:
+    """The topics and columns with data in an old table that no unit copies."""
+    copied: dict[str, set[str]] = defaultdict(set)
+    for unit in spec.units:
+        if unit.old_table == old_table:
+            copied[unit.old_topic].update(f"{c.old}__value" for c in unit.columns)
+    value_columns = sorted(
+        column for column in greptime.columns(old_table) if column.endswith("__value")
     )
-    return [sql_path, manifest_path, report_path]
+    topics: dict[str, int] = {}
+    columns: dict[str, set[str]] = defaultdict(set)
+    for chunk in _chunks(value_columns) if value_columns else [[]]:
+        counts = ", ".join(f"count({quote_ident(column)})" for column in chunk)
+        found = greptime.rows(
+            f"SELECT {quote_ident('topic')}, count(*){', ' if chunk else ''}{counts} "
+            f"FROM {quote_ident(old_table)} GROUP BY 1"
+        )
+        for topic, rows, *filled in found:
+            if topic not in copied:
+                topics[topic] = int(rows)
+                continue
+            columns[topic].update(
+                column
+                for column, count in zip(chunk, filled, strict=True)
+                if count and column not in copied[topic]
+            )
+    return Leftover(
+        topics=dict(sorted(topics.items())),
+        columns={
+            topic: sorted(found) for topic, found in sorted(columns.items()) if found
+        },
+    )
 
 
-def _table(header: list[str], rows: Iterable[Iterable[object]]) -> str:
-    lines = [
-        "| " + " | ".join(header) + " |",
-        "|" + "---|" * len(header),
-        *("| " + " | ".join(str(cell) for cell in row) + " |" for row in rows),
-    ]
-    return "\n".join(lines)
+def _table(headers: list[str], rows: Iterable[Iterable[object]]) -> str:
+    body = ["| " + " | ".join(str(cell) for cell in row) + " |" for row in rows]
+    if not body:
+        return "None."
+    rule = "|" + "|".join("---" for _ in headers) + "|"
+    return "\n".join(["| " + " | ".join(headers) + " |", rule, *body])
 
 
-def _moment(nanos: int) -> str:
-    return timestamp_literal(nanos)[1:20] + "Z"
-
-
-def _plan_report(plan: WavePlan) -> str:
-    casts = [
-        (index, copy.old, copy.new, copy.type)
-        for index, unit in enumerate(plan.units)
-        for copy in unit.copies
-        if copy.cast
-    ]
+def report(migration: Migration, leftovers: dict[str, Leftover]) -> str:
+    """What a run would do, as markdown."""
+    per_table: dict[str, list[int]] = defaultdict(lambda: [0, 0, 0])
+    for history in migration.histories:
+        present = sum(history.present.values())
+        for index, copy in enumerate(history.copies):
+            totals = per_table[copy.unit.old_table]
+            totals[0] += 1
+            totals[1] += copy.rows
+            totals[2] += present if index == 0 else 0
+    to_copy = sum(rows for _, rows, _ in per_table.values())
+    there = sum(present for _, _, present in per_table.values())
     sections = [
-        f"# Migrate history, wave {plan.wave}",
-        f"Endpoint `{plan.endpoint}`, boundary {_moment(plan.boundary)}, spec sha256 "
-        f"`{plan.spec_sha256}`. {len(plan.units)} units copy "
-        f"{sum(u.rows for u in plan.units):,} rows in {len(plan.statements)} statements.",
-        f"## Refused ({len(plan.refused)})",
+        f"# History migration: {to_copy:,} rows in "
+        f"{sum(units for units, _, _ in per_table.values())} units, "
+        f"{there:,} already copied",
+        "## Per old table",
         _table(
-            ["Old table", "Old topic", "New table", "New topic", "Reason"],
+            ["Old table", "Units", "Rows", "Already in the new tables"],
+            (
+                (f"`{table}`", units, f"{rows:,}", f"{present:,}")
+                for table, (units, rows, present) in sorted(per_table.items())
+            ),
+        ),
+        f"## Units left out ({len(migration.refused)})",
+        "A unit is copied with all its columns or not at all. Fix the cause and run "
+        "again.",
+        _table(
+            ["Old table", "Old topic", "New topic", "Reason"],
             (
                 (
-                    f"`{r.old_table}`",
-                    f"`{r.old_topic}`",
-                    f"`{r.new_table}`",
-                    f"`{r.new_topic}`",
+                    f"`{r.unit.old_table}`",
+                    f"`{r.unit.old_topic}`",
+                    f"`{r.unit.new_topic}`",
                     r.reason,
                 )
-                for r in plan.refused
+                for r in migration.refused
             ),
         ),
-        f"## Columns to add ({sum(len(c) for c in plan.added_columns.values())})",
+        f"## Columns that differ in type ({len(migration.mismatches)})",
+        "Decide per column which side is wrong and alter that one before the run: "
+        '`ALTER TABLE "<table>" MODIFY COLUMN "<column>" <TYPE>`.',
         _table(
-            ["Table", "Column", "Type"],
-            (
-                (f"`{table}`", f"`{column}`", column_type)
-                for table, columns in plan.added_columns.items()
-                for column, column_type in columns.items()
-            ),
-        ),
-        f"## Casts ({len(casts)})",
-        _table(
-            ["Unit", "Old column", "New column", "Type"],
-            ((i, f"`{o}`", f"`{n}`", t) for i, o, n, t in casts),
-        ),
-        f"## Units ({len(plan.units)})",
-        "Old rows: all rows of the old topic before the bound. To copy: those with a mapped "
-        "value. Live keys: old keys copied because the new table already has them.",
-        _table(
-            [
-                "#",
-                "Old table",
-                "Old topic",
-                "New table",
-                "New topic",
-                "Bound",
-                "Old rows",
-                "To copy",
-                "Days",
-                "Chain",
-                "Live keys",
-                "Not in the old table",
-            ],
+            ["Old table", "Old column", "Type", "New table", "New column", "Type"],
             (
                 (
-                    index,
-                    f"`{u.old_table}`",
-                    f"`{u.old_topic}`",
-                    f"`{u.new_table}`",
-                    f"`{u.new_topic}`",
-                    f"{_moment(u.bound)} ({u.bound_from})",
-                    f"{u.old_rows:,}",
-                    f"{u.rows:,}",
-                    len(u.windows),
-                    u.chain or "",
-                    ", ".join(f"`{k}`" for k in u.live_keys),
-                    ", ".join(f"`{c}`" for c in u.absent_old_columns),
+                    f"`{m.old_table}`",
+                    f"`{m.old_column}`",
+                    m.old_type,
+                    f"`{m.new_table}`",
+                    f"`{m.new_column}`",
+                    m.new_type,
                 )
-                for index, u in enumerate(plan.units)
+                for m in migration.mismatches
+            ),
+        ),
+        "## Columns the run adds",
+        "A new table gets a column when its first value arrives. These have none yet, "
+        "so the run adds them with the old column's type.",
+        _table(
+            ["New table", "Columns"],
+            (
+                (f"`{table}`", len(columns))
+                for table, columns in migration.additions.items()
+            ),
+        ),
+        "## Not migrated",
+        "Data in the old tables that no unit copies. It is lost when the table is "
+        "dropped.",
+        _table(
+            ["Old table", "Topic", "Rows", "Columns with values"],
+            (
+                row
+                for table, left in sorted(leftovers.items())
+                for row in [
+                    *(
+                        (f"`{table}`", f"`{topic}`", f"{rows:,}", "all")
+                        for topic, rows in left.topics.items()
+                    ),
+                    *(
+                        (
+                            f"`{table}`",
+                            f"`{topic}`",
+                            "",
+                            ", ".join(f"`{c}`" for c in columns),
+                        )
+                        for topic, columns in left.columns.items()
+                    ),
+                ]
             ),
         ),
     ]
     return "\n\n".join(sections) + "\n"
 
 
-# ---- execute ---------------------------------------------------------------------------------
-
-
-def read_statements(sql_text: str) -> list[str]:
-    """The statements of a planned SQL file, without their comment lines."""
-    statements = []
-    for block in sql_text.split("\n\n"):
-        lines = [line for line in block.splitlines() if not line.startswith("--")]
-        if lines:
-            statements.append("\n".join(lines))
-    return statements
-
-
-def load_plan(sql_path: Path, endpoint: str) -> tuple[WavePlan, list[str]]:
-    """The manifest and statements of a planned SQL file, refused unless both are unchanged."""
-    manifest_path, _, _ = wave_paths(sql_path)
-    plan = WavePlan.model_validate_json(manifest_path.read_bytes())
-    sql_text = sql_path.read_text()
-    if sha256(sql_text) != plan.sql_sha256:
-        raise MigrationRefused(
-            f"{sql_path} isn't the file the plan wrote (sha256 differs)"
-        )
-    if endpoint != plan.endpoint:
-        raise MigrationRefused(
-            f"{sql_path} was planned for {plan.endpoint}, not {endpoint}"
-        )
-    statements = read_statements(sql_text)
-    if [sha256(s) for s in statements] != [s.sha256 for s in plan.statements]:
-        raise MigrationRefused(f"{sql_path}'s statements don't match its manifest")
-    return plan, statements
-
-
-def read_journal(journal_path: Path) -> dict[int, dict[str, Any]]:
-    if not journal_path.exists():
-        return {}
-    entries = [
-        json.loads(line) for line in journal_path.read_text().splitlines() if line
-    ]
-    return {entry["statement"]: entry for entry in entries}
-
-
-def _check_schema(greptime: Greptime, plan: WavePlan, done: set[int]) -> None:
-    added_done = {
-        (s.table, s.column)
-        for i, s in enumerate(plan.statements)
-        if s.column and i in done
-    }
-    problems = []
-    for table, expected in plan.expected_columns.items():
-        current = greptime.columns(table)
-        for column, column_type in expected.items():
-            to_add = column in plan.added_columns.get(table, {})
-            if to_add and (table, column) not in added_done:
-                if column in current:
-                    problems.append(f"{table}.{column} has appeared since the plan")
-            elif current.get(column) != column_type:
-                problems.append(
-                    f"{table}.{column} is {current.get(column) or 'missing'}, "
-                    f"the plan expects {column_type}"
-                )
-    if problems:
-        raise MigrationRefused(
-            "The schema differs from the plan: " + "; ".join(problems)
-        )
-
-
-def execute_plan(
+def run(
     greptime: Greptime,
-    sql_path: Path,
-    endpoint: str,
-    pause: float,
+    migration: Migration,
+    until: date | None = None,
+    pause: float = 1.0,
     sleep: Callable[[float], None] = time.sleep,
-) -> dict[str, int]:
-    """Run a planned SQL file statement by statement; returns how many ended in each status."""
-    plan, statements = load_plan(sql_path, endpoint)
-    _, journal_path, _ = wave_paths(sql_path)
-    statuses: Counter[str] = Counter()
-    with journal_path.open("a") as journal_file:
-        try:
-            fcntl.flock(journal_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            raise MigrationRefused(
-                f"Another execute of {sql_path.name} is running"
-            ) from None
-        journal = read_journal(journal_path)
-        done = {
-            index
-            for index, entry in journal.items()
-            if entry["sha256"] == plan.statements[index].sha256
-            and entry["status"] != "short"
-        }
-        _check_schema(greptime, plan, done)
-        for index, (statement, sql) in enumerate(
-            zip(plan.statements, statements, strict=True)
-        ):
-            if index in done:
-                statuses["journalled"] += 1
+) -> int:
+    """Copy day by day, newest first, across all units; returns the rows copied."""
+    for table, columns in migration.additions.items():
+        for column, column_type in columns.items():
+            greptime.run(
+                f"ALTER TABLE {quote_ident(table)} ADD COLUMN "
+                f"{quote_ident(column)} {column_type.upper()} NULL"
+            )
+    oldest = day_start(until) if until else 0
+    days = sorted(
+        {day for h in migration.histories for day in h.expected if day >= oldest},
+        reverse=True,
+    )
+    copied = 0
+    for day in days:
+        copied_today = 0
+        for history in migration.histories:
+            expected = history.expected.get(day, 0)
+            present = history.present.get(day, 0)
+            if present == expected:
                 continue
-            started = time.monotonic()
-            entry = _run_statement(greptime, plan, index, statement, sql)
-            entry["seconds"] = round(time.monotonic() - started, 3)
-            journal_file.write(json.dumps(entry) + "\n")
-            journal_file.flush()
-            statuses[entry["status"]] += 1
-            if entry["status"] == "short":
-                raise MigrationRefused(
-                    f"{entry['new_topic']} holds {entry['rows']} of {entry['expected']} "
-                    f"rows from {entry['start']} after statement {index}"
+            for copy in history.copies:
+                if day in copy.days:
+                    greptime.run(copy.insert_sql(day))
+            there = greptime.count(
+                f"SELECT count(*) FROM {quote_ident(history.new_table)} "
+                f"WHERE {history.new_rows()} "
+                f'AND "timestamp" >= {timestamp_literal(day)} '
+                f'AND "timestamp" < {timestamp_literal(day + DAY_NS)}'
+            )
+            if there != expected:
+                raise MigrationFailed(
+                    f"{history.new_topic} holds {there} rows on {day_label(day)} "
+                    f"after copying, {expected} expected"
                 )
-            if entry["status"] == "copied":
-                logger.info("%d/%d %s", index + 1, len(statements), entry)
-                sleep(pause)
-    logger.info("%s: %s", sql_path.name, dict(statuses))
-    return dict(statuses)
+            copied_today += there - present
+            sleep(pause)
+        copied += copied_today
+        logger.info("%s: %d rows copied", day_label(day), copied_today)
+    return copied
 
 
-def _run_statement(
-    greptime: Greptime, plan: WavePlan, index: int, statement: Statement, sql: str
-) -> dict[str, Any]:
-    entry: dict[str, Any] = {"statement": index, "sha256": statement.sha256}
-    if statement.unit is None or statement.window is None:
-        greptime.run(sql)
-        return {
-            **entry,
-            "status": "added",
-            "table": statement.table,
-            "column": statement.column,
+def _aggregates(
+    greptime: Greptime, table: str, where: str, columns: list[str]
+) -> dict[str, tuple[Any, ...]]:
+    found: dict[str, tuple[Any, ...]] = {}
+    for chunk in _chunks(columns):
+        selected = ", ".join(
+            f"count({quote_ident(c)}), min({quote_ident(c)}), max({quote_ident(c)})"
+            for c in chunk
+        )
+        (values,) = greptime.rows(
+            f"SELECT {selected} FROM {quote_ident(table)} WHERE {where}"
+        )
+        found.update(
+            {
+                column: tuple(values[3 * index : 3 * index + 3])
+                for index, column in enumerate(chunk)
+            }
+        )
+    return found
+
+
+def _merged(stats: list[tuple[Any, ...]]) -> tuple[Any, ...]:
+    lows = [low for _, low, _ in stats if low is not None]
+    highs = [high for _, _, high in stats if high is not None]
+    return (
+        sum(count for count, _, _ in stats),
+        min(lows) if lows else None,
+        max(highs) if highs else None,
+    )
+
+
+def check(greptime: Greptime, migration: Migration) -> list[str]:
+    """Where the new tables differ from the old ones; empty when the copy is complete.
+
+    Per new topic it compares the rows per day, and `count`, `min` and `max` of every copied
+    column, between the old topics and the new topic up to the old topics' last row.
+    """
+    findings = [
+        f"{r.unit.old_table} {r.unit.label}: left out. {r.reason}"
+        for r in migration.refused
+    ]
+    for history in migration.histories:
+        expected = history.expected
+        findings.extend(
+            f"{history.new_table} {history.new_topic} {day_label(day)}: "
+            f"{expected.get(day, 0)} old rows, {history.present.get(day, 0)} new rows"
+            for day in sorted(set(expected) | set(history.present))
+            if expected.get(day, 0) != history.present.get(day, 0)
+        )
+        old_stats: dict[str, list[tuple[Any, ...]]] = defaultdict(list)
+        for copy in history.copies:
+            stats = _aggregates(
+                greptime,
+                copy.unit.old_table,
+                copy.old_rows(),
+                [old for old, _ in copy.pairs],
+            )
+            for old, new in copy.pairs:
+                old_stats[new].append(stats[old])
+        new_schema = greptime.columns(history.new_table)
+        absent: dict[str, tuple[Any, ...]] = {
+            column: (0, None, None) for column in old_stats if column not in new_schema
         }
-    unit = plan.units[statement.unit]
-    window = unit.windows[statement.window]
-    count_sql = (
-        f"SELECT count(*) FROM {quote_ident(unit.new_table)} "
-        f"WHERE {unit.new_rows_in(window.start, window.end)}"
-    )
-    located = {
-        **entry,
-        "unit": statement.unit,
-        "new_topic": unit.new_topic,
-        "start": _moment(window.start),
-        "expected": window.rows,
-    }
-    present = greptime.count(count_sql)
-    if present == window.rows:
-        return {**located, "status": "present", "rows": present}
-    greptime.run(sql)
-    copied = greptime.count(count_sql)
-    status = "copied" if copied == window.rows else "short"
-    return {**located, "status": status, "rows": copied, "present_before": present}
+        new_stats = absent | _aggregates(
+            greptime,
+            history.new_table,
+            history.new_rows(),
+            sorted(set(old_stats) - set(absent)),
+        )
+        findings.extend(
+            f"{history.new_table} {history.new_topic} {column}: count, min, max "
+            f"{_merged(old_stats[column])} old, {new_stats[column]} new"
+            for column in sorted(old_stats)
+            if _merged(old_stats[column]) != new_stats[column]
+        )
+    return findings
 
 
-# ---- check -----------------------------------------------------------------------------------
+def drop(
+    greptime: Greptime,
+    spec: MigrationSpec,
+    old_tables: list[str],
+    accept_unmigrated: bool,
+    execute: bool,
+) -> dict[str, str]:
+    """Drop the old tables whose history is in the new ones; returns what happened per table.
 
-
-def _daily(rows: list[tuple[Any, ...]]) -> dict[int, int]:
-    return {int(day): int(count) for day, count in rows}
-
-
-def check_plan(greptime: Greptime, sql_path: Path, endpoint: str) -> bool:
-    """Compare old and new rows per unit and write the check report; True when all match."""
-    plan, _ = load_plan(sql_path, endpoint)
-    _, _, report_path = wave_paths(sql_path)
-    findings: list[tuple[int, str]] = []
-    by_topic: dict[tuple[str, str], list[int]] = defaultdict(list)
-    for index, unit in enumerate(plan.units):
-        if not unit.windows:
+    Without tables it takes every old table of the spec. A table is kept while a check finds a
+    difference, while it still receives rows, or while it holds data no unit copies. That
+    last one is overridden by naming the table with `accept_unmigrated`.
+    """
+    migration = load(greptime, spec, old_tables)
+    present_tables = greptime.tables()
+    outcomes: dict[str, str] = {}
+    for table in old_tables or spec.old_tables:
+        if table not in present_tables:
+            outcomes[table] = "already gone"
             continue
-        by_topic[(unit.new_table, unit.new_topic)].append(index)
-        start, end = unit.span
-        old_days = _daily(
-            greptime.rows(
-                "SELECT CAST(date_trunc('day', \"timestamp\") AS BIGINT), count(*) "
-                f"FROM {quote_ident(unit.old_table)} WHERE {unit.old_rows_in(start, end)} "
-                "GROUP BY 1"
-            )
+        selected = Migration(
+            histories=migration.touching(table),
+            additions={},
+            mismatches=[],
+            refused=[r for r in migration.refused if r.unit.old_table == table],
         )
-        new_days = _daily(
-            greptime.rows(
-                "SELECT CAST(date_trunc('day', \"timestamp\") AS BIGINT), count(*) "
-                f"FROM {quote_ident(unit.new_table)} WHERE {unit.new_rows_in(start, end)} "
-                "GROUP BY 1"
-            )
-        )
-        for day in sorted(set(old_days) | set(new_days)):
-            if old_days.get(day, 0) != new_days.get(day, 0):
-                findings.append(
-                    (
-                        index,
-                        f"{_moment(day)[:10]}: {old_days.get(day, 0)} old rows, "
-                        f"{new_days.get(day, 0)} new rows",
-                    )
-                )
-        sampled = sorted(
-            (c for c in unit.copies if c.old.endswith("__value")), key=lambda c: c.new
-        )[:SAMPLED_COLUMNS]
-        for copy in sampled:
-            (old_stats,) = greptime.rows(
-                f"SELECT count({copy.expression}), min({copy.expression}), "
-                f"max({copy.expression}) FROM {quote_ident(unit.old_table)} "
-                f"WHERE {unit.old_rows_in(start, end)}"
-            )
-            new_column = quote_ident(copy.new)
-            (new_stats,) = greptime.rows(
-                f"SELECT count({new_column}), min({new_column}), max({new_column}) "
-                f"FROM {quote_ident(unit.new_table)} WHERE {unit.new_rows_in(start, end)}"
-            )
-            if old_stats != new_stats:
-                findings.append(
-                    (
-                        index,
-                        f"{copy.new}: count, min, max {old_stats} old, {new_stats} new",
-                    )
-                )
-
-    for (table, topic), indices in sorted(by_topic.items()):
-        bound = plan.units[indices[0]].bound
-        new_rows = greptime.count(
+        findings = check(greptime, selected)
+        recent = greptime.count(
             f"SELECT count(*) FROM {quote_ident(table)} "
-            f"WHERE {quote_ident('topic')} = {quote_literal(topic)} "
-            f'AND "timestamp" < {timestamp_literal(bound)}'
+            "WHERE \"timestamp\" > now() - INTERVAL '1 day'"
         )
-        expected = sum(plan.units[i].rows for i in indices)
-        if new_rows != expected:
-            findings.append(
-                (
-                    indices[0],
-                    f"{topic} holds {new_rows} rows before its bound, {expected} copied",
-                )
-            )
-
-    checked = sum(len(indices) for indices in by_topic.values())
-    matched = (
-        f"All {checked} units match."
-        if not findings
-        else f"{len({i for i, _ in findings})} of {checked} units differ."
-    )
-    summary = (
-        f"{matched} {len(plan.refused)} units were refused by the plan and not copied."
-        if plan.refused
-        else matched
-    )
-    report = "\n\n".join(
-        [
-            f"# Check of migrate-history wave {plan.wave}",
-            f"Endpoint `{plan.endpoint}`. Per unit: old rows with a mapped value against new rows, "
-            f"per day within the unit's span; `count`, `min` and `max` of up to "
-            f"{SAMPLED_COLUMNS} value columns; and per new topic, all rows before the bound "
-            f"against the rows copied. {summary}",
-            _table(
-                ["#", "Unit", "Finding"],
-                ((i, plan.units[i].label, finding) for i, finding in findings),
-            ),
+        left = leftover(greptime, spec, table)
+        reasons = [
+            *([f"{len(findings)} check findings"] if findings else []),
+            *([f"{recent} rows in the last day"] if recent else []),
             *(
                 [
-                    f"## Refused by the plan ({len(plan.refused)})",
-                    _table(
-                        ["Old topic", "New topic", "Reason"],
-                        (
-                            (f"`{r.old_topic}`", f"`{r.new_topic}`", r.reason)
-                            for r in plan.refused
-                        ),
-                    ),
+                    f"{len(left.topics)} topics and {len(left.columns)} topics with "
+                    "columns that aren't migrated"
                 ]
-                if plan.refused
+                if left and not (accept_unmigrated and table in old_tables)
                 else []
             ),
         ]
-    )
-    report_path.write_text(report + "\n")
-    logger.info("%s -> %s", summary, report_path)
-    return not findings
+        if reasons:
+            outcomes[table] = "kept: " + "; ".join(reasons)
+        elif execute:
+            greptime.run(f"DROP TABLE {quote_ident(table)}")
+            outcomes[table] = "dropped"
+        else:
+            outcomes[table] = "would be dropped"
+    return outcomes

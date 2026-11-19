@@ -109,41 +109,8 @@ recreates `public.power_tag_metadata` from `macros/load_power_tag_metadata.sql`.
 ### Migrating history to renamed topics
 
 When a system moves to new topics and tables, `greptime migrate-history` copies its history
-from the old tables into the new ones, under the new topic, `technical_name` and column
-names. Its input is a spec (JSON) listing units: one old topic in one old table, copied to
-one new topic in one new table, with a column map and a wave. The SQL that runs is a file
-that has been reviewed, not SQL built during the run.
-
-```bash
-# Only reads. Per wave: wave-<n>.sql, wave-<n>.plan.json and the dry-run wave-<n>.report.md.
-uv run zero-data greptime migrate-history plan spec.json --host <host> \
-  --boundary 2026-11-17T10:00:00Z --out migration/ [--table <old table> ...]
-
-# After review: runs the file as it is, journalling to wave-<n>.journal.jsonl; resumable.
-uv run zero-data greptime migrate-history execute migration/wave-1.sql --host <host>
-
-# Old against new rows per unit and day, and a sample of values: wave-<n>.check.md.
-uv run zero-data greptime migrate-history check migration/wave-1.sql --host <host>
-```
-
-- Rows are copied only before a unit's bound: the new topic's first row at plan time, or
-  `--boundary` for a topic that has none. `execute` and `check` read the bounds from the
-  manifest, so plan once; after a copy, the new topic's first row is the copied history.
-- `plan` copies the suffixes the spec lists for each key (`value`, `timestamp`, …). It adds
-  missing columns (`ALTER TABLE … ADD COLUMN`, typed as the old column), casts
-  where no value is lost, and refuses a unit that would need a lossy cast, whose new table
-  holds rows before the boundary from topics outside the spec, or whose period overlaps
-  another old topic of the same new topic. Refused units are listed in the report.
-- `execute` refuses a SQL file whose sha256 or endpoint (host, port and database) isn't the
-  plan's, or when a column it touches changed since the plan, or while another `execute` of
-  the same file runs. It copies one window (a unit's day) at a time and skips a window whose
-  rows are all there. Each INSERT leaves out timestamps the new topic already holds in that
-  window, so a window copied in part (a restart mid-INSERT) gets only its missing rows: the
-  new tables are append-only, and rows can't be deleted. A window that ends up with another
-  count than planned is journalled as `short` and stops the run, again on every rerun.
-- `check` lists the units the plan refused next to its findings.
-- Resume a wave from the checkout that started it, or with its journal: without it,
-  `execute` refuses the columns its earlier run added.
+from the old tables into the new ones, checks the copy and drops the old tables.
+[migrations/README.md](migrations/README.md) walks through a rehearsal and the migration.
 
 ## Release Management
 

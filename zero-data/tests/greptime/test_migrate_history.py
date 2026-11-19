@@ -1,34 +1,39 @@
-"""migrate-history against a real local Greptime: plan, execute and check on synthetic tables.
+"""migrate-history against a real local Greptime, on synthetic tables.
 
-The old table holds a sounder that was renamed on day 2 (a chain), and a catch-all topic whose
-keys belong to two devices in two new tables.
+The old table holds a sounder that was renamed on day 2 (an earlier name of the same device),
+and a catch-all topic whose keys belong to two devices in two new tables.
 """
 
-import fcntl
-import json
 from collections.abc import Iterator
-from datetime import UTC, datetime
+from datetime import date
 from pathlib import Path
 
 import pytest
-from pydantic import ValidationError
 
 from tests.greptime.conftest import Greptime as Query
-from zero_data.greptime.cli import MigratePlanCmd
+from tests.greptime.rehearsal_tables import create_new_tables
+from zero_data.greptime.cli import MigrateCheckCmd, MigrateDropCmd, MigrateRunCmd
 from zero_data.greptime.config import GreptimeConnection
 from zero_data.greptime.migrate_history import (
     Greptime,
-    MigrationRefused,
-    Window,
-    _Draft,
-    _overlapping,
-    check_plan,
-    execute_plan,
-    plan_migration,
-    to_nanos,
-    wave_paths,
+    MigrationFailed,
+    check,
+    drop,
+    leftover,
+    load,
+    report,
+    run,
 )
-from zero_data.greptime.migration_spec import ColumnMap, MigrationSpec, Unit
+from zero_data.greptime.migration_spec import (
+    ColumnMap,
+    MappingRow,
+    MigrationSpec,
+    SpecRefused,
+    Unit,
+    VectorEvent,
+    build_spec,
+    read_mapping,
+)
 from zero_data.greptime.snapshot import connect
 
 OLD = "zz_mh_old_fire"
@@ -37,58 +42,49 @@ SOUNDER = "zz_mh_fire__sounder"
 GENERAL = "zz_mh_fire__general"
 PANEL = "zz_mh_fire__main_panel"
 TABLES = (OLD, OLD_GENERAL, SOUNDER, GENERAL, PANEL)
-BOUNDARY = datetime(2026, 8, 10, tzinfo=UTC)
-ENDPOINT = "127.0.0.1:4003/public"
-
-
-def column(old: str, new: str) -> ColumnMap:
-    return ColumnMap(old=old, new=new, suffixes=["value", "timestamp"])
-
+EARLIER_NAME = "marpower/old-fire/201h1/s"
+OLD_SOUNDER = "marpower/old-fire/201h1-s"
+NEW_SOUNDER = "marpower/21-fire/sounder/201h1-s"
+OLD_CATCH_ALL = "marpower/old-fire-general"
 
 SOUNDER_COLUMNS = [
-    column("alarm", "alarm"),
-    column("prealarm", "pre_alarm"),
-    column("level", "level"),
-    column("test", "test"),
+    ColumnMap(old="alarm", new="alarm"),
+    ColumnMap(old="prealarm", new="pre_alarm"),
+    ColumnMap(old="level", new="level"),
 ]
 SPEC = MigrationSpec(
     units=[
         Unit(
-            wave=1,
             old_table=OLD,
-            old_topic="marpower/old-fire/201h1/s",
+            old_topic=EARLIER_NAME,
             new_table=SOUNDER,
-            new_topic="marpower/21-fire/sounder/201h1-s",
-            technical_name="201h1-s",
-            columns=SOUNDER_COLUMNS,
-            chain="earlier name",
-        ),
-        Unit(
-            wave=1,
-            old_table=OLD,
-            old_topic="marpower/old-fire/201h1-s",
-            new_table=SOUNDER,
-            new_topic="marpower/21-fire/sounder/201h1-s",
+            new_topic=NEW_SOUNDER,
             technical_name="201h1-s",
             columns=SOUNDER_COLUMNS,
         ),
         Unit(
-            wave=2,
+            old_table=OLD,
+            old_topic=OLD_SOUNDER,
+            new_table=SOUNDER,
+            new_topic=NEW_SOUNDER,
+            technical_name="201h1-s",
+            columns=SOUNDER_COLUMNS,
+        ),
+        Unit(
             old_table=OLD_GENERAL,
-            old_topic="marpower/old-fire-general",
+            old_topic=OLD_CATCH_ALL,
             new_table=GENERAL,
             new_topic="marpower/21-fire/general",
             technical_name="general",
-            columns=[column("fire_muster", "muster")],
+            columns=[ColumnMap(old="fire_muster", new="muster")],
         ),
         Unit(
-            wave=2,
             old_table=OLD_GENERAL,
-            old_topic="marpower/old-fire-general",
+            old_topic=OLD_CATCH_ALL,
             new_table=PANEL,
             new_topic="marpower/21-fire/main-panel",
             technical_name="main-panel",
-            columns=[column("fire_panel_command", "command")],
+            columns=[ColumnMap(old="fire_panel_command", new="command")],
         ),
     ]
 )
@@ -99,91 +95,55 @@ def ts(day: int, hour: int, nanos: int = 0) -> str:
 
 
 @pytest.fixture
-def tables(public: Query) -> Iterator[Query]:
+def greptime(connection: GreptimeConnection) -> Iterator[Greptime]:
+    with connect(connection.with_dbname("public")) as handle:
+        yield Greptime(handle, "public")
+
+
+@pytest.fixture
+def tables(public: Query, greptime: Greptime) -> Iterator[Query]:
     for table in TABLES:
         public.drop_table(table)
     public.execute(
         f'CREATE TABLE "{OLD}" ("timestamp" TIMESTAMP(9) NOT NULL, "topic" STRING NULL, '
-        '"source_type" STRING NULL, "table" STRING NULL, '
         '"alarm__value" BOOLEAN NULL, "alarm__timestamp" STRING NULL, '
-        '"prealarm__value" BOOLEAN NULL, "prealarm__timestamp" STRING NULL, '
-        '"level__value" BIGINT NULL, "level__timestamp" STRING NULL, '
-        '"test__value" BOOLEAN NULL, "test__timestamp" STRING NULL, '
+        '"prealarm__value" BOOLEAN NULL, "level__value" BIGINT NULL, '
         '"spare__value" BOOLEAN NULL, '
         "TIME INDEX (\"timestamp\")) WITH (append_mode = 'true')"
     )
     public.execute(
-        f'CREATE TABLE "{OLD_GENERAL}" ("timestamp" TIMESTAMP(9) NOT NULL, "topic" STRING NULL, '
-        '"fire_muster__value" BOOLEAN NULL, "fire_muster__timestamp" STRING NULL, '
-        '"fire_panel_command__value" BIGINT NULL, "fire_panel_command__timestamp" STRING NULL, '
+        f'CREATE TABLE "{OLD_GENERAL}" ("timestamp" TIMESTAMP(9) NOT NULL, '
+        '"topic" STRING NULL, "fire_muster__value" BOOLEAN NULL, '
+        '"fire_panel_command__value" BIGINT NULL, '
         "TIME INDEX (\"timestamp\")) WITH (append_mode = 'true')"
     )
-    public.execute(
-        f'CREATE TABLE "{SOUNDER}" ("timestamp" TIMESTAMP(9) NOT NULL, "topic" STRING NULL, '
-        '"technical_name" STRING NULL, "alarm__value" BOOLEAN NULL, '
-        '"alarm__timestamp" STRING NULL, "pre_alarm__value" BOOLEAN NULL, '
-        '"pre_alarm__timestamp" STRING NULL, "level__value" DOUBLE NULL, '
-        '"level__timestamp" STRING NULL, "spare__value" BOOLEAN NULL, '
-        "TIME INDEX (\"timestamp\")) WITH (append_mode = 'true')"
-    )
-    for table, column_name in ((GENERAL, "muster"), (PANEL, "command")):
-        value_type = "BOOLEAN" if column_name == "muster" else "BIGINT"
-        public.execute(
-            f'CREATE TABLE "{table}" ("timestamp" TIMESTAMP(9) NOT NULL, "topic" STRING NULL, '
-            f'"technical_name" STRING NULL, "{column_name}__value" {value_type} NULL, '
-            f'"{column_name}__timestamp" STRING NULL, '
-            "TIME INDEX (\"timestamp\")) WITH (append_mode = 'true')"
-        )
     old_rows = [
-        # The chain: 6 Aug and 7 Aug until 09h, then renamed.
-        (ts(6, 10), "marpower/old-fire/201h1/s", "true", "false", "3", "true", "true"),
-        (ts(6, 11), "marpower/old-fire/201h1/s", "false", "false", "4", "NULL", "NULL"),
-        (
-            ts(7, 9, 5),
-            "marpower/old-fire/201h1/s",
-            "false",
-            "true",
-            "5",
-            "false",
-            "NULL",
-        ),
-        # A row without any mapped value: not copied.
-        (
-            ts(7, 9, 7),
-            "marpower/old-fire/201h1/s",
-            "NULL",
-            "NULL",
-            "NULL",
-            "NULL",
-            "NULL",
-        ),
-        (ts(7, 10), "marpower/old-fire/201h1-s", "true", "true", "6", "false", "false"),
-        (ts(8, 10), "marpower/old-fire/201h1-s", "false", "false", "7", "NULL", "NULL"),
-        # After the new topic's first row (9 Aug 12h): left alone.
-        (ts(9, 13), "marpower/old-fire/201h1-s", "true", "true", "8", "NULL", "NULL"),
-        # Another sounder, not in the spec.
-        (ts(6, 10), "marpower/old-fire/201h2-s", "true", "true", "1", "NULL", "NULL"),
+        (ts(6, 10), EARLIER_NAME, "true", "false", "3", "NULL"),
+        (ts(6, 11), EARLIER_NAME, "false", "false", "4", "NULL"),
+        (ts(7, 9, 5), EARLIER_NAME, "false", "true", "5", "NULL"),
+        # No mapped value: not history of the sounder.
+        (ts(7, 9, 7), EARLIER_NAME, "NULL", "NULL", "NULL", "NULL"),
+        (ts(7, 10), OLD_SOUNDER, "true", "true", "6", "true"),
+        (ts(8, 10), OLD_SOUNDER, "false", "false", "7", "NULL"),
+        (ts(8, 11), OLD_SOUNDER, "true", "false", "8", "NULL"),
+        (ts(6, 10), "marpower/old-fire/201h2-s", "true", "true", "1", "NULL"),
     ]
     public.execute(
-        f'INSERT INTO "{OLD}" ("timestamp", "topic", "source_type", "table", "alarm__value", '
-        '"alarm__timestamp", "prealarm__value", "level__value", "test__value", "spare__value") '
-        "VALUES "
+        f'INSERT INTO "{OLD}" ("timestamp", "topic", "alarm__value", "alarm__timestamp", '
+        '"prealarm__value", "level__value", "spare__value") VALUES '
         + ", ".join(
-            f"({t}, '{topic}', 'mqtt', '{OLD}', {alarm}, 'stamp', {pre}, {level}, {test}, {spare})"
-            for t, topic, alarm, pre, level, test, spare in old_rows
+            f"({t}, '{topic}', {alarm}, 'stamp', {pre}, {level}, {spare})"
+            for t, topic, alarm, pre, level, spare in old_rows
         )
     )
     public.execute(
         f'INSERT INTO "{OLD_GENERAL}" ("timestamp", "topic", "fire_muster__value", '
         '"fire_panel_command__value") VALUES '
-        f"({ts(6, 10)}, 'marpower/old-fire-general', true, NULL), "
-        f"({ts(6, 11)}, 'marpower/old-fire-general', NULL, 2), "
-        f"({ts(8, 11)}, 'marpower/old-fire-general', false, 3)"
+        f"({ts(6, 10)}, '{OLD_CATCH_ALL}', true, NULL), "
+        f"({ts(6, 11)}, '{OLD_CATCH_ALL}', NULL, 2), "
+        f"({ts(8, 11)}, '{OLD_CATCH_ALL}', false, 3)"
     )
-    public.execute(
-        f'INSERT INTO "{SOUNDER}" ("timestamp", "topic", "technical_name", "alarm__value") '
-        f"VALUES ({ts(9, 12)}, 'marpower/21-fire/sounder/201h1-s', '201h1-s', true)"
-    )
+    create_new_tables(greptime, SPEC)
     try:
         yield public
     finally:
@@ -191,335 +151,306 @@ def tables(public: Query) -> Iterator[Query]:
             public.drop_table(table)
 
 
-@pytest.fixture
-def greptime(connection: GreptimeConnection) -> Iterator[Greptime]:
-    with connect(connection.with_dbname("public")) as handle:
-        yield Greptime(handle, "public")
-
-
-def plan(greptime: Greptime, out: Path, spec: MigrationSpec = SPEC) -> list[Path]:
-    return plan_migration(
-        greptime, spec, "spec-sha", ENDPOINT, to_nanos(BOUNDARY), [], out
-    )
-
-
 def no_sleep(_: float) -> None:
     pass
 
 
-def test_execute_copies_the_chain_and_its_successor_under_the_new_names(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    plan(greptime, tmp_path)
+def migrate(greptime: Greptime, until: date | None = None) -> int:
+    return run(greptime, load(greptime, SPEC), until, 0, no_sleep)
 
-    statuses = execute_plan(greptime, tmp_path / "wave-1.sql", ENDPOINT, 0, no_sleep)
 
-    assert statuses == {"added": 2, "copied": 4}
-    rows = tables.fetch(
-        'SELECT "timestamp", "topic", "technical_name", "alarm__value", "pre_alarm__value", '
-        f'"level__value", "test__value", "test__timestamp", "spare__value" FROM "{SOUNDER}" '
-        'ORDER BY "timestamp"'
+def sounder_rows(tables: Query) -> list[tuple[object, ...]]:
+    return tables.fetch(
+        'SELECT "topic", "technical_name", "alarm__value", "alarm__timestamp", '
+        f'"pre_alarm__value", "level__value" FROM "{SOUNDER}" ORDER BY "timestamp"'
     )
-    topic = "marpower/21-fire/sounder/201h1-s"
-    assert [row[1:] for row in rows] == [
-        (topic, "201h1-s", True, False, 3.0, True, None, True),
-        (topic, "201h1-s", False, False, 4.0, None, None, None),
-        (topic, "201h1-s", False, True, 5.0, False, None, None),
-        (topic, "201h1-s", True, True, 6.0, False, None, False),
-        (topic, "201h1-s", False, False, 7.0, None, None, None),
-        (topic, "201h1-s", True, None, None, None, None, None),
-    ]
-    assert tables.columns(SOUNDER, schema="public")[-2:] == [
-        ("test__timestamp", "string"),
-        ("test__value", "boolean"),
-    ]
-    assert check_plan(greptime, tmp_path / "wave-1.sql", ENDPOINT)
 
 
-def test_a_catch_all_topic_splits_into_one_topic_per_device(
-    tables: Query, greptime: Greptime, tmp_path: Path
+def test_run_copies_an_earlier_name_and_its_successor_under_the_new_names(
+    tables: Query, greptime: Greptime
 ) -> None:
-    plan(greptime, tmp_path)
+    assert migrate(greptime) == 10
 
-    execute_plan(greptime, tmp_path / "wave-2.sql", ENDPOINT, 0, no_sleep)
+    assert sounder_rows(tables) == [
+        (NEW_SOUNDER, "201h1-s", True, "stamp", False, 3),
+        (NEW_SOUNDER, "201h1-s", False, "stamp", False, 4),
+        (NEW_SOUNDER, "201h1-s", False, "stamp", True, 5),
+        (NEW_SOUNDER, "201h1-s", True, "stamp", True, 6),
+        (NEW_SOUNDER, "201h1-s", False, "stamp", False, 7),
+        (NEW_SOUNDER, "201h1-s", True, "stamp", False, 8),
+    ]
+    assert check(greptime, load(greptime, SPEC)) == []
+
+
+def test_run_splits_a_catch_all_topic_over_its_devices(
+    tables: Query, greptime: Greptime
+) -> None:
+    migrate(greptime)
 
     assert tables.fetch(
-        f'SELECT "topic", "technical_name", "muster__value" FROM "{GENERAL}" ORDER BY "timestamp"'
-    ) == [
-        ("marpower/21-fire/general", "general", True),
-        ("marpower/21-fire/general", "general", False),
-    ]
+        f'SELECT "topic", "muster__value" FROM "{GENERAL}" ORDER BY "timestamp"'
+    ) == [("marpower/21-fire/general", True), ("marpower/21-fire/general", False)]
     assert tables.fetch(
-        f'SELECT "topic", "technical_name", "command__value" FROM "{PANEL}" ORDER BY "timestamp"'
-    ) == [
-        ("marpower/21-fire/main-panel", "main-panel", 2),
-        ("marpower/21-fire/main-panel", "main-panel", 3),
+        f'SELECT "technical_name", "command__value" FROM "{PANEL}" ORDER BY "timestamp"'
+    ) == [("main-panel", 2), ("main-panel", 3)]
+
+
+def test_a_second_run_copies_nothing(tables: Query, greptime: Greptime) -> None:
+    migrate(greptime)
+
+    assert migrate(greptime) == 0
+    assert len(sounder_rows(tables)) == 6
+
+
+def test_run_goes_back_no_further_than_until(tables: Query, greptime: Greptime) -> None:
+    assert migrate(greptime, until=date(2026, 8, 8)) == 4
+
+    findings = check(greptime, load(greptime, SPEC))
+    assert f"{SOUNDER} {NEW_SOUNDER} 2026-08-07: 2 old rows, 0 new rows" in findings
+    assert migrate(greptime) == 6
+    assert check(greptime, load(greptime, SPEC)) == []
+
+
+def test_run_completes_a_day_that_was_copied_in_part(
+    tables: Query, greptime: Greptime
+) -> None:
+    load_first = load(greptime, SPEC)
+    run(greptime, load_first, date(2026, 8, 9), 0, no_sleep)
+    tables.execute(
+        f'INSERT INTO "{SOUNDER}" ("timestamp", "topic", "technical_name", '
+        f'"alarm__value", "alarm__timestamp", "pre_alarm__value", "level__value") '
+        f"VALUES ({ts(8, 10)}, '{NEW_SOUNDER}', '201h1-s', false, 'stamp', false, 7)"
+    )
+
+    migrate(greptime)
+
+    assert len(sounder_rows(tables)) == 6
+    assert check(greptime, load(greptime, SPEC)) == []
+
+
+def test_a_column_of_another_type_leaves_its_unit_out_until_it_is_altered(
+    tables: Query, greptime: Greptime
+) -> None:
+    tables.execute(f'ALTER TABLE "{SOUNDER}" ADD COLUMN "level__value" DOUBLE NULL')
+
+    migration = load(greptime, SPEC)
+
+    assert [(m.old_column, m.old_type, m.new_type) for m in migration.mismatches] == [
+        ("level__value", "bigint", "double"),
+        ("level__value", "bigint", "double"),
     ]
-    assert check_plan(greptime, tmp_path / "wave-2.sql", ENDPOINT)
+    assert [r.unit.new_table for r in migration.refused] == [SOUNDER, SOUNDER]
+    run(greptime, migration, None, 0, no_sleep)
+    assert tables.fetch(f'SELECT count(*) FROM "{SOUNDER}"') == [(0,)]
+    assert len(check(greptime, load(greptime, SPEC))) == 2
+
+    tables.execute(f'ALTER TABLE "{OLD}" MODIFY COLUMN "level__value" DOUBLE')
+
+    migrate(greptime)
+    assert [row[-1] for row in sounder_rows(tables)] == [3.0, 4.0, 5.0, 6.0, 7.0, 8.0]
+    assert check(greptime, load(greptime, SPEC)) == []
 
 
-def test_the_plan_names_its_bounds_columns_and_live_keys(
-    tables: Query, greptime: Greptime, tmp_path: Path
+def foreign_rows(tables: Query, hours: list[int]) -> None:
+    tables.execute(
+        f'INSERT INTO "{SOUNDER}" ("timestamp", "topic", "technical_name") VALUES '
+        + ", ".join(f"({ts(8, hour)}, '{NEW_SOUNDER}', '201h1-s')" for hour in hours)
+    )
+
+
+def test_a_new_topic_with_more_rows_than_the_old_one_is_left_out(
+    tables: Query, greptime: Greptime
 ) -> None:
-    plan(greptime, tmp_path)
+    foreign_rows(tables, [1, 2, 3])
 
-    manifest = json.loads((tmp_path / "wave-1.plan.json").read_text())
-    assert manifest["added_columns"] == {
-        SOUNDER: {"test__timestamp": "string", "test__value": "boolean"}
-    }
-    chain, successor = manifest["units"]
-    assert chain["bound_from"] == successor["bound_from"] == "first row"
-    assert [(w["rows"]) for w in chain["windows"]] == [2, 1]
-    assert [(w["rows"]) for w in successor["windows"]] == [1, 1]
-    assert chain["windows"][-1]["end"] <= successor["windows"][0]["start"]
-    assert successor["live_keys"] == ["spare"]
-    assert {(c["old"], c["new"], c["cast"]) for c in chain["copies"]} >= {
-        ("prealarm__value", "pre_alarm__value", False),
-        ("level__value", "level__value", True),
-    }
-    sql = (tmp_path / "wave-1.sql").read_text()
-    assert 'CAST("level__value" AS DOUBLE)' in sql
-    assert '"source_type"' not in sql
+    migration = load(greptime, SPEC)
+
+    assert {r.unit.new_topic for r in migration.refused} == {NEW_SOUNDER}
+    assert "old and new overlap" in migration.refused[0].reason
+    assert [h.new_table for h in migration.histories] == [GENERAL, PANEL]
 
 
-def test_a_second_execute_copies_nothing(
-    tables: Query, greptime: Greptime, tmp_path: Path
+def test_run_stops_on_a_day_that_ends_up_with_other_rows_than_the_old_topic(
+    tables: Query, greptime: Greptime
 ) -> None:
-    plan(greptime, tmp_path)
-    sql_path = tmp_path / "wave-1.sql"
-    execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep)
+    foreign_rows(tables, [1])
 
-    assert execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep) == {"journalled": 6}
+    with pytest.raises(MigrationFailed, match="holds 3 rows on 2026-08-08"):
+        migrate(greptime)
 
-    _, journal, _ = wave_paths(sql_path)
-    journal.write_text(
-        "".join(
-            line + "\n"
-            for line in journal.read_text().splitlines()
-            if '"added"' in line
+
+def test_check_finds_rows_and_values_that_differ(
+    tables: Query, greptime: Greptime
+) -> None:
+    migrate(greptime)
+    tables.execute(
+        f'INSERT INTO "{OLD}" ("timestamp", "topic", "alarm__value", "level__value") '
+        f"VALUES ({ts(8, 12)}, '{OLD_SOUNDER}', true, 99)"
+    )
+
+    findings = check(greptime, load(greptime, SPEC))
+
+    assert findings == [
+        f"{SOUNDER} {NEW_SOUNDER} 2026-08-08: 3 old rows, 2 new rows",
+        f"{SOUNDER} {NEW_SOUNDER} alarm__value: count, min, max (7, False, True) old, "
+        "(6, False, True) new",
+        f"{SOUNDER} {NEW_SOUNDER} level__value: count, min, max (7, 3, 99) old, "
+        "(6, 3, 8) new",
+    ]
+
+
+def test_leftover_names_the_topics_and_columns_no_unit_copies(
+    tables: Query, greptime: Greptime
+) -> None:
+    left = leftover(greptime, SPEC, OLD)
+
+    assert left.topics == {"marpower/old-fire/201h2-s": 1}
+    assert left.columns == {OLD_SOUNDER: ["spare__value"]}
+    assert not leftover(greptime, SPEC, OLD_GENERAL)
+
+
+def test_the_report_lists_what_a_run_would_do(
+    tables: Query, greptime: Greptime
+) -> None:
+    text = report(load(greptime, SPEC), {OLD: leftover(greptime, SPEC, OLD)})
+
+    assert "10 rows in 4 units, 0 already copied" in text
+    assert f"| `{SOUNDER}` | 4 |" in text
+    assert "`marpower/old-fire/201h2-s` | 1 | all" in text
+    assert "`spare__value`" in text
+
+
+def test_drop_keeps_a_table_until_its_history_is_checked(
+    tables: Query, greptime: Greptime
+) -> None:
+    outcomes = drop(greptime, SPEC, [OLD_GENERAL], True, True)
+
+    assert outcomes == {OLD_GENERAL: "kept: 6 check findings"}
+    assert OLD_GENERAL in greptime.tables()
+
+
+def test_drop_removes_checked_tables_and_asks_before_losing_data(
+    tables: Query, greptime: Greptime
+) -> None:
+    migrate(greptime)
+
+    assert drop(greptime, SPEC, [], False, False) == {
+        OLD: "kept: 1 topics and 1 topics with columns that aren't migrated",
+        OLD_GENERAL: "would be dropped",
+    }
+    assert drop(greptime, SPEC, [], False, True)[OLD_GENERAL] == "dropped"
+    assert drop(greptime, SPEC, [OLD], True, True) == {OLD: "dropped"}
+    assert greptime.tables().isdisjoint({OLD, OLD_GENERAL})
+    assert drop(greptime, SPEC, [], False, True) == {
+        OLD: "already gone",
+        OLD_GENERAL: "already gone",
+    }
+
+
+def test_drop_keeps_a_table_that_still_receives_rows(
+    tables: Query, greptime: Greptime
+) -> None:
+    migrate(greptime)
+    tables.execute(
+        f'INSERT INTO "{OLD_GENERAL}" ("timestamp", "topic") VALUES (now(), \'other\')'
+    )
+
+    outcome = drop(greptime, SPEC, [OLD_GENERAL], True, True)[OLD_GENERAL]
+
+    assert outcome == "kept: 1 rows in the last day"
+
+
+def test_load_refuses_a_table_the_spec_does_not_have(
+    tables: Query, greptime: Greptime
+) -> None:
+    with pytest.raises(MigrationFailed, match="Not an old table"):
+        load(greptime, SPEC, ["zz_mh_unknown"])
+
+
+def test_the_commands_run_check_and_drop(
+    tables: Query, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    spec_path = tmp_path / "spec.json"
+    spec_path.write_text(SPEC.model_dump_json())
+
+    MigrateRunCmd(spec=spec_path, dry_run=True).cli_cmd()
+    assert "10 rows in 4 units" in capsys.readouterr().out
+    with pytest.raises(SystemExit):
+        MigrateCheckCmd(spec=spec_path).cli_cmd()
+    MigrateRunCmd(spec=spec_path, pause=0).cli_cmd()
+    MigrateCheckCmd(spec=spec_path).cli_cmd()
+    MigrateDropCmd(spec=spec_path, table=[OLD_GENERAL]).cli_cmd()
+    assert f"{OLD_GENERAL}: would be dropped" in capsys.readouterr().out
+    with pytest.raises(SystemExit, match="needs the tables named"):
+        MigrateDropCmd(spec=spec_path, accept_unmigrated=True).cli_cmd()
+
+
+MAPPING = [
+    MappingRow(
+        old_topic="marpower/old-fire/201h1-s",
+        old_key="PreAlarm",
+        new_topic="marpower/21-fire/sounder/201h1-s",
+        new_key="Pre_Alarm",
+    ),
+    MappingRow(
+        old_topic="marpower/old-fire/201h1-s",
+        old_key="Alarm",
+        new_topic="marpower/21-fire/sounder/201h1-s",
+        new_key="Alarm",
+    ),
+]
+
+
+def fake_vector(cases: list[dict[str, str]]) -> list[VectorEvent]:
+    import json
+
+    events: list[VectorEvent] = []
+    for case in cases:
+        message = json.loads(case["message"])
+        key = next(k for k in message if k != "ZzCase")
+        old = case["topic"].startswith("marpower/old-fire")
+        events.append(
+            {
+                "zz_case": message["ZzCase"],
+                "topic": case["topic"],
+                "table": "old_fire" if old else "fire__sounder",
+                **({} if old else {"technical_name": case["topic"].rsplit("/", 1)[1]}),
+                f"{key.lower()}__value": 1.5,
+            }
         )
-    )
-    assert execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep) == {
-        "journalled": 2,
-        "present": 4,
-    }
-    assert tables.fetch(f'SELECT count(*) FROM "{SOUNDER}"') == [(6,)]
+    return events
 
 
-def test_a_window_holding_part_of_its_rows_gets_the_rest(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    plan(greptime, tmp_path)
-    tables.execute(
-        f'INSERT INTO "{SOUNDER}" ("timestamp", "topic", "alarm__value") '
-        f"VALUES ({ts(6, 10)}, 'marpower/21-fire/sounder/201h1-s', true)"
-    )
+def test_build_spec_takes_table_and_column_names_from_vector() -> None:
+    spec = build_spec(MAPPING, fake_vector)
 
-    statuses = execute_plan(greptime, tmp_path / "wave-1.sql", ENDPOINT, 0, no_sleep)
-
-    assert statuses["copied"] == 4
-    assert tables.fetch(
-        f'SELECT "timestamp", "alarm__value" FROM "{SOUNDER}" '
-        f'WHERE "timestamp" < {ts(7, 0)} ORDER BY 1'
-    ) == [
-        (datetime(2026, 8, 6, 10), True),
-        (datetime(2026, 8, 6, 11), False),
-    ]
-
-
-def test_a_window_that_ends_up_with_other_than_its_rows_stops_the_run_again(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    plan(greptime, tmp_path)
-    sql_path = tmp_path / "wave-1.sql"
-    tables.execute(
-        f'INSERT INTO "{SOUNDER}" ("timestamp", "topic") '
-        f"VALUES ({ts(6, 12)}, 'marpower/21-fire/sounder/201h1-s')"
-    )
-
-    with pytest.raises(MigrationRefused, match="holds 3 of 2 rows"):
-        execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep)
-    with pytest.raises(MigrationRefused, match="holds 3 of 2 rows"):
-        execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep)
-
-
-def test_execute_refuses_a_changed_sql_file_or_another_host(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    plan(greptime, tmp_path)
-    sql_path = tmp_path / "wave-1.sql"
-
-    with pytest.raises(MigrationRefused, match="planned for 127.0.0.1:4003/public"):
-        execute_plan(greptime, sql_path, "127.0.0.1:4003/other", 0, no_sleep)
-
-    sql_path.write_text(sql_path.read_text().replace("2026-08-06", "2026-08-05"))
-    with pytest.raises(MigrationRefused, match="sha256 differs"):
-        execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep)
-
-
-def test_execute_refuses_a_column_that_appeared_since_the_plan(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    plan(greptime, tmp_path)
-    tables.execute(f'ALTER TABLE "{SOUNDER}" ADD COLUMN "test__value" BOOLEAN NULL')
-
-    with pytest.raises(
-        MigrationRefused, match="test__value has appeared since the plan"
-    ):
-        execute_plan(greptime, tmp_path / "wave-1.sql", ENDPOINT, 0, no_sleep)
-
-
-def test_a_plan_built_twice_is_byte_identical(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    first = plan(greptime, tmp_path / "first")
-    second = plan(greptime, tmp_path / "second")
-
-    assert [p.name for p in first] == [p.name for p in second]
-    assert all(
-        a.read_bytes() == b.read_bytes() for a, b in zip(first, second, strict=True)
-    )
-
-
-def test_plan_casts_without_loss_and_refuses_a_table_with_foreign_rows(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    tables.drop_table(GENERAL)
-    tables.execute(
-        f'CREATE TABLE "{GENERAL}" ("timestamp" TIMESTAMP(9) NOT NULL, "topic" STRING NULL, '
-        '"muster__value" STRING NULL, '
-        "TIME INDEX (\"timestamp\")) WITH (append_mode = 'true')"
-    )
-    tables.execute(
-        f'INSERT INTO "{PANEL}" ("timestamp", "topic") '
-        f"VALUES ({ts(1, 0)}, 'marpower/someone-else')"
-    )
-
-    plan(greptime, tmp_path)
-
-    manifest = json.loads((tmp_path / "wave-2.plan.json").read_text())
-    reasons = {r["new_table"]: r["reason"] for r in manifest["refused"]}
-    assert reasons[PANEL].startswith("The new table holds rows before the boundary")
-    assert manifest["units"][0]["new_table"] == GENERAL
-    assert manifest["units"][0]["copies"][0]["cast"] is True
-
-
-def test_plan_refuses_a_cast_from_text_to_a_number(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    tables.drop_table(PANEL)
-    tables.execute(
-        f'CREATE TABLE "{PANEL}" ("timestamp" TIMESTAMP(9) NOT NULL, "topic" STRING NULL, '
-        '"command__value" BOOLEAN NULL, '
-        "TIME INDEX (\"timestamp\")) WITH (append_mode = 'true')"
-    )
-
-    plan(greptime, tmp_path)
-
-    manifest = json.loads((tmp_path / "wave-2.plan.json").read_text())
-    assert [r["reason"] for r in manifest["refused"]] == [
-        "fire_panel_command__value is bigint and command__value is boolean: "
-        "a cast would lose values"
-    ]
-
-
-def test_plan_refuses_old_topics_whose_periods_overlap_on_one_new_topic(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    tables.execute(
-        f'INSERT INTO "{OLD}" ("timestamp", "topic", "alarm__value") '
-        f"VALUES ({ts(8, 0)}, 'marpower/old-fire/201h1/s', true)"
-    )
-
-    plan(greptime, tmp_path)
-
-    manifest = json.loads((tmp_path / "wave-1.plan.json").read_text())
-    assert manifest["units"] == []
-    assert len(manifest["refused"]) == 2
-    assert all("overlaps" in r["reason"] for r in manifest["refused"])
-
-
-def draft(old_topic: str, start: int, end: int) -> _Draft:
-    unit = SPEC.units[0].model_copy(update={"old_topic": old_topic})
-    return _Draft(
-        unit=unit,
-        pairs=[],
-        filter_columns=[],
-        live_keys=[],
-        absent_old_columns=[],
-        bound=100,
-        bound_from="first row",
-        old_rows=0,
-        windows=[Window(start=start, end=end, rows=1)],
-    )
-
-
-def test_a_period_inside_a_long_one_overlaps_it_even_after_a_gap() -> None:
-    drafts = [draft("long", 0, 50), draft("early", 10, 20), draft("late", 30, 40)]
-
-    assert sorted(_overlapping(drafts)) == [0, 1, 2]
-
-
-def test_execute_refuses_while_another_execute_holds_the_journal(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    plan(greptime, tmp_path)
-    sql_path = tmp_path / "wave-1.sql"
-    _, journal_path, _ = wave_paths(sql_path)
-
-    with journal_path.open("a") as held:
-        fcntl.flock(held, fcntl.LOCK_EX)
-        with pytest.raises(MigrationRefused, match="Another execute"):
-            execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep)
-
-
-def test_check_reports_the_units_the_plan_refused(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    tables.execute(
-        f'INSERT INTO "{PANEL}" ("timestamp", "topic") '
-        f"VALUES ({ts(1, 0)}, 'marpower/someone-else')"
-    )
-    plan(greptime, tmp_path)
-    sql_path = tmp_path / "wave-2.sql"
-    execute_plan(greptime, sql_path, ENDPOINT, 0, no_sleep)
-
-    check_plan(greptime, sql_path, ENDPOINT)
-
-    _, _, report_path = wave_paths(sql_path)
-    assert "1 units were refused by the plan and not copied" in report_path.read_text()
-
-
-def test_plan_refuses_a_boundary_without_a_timezone() -> None:
-    with pytest.raises(ValidationError, match="timezone"):
-        MigratePlanCmd.model_validate(
-            {"spec": "spec.json", "boundary": "2026-11-17T10:00:00", "out": "out"}
+    assert spec.units == [
+        Unit(
+            old_table="old_fire",
+            old_topic="marpower/old-fire/201h1-s",
+            new_table="fire__sounder",
+            new_topic="marpower/21-fire/sounder/201h1-s",
+            technical_name="201h1-s",
+            columns=[
+                ColumnMap(old="alarm", new="alarm"),
+                ColumnMap(old="prealarm", new="pre_alarm"),
+            ],
         )
-
-
-def test_plan_copies_only_the_suffixes_the_spec_lists(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    value_only = ColumnMap(old="fire_muster", new="muster", suffixes=["value"])
-    spec = MigrationSpec(
-        units=[SPEC.units[2].model_copy(update={"columns": [value_only]})]
-    )
-
-    plan(greptime, tmp_path, spec)
-
-    manifest = json.loads((tmp_path / "wave-2.plan.json").read_text())
-    assert [c["new"] for c in manifest["units"][0]["copies"]] == ["muster__value"]
-
-
-def test_plan_refuses_a_unit_whose_new_table_does_not_exist_yet(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    tables.drop_table(PANEL)
-
-    plan(greptime, tmp_path)
-
-    manifest = json.loads((tmp_path / "wave-2.plan.json").read_text())
-    assert [(r["new_table"], r["reason"]) for r in manifest["refused"]] == [
-        (PANEL, "The new table doesn't exist yet")
     ]
-    assert [u["new_table"] for u in manifest["units"]] == [GENERAL]
+
+
+def test_build_spec_refuses_a_message_vector_drops() -> None:
+    with pytest.raises(SpecRefused, match="Vector dropped 2 messages"):
+        build_spec(MAPPING, lambda cases: fake_vector(cases[:2]))
+
+
+def test_read_mapping_wants_the_four_columns(tmp_path: Path) -> None:
+    mapping_path = tmp_path / "mapping.csv"
+    mapping_path.write_text("old_topic,old_key,new_topic,new_key\na,B,c,D\n")
+    assert read_mapping(mapping_path) == [
+        MappingRow(old_topic="a", old_key="B", new_topic="c", new_key="D")
+    ]
+
+    mapping_path.write_text("topic,key\na,B\n")
+    with pytest.raises(SpecRefused, match="must have the columns"):
+        read_mapping(mapping_path)
