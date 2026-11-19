@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { DarkModeToggle } from "@/modules/common/components/dark-mode";
-import SplashGlassPill from "./SplashGlassPill.vue";
 </script>
 
 <template>
-  <SplashGlassPill class="p-1">
+  <div class="toggle grid size-12 place-items-center rounded-xl max-[560px]:size-11">
     <DarkModeToggle />
-  </SplashGlassPill>
+  </div>
 </template>
+
+<style scoped>
+.toggle {
+  background: var(--splash-switch-bg);
+  color: var(--brand);
+}
+</style>
