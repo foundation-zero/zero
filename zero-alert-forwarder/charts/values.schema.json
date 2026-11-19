@@ -92,6 +92,11 @@
           "description": "Seconds one poll of one mirror may take before it is abandoned. Keep well below livenessMaxAgeSeconds.",
           "exclusiveMinimum": 0
         },
+        "historyTimeoutSeconds": {
+          "type": "number",
+          "description": "Seconds the first poll may take, which reads the day so far to rebuild the alarm list. Keep below livenessMaxAgeSeconds.",
+          "exclusiveMinimum": 0
+        },
         "minPriority": {
           "type": "string",
           "description": "Lowest AMCS priority that is forwarded.",
@@ -129,13 +134,63 @@
         }
       }
     },
+    "mqtt": {
+      "type": "object",
+      "required": ["host", "port"],
+      "properties": {
+        "host": {
+          "type": "string",
+          "description": "MQTT broker hostname to publish the alarm list to. Empty publishes nothing."
+        },
+        "port": {
+          "type": "integer",
+          "description": "MQTT broker port.",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "existingSecret": {
+          "type": "string",
+          "description": "Name of an existing Kubernetes Secret with the MQTT username and password."
+        },
+        "existingSecretUsernameKey": {
+          "type": "string",
+          "description": "Key in the existing Secret that holds the MQTT username."
+        },
+        "existingSecretPasswordKey": {
+          "type": "string",
+          "description": "Key in the existing Secret that holds the MQTT password."
+        }
+      }
+    },
+    "alarmList": {
+      "type": "object",
+      "required": ["minPriority", "windowMinutes", "intervalSeconds"],
+      "properties": {
+        "minPriority": {
+          "type": "string",
+          "description": "Lowest AMCS priority on the alarm list.",
+          "enum": ["GEA", "Emergency", "Alarm", "Warning", "Caution", "Event"]
+        },
+        "windowMinutes": {
+          "type": "number",
+          "description": "Minutes an alarm that ended stays listed after its last change.",
+          "exclusiveMinimum": 0
+        },
+        "intervalSeconds": {
+          "type": "number",
+          "description": "Seconds between publishes of the alarm list. zero-mqtt-graphql drops it after 5 minutes without one.",
+          "minimum": 1,
+          "maximum": 60
+        }
+      }
+    },
     "livenessPath": {
       "type": "string",
       "description": "File touched after every poll; its age is what the liveness probe checks. Must be on a writable volume."
     },
     "livenessMaxAgeSeconds": {
       "type": "integer",
-      "description": "Age of the liveness file in seconds after which the container is restarted. Must exceed the retries of a single notification and pollTimeoutSeconds.",
+      "description": "Age of the liveness file in seconds after which the container is restarted. Must exceed the retries of a single notification, pollTimeoutSeconds and historyTimeoutSeconds.",
       "minimum": 1
     },
     "readinessPath": {

@@ -31,3 +31,4 @@ WORKDIR /app/zero-alert-forwarder
 USER 1001
 
 ENTRYPOINT ["python", "-m", "zero_alert_forwarder"]
+CMD ["run"]

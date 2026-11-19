@@ -1,7 +1,8 @@
 import asyncio
 from collections.abc import AsyncIterator
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 
+from zero_alert_forwarder.alarm_list import AlarmList
 from zero_alert_forwarder.alert import Alert, AlertPriority, AlertUpdate
 from zero_alert_forwarder.forwarder import Forwarder
 
@@ -224,3 +225,30 @@ async def test_keeps_reminding_when_alarm_goes_idle_unacknowledged():
     )
 
     assert len(notifier.notified) > 6
+
+
+async def test_every_row_reaches_the_alarm_list():
+    alarms = AlarmList(AlertPriority.WARNING, timedelta(hours=1))
+    notifier = RecordingNotifier()
+
+    await Forwarder(
+        ListSource(
+            make_alert(1, tag="PUMP-1"),
+            make_alert(2, tag="PUMP-1", update=AlertUpdate.ACKNOWLEDGED),
+            make_alert(3, tag="PUMP-2", update=AlertUpdate.IDLE),
+        ),
+        notifier,
+        AlertPriority.WARNING,
+        {AlertUpdate.ACTIVATED},
+        3,
+        timedelta(0),
+        alarms=alarms,
+    ).run()
+
+    listed = {
+        alarm.tag: alarm
+        for alarm in alarms.message(datetime(2026, 10, 22, 17, 0, tzinfo=UTC)).alarms
+    }
+    assert listed["PUMP-1"].active and listed["PUMP-1"].acknowledged
+    assert not listed["PUMP-2"].active
+    assert notifier.notified == [1]

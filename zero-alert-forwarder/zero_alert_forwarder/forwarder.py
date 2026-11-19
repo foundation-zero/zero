@@ -4,6 +4,7 @@ from collections.abc import Sequence
 from datetime import timedelta
 from itertools import chain, repeat
 
+from zero_alert_forwarder.alarm_list import AlarmKey, AlarmList, alarm_key
 from zero_alert_forwarder.alert import Alert, AlertPriority, AlertUpdate
 from zero_alert_forwarder.ntfy import Notifier
 from zero_alert_forwarder.source import AlertSource
@@ -21,6 +22,7 @@ class Forwarder:
         attempts: int,
         retry_delay: timedelta,
         reminder_delays: Sequence[timedelta] = (),
+        alarms: AlarmList | None = None,
     ):
         self._source = source
         self._notifier = notifier
@@ -29,11 +31,14 @@ class Forwarder:
         self._attempts = attempts
         self._retry_delay = retry_delay
         self._reminder_delays = reminder_delays
-        self._reminders: dict[AlertKey, asyncio.Task[None]] = {}
+        self._alarms = alarms
+        self._reminders: dict[AlarmKey, asyncio.Task[None]] = {}
 
     async def run(self) -> None:
         try:
             async for alert in self._source.alerts():
+                if self._alarms:
+                    self._alarms.apply(alert)
                 self._silence(alert)
                 if self._wanted(alert):
                     await self._forward(alert)
@@ -52,7 +57,7 @@ class Forwarder:
         Seen for every alert, since the filters only apply to what gets forwarded.
         """
         if alert.update is AlertUpdate.ACKNOWLEDGED and (
-            reminder := self._reminders.pop(_key(alert), None)
+            reminder := self._reminders.pop(alarm_key(alert), None)
         ):
             reminder.cancel()
             logger.info(f"Stopped reminding of {alert.tag}: acknowledged")
@@ -60,9 +65,9 @@ class Forwarder:
     def _remind(self, alert: Alert) -> None:
         if not self._reminder_delays:
             return
-        if previous := self._reminders.pop(_key(alert), None):
+        if previous := self._reminders.pop(alarm_key(alert), None):
             previous.cancel()
-        self._reminders[_key(alert)] = asyncio.create_task(self._ping(alert))
+        self._reminders[alarm_key(alert)] = asyncio.create_task(self._ping(alert))
 
     async def _ping(self, alert: Alert) -> None:
         """Re-notifies at growing urgency: each delay once, the last one for ever after."""
@@ -87,11 +92,3 @@ class Forwarder:
                 if attempt < self._attempts:
                     await asyncio.sleep(self._retry_delay.total_seconds())
         logger.error(f"Giving up on alert {alert.id}: {alert.description}")
-
-
-type AlertKey = tuple[str | None, str | None, str | None]
-
-
-def _key(alert: Alert) -> AlertKey:
-    """The AMCS gives each update of an alarm a row of its own, so its identity is its tag."""
-    return alert.system, alert.tag, alert.location

@@ -1,0 +1,36 @@
+{
+  "alarms": {
+    "loading": "Loading alarms…",
+    "error": "Failed to load alarms.",
+    "offline": "No alarm list received for several minutes: the alarm feed is offline. Check the alarms on the AMCS.",
+    "sections": {
+      "active": "Active ({count})",
+      "ended": "No longer active ({count})"
+    },
+    "endedNotice": "Alarms that ended more than {minutes} minutes ago are not shown.",
+    "empty": {
+      "active": "No active alarms."
+    },
+    "columns": {
+      "priority": "Priority",
+      "alarm": "Alarm",
+      "location": "Location",
+      "status": "Status",
+      "activatedAt": "Activated",
+      "lastChangeAt": "Last change"
+    },
+    "status": {
+      "unacknowledged": "Unacknowledged",
+      "acknowledged": "Acknowledged"
+    },
+    "priorities": {
+      "GEA": "GEA",
+      "EMERGENCY": "Emergency",
+      "ALARM": "Alarm",
+      "WARNING": "Warning",
+      "CAUTION": "Caution",
+      "EVENT": "Event",
+      "UNKNOWN": "Unknown"
+    }
+  }
+}

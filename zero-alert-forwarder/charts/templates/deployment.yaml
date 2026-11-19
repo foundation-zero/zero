@@ -87,6 +87,32 @@ spec:
               value: {{ .Values.forwarding.dryRun | quote }}
             - name: POLL_TIMEOUT_SECONDS
               value: {{ .Values.forwarding.pollTimeoutSeconds | quote }}
+            - name: HISTORY_TIMEOUT_SECONDS
+              value: {{ .Values.forwarding.historyTimeoutSeconds | quote }}
+            {{- if .Values.mqtt.host }}
+            - name: MQTT_HOST
+              value: {{ .Values.mqtt.host | quote }}
+            - name: MQTT_PORT
+              value: {{ .Values.mqtt.port | quote }}
+            {{- if .Values.mqtt.existingSecret }}
+            - name: MQTT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mqtt.existingSecret }}
+                  key: {{ .Values.mqtt.existingSecretUsernameKey }}
+            - name: MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mqtt.existingSecret }}
+                  key: {{ .Values.mqtt.existingSecretPasswordKey }}
+            {{- end }}
+            - name: ALARM_LIST_MIN_PRIORITY
+              value: {{ .Values.alarmList.minPriority | quote }}
+            - name: ALARM_LIST_WINDOW_MINUTES
+              value: {{ .Values.alarmList.windowMinutes | quote }}
+            - name: ALARM_LIST_INTERVAL_SECONDS
+              value: {{ .Values.alarmList.intervalSeconds | quote }}
+            {{- end }}
             - name: LIVENESS_PATH
               value: {{ .Values.livenessPath | quote }}
             - name: READINESS_PATH

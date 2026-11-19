@@ -1,5 +1,6 @@
 import { INCLUDED_APPS, ZeroApps } from "@/apps.ts";
 import {
+  RiAlarmWarningLine,
   RiBarChart2Line,
   RiLightbulbLine,
   RiPlugLine,
@@ -93,5 +94,15 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
     border: "var(--brand-dull)",
     shadow: "var(--brand-dull)",
     iconBackground: "color-mix(in srgb, var(--brand) 18%, transparent)",
+  },
+  {
+    id: ZeroApps.alarms,
+    nameKey: "views.splash.apps.alarms.title",
+    to: "/alarms",
+    icon: RiAlarmWarningLine,
+    glow: "color-mix(in srgb, var(--destructive-dull) 38%, transparent)",
+    border: "var(--destructive-dull)",
+    shadow: "var(--destructive-dull)",
+    iconBackground: "color-mix(in srgb, var(--destructive) 16%, transparent)",
   },
 ].filter((app) => INCLUDED_APPS.includes(app.id));
