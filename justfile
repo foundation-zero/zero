@@ -15,8 +15,8 @@ run-all recipe:
 
     failed=()
 
-    # Find all subdirectories containing a Justfile/justfile
-    for dir in $(find . -mindepth 2 -maxdepth 2 \( -name "Justfile" -o -name "justfile" \) | xargs -n1 dirname | sort); do
+    # Find all apps and packages containing a Justfile/justfile
+    for dir in $(find . packages/py packages/rust -mindepth 2 -maxdepth 2 \( -name "Justfile" -o -name "justfile" \) | xargs -n1 dirname | sort); do
         echo "========================================"
         echo "==> Running '{{ recipe }}' in $dir"
         echo "========================================"
