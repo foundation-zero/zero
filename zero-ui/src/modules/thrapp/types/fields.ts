@@ -111,6 +111,9 @@ export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.Pvt]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
   };
+  [MimicComponentType.PowerConverter]: {
+    heatTransfer: SensorComponentType.HeatTransferDevice;
+  };
   [MimicComponentType.PvtString]: EmptyObject;
   [MimicComponentType.Thruster]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
@@ -168,6 +171,7 @@ export type ControlFieldDefinitions = ControlFields<{
     valve: ControlComponentType.Valve;
   };
   [MimicComponentType.Pvt]: EmptyObject;
+  [MimicComponentType.PowerConverter]: EmptyObject;
   [MimicComponentType.PvtString]: EmptyObject;
   [MimicComponentType.Thruster]: EmptyObject;
   [MimicComponentType.AdsorptionChiller]: {
@@ -216,6 +220,7 @@ export type ControllerStateFieldDefinitions = ControllerStateFields<{
   [MimicComponentType.ConnectingCircuit]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
   [MimicComponentType.Pvt]: EmptyObject;
+  [MimicComponentType.PowerConverter]: EmptyObject;
   [MimicComponentType.PvtString]: EmptyObject;
   [MimicComponentType.Thruster]: EmptyObject;
   [MimicComponentType.AdsorptionChiller]: EmptyObject;
@@ -262,6 +267,7 @@ export type ParameterFieldDefinitions = ParameterFields<{
   [MimicComponentType.SwitchValve]: EmptyObject;
   [MimicComponentType.FlowControlValve]: EmptyObject;
   [MimicComponentType.Pvt]: EmptyObject;
+  [MimicComponentType.PowerConverter]: EmptyObject;
   [MimicComponentType.PvtString]: EmptyObject;
   [MimicComponentType.Thruster]: EmptyObject;
   [MimicComponentType.AdsorptionChiller]: EmptyObject;
@@ -301,6 +307,8 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.DcConverter]: {
     converters: ModuleField<SensorComponentType.Ugrid | SensorComponentType.Brightloop>[];
     group: DcConverterGroup;
+    /** Sub-mimic showing the converters of this group one by one. */
+    mimic?: MimicKey;
   };
   [MimicComponentType.PropulsionDrive]: EmptyObject;
   [MimicComponentType.PropulsionCooler]: EmptyObject;
@@ -365,6 +373,7 @@ export type CustomFieldDefinitions = CustomFields<{
     group: PvtGroup;
     mimic?: MimicKey;
   };
+  [MimicComponentType.PowerConverter]: EmptyObject;
   [MimicComponentType.PvtString]: EmptyObject;
   [MimicComponentType.Thruster]: {
     titleKey: "fwdTitle" | "aftTitle";
@@ -403,6 +412,10 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.PropulsionCooler]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.ShorePowerConverter]: SensorComponentType.ShorePowerGroup;
   [MimicComponentType.Pvt]: SensorComponentType.Pvt;
+  [MimicComponentType.PowerConverter]:
+    | SensorComponentType.Brightloop
+    | SensorComponentType.Ugrid
+    | SensorComponentType.ShorePowerConverter;
   [MimicComponentType.PvtString]: SensorComponentType.HeatTransferDevice;
   [MimicComponentType.Thruster]: SensorComponentType.Thruster;
   [MimicComponentType.AdsorptionChiller]: SensorComponentType.AdsorptionChiller;

@@ -56,5 +56,45 @@ export const DC_TEMPERATURE_SENSOR_DATA = toFieldsMap({
         getField(SensorComponentType.Temperature, "dc", "dcTemperatureUgridReturn"),
       ),
     ),
+    "1038-05": toTemperatureSensor(
+      measuredTemperatureFields(
+        getField(SensorComponentType.Temperature, "dc", "dcTemperatureAft4Return"),
+      ),
+    ),
+    "1038-06": toTemperatureSensor(
+      measuredTemperatureFields(
+        getField(SensorComponentType.Temperature, "dc", "dcTemperatureAft3Return"),
+      ),
+    ),
+    "1038-07": toTemperatureSensor(
+      measuredTemperatureFields(
+        getField(SensorComponentType.Temperature, "dc", "dcTemperatureAft2Return"),
+      ),
+    ),
+    "1038-08": toTemperatureSensor(
+      measuredTemperatureFields(
+        getField(SensorComponentType.Temperature, "dc", "dcTemperatureAft1Return"),
+      ),
+    ),
+    "1038-09": toTemperatureSensor(
+      measuredTemperatureFields(
+        getField(SensorComponentType.Temperature, "dc", "dcTemperatureUgrid2Return"),
+      ),
+    ),
+    "1038-10": toTemperatureSensor(
+      measuredTemperatureFields(
+        getField(SensorComponentType.Temperature, "dc", "dcTemperatureUgrid1Return"),
+      ),
+    ),
+    "1038-12": toTemperatureSensor(
+      measuredTemperatureFields(
+        getField(SensorComponentType.Temperature, "dc", "dcTemperatureFwd2Return"),
+      ),
+    ),
+    "1038-13": toTemperatureSensor(
+      measuredTemperatureFields(
+        getField(SensorComponentType.Temperature, "dc", "dcTemperatureFwd1Return"),
+      ),
+    ),
   },
 });

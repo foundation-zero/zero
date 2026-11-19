@@ -24,6 +24,7 @@ export { default as MixValveInstance } from "./MixValveInstance.vue";
 export { default as PcmInstance } from "./PcmInstance.vue";
 export { default as PipeHeatExchangerInstance } from "./PipeHeatExchangerInstance.vue";
 export { default as PortTemperatureLabelInstance } from "./PortTemperatureLabelInstance.vue";
+export { default as PowerConverterInstance } from "./PowerConverterInstance.vue";
 export { default as PressureGaugeInstance } from "./PressureGaugeInstance.vue";
 export { default as PressureLabelInstance } from "./PressureLabelInstance.vue";
 export { default as PressureSensorInstance } from "./PressureSensorInstance.vue";

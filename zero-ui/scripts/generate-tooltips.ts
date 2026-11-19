@@ -89,6 +89,8 @@ try {
   const entries: {
     key: string;
     registerKeys: string[];
+    /** Whether the data module is the module the source is read from. */
+    isHome: boolean;
     componentType: string;
     context: TooltipData;
   }[] = [];
@@ -109,11 +111,13 @@ try {
         if (!key) throw new Error(`Tooltip in ${module} has neither a yardTag nor a source`);
         entries.push({
           key,
+          isHome: source?.[1] === module,
+          // A field is looked up by the module it is read from (`findTooltipContext`).
           registerKeys:
             !source || source[0] === "custom" || source[2] === "placeholder"
               ? []
               : hasYardTag
-                ? [instance, `${module}:${source?.[2]}`]
+                ? [instance, `${source[1]}:${source[2]}`]
                 : [`${module}:${instance}`],
           componentType,
           context: resolved,
@@ -137,13 +141,19 @@ try {
     !registerKey.includes(":") &&
     aliasTargets.get(registerKey)!.size > 1;
 
-  let redundant = 0;
-  for (const entry of entries) {
+  // A field's own module claims it first; another module's view of it (e.g. the DHW exchanger
+  // shown in the adsorption mimic) only takes a key nobody else has.
+  const byHomeFirst = [...entries.filter((e) => e.isHome), ...entries.filter((e) => !e.isHome)];
+  for (const entry of byHomeFirst) {
     for (const registerKey of entry.registerKeys) {
       if (!Object.hasOwn(register, registerKey) && !isAmbiguous(registerKey)) {
         register[registerKey] = `${entry.componentType}/${entry.key}`;
       }
     }
+  }
+
+  let redundant = 0;
+  for (const entry of entries) {
     const group = (contexts[entry.componentType] ??= {});
     const existing = Object.hasOwn(group, entry.key) ? group[entry.key] : undefined;
     if (

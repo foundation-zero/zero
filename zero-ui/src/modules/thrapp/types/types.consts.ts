@@ -33,5 +33,6 @@ export const enum MimicComponentType {
   PropulsionCooler = "PropulsionCooler",
   PropulsionDrive = "PropulsionDrive",
   ShorePowerConverter = "ShorePowerConverter",
+  PowerConverter = "PowerConverter",
   AdsorptionChiller = "AdsorptionChiller",
 }

@@ -11,6 +11,7 @@ import { DC_MIX_VALVE_DATA } from "./mix-valves";
 import { DC_PRESSURE_GAUGE_DATA } from "./pressure-gauges";
 import { DC_PRESSURE_SENSOR_DATA } from "./pressure-sensors";
 import { DC_PUMP_DATA } from "./pumps";
+import { DC_SWITCH_VALVE_DATA } from "./switch-valves";
 import { DC_TEMPERATURE_SENSOR_DATA } from "./temperature-sensors";
 
 export { DC_CHECK_VALVE_DATA } from "./check-valves";
@@ -25,6 +26,7 @@ export { DC_MIX_VALVE_DATA } from "./mix-valves";
 export { DC_PRESSURE_GAUGE_DATA } from "./pressure-gauges";
 export { DC_PRESSURE_SENSOR_DATA } from "./pressure-sensors";
 export { DC_PUMP_DATA } from "./pumps";
+export { DC_SWITCH_VALVE_DATA } from "./switch-valves";
 export { DC_TEMPERATURE_SENSOR_DATA } from "./temperature-sensors";
 
 export const DC_MIMIC_DATA = toFieldsMap({
@@ -41,4 +43,5 @@ export const DC_MIMIC_DATA = toFieldsMap({
   ...DC_FLOW_SENSOR_DATA,
   ...DC_PUMP_DATA,
   ...DC_MIX_VALVE_DATA,
+  ...DC_SWITCH_VALVE_DATA,
 });
