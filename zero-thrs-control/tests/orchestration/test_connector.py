@@ -27,6 +27,7 @@ from thrs.input_output.definitions.sensor import (
     TemperatureSensor,
 )
 from thrs.orchestration.comms import (
+    PENDING_PUBLISHES_WARNING_THRESHOLD,
     ControlChannels,
     DirectMqttMapping,
     MergedModuleMqttMapping,
@@ -479,6 +480,14 @@ async def test_mqtt_connector_dispatches_only_received_topics(mock_mqtt_client):
     assert [call.args[0] for call in handle_message.call_args_list] == [
         "base/module/go-with-the"
     ]
+
+
+async def test_mqtt_connector_raises_pending_publishes_warning_threshold():
+    client = Client("localhost")
+
+    MqttConnector(client)
+
+    assert client.pending_calls_threshold == PENDING_PUBLISHES_WARNING_THRESHOLD
 
 
 async def test_mqtt_connector_publisher_uses_mapping(mock_mqtt_client):

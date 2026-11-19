@@ -35,6 +35,9 @@ logger = logging.getLogger(__name__)
 DEVICE_NAMESPACE = "500000-thrs"
 SIMULATION_INPUTS_TOPIC = "simulation-inputs"
 SIMULATION_OUTPUTS_TOPIC = "simulation-outputs"
+# Each publish fans out to one message per topic, so a single simulation tick
+# has ~350 publishes in flight; aiomqtt's default of 10 warns on every tick.
+PENDING_PUBLISHES_WARNING_THRESHOLD = 1000
 
 
 def device_module_prefix(module_name: str) -> str:
@@ -781,6 +784,7 @@ class DirectivesApiChannels:
 
 class MqttConnector:
     def __init__(self, mqtt_client: Client):
+        mqtt_client.pending_calls_threshold = PENDING_PUBLISHES_WARNING_THRESHOLD
         self._mqtt_client = mqtt_client
         self._listeners: list[MqttReceiveMapping[object]] = []
         self._started = False
