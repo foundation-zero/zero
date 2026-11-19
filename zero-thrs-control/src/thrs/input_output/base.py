@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Annotated, Any, Literal, Self, cast
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, ValidationInfo, model_validator
 from pydantic.alias_generators import to_pascal
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
@@ -11,6 +11,7 @@ from thrs.input_output.definitions.units import (
     unit_for_annotation,
     zero_for_unit,
 )
+from thrs.input_output.definitions.wire_context import is_set
 
 
 class ThrsValues(BaseModel):
@@ -86,9 +87,31 @@ class ThrsValues(BaseModel):
         return cast(dict, cls.model_fields[field_name].json_schema_extra)["yard_tag"]
 
 
+def _timestamp_optional(schema: dict[str, Any]) -> None:
+    """Leave `TimeStamp` out of a stamped value's required fields: a client's
+    write may omit it (see `Stamped._stamp_on_arrival`)."""
+    schema["required"] = [name for name in schema["required"] if name != "TimeStamp"]
+
+
 class Stamped[T](ThrsValues):
+    model_config = ConfigDict(json_schema_extra=_timestamp_optional)
+
     value: T
     timestamp: Annotated[datetime, Field(alias="TimeStamp")]
+
+    @model_validator(mode="before")
+    @classmethod
+    def _stamp_on_arrival(cls, data: Any, info: ValidationInfo) -> Any:
+        """A client's write without a `TimeStamp` is stamped when it arrives;
+        everywhere else a value must carry its own."""
+        if (
+            is_set(info.context)
+            and isinstance(data, dict)
+            and "TimeStamp" not in data
+            and "timestamp" not in data
+        ):
+            return {**data, "TimeStamp": datetime.now(UTC)}
+        return data
 
     @staticmethod
     def stamp[V](value: V) -> Stamped[V]:
