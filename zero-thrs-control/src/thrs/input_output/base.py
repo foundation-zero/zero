@@ -87,14 +87,25 @@ class ThrsValues(BaseModel):
         return cast(dict, cls.model_fields[field_name].json_schema_extra)["yard_tag"]
 
 
-def _timestamp_optional(schema: dict[str, Any]) -> None:
-    """Leave `TimeStamp` out of a stamped value's required fields: a client's
-    write may omit it (see `Stamped._stamp_on_arrival`)."""
+def _stamped_schema(schema: dict[str, Any]) -> None:
+    """A stamped value's JSON Schema, as the Spec describes it:
+
+    - `TimeStamp` is not required, as a client's write may leave it out (see
+      `Stamped._stamp_on_arrival`);
+    - a number `Value`, nullable or not, has `format: float`: the AMCS keeps its
+      values as float32, so a client compares what it wrote with what comes back
+      at that precision. Tuples of numbers stay plain: they are controller state,
+      which no client writes.
+    """
     schema["required"] = [name for name in schema["required"] if name != "TimeStamp"]
+    value = schema["properties"]["Value"]
+    for number in [value, *value.get("anyOf", [])]:
+        if number.get("type") == "number":
+            number["format"] = "float"
 
 
 class Stamped[T](ThrsValues):
-    model_config = ConfigDict(json_schema_extra=_timestamp_optional)
+    model_config = ConfigDict(json_schema_extra=_stamped_schema)
 
     value: T
     timestamp: Annotated[datetime, Field(alias="TimeStamp")]
