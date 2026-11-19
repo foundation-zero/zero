@@ -76,8 +76,20 @@ async fn run() -> Result<()> {
     // First, so a restarted container does not inherit the previous run's `ready:` line.
     let readiness = Readiness::new(STATUS_FILE, "mqtt: connecting");
     let config = PipelineConfig::load().context("Failed to load configuration")?;
-    let decoder = Decoder::load(&config)?;
-    let (publisher, connection) = MqttPublisher::new(&config.app, &mqtt_client_id());
+    run_pipeline(&config, &mqtt_client_id(), readiness).await
+}
+
+/// Run the pipeline until a task stops or ctrl-c.
+///
+/// A broker outage alone never ends it (ADR 0001): the connection task retries
+/// for as long as the outage lasts and only returns once it gives up.
+async fn run_pipeline(
+    config: &PipelineConfig,
+    client_id: &str,
+    readiness: Readiness,
+) -> Result<()> {
+    let decoder = Decoder::load(config)?;
+    let (publisher, connection) = MqttPublisher::new(&config.app, client_id);
 
     let (frame_tx, frame_rx) = tokio::sync::mpsc::channel(FRAME_QUEUE);
 
@@ -245,5 +257,47 @@ fn print_datagram(decoder: &mut Decoder, prefix: &str, source: SocketAddr, bytes
             }
         }
         Err(reason) => println!("from {}: dropped: {:#}", source, reason),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::config::AppConfig;
+    use std::time::Duration;
+
+    /// A port nothing listens on, so every connection attempt is refused.
+    fn closed_port() -> u16 {
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        listener.local_addr().unwrap().port()
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn a_broker_outage_does_not_end_the_pipeline() {
+        let config = PipelineConfig {
+            app: AppConfig {
+                mqtt_host: "127.0.0.1".to_string(),
+                mqtt_port: closed_port(),
+                mqtt_prefix: "battery".to_string(),
+                udp_port: 0,
+                mqtt_username: None,
+                mqtt_password: None,
+            },
+            nvl_file: "spec/KEB6_FOX_05_41_1_NVL_Declaration.txt".to_string(),
+            owned_list_ids: None,
+        };
+        let path = std::env::temp_dir().join(format!("pipeline-outage-{}", std::process::id()));
+        let readiness = Readiness::new(&path, "mqtt: connecting");
+
+        // Longer than the 15 minute not-ready exit this replaced.
+        let outage = Duration::from_secs(20 * 60);
+        let pipeline = tokio::time::timeout(outage, run_pipeline(&config, "test", readiness));
+
+        assert!(
+            pipeline.await.is_err(),
+            "the pipeline ended during the outage"
+        );
+        let status = std::fs::read_to_string(&path).unwrap();
+        assert!(status.starts_with("not ready: mqtt: I/O: Connection refused"));
     }
 }
