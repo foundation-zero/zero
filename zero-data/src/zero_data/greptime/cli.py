@@ -83,7 +83,11 @@ class InitCmd(BaseModel):
 class _MigrateCmd(BaseModel):
     spec: CliPositionalArg[Path]
     table: Annotated[
-        list[str], Field(description="Only these old tables (repeat for more).")
+        list[str],
+        Field(
+            description="Only the new topics these old tables feed (repeat for more). "
+            "Other old tables that feed the same topics come along."
+        ),
     ] = []
     host: Annotated[
         str | None,

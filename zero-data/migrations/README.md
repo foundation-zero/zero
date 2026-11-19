@@ -35,7 +35,9 @@ The four commands, all under `uv run zero-data greptime migrate-history`:
 | `drop <spec.json> [--execute]` | Drops the old tables whose history is checked. Without `--execute` it prints what it would do. |
 
 `run`, `check` and `drop` take `--host <greptime host>` (default: `GREPTIME_HOST`, else the
-local Greptime) and `--table <old table>`, repeatable, to work on some old tables only.
+local Greptime) and `--table <old table>`, repeatable, to work on the new topics those old
+tables feed. A new topic's history is kept whole: when another old table feeds the same topic
+(a device's earlier name), its rows come along.
 
 ## Rehearsal, before the cut-over
 
