@@ -25,6 +25,7 @@ use std::net::SocketAddr;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 use tokio::net::UdpSocket;
+use tokio::signal::unix::{signal, SignalKind};
 use tokio::sync::mpsc::Receiver;
 use tokio::task::JoinSet;
 use tokio_stream::wrappers::ReceiverStream;
@@ -145,12 +146,12 @@ async fn publish_task(mqtt: MqttPublisher, frames: Receiver<ModuleFrame<'static>
     }
 }
 
-/// Keep the pipeline tasks alive: end when a task stops, or after ctrl-c.
+/// Keep the pipeline tasks alive: end when a task stops, or on a shutdown signal.
 ///
 /// Any task ending means the pipeline is broken, so the rest are aborted (the
 /// UDP listener may sit in `recv_from` indefinitely and would otherwise keep the
 /// drain waiting) and the process exits with an error for the container
-/// runtime to restart it. ctrl-c aborts everything and exits cleanly.
+/// runtime to restart it. A shutdown signal aborts everything and exits cleanly.
 async fn await_tasks(tasks: &mut JoinSet<()>) -> Result<()> {
     let outcome = tokio::select! {
         biased;
@@ -161,10 +162,7 @@ async fn await_tasks(tasks: &mut JoinSet<()>) -> Result<()> {
             None => Ok(()),
         },
 
-        _ = tokio::signal::ctrl_c() => {
-            info!("Shutting down on ctrl-c");
-            Ok(())
-        }
+        result = shutdown_signal() => result,
     };
     tasks.abort_all();
     while let Some(result) = tasks.join_next().await {
@@ -174,6 +172,17 @@ async fn await_tasks(tasks: &mut JoinSet<()>) -> Result<()> {
         }
     }
     outcome
+}
+
+/// Wait for SIGINT or SIGTERM; as PID 1 the process ignores an unhandled SIGTERM.
+async fn shutdown_signal() -> Result<()> {
+    let mut terminate = signal(SignalKind::terminate())?;
+    let name = tokio::select! {
+        result = tokio::signal::ctrl_c() => result.map(|()| "SIGINT")?,
+        _ = terminate.recv() => "SIGTERM",
+    };
+    info!("Shutting down on {name}");
+    Ok(())
 }
 
 /// A unique client id per process, so a restart cannot collide with a session
