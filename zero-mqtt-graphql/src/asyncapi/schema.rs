@@ -258,6 +258,7 @@ fn field_type_for_json_type(
             (!fields.is_empty()).then(|| FieldType::Object(name, Box::new(fields)))
         }
         "array" => Some(array_field_type(name, schema, doc)),
+        "number" if schema.format.as_deref() == Some("float") => Some(FieldType::Float32),
         "number" => Some(FieldType::Float),
         "integer" => Some(enum_field_type(name, schema, FieldType::Int)),
         "boolean" => Some(FieldType::Boolean),
@@ -385,6 +386,14 @@ mod tests {
     fn test_extract_scalar_fields() {
         let props = BTreeMap::from([
             ("celsius".to_string(), json!({"type": "number"})),
+            (
+                "dutypoint".to_string(),
+                json!({"type": "number", "format": "float"}),
+            ),
+            (
+                "ratio".to_string(),
+                json!({"type": "number", "format": "double"}),
+            ),
             ("sensor_id".to_string(), json!({"type": "integer"})),
             ("ok".to_string(), json!({"type": "boolean"})),
             ("label".to_string(), json!({"type": "string"})),
@@ -424,12 +433,15 @@ mod tests {
         }));
 
         let fields = extract_fields_from_schema(&schema, &doc);
-        assert_eq!(fields.len(), 12);
+        assert_eq!(fields.len(), 14);
         // BTreeMap ordering, so sorted by key
         let get = |name: &str| fields.get(name).unwrap();
         // An array without a declared element type is any JSON.
         assert_eq!(get("items"), &FieldType::Json);
         assert_eq!(get("celsius"), &FieldType::Float);
+        assert_eq!(get("dutypoint"), &FieldType::Float32);
+        // Other formats stay plain numbers.
+        assert_eq!(get("ratio"), &FieldType::Float);
         assert_eq!(get("sensor_id"), &FieldType::Int);
         assert_eq!(get("ok"), &FieldType::Boolean);
         assert_eq!(get("label"), &FieldType::String);

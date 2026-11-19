@@ -156,7 +156,7 @@ fn input_objects(spec: &str, name: &str, fields: &BTreeMap<String, FieldType>) -
 /// to `nested`.
 fn input_type_ref(spec: &str, field_type: &FieldType, nested: &mut Vec<InputObject>) -> TypeRef {
     match field_type {
-        FieldType::Float => TypeRef::named(TypeRef::FLOAT),
+        FieldType::Float | FieldType::Float32 => TypeRef::named(TypeRef::FLOAT),
         FieldType::Int => TypeRef::named(TypeRef::INT),
         FieldType::Boolean => TypeRef::named(TypeRef::BOOLEAN),
         FieldType::String => TypeRef::named(TypeRef::STRING),
@@ -197,6 +197,7 @@ fn field_type_enums(spec: &str, field_type: &FieldType) -> Vec<Type> {
         | FieldType::Duration
         | FieldType::String
         | FieldType::Float
+        | FieldType::Float32
         | FieldType::Int
         | FieldType::Boolean => {
             vec![]
@@ -408,22 +409,24 @@ fn equal_fields(
 /// type when `None`. An object compares as in [`equal_fields`], a list
 /// element by element at the same length, and a string as in
 /// [`equal_string`]. Numbers compare by value, so `21` and `21.0` are equal,
-/// but a rounded or clamped value is not.
+/// but a rounded or clamped value is not; a [`FieldType::Float32`] compares
+/// at 32-bit precision, so `0.3` equals the `0.30000001192092896` its source
+/// keeps.
 #[allow(clippy::float_cmp)]
 pub(super) fn equal_value(
     state: &JsonValue,
     given: &JsonValue,
     field_type: Option<&FieldType>,
 ) -> bool {
-    match (state, given) {
-        (_, JsonValue::Object(_)) => {
+    match (state, given, field_type) {
+        (_, JsonValue::Object(_), _) => {
             let fields = match field_type {
                 Some(FieldType::Object(_, fields)) => Some(fields.as_ref()),
                 _ => None,
             };
             equal_fields(state, given, fields)
         }
-        (JsonValue::Array(state), JsonValue::Array(given)) => {
+        (JsonValue::Array(state), JsonValue::Array(given), _) => {
             let element = match field_type {
                 Some(FieldType::List(element)) => Some(element.as_ref()),
                 _ => None,
@@ -434,8 +437,11 @@ pub(super) fn equal_value(
                     .zip(given)
                     .all(|(state, given)| equal_value(state, given, element))
         }
-        (JsonValue::Number(state), JsonValue::Number(given)) => state.as_f64() == given.as_f64(),
-        (JsonValue::String(state), JsonValue::String(given)) => {
+        (JsonValue::Number(state), JsonValue::Number(given), Some(FieldType::Float32)) => {
+            as_f32(state) == as_f32(given)
+        }
+        (JsonValue::Number(state), JsonValue::Number(given), _) => state.as_f64() == given.as_f64(),
+        (JsonValue::String(state), JsonValue::String(given), _) => {
             equal_string(state, given, field_type)
         }
         _ => state == given,
@@ -467,6 +473,15 @@ fn equal_string(state: &str, given: &str, field_type: Option<&FieldType>) -> boo
         _ => None,
     };
     equal.unwrap_or(state == given)
+}
+
+/// `number` rounded to the nearest 32-bit float.
+#[allow(
+    clippy::cast_possible_truncation,
+    reason = "rounding to 32 bits is the point"
+)]
+fn as_f32(number: &serde_json::Number) -> Option<f32> {
+    number.as_f64().map(|number| number as f32)
 }
 
 #[cfg(test)]
@@ -1368,6 +1383,27 @@ mod tests {
             &label("2026-11-10T09:30:00.123000Z"),
             label("2026-11-10T09:30:00.123Z")
         ));
+    }
+
+    #[test_log::test]
+    fn test_equal_fields_compares_float32_at_32_bit_precision() {
+        let fields = BTreeMap::from([
+            (
+                "dutypoint".to_string(),
+                stamped("StampedFloat32", FieldType::Float32),
+            ),
+            ("measured".to_string(), FieldType::Float),
+        ]);
+        let equal =
+            |state: &JsonValue, given: JsonValue| equal_fields(state, &given, Some(&fields));
+        let dutypoint = |value: f64| json!({"dutypoint": {"Value": value}});
+        let measured = |value: f64| json!({"measured": value});
+
+        // What the AMCS reports for a duty point written as 0.3.
+        assert!(equal(&dutypoint(0.300_000_011_920_928_96), dutypoint(0.3)));
+        assert!(!equal(&dutypoint(0.300_000_1), dutypoint(0.3)));
+        // Other numbers still compare exactly.
+        assert!(!equal(&measured(0.300_000_011_920_928_96), measured(0.3)));
     }
 
     #[test_log::test]
