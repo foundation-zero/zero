@@ -1,3 +1,4 @@
+import contextlib
 import signal
 
 from pydantic_settings import CliApp
@@ -8,7 +9,8 @@ from .cli import ThrsCli
 def run_app():
     # As PID 1, SIGTERM is ignored unless handled.
     signal.signal(signal.SIGTERM, lambda *_: signal.raise_signal(signal.SIGINT))
-    CliApp.run(ThrsCli)
+    with contextlib.suppress(KeyboardInterrupt):
+        CliApp.run(ThrsCli)
 
 
 if __name__ == "__main__":

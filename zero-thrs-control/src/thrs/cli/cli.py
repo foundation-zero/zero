@@ -1,4 +1,3 @@
-import contextlib
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -282,5 +281,4 @@ class ThrsCli(BaseSettings, cli_kebab_case=True):
     def cli_cmd(self) -> None:
         setup_logging()
 
-        with contextlib.suppress(KeyboardInterrupt):
-            CliApp.run_subcommand(self)
+        CliApp.run_subcommand(self)
