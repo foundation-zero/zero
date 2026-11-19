@@ -589,12 +589,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "FM B Upwind 20261006",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 11.677484156159341
-  },
-  {
-    "load_case_id": "FM B Upwind 20261006",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 21.8
@@ -628,12 +622,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 2.68052800905508
-  },
-  {
-    "load_case_id": "FM B Upwind 20261006",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 1.5295743194668925
   },
   {
     "load_case_id": "FM B Upwind 20261006",
@@ -769,12 +757,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "FM B Upwind 20261006",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 11.677484156159341
-  },
-  {
-    "load_case_id": "FM B Upwind 20261006",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 21.8
@@ -808,12 +790,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 2.68052800905508
-  },
-  {
-    "load_case_id": "FM B Upwind 20261006",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 1.5295743194668925
   },
   {
     "load_case_id": "FM B Upwind 20261006",
@@ -955,12 +931,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 13.38510092641218
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 4.89443387905146
@@ -1012,12 +982,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 4.200822910983873
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 3.5977627426287264
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -1165,12 +1129,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 13.38510092641218
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 4.89443387905146
@@ -1222,12 +1180,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 4.200822910983873
-  },
-  {
-    "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 3.5977627426287264
   },
   {
     "load_case_id": "LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418",
@@ -1369,12 +1321,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 9.53618208052699
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 18.7109767351746
@@ -1420,12 +1366,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 1.1410624423223017
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 1.2283501501532124
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
@@ -1567,12 +1507,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 9.53618208052699
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 18.7109767351746
@@ -1618,12 +1552,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 1.1410624423223017
-  },
-  {
-    "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 1.2283501501532124
   },
   {
     "load_case_id": "LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409",
@@ -1735,12 +1663,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 10.269867895764609
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 2.0394324259558565
@@ -1780,12 +1702,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 7.473296181672641
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 5.0985810648896415
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
@@ -1903,12 +1819,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 10.269867895764609
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 2.0394324259558565
@@ -1951,12 +1861,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 5.0985810648896415
-  },
-  {
-    "load_case_id": "LC10_ SJ_TWA60_TWS45_RM10_20240419",
     "variable_id": "mizzen-sheet-load",
     "tack": "starboard",
     "target": 2.0394324259558565
@@ -2071,12 +1975,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 4.844671727858137
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 21.36142311594683
@@ -2110,12 +2008,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 3.38831303248306
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 1.7727766362621282
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
@@ -2239,12 +2131,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 4.844671727858137
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 21.36142311594683
@@ -2278,12 +2164,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 3.38831303248306
-  },
-  {
-    "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 1.7727766362621282
   },
   {
     "load_case_id": "LC11_ SS_M1R_TWA50_TWS24_RM18_20240410",
@@ -2425,12 +2305,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 11.73989078839359
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 8.553175651216266
@@ -2482,12 +2356,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 2.519616790647163
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 1.7588065241443307
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
@@ -2617,12 +2485,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 11.73989078839359
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 8.553175651216266
@@ -2674,12 +2536,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 2.519616790647163
-  },
-  {
-    "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 1.7588065241443307
   },
   {
     "load_case_id": "LC20_ MH0_FM_FMZ_ TWA70_TWS12_RM22_20240411",
@@ -2833,12 +2689,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 8.315785716835006
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 13.834897747956743
@@ -2896,12 +2746,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 5.86418399759347
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 4.158096801660098
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -3055,12 +2899,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 8.315785716835006
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 13.834897747956743
@@ -3118,12 +2956,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 5.86418399759347
-  },
-  {
-    "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 4.158096801660098
   },
   {
     "load_case_id": "LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519",
@@ -3265,12 +3097,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 10.0300306424722
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 19.654622118664378
@@ -3310,12 +3136,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 3.253812463991271
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 2.232158790208685
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
@@ -3457,12 +3277,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 10.0300306424722
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 19.654622118664378
@@ -3502,12 +3316,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 3.253812463991271
-  },
-  {
-    "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 2.232158790208685
   },
   {
     "load_case_id": "LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409",
@@ -3637,12 +3445,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 9.750322485252354
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 3.5792039075525284
@@ -3694,12 +3496,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 2.724171862970535
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 1.856087450862425
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
@@ -3829,12 +3625,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 9.750322485252354
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 3.5792039075525284
@@ -3886,12 +3676,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 2.724171862970535
-  },
-  {
-    "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 1.856087450862425
   },
   {
     "load_case_id": "LC33_ A3_FM_FMZ_ TWA125_TWS15_RM20_20240411",
@@ -4039,12 +3823,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 9.824149939071956
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 5.0369902056257745
@@ -4102,12 +3880,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 8.569797025487807
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 5.1005185256943
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -4255,12 +4027,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 9.824149939071956
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 5.0369902056257745
@@ -4318,12 +4084,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 8.569797025487807
-  },
-  {
-    "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 5.1005185256943
   },
   {
     "load_case_id": "LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411",
@@ -4459,12 +4219,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 11.232174085951879
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 16.726608984719554
@@ -4504,12 +4258,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 4.703339060739396
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 2.7608816466377406
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
@@ -4645,12 +4393,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 11.232174085951879
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 16.726608984719554
@@ -4690,12 +4432,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 4.703339060739396
-  },
-  {
-    "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 2.7608816466377406
   },
   {
     "load_case_id": "LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410",
@@ -4813,12 +4549,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 9.372517628344031
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 4.496948499232664
@@ -4864,12 +4594,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 5.524006668944033
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 3.7148261638785924
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -4999,12 +4723,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 9.372517628344031
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 4.496948499232664
@@ -5050,12 +4768,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 5.524006668944033
-  },
-  {
-    "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 3.7148261638785924
   },
   {
     "load_case_id": "LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418",
@@ -5191,12 +4903,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 3.8100676581707313
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 4.820606425231858
@@ -5248,12 +4954,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 2.371961883007959
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 1.3684591578163796
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -5371,12 +5071,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 3.8100676581707313
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 4.820606425231858
@@ -5428,12 +5122,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 2.371961883007959
-  },
-  {
-    "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 1.3684591578163796
   },
   {
     "load_case_id": "LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419",
@@ -5545,12 +5233,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 9.224556805840935
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 9.325712654168345
@@ -5596,12 +5278,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 7.265783932331632
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 4.1250579963596135
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
@@ -5731,12 +5407,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 9.224556805840935
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 9.325712654168345
@@ -5782,12 +5452,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 7.265783932331632
-  },
-  {
-    "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 4.1250579963596135
   },
   {
     "load_case_id": "LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508",
@@ -5917,12 +5581,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 4.837227799503398
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 7.341956733441084
@@ -5962,12 +5620,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 2.9252599001697828
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 1.5500706153477488
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
@@ -6079,12 +5731,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 4.837227799503398
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 7.341956733441084
@@ -6124,12 +5770,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 2.9252599001697828
-  },
-  {
-    "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 1.5500706153477488
   },
   {
     "load_case_id": "LC65-2_M3R_TWA70_TWS40_RM12_20240412",
@@ -6241,12 +5881,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 5.0985810648896415
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 6.11829727786757
@@ -6280,12 +5914,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 3.800788240632632
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 3.059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
@@ -6397,12 +6025,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 5.0985810648896415
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 6.11829727786757
@@ -6436,12 +6058,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 3.800788240632632
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA45",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 3.059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA45",
@@ -6553,12 +6169,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 5.0985810648896415
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 6.11829727786757
@@ -6592,12 +6202,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 3.800788240632632
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 3.059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
@@ -6709,12 +6313,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 5.0985810648896415
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 6.11829727786757
@@ -6748,12 +6346,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 3.800788240632632
-  },
-  {
-    "load_case_id": "LC66_TSOnly_TWS45_TWA70",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 3.059148638933785
   },
   {
     "load_case_id": "LC66_TSOnly_TWS45_TWA70",
@@ -6859,12 +6451,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 7.296171475478374
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 21.8
@@ -6904,12 +6490,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 8.916908424385493
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 5.0376020353535615
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -7033,12 +6613,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 7.296171475478374
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 21.8
@@ -7078,12 +6652,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 8.916908424385493
-  },
-  {
-    "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 5.0376020353535615
   },
   {
     "load_case_id": "LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410",
@@ -7213,12 +6781,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 9.37588269184686
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 8.789341926141955
@@ -7264,12 +6826,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 8.951782718869339
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 5.299771073710186
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7399,12 +6955,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 9.37588269184686
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 8.789341926141955
@@ -7450,12 +7000,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 8.951782718869339
-  },
-  {
-    "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 5.299771073710186
   },
   {
     "load_case_id": "LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418",
@@ -7579,12 +7123,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 8.545425807997635
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 15.830686319997145
@@ -7624,12 +7162,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 9.116976745371764
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 4.970300765297018
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
@@ -7753,12 +7285,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 8.545425807997635
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 15.830686319997145
@@ -7798,12 +7324,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 9.116976745371764
-  },
-  {
-    "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 4.970300765297018
   },
   {
     "load_case_id": "LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410",
@@ -7957,12 +7477,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 14.033844381108738
-  },
-  {
-    "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 13.941152177349045
@@ -7996,12 +7510,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 5.276419572432992
-  },
-  {
-    "load_case_id": "M1R B Rchng TWA70 20261009",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 4.145860207104363
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -8143,12 +7651,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 14.033844381108738
-  },
-  {
-    "load_case_id": "M1R B Rchng TWA70 20261009",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 13.941152177349045
@@ -8182,12 +7684,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 5.276419572432992
-  },
-  {
-    "load_case_id": "M1R B Rchng TWA70 20261009",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 4.145860207104363
   },
   {
     "load_case_id": "M1R B Rchng TWA70 20261009",
@@ -8299,12 +7795,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 5.811260726139915
-  },
-  {
-    "load_case_id": "M1R M12R SS Upwind 20261009",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 19.622806972819465
@@ -8350,12 +7840,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 6.5400519035552405
-  },
-  {
-    "load_case_id": "M1R M12R SS Upwind 20261009",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 3.974955769809262
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
@@ -8479,12 +7963,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 5.811260726139915
-  },
-  {
-    "load_case_id": "M1R M12R SS Upwind 20261009",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 19.622806972819465
@@ -8530,12 +8008,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 6.5400519035552405
-  },
-  {
-    "load_case_id": "M1R M12R SS Upwind 20261009",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 3.974955769809262
   },
   {
     "load_case_id": "M1R M12R SS Upwind 20261009",
@@ -8689,12 +8161,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 10.760963223934779
-  },
-  {
-    "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 18.597176405806266
@@ -8740,12 +8206,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 8.23696165357181
-  },
-  {
-    "load_case_id": "M1R MZ2R B Upwind 20261007",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 4.232638056828785
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
@@ -8881,12 +8341,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 10.760963223934779
-  },
-  {
-    "load_case_id": "M1R MZ2R B Upwind 20261007",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 18.597176405806266
@@ -8932,12 +8386,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 8.23696165357181
-  },
-  {
-    "load_case_id": "M1R MZ2R B Upwind 20261007",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 4.232638056828785
   },
   {
     "load_case_id": "M1R MZ2R B Upwind 20261007",
@@ -9049,12 +8497,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M2R SJ Upwind 20261008",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 7.929211300495072
-  },
-  {
-    "load_case_id": "M2R SJ Upwind 20261008",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 19.002819515328884
@@ -9088,12 +8530,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 2.679100406356911
-  },
-  {
-    "load_case_id": "M2R SJ Upwind 20261008",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 1.5296762910881903
   },
   {
     "load_case_id": "M2R SJ Upwind 20261008",
@@ -9217,12 +8653,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M2R SJ Upwind 20261008",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 7.929211300495072
-  },
-  {
-    "load_case_id": "M2R SJ Upwind 20261008",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 19.002819515328884
@@ -9256,12 +8686,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 2.679100406356911
-  },
-  {
-    "load_case_id": "M2R SJ Upwind 20261008",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 1.5296762910881903
   },
   {
     "load_case_id": "M2R SJ Upwind 20261008",
@@ -9385,12 +8809,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M2R SS Upwind 20261008",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 8.439783208333122
-  },
-  {
-    "load_case_id": "M2R SS Upwind 20261008",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 16.02116930858142
@@ -9424,12 +8842,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 3.3284556907812557
-  },
-  {
-    "load_case_id": "M2R SS Upwind 20261008",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 1.8220289293489622
   },
   {
     "load_case_id": "M2R SS Upwind 20261008",
@@ -9559,12 +8971,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M2R SS Upwind 20261008",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 8.439783208333122
-  },
-  {
-    "load_case_id": "M2R SS Upwind 20261008",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 16.02116930858142
@@ -9598,12 +9004,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 3.3284556907812557
-  },
-  {
-    "load_case_id": "M2R SS Upwind 20261008",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 1.8220289293489622
   },
   {
     "load_case_id": "M2R SS Upwind 20261008",
@@ -9733,12 +9133,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M3R SJ Rchng 20261008",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 9.857392687615038
-  },
-  {
-    "load_case_id": "M3R SJ Rchng 20261008",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 3.643853915455329
@@ -9772,12 +9166,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 2.1339601188989104
-  },
-  {
-    "load_case_id": "M3R SJ Rchng 20261008",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 1.2518036230517047
   },
   {
     "load_case_id": "M3R SJ Rchng 20261008",
@@ -9901,12 +9289,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M3R SJ Rchng 20261008",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 9.857392687615038
-  },
-  {
-    "load_case_id": "M3R SJ Rchng 20261008",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 3.643853915455329
@@ -9940,12 +9322,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 2.1339601188989104
-  },
-  {
-    "load_case_id": "M3R SJ Rchng 20261008",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 1.2518036230517047
   },
   {
     "load_case_id": "M3R SJ Rchng 20261008",
@@ -10069,12 +9445,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M3R SJ Upwind 20261008",
-    "variable_id": "main-runner-tail-ps-load",
-    "tack": "port",
-    "target": 9.368030877006928
-  },
-  {
-    "load_case_id": "M3R SJ Upwind 20261008",
     "variable_id": "main-sheet-load",
     "tack": "port",
     "target": 7.557728684107213
@@ -10108,12 +9478,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-ps-load",
     "tack": "port",
     "target": 2.6891955968653924
-  },
-  {
-    "load_case_id": "M3R SJ Upwind 20261008",
-    "variable_id": "mizzen-runner-tail-ps-load",
-    "tack": "port",
-    "target": 1.535182758638271
   },
   {
     "load_case_id": "M3R SJ Upwind 20261008",
@@ -10237,12 +9601,6 @@ reference_payload AS (
   },
   {
     "load_case_id": "M3R SJ Upwind 20261008",
-    "variable_id": "main-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 9.368030877006928
-  },
-  {
-    "load_case_id": "M3R SJ Upwind 20261008",
     "variable_id": "main-sheet-load",
     "tack": "starboard",
     "target": 7.557728684107213
@@ -10276,12 +9634,6 @@ reference_payload AS (
     "variable_id": "mizzen-runner-stay-sb-load",
     "tack": "starboard",
     "target": 2.6891955968653924
-  },
-  {
-    "load_case_id": "M3R SJ Upwind 20261008",
-    "variable_id": "mizzen-runner-tail-sb-load",
-    "tack": "starboard",
-    "target": 1.535182758638271
   },
   {
     "load_case_id": "M3R SJ Upwind 20261008",
