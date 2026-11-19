@@ -5,7 +5,7 @@ import pytest
 from asyncapi3.models import Channel, Operation, Server
 
 # Adjust the import to match your actual module location
-from thrs.input_output.base import ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues
 from thrs.runtime.descriptions.simulation import Mode
 from thrs.spec.asyncapi import (
     CHANNEL_TTL,
@@ -211,6 +211,53 @@ def test_build_asyncapi_names_enum_values():
         {"const": 3, "title": "HIGH"},
     ]
     assert "enum" not in level
+
+
+class StampedPayload(ThrsValues):
+    setpoint: Stamped[float]
+
+
+def test_build_asyncapi_stamped_values_may_leave_out_their_timestamp():
+    topics = [TopicMapping("valve/set", StampedPayload, "receive", "valve")]
+    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # type: ignore[arg-type]
+
+    assert doc.components
+    assert doc.components.schemas
+    stamped = doc.components.schemas.root["Stamped_float_"].model_dump(
+        by_alias=True, exclude_none=True
+    )
+    assert stamped["required"] == ["Value"]
+    assert "TimeStamp" in stamped["properties"]
+
+
+class Float32Payload(ThrsValues):
+    setpoint: Stamped[float]
+    optional: Stamped[float | None]
+    tuning: Stamped[tuple[float, float, float]]
+    on: Stamped[bool]
+
+
+def test_build_asyncapi_stamped_numbers_are_float32():
+    topics = [TopicMapping("valve/set", Float32Payload, "receive", "valve")]
+    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # type: ignore[arg-type]
+
+    assert doc.components
+    assert doc.components.schemas
+    schemas = doc.components.schemas.root
+
+    def value(name: str) -> dict:
+        return schemas[name].model_dump(by_alias=True, exclude_none=True)["properties"][
+            "Value"
+        ]
+
+    assert value("Stamped_float_")["format"] == "float"
+    assert value("Stamped_Union_float__NoneType__")["anyOf"][0]["format"] == "float"
+    # Tuples are controller state, which no client writes.
+    assert all(
+        "format" not in item
+        for item in value("Stamped_tuple_float__float__float__")["prefixItems"]
+    )
+    assert "format" not in value("Stamped_bool_")
 
 
 def test_build_asyncapi_topics_are_sorted():

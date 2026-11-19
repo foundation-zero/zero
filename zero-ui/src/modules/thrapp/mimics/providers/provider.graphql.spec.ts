@@ -149,10 +149,7 @@ describe("GraphQL mimic data provider", () => {
   });
 
   describe("setting a control value", () => {
-    it("sends the values stamped with now in the module controller's control values", async () => {
-      vi.setSystemTime(new Date("2026-11-11T12:00:00Z"));
-      const timeStamp = "2026-11-11T12:00:00.000Z";
-
+    it("sends the values without a timeStamp in the module controller's control values", async () => {
       await useGraphQLDataProvider().setControlValue(
         [ControlComponentType.Pump, "thrusters", "thrustersPump1", null],
         { dutypoint: 0.8, on: true },
@@ -162,10 +159,9 @@ describe("GraphQL mimic data provider", () => {
       expect(query).toContain("mutation ($input: ThrsControlThrustersControlValuesInput!)");
       expect(query).toContain("controlValues(input: $input)");
       expect(input).toEqual({
-        thrustersPump1: { dutypoint: { value: 0.8, timeStamp }, on: { value: true, timeStamp } },
+        thrustersPump1: { dutypoint: { value: 0.8 }, on: { value: true } },
       });
       expect(history.refresh).toHaveBeenCalledOnce();
-      vi.useRealTimers();
     });
   });
 

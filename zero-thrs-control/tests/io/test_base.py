@@ -1,9 +1,13 @@
+from datetime import UTC, datetime
+
+from pydantic import ValidationError
 from pytest import raises
 
 from thrs.classes.control import ControlMode
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.input_output.definitions.simulation import HeatSource
+from thrs.input_output.definitions.wire_context import WireContext
 
 
 class SimpleInputs(ThrsValues):
@@ -121,3 +125,27 @@ def test_update_in_place_rejects_mismatched_list_length():
 
     with raises(ValueError):
         target.update_in_place(source)
+
+
+def test_a_set_value_without_timestamp_is_stamped_on_arrival():
+    before = datetime.now(UTC)
+
+    stamped = Stamped[float].model_validate({"Value": 0.3}, context=WireContext.SET)
+
+    assert stamped.value == 0.3
+    assert before <= stamped.timestamp <= datetime.now(UTC)
+
+
+def test_a_set_value_keeps_its_timestamp():
+    stamped = Stamped[float].model_validate(
+        {"Value": 0.3, "TimeStamp": "2026-11-19T10:00:00Z"}, context=WireContext.SET
+    )
+
+    assert stamped.timestamp == datetime(2026, 11, 19, 10, tzinfo=UTC)
+
+
+def test_a_value_outside_a_set_needs_a_timestamp():
+    with raises(ValidationError):
+        Stamped[float].model_validate({"Value": 0.3})
+    with raises(ValidationError):
+        Stamped[float].model_validate({"Value": 0.3}, context=WireContext.ACTUATED)

@@ -1,7 +1,7 @@
 import i18n from "@/i18n";
 import { PID } from "@/modules/common/types";
 import { ControlledModule } from "@/modules/thrapp/lib/consts";
-import { controllerMutation, stampedValues } from "@/modules/thrapp/lib/mqtt-graphql.utils";
+import { controllerMutation, valueInputs } from "@/modules/thrapp/lib/mqtt-graphql.utils";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import { unstamp } from "@common/lib/utils";
 import { Stamped } from "@common/types";
@@ -57,8 +57,8 @@ type ValuesForm<Form> = {
   error: Ref<null | string>;
 } & Form;
 
-// A form over some fields of a component's values. Submitting sends the edited fields, stamped,
-// and clears the edits once sent; the sender reloads what the page shows.
+// A form over some fields of a component's values. Submitting sends the edited fields and clears
+// the edits once sent; the sender reloads what the page shows.
 const editedValuesForm = <
   A extends Ref<FieldObject>,
   K extends ExtractRefKeys<A>,
@@ -66,7 +66,7 @@ const editedValuesForm = <
 >(
   values: A,
   fields: K[],
-  send: (stamped: Record<string, unknown>) => Promise<{ error?: { message: string } }>,
+  send: (inputs: Record<string, unknown>) => Promise<{ error?: { message: string } }>,
 ): ValuesForm<Form> => {
   const refs = Object.fromEntries(
     fields.map((field: K) => [field, valueWithDirty(computed(() => values.value[field]))]),
@@ -84,7 +84,7 @@ const editedValuesForm = <
       isSubmitting.value = true;
       error.value = null;
 
-      const result = await send(stampedValues(edited));
+      const result = await send(valueInputs(edited));
       if (result.error) {
         error.value = result.error.message;
         return;

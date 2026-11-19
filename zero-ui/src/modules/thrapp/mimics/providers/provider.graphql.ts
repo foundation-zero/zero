@@ -6,7 +6,7 @@ import {
 import {
   ControllerInput,
   controllerMutation,
-  stampedValues,
+  valueInputs,
 } from "@/modules/thrapp/lib/mqtt-graphql.utils";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import {
@@ -114,7 +114,7 @@ export const useGraphQLDataProvider = (): MimicDataProvider => {
   const setControlValue = <Type extends ControlComponentType, Module extends keyof ThrsDefinitions>(
     [_type, module, field]: ModuleField<Type, Module>,
     values: Partial<ControlValues<Type>>,
-  ) => send(module, "controlValues", { [field]: stampedValues(values) });
+  ) => send(module, "controlValues", { [field]: valueInputs(values) });
 
   return {
     getSensorValue,

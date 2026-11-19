@@ -26,6 +26,7 @@ from thrs.input_output.definitions.sensor import (
     TemperatureDelta,
     TemperatureSensor,
 )
+from thrs.input_output.definitions.wire_context import WireContext
 from thrs.orchestration.comms import (
     PENDING_PUBLISHES_WARNING_THRESHOLD,
     ControlChannels,
@@ -245,6 +246,24 @@ class TestDirectMqttMappingAutoclear:
         mapping.handle_message(topic, model.model_dump_json(by_alias=True))
         assert mapping.result() == model
         assert mapping.result() is None
+
+    def test_for_module_passes_context(self):
+        """A /set mapping takes a client's values without timestamps."""
+        mapping = DirectMqttMapping.for_module(
+            SimpleInOut,
+            "prefix",
+            "module",
+            type_topic="values",
+            context=WireContext.SET,
+        )
+        topic = next(iter(mapping.subscribe_topics()))
+        mapping.handle_message(
+            topic,
+            '{"GoWithThe": {"Flow": {"Value": 1.0}, "Temperature": {"Value": 20.0}}}',
+        )
+        result = mapping.result()
+        assert result is not None
+        assert result.go_with_the.flow.value == 1.0
 
     async def test_wait_for_consumes_on_match(self):
         mapping = DirectMqttMapping(SimpleInOut, "sensors/data", autoclear=True)

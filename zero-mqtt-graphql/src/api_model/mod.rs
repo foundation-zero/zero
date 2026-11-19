@@ -160,6 +160,10 @@ pub enum FieldType {
     Duration,
     String,
     Float,
+    /// A number in `format: float`, kept as a 32-bit float by its source: a
+    /// GraphQL `Float` like any number, but a mutation's confirmation compares
+    /// it at 32-bit precision.
+    Float32,
     Int,
     Boolean,
 }

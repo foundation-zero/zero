@@ -95,11 +95,7 @@ export function automationModeMutation(module: string) {
   `;
 }
 
-// A component's control values, each stamped with now, so thrs-control takes them as the newest
-// setpoints.
-export const stampedValues = (values: Record<string, unknown>) => {
-  const timeStamp = new Date().toISOString();
-  return Object.fromEntries(
-    Object.entries(values).map(([name, value]) => [name, { value, timeStamp }]),
-  );
-};
+// A component's values as stamped-value inputs without a timeStamp: thrs-control stamps them when
+// they arrive, and the API confirms the write on the values alone, whatever stamp the AMCS reports.
+export const valueInputs = (values: Record<string, unknown>) =>
+  Object.fromEntries(Object.entries(values).map(([name, value]) => [name, { value }]));

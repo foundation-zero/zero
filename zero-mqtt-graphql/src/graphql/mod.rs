@@ -427,7 +427,7 @@ fn non_null(value: Option<GraphQlValue>) -> Option<GraphQlValue> {
 fn graphql_type_ref(name_prefix: &str, field_type: &FieldType) -> (TypeRef, Vec<Type>) {
     #[allow(clippy::match_same_arms)]
     match field_type {
-        FieldType::Float => (TypeRef::named(TypeRef::FLOAT), vec![]),
+        FieldType::Float | FieldType::Float32 => (TypeRef::named(TypeRef::FLOAT), vec![]),
         FieldType::Int => (TypeRef::named(TypeRef::INT), vec![]),
         FieldType::Boolean => (TypeRef::named(TypeRef::BOOLEAN), vec![]),
         FieldType::String => (TypeRef::named(TypeRef::STRING), vec![]),

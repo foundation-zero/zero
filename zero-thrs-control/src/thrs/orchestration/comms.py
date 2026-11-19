@@ -194,7 +194,9 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         topic_suffix: str | None = None,
         *,
         autoclear: bool = False,
+        context: WireContext | None = None,
     ):
+        self._context = context
         self._types = cls if isinstance(cls, tuple) else (cls,)
         validate_type: type[M] | object = self._types[0]
         for extra_type in self._types[1:]:
@@ -219,12 +221,14 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         type_topic: str | None = None,
         topic_suffix: str | None = None,
         autoclear: bool = False,
+        context: WireContext | None = None,
     ) -> DirectMqttMapping[M]:
         base = f"{topic_prefix}/{module_name}{f'/{type_topic}' if type_topic else ''}"
         return DirectMqttMapping(
             message_type,
             f"{base}{f'/{topic_suffix}' if topic_suffix else ''}",
             autoclear=autoclear,
+            context=context,
         )
 
     def split_to_topics(self, model: M) -> dict[str, str]:
@@ -239,7 +243,9 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
     def handle_message(self, topic: str, json: str | bytes):
         awaitables: list[Awaitable] = []
         if topic == self._topic:
-            self._value = cast(M, self._adapter.validate_json(json))
+            self._value = cast(
+                M, self._adapter.validate_json(json, context=self._context)
+            )
             if not self._first_received.is_set():
                 self._first_value = self._value
                 self._first_received.set()
@@ -421,6 +427,7 @@ class ControlChannels[
             type_topic="parameters",
             topic_suffix=config.mqtt_controller_topic_suffix,
             autoclear=True,
+            context=WireContext.SET,
         )
         connector._register_listener(parameters_mapping)
 
@@ -431,6 +438,7 @@ class ControlChannels[
             type_topic="automation-mode",
             topic_suffix=config.mqtt_controller_topic_suffix,
             autoclear=True,
+            context=WireContext.SET,
         )
         connector._register_listener(manual_mode_mapping)
         manual_controls_mapping = DirectMqttMapping[C].for_module(
@@ -440,6 +448,7 @@ class ControlChannels[
             type_topic="manual-values",
             topic_suffix=config.mqtt_controller_topic_suffix,
             autoclear=True,
+            context=WireContext.SET,
         )
         connector._register_listener(manual_controls_mapping)
         # Writes the manual controls too, but its state is what the AMCS actuated, so
@@ -451,6 +460,7 @@ class ControlChannels[
             type_topic="control-values",
             topic_suffix=config.mqtt_controller_topic_suffix,
             autoclear=True,
+            context=WireContext.SET,
         )
         connector._register_listener(control_values_set_mapping)
 
@@ -576,6 +586,7 @@ class SimulationChannels[
             simulation_inputs_cls,
             simulation_inputs_topic,
             config.mqtt_simulator_topic_suffix,
+            context=WireContext.SET,
         )
         connector._register_listener(simulation_inputs_mapping)
 
@@ -744,6 +755,7 @@ class DirectivesChannels:
         status_set_mapping = DirectMqttMapping(
             SimulationStatusSetMessage,
             f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusSetMessage.subscribe_topic()}",
+            context=WireContext.SET,
         )
         connector._register_listener(status_set_mapping)
 
