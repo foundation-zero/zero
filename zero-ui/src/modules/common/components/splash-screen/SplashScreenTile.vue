@@ -21,7 +21,6 @@ const { t } = useI18n();
     <component
       :is="to ? 'RouterLink' : 'div'"
       :to="to"
-      :aria-disabled="to ? undefined : 'true'"
       class="tile-button flex w-full flex-col items-center rounded-(--splash-radius) pt-3 text-inherit no-underline"
     >
       <span

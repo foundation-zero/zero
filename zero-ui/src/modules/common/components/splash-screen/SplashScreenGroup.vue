@@ -1,13 +1,17 @@
 <script setup lang="ts">
+import { useId } from "vue";
+
 defineProps<{
   name: string;
   count: string;
 }>();
+
+const headingId = useId();
 </script>
 
 <template>
   <section
-    :aria-label="name"
+    :aria-labelledby="headingId"
     class="flex max-w-full flex-col"
   >
     <div
@@ -15,6 +19,7 @@ defineProps<{
       class="relative mb-4 flex items-baseline gap-3 pb-3 pl-1"
     >
       <h2
+        :id="headingId"
         class="font-headers text-foreground text-(length:--splash-group-name) leading-[1.2] font-medium"
       >
         {{ name }}

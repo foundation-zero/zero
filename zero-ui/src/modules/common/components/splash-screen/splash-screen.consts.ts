@@ -112,4 +112,4 @@ const ALL_SPLASH_GROUPS: SplashGroup[] = [
 export const SPLASH_GROUPS: SplashGroup[] = ALL_SPLASH_GROUPS.map((group) => ({
   ...group,
   tiles: group.tiles.filter((tile) => !tile.app || INCLUDED_APPS.includes(tile.app)),
-}));
+})).filter((group) => group.tiles.length);
