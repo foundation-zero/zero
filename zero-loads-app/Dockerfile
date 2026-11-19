@@ -3,15 +3,12 @@ ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy
 ENV UV_NO_DEV=1
 ENV UV_PYTHON_DOWNLOADS=0
 
-WORKDIR /app
-
-# Copy dependency packages first (needed for resolution)
-COPY zero-generator zero-generator/
-
 WORKDIR /app/zero-loads-app
 
 # Install dependencies
+# pyproject.toml points at ../packages/py, which is /app/packages/py from the app directory.
 RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=packages/py,target=/app/packages/py \
     --mount=type=bind,source=zero-loads-app/uv.lock,target=uv.lock \
     --mount=type=bind,source=zero-loads-app/pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-install-project --no-editable
@@ -26,6 +23,7 @@ WORKDIR /app/zero-loads-app
 
 # Sync the project
 RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=packages/py,target=/app/packages/py \
     uv sync --locked --no-editable
 
 FROM python:3.15-slim-trixie@sha256:65a65fc7b30b06cb6df4930fd4650697cb23f4c2698ab81fc87e4b031bc36928 AS runtime
