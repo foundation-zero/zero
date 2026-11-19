@@ -25,7 +25,8 @@ export const resetSplashEntry = () => {
   hasEntered = false;
 };
 
-const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const prefersReducedMotion = () =>
+  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
 
 export const rippleDelay = (distance: number, entry: SplashEntry) =>
   distance * RIPPLE_DELAY_PER_PIXEL * SPLASH_ENTRY_MOTION[entry].delay;
