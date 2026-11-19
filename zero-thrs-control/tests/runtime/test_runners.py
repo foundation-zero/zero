@@ -194,8 +194,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
 
     simulation_channels = Mock()
     simulation_channels.get_simulation_inputs.return_value = None
-    simulation_channels.send_sensor_values = AsyncMock()
-    simulation_channels.send_actuated_control_values = AsyncMock()
+    simulation_channels.send_device_values = AsyncMock()
     simulation_channels.send_simulation_inputs = AsyncMock()
     simulation_channels.send_simulation_outputs = AsyncMock()
 
@@ -219,8 +218,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
         await runner.tick()
 
     assert control_channels.send_control_values.await_count == 3
-    assert simulation_channels.send_sensor_values.await_count == 3
-    assert simulation_channels.send_actuated_control_values.await_count == 3
+    assert simulation_channels.send_device_values.await_count == 3
     assert control_channels.send_controller_state.await_count == 3
     assert control_channels.send_computed_values.await_count == 3
     assert simulation_channels.send_simulation_inputs.await_count == 3
@@ -271,19 +269,9 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     control_channels.send_computed_values.assert_has_awaits(
         [call(sensor_values), call(sensor_values), call(sensor_values)]
     )
-    simulation_channels.send_sensor_values.assert_has_awaits(
-        [
-            call(combined_sensor_values),
-            call(combined_sensor_values),
-            call(combined_sensor_values),
-        ]
-    )
-    simulation_channels.send_actuated_control_values.assert_has_awaits(
-        [
-            call(combined_control_values),
-            call(combined_control_values),
-            call(combined_control_values),
-        ]
+    assert (
+        simulation_channels.send_device_values.await_args_list
+        == [call(combined_sensor_values, combined_control_values)] * 3
     )
 
     expected_inputs = SimpleNamespace()
@@ -410,8 +398,7 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     channels.get_control_values.return_value = control_values
     channels.get_simulation_inputs.return_value = simulation_inputs
     channels.wait_for_control_values = AsyncMock()
-    channels.send_sensor_values = AsyncMock()
-    channels.send_actuated_control_values = AsyncMock()
+    channels.send_device_values = AsyncMock()
     channels.send_simulation_inputs = AsyncMock()
     channels.send_simulation_outputs = AsyncMock()
 
@@ -429,8 +416,7 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     assert simulation.update_simulation_inputs.call_count == 4
     assert simulation.tick.call_count == 4
 
-    assert channels.send_sensor_values.await_count == 4
-    assert channels.send_actuated_control_values.await_count == 4
+    assert channels.send_device_values.await_count == 4
     assert channels.send_simulation_inputs.await_count == 4
     assert channels.send_simulation_outputs.await_count == 4
 
@@ -442,21 +428,9 @@ async def test_simulation_runner_ticks_and_uses_inputs():
             call(control_values),
         ]
     )
-    channels.send_sensor_values.assert_has_awaits(
-        [
-            call(sensor_values),
-            call(sensor_values),
-            call(sensor_values),
-            call(sensor_values),
-        ]
-    )
-    channels.send_actuated_control_values.assert_has_awaits(
-        [
-            call(control_values),
-            call(control_values),
-            call(control_values),
-            call(control_values),
-        ]
+    assert (
+        channels.send_device_values.await_args_list
+        == [call(sensor_values, control_values)] * 4
     )
     channels.send_simulation_inputs.assert_has_awaits(
         [

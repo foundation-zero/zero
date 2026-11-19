@@ -136,8 +136,10 @@ class SimulationUnit[
         self, sim_result: SimulationResult[S, C, I, O]
     ) -> None:
         """Send sensor values, simulation inputs, and simulation outputs to the appropriate channels."""
-        await self._channels.send_sensor_values(sim_result.sensor_values)  # type: ignore[arg-type]
-        await self._channels.send_actuated_control_values(sim_result.control_values)  # type: ignore[arg-type]
+        await self._channels.send_device_values(
+            sim_result.sensor_values,  # type: ignore[arg-type]
+            sim_result.control_values,  # type: ignore[arg-type]
+        )
         await self._channels.send_simulation_inputs(sim_result.simulation_inputs)
         await self._channels.send_simulation_outputs(sim_result.simulation_outputs)
 
