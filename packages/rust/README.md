@@ -18,5 +18,5 @@ Each crate has its own `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml`,
 `justfile` and CI workflow (`.github/workflows/ci_<crate>.yaml`); there is no
 Cargo workspace.
 
-- [zero-readiness](zero-readiness): a readiness status file for an exec probe,
-  and the not-ready deadline of ADR 0001.
+- [zero-readiness](zero-readiness): a readiness status file for an exec probe
+  (ADR 0001).

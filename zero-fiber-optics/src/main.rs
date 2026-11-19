@@ -26,7 +26,7 @@ use tokio::sync::mpsc::{Receiver, Sender};
 use tokio::task::{JoinHandle, JoinSet};
 use tokio_stream::wrappers::ReceiverStream;
 use tokio_stream::StreamExt;
-use zero_readiness::{write_termination_message, Readiness, NOT_READY_DEADLINE, STATUS_FILE};
+use zero_readiness::{Readiness, STATUS_FILE};
 
 /// How often the watchdog checks that each port is still receiving packets.
 const WATCHDOG_INTERVAL: Duration = Duration::from_secs(10);
@@ -78,29 +78,7 @@ async fn main() -> Result<()> {
                 AppConfig::load().context("Failed to load application configuration")?;
             let client_id = mqtt_client_id();
             log_startup_config(&config, &app_config, &client_id);
-            let (mqtt_handler, connection) = create_mqtt_handler(&app_config, &client_id);
-            let mqtt_metrics = mqtt_handler.metrics();
-            let topic_map = Arc::new(TopicMap::new());
-            let (handles, port_metrics) = spawn_port_tasks(config.ports, mqtt_handler, topic_map);
-            // The watchdog is deliberately kept out of `handles`. It loops forever,
-            // so including it there would mean the process never exits: a failed
-            // bind would leave a running-but-idle pod instead of one Kubernetes
-            // restarts. Detached, it only runs as long as the port tasks do.
-            let _watchdog = spawn_watchdog_task(port_metrics, mqtt_metrics);
-
-            let mut mqtt_tasks = JoinSet::new();
-            mqtt_tasks.spawn(connection.run(readiness.clone()));
-            mqtt_tasks.spawn(async move {
-                let status = readiness.deadline(NOT_READY_DEADLINE).await;
-                let message = format!("{status}; exiting after {NOT_READY_DEADLINE:?} not ready");
-                error!("{message}");
-                write_termination_message(&message);
-            });
-            tokio::select! {
-                () = await_tasks(handles) => {}
-                // Either task has logged why it stopped.
-                _ = mqtt_tasks.join_next() => bail!("MQTT connection given up"),
-            }
+            run_adapter(config.ports, &app_config, &client_id, readiness).await?;
         }
         Commands::SendExample => {
             send_example_packet(&config).await?;
@@ -108,6 +86,34 @@ async fn main() -> Result<()> {
     }
 
     Ok(())
+}
+
+/// Run the port tasks and the MQTT connection until the port tasks end or the
+/// connection gives up.
+///
+/// A broker outage alone never ends it (ADR 0001): the connection task retries
+/// for as long as the outage lasts and only returns once it gives up.
+async fn run_adapter(
+    ports: Vec<Port>,
+    app_config: &AppConfig,
+    client_id: &str,
+    readiness: Readiness,
+) -> Result<()> {
+    let (mqtt_handler, connection) = create_mqtt_handler(app_config, client_id);
+    let mqtt_metrics = mqtt_handler.metrics();
+    let topic_map = Arc::new(TopicMap::new());
+    let (handles, port_metrics) = spawn_port_tasks(ports, mqtt_handler, topic_map);
+    // The watchdog is deliberately kept out of `handles`. It loops forever,
+    // so including it there would mean the process never exits: a failed
+    // bind would leave a running-but-idle pod instead of one Kubernetes
+    // restarts. Detached, it only runs as long as the port tasks do.
+    let _watchdog = spawn_watchdog_task(port_metrics, mqtt_metrics);
+
+    tokio::select! {
+        () = await_tasks(handles) => Ok(()),
+        // The connection task has logged why it stopped.
+        _ = tokio::spawn(connection.run(readiness)) => bail!("MQTT connection given up"),
+    }
 }
 
 fn packet_for_example_config(port: &Port) -> Result<Vec<u8>> {
@@ -478,5 +484,49 @@ async fn await_tasks(handles: Vec<JoinHandle<()>>) {
         if let Err(e) = result {
             error!("Task monitor failed: {}", e);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// A port nothing listens on, so every connection attempt is refused.
+    fn closed_port() -> u16 {
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+        listener.local_addr().unwrap().port()
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn a_broker_outage_does_not_end_the_adapter() {
+        let ports = vec![Port {
+            numport: 0,
+            channel: "test".to_string(),
+            frequency: None,
+            mode: None,
+            variables: Vec::new(),
+        }];
+        let app_config = AppConfig {
+            mqtt_host: "127.0.0.1".to_string(),
+            mqtt_port: closed_port(),
+            mqtt_prefix: "telemetry".to_string(),
+            mqtt_username: None,
+            mqtt_password: None,
+        };
+        let path = std::env::temp_dir().join(format!("adapter-outage-{}", std::process::id()));
+        let readiness = Readiness::new(&path, "mqtt: connecting");
+
+        // Longer than the old 15 minute not-ready exit.
+        let outage = Duration::from_secs(20 * 60);
+        let adapter =
+            tokio::time::timeout(outage, run_adapter(ports, &app_config, "test", readiness));
+
+        assert!(
+            adapter.await.is_err(),
+            "the adapter ended during the outage"
+        );
+        let status = std::fs::read_to_string(&path).unwrap();
+        assert!(status.starts_with("not ready: mqtt: "), "{status}");
+        assert!(status.contains("Connection refused"), "{status}");
     }
 }
