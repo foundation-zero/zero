@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ComponentOrientation } from "../../../components";
 import ActuatedValve from "../../../components/actuated-valve/ActuatedValve.vue";
+import MixValve from "../../../components/actuated-valve/MixValve.vue";
 import TwoWayValve from "../../../components/actuated-valve/TwoWayValve.vue";
 </script>
 
@@ -14,6 +15,7 @@ import TwoWayValve from "../../../components/actuated-valve/TwoWayValve.vue";
       :orientation="ComponentOrientation.Up"
     >
       <TwoWayValve :flow="0" />
+      <MixValve />
     </ActuatedValve>
     <ActuatedValve
       x="275.63"
@@ -21,6 +23,7 @@ import TwoWayValve from "../../../components/actuated-valve/TwoWayValve.vue";
       :orientation="ComponentOrientation.Up"
     >
       <TwoWayValve :flow="0" />
+      <MixValve />
     </ActuatedValve>
     <ActuatedValve
       x="275.63"
@@ -28,6 +31,7 @@ import TwoWayValve from "../../../components/actuated-valve/TwoWayValve.vue";
       :orientation="ComponentOrientation.Up"
     >
       <TwoWayValve :flow="0" />
+      <MixValve />
     </ActuatedValve>
     <ActuatedValve
       x="275.63"
@@ -35,6 +39,7 @@ import TwoWayValve from "../../../components/actuated-valve/TwoWayValve.vue";
       :orientation="ComponentOrientation.Up"
     >
       <TwoWayValve :flow="0" />
+      <MixValve />
     </ActuatedValve>
   </g>
 </template>
