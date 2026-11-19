@@ -1,6 +1,6 @@
 import i18n from "@/i18n";
 import { mqttGraphqlContext } from "@/modules/thrapp/graphql/client";
-import { stampedValues } from "@/modules/thrapp/lib/mqtt-graphql.utils";
+import { valueInputs } from "@/modules/thrapp/lib/mqtt-graphql.utils";
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
 
 import { gql, TypedDocumentNode, useClientHandle, useQuery } from "@urql/vue";
@@ -101,7 +101,7 @@ export const useSimulationStore = defineStore("simulation", () => {
     advisoryError.value = null;
     try {
       const mode = enabled ? AmcsControlMode.External : AmcsControlMode.Manual;
-      const result = await setInputs({ mode: stampedValues({ mode }) });
+      const result = await setInputs({ mode: valueInputs({ mode }) });
       if (result.error) {
         advisoryError.value = result.error.message ?? i18n.global.t("thrs.labels.failedToSubmit");
         return;

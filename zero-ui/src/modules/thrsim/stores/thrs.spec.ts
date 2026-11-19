@@ -2,7 +2,7 @@ import { useThrsHistory } from "@/modules/thrapp/stores/history";
 import { createTestingPinia } from "@pinia/testing";
 import { DocumentNode, print } from "graphql";
 import { setActivePinia } from "pinia";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 import { useSimulationStore } from "./simulation";
 import { controlForm, simulationInputsForm } from "./thrs";
@@ -23,13 +23,7 @@ const stamp = <T>(value: T) => ({ value, timestamp: new Date() });
 
 describe("control form", () => {
   beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-11-11T12:00:00Z"));
     setActivePinia(createTestingPinia());
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
   });
 
   const pumpForm = () =>
@@ -38,7 +32,7 @@ describe("control form", () => {
       "on",
     ]);
 
-  it("sends the edited fields stamped as the component's control values, then refreshes", async () => {
+  it("sends the edited fields as the component's control values, then refreshes", async () => {
     const history = useThrsHistory();
     vi.mocked(history.mutate).mockResolvedValue({} as never);
     const form = pumpForm();
@@ -50,7 +44,7 @@ describe("control form", () => {
     expect(print(query)).toContain("mutation ($input: ThrsControlDhwControlValuesInput!)");
     expect(print(query)).toContain("controlValues(input: $input)");
     expect(variables).toEqual({
-      input: { dhwPump: { dutypoint: { value: 0.8, timeStamp: "2026-11-11T12:00:00.000Z" } } },
+      input: { dhwPump: { dutypoint: { value: 0.8 } } },
     });
     expect(history.refresh).toHaveBeenCalledOnce();
     expect(form.dutypoint.isDirty.value).toBe(false);
@@ -72,16 +66,10 @@ describe("control form", () => {
 
 describe("simulation inputs form", () => {
   beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-11-11T12:00:00Z"));
     setActivePinia(createTestingPinia());
   });
 
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  it("sends the edited fields stamped as the component's simulation inputs", async () => {
+  it("sends the edited fields as the component's simulation inputs", async () => {
     const simulation = useSimulationStore();
     vi.mocked(simulation.setInputs).mockResolvedValue({} as never);
     const form = simulationInputsForm(
@@ -94,7 +82,7 @@ describe("simulation inputs form", () => {
     await form.submit();
 
     expect(simulation.setInputs).toHaveBeenCalledWith({
-      thrustersSeawaterSupply: { flow: { value: 4, timeStamp: "2026-11-11T12:00:00.000Z" } },
+      thrustersSeawaterSupply: { flow: { value: 4 } },
     });
     expect(form.flow.isDirty.value).toBe(false);
   });

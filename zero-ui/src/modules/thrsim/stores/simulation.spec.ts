@@ -148,7 +148,6 @@ describe("simulation store", () => {
       { enabled: true, mode: AmcsControlMode.External },
       { enabled: false, mode: AmcsControlMode.Manual },
     ])("sets the AMCS mode to $mode when enabled=$enabled", async ({ enabled, mode }) => {
-      vi.setSystemTime(new Date("2026-11-11T12:00:00Z"));
       const simulation = useSimulationStore();
       const refreshHistory = vi.spyOn(useThrsHistory(), "refresh");
       withSimulator(running);
@@ -158,7 +157,7 @@ describe("simulation store", () => {
       const [query, variables] = mutation.mock.lastCall as [DocumentNode, unknown];
       expect(print(query)).toContain("simulationInputs(input: $input)");
       expect(variables).toEqual({
-        input: { mode: { mode: { value: mode, timeStamp: "2026-11-11T12:00:00.000Z" } } },
+        input: { mode: { mode: { value: mode } } },
       });
       expect(refreshHistory).toHaveBeenCalled();
       expect(simulatorQuery().executeQuery).toHaveBeenCalled();
