@@ -4,6 +4,8 @@ import { useId } from "vue";
 defineProps<{
   name: string;
   count: string;
+  /** Number of tiles, so the group is exactly as wide as its tile grid. */
+  tiles: number;
 }>();
 
 const headingId = useId();
@@ -27,18 +29,22 @@ const headingId = useId();
       <span class="text-muted-foreground text-(length:--splash-group-count)">{{ count }}</span>
       <span class="rule absolute inset-x-0 bottom-0 h-px" />
     </div>
-    <div class="tiles flex flex-wrap gap-x-(--splash-tile-gap) gap-y-3">
+    <div
+      class="tiles flex flex-wrap gap-x-(--splash-tile-gap) gap-y-3"
+      :style="{ '--splash-group-columns': `min(var(--splash-columns, 99), ${tiles})` }"
+    >
       <slot />
     </div>
   </section>
 </template>
 
 <style scoped>
+/* A fixed grid width keeps the heading rule flush with the tiles and wrapped rows left-aligned. */
 .tiles {
-  max-width: min(
+  width: min(
     100%,
     calc(
-      var(--splash-columns, 99) * var(--splash-cell) + (var(--splash-columns, 99) - 1) *
+      var(--splash-group-columns) * var(--splash-cell) + (var(--splash-group-columns) - 1) *
         var(--splash-tile-gap)
     )
   );

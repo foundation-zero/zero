@@ -55,13 +55,14 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
       class="relative flex [align-items:safe_center] [justify-content:safe_center] px-(--splash-margin) pt-10 pb-12"
     >
       <div
-        class="flex max-w-full flex-wrap items-start justify-center gap-x-(--splash-cluster-gap) gap-y-(--splash-line-gap)"
+        class="flex max-w-full flex-wrap items-start justify-center gap-x-(--splash-cluster-gap) gap-y-(--splash-line-gap) data-stacked:flex-col data-stacked:flex-nowrap data-stacked:items-stretch"
       >
         <SplashScreenGroup
           v-for="group in SPLASH_GROUPS"
           :key="group.nameKey"
           :name="t(group.nameKey)"
           :count="t('views.splash.appCount', group.tiles.length)"
+          :tiles="group.tiles.length"
         >
           <SplashScreenTile
             v-for="tile in group.tiles"

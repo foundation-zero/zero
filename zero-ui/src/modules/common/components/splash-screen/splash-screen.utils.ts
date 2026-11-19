@@ -79,6 +79,7 @@ export const fitSplash = (screen: HTMLElement, header: HTMLElement, area: HTMLEl
   const groups = area.firstElementChild as HTMLElement | null;
   const clusters = [...(groups?.children ?? [])] as HTMLElement[];
   if (!groups || !clusters.length) return;
+  delete groups.dataset.stacked;
 
   const tileCounts = clusters.map(
     (cluster) => cluster.querySelectorAll("[data-splash-tile]").length,
@@ -126,6 +127,10 @@ export const fitSplash = (screen: HTMLElement, header: HTMLElement, area: HTMLEl
     ({ size: "s", columns: 2 } satisfies SplashFit);
 
   applyFit(best, screen);
+
+  // When every group has a row of its own, line them up on one left edge at one width.
+  const rows = new Set(clusters.map((cluster) => cluster.offsetTop));
+  if (clusters.length > 1 && rows.size === clusters.length) groups.dataset.stacked = "";
 };
 
 /** Writes the wordmark by drawing the pen stroke that masks it. */
