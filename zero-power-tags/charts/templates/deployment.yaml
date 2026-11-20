@@ -69,6 +69,27 @@ spec:
             - name: MODBUS_PROBE_INTERVAL
               value: {{ .Values.modbus.probe_interval | quote }}
             {{- include "zero-power-tags.panelEnv" . | trim | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          # Readiness: /health returns 204 while the MQTT broker is up, 500
+          # otherwise; the Modbus gateways are optional. Liveness: /live answers
+          # while the event loop runs, so a pod whose loop is stuck for a minute
+          # is restarted (docs/adr/0001-dependency-outages.md).
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

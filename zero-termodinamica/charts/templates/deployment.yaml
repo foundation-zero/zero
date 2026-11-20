@@ -76,6 +76,27 @@ spec:
               value: {{ .Values.modbus.probe_interval | quote }}
             - name: MODBUS_BRIDGES_PATH
               value: {{ .Values.modbus.bridgesPath | quote }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          # Readiness: /health returns 204 while the MQTT broker and the Modbus
+          # gateway are up, 500 otherwise. Liveness: /live answers while the
+          # event loop runs, so a pod whose loop is stuck for a minute is
+          # restarted (docs/adr/0001-dependency-outages.md).
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

@@ -12,6 +12,7 @@ from pydantic_settings import (
     CliSubCommand,
 )
 from zero_modbus_bridge.bridge import ModbusBridge
+from zero_modbus_bridge.health import make_health_asgi, run_with_health
 from zero_modbus_bridge.publisher import MqttPublisher
 from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
 from zero_modbus_bridge.stub import Stub
@@ -39,9 +40,7 @@ class RunCmd(ModbusSettings, MqttSettings):
             buffer_size=max(1, round(BUFFER_SECONDS / self.modbus_probe_interval))
             * len(topics),
         )
-        app = FastStream(broker)
-        app.after_startup(bridge.run)
-        await app.run()
+        await run_with_health(broker, bridge.run, make_health_asgi(broker, bridge))
 
 
 class StubCmd(ModbusSettings):

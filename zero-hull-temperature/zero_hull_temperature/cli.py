@@ -4,7 +4,6 @@ import logging
 from secrets import token_hex
 from typing import Any, Literal
 
-from faststream import FastStream
 from faststream.mqtt import MQTTBroker
 from faststream.specification import AsyncAPI
 from pydantic import BaseModel, Field
@@ -15,6 +14,7 @@ from pydantic_settings import (
     CliSubCommand,
     SettingsConfigDict,
 )
+from zero_modbus_bridge.health import make_health_asgi, run_with_health
 from zero_modbus_bridge.io import ModbusTopic
 from zero_modbus_bridge.reader import ModbusReader
 from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
@@ -122,9 +122,7 @@ class RunCmd(ModbusSettings, MqttSettings):
             self.activate_topic,
             self.activate_json_path,
         )
-        app = FastStream(broker)
-        app.after_startup(bridge.run)
-        await app.run()
+        await run_with_health(broker, bridge.run, make_health_asgi(broker, bridge))
 
 
 class SchemaCmd(BaseModel):

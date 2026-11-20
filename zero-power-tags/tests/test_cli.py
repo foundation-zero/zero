@@ -1,6 +1,7 @@
 import logging
 import os
 import re
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from faststream.mqtt import MQTTBroker
@@ -11,6 +12,7 @@ from zero_power_tags import cli
 from zero_power_tags.cli import (
     PowerTagsSettings,
     RunCmd,
+    StubCmd,
     configured_modbus_ports,
     deployed_specs,
     local_topic_groups,
@@ -156,20 +158,6 @@ def test_local_topic_groups():
     assert local_topic_groups(_settings(), [_spec("10P1")], 1000) == [([], 1000)]
 
 
-class _FakeApp:
-    """Stands in for FastStream: records the broker and startup hooks, runs nothing."""
-
-    def __init__(self, broker):
-        self.broker = broker
-        self.startup = []
-
-    def after_startup(self, hook):
-        self.startup.append(hook)
-
-    async def run(self):
-        pass
-
-
 async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
     monkeypatch: pytest.MonkeyPatch,
 ):
@@ -179,10 +167,12 @@ async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
         "PowerTagsSettings",
         lambda: _settings(**{cli._panel_field_key(panel, "host"): "192.168.0.10"}),
     )
-    apps: list[_FakeApp] = []
-    monkeypatch.setattr(
-        cli, "FastStream", lambda broker: apps.append(_FakeApp(broker)) or apps[-1]
-    )
+    runs = []
+
+    async def fake_run_with_health(broker, after_startup, health) -> None:
+        runs.append((broker, after_startup, health))
+
+    monkeypatch.setattr(cli, "run_with_health", fake_run_with_health)
     started: list[ModbusBridge] = []
 
     async def fake_run(bridge: ModbusBridge) -> None:
@@ -192,10 +182,38 @@ async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
     cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
 
     await cmd.cli_cmd()
-    for hook in apps[0].startup:
-        await hook()
+    [(broker, after_startup, health)] = runs
+    await after_startup()
 
-    broker = apps[0].broker
+    # Gateways are optional for power-tags, so /health only pings the broker.
+    broker.ping = AsyncMock(return_value=True)
+    send = AsyncMock()
+    await health({"type": "http", "method": "GET"}, AsyncMock(), send)
+    assert send.await_args_list[0].args[0]["status"] == 204
+    broker.ping.assert_awaited_once_with(4.0)
+
     assert isinstance(broker, RecoveringBroker)
     assert broker._connection_kwargs["reconnect"].max_attempts is None
     assert len(started) == 1
+
+
+def test_stub_serves_only_the_deployed_panels(monkeypatch: pytest.MonkeyPatch):
+    deployed, *_ = read_modbus_bridge_specs()
+    settings = _settings(
+        **{
+            cli._panel_field_key(deployed.panel, "host"): "stub",
+            cli._panel_field_key(deployed.panel, "port"): "11502",
+        }
+    )
+    monkeypatch.setattr(cli, "PowerTagsSettings", lambda: settings)
+    stub = MagicMock(servers=[])
+    monkeypatch.setattr(cli.Stub, "from_topic_groups", stub.from_topic_groups)
+
+    StubCmd(_env_file=None).cli_cmd()  # type: ignore[call-arg]
+
+    [[(topics, port)]] = stub.from_topic_groups.call_args.args
+    assert [topic.topic for topic in topics] == [
+        topic.topic for topic in deployed.topics
+    ]
+    assert port == 11502
+    stub.from_topic_groups.return_value.run.assert_called_once_with()
