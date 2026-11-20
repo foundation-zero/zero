@@ -19,7 +19,8 @@ This guide walks through a rehearsal on a laptop and then the migration itself.
   key, so table and column names are Vector's own. It is not committed.
 - **A unit** is one old topic copied to one new topic. A unit is copied with all its columns
   or not at all: the new tables are append-only, so a row can't be completed or removed later.
-- **The copy** runs day by day, newest first, across all units. Nothing is kept outside
+- **The copy** runs day by day, newest first, across all units. A day of a wide table is
+  copied in several inserts, because Greptime holds an insert in memory. Nothing is kept outside
   Greptime. Each insert leaves out the timestamps the new topic already has, so you can stop
   it and start it again, and a second run copies nothing.
 - **Old and new topics never publish side by side**, so every row of an old topic is history
@@ -48,9 +49,12 @@ topics to exist yet: the new tables are created empty, and the run adds their co
    ```bash
    docker compose --profile data-collection up -d greptimedb
    ```
-2. **Restore one daily backup** of the live Greptime into it. Each daily backup holds one
-   day of all tables. Follow *Restore from the GCP bucket* in
-   `apps/base/greptime-backup/README.md` of the `edge-flux` repo.
+2. **Restore one daily backup** of the live Greptime into it. Follow *Restore from the GCP
+   bucket* in `apps/base/greptime-backup/README.md` of the `edge-flux` repo, with the
+   cluster's own secret and bucket. A daily backup holds one day of **all** tables, so the
+   import takes hours and tens of GB. Only the old tables of the mapping are needed: once
+   their row counts stop growing, stop the import and drop the largest unrelated table
+   (`atpx_raw`) to free memory. Give Docker at least 8 GB.
 3. **Build the spec:**
    ```bash
    uv run zero-data greptime migrate-history build-spec migrations/450000-mapping.csv --out spec.json
@@ -141,7 +145,9 @@ tables and their columns.
 
 ## When something goes wrong
 
-- **The run stops with an error** (a timeout, a restart of Greptime): start it again. Days
+- **The run stops with an error** (a timeout, a restart of Greptime): start it again. If
+  Greptime ran out of memory on an insert, lower `VALUES_PER_INSERT` in `migrate_history.py`
+  first. Days
   that are complete are skipped, and a day that was copied in part gets its missing rows.
 - **The run stops because a day "holds N rows after copying, M expected":** the new topic has
   rows on that day that didn't come from the old topic. Nothing wrong was written, but find

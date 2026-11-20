@@ -12,6 +12,7 @@ import pytest
 
 from tests.greptime.conftest import Greptime as Query
 from tests.greptime.rehearsal_tables import create_new_tables
+from zero_data.greptime import migrate_history
 from zero_data.greptime.cli import MigrateCheckCmd, MigrateDropCmd, MigrateRunCmd
 from zero_data.greptime.config import GreptimeConnection
 from zero_data.greptime.migrate_history import (
@@ -195,6 +196,25 @@ def test_run_splits_a_catch_all_topic_over_its_devices(
     ) == [("main-panel", 2), ("main-panel", 3)]
 
 
+def test_run_copies_a_wide_day_in_parts(
+    tables: Query, greptime: Greptime, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(migrate_history, "VALUES_PER_INSERT", 3)
+    inserts: list[str] = []
+
+    def recording(sql: str) -> None:
+        if sql.startswith("INSERT"):
+            inserts.append(sql)
+        Greptime.run(greptime, sql)
+
+    monkeypatch.setattr(greptime, "run", recording)
+
+    assert migrate(greptime) == 10
+
+    assert len(inserts) == 14
+    assert check(greptime, load(greptime, SPEC)) == []
+
+
 def test_a_second_run_copies_nothing(tables: Query, greptime: Greptime) -> None:
     migrate(greptime)
 
@@ -249,6 +269,37 @@ def test_a_column_of_another_type_leaves_its_unit_out_until_it_is_altered(
     migrate(greptime)
     assert [row[-1] for row in sounder_rows(tables)] == [3.0, 4.0, 5.0, 6.0, 7.0, 8.0]
     assert check(greptime, load(greptime, SPEC)) == []
+
+
+def test_two_old_topics_of_one_new_topic_keep_their_rows_at_the_same_moment(
+    tables: Query, greptime: Greptime
+) -> None:
+    tables.execute(
+        f'INSERT INTO "{OLD}" ("timestamp", "topic", "spare__value") '
+        f"VALUES ({ts(8, 11)}, 'marpower/old-fire/panel', true)"
+    )
+    spec = MigrationSpec(
+        units=[
+            *SPEC.units,
+            Unit(
+                old_table=OLD,
+                old_topic="marpower/old-fire/panel",
+                new_table=PANEL,
+                new_topic="marpower/21-fire/main-panel",
+                technical_name="main-panel",
+                columns=[ColumnMap(old="spare", new="spare")],
+            ),
+        ]
+    )
+
+    assert run(greptime, load(greptime, spec), None, 0, no_sleep) == 11
+    assert run(greptime, load(greptime, spec), None, 0, no_sleep) == 0
+
+    assert tables.fetch(
+        f'SELECT "command__value", "spare__value" FROM "{PANEL}" '
+        'ORDER BY "timestamp", "command__value"'
+    ) == [(2, None), (3, None), (None, True)]
+    assert check(greptime, load(greptime, spec)) == []
 
 
 def foreign_rows(tables: Query, hours: list[int]) -> None:
@@ -335,7 +386,7 @@ def test_drop_removes_checked_tables_and_asks_before_losing_data(
     migrate(greptime)
 
     assert drop(greptime, SPEC, [], False, False) == {
-        OLD: "kept: 1 topics and 1 topics with columns that aren't migrated",
+        OLD: "kept: not migrated: 1 topics, and columns of 1 migrated topics",
         OLD_GENERAL: "would be dropped",
     }
     assert drop(greptime, SPEC, [], False, True)[OLD_GENERAL] == "dropped"

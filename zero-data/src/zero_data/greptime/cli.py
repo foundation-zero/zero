@@ -4,7 +4,12 @@ from pathlib import Path
 from typing import Annotated
 
 from pydantic import BaseModel, Field
-from pydantic_settings import CliApp, CliPositionalArg, CliSubCommand
+from pydantic_settings import (
+    CliApp,
+    CliImplicitFlag,
+    CliPositionalArg,
+    CliSubCommand,
+)
 
 from zero_data.greptime.config import (
     CURATED_TABLES_FILE,
@@ -115,7 +120,8 @@ class MigrateRunCmd(_MigrateCmd):
         Field(description="Copy back to and including this day (default: everything)."),
     ] = None
     dry_run: Annotated[
-        bool, Field(description="Only read, and print what a run would do.")
+        CliImplicitFlag[bool],
+        Field(description="Only read, and print what a run would do."),
     ] = False
     pause: Annotated[
         float, Field(description="Seconds to wait after each copied topic and day.")
@@ -160,10 +166,12 @@ class MigrateDropCmd(_MigrateCmd):
     """Drop the old tables whose history is checked. Prints what it would do unless --execute."""
 
     accept_unmigrated: Annotated[
-        bool,
+        CliImplicitFlag[bool],
         Field(description="Also drop the named tables that hold data no unit copies."),
     ] = False
-    execute: Annotated[bool, Field(description="Drop the tables.")] = False
+    execute: Annotated[CliImplicitFlag[bool], Field(description="Drop the tables.")] = (
+        False
+    )
 
     def cli_cmd(self) -> None:
         if self.accept_unmigrated and not self.table:

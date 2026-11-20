@@ -27,6 +27,9 @@ logger = logging.getLogger(__name__)
 SUFFIXES = ("value", "timestamp", "is_valid", "has_value")
 DAY_NS = 86_400 * 10**9
 COLUMNS_PER_QUERY = 100
+# Greptime holds an insert in memory: a day of a 1,100-column battery pack in one statement
+# took more than 8 GB, an hour of it (4M values) 150 MB.
+VALUES_PER_INSERT = 4_000_000
 
 
 class MigrationFailed(Exception):
@@ -119,10 +122,16 @@ class Copy(BaseModel):
     def old_rows(self) -> str:
         return _rows_with_a_value(self.unit.old_topic, self.pairs)
 
-    def insert_sql(self, day: int) -> str:
+    def slices(self, day: int) -> list[tuple[int, int]]:
+        """The day in equal parts, each small enough for one insert."""
+        parts = -(-self.days[day] * len(self.pairs) // VALUES_PER_INSERT)
+        edges = [day + DAY_NS * part // parts for part in range(parts + 1)]
+        return list(zip(edges, edges[1:], strict=False))
+
+    def insert_sql(self, start: int, end: int) -> str:
         in_day = (
-            f'"timestamp" >= {timestamp_literal(day)} '
-            f'AND "timestamp" < {timestamp_literal(day + DAY_NS)}'
+            f'"timestamp" >= {timestamp_literal(start)} '
+            f'AND "timestamp" < {timestamp_literal(end)}'
         )
         targets = [
             '"timestamp"',
@@ -134,6 +143,11 @@ class Copy(BaseModel):
             *(quote_literal(value) for value in self.constants.values()),
             *(quote_ident(old) for old, _ in self.pairs),
         ]
+        copied_before = " OR ".join(
+            f"{quote_ident(new)} IS NOT NULL"
+            for _, new in self.pairs
+            if new.endswith("__value")
+        )
         return (
             f"INSERT INTO {quote_ident(self.unit.new_table)} ({', '.join(targets)})\n"
             f"SELECT {', '.join(sources)}\n"
@@ -142,7 +156,7 @@ class Copy(BaseModel):
             f'AND "timestamp" NOT IN (SELECT "timestamp" '
             f"FROM {quote_ident(self.unit.new_table)} "
             f"WHERE {quote_ident('topic')} = {quote_literal(self.unit.new_topic)} "
-            f"AND {in_day})"
+            f"AND {in_day} AND ({copied_before}))"
         )
 
 
@@ -519,7 +533,8 @@ def run(
                 continue
             for copy in history.copies:
                 if day in copy.days:
-                    greptime.run(copy.insert_sql(day))
+                    for start, end in copy.slices(day):
+                        greptime.run(copy.insert_sql(start, end))
             there = greptime.count(
                 f"SELECT count(*) FROM {quote_ident(history.new_table)} "
                 f"WHERE {history.new_rows()} "
@@ -653,8 +668,8 @@ def drop(
             *([f"{recent} rows in the last day"] if recent else []),
             *(
                 [
-                    f"{len(left.topics)} topics and {len(left.columns)} topics with "
-                    "columns that aren't migrated"
+                    f"not migrated: {len(left.topics)} topics, and columns of "
+                    f"{len(left.columns)} migrated topics"
                 ]
                 if left and not (accept_unmigrated and table in old_tables)
                 else []
