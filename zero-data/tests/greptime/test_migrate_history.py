@@ -16,12 +16,14 @@ from zero_data.greptime import migrate_history
 from zero_data.greptime.cli import MigrateCheckCmd, MigrateDropCmd, MigrateRunCmd
 from zero_data.greptime.config import GreptimeConnection
 from zero_data.greptime.migrate_history import (
+    LOCK_TABLE,
     Greptime,
     MigrationFailed,
     check,
     drop,
     leftover,
     load,
+    lock,
     report,
     run,
 )
@@ -42,7 +44,7 @@ OLD_GENERAL = "zz_mh_old_fire_general"
 SOUNDER = "zz_mh_fire__sounder"
 GENERAL = "zz_mh_fire__general"
 PANEL = "zz_mh_fire__main_panel"
-TABLES = (OLD, OLD_GENERAL, SOUNDER, GENERAL, PANEL)
+TABLES = (OLD, OLD_GENERAL, SOUNDER, GENERAL, PANEL, LOCK_TABLE)
 EARLIER_NAME = "marpower/old-fire/201h1/s"
 OLD_SOUNDER = "marpower/old-fire/201h1-s"
 NEW_SOUNDER = "marpower/21-fire/sounder/201h1-s"
@@ -317,7 +319,7 @@ def test_a_new_topic_with_more_rows_than_the_old_one_is_left_out(
     migration = load(greptime, SPEC)
 
     assert {r.unit.new_topic for r in migration.refused} == {NEW_SOUNDER}
-    assert "old and new overlap" in migration.refused[0].reason
+    assert "3 against 2 on 2026-08-08" in migration.refused[0].reason
     assert [h.new_table for h in migration.histories] == [GENERAL, PANEL]
 
 
@@ -432,6 +434,39 @@ def test_drop_keeps_a_table_that_still_receives_rows(
     outcome = drop(greptime, SPEC, [OLD_GENERAL], True, True)[OLD_GENERAL]
 
     assert outcome == "kept: 1 rows in the last day"
+
+
+def test_a_second_run_is_refused_while_one_holds_the_lock(
+    tables: Query, greptime: Greptime
+) -> None:
+    with lock(greptime):
+        with pytest.raises(MigrationFailed, match="Another run holds the lock"):
+            with lock(greptime):
+                pass
+
+    with lock(greptime):
+        assert LOCK_TABLE in greptime.tables()
+    assert LOCK_TABLE not in greptime.tables()
+
+
+def test_a_failed_run_releases_the_lock_and_unlock_clears_one_left_behind(
+    tables: Query, greptime: Greptime
+) -> None:
+    foreign_rows(tables, [1])
+    with pytest.raises(MigrationFailed, match="holds 3 rows"):
+        with lock(greptime):
+            migrate(greptime)
+    assert LOCK_TABLE not in greptime.tables()
+
+    tables.execute(
+        f'CREATE TABLE "{LOCK_TABLE}" ("started" TIMESTAMP(3) TIME INDEX, "host" STRING)'
+    )
+    with pytest.raises(MigrationFailed, match="--unlock"):
+        with lock(greptime):
+            pass
+    with lock(greptime, unlock=True):
+        pass
+    assert LOCK_TABLE not in greptime.tables()
 
 
 def test_load_refuses_a_table_the_spec_does_not_have(

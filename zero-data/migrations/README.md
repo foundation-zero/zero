@@ -23,6 +23,9 @@ This guide walks through a rehearsal on a laptop and then the migration itself.
   copied in several inserts, because Greptime holds an insert in memory. Nothing is kept outside
   Greptime. Each insert leaves out the timestamps the new topic already has, so you can stop
   it and start it again, and a second run copies nothing.
+- **One run at a time.** Two runs at once would both find a timestamp missing and both insert
+  it, and a duplicate row can't be removed. A run therefore holds a lock, the table
+  `migrate_history_running`, and a second run refuses to start while it exists.
 - **Old and new topics never publish side by side**, so every row of an old topic is history
   of its new topic. No cut-over time is passed.
 
@@ -49,12 +52,18 @@ topics to exist yet: the new tables are created empty, and the run adds their co
    ```bash
    docker compose --profile data-collection up -d greptimedb
    ```
-2. **Restore one daily backup** of the live Greptime into it. Follow *Restore from the GCP
-   bucket* in `apps/base/greptime-backup/README.md` of the `edge-flux` repo, with the
-   cluster's own secret and bucket. A daily backup holds one day of **all** tables, so the
-   import takes hours and tens of GB. Only the old tables of the mapping are needed: once
-   their row counts stop growing, stop the import and drop the largest unrelated table
-   (`atpx_raw`) to free memory. Give Docker at least 8 GB.
+2. **Restore the old tables from one daily backup** of the live Greptime. Copy the bucket
+   credential into the container as in *Restore from the GCP bucket* in
+   `apps/base/greptime-backup/README.md` of the `edge-flux` repo, with the cluster's own
+   secret and bucket. A daily backup holds one day of **all** tables, which takes hours and
+   more memory than a laptop has, so restore only the old tables of the mapping. For each one,
+   create it from the live Greptime's `SHOW CREATE TABLE` and load its file:
+   ```sql
+   COPY "<old table>" FROM 'gcs://<bucket>/data/daily-backups/<date>/data/public/1/<old table>.parquet'
+     WITH (FORMAT='parquet') CONNECTION (SCOPE='https://www.googleapis.com/auth/devstorage.read_only');
+   ```
+   Verify the backup first (`greptime cli data export-v2 verify`): a recent one may still be
+   uploading. Give Docker at least 8 GB, and remove the credential afterwards.
 3. **Build the spec:**
    ```bash
    uv run zero-data greptime migrate-history build-spec migrations/450000-mapping.csv --out spec.json
@@ -144,6 +153,12 @@ tables and their columns.
   that has been copied can't get more columns afterwards.
 
 ## When something goes wrong
+
+- **The run refuses to start because another run holds the lock:** the message says from
+  which machine and since when. Ctrl-C and errors release the lock. A run that lost its
+  connection (a closed laptop, a restarted Greptime) can't, and leaves it behind. Make sure
+  that run has ended, wait a minute so its last insert is finished in Greptime, and start
+  again with `--unlock`.
 
 - **The run stops with an error** (a timeout, a restart of Greptime): start it again. If
   Greptime ran out of memory on an insert, lower `VALUES_PER_INSERT` in `migrate_history.py`

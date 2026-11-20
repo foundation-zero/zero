@@ -22,6 +22,7 @@ from zero_data.greptime.migrate_history import (
     drop,
     leftover,
     load,
+    lock,
     report,
     run,
 )
@@ -126,6 +127,10 @@ class MigrateRunCmd(_MigrateCmd):
     pause: Annotated[
         float, Field(description="Seconds to wait after each copied topic and day.")
     ] = 1.0
+    unlock: Annotated[
+        CliImplicitFlag[bool],
+        Field(description="Clear the lock an interrupted run left behind, then run."),
+    ] = False
 
     def cli_cmd(self) -> None:
         connection = _connection(self.host)
@@ -143,7 +148,8 @@ class MigrateRunCmd(_MigrateCmd):
                 return
             for refusal in migration.refused:
                 logger.warning("Left out %s: %s", refusal.unit.label, refusal.reason)
-            copied = run(greptime, migration, self.until, self.pause)
+            with lock(greptime, self.unlock):
+                copied = run(greptime, migration, self.until, self.pause)
         logger.info("Copied %d rows", copied)
 
 

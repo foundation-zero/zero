@@ -5,15 +5,19 @@ with its columns renamed. Old and new topics never publish side by side, so ever
 old topic is history of its new topic.
 
 Nothing is kept outside Greptime. Each insert leaves out the timestamps the new topic already
-holds, so a run can be stopped and started again, and a second run copies nothing. The new
+holds, so a run can be stopped and started again, and a second run copies nothing. Two runs
+at once would both find a timestamp missing and both insert it, so a run holds a lock: a
+table in Greptime that exists while it copies. The new
 tables are append-only: a copied row can't be changed or deleted afterwards, so a unit is
 either copied with all its columns or left out and reported.
 """
 
 import logging
+import socket
 import time
 from collections import defaultdict
 from collections.abc import Callable, Iterable, Iterator
+from contextlib import contextmanager
 from datetime import UTC, date, datetime
 from typing import Any
 
@@ -27,6 +31,7 @@ logger = logging.getLogger(__name__)
 SUFFIXES = ("value", "timestamp", "is_valid", "has_value")
 DAY_NS = 86_400 * 10**9
 COLUMNS_PER_QUERY = 100
+LOCK_TABLE = "migrate_history_running"
 # Greptime holds an insert in memory: a day of a 1,100-column battery pack in one statement
 # took more than 8 GB, an hour of it (4M values) 150 MB.
 VALUES_PER_INSERT = 4_000_000
@@ -340,16 +345,18 @@ def load(
         }
         expected = history.expected
         surplus = sorted(
-            day_label(day)
-            for day, rows in present.items()
-            if rows > expected.get(day, 0)
+            day for day, rows in present.items() if rows > expected.get(day, 0)
         )
         if surplus:
             refused.extend(
                 Refusal(
                     unit=copy.unit,
-                    reason="The new topic holds more rows than the old one on "
-                    f"{', '.join(surplus[:5])}: old and new overlap",
+                    reason="The new topic holds more rows than the old topics have: "
+                    + ", ".join(
+                        f"{present[day]} against {expected.get(day, 0)} on "
+                        f"{day_label(day)}"
+                        for day in surplus[:5]
+                    ),
                 )
                 for copy in topic_copies
             )
@@ -502,6 +509,46 @@ def report(migration: Migration, leftovers: dict[str, Leftover]) -> str:
         ),
     ]
     return "\n\n".join(sections) + "\n"
+
+
+@contextmanager
+def lock(greptime: Greptime, unlock: bool = False) -> Iterator[None]:
+    """Hold the lock that keeps a second run out; `unlock` first clears one left behind.
+
+    A run that loses its connection can't release the lock, and its last insert may still be
+    going on in Greptime.
+    """
+    if unlock:
+        greptime.run(f"DROP TABLE IF EXISTS {quote_ident(LOCK_TABLE)}")
+    try:
+        greptime.run(
+            f"CREATE TABLE {quote_ident(LOCK_TABLE)} "
+            '("started" TIMESTAMP(3) TIME INDEX, "host" STRING)'
+        )
+    except psycopg.Error as error:
+        if LOCK_TABLE not in greptime.tables():
+            raise
+        holders = ", ".join(
+            f"{host} since {started}"
+            for started, host in greptime.rows(
+                f'SELECT "started", "host" FROM {quote_ident(LOCK_TABLE)}'
+            )
+        )
+        raise MigrationFailed(
+            f"Another run holds the lock ({holders or 'just started'}). If that run "
+            "has ended, wait a minute for its last insert and run again with --unlock."
+        ) from error
+    greptime.run(
+        f"INSERT INTO {quote_ident(LOCK_TABLE)} VALUES "
+        f"(now(), {quote_literal(socket.gethostname())})"
+    )
+    try:
+        yield
+    finally:
+        try:
+            greptime.run(f"DROP TABLE {quote_ident(LOCK_TABLE)}")
+        except psycopg.Error:
+            logger.warning("Could not release the lock; the next run needs --unlock")
 
 
 def run(
