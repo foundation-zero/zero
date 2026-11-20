@@ -12,6 +12,10 @@ CREATE TABLE IF NOT EXISTS "marpower__dc_24v__power_supply" (
   "device_temp__is_valid" BOOLEAN NULL,
   "device_temp__timestamp" STRING NULL,
   "device_temp__value" DOUBLE NULL,
+  "fault__has_value" BOOLEAN NULL,
+  "fault__is_valid" BOOLEAN NULL,
+  "fault__timestamp" STRING NULL,
+  "fault__value" BOOLEAN NULL,
   "heatsink_temp__has_value" BOOLEAN NULL,
   "heatsink_temp__is_valid" BOOLEAN NULL,
   "heatsink_temp__timestamp" STRING NULL,
@@ -31,6 +35,6 @@ CREATE TABLE IF NOT EXISTS "marpower__dc_24v__power_supply" (
 
 ENGINE=mito
 WITH(
-  append_mode = 'true',
-  comment = 'Created on insertion'
+  'comment' = 'Created on insertion',
+  append_mode = 'true'
 )

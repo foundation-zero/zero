@@ -63,6 +63,6 @@ CREATE TABLE IF NOT EXISTS "marpower__dc_24v__breaker" (
 
 ENGINE=mito
 WITH(
-  append_mode = 'true',
-  comment = 'Created on insertion'
+  'comment' = 'Created on insertion',
+  append_mode = 'true'
 )

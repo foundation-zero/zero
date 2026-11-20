@@ -16,17 +16,17 @@ CREATE TABLE IF NOT EXISTS "marpower__fire_detection__call_point" (
   "pre_alarm__is_valid" BOOLEAN NULL,
   "pre_alarm__timestamp" STRING NULL,
   "pre_alarm__value" BOOLEAN NULL,
+  "technical_name" STRING NULL,
   "test__has_value" BOOLEAN NULL,
   "test__is_valid" BOOLEAN NULL,
   "test__timestamp" STRING NULL,
   "test__value" BOOLEAN NULL,
-  "technical_name" STRING NULL,
   "topic" STRING NULL,
   TIME INDEX ("timestamp")
 )
 
 ENGINE=mito
 WITH(
-  append_mode = 'true',
-  comment = 'Created on insertion'
+  'comment' = 'Created on insertion',
+  append_mode = 'true'
 )
