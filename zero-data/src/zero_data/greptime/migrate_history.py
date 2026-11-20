@@ -13,6 +13,7 @@ either copied with all its columns or left out and reported.
 """
 
 import logging
+import signal
 import socket
 import time
 from collections import defaultdict
@@ -516,7 +517,8 @@ def lock(greptime: Greptime, unlock: bool = False) -> Iterator[None]:
     """Hold the lock that keeps a second run out; `unlock` first clears one left behind.
 
     A run that loses its connection can't release the lock, and its last insert may still be
-    going on in Greptime.
+    going on in Greptime. Give the lock a connection of its own: Ctrl-C cancels the statement
+    on the connection that copies, and reaches the process more than once under `uv run`.
     """
     if unlock:
         greptime.run(f"DROP TABLE IF EXISTS {quote_ident(LOCK_TABLE)}")
@@ -545,10 +547,13 @@ def lock(greptime: Greptime, unlock: bool = False) -> Iterator[None]:
     try:
         yield
     finally:
+        interrupt = signal.signal(signal.SIGINT, signal.SIG_IGN)
         try:
             greptime.run(f"DROP TABLE {quote_ident(LOCK_TABLE)}")
         except psycopg.Error:
             logger.warning("Could not release the lock; the next run needs --unlock")
+        finally:
+            signal.signal(signal.SIGINT, interrupt)
 
 
 def run(
