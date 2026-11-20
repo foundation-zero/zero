@@ -9,7 +9,6 @@ from tests.orchestration.simples import (
     SimpleParameters,
     simple_control_values,
 )
-from thrs.classes.machine_state_logger import MachineStateLoggingService
 from thrs.control.manual import ManualControl
 from thrs.control.modules.thrusters.control import ThrustersControl
 from thrs.control.modules.thrusters.io import (
@@ -47,11 +46,7 @@ def simulation(
 
 @fixture
 def thrusters_control(simulation: ThrustersSimulation, postgres_db) -> ThrustersControl:
-    return ThrustersControl(
-        parameters=ThrustersParameters(),
-        time_fn=simulation.time,
-        state_logger=MachineStateLoggingService(postgres_db),
-    )
+    return ThrustersControl(parameters=ThrustersParameters(), time_fn=simulation.time)
 
 
 @fixture

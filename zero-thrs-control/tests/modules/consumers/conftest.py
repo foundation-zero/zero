@@ -3,7 +3,6 @@ from datetime import UTC, datetime, timedelta
 from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.consumers.control import ConsumersAlarms, ConsumersControl
 from thrs.control.modules.consumers.io import (
     ConsumersControlValues,
@@ -53,9 +52,7 @@ def parameters():
 
 @fixture
 def control(parameters, simulation):
-    return ConsumersControl(
-        parameters, simulation.time, MachineStateLoggingServiceNoop()
-    )
+    return ConsumersControl(parameters, simulation.time)
 
 
 @fixture

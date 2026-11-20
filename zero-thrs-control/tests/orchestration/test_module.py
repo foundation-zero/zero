@@ -285,7 +285,6 @@ async def test_parameters_changed_while_manual_survive_engage():
     module = make_module(channels=channels)
     module._control.update_parameters(ConfigurableParameters(setpoint=77.0))
     automatic = module._control.automatic_control
-    logger_before = module.control_state_logger
 
     module.set_automation_mode(AutomationMode(mode="automatic"))
     await module.tick(simple_advisory_values(flow=2.0))
@@ -293,7 +292,6 @@ async def test_parameters_changed_while_manual_survive_engage():
     assert module._control.automatic_control is automatic
     assert automatic.parameters.setpoint == 77.0
     assert module._control.parameters.setpoint == 77.0
-    assert module.control_state_logger is logger_before
 
 
 async def test_snapshot_with_custom_params_restores_into_first_automatic_tick():

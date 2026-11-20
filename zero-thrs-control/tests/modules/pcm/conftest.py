@@ -5,7 +5,6 @@ from typing import Any, Self
 from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.pcm.control import PcmAlarms, PcmControl
 from thrs.control.modules.pcm.io import (
     PcmControlValues,
@@ -89,9 +88,7 @@ class _ThrottledConsumersSwitch:
 
 @fixture
 def control(simulation):
-    return PcmControl(
-        PcmParameters(), simulation.time, MachineStateLoggingServiceNoop()
-    )
+    return PcmControl(PcmParameters(), simulation.time)
 
 
 @fixture

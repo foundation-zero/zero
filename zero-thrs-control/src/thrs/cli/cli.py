@@ -26,7 +26,6 @@ from thrs.orchestration.setup import (
     setup_simulation_module,
 )
 from thrs.orchestration.simulation import SimulationUnit
-from thrs.runtime.context import control_shutdown_context
 from thrs.runtime.descriptions.simulation import ModeName, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.liveness import Liveness
@@ -41,7 +40,6 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 class ControlCmd(BaseSettings):
     mode: ModeName
-    machine_state_logging: CliImplicitFlag[bool] = True
     module_persistence: CliImplicitFlag[bool] = True
     allow_boot_without_persistence_having_active_postgres: CliImplicitFlag[bool] = False
 
@@ -53,11 +51,7 @@ class ControlCmd(BaseSettings):
 
         control_mode = lookup_mode(self.mode)
 
-        database = setup_database(
-            settings,
-            self.module_persistence,
-            self.machine_state_logging,
-        )
+        database = setup_database(settings, self.module_persistence)
 
         persistence = await setup_persistence_manager(
             database,
@@ -80,7 +74,6 @@ class ControlCmd(BaseSettings):
                 control_mode.control_modules,
                 datetime.now,
                 database,
-                self.machine_state_logging,
             )
 
             await persistence.restore_all(control_modules)
@@ -92,8 +85,7 @@ class ControlCmd(BaseSettings):
             await loop.play()
             logger.info("Running control")
 
-            async with control_shutdown_context(control_modules):
-                await runtime.start()
+            await runtime.start()
 
 
 class SimulationCmd(BaseSettings):
@@ -137,7 +129,6 @@ class SimulationCmd(BaseSettings):
 
 class LockstepCmd(BaseSettings):
     mode: ModeName
-    machine_state_logging: CliImplicitFlag[bool] = True
     play: CliImplicitFlag[bool] = False
     module_persistence: CliImplicitFlag[bool] = True
     allow_boot_without_persistence_having_active_postgres: CliImplicitFlag[bool] = False
@@ -160,11 +151,7 @@ class LockstepCmd(BaseSettings):
             mode.simulation_description,
         )
 
-        database = setup_database(
-            settings,
-            self.module_persistence,
-            self.machine_state_logging,
-        )
+        database = setup_database(settings, self.module_persistence)
 
         persistence = await setup_persistence_manager(
             database,
@@ -178,7 +165,6 @@ class LockstepCmd(BaseSettings):
             mode.control_modules,
             time_fn=simulation_module.time,
             database=database,
-            machine_state_logging_service_enabled=self.machine_state_logging,
             # Lockstep trades delivery guarantees for speed; every tick republishes these values
             publish_qos=0,
         )
@@ -220,8 +206,7 @@ class LockstepCmd(BaseSettings):
             if self.play:
                 await runtime.play()
 
-            async with control_shutdown_context(runtime.runner.control_modules):  # pyrefly: ignore[missing-attribute]
-                await runtime.start()
+            await runtime.start()
 
 
 class AsyncApiCmd(BaseModel):

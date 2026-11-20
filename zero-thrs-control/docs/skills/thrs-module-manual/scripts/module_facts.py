@@ -23,7 +23,6 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.input_output.definitions.units import unit_meta
 
 # Display units for the `modelica_name` carried by each unit alias in
@@ -272,9 +271,7 @@ def module_description(module_name: str) -> Any:
 
 
 def build_control(description: Any) -> Any:
-    return description.control(
-        description.parameters_cls(), datetime.now, MachineStateLoggingServiceNoop()
-    )
+    return description.control(description.parameters_cls(), datetime.now)
 
 
 def print_facts(description: Any, control: Any) -> None:

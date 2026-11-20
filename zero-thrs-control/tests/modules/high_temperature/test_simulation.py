@@ -4,7 +4,6 @@ import pytest
 from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.consumers.io import ConsumersSensorValues
 from thrs.control.modules.high_temperature.io import (
     HighTemperatureSimulationInputs,
@@ -60,9 +59,7 @@ def test_high_temperature_simulation_inputs(
                     CombinedValues(
                         {
                             module_name: module.control(
-                                module.parameters_cls(),
-                                simulation.time,
-                                MachineStateLoggingServiceNoop(),
+                                module.parameters_cls(), simulation.time
                             ).initial()[0]
                             for module_name, module in modules.items()
                         }
@@ -75,9 +72,7 @@ def test_high_temperature_simulation_ticks(modules, simulation):
         CombinedValues(
             {
                 module_name: module.control(
-                    module.parameters_cls(),
-                    simulation.time,
-                    MachineStateLoggingServiceNoop(),
+                    module.parameters_cls(), simulation.time
                 ).initial()[0]
                 for module_name, module in modules.items()
             }

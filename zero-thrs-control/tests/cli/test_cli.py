@@ -89,7 +89,6 @@ def setup_lockstep(
     settings: Config,
     mqtt_client: Client,
     database: PostgresDatabase | None = None,
-    machine_state_logging_service_enabled: bool = False,
 ) -> Runtime:
     """Test helper mirroring LockstepCmd.setup() from the CLI."""
     connector = MqttConnector(mqtt_client)
@@ -110,7 +109,6 @@ def setup_lockstep(
         mode.control_modules,
         time_fn=simulation_module.time,
         database=database or mock.Mock(spec=PostgresDatabase),
-        machine_state_logging_service_enabled=machine_state_logging_service_enabled,
         publish_qos=0,
     )
 

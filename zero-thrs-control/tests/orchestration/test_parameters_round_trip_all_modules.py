@@ -16,7 +16,6 @@ from unittest import mock
 import pytest
 from pydantic import ValidationError
 
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.classes.persistence.engine import InMemoryPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
@@ -110,7 +109,6 @@ def _make_module(name: str, description: ModuleDescription) -> Module:
         description=description,
         channels=channels,
         time_fn=lambda: datetime.now(UTC),
-        state_logger=MachineStateLoggingServiceNoop(),
     )
 
 

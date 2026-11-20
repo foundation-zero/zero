@@ -2,10 +2,9 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Literal
 
-from transitions import State
+from transitions import Machine, State
 
 from thrs.classes.control import Control
-from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.control.modules.drives.io import DrivesControlValues, DrivesSensorValues
 from thrs.control.modules.drives.state import (
@@ -93,25 +92,22 @@ class DrivesControl(
         self,
         parameters: DrivesParameters,
         time_fn: Callable[[], datetime],
-        state_logger: StateLogger,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self.state_logger = state_logger
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
 
         self._init_state_machine_states()
         self._init_state_machine_transitions()
-        self._state_machine = self.state_logger.create_logged_state_machine(
+        self._state_machine = Machine(
             self,
             transitions=self._transitions,
             states=self._states,
             initial="idle",
         )
         self._init_controllers()
-        self.state_logger.log_parameters_initial_state(parameters)
 
     def _init_state_machine_states(self):
         self._states = [
@@ -247,7 +243,6 @@ class DrivesControl(
     def parameters(self) -> DrivesParameters:
         return self._parameters
 
-    @StateLogger.log_parameters
     def update_parameters(self, parameters: DrivesParameters):
         self._parameters = parameters
 
@@ -280,7 +275,6 @@ class DrivesControl(
         self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
         self._init_controllers()
 
-    @StateLogger.log_warnings
     def control(
         self, sensor_values: DrivesSensorValues
     ) -> tuple[DrivesControlValues, DrivesControllerState]:

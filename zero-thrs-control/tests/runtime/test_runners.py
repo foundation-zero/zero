@@ -9,7 +9,6 @@ from tests.helpers.simulation_runner import (
     flatten_controller_state,
 )
 from tests.orchestration.simples import simple_control_values, simple_controller_state
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.classes.persistence.engine import NoopPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
 from thrs.control.modules.thrusters.control import ThrustersAlarms, ThrustersControl
@@ -68,11 +67,7 @@ def test_simulation_test_runner():
             timedelta(seconds=1),
         )
 
-        control = ThrustersControl(
-            ThrustersParameters(),
-            simulation.time,
-            MachineStateLoggingServiceNoop(),
-        )
+        control = ThrustersControl(ThrustersParameters(), simulation.time)
         alarms = ThrustersAlarms()
 
         io_mapping = ThrsModelIoMapping(
@@ -166,7 +161,6 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
         description=_mock_description(control, alarms),
         channels=control_channels,
         time_fn=datetime.now,
-        state_logger=MachineStateLoggingServiceNoop(),
     )
     module.set_automation_mode(AutomationMode(mode="automatic"))
 
@@ -277,7 +271,6 @@ async def test_control_runner_ticks_and_uses_channels():
         description=_mock_description(control, alarms),
         channels=channels,
         time_fn=datetime.now,
-        state_logger=MachineStateLoggingServiceNoop(),
     )
     module.set_automation_mode(AutomationMode(mode="automatic"))
 
