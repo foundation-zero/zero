@@ -3,7 +3,6 @@ import { useDebounceFn } from "@vueuse/core";
 import { computed, ref, Ref } from "vue";
 import { useRoute } from "vue-router";
 import { getMimicDataProvider, ModuleField, provideFieldValue } from ".";
-import { useAdvisoryEnabled, useAutomaticMode } from "../../state";
 import { provideValueForm, ValueFormContext } from "./forms";
 
 export interface ParameterValueFormContext<
@@ -21,15 +20,11 @@ export const createParameterFormContext = <Parameter extends ParametersType>(
   const { query } = useRoute();
   const parameter = getParameter(source);
   const hasFocus = query.parameter === source[2];
-  const automaticMode = useAutomaticMode();
-  const advisoryEnabled = useAdvisoryEnabled();
   const dirtyValue = ref<ParameterDefinitionMap[Parameter] | undefined>();
   const isDirty = computed(() => dirtyValue.value !== undefined);
   const error = ref<string>();
   const isPending = ref(false);
-  const isEditable = computed(
-    () => parameter.value != undefined && !!automaticMode.value && !!advisoryEnabled.value,
-  );
+  const isEditable = computed(() => parameter.value != undefined);
 
   const _submit = useDebounceFn(submit, 1000);
 
@@ -38,13 +33,7 @@ export const createParameterFormContext = <Parameter extends ParametersType>(
   );
 
   async function submit() {
-    if (
-      !isEditable.value ||
-      parameter.value == undefined ||
-      isPending.value ||
-      dirtyValue.value === undefined
-    )
-      return;
+    if (!isEditable.value || isPending.value || dirtyValue.value === undefined) return;
 
     error.value = undefined;
     isPending.value = true;
