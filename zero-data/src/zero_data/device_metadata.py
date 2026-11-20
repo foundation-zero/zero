@@ -12,7 +12,7 @@ MACRO_TEMPLATE = """\
 /*
  * Generated from marpower_device_metadata.csv by `just generate-device-metadata`; edit the CSV.
  *
- * Devices on the Marpower topic convention (marpower/<NN>-<system>/<kind>/<instance>), one row per
+ * Devices on the Marpower topic convention (marpower/<NN>-<system>/<kind>[/<instance>]), one row per
  * topic, with the device's yard tag and functional name. Created by a macro for the same reason as
  * load_power_tag_metadata: Greptime needs a time index, which dbt seeds don't give.
  */
