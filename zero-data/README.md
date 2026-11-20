@@ -106,6 +106,12 @@ This creates the `views` database if needed and runs `dbt build` (models and tes
 that tier. Rerunning is safe: views are `CREATE OR REPLACE`d. Each build also drops and
 recreates `public.power_tag_metadata` from `macros/load_power_tag_metadata.sql`.
 
+### Migrating history to renamed topics
+
+When a system moves to new topics and tables, `greptime migrate-history` copies its history
+from the old tables into the new ones, checks the copy and drops the old tables.
+[migrations/README.md](migrations/README.md) walks through a rehearsal and the migration.
+
 ## Release Management
 
 ### Charts
