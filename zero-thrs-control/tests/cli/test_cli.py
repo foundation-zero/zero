@@ -25,6 +25,7 @@ from thrs.orchestration.config import Config
 from thrs.orchestration.setup import setup_control_modules, setup_simulation_module
 from thrs.runtime.descriptions.simulation import Mode, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
+from thrs.runtime.loop import ControllableLoop
 from thrs.runtime.messages import (
     SimulationStatus,
     SimulationStatusMessage,
@@ -89,8 +90,9 @@ def setup_lockstep(
     mqtt_client: Client,
     database: PostgresDatabase | None = None,
     machine_state_logging_service_enabled: bool = False,
-) -> Runtime:
-    """Test helper mirroring LockstepCmd.setup() from the CLI."""
+) -> tuple[Runtime, ControllableLoop]:
+    """Test helper mirroring LockstepCmd.setup() from the CLI, returning its loop
+    too, to clear the previous status."""
     connector = MqttConnector(mqtt_client)
 
     if mode.simulation_description is None:
@@ -119,18 +121,16 @@ def setup_lockstep(
     persistence = PersistManager(NoopPersistentEngine())
     runner = LockstepRunner(control_modules, simulation_module, persistence)
 
+    directives_channels = DirectivesChannels(connector, settings)
     directive_handling = DirectiveHandling(
-        DirectivesChannels(connector, settings),
+        directives_channels,
         mode,
         simulation_module.time,
     )
-    return Runtime(
-        runner,
-        connector,
-        simulation_module.tick_duration,
-        simulation_module.time,
-        directive_handling,
+    loop = ControllableLoop(
+        simulation_module.tick_duration, simulation_module.time, directive_handling
     )
+    return Runtime(loop, runner, connector), loop
 
 
 @pytest.mark.timeout(30)
@@ -144,13 +144,13 @@ async def test_simulation_status_goes_available_running_available(
 ):
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
 
-    runtime = setup_lockstep(
+    runtime, loop = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
     )
 
-    await runtime.clear_previous()
+    await loop.clear_previous()
     await test_client.subscribe(
         f"{settings.mqtt_devices_topic_prefix}/500000-thrs/thrusters/#"
     )
@@ -208,13 +208,13 @@ async def test_higher_playback_rate_publishes_more_outputs(
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
-    runtime = setup_lockstep(
+    runtime, loop = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
     )
 
-    await runtime.clear_previous()
+    await loop.clear_previous()
     await status_client.subscribe(status_topic)
     await test_client.subscribe(outputs_topic)
 
@@ -284,13 +284,13 @@ async def test_step_directive_advances_and_publishes(
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
-    runtime = setup_lockstep(
+    runtime, loop = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
     )
 
-    await runtime.clear_previous()
+    await loop.clear_previous()
     await status_client.subscribe(status_topic)
     await test_client.subscribe(outputs_topic)
 
@@ -383,13 +383,13 @@ async def test_automatic_mode_changes_control_outputs(
         f"{settings.mqtt_controller_topic_suffix}"
     )
 
-    runtime = setup_lockstep(
+    runtime, loop = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
     )
 
-    await runtime.clear_previous()
+    await loop.clear_previous()
     await test_client.subscribe(
         f"{settings.mqtt_devices_topic_prefix}/500000-thrs/thrusters/+/{settings.mqtt_control_topic_suffix}"
     )
@@ -470,13 +470,13 @@ async def test_parameters_set_over_mqtt_are_applied(
         f"{settings.mqtt_controller_topic_suffix}"
     )
 
-    runtime = setup_lockstep(
+    runtime, loop = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
     )
 
-    await runtime.clear_previous()
+    await loop.clear_previous()
     await status_client.subscribe(status_topic)
     await test_client.subscribe(parameters_topic)
 
@@ -550,13 +550,13 @@ async def test_simulation_inputs_set_over_mqtt_reach_later_ticks(
         f"{settings.mqtt_simulator_topic_suffix}"
     )
 
-    runtime = setup_lockstep(
+    runtime, loop = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
     )
 
-    await runtime.clear_previous()
+    await loop.clear_previous()
     await status_client.subscribe(status_topic)
     await test_client.subscribe(simulation_inputs_topic)
 
@@ -629,13 +629,13 @@ async def test_running_simulation_publishes_physically_valid_outputs(
         f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
     )
 
-    runtime = setup_lockstep(
+    runtime, loop = setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
     )
 
-    await runtime.clear_previous()
+    await loop.clear_previous()
     await status_client.subscribe(status_topic)
     await test_client.subscribe(simulation_outputs_topic)
 

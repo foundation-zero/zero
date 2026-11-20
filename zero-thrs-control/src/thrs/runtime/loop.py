@@ -4,12 +4,17 @@ from asyncio import (
     TaskGroup,
     sleep,
 )
-from collections.abc import Awaitable, Callable
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from typing import TYPE_CHECKING, Protocol
 
 from thrs.runtime.messages import SimulationStatus
 from thrs.runtime.runners.base import Runner
+
+if TYPE_CHECKING:
+    from thrs.runtime.directives import DirectiveHandling
+
 
 logger: logging.Logger = logging.getLogger(__name__)
 
@@ -21,24 +26,24 @@ class Request:
     pause_at: datetime | None
 
 
-type Hook = Callable[["Loop"], Awaitable[None]]
+class Loop(Protocol):
+    async def loop(self, runner: Runner): ...
 
 
-@dataclass
-class LoopHooks:
-    available: Hook
-    running: Hook
-    stepping: Hook
+class RealtimeLoop(Loop):
+    """Ticks a runner at realtime speed."""
+
+    async def loop(self, runner: Runner):
+        logger.debug("Loop started")
+
+        sleep_duration = 1
+        while True:
+            async with TaskGroup() as tg:
+                tg.create_task(sleep(sleep_duration))
+                tg.create_task(runner.tick())
 
 
-async def empty_hook(_: Loop):
-    pass
-
-
-EMPTY_HOOKS = LoopHooks(empty_hook, empty_hook, empty_hook)
-
-
-class Loop:
+class ControllableLoop(Loop):
     """Ticks a runner as requested: paused (available), running at a playback rate,
     or stepping as fast as possible.
 
@@ -47,17 +52,24 @@ class Loop:
     harmless: running then runs on, and stepping does nothing.
     """
 
-    def __init__(self, tick_duration: timedelta, time_fn: Callable[[], datetime]):
+    def __init__(
+        self,
+        tick_duration: timedelta,
+        time_fn: Callable[[], datetime],
+        directive_handling: DirectiveHandling,
+    ):
         self._requests = Queue[Request]()
         self._tick_duration = tick_duration
         self._time_fn = time_fn
         self.requested = Request(status="available", playback_rate=1.0, pause_at=None)
+        self._directive_handling = directive_handling
+        directive_handling.register(self)
 
-    async def loop(self, runner: Runner, hooks: LoopHooks = EMPTY_HOOKS):
+    async def loop(self, runner: Runner):
         logger.debug("Loop started")
 
         while True:
-            await hooks.available(self)
+            await self._send_status("available")
             self.requested = await self._requests.get()
             pause_at = self.requested.pause_at
             target = (
@@ -72,13 +84,13 @@ class Loop:
                         self._tick_duration.total_seconds()
                         / self.requested.playback_rate
                     )
-                    await hooks.running(self)
+                    await self._send_status("running")
                     while self._requests.empty() and not self._reached(target):
                         async with TaskGroup() as tg:
                             tg.create_task(sleep(sleep_duration))
-                            tg.create_task(self._tick_running(runner, hooks))
+                            tg.create_task(self._tick_running(runner))
                 case "stepping" if target is not None:
-                    await hooks.stepping(self)
+                    await self._send_status("stepping")
                     while self._requests.empty() and not self._reached(target):
                         await runner.tick()
                 case "stepping" | "available":
@@ -87,13 +99,19 @@ class Loop:
     def _reached(self, target: datetime | None) -> bool:
         return target is not None and self._time_fn() >= target
 
-    async def _tick_running(self, runner: Runner, hooks: LoopHooks):
+    async def _tick_running(self, runner: Runner):
         await runner.tick()
-        await hooks.running(self)
+        await self._send_status("running")
 
-    async def request(self, request: Request):
+    async def _send_status(self, status: SimulationStatus):
+        await self._directive_handling.send_status(self, status)
+
+    def request(self, request: Request):
         logger.debug("Loop request: %s", request)
-        await self._requests.put(request)
+        self._requests.put_nowait(request)
 
     async def play(self):
-        await self.request(Request("running", 1.0, None))
+        self.request(Request("running", 1.0, None))
+
+    async def clear_previous(self):
+        await self._directive_handling.clear_previous()
