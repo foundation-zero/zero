@@ -621,35 +621,35 @@ export const DC700_V_SHORE_CONVERTER_SENSOR_VALUES_DEFINITION = {
   _07_11Tbc1A: {
     yardTag: "45002001",
     componentType: SensorComponentType.ShorePowerConverter,
-    path: ["marpower", "_450000DcDistributionEsi", "_07_11Tbc1A"],
+    path: ["marpower", "_45Dc700V", "shoreConverter", "_07_11Tbc1A"],
   },
   _07_11Tbc1B: {
     yardTag: "45002001",
     componentType: SensorComponentType.ShorePowerConverter,
-    path: ["marpower", "_450000DcDistributionEsi", "_07_11Tbc1B"],
+    path: ["marpower", "_45Dc700V", "shoreConverter", "_07_11Tbc1B"],
   },
   _07_12Tbc1A: {
     yardTag: "45002001",
     componentType: SensorComponentType.ShorePowerConverter,
-    path: ["marpower", "_450000DcDistributionEsi", "_07_12Tbc1A"],
+    path: ["marpower", "_45Dc700V", "shoreConverter", "_07_12Tbc1A"],
   },
   _07_12Tbc1B: {
     yardTag: "45002001",
     componentType: SensorComponentType.ShorePowerConverter,
-    path: ["marpower", "_450000DcDistributionEsi", "_07_12Tbc1B"],
+    path: ["marpower", "_45Dc700V", "shoreConverter", "_07_12Tbc1B"],
   },
 } as const satisfies SensorDefinitions;
 
 export const DC_AC_CONVERTER_SENSOR_VALUES_DEFINITION = {
-  _5_11U101: {
+  _05_11U101: {
     yardTag: "45002082",
     componentType: SensorComponentType.Ugrid,
-    path: ["marpower", "_450000DynamicConvPsAra", "_5_11U101"],
+    path: ["marpower", "_45DcAc", "inverter", "_05_11U101"],
   },
-  _5_12U101: {
+  _05_12U101: {
     yardTag: "45002081",
     componentType: SensorComponentType.Ugrid,
-    path: ["marpower", "_450000DynamicConvSbAra", "_5_12U101"],
+    path: ["marpower", "_45DcAc", "inverter", "_05_12U101"],
   },
 } as const satisfies SensorDefinitions;
 
@@ -3796,12 +3796,12 @@ export const MQTT_TOPICS = {
   hotTemperatureToCabins: "marpower/250000-fresh-water/hot/hot-temperature-to-cabins",
   hotTemperatureToPcm: "marpower/250000-fresh-water/hot/hot-temperature-to-pcm",
   coldFlowLowSeawater: "marpower/380000-sea-water/cold/cold-flow-low-seawater",
-  _07_11Tbc1A: "marpower/450000-dc-distribution-esi/07-11-tbc1a",
-  _07_11Tbc1B: "marpower/450000-dc-distribution-esi/07-11-tbc1b",
-  _07_12Tbc1A: "marpower/450000-dc-distribution-esi/07-12-tbc1a",
-  _07_12Tbc1B: "marpower/450000-dc-distribution-esi/07-12-tbc1b",
-  _5_11U101: "marpower/450000-dynamic-conv-ps-ara/5-11-u101",
-  _5_12U101: "marpower/450000-dynamic-conv-sb-ara/5-12-u101",
+  _07_11Tbc1A: "marpower/45-dc-700v/shore-converter/07-11-tbc1a",
+  _07_11Tbc1B: "marpower/45-dc-700v/shore-converter/07-11-tbc1b",
+  _07_12Tbc1A: "marpower/45-dc-700v/shore-converter/07-12-tbc1a",
+  _07_12Tbc1B: "marpower/45-dc-700v/shore-converter/07-12-tbc1b",
+  _05_11U101: "marpower/45-dc-ac/inverter/05-11-u101",
+  _05_12U101: "marpower/45-dc-ac/inverter/05-12-u101",
   adsorptionFlowDhw: "marpower/500000-thrs/adsorption/adsorption-flow-dhw",
   adsorptionFlowHot: "marpower/500000-thrs/adsorption/adsorption-flow-hot",
   adsorptionFlowHt: "marpower/500000-thrs/adsorption/adsorption-flow-ht",

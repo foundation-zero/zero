@@ -721,34 +721,36 @@ fragment CoolingSensorValues on Query {
 export const DC700_V_SHORE_CONVERTER_SENSOR_VALUES_FRAGMENT = `
 fragment Dc700VShoreConverterSensorValues on Query {
   marpower {
-    _450000DcDistributionEsi {
-      _07_11Tbc1A {
-        active: online { value timestamp: timeStamp }
-        esiTransformerTemperature { value timestamp: timeStamp }
-        esiIgbtMinTemperature { value timestamp: timeStamp }
-        esiIgbtMaxTemperature { value timestamp: timeStamp }
-        power: esiAcBusActivePower3Phase { value timestamp: timeStamp }
-      }
-      _07_11Tbc1B {
-        active: online { value timestamp: timeStamp }
-        esiTransformerTemperature { value timestamp: timeStamp }
-        esiIgbtMinTemperature { value timestamp: timeStamp }
-        esiIgbtMaxTemperature { value timestamp: timeStamp }
-        power: esiAcBusActivePower3Phase { value timestamp: timeStamp }
-      }
-      _07_12Tbc1A {
-        active: online { value timestamp: timeStamp }
-        esiTransformerTemperature { value timestamp: timeStamp }
-        esiIgbtMinTemperature { value timestamp: timeStamp }
-        esiIgbtMaxTemperature { value timestamp: timeStamp }
-        power: esiAcBusActivePower3Phase { value timestamp: timeStamp }
-      }
-      _07_12Tbc1B {
-        active: online { value timestamp: timeStamp }
-        esiTransformerTemperature { value timestamp: timeStamp }
-        esiIgbtMinTemperature { value timestamp: timeStamp }
-        esiIgbtMaxTemperature { value timestamp: timeStamp }
-        power: esiAcBusActivePower3Phase { value timestamp: timeStamp }
+    _45Dc700V {
+      shoreConverter {
+        _07_11Tbc1A {
+          active: online { value timestamp: timeStamp }
+          esiTransformerTemperature { value timestamp: timeStamp }
+          esiIgbtMinTemperature { value timestamp: timeStamp }
+          esiIgbtMaxTemperature { value timestamp: timeStamp }
+          power: esiAcBusActivePower3Phase { value timestamp: timeStamp }
+        }
+        _07_11Tbc1B {
+          active: online { value timestamp: timeStamp }
+          esiTransformerTemperature { value timestamp: timeStamp }
+          esiIgbtMinTemperature { value timestamp: timeStamp }
+          esiIgbtMaxTemperature { value timestamp: timeStamp }
+          power: esiAcBusActivePower3Phase { value timestamp: timeStamp }
+        }
+        _07_12Tbc1A {
+          active: online { value timestamp: timeStamp }
+          esiTransformerTemperature { value timestamp: timeStamp }
+          esiIgbtMinTemperature { value timestamp: timeStamp }
+          esiIgbtMaxTemperature { value timestamp: timeStamp }
+          power: esiAcBusActivePower3Phase { value timestamp: timeStamp }
+        }
+        _07_12Tbc1B {
+          active: online { value timestamp: timeStamp }
+          esiTransformerTemperature { value timestamp: timeStamp }
+          esiIgbtMinTemperature { value timestamp: timeStamp }
+          esiIgbtMaxTemperature { value timestamp: timeStamp }
+          power: esiAcBusActivePower3Phase { value timestamp: timeStamp }
+        }
       }
     }
   }
@@ -758,18 +760,18 @@ fragment Dc700VShoreConverterSensorValues on Query {
 export const DC_AC_CONVERTER_SENSOR_VALUES_FRAGMENT = `
 fragment DcAcConverterSensorValues on Query {
   marpower {
-    _450000DynamicConvPsAra {
-      _5_11U101 {
-        active: running { value timestamp: timeStamp }
-        tempPowerStage { value timestamp: timeStamp }
-        power: pvPower { value timestamp: timeStamp }
-      }
-    }
-    _450000DynamicConvSbAra {
-      _5_12U101 {
-        active: running { value timestamp: timeStamp }
-        tempPowerStage { value timestamp: timeStamp }
-        power: pvPower { value timestamp: timeStamp }
+    _45DcAc {
+      inverter {
+        _05_11U101 {
+          active: running { value timestamp: timeStamp }
+          tempPowerStage { value timestamp: timeStamp }
+          power: pvPower { value timestamp: timeStamp }
+        }
+        _05_12U101 {
+          active: running { value timestamp: timeStamp }
+          tempPowerStage { value timestamp: timeStamp }
+          power: pvPower { value timestamp: timeStamp }
+        }
       }
     }
   }
