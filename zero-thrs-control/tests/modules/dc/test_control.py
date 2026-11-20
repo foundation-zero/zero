@@ -1,11 +1,12 @@
 from pytest import approx
 
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.control.modules.dc import DcControl, DcParameters
+from thrs.control.modules.dc.control import DcControl
+from thrs.control.modules.dc.io import DcSensorValues, DcSimulationInputs
+from thrs.control.modules.dc.state import DcParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.input_output.definitions.simulation import ActiveHeatSource
-from thrs.input_output.modules.dc import DcSensorValues, DcSimulationInputs
 
 
 def test_all_idle(

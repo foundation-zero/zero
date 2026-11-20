@@ -4,21 +4,21 @@ import pytest
 from pytest import approx
 
 from tests.modules.thrusters.conftest import ThrustersRunner
-from thrs.control.modules.thrusters import (
+from thrs.control.modules.thrusters.control import (
     RECOVERY_MIX_LOWER_BOUND,
     RECOVERY_MIX_UPPER_BOUND,
     ThrustersControl,
-    ThrustersControllerState,
 )
-from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.control import Valve
-from thrs.input_output.definitions.simulation import Pcs, Thruster
-from thrs.input_output.definitions.units import PcsMode
-from thrs.input_output.modules.thrusters import (
+from thrs.control.modules.thrusters.io import (
     ThrustersControlValues,
     ThrustersSensorValues,
     ThrustersSimulationInputs,
 )
+from thrs.control.modules.thrusters.state import ThrustersControllerState
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.control import Valve
+from thrs.input_output.definitions.simulation import Pcs, Thruster
+from thrs.input_output.definitions.units import PcsMode
 
 OFF = Thruster(heat_flow=Stamped.stamp(0))
 

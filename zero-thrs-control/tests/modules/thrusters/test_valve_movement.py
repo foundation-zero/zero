@@ -2,7 +2,7 @@ from datetime import UTC, datetime, timedelta
 
 from pytest import approx
 
-from thrs.input_output.modules.thrusters import (
+from thrs.control.modules.thrusters.io import (
     ThrustersSensorValues,
     ThrustersSimulationOutputs,
 )

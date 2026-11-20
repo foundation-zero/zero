@@ -2,57 +2,57 @@ from typing import Annotated
 
 from pydantic import computed_field
 
-from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
-from thrs.input_output.definitions import sensor, simulation
-from thrs.input_output.definitions.system import AmcsControlMode
-from thrs.input_output.modules.adsorption import (
+from thrs.control.modules.adsorption.io import (
     AdsorptionControlValues,
     AdsorptionSensorValues,
     AdsorptionSimulationInputs,
     AdsorptionSimulationOutputs,
 )
-from thrs.input_output.modules.consumers import (
+from thrs.control.modules.consumers.io import (
     ConsumersControlValues,
     ConsumersSensorValues,
     ConsumersSimulationOutputs,
 )
-from thrs.input_output.modules.dc import (
+from thrs.control.modules.dc.io import (
     DcControlValues,
     DcSensorValues,
     DcSimulationInputs,
     DcSimulationOutputs,
 )
-from thrs.input_output.modules.dhw import (
+from thrs.control.modules.dhw.io import (
     DhwControlValues,
     DhwSensorValues,
     DhwSimulationInputs,
     DhwSimulationOutputs,
 )
-from thrs.input_output.modules.drives import (
+from thrs.control.modules.drives.io import (
     DrivesControlValues,
     DrivesSensorValues,
     DrivesSimulationInputs,
     DrivesSimulationOutputs,
 )
-from thrs.input_output.modules.high_temperature import (
+from thrs.control.modules.high_temperature.io import (
     HighTemperatureSimulationInputs,
     HighTemperatureSimulationOutputs,
 )
-from thrs.input_output.modules.pcm import (
+from thrs.control.modules.pcm.io import (
     PcmControlValues,
     PcmSensorValues,
     PcmSimulationOutputs,
 )
-from thrs.input_output.modules.pvt import (
+from thrs.control.modules.pvt.io import (
     PvtControlValues,
     PvtSensorValues,
     PvtSimulationOutputs,
 )
-from thrs.input_output.modules.thrusters import (
+from thrs.control.modules.thrusters.io import (
     ThrustersControlValues,
     ThrustersSensorValues,
     ThrustersSimulationOutputs,
 )
+from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
+from thrs.input_output.definitions import sensor, simulation
+from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.simulation.cosimulation import (
     CoSimulationMaster,
     CoSimulationParticipant,

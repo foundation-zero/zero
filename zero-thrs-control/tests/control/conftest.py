@@ -11,13 +11,14 @@ from tests.orchestration.simples import (
 )
 from thrs.classes.machine_state_logger import MachineStateLoggingService
 from thrs.control.manual import ManualControl
-from thrs.control.modules.thrusters import ThrustersControl, ThrustersParameters
-from thrs.control.switching import Switching
-from thrs.input_output.modules.thrusters import (
+from thrs.control.modules.thrusters.control import ThrustersControl
+from thrs.control.modules.thrusters.io import (
     ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
+from thrs.control.modules.thrusters.state import ThrustersParameters
+from thrs.control.switching import Switching
 from thrs.orchestration.simulation import Simulation
 from thrs.runtime.descriptions.simulation import SIMULATION_INPUTS
 from thrs.simulation.fmu import Fmu

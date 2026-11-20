@@ -272,7 +272,7 @@ def find_machine(control: Any) -> tuple[Any, Any, Any] | None:
 
 
 def module_description(module_name: str) -> Any:
-    module = importlib.import_module(f"thrs.control.modules.{module_name}")
+    module = importlib.import_module(f"thrs.control.modules.{module_name}.control")
     description = next(
         (
             getattr(module, attr)

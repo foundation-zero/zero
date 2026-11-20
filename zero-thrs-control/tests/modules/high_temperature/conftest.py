@@ -2,14 +2,18 @@ from datetime import UTC, datetime, timedelta
 
 from pytest import fixture
 
-from thrs.control.modules.consumers import (
-    CONSUMERS_MODULE_DESCRIPTION,
+from thrs.control.modules.consumers.control import CONSUMERS_MODULE_DESCRIPTION
+from thrs.control.modules.consumers.io import ConsumersSensorValues
+from thrs.control.modules.high_temperature.io import (
+    HighTemperatureSimulationInputs,
+    HighTemperatureSimulationOutputs,
 )
-from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
-from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
-from thrs.control.modules.thrusters import (
-    THRUSTERS_MODULE_DESCRIPTION,
-)
+from thrs.control.modules.pcm.control import PCM_MODULE_DESCRIPTION
+from thrs.control.modules.pcm.io import PcmSensorValues
+from thrs.control.modules.pvt.control import PVT_MODULE_DESCRIPTION
+from thrs.control.modules.pvt.io import PvtSensorValues
+from thrs.control.modules.thrusters.control import THRUSTERS_MODULE_DESCRIPTION
+from thrs.control.modules.thrusters.io import ThrustersSensorValues
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
     Boundary,
@@ -19,14 +23,6 @@ from thrs.input_output.definitions.simulation import (
 )
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.definitions.units import PcsMode
-from thrs.input_output.modules.consumers import ConsumersSensorValues
-from thrs.input_output.modules.high_temperature import (
-    HighTemperatureSimulationInputs,
-    HighTemperatureSimulationOutputs,
-)
-from thrs.input_output.modules.pcm import PcmSensorValues
-from thrs.input_output.modules.pvt import PvtSensorValues
-from thrs.input_output.modules.thrusters import ThrustersSensorValues
 from thrs.orchestration.module import ModuleDescription
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu

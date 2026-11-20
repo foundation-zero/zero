@@ -5,7 +5,7 @@ from tests.modules.conftest import (
     compare_modelica_names,
     compare_yard_tags,
 )
-from thrs.input_output.modules.pvt import (
+from thrs.control.modules.pvt.io import (
     PvtControlValues,
     PvtSensorValues,
     PvtSimulationInputs,

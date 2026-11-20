@@ -6,11 +6,13 @@ from pydantic import ValidationError
 from pytest import approx
 
 from tests.modules.pcm.conftest import PcmRunner
-from thrs.control.modules.pcm import (
-    PcmControl,
-    PcmControllerState,
-    PcmParameters,
+from thrs.control.modules.pcm.control import PcmControl
+from thrs.control.modules.pcm.io import (
+    PcmControlValues,
+    PcmSensorValues,
+    PcmSimulationInputs,
 )
+from thrs.control.modules.pcm.state import PcmControllerState, PcmParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.controllers import (
@@ -20,11 +22,6 @@ from thrs.input_output.definitions.controllers import (
     PidControllerValues,
 )
 from thrs.input_output.definitions.simulation import Boundary, TemperatureBoundary
-from thrs.input_output.modules.pcm import (
-    PcmControlValues,
-    PcmSensorValues,
-    PcmSimulationInputs,
-)
 
 type Check = Callable[[PcmSensorValues, PcmControlValues, PcmControllerState], None]
 
