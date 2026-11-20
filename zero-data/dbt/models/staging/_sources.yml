@@ -63,7 +63,7 @@ sources:
           - name: ts
             description: "Mandatory timestamp without valid value."
           - name: topic
-            description: "MQTT topic of the device (marpower/<NN>-<system>/<kind>/<instance>)."
+            description: "MQTT topic of the device (marpower/<NN>-<system>/<kind>[/<instance>]); the instance is left out for the only device of its kind."
             tests:
               - unique
               - not_null
