@@ -560,7 +560,7 @@ def run(
     greptime: Greptime,
     migration: Migration,
     until: date | None = None,
-    pause: float = 1.0,
+    pause: float = 0.1,
     sleep: Callable[[float], None] = time.sleep,
 ) -> int:
     """Copy day by day, newest first, across all units; returns the rows copied."""

@@ -109,6 +109,7 @@ tables and their columns.
    ```
    Open the dashboards over that day. `check` will still list the older days as missing.
 5. **Copy the rest.** It can take hours; stop it with Ctrl-C and start it again whenever.
+   After each topic and day it waits 0.1 s to leave room for live data; `--pause` changes that.
    ```bash
    uv run zero-data greptime migrate-history run spec.json --host <host>
    ```

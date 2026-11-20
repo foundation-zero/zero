@@ -125,8 +125,12 @@ class MigrateRunCmd(_MigrateCmd):
         Field(description="Only read, and print what a run would do."),
     ] = False
     pause: Annotated[
-        float, Field(description="Seconds to wait after each copied topic and day.")
-    ] = 1.0
+        float,
+        Field(
+            description="Seconds to wait after each copied topic and day, to leave "
+            "room for live data. A system has some 80,000 of them."
+        ),
+    ] = 0.1
     unlock: Annotated[
         CliImplicitFlag[bool],
         Field(description="Clear the lock an interrupted run left behind, then run."),
