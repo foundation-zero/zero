@@ -29,14 +29,14 @@ const rowKey = (alarm: Alarm) => `${alarm.system}/${alarm.tag}/${alarm.location}
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>{{ t("alarms.columns.priority") }}</TableHead>
-          <TableHead class="w-full">{{ t("alarms.columns.alarm") }}</TableHead>
-          <TableHead>{{ t("alarms.columns.location") }}</TableHead>
-          <TableHead>{{ t("alarms.columns.status") }}</TableHead>
-          <TableHead class="text-right whitespace-nowrap">
+          <TableHead class="px-4">{{ t("alarms.columns.priority") }}</TableHead>
+          <TableHead class="w-full px-4">{{ t("alarms.columns.alarm") }}</TableHead>
+          <TableHead class="px-4">{{ t("alarms.columns.location") }}</TableHead>
+          <TableHead class="px-4">{{ t("alarms.columns.status") }}</TableHead>
+          <TableHead class="px-4 text-right whitespace-nowrap">
             {{ t("alarms.columns.activatedAt") }}
           </TableHead>
-          <TableHead class="text-right whitespace-nowrap">
+          <TableHead class="px-4 text-right whitespace-nowrap">
             {{ t("alarms.columns.lastChangeAt") }}
           </TableHead>
         </TableRow>

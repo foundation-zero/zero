@@ -10,4 +10,6 @@ export type SplashAppLink = {
   glow: string;
   border: string;
   shadow: string;
+  /** Shown on the corner of the tile's icon, for what needs attention in the app. */
+  badge?: Component;
 };

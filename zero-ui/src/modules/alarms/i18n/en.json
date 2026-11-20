@@ -1,5 +1,6 @@
 {
   "alarms": {
+    "activeCount": "{count} active alarm | {count} active alarms",
     "loading": "Loading alarms…",
     "error": "Failed to load alarms.",
     "offline": "No alarm list received for several minutes: the alarm feed is offline. Check the alarms on the AMCS.",

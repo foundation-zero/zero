@@ -8,6 +8,7 @@ import {
   RiTempHotLine,
   RiWindyLine,
 } from "@remixicon/vue";
+import { defineAsyncComponent } from "vue";
 import { SplashAppLink } from "./splash-screen.types";
 
 // These timings were arbitrarily chosen by CoPilot but seem to work well together.
@@ -104,5 +105,8 @@ export const SPLASH_APP_LINKS: SplashAppLink[] = [
     border: "var(--destructive-dull)",
     shadow: "var(--destructive-dull)",
     iconBackground: "color-mix(in srgb, var(--destructive) 16%, transparent)",
+    badge: defineAsyncComponent(
+      () => import("@/modules/alarms/components/active-alarms-badge/ActiveAlarmsBadge.vue"),
+    ),
   },
 ].filter((app) => INCLUDED_APPS.includes(app.id));
