@@ -2,10 +2,8 @@
 import { useIntervalFn } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { AlarmTable } from "../components/alarm-table";
+import { POLL_INTERVAL_MS } from "../lib/consts";
 import { useAlarmsStore } from "../stores/alarms";
-
-// The forwarder publishes every 5 seconds.
-const POLL_INTERVAL_MS = 5_000;
 
 const { t } = useI18n();
 const store = useAlarmsStore();

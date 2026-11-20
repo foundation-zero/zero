@@ -34,7 +34,7 @@ const { t } = useI18n();
 
 <template>
   <main
-    class="bg-background text-foreground relative min-h-screen overflow-hidden"
+    class="bg-background text-foreground relative min-h-screen shrink-0 overflow-hidden"
     style="isolation: isolate"
   >
     <SplashScreenBackground />
@@ -86,7 +86,12 @@ const { t } = useI18n();
                 <SplashScreenTileIcon
                   :icon="appLink.icon"
                   :background="appLink.iconBackground"
-                />
+                >
+                  <component
+                    :is="appLink.badge"
+                    v-if="appLink.badge"
+                  />
+                </SplashScreenTileIcon>
                 <SplashScreenTileAction>
                   {{ t("views.splash.open") }}
                 </SplashScreenTileAction>
