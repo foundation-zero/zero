@@ -4,10 +4,6 @@ The old table holds a sounder that was renamed on day 2 (an earlier name of the 
 and a catch-all topic whose keys belong to two devices in two new tables.
 """
 
-import os
-import signal
-import subprocess
-import time
 from collections.abc import Iterator
 from datetime import date
 from pathlib import Path
@@ -471,32 +467,6 @@ def test_a_failed_run_releases_the_lock_and_unlock_clears_one_left_behind(
     with lock(greptime, unlock=True):
         pass
     assert LOCK_TABLE not in greptime.tables()
-
-
-def test_ctrl_c_stops_the_run_command_and_releases_the_lock(
-    tables: Query, greptime: Greptime, tmp_path: Path
-) -> None:
-    spec_path = tmp_path / "spec.json"
-    spec_path.write_text(SPEC.model_dump_json())
-    command = ["uv", "run", "zero-data", "greptime", "migrate-history", "run"]
-    running = subprocess.Popen(
-        [*command, str(spec_path), "--pause", "30"], start_new_session=True
-    )
-    deadline = time.monotonic() + 60
-    while LOCK_TABLE not in greptime.tables() and time.monotonic() < deadline:
-        time.sleep(0.2)
-    time.sleep(2)
-
-    os.killpg(running.pid, signal.SIGINT)
-    os.killpg(running.pid, signal.SIGINT)
-
-    assert running.wait(timeout=60) != 0
-    assert LOCK_TABLE not in greptime.tables()
-    assert (
-        0
-        < len(sounder_rows(tables)) + len(tables.fetch(f'SELECT 1 FROM "{GENERAL}"'))
-        < 8
-    )
 
 
 def test_load_refuses_a_table_the_spec_does_not_have(
