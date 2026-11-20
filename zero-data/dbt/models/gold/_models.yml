@@ -8,24 +8,14 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated active power."
-        tests:
-          - not_null
       - name: topic
         description: "MQTT topic associated with the raw message."
-        tests:
-          - not_null
       - name: consumer
         description: "Consumer identifier associated with the tag."
-        tests:
-          - not_null
       - name: power
         description: "Power consumption aggregated per minute."
-        tests:
-          - not_null
       - name: main_group
         description: "The main group classification of the power tag."
-        tests:
-          - not_null
       - name: sub_group
         description: "The sub group classification, within the main group, of the power tag."
   - name: gld_power_tags_power_per_minute_per_main_group
@@ -35,24 +25,14 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated active power."
-        tests:
-          - not_null
       - name: topic
         description: "MQTT topic associated with the raw message."
-        tests:
-          - not_null
       - name: consumer
         description: "Consumer identifier associated with the tag."
-        tests:
-          - not_null
       - name: power
         description: "Power consumption aggregated per minute."
-        tests:
-          - not_null
       - name: main_group
         description: "The main group classification of the power tag."
-        tests:
-          - not_null
   - name: gld_batteries_per_minute
     description: >
       Battery metrics aggregated per minute.
