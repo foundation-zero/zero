@@ -10,6 +10,7 @@ from pydantic_settings import BaseSettings, CliApp, CliPositionalArg, CliSubComm
 from zero_data.asyncapi import build_asyncapi
 from zero_data.config import io_lists
 from zero_data.data_gen import DEFAULT_PUBLISH_INTERVAL_SECONDS, generate_data
+from zero_data.device_metadata import generate_device_metadata
 from zero_data.greptime.cli import GreptimeCmd
 from zero_data.io_list import read_io_list
 from zero_data.vector_gen import generate_vector
@@ -89,6 +90,13 @@ class GenerateAsyncapiCmd(BaseModel):
             json.dump(build_asyncapi(io_result), result_file, indent=2)
 
 
+class GenerateDeviceMetadataCmd(BaseModel):
+    """Generate the dbt macro that loads marpower__device_metadata from its CSV"""
+
+    def cli_cmd(self):
+        generate_device_metadata()
+
+
 class ZeroDataCli(BaseSettings, cli_kebab_case=True):
     """Zero Data
 
@@ -104,6 +112,7 @@ class ZeroDataCli(BaseSettings, cli_kebab_case=True):
     generate_vector: CliSubCommand[GenerateVectorCmd]
     greptime: CliSubCommand[GreptimeCmd]
     generate_asyncapi: CliSubCommand[GenerateAsyncapiCmd]
+    generate_device_metadata: CliSubCommand[GenerateDeviceMetadataCmd]
 
     def cli_cmd(self):
         CliApp.run_subcommand(self)
