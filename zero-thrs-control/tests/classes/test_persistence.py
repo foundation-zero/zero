@@ -39,7 +39,7 @@ class CorruptSnapshotStore(PersistentEngine):
 
     async def load(self, module_name: str) -> ModulePersistenceSnapshot | None:
         return ModulePersistenceSnapshot.model_validate(
-            {"parameters": None, "manual_control_values": None, "control_mode": "x"}
+            {"parameters": None, "control_mode": "x"}
         )
 
     async def save(self, module_name: str, snapshot: ModulePersistenceSnapshot) -> None:
@@ -49,63 +49,14 @@ class CorruptSnapshotStore(PersistentEngine):
 def make_manager(
     store: PersistentEngine,
     apply_module_defaults_on_corrupt_database: bool = False,
-    restore_manual_control_values: bool = True,
 ) -> PersistManager:
-    return PersistManager(
-        store,
-        HEARTBEAT,
-        apply_module_defaults_on_corrupt_database,
-        restore_manual_control_values,
-    )
+    return PersistManager(store, HEARTBEAT, apply_module_defaults_on_corrupt_database)
 
 
 def change_setpoint(module: ConfigurableModule, setpoint: float) -> None:
     module.apply_persistence_snapshot(
         ModulePersistenceSnapshot(parameters={"setpoint": setpoint})
     )
-
-
-def test_diff_is_empty_for_identical_snapshots():
-    snapshot = ModulePersistenceSnapshot(
-        parameters={"setpoint": 50.0},
-        manual_control_values={"dhw_pump": {"on": {"value": False}}},
-        control_mode="manual",
-    )
-
-    assert snapshot._diff(snapshot.model_copy(deep=True)) == {}
-
-
-def test_diff_reports_only_the_changed_leaf_by_dotted_path():
-    old = ModulePersistenceSnapshot(
-        manual_control_values={
-            "dhw_pump": {
-                "on": {"value": False, "timestamp": "2026-08-24T12:10:00"},
-                "dutypoint": {"value": 0.0, "timestamp": "2026-08-24T12:10:00"},
-            }
-        },
-    )
-    new = ModulePersistenceSnapshot(
-        manual_control_values={
-            "dhw_pump": {
-                "on": {"value": True, "timestamp": "2026-08-24T12:29:00"},
-                "dutypoint": {"value": 0.0, "timestamp": "2026-08-24T12:29:00"},
-            }
-        },
-    )
-
-    diff = old._diff(new)
-
-    assert diff == {
-        "manual_control_values.dhw_pump.on.value": (False, True),
-        "manual_control_values.dhw_pump.on.timestamp": (
-            "2026-08-24T12:10:00",
-            "2026-08-24T12:29:00",
-        ),
-        "manual_control_values.dhw_pump.dutypoint.timestamp": (
-            "2026-08-24T12:10:00",
-            "2026-08-24T12:29:00",
-        ),
-    }
 
 
 async def test_persist_writes_on_first_call():
@@ -199,34 +150,6 @@ async def test_restore_does_not_trigger_an_immediate_rewrite():
 
     assert await manager.persist(module) is False
     assert store.snapshots["test"] == stored
-
-
-async def test_restore_skips_manual_control_values_when_disabled():
-    """`restore_manual_control_values=False` still restores parameters and control
-    mode from a stored snapshot - it only keeps manual control values at their
-    module defaults, mirroring how `allow_boot_without_persistence_having_active_postgres`
-    only toggles one specific piece of persisted behavior."""
-    stored = ModulePersistenceSnapshot(
-        parameters={"setpoint": 60.0},
-        manual_control_values={
-            "go_with_the": {"flow": {"value": 99.0}, "temperature": {"value": 20.0}}
-        },
-        control_mode="automatic",
-    )
-    manager = make_manager(
-        InMemoryPersistentEngine({"test": stored}),
-        restore_manual_control_values=False,
-    )
-    module = make_module()
-
-    assert await manager.restore(module) is True
-
-    snapshot = module.get_persistence_snapshot()
-    assert snapshot.parameters == {"setpoint": 60.0}
-    assert snapshot.control_mode == "automatic"
-    manual_control_values = snapshot.manual_control_values
-    assert manual_control_values is not None
-    assert manual_control_values["go_with_the"]["flow"]["value"] == 0.0
 
 
 async def test_restore_all_covers_every_module():
@@ -410,7 +333,6 @@ async def test_restore_with_malformed_control_mode_keeps_module_untouched():
     row) must not be able to smuggle an unrecognized control mode into the module."""
     corrupt = ModulePersistenceSnapshot.model_construct(
         parameters={"setpoint": 60.0},
-        manual_control_values=None,
         control_mode="deleted-enum-value",  # pyrefly: ignore[bad-argument-type]
     )
     manager = make_manager(InMemoryPersistentEngine({"test": corrupt}))
@@ -420,22 +342,6 @@ async def test_restore_with_malformed_control_mode_keeps_module_untouched():
         await manager.restore(module)
 
     assert module.get_persistence_snapshot().control_mode == "manual"
-    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
-
-
-async def test_restore_with_malformed_manual_control_values_keeps_defaults():
-    corrupt = ModulePersistenceSnapshot(
-        parameters={"setpoint": 60.0},
-        manual_control_values={"go_with_the": "not-a-flow-sensor"},
-    )
-    manager = make_manager(InMemoryPersistentEngine({"test": corrupt}))
-    module = make_module()
-
-    with pytest.raises(ValidationError):
-        await manager.restore(module)
-
-    # Since manual control values fail validation, the whole restore is rejected -
-    # even the otherwise-valid setpoint must not be partially applied.
     assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
 
 

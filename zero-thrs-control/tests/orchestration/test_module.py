@@ -301,7 +301,6 @@ async def test_snapshot_with_custom_params_restores_into_first_automatic_tick():
     module.apply_persistence_snapshot(
         ModulePersistenceSnapshot(
             parameters={"setpoint": 77.0},
-            manual_control_values=None,
             control_mode="automatic",
         )
     )

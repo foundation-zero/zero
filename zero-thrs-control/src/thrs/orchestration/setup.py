@@ -86,7 +86,6 @@ async def setup_persistence_manager(
     database: PostgresDatabase | None,
     module_persistence_enabled: bool,
     allow_boot_without_persistence_having_active_postgres: bool = False,
-    restore_manual_control_values: bool = True,
 ) -> PersistManager:
     """Build the persist manager. Without persistence enabled it silently no-ops, so
     the runtime can run against MQTT only."""
@@ -103,9 +102,7 @@ async def setup_persistence_manager(
                 "is False - refusing to boot without persistence having active postgres"
             )
 
-    return PersistManager(
-        engine, restore_manual_control_values=restore_manual_control_values
-    )
+    return PersistManager(engine)
 
 
 async def _is_postgres_reachable(database: PostgresDatabase) -> bool:

@@ -122,9 +122,6 @@ class Module[
         """Serialize the configuration a restart should be able to pick up again."""
         return ModulePersistenceSnapshot(
             parameters=self._control.parameters.model_dump(mode="json"),
-            manual_control_values=self._control.manual_controls.model_dump(
-                mode="json", exclude={"external_available"}
-            ),
             control_mode=self._control.control_mode,
         )
 
@@ -132,27 +129,12 @@ class Module[
         """Apply a configuration snapshot."""
 
         parameters = self._validate_parameters(snapshot)
-        manual_control_values = self._validate_manual_control_values(snapshot)
         automation_mode = AutomationMode(mode=snapshot.control_mode)
 
         if parameters is not None:
             self._control.update_parameters(parameters)
 
-        if manual_control_values is not None:
-            self._control.update_manual_controls(manual_control_values)
-
         self._control.switch_mode(automation_mode)
-
-    def _validate_manual_control_values(
-        self, snapshot: ModulePersistenceSnapshot
-    ) -> C | None:
-        """Validate manual control values from a snapshot without applying them."""
-        if snapshot.manual_control_values is None:
-            return None
-
-        return self._control.manual_controls.model_validate(
-            snapshot.manual_control_values
-        )
 
     def _validate_parameters(self, snapshot: ModulePersistenceSnapshot) -> P | None:
         """Validate control parameters from a snapshot without applying them."""
