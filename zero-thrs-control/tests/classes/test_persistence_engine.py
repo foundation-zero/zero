@@ -12,7 +12,6 @@ def _stored_row(automation_mode: str) -> SimpleNamespace:
     """Stands in for a `ModulePersistence` row as returned by `session.get()`."""
     return SimpleNamespace(
         parameters={"setpoint": 60.0},
-        manual_control_values=None,
         automation_mode=automation_mode,
     )
 

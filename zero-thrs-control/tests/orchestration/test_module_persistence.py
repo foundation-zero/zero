@@ -18,7 +18,6 @@ def test_persistence_snapshot_starts_in_manual_with_defaults():
 
     assert snapshot.control_mode == "manual"
     assert snapshot.parameters == {"setpoint": 50.0}
-    assert snapshot.manual_control_values is not None
 
 
 def test_persistence_snapshot_follows_automation_mode():
@@ -73,7 +72,6 @@ def test_apply_snapshot_is_atomic_when_control_mode_is_invalid():
     module = make_module()
     corrupt = ModulePersistenceSnapshot.model_construct(
         parameters={"setpoint": 60.0},
-        manual_control_values=None,
         control_mode="deleted-enum-value",  # pyrefly: ignore[bad-argument-type]
     )
 
@@ -94,16 +92,11 @@ def test_apply_snapshot_with_unchanged_default_values_applies_correctly():
 
     assert module.get_persistence_snapshot().control_mode == "manual"
     assert module.get_persistence_snapshot().parameters == default_snapshot.parameters
-    assert (
-        module.get_persistence_snapshot().manual_control_values
-        == default_snapshot.manual_control_values
-    )
 
 
 async def test_persist_then_restore_reproduces_the_module_snapshot():
     channels = make_channels()
     channels.get_parameters.return_value = ConfigurableParameters(setpoint=65.0)
-    channels.get_manual_controls.return_value = simple_control_values(1.25)
     channels.get_automation_modes.return_value = AutomationMode(mode="automatic")
 
     store = InMemoryPersistentEngine()
@@ -112,9 +105,7 @@ async def test_persist_then_restore_reproduces_the_module_snapshot():
     await PersistManager(store).persist(running)
 
     restarted = make_module()
-    restored = await PersistManager(store, restore_manual_control_values=True).restore(
-        restarted
-    )
+    restored = await PersistManager(store).restore(restarted)
 
     assert restored is True
     assert restarted.get_persistence_snapshot() == running.get_persistence_snapshot()
