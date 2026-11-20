@@ -7,8 +7,8 @@ old topic is history of its new topic.
 Nothing is kept outside Greptime. Each insert leaves out the timestamps the new topic already
 holds, so a run can be stopped and started again, and a second run copies nothing. Two runs
 at once would both find a timestamp missing and both insert it, so a run holds a lock: a
-table in Greptime that exists while it copies. The new
-tables are append-only: a copied row can't be changed or deleted afterwards, so a unit is
+table in Greptime that exists while it copies. A drop holds it too, to stay out of a run. The
+new tables are append-only: a copied row can't be changed or deleted afterwards, so a unit is
 either copied with all its columns or left out and reported.
 """
 
@@ -514,7 +514,7 @@ def report(migration: Migration, leftovers: dict[str, Leftover]) -> str:
 
 @contextmanager
 def lock(greptime: Greptime, unlock: bool = False) -> Iterator[None]:
-    """Hold the lock that keeps a second run out; `unlock` first clears one left behind.
+    """Hold the lock that keeps runs and drops apart; `unlock` first clears one left behind.
 
     A run that loses its connection can't release the lock, and its last insert may still be
     going on in Greptime. Give the lock a connection of its own: Ctrl-C cancels the statement
@@ -537,8 +537,8 @@ def lock(greptime: Greptime, unlock: bool = False) -> Iterator[None]:
             )
         )
         raise MigrationFailed(
-            f"Another run holds the lock ({holders or 'just started'}). If that run "
-            "has ended, wait a minute for its last insert and run again with --unlock."
+            f"A run or drop holds the lock ({holders or 'just started'}). If it has "
+            "ended, wait a minute for its last insert and start again with --unlock."
         ) from error
     greptime.run(
         f"INSERT INTO {quote_ident(LOCK_TABLE)} VALUES "
@@ -551,7 +551,9 @@ def lock(greptime: Greptime, unlock: bool = False) -> Iterator[None]:
         try:
             greptime.run(f"DROP TABLE {quote_ident(LOCK_TABLE)}")
         except psycopg.Error:
-            logger.warning("Could not release the lock; the next run needs --unlock")
+            logger.warning(
+                "Could not release the lock; the next run or drop needs --unlock"
+            )
         finally:
             signal.signal(signal.SIGINT, interrupt)
 

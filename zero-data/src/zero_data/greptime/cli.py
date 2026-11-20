@@ -1,4 +1,5 @@
 import logging
+from contextlib import ExitStack
 from datetime import date
 from pathlib import Path
 from typing import Annotated
@@ -187,12 +188,21 @@ class MigrateDropCmd(_MigrateCmd):
     execute: Annotated[CliImplicitFlag[bool], Field(description="Drop the tables.")] = (
         False
     )
+    unlock: Annotated[
+        CliImplicitFlag[bool],
+        Field(description="Clear the lock an interrupted run left behind, then drop."),
+    ] = False
 
     def cli_cmd(self) -> None:
         if self.accept_unmigrated and not self.table:
             raise SystemExit("--accept-unmigrated needs the tables named with --table")
         connection = _connection(self.host)
-        with connect(connection) as handle:
+        with connect(connection) as handle, ExitStack() as held:
+            if self.execute:
+                lock_handle = held.enter_context(connect(connection))
+                held.enter_context(
+                    lock(Greptime(lock_handle, connection.dbname), self.unlock)
+                )
             outcomes = drop(
                 Greptime(handle, connection.dbname),
                 read_spec(self.spec),

@@ -25,7 +25,8 @@ This guide walks through a rehearsal on a laptop and then the migration itself.
   it and start it again, and a second run copies nothing.
 - **One run at a time.** Two runs at once would both find a timestamp missing and both insert
   it, and a duplicate row can't be removed. A run therefore holds a lock, the table
-  `migrate_history_running`, and a second run refuses to start while it exists.
+  `migrate_history_running`, and a second run refuses to start while it exists. `drop
+  --execute` holds the same lock, so it can't drop a table a run is reading.
 - **Old and new topics never publish side by side**, so every row of an old topic is history
   of its new topic. No cut-over time is passed.
 
@@ -34,9 +35,9 @@ The four commands, all under `uv run zero-data greptime migrate-history`:
 | Command | What it does |
 |---|---|
 | `build-spec <mapping.csv> --out <spec.json>` | Makes the spec. Needs Docker, not Greptime. |
-| `run <spec.json> [--dry-run] [--until <date>]` | Copies. With `--dry-run` it only reads and prints a report. |
+| `run <spec.json> [--dry-run] [--until <date>] [--unlock]` | Copies. With `--dry-run` it only reads and prints a report. |
 | `check <spec.json>` | Compares old and new. Prints the differences and exits 1 when there are any. |
-| `drop <spec.json> [--execute]` | Drops the old tables whose history is checked. Without `--execute` it prints what it would do. |
+| `drop <spec.json> [--execute] [--unlock]` | Drops the old tables whose history is checked. Without `--execute` it prints what it would do. |
 
 `run`, `check` and `drop` take `--host <greptime host>` (default: `GREPTIME_HOST`, else the
 local Greptime) and `--table <old table>`, repeatable, to work on the new topics those old
@@ -155,11 +156,11 @@ tables and their columns.
 
 ## When something goes wrong
 
-- **The run refuses to start because another run holds the lock:** the message says from
-  which machine and since when. Ctrl-C and errors release the lock. A run that lost its
+- **A run or drop refuses to start because another one holds the lock:** the message says
+  from which machine and since when. Ctrl-C and errors release the lock. A run that lost its
   connection (a closed laptop, a restarted Greptime) can't, and leaves it behind. Make sure
   that run has ended, wait a minute so its last insert is finished in Greptime, and start
-  again with `--unlock`.
+  again with `--unlock` (`run` and `drop` both take it).
 
 - **The run stops with an error** (a timeout, a restart of Greptime): start it again. If
   Greptime ran out of memory on an insert, lower `VALUES_PER_INSERT` in `migrate_history.py`

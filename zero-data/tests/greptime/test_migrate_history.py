@@ -440,7 +440,7 @@ def test_a_second_run_is_refused_while_one_holds_the_lock(
     tables: Query, greptime: Greptime
 ) -> None:
     with lock(greptime):
-        with pytest.raises(MigrationFailed, match="Another run holds the lock"):
+        with pytest.raises(MigrationFailed, match="A run or drop holds the lock"):
             with lock(greptime):
                 pass
 
@@ -467,6 +467,19 @@ def test_a_failed_run_releases_the_lock_and_unlock_clears_one_left_behind(
     with lock(greptime, unlock=True):
         pass
     assert LOCK_TABLE not in greptime.tables()
+
+
+def test_drop_is_refused_while_a_run_holds_the_lock(
+    tables: Query, greptime: Greptime, tmp_path: Path
+) -> None:
+    spec_path = tmp_path / "spec.json"
+    spec_path.write_text(SPEC.model_dump_json())
+    migrate(greptime)
+
+    with lock(greptime):
+        with pytest.raises(MigrationFailed, match="A run or drop holds the lock"):
+            MigrateDropCmd(spec=spec_path, table=[OLD_GENERAL], execute=True).cli_cmd()
+    assert OLD_GENERAL in greptime.tables()
 
 
 def test_load_refuses_a_table_the_spec_does_not_have(
