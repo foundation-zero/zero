@@ -64,8 +64,6 @@ def test_yard_tags():
         DhwControlValues,
         {
             "dhw_mode",
-            "freshwater_hotwater_flow",
-            "freshwater_hotwater_temperature",
             "dhw_tanks_controller",
             "dhw_pump_flow_controller",
             "dhw_drives_flow_controller",

@@ -1,4 +1,3 @@
-from datetime import UTC, datetime
 from typing import Annotated, cast
 
 from pydantic import ConfigDict, computed_field
@@ -99,26 +98,6 @@ class PvtSensorValues(AmcsModeSensorValues):
         sensor.PressureSensor,
         component_meta(yard_tag="50001097-06", component_type="pressure_sensor"),
     ]
-    pvt_pressure_main_vacuum: Annotated[
-        sensor.PressureSensor,
-        component_meta(
-            yard_tag="50009059-01",
-            component_type="pressure_sensor",
-            included_in_fmu=False,
-        ),
-    ] = sensor.PressureSensor(  # TODO: Remove default
-        pressure=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
-    )
-    pvt_pressure_owners_vacuum: Annotated[
-        sensor.PressureSensor,
-        component_meta(
-            yard_tag="50009059-02",
-            component_type="pressure_sensor",
-            included_in_fmu=False,
-        ),
-    ] = sensor.PressureSensor(  # TODO: Remove default
-        pressure=Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
-    )
     pvt_switch_main_fwd: Annotated[
         sensor.Valve,
         valve_meta(yard_tag="50001067-01", component_type="valve", valve_type="switch"),
@@ -138,18 +117,6 @@ class PvtSensorValues(AmcsModeSensorValues):
     pvt_temperature_supply: Annotated[
         sensor.TemperatureSensor,
         component_meta(yard_tag="50001038-24", component_type="temperature_sensor"),
-    ]
-    pvt_pyranometer_ps: Annotated[
-        sensor.Pyranometer,
-        component_meta(
-            yard_tag="50009043", component_type="pyranometer", included_in_fmu=False
-        ),
-    ]
-    pvt_pyranometer_sb: Annotated[
-        sensor.Pyranometer,
-        component_meta(
-            yard_tag="50009044", component_type="pyranometer", included_in_fmu=False
-        ),
     ]
     pvt_temperature_main_string1_1_return: Annotated[
         sensor.TemperatureSensor,
@@ -782,28 +749,6 @@ class PvtSensorValues(AmcsModeSensorValues):
                 self.pvt_flow_owners_string6,
             ],
         )
-
-    # TODO: Remove when api is ready since we don't need them for control
-    pvt_pvt_main_fwd: Annotated[
-        sensor.Pvt,
-        component_meta(
-            yard_tag="50009001-01", component_type="pvt", included_in_fmu=False
-        ),
-    ] = sensor.Pvt(power=Stamped(value=0, timestamp=datetime.fromtimestamp(0, UTC)))
-
-    pvt_pvt_main_aft: Annotated[
-        sensor.Pvt,
-        component_meta(
-            yard_tag="50009002-01", component_type="pvt", included_in_fmu=False
-        ),
-    ] = sensor.Pvt(power=Stamped(value=0, timestamp=datetime.fromtimestamp(0, UTC)))
-
-    pvt_pvt_owners: Annotated[
-        sensor.Pvt,
-        component_meta(
-            yard_tag="50009001-03", component_type="pvt", included_in_fmu=False
-        ),
-    ] = sensor.Pvt(power=Stamped(value=0, timestamp=datetime.fromtimestamp(0, UTC)))
 
     @computed_field(
         json_schema_extra=computed_meta(

@@ -1,6 +1,6 @@
 import json
 import logging
-from asyncio import Event, TaskGroup, gather, timeout
+from asyncio import Event, TaskGroup, gather
 from collections import defaultdict
 from collections.abc import Awaitable, Callable, Coroutine, Iterable, Mapping
 from functools import partial
@@ -120,7 +120,6 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
             for field_name, field in message_type.model_fields.items()
         }
         self._builder = PartialModelBuilder(self._cls, context)
-        self._update_event = Event()
 
     @staticmethod
     def only_computed_fields[T: ThrsValues](
@@ -164,7 +163,6 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
             return
 
         self._builder.input(self._topic_to_field[topic], json)
-        self._update_event.set()
 
     def result(self) -> M | None:
         return self._builder.result()
@@ -172,24 +170,13 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
     async def wait_for_result(self) -> M:
         return await self._builder.wait_for_result()
 
-    async def wait_for_update(self):
-        await self._update_event.wait()
-        self._update_event.clear()
-
-    async def wait_for(self, condition: Callable[[M], bool], timeout_s: float) -> M:
-        async with timeout(timeout_s):
-            while True:
-                if (result := self.result()) and condition(result):
-                    return result
-                await self.wait_for_update()
-
 
 class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
     """MQTT mapping that maps the entire model to a single topic"""
 
     def __init__(
         self,
-        cls: type[M] | tuple[type[M], ...],
+        cls: type[M],
         topic: str,
         topic_suffix: str | None = None,
         *,
@@ -197,18 +184,14 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         context: WireContext | None = None,
     ):
         self._context = context
-        self._types = cls if isinstance(cls, tuple) else (cls,)
-        validate_type: type[M] | object = self._types[0]
-        for extra_type in self._types[1:]:
-            validate_type = validate_type | extra_type
-        self._adapter: TypeAdapter[M] = TypeAdapter(validate_type)
+        self._cls = cls
+        self._adapter: TypeAdapter[M] = TypeAdapter(cls)
         self._topic = f"{topic}{f'/{topic_suffix}' if topic_suffix else ''}"
         self._value = None
         # An Event rather than a Future: since Python 3.14 a Future needs a running loop,
         # and mappings are fed outside one.
         self._first_value: M | None = None
         self._first_received = Event()
-        self._update_event = Event()
         self._hooks: list[Callable[[M], object]] = []
         self._autoclear = autoclear
 
@@ -249,7 +232,6 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
             if not self._first_received.is_set():
                 self._first_value = self._value
                 self._first_received.set()
-            self._update_event.set()
             for hook in self._hooks:
                 result = hook(self._value)
                 if isawaitable(result):
@@ -268,20 +250,6 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         if self._autoclear:
             self._value = None
         return result
-
-    async def wait_for_update(self):
-        await self._update_event.wait()
-        self._update_event.clear()
-
-    async def wait_for(self, condition: Callable[[M], bool], timeout_s: float) -> M:
-        async with timeout(timeout_s):
-            while True:
-                peek = self._value
-                if peek is not None and condition(peek):
-                    if self._autoclear:
-                        self._value = None
-                    return peek
-                await self.wait_for_update()
 
     def add_hook(self, hook: Callable[[M], object]):
         self._hooks.append(hook)
@@ -615,140 +583,6 @@ class SimulationChannels[
         await self._publish_merged((sensor_values, control_values))
 
 
-class ControlApiChannels[
-    S: ThrsValues,
-    C: ThrsValues,
-    P: ThrsValues,
-    M: ThrsValues,
-    CS: ThrsValues,
-]:
-    def __init__(
-        self,
-        connector: MqttConnector,
-        config: Config,
-        module_name: str,
-        module_description: ModuleDescription[S, C, P, M, CS],
-    ) -> None:
-        self.module_name = module_name
-        sensor_values_mapping = PartialMqttMapping[S](
-            module_description.sensor_values_cls,
-            config.mqtt_devices_topic_prefix,
-            device_module_prefix(module_name),
-        )
-        connector._register_listener(sensor_values_mapping)
-
-        actuated_control_values_mapping = PartialMqttMapping[C](
-            module_description.control_values_cls,
-            config.mqtt_devices_topic_prefix,
-            device_module_prefix(module_name),
-            context=AMCS_RECEIVE_CONTEXT,
-        )
-        connector._register_listener(actuated_control_values_mapping)
-
-        # We should not need to wrap here with SwitchingControlMode because it exposes SwitchingControlMode
-        # which we should not have to know about here... This needs a refactor of how switching control is handled
-        control_modes_mapping = DirectMqttMapping[SwitchingControlMode[M]].for_module(
-            SwitchingControlMode[module_description.control_mode_cls],
-            config.mqtt_controller_topic_prefix,
-            module_name,
-            type_topic="control-mode",
-        )
-        connector._register_listener(control_modes_mapping)
-
-        automation_mode_mapping = DirectMqttMapping[AutomationMode].for_module(
-            AutomationMode,
-            config.mqtt_controller_topic_prefix,
-            module_name,
-            type_topic="automation-mode",
-        )
-        connector._register_listener(automation_mode_mapping)
-
-        parameters_mapping = DirectMqttMapping[P].for_module(
-            module_description.parameters_cls,
-            config.mqtt_controller_topic_prefix,
-            module_name,
-            type_topic="parameters",
-        )
-        connector._register_listener(parameters_mapping)
-
-        controller_state_mapping = PartialMqttMapping[CS](
-            module_description.controller_state_cls,
-            config.mqtt_controller_topic_prefix,
-            module_name,
-        )
-        connector._register_listener(controller_state_mapping)
-
-        self.send_manual_values = connector._create_publisher(
-            DirectMqttMapping[C].for_module(
-                module_description.control_values_cls,
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="manual-values",
-                topic_suffix=config.mqtt_controller_topic_suffix,
-            )
-        )
-        self.send_automation_mode = connector._create_publisher(
-            DirectMqttMapping[AutomationMode].for_module(
-                AutomationMode,
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="automation-mode",
-                topic_suffix=config.mqtt_controller_topic_suffix,
-            )
-        )
-        self.send_parameters = connector._create_publisher(
-            DirectMqttMapping[P].for_module(
-                module_description.parameters_cls,
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="parameters",
-                topic_suffix=config.mqtt_controller_topic_suffix,
-            )
-        )
-
-        self.get_sensor_values = sensor_values_mapping.result
-        self.get_actuated_control_values = actuated_control_values_mapping.result
-        self.get_control_modes = control_modes_mapping.result
-        self.get_parameters = parameters_mapping.result
-        self.get_controller_state = controller_state_mapping.result
-        self.wait_for_actuated_control_values = actuated_control_values_mapping.wait_for
-        self.wait_for_parameters = parameters_mapping.wait_for
-        self.wait_for_control_modes = control_modes_mapping.wait_for
-        self.wait_for_automation_mode = automation_mode_mapping.wait_for
-
-
-class SimulationApiChannels[I: ThrsValues, O: ThrsValues]:
-    def __init__(
-        self,
-        connector: MqttConnector,
-        config: Config,
-        simulation_inputs_cls: type[I] | tuple[type[I], ...],
-        simulation_outputs_cls: type[O] | tuple[type[O], ...],
-    ) -> None:
-        self.simulation_inputs_mapping = DirectMqttMapping(
-            simulation_inputs_cls,
-            f"{config.mqtt_simulator_topic_prefix}/{SIMULATION_INPUTS_TOPIC}",
-        )
-        connector._register_listener(self.simulation_inputs_mapping)
-
-        self.simulation_outputs_mapping = DirectMqttMapping(
-            simulation_outputs_cls,
-            f"{config.mqtt_simulator_topic_prefix}/{SIMULATION_OUTPUTS_TOPIC}",
-        )
-        connector._register_listener(self.simulation_outputs_mapping)
-
-        self.send_simulation_inputs = connector._create_publisher(
-            DirectMqttMapping(
-                simulation_inputs_cls,
-                f"{config.mqtt_simulator_topic_prefix}/{SIMULATION_INPUTS_TOPIC}/{config.mqtt_simulator_topic_suffix}",
-            )
-        )
-
-        self.get_simulation_inputs = self.simulation_inputs_mapping.result
-        self.get_simulation_outputs = self.simulation_outputs_mapping.result
-        self.wait_for_simulation_inputs = self.simulation_inputs_mapping.wait_for
-
-
 class DirectivesChannels:
     def __init__(self, connector: MqttConnector, config: Config) -> None:
         self._connector = connector
@@ -771,27 +605,6 @@ class DirectivesChannels:
         await self._connector._mqtt_client.publish(
             self._status_topic, b"", qos=1, retain=True
         )
-
-
-class DirectivesApiChannels:
-    def __init__(self, connector: MqttConnector, config: Config) -> None:
-        status_topic = f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}"
-        simulation_status_mapping = DirectMqttMapping(
-            SimulationStatusMessage, status_topic
-        )
-        connector._register_listener(simulation_status_mapping)
-
-        self.send_status_set = connector._create_publisher(
-            DirectMqttMapping(
-                SimulationStatusSetMessage,
-                f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusSetMessage.subscribe_topic()}",
-            )
-        )
-
-        self.get_simulation_status = simulation_status_mapping.result
-        self.wait_for_simulation_status = simulation_status_mapping.wait_for_result
-        self.wait_for_simulation_status_where = simulation_status_mapping.wait_for
-        self.on_simulation_status = simulation_status_mapping.add_hook
 
 
 class MqttConnector:

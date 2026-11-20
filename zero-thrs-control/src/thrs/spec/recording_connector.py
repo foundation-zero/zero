@@ -80,7 +80,7 @@ def _describe_mapping(
             for name, field in fields.items()
         ]
     if isinstance(mapping, DirectMqttMapping):
-        return [(mapping._topic, t, None, None) for t in mapping._types]
+        return [(mapping._topic, mapping._cls, None, None)]
     if isinstance(mapping, ModuleMqttMapping):
         return [
             pair

@@ -47,20 +47,6 @@
       "cwd": "${workspaceFolder}",
     },
     {
-      "name": "THRS: Debug graphql api",
-      "type": "debugpy",
-      "request": "launch",
-      "module": "fastapi",
-      "envFile": "${workspaceFolder}/.env",
-      "args": [
-        "dev",
-        "src/thrs/graphql/asgi.py"
-      ],
-      "console": "integratedTerminal",
-      "justMyCode": false,
-      "cwd": "${workspaceFolder}",
-    },
-    {
       "name": "THRS: Debug generate asyncapi",
       "type": "debugpy",
       "request": "launch",
