@@ -2,11 +2,7 @@
 import TopNav from "@/modules/common/components/navigation/TopNav.vue";
 import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.vue";
 import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
-import { provideClient } from "@urql/vue";
 import { useI18n } from "vue-i18n";
-import client from "../graphql/client";
-
-provideClient(client);
 
 const { t } = useI18n();
 </script>
