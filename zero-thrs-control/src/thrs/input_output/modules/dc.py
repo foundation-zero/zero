@@ -223,7 +223,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002076",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-44-1",
+            topic_override="45-battery/pack/05-44-1",
         ),
     ]
     dc_brightloop_aft1_converter2: Annotated[
@@ -232,7 +232,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002076",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-44-2",
+            topic_override="45-battery/pack/05-44-2",
         ),
     ]
     dc_brightloop_aft1_converter3: Annotated[
@@ -241,7 +241,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002076",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-44-3",
+            topic_override="45-battery/pack/05-44-3",
         ),
     ]
     dc_brightloop_aft1_converter4: Annotated[
@@ -250,7 +250,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002076",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-44-4",
+            topic_override="45-battery/pack/05-44-4",
         ),
     ]
     dc_brightloop_aft2_converter1: Annotated[
@@ -259,7 +259,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002075",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-43-1",
+            topic_override="45-battery/pack/05-43-1",
         ),
     ]
     dc_brightloop_aft2_converter2: Annotated[
@@ -268,7 +268,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002075",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-43-2",
+            topic_override="45-battery/pack/05-43-2",
         ),
     ]
     dc_brightloop_aft2_converter3: Annotated[
@@ -277,7 +277,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002075",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-43-3",
+            topic_override="45-battery/pack/05-43-3",
         ),
     ]
     dc_brightloop_aft3_converter1: Annotated[
@@ -286,7 +286,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002074",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-42-1",
+            topic_override="45-battery/pack/05-42-1",
         ),
     ]
     dc_brightloop_aft3_converter2: Annotated[
@@ -295,7 +295,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002074",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-42-2",
+            topic_override="45-battery/pack/05-42-2",
         ),
     ]
     dc_brightloop_aft3_converter3: Annotated[
@@ -304,7 +304,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002074",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-42-3",
+            topic_override="45-battery/pack/05-42-3",
         ),
     ]
     dc_brightloop_aft4_converter1: Annotated[
@@ -313,7 +313,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002073",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-41-1",
+            topic_override="45-battery/pack/05-41-1",
         ),
     ]
     dc_brightloop_aft4_converter2: Annotated[
@@ -322,7 +322,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002073",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-41-2",
+            topic_override="45-battery/pack/05-41-2",
         ),
     ]
     dc_brightloop_aft4_converter3: Annotated[
@@ -331,7 +331,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002073",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-41-3",
+            topic_override="45-battery/pack/05-41-3",
         ),
     ]
     dc_brightloop_aft4_converter4: Annotated[
@@ -340,7 +340,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002073",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-41-4",
+            topic_override="45-battery/pack/05-41-4",
         ),
     ]
     dc_brightloop_fwd1_converter1: Annotated[
@@ -349,7 +349,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002078",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-46-1",
+            topic_override="45-battery/pack/05-46-1",
         ),
     ]
     dc_brightloop_fwd1_converter2: Annotated[
@@ -358,7 +358,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002078",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-46-2",
+            topic_override="45-battery/pack/05-46-2",
         ),
     ]
     dc_brightloop_fwd1_converter3: Annotated[
@@ -367,7 +367,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002078",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-46-3",
+            topic_override="45-battery/pack/05-46-3",
         ),
     ]
     dc_brightloop_fwd1_converter4: Annotated[
@@ -376,7 +376,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002078",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-46-4",
+            topic_override="45-battery/pack/05-46-4",
         ),
     ]
     dc_brightloop_fwd2_converter1: Annotated[
@@ -385,7 +385,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002077",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-45-1",
+            topic_override="45-battery/pack/05-45-1",
         ),
     ]
     dc_brightloop_fwd2_converter2: Annotated[
@@ -394,7 +394,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002077",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-45-2",
+            topic_override="45-battery/pack/05-45-2",
         ),
     ]
     dc_brightloop_fwd2_converter3: Annotated[
@@ -403,7 +403,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002077",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-45-3",
+            topic_override="45-battery/pack/05-45-3",
         ),
     ]
     dc_brightloop_fwd2_converter4: Annotated[
@@ -412,7 +412,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002077",
             component_type="brightloop_converter",
             included_in_fmu=False,
-            topic_override="450000-main-power-storage-errors/5-45-4",
+            topic_override="45-battery/pack/05-45-4",
         ),
     ]
 
@@ -528,7 +528,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002082",
             component_type="ugrid",
             included_in_fmu=False,
-            topic_override="450000-dynamic-conv-ps-ara/5-11-u101",
+            topic_override="45-dc-ac/inverter/05-11-u101",
         ),
     ]
     dc_ugrid2: Annotated[
@@ -537,7 +537,7 @@ class DcSensorValues(AmcsModeSensorValues):
             yard_tag="45002081",
             component_type="ugrid",
             included_in_fmu=False,
-            topic_override="450000-dynamic-conv-sb-ara/5-12-u101",
+            topic_override="45-dc-ac/inverter/05-12-u101",
         ),
     ]
 
