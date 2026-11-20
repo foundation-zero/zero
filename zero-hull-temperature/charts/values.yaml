@@ -23,8 +23,8 @@ stub:
   seconds: -1
 
 hullTemperature:
-  activateTopic: marpower/450000-amcs/Command
-  activateJsonPath: $.KEB1_ACTIVATE_HULL_MEASUREMENT_ONOFF
+  activateTopic: marpower/45-amcs/plc/keb1/Command
+  activateJsonPath: $.HullTemperatureMeasurementOn
 
 resources: {}
 
