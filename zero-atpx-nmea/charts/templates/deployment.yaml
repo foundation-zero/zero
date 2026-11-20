@@ -65,6 +65,25 @@ spec:
                   name: {{ .Values.mqtt.existingSecret }}
                   key: {{ .Values.mqtt.existingSecretPasswordKey }}
             {{- end }}
+          ports:
+            - name: http
+              containerPort: 8080
+          # Readiness: /health pings both brokers with a 4 s timeout. Liveness:
+          # /live answers while the event loop runs, so a pod whose loop is
+          # stuck for a minute is restarted (docs/adr/0001-dependency-outages.md).
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

@@ -12,6 +12,7 @@ dependencies = [
     "faststream[mqtt]>=0.7.5,<1.0.0",
     "zmqtt>=0.2.6,<0.3.0",
     "pynmea2>=1.19.0,<2.0.0",
+    "uvicorn>=0.54.0,<0.55.0",
 ]
 dynamic = ["version"]
 
