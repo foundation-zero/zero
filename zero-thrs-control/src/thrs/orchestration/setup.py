@@ -6,11 +6,6 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from thrs.classes.database import PostgresDatabase
-from thrs.classes.machine_state_logger import (
-    MachineStateLoggingService,
-    MachineStateLoggingServiceNoop,
-    StateLogger,
-)
 from thrs.classes.persistence.engine import (
     NoopPersistentEngine,
     PersistentEngine,
@@ -71,12 +66,11 @@ def setup_simulation_module(
 def setup_database(
     config: Config,
     module_persistence_enabled: bool,
-    machine_state_logging_service_enabled: bool,
 ) -> PostgresDatabase | None:
     """Single engine shared by every consumer that needs Postgres. Only built when
-    persistence or machine-state logging actually needs one; `None` otherwise, so the
-    runtime can run against MQTT only."""
-    if not module_persistence_enabled and not machine_state_logging_service_enabled:
+    persistence actually needs one; `None` otherwise, so the runtime can run against
+    MQTT only."""
+    if not module_persistence_enabled:
         return None
 
     return PostgresDatabase(config)
@@ -116,34 +110,17 @@ async def _is_postgres_reachable(database: PostgresDatabase) -> bool:
     return True
 
 
-def setup_machine_state_logger(
-    database: PostgresDatabase | None,
-    machine_state_logging_service_enabled: bool,
-) -> StateLogger:
-    """If disabled by the caller or no database is provided, it logs machine state to a noop service."""
-    if not machine_state_logging_service_enabled or database is None:
-        return MachineStateLoggingServiceNoop()
-
-    return MachineStateLoggingService(database)
-
-
 def setup_control_modules(
     connector: MqttConnector,
     config: Config,
     control_modules: dict[str, ModuleDescription],
     time_fn: Callable[[], datetime],
     database: PostgresDatabase | None,
-    machine_state_logging_service_enabled: bool,
     publish_qos: int = 1,
 ) -> list[Module]:
     result = []
 
     for module_name, module in control_modules.items():
-        # Each module gets its own service: it tracks the last state and trigger of one control.
-        machine_state_logger = setup_machine_state_logger(
-            database, machine_state_logging_service_enabled
-        )
-
         channel = ControlChannels(
             connector, config, module_name, module, publish_qos=publish_qos
         )
@@ -154,7 +131,6 @@ def setup_control_modules(
                 description=module,
                 channels=channel,
                 time_fn=time_fn,
-                state_logger=machine_state_logger,
             )
         )
 

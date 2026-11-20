@@ -3,13 +3,9 @@ from collections.abc import Callable
 from datetime import datetime, timedelta
 from typing import Literal
 
-from transitions import State
+from transitions import Machine, State
 
 from thrs.classes.control import Control
-from thrs.classes.machine_state_logger import (
-    MachineStateLoggingServiceNoop,
-    StateLogger,
-)
 from thrs.control.controllers import PidController
 from thrs.control.modules.dhw.io import DhwControlValues, DhwSensorValues
 from thrs.control.modules.dhw.state import (
@@ -591,11 +587,9 @@ class DhwControl(
         self,
         parameters: DhwParameters,
         time_fn: Callable[[], datetime],
-        state_logger: StateLogger | None = None,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self.state_logger = state_logger or MachineStateLoggingServiceNoop()
         self._current_values, self._current_controller_state = self.initial()
         self._boosting_entered_at: datetime | None = None
         self._boosting_shortfall_since: datetime | None = None
@@ -603,14 +597,13 @@ class DhwControl(
 
         self._init_state_machine_states()
         self._init_state_machine_transitions()
-        self._state_machine = self.state_logger.create_logged_state_machine(
+        self._state_machine = Machine(
             self,
             transitions=self._transitions,
             states=self._states,
             initial="idle",
         )
         self._init_controllers()
-        self.state_logger.log_parameters_initial_state(parameters)
 
     def _init_state_machine_states(self):
         self._states = [
@@ -754,7 +747,6 @@ class DhwControl(
     def parameters(self) -> DhwParameters:
         return self._parameters
 
-    @StateLogger.log_parameters
     def update_parameters(self, parameters: DhwParameters):
         self._parameters = parameters
 
@@ -791,7 +783,6 @@ class DhwControl(
         self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
         self._init_controllers()
 
-    @StateLogger.log_warnings
     def control(
         self, sensor_values: DhwSensorValues
     ) -> tuple[DhwControlValues, DhwControllerState]:

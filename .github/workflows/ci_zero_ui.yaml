@@ -112,7 +112,7 @@ jobs:
           password: ${{ steps.auth.outputs.access_token }}
 
       - name: Run services
-        run: MACHINE_STATE_LOGGING=false docker compose --profile loads --profile thrs up --quiet-pull --wait
+        run: docker compose --profile loads --profile thrs up --quiet-pull --wait
 
       - name: Wait for the APIs and the THRS simulation state
         timeout-minutes: 2

@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from thrs.classes.control import Control
-from thrs.classes.machine_state_logger import StateLogger
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.manual import ManualControl
 from thrs.control.state import AutomationMode, ControlState
@@ -37,9 +36,7 @@ class ModuleDescription[
         sensor_values_cls: type[S],
         control_values_cls: type[C],
         parameters_cls: type[P],
-        control: Callable[
-            [P, Callable[[], datetime], StateLogger], Control[S, C, P, M, CS]
-        ],
+        control: Callable[[P, Callable[[], datetime]], Control[S, C, P, M, CS]],
         controller_state_cls: type[CS],
         alarms: Callable[[], BaseAlarms[S, C, CS]],
     ):
@@ -64,11 +61,10 @@ class Module[
         description: ModuleDescription[S, C, P, M, CS],
         channels: ControlChannels[S, C, P, M, CS],
         time_fn: Callable[[], datetime],
-        state_logger: StateLogger,
     ):
         self._name = name
         parameters = description.parameters_cls()
-        control = description.control(parameters, time_fn, state_logger)
+        control = description.control(parameters, time_fn)
         self._control = Switching(
             ManualControl(control.initial()[0]),
             control,
@@ -76,11 +72,6 @@ class Module[
         )
         self._alarms = description.alarms()
         self._channels = channels
-        self._active_alarms: dict[str, Alarm] = {}
-
-    @property
-    def control_state_logger(self) -> StateLogger:
-        return self._control.automatic_control.state_logger
 
     @property
     def name(self):
@@ -143,7 +134,6 @@ class Module[
 
         return self._control.parameters.model_validate(snapshot.parameters)
 
-    @StateLogger.log_alarms
     def _check_alarms(
         self, sensor_values: S, control_values: C, controller_state: CS
     ) -> list[Alarm]:

@@ -7,7 +7,6 @@ from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from tests.simulation.test_cosimulation import MockFmu
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.adsorption.control import ADSORPTION_MODULE_DESCRIPTION
 from thrs.control.modules.adsorption.io import (
     AdsorptionSensorValues,
@@ -145,30 +144,21 @@ def modules() -> dict[str, ModuleDescription]:
 
 @fixture
 def control() -> Callable[[CombinedValues], tuple[CombinedValues, CombinedValues]]:
-    state_logger = MachineStateLoggingServiceNoop()
     modules = {
         "thrusters": THRUSTERS_MODULE_DESCRIPTION.control(
-            ThrustersParameters(), datetime.now, state_logger
+            ThrustersParameters(), datetime.now
         ),
-        "pvt": PVT_MODULE_DESCRIPTION.control(
-            PvtParameters(), datetime.now, state_logger
-        ),
-        "pcm": PCM_MODULE_DESCRIPTION.control(
-            PcmParameters(), datetime.now, state_logger
-        ),
+        "pvt": PVT_MODULE_DESCRIPTION.control(PvtParameters(), datetime.now),
+        "pcm": PCM_MODULE_DESCRIPTION.control(PcmParameters(), datetime.now),
         "consumers": CONSUMERS_MODULE_DESCRIPTION.control(
-            ConsumersParameters(), datetime.now, state_logger
+            ConsumersParameters(), datetime.now
         ),
         "adsorption": ADSORPTION_MODULE_DESCRIPTION.control(
-            AdsorptionParameters(), datetime.now, state_logger
+            AdsorptionParameters(), datetime.now
         ),
-        "dhw": DHW_MODULE_DESCRIPTION.control(
-            DhwParameters(), datetime.now, state_logger
-        ),
-        "dc": DC_MODULE_DESCRIPTION.control(DcParameters(), datetime.now, state_logger),
-        "drives": DRIVES_MODULE_DESCRIPTION.control(
-            DrivesParameters(), datetime.now, state_logger
-        ),
+        "dhw": DHW_MODULE_DESCRIPTION.control(DhwParameters(), datetime.now),
+        "dc": DC_MODULE_DESCRIPTION.control(DcParameters(), datetime.now),
+        "drives": DRIVES_MODULE_DESCRIPTION.control(DrivesParameters(), datetime.now),
     }
 
     def control(sensor_values: CombinedValues) -> tuple[CombinedValues, CombinedValues]:

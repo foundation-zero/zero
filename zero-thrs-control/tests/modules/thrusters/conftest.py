@@ -3,7 +3,6 @@ from datetime import UTC, datetime, timedelta
 from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.classes.machine_state_logger import MachineStateLoggingService
 from thrs.control.modules.thrusters.control import ThrustersAlarms, ThrustersControl
 from thrs.control.modules.thrusters.io import (
     ThrustersControlValues,
@@ -63,11 +62,7 @@ def simulation_inputs():
 
 @fixture
 def control(simulation, postgres_db):
-    return ThrustersControl(
-        ThrustersParameters(),
-        simulation.time,
-        MachineStateLoggingService(postgres_db),
-    )
+    return ThrustersControl(ThrustersParameters(), simulation.time)
 
 
 @fixture

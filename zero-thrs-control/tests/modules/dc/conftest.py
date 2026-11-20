@@ -3,7 +3,6 @@ from datetime import UTC, datetime, timedelta
 from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.dc.control import DcAlarms, DcControl
 from thrs.control.modules.dc.io import (
     DcSensorValues,
@@ -84,7 +83,7 @@ def simulation_inputs():
 
 @fixture()
 def control(simulation) -> DcControl:
-    return DcControl(DcParameters(), simulation.time, MachineStateLoggingServiceNoop())
+    return DcControl(DcParameters(), simulation.time)
 
 
 @fixture

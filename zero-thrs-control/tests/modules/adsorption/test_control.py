@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 from pytest import approx
 
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.adsorption.control import AdsorptionControl
 from thrs.control.modules.adsorption.io import (
     AdsorptionSensorValues,
@@ -244,9 +243,7 @@ def test_waste_cooling():
             datetime.fromtimestamp(0),
             timedelta(seconds=1),
         )
-        control = AdsorptionControl(
-            parameters, simulation.time, MachineStateLoggingServiceNoop()
-        )
+        control = AdsorptionControl(parameters, simulation.time)
 
         result = simulation.tick(control.initial()[0])
 

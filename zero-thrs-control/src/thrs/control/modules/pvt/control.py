@@ -2,7 +2,6 @@ from collections.abc import Callable
 from datetime import datetime
 
 from thrs.classes.control import Control
-from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
 from thrs.control.modules.pvt.group import (
     _INITIAL_PVT_GROUP_CONTROLLER_STATE,
@@ -131,17 +130,14 @@ class PvtControl(
         self,
         parameters: PvtParameters,
         time_fn: Callable[[], datetime],
-        state_logger: StateLogger,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self.state_logger = state_logger
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
 
         self._init_controllers(parameters, time_fn)
-        self.state_logger.log_parameters_initial_state(parameters)
 
     def _init_controllers(
         self, parameters: PvtParameters, time_fn: Callable[[], datetime]
@@ -162,7 +158,6 @@ class PvtControl(
                 mix=self._current_values.pvt_mix_main_fwd,
             ),
             time_fn=time_fn,
-            state_logger=self.state_logger,
         )
         self._main_aft_control = PvtGroupControl(
             aft_pvt_group_parameters(parameters),
@@ -171,7 +166,6 @@ class PvtControl(
                 mix=self._current_values.pvt_mix_main_aft,
             ),
             time_fn=time_fn,
-            state_logger=self.state_logger,
         )
         self._owners_control = PvtGroupControl(
             owners_pvt_group_parameters(parameters),
@@ -180,7 +174,6 @@ class PvtControl(
                 mix=self._current_values.pvt_mix_owners,
             ),
             time_fn=time_fn,
-            state_logger=self.state_logger,
         )
 
     @property
@@ -219,7 +212,6 @@ class PvtControl(
         )
         self._init_controllers(self._parameters, self._time)
 
-    @StateLogger.log_parameters
     def update_parameters(self, parameters: PvtParameters):
         self._parameters = parameters
         self._main_fwd_control.update_parameters(main_pvt_group_parameters(parameters))
@@ -300,7 +292,6 @@ class PvtControl(
             "pvt_owners": owners_controller_state,
         }
 
-    @StateLogger.log_warnings
     def control(
         self, sensor_values: PvtSensorValues
     ) -> tuple[PvtControlValues, PvtControllerState]:

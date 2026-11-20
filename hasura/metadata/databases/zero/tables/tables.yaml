@@ -4,8 +4,4 @@
 - "!include domestic_lighting_groups.yaml"
 - "!include domestic_rooms.yaml"
 - "!include domestic_ventilation.yaml"
-- "!include thrs_machinestate_event.yaml"
-- "!include thrs_machinestate_issue.yaml"
-- "!include thrs_machinestate_parameters.yaml"
-- "!include thrs_machinestate_transition.yaml"
 - "!include thrs_module_persistence.yaml"

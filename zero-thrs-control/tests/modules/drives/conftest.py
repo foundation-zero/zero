@@ -3,7 +3,6 @@ from datetime import UTC, datetime, timedelta
 from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.drives.control import DrivesAlarms, DrivesControl
 from thrs.control.modules.drives.io import (
     DrivesSensorValues,
@@ -101,9 +100,7 @@ def simulation(simulation_inputs_all_drives_active):
 
 @fixture()
 def control(simulation) -> DrivesControl:
-    return DrivesControl(
-        DrivesParameters(), simulation.time, MachineStateLoggingServiceNoop()
-    )
+    return DrivesControl(DrivesParameters(), simulation.time)
 
 
 @fixture
