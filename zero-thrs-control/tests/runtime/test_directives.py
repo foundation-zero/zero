@@ -1,5 +1,5 @@
 from datetime import UTC, datetime, timedelta
-from unittest.mock import AsyncMock, Mock
+from unittest.mock import AsyncMock, Mock, call
 
 import pytest
 from pydantic import ValidationError
@@ -34,6 +34,15 @@ def test_status_set_rejects_a_pause_at_without_time_zone():
         SimulationStatusSetMessage.model_validate_json(
             '{"Status": "stepping", "PauseAt": "2026-11-13T10:10:00"}'
         )
+
+
+async def test_clear_previous_clears_the_status():
+    channels = AsyncMock()
+    handling = DirectiveHandling(channels, Mode("thrs", {}, None), lambda: START)  # type: ignore[arg-type]
+
+    await handling.clear_previous()
+
+    assert channels.send_simulation_status.await_args_list == [call(None)]
 
 
 async def test_status_reports_the_request():

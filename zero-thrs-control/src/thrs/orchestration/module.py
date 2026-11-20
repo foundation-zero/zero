@@ -191,8 +191,7 @@ class Module[
         await self._channels.send_control_values(control_values)
         await self._channels.send_controller_state(controller_state)
         await self._channels.send_parameters(self._control.parameters)
-        if self._control.mode is not None:
-            await self._channels.send_control_modes(self._control.mode)
+        await self._channels.send_control_modes(self._control.mode)
         await self._channels.send_automation_mode(
             AutomationMode(mode=self._control.control_mode)
         )
