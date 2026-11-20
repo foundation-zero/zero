@@ -153,14 +153,56 @@ def test_flow_meters_that_measure_only_a_flow_have_their_own_schema():
             {"VpEnable", "TempPowerStage", "Power"},
         ),
         (
+            "dc_ac.converter.05-11-u101",
+            "marpower/45-dc-ac/inverter/05-11-u101",
+            "Converter",
+            {"Running", "TempPowerStage", "PvPower"},
+        ),
+        (
             "dc_ac.converter.05-12-u101",
-            "marpower/450000-dynamic-conv-sb-ara/5-12-u101",
+            "marpower/45-dc-ac/inverter/05-12-u101",
             "Converter",
             {"Running", "TempPowerStage", "PvPower"},
         ),
         (
             "dc_700v.shore-converter.07-11-tbc1a",
-            "marpower/450000-dc-distribution-esi/07-11-tbc1a",
+            "marpower/45-dc-700v/shore-converter/07-11-tbc1a",
+            "ShoreConverter",
+            {
+                "Online",
+                "EsiTransformerTemperature",
+                "EsiIgbtMinTemperature",
+                "EsiIgbtMaxTemperature",
+                "EsiAcBusActivePower3Phase",
+            },
+        ),
+        (
+            "dc_700v.shore-converter.07-11-tbc1b",
+            "marpower/45-dc-700v/shore-converter/07-11-tbc1b",
+            "ShoreConverter",
+            {
+                "Online",
+                "EsiTransformerTemperature",
+                "EsiIgbtMinTemperature",
+                "EsiIgbtMaxTemperature",
+                "EsiAcBusActivePower3Phase",
+            },
+        ),
+        (
+            "dc_700v.shore-converter.07-12-tbc1a",
+            "marpower/45-dc-700v/shore-converter/07-12-tbc1a",
+            "ShoreConverter",
+            {
+                "Online",
+                "EsiTransformerTemperature",
+                "EsiIgbtMinTemperature",
+                "EsiIgbtMaxTemperature",
+                "EsiAcBusActivePower3Phase",
+            },
+        ),
+        (
+            "dc_700v.shore-converter.07-12-tbc1b",
+            "marpower/45-dc-700v/shore-converter/07-12-tbc1b",
             "ShoreConverter",
             {
                 "Online",
@@ -172,7 +214,7 @@ def test_flow_meters_that_measure_only_a_flow_have_their_own_schema():
         ),
     ],
 )
-def test_extra_devices_are_named_by_the_proposal_at_todays_address(
+def test_extra_devices_are_named_by_the_proposal_at_their_address(
     document: dict, channel_key: str, address: str, component: str, fields: set[str]
 ):
     device = document["channels"][channel_key]
