@@ -1,5 +1,7 @@
+import contextlib
 import json
 import logging
+import signal
 import sys
 from pathlib import Path
 from typing import Annotated
@@ -120,11 +122,11 @@ class ZeroDataCli(BaseSettings, cli_kebab_case=True):
 
 def run():
     setup_logging()
-    CliApp.run(ZeroDataCli)
+    # As PID 1, SIGTERM is ignored unless handled.
+    signal.signal(signal.SIGTERM, lambda *_: signal.raise_signal(signal.SIGINT))
+    with contextlib.suppress(KeyboardInterrupt):
+        CliApp.run(ZeroDataCli)
 
 
 if __name__ == "__main__":
-    try:
-        run()
-    except KeyboardInterrupt:
-        pass
+    run()
