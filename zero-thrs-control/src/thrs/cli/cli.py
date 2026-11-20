@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Annotated
 
@@ -30,6 +30,7 @@ from thrs.runtime.context import control_shutdown_context
 from thrs.runtime.descriptions.simulation import ModeName, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.liveness import Liveness
+from thrs.runtime.loop import ControllableLoop, RealtimeLoop
 from thrs.runtime.runners.control import ControlRunner
 from thrs.runtime.runners.lockstep import LockstepRunner
 from thrs.runtime.runners.simulator import SimulationRunner
@@ -87,9 +88,10 @@ class ControlCmd(BaseSettings):
             await persistence.restore_all(control_modules)
 
             runner = ControlRunner(control_modules, liveness_check, persistence)
-            runtime = Runtime(runner, connector, timedelta(seconds=1), datetime.now)
+            loop = RealtimeLoop()
+            runtime = Runtime(loop, runner, connector)
 
-            await runtime.loop.play()
+            await loop.play()
             logger.info("Running control")
 
             async with control_shutdown_context(control_modules):
@@ -127,14 +129,10 @@ class SimulationCmd(BaseSettings):
             )
 
             runner = SimulationRunner(simulation_module, liveness_check)
-            runtime = Runtime(
-                runner,
-                connector,
-                simulation_module.tick_duration,
-                simulation_module.time,
-            )
+            loop = RealtimeLoop()
+            runtime = Runtime(loop, runner, connector)
 
-            await runtime.loop.play()
+            await loop.play()
             logger.info("Running simulation")
             await runtime.start()
 
@@ -197,19 +195,15 @@ class LockstepCmd(BaseSettings):
         runner = LockstepRunner(control_modules, simulation_module, persistence)
 
         directives_channels = DirectivesChannels(connector, settings)
-
         directive_handling = DirectiveHandling(
             directives_channels,
             mode,
             simulation_module.time,
         )
-        return Runtime(
-            runner,
-            connector,
-            simulation_module.tick_duration,
-            simulation_module.time,
-            directive_handling,
+        loop = ControllableLoop(
+            simulation_module.tick_duration, simulation_module.time, directive_handling
         )
+        return Runtime(loop, runner, connector)
 
     async def cli_cmd(self) -> None:
         settings = Config()
@@ -228,7 +222,7 @@ class LockstepCmd(BaseSettings):
             logger.info("Running lockstep")
 
             if self.play:
-                await runtime.loop.play()
+                await runtime.play()
 
             async with control_shutdown_context(runtime.runner.control_modules):  # pyrefly: ignore[missing-attribute]
                 await runtime.start()

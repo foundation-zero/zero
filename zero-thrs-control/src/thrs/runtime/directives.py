@@ -1,27 +1,10 @@
 from collections.abc import Callable
 from datetime import datetime
-from functools import partial
 
 from thrs.orchestration.comms import DirectivesChannels
 from thrs.runtime.descriptions.simulation import Mode
-from thrs.runtime.loop import Loop, LoopHooks, Request
-from thrs.runtime.messages import (
-    SimulationStatus,
-    SimulationStatusMessage,
-    SimulationStatusSetMessage,
-)
-
-
-class DirectiveHandler:
-    def __init__(self, channels: DirectivesChannels, loop: Loop):
-        self._loop = loop
-        self._channels = channels
-
-    async def register(self):
-        self._channels.on_status_set(self._on_status_set)
-
-    async def _on_status_set(self, msg: SimulationStatusSetMessage):
-        await self._loop.request(Request(msg.status, msg.playback_rate, msg.pause_at))
+from thrs.runtime.loop import ControllableLoop, Request, StatusHook
+from thrs.runtime.messages import SimulationStatus, SimulationStatusMessage
 
 
 class DirectiveHandling:
@@ -35,20 +18,18 @@ class DirectiveHandling:
         self._mode = mode
         self._time_fn = time_fn
 
-    def handler(self, loop: Loop):
-        return DirectiveHandler(self._channels, loop)
-
-    def status_hooks(self) -> LoopHooks:
-        return LoopHooks(
-            available=partial(self.send_status, status="available"),
-            running=partial(self.send_status, status="running"),
-            stepping=partial(self.send_status, status="stepping"),
+    def register(self, loop: ControllableLoop) -> StatusHook:
+        self._channels.on_status_set(
+            lambda msg: loop.request(
+                Request(msg.status, msg.playback_rate, msg.pause_at)
+            )
         )
+        return self.send_status
 
     async def clear_previous(self):
         await self._channels.send_simulation_status(None)
 
-    async def send_status(self, loop: Loop, status: SimulationStatus):
+    async def send_status(self, loop: ControllableLoop, status: SimulationStatus):
         msg = SimulationStatusMessage(
             mode=self._mode.name,
             status=status,

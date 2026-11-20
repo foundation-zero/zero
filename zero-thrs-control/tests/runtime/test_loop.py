@@ -4,12 +4,13 @@ import asyncio
 from collections.abc import AsyncGenerator, Callable
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime, timedelta
-from functools import partial
 from unittest.mock import AsyncMock, MagicMock, Mock
 
 import pytest
 
-from thrs.runtime.loop import Loop, LoopHooks, Request
+from thrs.runtime.directives import DirectiveHandling
+from thrs.runtime.loop import ControllableLoop, Loop, Request, StatusHook
+from thrs.runtime.messages import SimulationStatus
 
 START = datetime(2026, 11, 13, 10, tzinfo=UTC)
 PAUSE = Request("available", 1.0, None)
@@ -47,20 +48,16 @@ def make_runner(clock: Clock, block_after_first_call: bool = False):
     return runner
 
 
-class RecordingHooks:
+class RecordingHooks(DirectiveHandling):
     def __init__(self) -> None:
         self.calls: list[str] = []
         self._recorded = asyncio.Condition()
 
-    def hooks(self) -> LoopHooks:
-        return LoopHooks(
-            partial(self._record, "available"),
-            partial(self._record, "running"),
-            partial(self._record, "stepping"),
-        )
+    def register(self, loop: Loop) -> StatusHook:
+        return self._record
 
-    async def _record(self, name: str, _loop: Loop) -> None:
-        self.calls.append(name)
+    async def _record(self, _loop: Loop, status: SimulationStatus) -> None:
+        self.calls.append(status)
         async with self._recorded:
             self._recorded.notify_all()
 
@@ -75,8 +72,8 @@ class RecordingHooks:
 
 
 @asynccontextmanager
-async def looping(loop: Loop, runner, hooks: RecordingHooks) -> AsyncGenerator[None]:
-    loop_task = asyncio.create_task(loop.loop(runner, hooks.hooks()))
+async def looping(loop: Loop, runner) -> AsyncGenerator[None]:
+    loop_task = asyncio.create_task(loop.loop(runner))
     try:
         yield
     finally:
@@ -87,12 +84,12 @@ async def looping(loop: Loop, runner, hooks: RecordingHooks) -> AsyncGenerator[N
 
 async def test_loop_steps_to_pause_at():
     clock = Clock(timedelta(seconds=2))
-    loop = Loop(clock.tick_duration, clock)
-    runner = make_runner(clock)
     hooks = RecordingHooks()
+    loop = ControllableLoop(clock.tick_duration, clock, hooks)
+    runner = make_runner(clock)
 
-    async with looping(loop, runner, hooks):
-        await loop.request(Request("stepping", 1.0, START + timedelta(seconds=5)))
+    async with looping(loop, runner):
+        loop.request(Request("stepping", 1.0, START + timedelta(seconds=5)))
         await hooks.wait_until_available(2)
 
     # The first tick at or after pause_at: 2 s, 4 s, 6 s.
@@ -103,12 +100,12 @@ async def test_loop_steps_to_pause_at():
 
 async def test_loop_stepping_without_a_later_pause_at_does_nothing():
     clock = Clock(timedelta(seconds=1))
-    loop = Loop(clock.tick_duration, clock)
-    runner = make_runner(clock)
     hooks = RecordingHooks()
+    loop = ControllableLoop(clock.tick_duration, clock, hooks)
+    runner = make_runner(clock)
 
-    async with looping(loop, runner, hooks):
-        await loop.request(Request("stepping", 1.0, START))
+    async with looping(loop, runner):
+        loop.request(Request("stepping", 1.0, START))
         await hooks.wait_until_available(2)
 
     assert runner.calls.call_count == 0
@@ -117,12 +114,12 @@ async def test_loop_stepping_without_a_later_pause_at_does_nothing():
 
 async def test_loop_runs_until_pause_at():
     clock = Clock(timedelta(milliseconds=100))
-    loop = Loop(clock.tick_duration, clock)
-    runner = make_runner(clock)
     hooks = RecordingHooks()
+    loop = ControllableLoop(clock.tick_duration, clock, hooks)
+    runner = make_runner(clock)
 
-    async with looping(loop, runner, hooks):
-        await loop.request(Request("running", 10, START + timedelta(milliseconds=300)))
+    async with looping(loop, runner):
+        loop.request(Request("running", 10, START + timedelta(milliseconds=300)))
         await hooks.wait_until_available(2)
 
     assert runner.calls.call_count == 3
@@ -138,14 +135,14 @@ async def test_loop_runs_until_pause_at():
 
 async def test_loop_runs_on_with_a_past_pause_at():
     clock = Clock(timedelta(milliseconds=100))
-    loop = Loop(clock.tick_duration, clock)
-    runner = make_runner(clock)
     hooks = RecordingHooks()
+    loop = ControllableLoop(clock.tick_duration, clock, hooks)
+    runner = make_runner(clock)
 
-    async with looping(loop, runner, hooks):
-        await loop.request(Request("running", 10, START))
+    async with looping(loop, runner):
+        loop.request(Request("running", 10, START))
         await hooks.wait_until(lambda calls: calls.count("running") > 3)
-        await loop.request(PAUSE)
+        loop.request(PAUSE)
         await hooks.wait_until_available(2)
 
     assert runner.calls.call_count >= 3
@@ -153,15 +150,15 @@ async def test_loop_runs_on_with_a_past_pause_at():
 
 async def test_loop_pause_interrupts_stepping():
     clock = Clock(timedelta(seconds=1))
-    loop = Loop(clock.tick_duration, clock)
-    runner = make_runner(clock, block_after_first_call=True)
     hooks = RecordingHooks()
+    loop = ControllableLoop(clock.tick_duration, clock, hooks)
+    runner = make_runner(clock, block_after_first_call=True)
 
-    async with looping(loop, runner, hooks):
-        await loop.request(Request("stepping", 1.0, START + timedelta(hours=1)))
+    async with looping(loop, runner):
+        loop.request(Request("stepping", 1.0, START + timedelta(hours=1)))
         await asyncio.wait_for(runner.started.wait(), timeout=1)
 
-        await loop.request(PAUSE)
+        loop.request(PAUSE)
         runner.release.set()
         await hooks.wait_until_available(2)
 
@@ -171,13 +168,13 @@ async def test_loop_pause_interrupts_stepping():
 
 async def test_loop_keeps_the_last_request():
     clock = Clock(timedelta(seconds=1))
-    loop = Loop(clock.tick_duration, clock)
-    runner = make_runner(clock, block_after_first_call=True)
     hooks = RecordingHooks()
+    loop = ControllableLoop(clock.tick_duration, clock, hooks)
+    runner = make_runner(clock, block_after_first_call=True)
     request = Request("running", 2.0, START + timedelta(minutes=1))
 
-    async with looping(loop, runner, hooks):
-        await loop.request(request)
+    async with looping(loop, runner):
+        loop.request(request)
         await asyncio.wait_for(runner.started.wait(), timeout=1)
 
         assert loop.requested == request
@@ -185,18 +182,18 @@ async def test_loop_keeps_the_last_request():
 
 async def test_loop_play_runs_until_pause():
     clock = Clock(timedelta(seconds=1))
-    loop = Loop(clock.tick_duration, clock)
-    runner = make_runner(clock, block_after_first_call=True)
     hooks = RecordingHooks()
+    loop = ControllableLoop(clock.tick_duration, clock, hooks)
+    runner = make_runner(clock, block_after_first_call=True)
 
-    async with looping(loop, runner, hooks):
-        await loop.request(Request("running", 2.0, None))
+    async with looping(loop, runner):
+        loop.request(Request("running", 2.0, None))
 
         await asyncio.wait_for(runner.started.wait(), timeout=1)
         assert runner.calls.call_count == 1
         assert hooks.calls == ["available", "running"]
 
-        await loop.request(PAUSE)
+        loop.request(PAUSE)
         runner.release.set()
         await hooks.wait_until_available(2)
 

@@ -25,6 +25,7 @@ from thrs.orchestration.config import Config
 from thrs.orchestration.setup import setup_control_modules, setup_simulation_module
 from thrs.runtime.descriptions.simulation import Mode, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
+from thrs.runtime.loop import ControllableLoop
 from thrs.runtime.messages import (
     SimulationStatus,
     SimulationStatusMessage,
@@ -119,18 +120,16 @@ def setup_lockstep(
     persistence = PersistManager(NoopPersistentEngine())
     runner = LockstepRunner(control_modules, simulation_module, persistence)
 
+    directives_channels = DirectivesChannels(connector, settings)
     directive_handling = DirectiveHandling(
-        DirectivesChannels(connector, settings),
+        directives_channels,
         mode,
         simulation_module.time,
     )
-    return Runtime(
-        runner,
-        connector,
-        simulation_module.tick_duration,
-        simulation_module.time,
-        directive_handling,
+    loop = ControllableLoop(
+        simulation_module.tick_duration, simulation_module.time, directive_handling
     )
+    return Runtime(loop, runner, connector)
 
 
 @pytest.mark.timeout(30)
