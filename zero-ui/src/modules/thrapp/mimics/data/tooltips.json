@@ -1388,13 +1388,13 @@
             [
               "sensor:ugrid",
               "dcAcConverter",
-              "_5_11U101",
+              "_05_11U101",
               null
             ],
             [
               "sensor:ugrid",
               "dcAcConverter",
-              "_5_12U101",
+              "_05_12U101",
               null
             ]
           ],
