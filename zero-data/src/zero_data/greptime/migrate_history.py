@@ -643,6 +643,9 @@ def drop(
     Without tables it takes every old table of the spec. A table is kept while a check finds a
     difference, while it still receives rows, or while it holds data no unit copies. That
     last one is overridden by naming the table with `accept_unmigrated`.
+
+    Every table is checked before any is dropped: old tables that feed the same new topic can
+    only be checked while all of them exist.
     """
     migration = load(greptime, spec, old_tables)
     present_tables = greptime.tables()
@@ -675,11 +678,15 @@ def drop(
                 else []
             ),
         ]
-        if reasons:
-            outcomes[table] = "kept: " + "; ".join(reasons)
-        elif execute:
+        outcomes[table] = (
+            "kept: " + "; ".join(reasons) if reasons else "would be dropped"
+        )
+    if not execute:
+        return outcomes
+    for table, outcome in outcomes.items():
+        if outcome == "would be dropped":
             greptime.run(f"DROP TABLE {quote_ident(table)}")
-            outcomes[table] = "dropped"
-        else:
-            outcomes[table] = "would be dropped"
-    return outcomes
+    return {
+        table: "dropped" if outcome == "would be dropped" else outcome
+        for table, outcome in outcomes.items()
+    }

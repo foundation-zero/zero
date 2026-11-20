@@ -398,6 +398,29 @@ def test_drop_removes_checked_tables_and_asks_before_losing_data(
     }
 
 
+def test_drop_checks_old_tables_of_one_new_topic_before_dropping_either(
+    tables: Query, greptime: Greptime
+) -> None:
+    spec = MigrationSpec(
+        units=[
+            *SPEC.units,
+            Unit(
+                old_table=OLD,
+                old_topic=OLD_SOUNDER,
+                new_table=PANEL,
+                new_topic="marpower/21-fire/main-panel",
+                technical_name="main-panel",
+                columns=[ColumnMap(old="spare", new="spare")],
+            ),
+        ]
+    )
+    run(greptime, load(greptime, spec), None, 0, no_sleep)
+
+    outcomes = drop(greptime, spec, [OLD, OLD_GENERAL], True, True)
+
+    assert outcomes == {OLD: "dropped", OLD_GENERAL: "dropped"}
+
+
 def test_drop_keeps_a_table_that_still_receives_rows(
     tables: Query, greptime: Greptime
 ) -> None:

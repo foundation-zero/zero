@@ -168,4 +168,9 @@ tables and their columns.
 - it holds topics or columns that aren't migrated, unless you name the table with `--table`
   and pass `--accept-unmigrated`.
 
+It checks every table before it drops any. Old tables that feed the same new topic (a
+device's earlier name in another table, or a new topic that gathers signals from two old
+ones) can only be checked while all of them exist. So drop them in one run: once one of them
+is gone, the others are kept, and removing those is a decision by hand.
+
 It only looks at the old tables in the spec. `DROP TABLE` can't be undone.
