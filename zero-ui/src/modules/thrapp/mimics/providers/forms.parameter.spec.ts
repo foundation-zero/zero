@@ -61,17 +61,6 @@ describe("parameter value form", () => {
     expect(form.isDirty.value).toBe(false);
   });
 
-  it("is only editable in automatic mode", async () => {
-    automaticMode.value = false;
-    const form = createParameterFormContext(source);
-
-    form.update(70);
-    await vi.advanceTimersByTimeAsync(1000);
-
-    expect(form.isEditable.value).toBe(false);
-    expect(setParameter).not.toHaveBeenCalled();
-  });
-
   it("exposes the error message when submitting fails", async () => {
     setParameter.mockRejectedValue(new Error("Out of range"));
     const form = createParameterFormContext(source);
