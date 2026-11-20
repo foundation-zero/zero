@@ -1,21 +1,8 @@
 export type AlarmPriority =
-  | "GEA"
-  | "EMERGENCY"
-  | "ALARM"
-  | "WARNING"
-  | "CAUTION"
-  | "EVENT"
-  | "UNKNOWN";
+  "GEA" | "EMERGENCY" | "ALARM" | "WARNING" | "CAUTION" | "EVENT" | "UNKNOWN";
 
 export type AlarmUpdate =
-  | "ACTIVATED"
-  | "ACKNOWLEDGED"
-  | "IDLE"
-  | "INHIBITED"
-  | "INVALID"
-  | "UNBOUND"
-  | "EVENT"
-  | "UNKNOWN";
+  "ACTIVATED" | "ACKNOWLEDGED" | "IDLE" | "INHIBITED" | "INVALID" | "UNBOUND" | "EVENT" | "UNKNOWN";
 
 /** One AMCS alarm, as zero-alert-forwarder folds it from the rows of its updates. */
 export interface Alarm {
