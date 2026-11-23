@@ -30,7 +30,9 @@ def test_switching_control(switching):
         simple_advisory_values(flow=42.0)
     )
     assert control_values.go_with_the.flow.value == 42.0
-    assert controller_state == switching_control.automatic_control.initial()[1]
+    assert controller_state == switching_control.automatic_control.initial()[
+        1
+    ].model_copy(update={"manual_values": switching_control.manual_controls})
     assert controller_state.automation_mode == AutomationMode(mode="manual")
     assert controller_state.parameters == switching_control.parameters
 

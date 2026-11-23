@@ -193,7 +193,6 @@ class Module[
         actuated_control_values = self._channels.get_actuated_control_values()
         if actuated_control_values is not None:
             await self._channels.send_actuated_control_values(actuated_control_values)
-        await self._channels.send_manual_control(self._control.manual_controls)
 
     async def tick(self, sensor_values: S | None) -> C:
         if sensor_values is None:

@@ -22,6 +22,8 @@ class ControlState[C: ThrsValues, P: ThrsValues, M: ThrsValues](ThrsValues):
     """
 
     automation_mode: AutomationMode = AutomationMode(mode="manual")
+    # The manual controls, which Switching fills; `None` only without it.
+    manual_values: C | None = None
     # The automatic control's mode, `None` while manual.
     control_mode: M | None = None
     parameters: P
@@ -105,6 +107,7 @@ class Switching[
             sensor_values
         )
         controller_state.automation_mode = AutomationMode(mode="automatic")
+        controller_state.manual_values = self.manual_controls
         self._last_mode = "automatic"
         return control_values, controller_state
 
@@ -120,6 +123,7 @@ class Switching[
             self._automatic_control.mode if self._mode == "automatic" else None
         )
         controller_state.automation_mode = AutomationMode(mode=self._mode)
+        controller_state.manual_values = self.manual_controls
         return controller_state
 
     def switch_mode(self, mode: AutomationMode):

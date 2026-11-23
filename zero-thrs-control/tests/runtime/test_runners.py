@@ -8,7 +8,7 @@ from tests.helpers.simulation_runner import (
     SimulationTestRunner,
     flatten_controller_state,
 )
-from tests.orchestration.simples import simple_controller_state
+from tests.orchestration.simples import simple_control_values, simple_controller_state
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.classes.persistence.engine import NoopPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
@@ -119,7 +119,7 @@ def test_simulation_test_runner():
 
 
 async def test_lockstep_runner_ticks_and_publishes_channels():
-    control_values = ModelDumpable()
+    control_values = simple_control_values(flow=1.0)
     controller_state = simple_controller_state()
     parameters = ModelDumpable()
     sensor_values = Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
@@ -151,7 +151,6 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     control_channels.send_computed_values = AsyncMock()
     control_channels.send_controller_state = AsyncMock()
     control_channels.send_actuated_control_values = AsyncMock()
-    control_channels.send_manual_control = AsyncMock()
 
     simulation_channels = Mock()
     simulation_channels.get_simulation_inputs.return_value = None
@@ -184,9 +183,9 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     assert control_channels.send_computed_values.await_count == 3
     assert simulation_channels.send_simulation_inputs.await_count == 3
     assert simulation_channels.send_simulation_outputs.await_count == 3
-    assert control_channels.send_manual_control.await_count == 3
     assert control_channels.send_actuated_control_values.await_count == 3
     assert controller_state.automation_mode == AutomationMode(mode="automatic")
+    assert controller_state.manual_values == control_values
 
     assert control.initial.call_count == 2
     assert simulation.tick.call_count == 3
@@ -245,14 +244,11 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     control_channels.send_controller_state.assert_has_awaits(
         [call(controller_state), call(controller_state), call(controller_state)]
     )
-    control_channels.send_manual_control.assert_has_awaits(
-        [call(control_values), call(control_values), call(control_values)]
-    )
 
 
 async def test_control_runner_ticks_and_uses_channels():
-    control_values = ModelDumpable()
-    control_values_new = ModelDumpable()
+    control_values = simple_control_values(flow=1.0)
+    control_values_new = simple_control_values(flow=2.0)
     controller_state = simple_controller_state()
     parameters = ModelDumpable()
     sensor_values = Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
@@ -276,7 +272,6 @@ async def test_control_runner_ticks_and_uses_channels():
     channels.send_control_values = AsyncMock()
     channels.send_controller_state = AsyncMock()
     channels.send_actuated_control_values = AsyncMock()
-    channels.send_manual_control = AsyncMock()
 
     alarms = Mock()
     alarms.check.return_value = []
@@ -309,7 +304,8 @@ async def test_control_runner_ticks_and_uses_channels():
     assert channels.send_controller_state.await_count == 2
     assert controller_state.automation_mode == AutomationMode(mode="automatic")
     assert channels.send_actuated_control_values.await_count == 2
-    assert channels.send_manual_control.await_count == 2
+    # Manual holds the UI value; automatic output is no longer tracked into it
+    assert controller_state.manual_values == control_values_new
 
     channels.send_computed_values.assert_has_awaits(
         [call(sensor_values), call(sensor_values)]
@@ -319,10 +315,6 @@ async def test_control_runner_ticks_and_uses_channels():
     )
     channels.send_controller_state.assert_has_awaits(
         [call(controller_state), call(controller_state)]
-    )
-    channels.send_manual_control.assert_has_awaits(
-        # Manual holds the UI value; automatic output is no longer tracked into it
-        [call(control_values_new), call(control_values_new)]
     )
 
 
