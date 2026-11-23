@@ -210,3 +210,24 @@ models:
         description: "Power of the device in W. The source reports kW and is converted here."
         tests:
           - not_null
+  - name: slv_24vdc_power_supplies
+    description: >
+      Output power of the 24 VDC power supplies, labelled with their converter group.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic of the power supply."
+        tests:
+          - not_null
+      - name: converter
+        description: "The converter group the power supply belongs to, e.g. W14E1_01."
+        tests:
+          - not_null
+      - name: power
+        description: "Output power of the power supply in W."
+        tests:
+          - not_null
