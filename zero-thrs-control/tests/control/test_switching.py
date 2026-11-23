@@ -6,6 +6,7 @@ import pytest
 from tests.orchestration.simples import (
     SimpleControllerState,
     SimpleInOut,
+    SimpleParameters,
     simple_advisory_values,
     simple_control_values,
     simple_non_advisory_values,
@@ -22,25 +23,25 @@ def test_switching_control(switching):
 
     control_values, controller_state = switching_control.initial()
 
-    assert switching_control.mode is None
-    assert not switching_control.automatic
-    assert controller_state
+    assert controller_state.automation_mode == AutomationMode(mode="manual")
+    assert controller_state.control_mode is None
 
     control_values, controller_state = switching_control.control(
         simple_advisory_values(flow=42.0)
     )
-    assert controller_state
     assert control_values.go_with_the.flow.value == 42.0
     assert controller_state == switching_control.automatic_control.initial()[1]
+    assert controller_state.automation_mode == AutomationMode(mode="manual")
+    assert controller_state.parameters == switching_control.parameters
 
     switching_control.switch_mode(AutomationMode(mode="automatic"))
     control_values, controller_state = switching_control.control(
         simple_advisory_values(flow=30.0)
     )
 
-    assert switching_control.automatic
-    assert switching_control.mode == switching_control.automatic_control.mode
-    assert controller_state
+    assert controller_state.automation_mode == AutomationMode(mode="automatic")
+    assert controller_state.control_mode == switching_control.automatic_control.mode
+    assert controller_state.parameters == switching_control.parameters
     assert control_values.go_with_the.flow.value == 30.0
 
 
@@ -55,11 +56,11 @@ def test_non_advisory_forces_manual_and_tracks_actuated(
     switching_control.switch_mode(AutomationMode(mode="automatic"))
     actuated = None if actuated_flow is None else simple_control_values(actuated_flow)
 
-    control_values, _ = switching_control.control(
+    control_values, controller_state = switching_control.control(
         simple_non_advisory_values(flow=9.0), actuated
     )
 
-    assert switching_control.manual
+    assert controller_state.automation_mode == AutomationMode(mode="manual")
     assert control_values.go_with_the.flow.value == expected_flow
     assert switching_control.manual_controls.go_with_the.flow.value == expected_flow
 
@@ -67,18 +68,19 @@ def test_non_advisory_forces_manual_and_tracks_actuated(
 def test_advisory_restore_does_not_auto_engage(switching):
     """Actuated control values are not applied when in advisory mode"""
     switching_control = switching(manual_flow=1.0)
-    control_values, _ = switching_control.control(
+    control_values, controller_state = switching_control.control(
         simple_advisory_values(flow=9.0), simple_control_values(flow=7.0)
     )
 
-    assert switching_control.manual
+    assert controller_state.automation_mode == AutomationMode(mode="manual")
     assert control_values.go_with_the.flow.value == 1.0
 
 
 def _mock_switching(initial_automatic: mock.Mock) -> Switching:
+    initial_automatic.parameters = SimpleParameters()
     initial_automatic.initial.return_value = (
         SimpleInOut.zero(),
-        SimpleControllerState(),
+        SimpleControllerState(parameters=SimpleParameters()),
     )
     return Switching(
         ManualControl(simple_control_values(flow=4.0)),
@@ -89,7 +91,6 @@ def _mock_switching(initial_automatic: mock.Mock) -> Switching:
 
 def test_manual_ticks_do_not_touch_automatic():
     automatic = mock.Mock()
-    automatic.initial.return_value = (SimpleInOut.zero(), SimpleControllerState())
     switching_control = _mock_switching(automatic)
 
     control_values, controller_state = switching_control.control(
@@ -107,7 +108,7 @@ def test_manual_to_automatic_resets_and_returns_first_control_tick():
     automatic = mock.Mock()
     automatic.control.return_value = (
         simple_control_values(flow=4.0),
-        SimpleControllerState(),
+        SimpleControllerState(parameters=SimpleParameters()),
     )
     switching_control = _mock_switching(automatic)
     switching_control.control(simple_advisory_values(flow=9.0))
@@ -151,11 +152,11 @@ def test_automatic_to_manual_snaps_to_actuated(switching):
     switching_control.control(simple_advisory_values(flow=8.0))
 
     switching_control.switch_mode(AutomationMode(mode="manual"))
-    control_values, _ = switching_control.control(
+    control_values, controller_state = switching_control.control(
         simple_advisory_values(flow=3.0), simple_control_values(flow=6.0)
     )
 
-    assert switching_control.manual
+    assert controller_state.automation_mode == AutomationMode(mode="manual")
     assert control_values.go_with_the.flow.value == 6.0
     assert switching_control.manual_controls.go_with_the.flow.value == 6.0
 
@@ -199,11 +200,11 @@ def test_advisory_disable_logs_warning_on_falling_edge_only(
         switching_control.control(simple_advisory_values(flow=8.0))
 
     with caplog.at_level(logging.WARNING, logger="thrs.control.switching"):
-        control_values, _ = switching_control.control(
+        control_values, controller_state = switching_control.control(
             simple_non_advisory_values(flow=2.0), simple_control_values(flow=6.0)
         )
 
-    assert switching_control.manual
+    assert controller_state.automation_mode == AutomationMode(mode="manual")
     assert control_values.go_with_the.flow.value == 6.0
     assert (
         sum("advisory was disabled for simple" in r.message for r in caplog.records)

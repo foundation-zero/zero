@@ -4,7 +4,11 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock, Mock, call
 
 from tests.helpers.collector import PolarsCollector
-from tests.helpers.simulation_runner import SimulationTestRunner
+from tests.helpers.simulation_runner import (
+    SimulationTestRunner,
+    flatten_controller_state,
+)
+from tests.orchestration.simples import simple_controller_state
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.classes.persistence.engine import NoopPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
@@ -15,7 +19,6 @@ from thrs.control.modules.thrusters.io import (
     ThrustersSimulationOutputs,
 )
 from thrs.control.modules.thrusters.state import (
-    ThrustersControllerState,
     ThrustersParameters,
 )
 from thrs.control.switching import AutomationMode
@@ -77,7 +80,7 @@ def test_simulation_test_runner():
         )
         collector = PolarsCollector()
         runner = SimulationTestRunner(simulation, simulation_inputs, control, alarms)
-        runner.run(20, collector)
+        _, _, controller_state = runner.run(20, collector)
         frame = collector.result()
         inputs = io_mapping.generate_inputs(
             ThrustersControlValues.zero(), simulation_inputs
@@ -101,7 +104,7 @@ def test_simulation_test_runner():
         not_in_fmu = {
             *flatten_model_values(ThrustersSensorValues.zero(), all_keys),
             *flatten_model_values(ThrustersControlValues.zero(), all_keys),
-            *flatten_model_values(ThrustersControllerState.zero(), all_keys),
+            *flatten_controller_state(controller_state),
             *flatten_model_values(simulation_inputs, all_keys),
         } - {
             *flatten_model_values(ThrustersSensorValues.zero(), build_fmu_key_mapping),
@@ -117,7 +120,7 @@ def test_simulation_test_runner():
 
 async def test_lockstep_runner_ticks_and_publishes_channels():
     control_values = ModelDumpable()
-    controller_state = {}
+    controller_state = simple_controller_state()
     parameters = ModelDumpable()
     sensor_values = Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
 
@@ -147,9 +150,6 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     control_channels.send_control_values = AsyncMock()
     control_channels.send_computed_values = AsyncMock()
     control_channels.send_controller_state = AsyncMock()
-    control_channels.send_parameters = AsyncMock()
-    control_channels.send_control_modes = AsyncMock()
-    control_channels.send_automation_mode = AsyncMock()
     control_channels.send_actuated_control_values = AsyncMock()
     control_channels.send_manual_control = AsyncMock()
 
@@ -184,11 +184,9 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     assert control_channels.send_computed_values.await_count == 3
     assert simulation_channels.send_simulation_inputs.await_count == 3
     assert simulation_channels.send_simulation_outputs.await_count == 3
-    assert control_channels.send_parameters.await_count == 3
     assert control_channels.send_manual_control.await_count == 3
-    assert control_channels.send_control_modes.await_count == 3
-    assert control_channels.send_automation_mode.await_count == 3
     assert control_channels.send_actuated_control_values.await_count == 3
+    assert controller_state.automation_mode == AutomationMode(mode="automatic")
 
     assert control.initial.call_count == 2
     assert simulation.tick.call_count == 3
@@ -247,9 +245,6 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     control_channels.send_controller_state.assert_has_awaits(
         [call(controller_state), call(controller_state), call(controller_state)]
     )
-    control_channels.send_parameters.assert_has_awaits(
-        [call(parameters), call(parameters), call(parameters)]
-    )
     control_channels.send_manual_control.assert_has_awaits(
         [call(control_values), call(control_values), call(control_values)]
     )
@@ -258,7 +253,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
 async def test_control_runner_ticks_and_uses_channels():
     control_values = ModelDumpable()
     control_values_new = ModelDumpable()
-    controller_state = {}
+    controller_state = simple_controller_state()
     parameters = ModelDumpable()
     sensor_values = Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
 
@@ -280,9 +275,6 @@ async def test_control_runner_ticks_and_uses_channels():
     channels.send_computed_values = AsyncMock()
     channels.send_control_values = AsyncMock()
     channels.send_controller_state = AsyncMock()
-    channels.send_parameters = AsyncMock()
-    channels.send_control_modes = AsyncMock()
-    channels.send_automation_mode = AsyncMock()
     channels.send_actuated_control_values = AsyncMock()
     channels.send_manual_control = AsyncMock()
 
@@ -315,9 +307,7 @@ async def test_control_runner_ticks_and_uses_channels():
 
     assert channels.send_control_values.await_count == 2
     assert channels.send_controller_state.await_count == 2
-    assert channels.send_parameters.await_count == 2
-    assert channels.send_control_modes.await_count == 2
-    assert channels.send_automation_mode.await_count == 2
+    assert controller_state.automation_mode == AutomationMode(mode="automatic")
     assert channels.send_actuated_control_values.await_count == 2
     assert channels.send_manual_control.await_count == 2
 
@@ -330,7 +320,6 @@ async def test_control_runner_ticks_and_uses_channels():
     channels.send_controller_state.assert_has_awaits(
         [call(controller_state), call(controller_state)]
     )
-    channels.send_parameters.assert_has_awaits([call(parameters), call(parameters)])
     channels.send_manual_control.assert_has_awaits(
         # Manual holds the UI value; automatic output is no longer tracked into it
         [call(control_values_new), call(control_values_new)]

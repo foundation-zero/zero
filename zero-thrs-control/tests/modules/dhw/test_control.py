@@ -60,6 +60,17 @@ async def test_filling_flow(
     assert sensor_values.dhw_flow_dc.flow.value > 0.1
 
 
+def test_controller_state_carries_parameters_and_mode(runner, control: DhwControl):
+    control.update_parameters(
+        control.parameters.model_copy(update={"minimum_tank_level": 2})
+    )
+
+    _sensor_values, _control_values, controller_state = runner.run(1)
+
+    assert controller_state.parameters == control.parameters
+    assert controller_state.control_mode == control.mode
+
+
 @pytest.mark.parametrize("overpressure", [0.1, 0.2, 0.3, 0.5])
 def test_filling_level(
     control: DhwControl, runner, simulation: Simulation, simulation_inputs, overpressure

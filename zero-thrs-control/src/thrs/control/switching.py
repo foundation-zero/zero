@@ -15,12 +15,24 @@ class AutomationMode(ThrsValues):
     mode: ControlModes
 
 
+class ControlState[C: ThrsValues, P: ThrsValues, M: ThrsValues](ThrsValues):
+    """What a module's controller publishes about itself, besides its own controllers.
+
+    A module's controller state subclasses this and adds its controllers as components.
+    """
+
+    automation_mode: AutomationMode = AutomationMode(mode="manual")
+    # The automatic control's mode, `None` while manual.
+    control_mode: M | None = None
+    parameters: P
+
+
 class Switching[
     SensorValues: AmcsModeSensorValues,
     ControlValues: ThrsValues,
     ControlParameters: ThrsValues,
-    ControlMode,
-    ControllerState: ThrsValues,
+    ControlMode: ThrsValues,
+    ControllerState: ControlState,
 ]:
     def __init__(
         self,
@@ -80,20 +92,35 @@ class Switching[
                 self.update_manual_controls(actuated_control_values)
             self._mode = "manual"
 
-        if self.control_mode == "manual":
+        if self._mode == "manual":
             if self._last_mode == "automatic" and actuated_control_values is not None:
                 self.update_manual_controls(actuated_control_values)
             control_values, _ = self._manual_control.control(sensor_values)
-            _, controller_state = self._automatic_control.initial()
             self._last_mode = "manual"
-            return control_values, controller_state
+            return control_values, self.idle_state()
+
         if self._last_mode == "manual":
             self._automatic_control.reset()
         control_values, controller_state = self._automatic_control.control(
             sensor_values
         )
+        controller_state.automation_mode = AutomationMode(mode="automatic")
         self._last_mode = "automatic"
         return control_values, controller_state
+
+    def idle_state(self) -> ControllerState:
+        """The controller state while the automatic control does not run.
+
+        That is while manual, or without sensor values: the automatic control's
+        initial state, with the current parameters and modes.
+        """
+        _, controller_state = self._automatic_control.initial()
+        controller_state.parameters = self._automatic_control.parameters
+        controller_state.control_mode = (
+            self._automatic_control.mode if self._mode == "automatic" else None
+        )
+        controller_state.automation_mode = AutomationMode(mode=self._mode)
+        return controller_state
 
     def switch_mode(self, mode: AutomationMode):
         self._mode = mode.mode
@@ -112,19 +139,6 @@ class Switching[
     @staticmethod
     def initial_mode() -> AutomationMode:
         return AutomationMode(mode="manual")
-
-    @property
-    def mode(self) -> ControlMode | None:
-        """The automatic control's mode, `None` while manual."""
-        return self._automatic_control.mode if self.automatic else None
-
-    @property
-    def automatic(self) -> bool:
-        return self.control_mode == "automatic"
-
-    @property
-    def manual(self) -> bool:
-        return self.control_mode == "manual"
 
     @property
     def control_mode(self) -> ControlModes:

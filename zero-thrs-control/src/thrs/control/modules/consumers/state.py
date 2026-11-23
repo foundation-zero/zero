@@ -3,6 +3,8 @@ from typing import Annotated
 from pydantic import Field
 
 from thrs.classes.control import ControlMode
+from thrs.control.modules.consumers.io import ConsumersControlValues
+from thrs.control.switching import ControlState
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Ratio, Tuning
@@ -22,7 +24,9 @@ class ConsumersParameters(ThrsValues):
     adsorption_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
 
 
-class ConsumersControllerState(ThrsValues):
+class ConsumersControllerState(
+    ControlState[ConsumersControlValues, ConsumersParameters, ConsumersControlMode]
+):
     consumers_dhw_flow_controller: Annotated[
         PidControllerValues, component_meta(component_type="pid_controller")
     ]

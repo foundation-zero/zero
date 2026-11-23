@@ -4,6 +4,8 @@ from pydantic import Field, model_validator
 
 from thrs.classes.control import ControlMode
 from thrs.control.controllers import PcmChargeController
+from thrs.control.modules.pcm.io import PcmControlValues
+from thrs.control.switching import ControlState
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions.controllers import (
     PcmChargeControllerValues,
@@ -95,7 +97,7 @@ class PcmParameters(ThrsValues):
         return self
 
 
-class PcmControllerState(ThrsValues):
+class PcmControllerState(ControlState[PcmControlValues, PcmParameters, PcmControlMode]):
     pcm_pump_flow_controller: Annotated[
         PidControllerValues, component_meta(component_type="pid_controller")
     ]

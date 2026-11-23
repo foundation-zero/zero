@@ -103,6 +103,8 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:  # noq
         dhw_drives_flow_controller=PidController.zero(timestamp),
         dhw_dc_flow_controller=PidController.zero(timestamp),
         dhw_pump_flow_controller=PidController.zero(timestamp, setpoint=0.0),
+        parameters=DhwParameters(),
+        control_mode=None,
     )
 
 
@@ -745,6 +747,8 @@ class DhwControl(
         self._current_controller_state.dhw_pump_flow_controller = (
             self._pump_flow_controller.values()
         )
+        self._current_controller_state.parameters = self._parameters
+        self._current_controller_state.control_mode = self.mode
 
     @property
     def parameters(self) -> DhwParameters:

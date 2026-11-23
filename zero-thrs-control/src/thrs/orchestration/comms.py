@@ -473,35 +473,6 @@ class ControlChannels[
             ),
             qos=publish_qos,
         )
-        self.send_parameters = connector._create_publisher(
-            DirectMqttMapping[P].for_module(
-                control_module.parameters_cls,
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="parameters",
-            ),
-            qos=publish_qos,
-        )
-
-        # Cleared while the module is manual.
-        self.send_control_modes = connector._create_publisher(
-            DirectMqttMapping[M].for_module(
-                control_module.control_mode_cls,
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="control-mode",
-            ),
-            qos=publish_qos,
-        )
-        self.send_automation_mode = connector._create_publisher(
-            DirectMqttMapping[AutomationMode].for_module(
-                AutomationMode,
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="automation-mode",
-            ),
-            qos=publish_qos,
-        )
         self.send_actuated_control_values = connector._create_publisher(
             DirectMqttMapping[C].for_module(
                 control_module.control_values_cls,

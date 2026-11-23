@@ -75,6 +75,8 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> ThrustersControllerState: 
         thrusters_fwd_recovery_temperature_controller=PidController.zero(timestamp),
         thrusters_aft_flow_controller=PidController.zero(timestamp),
         thrusters_fwd_flow_controller=PidController.zero(timestamp),
+        parameters=ThrustersParameters(),
+        control_mode=None,
     )
 
 
@@ -375,6 +377,8 @@ class ThrustersControl(
             thrusters_fwd_recovery_temperature_controller=self._fwd_recovery_temperature_controller.values(),
             thrusters_aft_flow_controller=self._aft_flow_controller.values(),
             thrusters_fwd_flow_controller=self._fwd_flow_controller.values(),
+            parameters=self._parameters,
+            control_mode=self.mode,
         )
 
         return (self._current_control_values, controller_state)

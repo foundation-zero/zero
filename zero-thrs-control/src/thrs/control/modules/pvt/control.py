@@ -77,6 +77,8 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> PvtControllerState:  # noq
         pvt_main_fwd_pump_controller=pvt_group_state.pvt_group_pump_controller,
         pvt_owners_warmup_mix_controller=pvt_group_state.pvt_group_warmup_mix_controller,
         pvt_owners_pump_controller=pvt_group_state.pvt_group_pump_controller,
+        parameters=PvtParameters(),
+        control_mode=None,
     )
 
 
@@ -326,6 +328,8 @@ class PvtControl(
             pvt_owners_pump_controller=pvt_group_state[
                 "pvt_owners"
             ].pvt_group_pump_controller,
+            parameters=self._parameters,
+            control_mode=self.mode,
         )
 
         return (self._current_values, controller_state)

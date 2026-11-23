@@ -9,6 +9,7 @@ from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.manual import ManualControl
 from thrs.control.switching import (
     AutomationMode,
+    ControlState,
     Switching,
 )
 from thrs.input_output.base import ThrsValues
@@ -60,7 +61,7 @@ class Module[
     C: AmcsWatchdogControlValues,
     P: ThrsValues,
     M: ThrsValues,
-    CS: ThrsValues,
+    CS: ControlState,
 ]:
     def __init__(
         self,
@@ -190,11 +191,6 @@ class Module[
             await self._channels.send_computed_values(sensor_values)
         await self._channels.send_control_values(control_values)
         await self._channels.send_controller_state(controller_state)
-        await self._channels.send_parameters(self._control.parameters)
-        await self._channels.send_control_modes(self._control.mode)
-        await self._channels.send_automation_mode(
-            AutomationMode(mode=self._control.control_mode)
-        )
         actuated_control_values = self._channels.get_actuated_control_values()
         if actuated_control_values is not None:
             await self._channels.send_actuated_control_values(actuated_control_values)
@@ -207,7 +203,7 @@ class Module[
                 self._name,
             )
             control_values = self._control.manual_controls
-            _, controller_state = self._control.automatic_control.initial()
+            controller_state = self._control.idle_state()
         else:
             control_values, controller_state = self.execute_control(sensor_values)
 

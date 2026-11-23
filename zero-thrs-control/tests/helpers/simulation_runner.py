@@ -21,6 +21,31 @@ from thrs.simulation.io_mapping import flatten_model_values
 _all_keys = partial(build_fmu_key_mapping, fmu_only=False)
 
 
+def flatten_controller_state(state: ThrsValues | CombinedValues) -> dict[str, Any]:
+    """A controller state as `__`-joined columns, a stamped value as its value.
+
+    No controller state goes to the FMU, so it is flattened from its dump rather than
+    with the FMU mapping; combined states are keyed by module first.
+    """
+    if isinstance(state, CombinedValues):
+        return _flatten(
+            {name: model.model_dump() for name, model in state.values.items()}
+        )
+    return _flatten(state.model_dump())
+
+
+def _flatten(value: Any, key: str = "") -> dict[str, Any]:
+    if isinstance(value, dict) and "timestamp" not in value:
+        return {
+            flat_key: flat_value
+            for name, item in value.items()
+            for flat_key, flat_value in _flatten(
+                item, f"{key}__{name}" if key else name
+            ).items()
+        }
+    return {key: value["value"] if isinstance(value, dict) else value}
+
+
 class _CombinedControlAdapter[
     S: CombinedValues,
     C: CombinedValues,
@@ -198,7 +223,7 @@ class SimulationTestRunner[
                 {
                     **flatten_model_values(result.sensor_values, _all_keys),
                     **flatten_model_values(result.control_values, _all_keys),
-                    **flatten_model_values(self._controller_state, _all_keys),
+                    **flatten_controller_state(self._controller_state),
                     **flatten_model_values(result.simulation_outputs, _all_keys),
                     **flatten_model_values(result.simulation_inputs, _all_keys),
                 },
