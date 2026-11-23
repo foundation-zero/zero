@@ -415,8 +415,8 @@
     "dc700VShoreConverter:_07_11Tbc1B": "PowerConverter/drives:shorepower-1b",
     "dc700VShoreConverter:_07_12Tbc1A": "PowerConverter/drives:shorepower-2a",
     "dc700VShoreConverter:_07_12Tbc1B": "PowerConverter/drives:shorepower-2b",
-    "dcAcConverter:_5_11U101": "PowerConverter/dc:ugrid-1",
-    "dcAcConverter:_5_12U101": "PowerConverter/dc:ugrid-2",
+    "dcAcConverter:_05_11U101": "PowerConverter/dc:ugrid-1",
+    "dcAcConverter:_05_12U101": "PowerConverter/dc:ugrid-2",
     "dcConverters": "ExchangeCircuit/dhw:dcConverters",
     "dhw": "ExchangeCircuit/pcm:dhw",
     "dhw:dhwAdsorptionExchanger": "HeatExchanger/1004",
@@ -6009,14 +6009,14 @@
         "source": [
           "sensor:ugrid",
           "dcAcConverter",
-          "_5_11U101",
+          "_05_11U101",
           null
         ],
         "tooltip": {
           "title": "U-Grid 1",
           "yardTag": "45002082",
-          "technicalName": "5-11-u-101",
-          "mqttTopic": ".../5-11-u-101",
+          "technicalName": "05-11-u-101",
+          "mqttTopic": ".../05-11-u-101",
           "componentType": "DC converter"
         }
       },
@@ -6032,14 +6032,14 @@
         "source": [
           "sensor:ugrid",
           "dcAcConverter",
-          "_5_12U101",
+          "_05_12U101",
           null
         ],
         "tooltip": {
           "title": "U-Grid 2",
           "yardTag": "45002081",
-          "technicalName": "5-12-u-101",
-          "mqttTopic": ".../5-12-u-101",
+          "technicalName": "05-12-u-101",
+          "mqttTopic": ".../05-12-u-101",
           "componentType": "DC converter"
         }
       },

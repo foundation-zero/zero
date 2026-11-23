@@ -109,11 +109,11 @@ export const DC_CONVERTER_DATA = toFieldsMap({
       "Brightloop AFT 4",
     ),
     "ugrid-1": powerConverter(
-      getField(SensorComponentType.Ugrid, "dcAcConverter", "_5_11U101"),
+      getField(SensorComponentType.Ugrid, "dcAcConverter", "_05_11U101"),
       "U-Grid 1",
     ),
     "ugrid-2": powerConverter(
-      getField(SensorComponentType.Ugrid, "dcAcConverter", "_5_12U101"),
+      getField(SensorComponentType.Ugrid, "dcAcConverter", "_05_12U101"),
       "U-Grid 2",
     ),
     "fwd-1": powerConverter(
