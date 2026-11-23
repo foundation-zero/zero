@@ -4515,3 +4515,65 @@ models:
         description: "Power of AC compressor 2 in kW."
       - name: watt_sea_water_pump
         description: "Power of the AC seawater pump in kW."
+  - name: stg_marpower__dc_350v_converters
+    description: >
+      Staging view for the Marpower 350 VDC converters between the 700 VDC bus and the 350 VDC network,
+      one topic per converter.
+    columns:
+      - name: ts
+        description: "Time index of the measurement record (renamed from timestamp)."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message, one per 350 VDC converter."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - "marpower/45-dc-350v/dc-dc-converter/02-71-t101"
+                  - "marpower/45-dc-350v/dc-dc-converter/02-71-t102"
+                  - "marpower/45-dc-350v/dc-dc-converter/02-72-t101"
+                  - "marpower/45-dc-350v/dc-dc-converter/02-72-t102"
+      - name: technical_name
+        description: "The converter's designation (02-71-t101, 02-71-t102 aft; 02-72-t101, 02-72-t102 fwd)."
+      - name: hvdc_current__has_value
+        description: "Indicates whether a value is present for the HVDC (high side, 700 VDC) current in A."
+      - name: hvdc_current__is_valid
+        description: "Indicates whether the HVDC (high side, 700 VDC) current in A value is valid."
+      - name: hvdc_current__timestamp
+        description: "Timestamp of the HVDC (high side, 700 VDC) current in A reading."
+      - name: hvdc_current__value
+        description: "HVDC (high side, 700 VDC) current in A."
+      - name: hvdc_power__has_value
+        description: "Indicates whether a value is present for the HVDC (high side, 700 VDC) power in W, positive from the 700 VDC bus to the 350 VDC network."
+      - name: hvdc_power__is_valid
+        description: "Indicates whether the HVDC (high side, 700 VDC) power in W, positive from the 700 VDC bus to the 350 VDC network value is valid."
+      - name: hvdc_power__timestamp
+        description: "Timestamp of the HVDC (high side, 700 VDC) power in W, positive from the 700 VDC bus to the 350 VDC network reading."
+      - name: hvdc_power__value
+        description: "HVDC (high side, 700 VDC) power in W, positive from the 700 VDC bus to the 350 VDC network."
+      - name: hvdc_voltage__has_value
+        description: "Indicates whether a value is present for the HVDC (high side, 700 VDC) voltage in V."
+      - name: hvdc_voltage__is_valid
+        description: "Indicates whether the HVDC (high side, 700 VDC) voltage in V value is valid."
+      - name: hvdc_voltage__timestamp
+        description: "Timestamp of the HVDC (high side, 700 VDC) voltage in V reading."
+      - name: hvdc_voltage__value
+        description: "HVDC (high side, 700 VDC) voltage in V."
+      - name: lvdc_current__has_value
+        description: "Indicates whether a value is present for the LVDC (low side, 350 VDC) current in A."
+      - name: lvdc_current__is_valid
+        description: "Indicates whether the LVDC (low side, 350 VDC) current in A value is valid."
+      - name: lvdc_current__timestamp
+        description: "Timestamp of the LVDC (low side, 350 VDC) current in A reading."
+      - name: lvdc_current__value
+        description: "LVDC (low side, 350 VDC) current in A."
+      - name: lvdc_voltage__has_value
+        description: "Indicates whether a value is present for the LVDC (low side, 350 VDC) voltage in V."
+      - name: lvdc_voltage__is_valid
+        description: "Indicates whether the LVDC (low side, 350 VDC) voltage in V value is valid."
+      - name: lvdc_voltage__timestamp
+        description: "Timestamp of the LVDC (low side, 350 VDC) voltage in V reading."
+      - name: lvdc_voltage__value
+        description: "LVDC (low side, 350 VDC) voltage in V."
