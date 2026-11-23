@@ -138,13 +138,13 @@
           "title": "Weather routing"
         },
         "loads": {
-          "title": "Sail loads"
+          "title": "Loads"
         },
         "sailSystem": {
           "title": "Sail systems HMI"
         },
         "thrs": {
-          "title": "Heating system"
+          "title": "Heat system"
         },
         "thrsim": {
           "title": "THRSim"

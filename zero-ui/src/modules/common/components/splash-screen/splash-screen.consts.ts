@@ -39,14 +39,14 @@ const ALL_SPLASH_GROUPS: SplashGroup[] = [
   {
     nameKey: "views.splash.groups.sailing",
     tiles: [
-      { nameKey: "views.splash.apps.conning.title", icon: RiCompass3Line },
-      { nameKey: "views.splash.apps.weatherRouting.title", icon: RiRouteLine },
       {
         app: ZeroApps.loads,
         to: "/loads",
         nameKey: "views.splash.apps.loads.title",
         icon: RiSailboatLine,
       },
+      { nameKey: "views.splash.apps.conning.title", icon: RiCompass3Line },
+      { nameKey: "views.splash.apps.weatherRouting.title", icon: RiRouteLine },
       {
         app: ZeroApps.sailSystem,
         to: "/sail-system",
