@@ -21,6 +21,7 @@ dependencies = [
   "asyncpg>=0.30.0,<1.0.0",
   "asyncapi3==0.0.2",
   "more_itertools==11.2.1",
+  "aiomysql>=0.3.2,<0.4.0",
 ]
 dynamic = ["version"]
 license-files = ["LICENSE"]
@@ -60,6 +61,7 @@ log_format = "%(asctime)s.%(msecs)03d | %(levelname)-8s | %(message)s"
 markers = [
   "io: tests that check code against IOlist outside this repo",
   "mqtt: tests requiring a running MQTT broker",
+  "greptime: tests requiring a running GreptimeDB (GREPTIME_TEST_URL)",
   "slow: Slow tests",
 ]
 
