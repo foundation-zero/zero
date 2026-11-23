@@ -6,7 +6,7 @@ ENV UV_PYTHON_DOWNLOADS=0
 WORKDIR /app
 
 COPY zero-alert-forwarder/pyproject.toml zero-alert-forwarder/uv.lock zero-alert-forwarder/README.md ./zero-alert-forwarder/
-COPY zero-alert-forwarder/zero_alert_forwarder ./zero-alert-forwarder/zero_alert_forwarder
+COPY zero-alert-forwarder/src ./zero-alert-forwarder/src
 
 WORKDIR /app/zero-alert-forwarder
 
