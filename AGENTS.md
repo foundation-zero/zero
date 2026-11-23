@@ -24,3 +24,17 @@ holding a `SKILL.md` plus any scripts and references it needs:
 A `SKILL.md` starts with a `description` saying when it applies. Read the ones
 that match your task before you start; commands in them are written to run from
 the service directory (`zero-thrs-control`), not from the repository root.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in Jira project ZERO (foundationzero-team.atlassian.net), reached through the Atlassian MCP tools (setup in the same doc). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Optional: the five default triage roles as plain Jira labels, only when triage is asked for. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Multi-context: `GLOSSARY-MAP.md` at the root points at per-service glossaries; system-wide ADRs live in `docs/adr/`, service-scoped ones in `<service>/docs/adr/`. See `docs/agents/domain.md`.
