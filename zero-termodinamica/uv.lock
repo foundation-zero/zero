@@ -608,7 +608,7 @@ provides-extras = ["tui"]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "pyright", specifier = ">=1.1.403,<2" },
+    { name = "pyrefly", specifier = "~=1.5" },
     { name = "ruff", specifier = ">=0.17.2,<0.18" },
 ]
 test = [

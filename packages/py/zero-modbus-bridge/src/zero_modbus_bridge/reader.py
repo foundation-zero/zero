@@ -31,7 +31,7 @@ class ModbusReader:
         """
         if self._modbus.is_open:
             return True
-        return bool(self._modbus.open())
+        return self._modbus.open()
 
     def read_all(self) -> Iterator[tuple[str, Any]]:
         """Read every topic once and yield ``(topic_name, payload)``.
