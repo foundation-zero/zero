@@ -23,11 +23,11 @@ use std::collections::{BTreeMap, HashMap};
 use std::sync::Arc;
 
 use anyhow::{Context, bail};
-use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{
     Enum, Field, FieldValue, Object, Scalar, Schema, SchemaBuilder, Type, TypeRef,
 };
+use async_graphql::{Name, PathSegment, ServerError};
 use log::{info, warn};
 
 use crate::graphql::groups::register_group_queries;
@@ -327,7 +327,7 @@ fn payload_object(name_prefix: &str, name: &str, fields: &BTreeMap<String, Field
     let type_name = payload_type_name(name_prefix, name);
     let (object, mut types) = fields
         .iter()
-        .filter_map(|(name, field)| payload_field(name_prefix, name, &field.field_type))
+        .filter_map(|(name, field)| payload_field(name_prefix, name, field))
         .fold(
             (Object::new(type_name.as_str()), Vec::new()),
             |(obj, mut types), (field, new_types)| {
@@ -340,12 +340,10 @@ fn payload_object(name_prefix: &str, name: &str, fields: &BTreeMap<String, Field
 }
 
 /// One payload field on a `<Topic>` object: projects the raw field name
-/// from the object value returned by [`topic_query_field`].
-fn payload_field(
-    name_prefix: &str,
-    name: &str,
-    field_type: &FieldType,
-) -> Option<(Field, Vec<Type>)> {
+/// from the object value returned by [`topic_query_field`]. A value the
+/// Spec rules out as missing or `null` resolves to `null` with an error,
+/// so the rest of the payload is still served.
+fn payload_field(name_prefix: &str, name: &str, def: &FieldDef) -> Option<(Field, Vec<Type>)> {
     let field_name = sanitize_to_graphql_name(name);
 
     if field_name.is_empty() {
@@ -354,33 +352,61 @@ fn payload_field(
     }
 
     let raw_name = Name::new(name);
-    let (type_ref, types) = graphql_type_ref(name_prefix, field_type);
-    let field_type = field_type.clone();
+    let (type_ref, types) = graphql_type_ref(name_prefix, &def.field_type);
+    let def = def.clone();
 
     let field = Field::new(field_name, type_ref, move |ctx| {
         let raw_name = raw_name.clone();
-        let field_type = field_type.clone();
+        let def = def.clone();
         async_graphql::dynamic::FieldFuture::new(async move {
-            let parent = ctx.parent_value.try_to_value()?;
-            let value = match parent {
-                GraphQlValue::Object(map) => map.get(&raw_name).cloned(),
-                _ => None,
+            // async-graphql resolves a `null` element of a list of objects
+            // as an object; that element is reported, its fields are not.
+            let GraphQlValue::Object(parent) = ctx.parent_value.try_to_value()? else {
+                return Ok(None);
             };
-            non_null(value)
-                .map(|value| output_value(&field_type, value).map(FieldValue::value))
-                .transpose()
+            let Some(value) = non_null(parent.get(&raw_name).cloned()) else {
+                if def.non_null {
+                    let message =
+                        format!("\"{raw_name}\" is missing or null, but the Spec requires a value");
+                    report_spec_violation(ctx.ctx, message, Vec::new());
+                }
+                return Ok(None);
+            };
+            let mut null_elements = Vec::new();
+            let value = output_value(&def.field_type, value, &mut null_elements)?;
+            for indices in null_elements {
+                let message =
+                    format!("\"{raw_name}\" has a null element, but the Spec requires a value");
+                report_spec_violation(ctx.ctx, message, indices);
+            }
+            Ok(Some(FieldValue::value(value)))
         })
     });
 
     Some((field, types))
 }
 
+/// Report a value that breaks the Spec at the current field, or at the
+/// list element at `indices` in it, without failing the field. A resolver
+/// error would null the whole response: async-graphql's dynamic schema
+/// propagates it to the root, not to the nearest nullable field.
+fn report_spec_violation(ctx: &async_graphql::Context<'_>, message: String, indices: Vec<usize>) {
+    let mut error = ctx.set_error_path(ServerError::new(message, Some(ctx.item.pos)));
+    error
+        .path
+        .extend(indices.into_iter().map(PathSegment::Index));
+    ctx.add_error(error);
+}
+
 /// `value` as the output of a field of `field_type`: enum values by their
 /// GraphQL name. Errors on a value that is not one of the enum's, so a Spec
-/// that no longer matches what is published shows.
+/// that no longer matches what is published shows. Adds to `null_elements`
+/// the indices, per level of nested lists, of each `null` element the Spec
+/// rules out.
 fn output_value(
     field_type: &FieldType,
     value: GraphQlValue,
+    null_elements: &mut Vec<Vec<usize>>,
 ) -> async_graphql::Result<GraphQlValue> {
     match (field_type, value) {
         (FieldType::Enum(name, values), value) => {
@@ -394,14 +420,25 @@ fn output_value(
                 .map(|enum_value| GraphQlValue::Enum(Name::new(&enum_value.name)))
                 .ok_or_else(|| format!("{value} is not one of the values of enum {name}").into())
         }
-        (FieldType::List(element), GraphQlValue::List(items)) => items
-            .into_iter()
-            .map(|item| match item {
-                GraphQlValue::Null => Ok(GraphQlValue::Null),
-                item => output_value(&element.field_type, item),
-            })
-            .collect::<async_graphql::Result<_>>()
-            .map(GraphQlValue::List),
+        (FieldType::List(element), GraphQlValue::List(items)) => {
+            let mut outputs = Vec::with_capacity(items.len());
+            for (index, item) in items.into_iter().enumerate() {
+                if item == GraphQlValue::Null {
+                    if element.non_null {
+                        null_elements.push(vec![index]);
+                    }
+                    outputs.push(GraphQlValue::Null);
+                    continue;
+                }
+                let mut nested = Vec::new();
+                outputs.push(output_value(&element.field_type, item, &mut nested)?);
+                null_elements.extend(nested.into_iter().map(|mut indices| {
+                    indices.insert(0, index);
+                    indices
+                }));
+            }
+            Ok(GraphQlValue::List(outputs))
+        }
         (_, value) => Ok(value),
     }
 }
@@ -686,5 +723,104 @@ mod tests {
                 "for {payload}"
             );
         }
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_value_the_spec_rules_out_is_null_with_an_error() {
+        let alarm = FieldType::Object(
+            "alarm".to_string(),
+            Box::new(BTreeMap::from([
+                ("code".to_string(), FieldDef::non_null(FieldType::Int)),
+                ("text".to_string(), FieldDef::nullable(FieldType::String)),
+            ])),
+        );
+        let list = |element| FieldType::List(Box::new(element));
+        let topic = TopicDef {
+            topic: "a/b".to_string(),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from([
+                    ("on".to_string(), FieldDef::non_null(FieldType::Boolean)),
+                    ("setpoint".to_string(), FieldDef::nullable(FieldType::Float)),
+                    (
+                        "alarms".to_string(),
+                        FieldDef::non_null(list(FieldDef::non_null(alarm))),
+                    ),
+                    (
+                        "readings".to_string(),
+                        FieldDef::non_null(list(FieldDef::nullable(FieldType::Float))),
+                    ),
+                    (
+                        "grid".to_string(),
+                        FieldDef::non_null(list(FieldDef::non_null(list(FieldDef::non_null(
+                            FieldType::Int,
+                        ))))),
+                    ),
+                ]),
+            }),
+            operation: Direction::Send,
+            ttl_secs: None,
+            setter: None,
+            kind: TopicKind::Single,
+        };
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "a/b",
+            json!({
+                "setpoint": null,
+                "alarms": [{"code": 1}, null, {"text": "low"}],
+                "readings": [1.0, null],
+                "grid": [[1, null], [2]],
+            }),
+        );
+        let schema = build_schema(&mock_api(vec![topic]), &cache, None).unwrap();
+
+        let response = schema
+            .execute("{ a { b { on setpoint alarms { code text } readings grid } } }")
+            .await;
+
+        // Everything that arrived is served. async-graphql shows a `null`
+        // element of a list of objects as an object of `null` fields.
+        let data: serde_json::Value = response.data.into_json().unwrap();
+        assert_eq!(
+            data["a"]["b"],
+            json!({
+                "on": null,
+                "setpoint": null,
+                "alarms": [
+                    {"code": 1, "text": null},
+                    {"code": null, "text": null},
+                    {"code": null, "text": "low"},
+                ],
+                "readings": [1.0, null],
+                "grid": [[1, null], [2]],
+            }),
+            "{:?}",
+            response.errors
+        );
+        // An error for each value the Spec rules out, and only for those.
+        let mut paths: Vec<serde_json::Value> = response
+            .errors
+            .iter()
+            .map(|error| serde_json::to_value(&error.path).unwrap())
+            .collect();
+        paths.sort_by_key(ToString::to_string);
+        assert_eq!(
+            paths,
+            [
+                json!(["a", "b", "alarms", 1]),
+                json!(["a", "b", "alarms", 2, "code"]),
+                json!(["a", "b", "grid", 0, 1]),
+                json!(["a", "b", "on"]),
+            ]
+        );
+        assert!(
+            response.errors[0]
+                .message
+                .contains("but the Spec requires a value"),
+            "{:?}",
+            response.errors
+        );
     }
 }
