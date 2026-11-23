@@ -24,6 +24,7 @@ const modules: Array<MimicKey> = [
   "dc-ugrid",
   "dc-fwd",
   "drives",
+  "drives-shorepower",
   "adsorption",
 ];
 const currentTabKey = computed(() => currentRoute.params.module as MimicKey);

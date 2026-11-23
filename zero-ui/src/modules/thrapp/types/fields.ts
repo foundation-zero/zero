@@ -314,6 +314,8 @@ export type CustomFieldDefinitions = CustomFields<{
   [MimicComponentType.PropulsionCooler]: EmptyObject;
   [MimicComponentType.ShorePowerConverter]: {
     converters: ModuleField<SensorComponentType.ShorePowerConverter>[];
+    /** Sub-mimic showing the converters one by one. */
+    mimic?: MimicKey;
   };
   [MimicComponentType.ConnectingCircuit]: {
     width?: number | string;

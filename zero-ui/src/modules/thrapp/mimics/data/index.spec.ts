@@ -16,7 +16,7 @@ describe("findTooltipContext", () => {
   it("finds a field by the module it is read from, not the mimic data that shows it", () => {
     // The dc data shows the U-Grids, but they are read from the dcAcConverter module.
     const contexts = findTooltipContext(
-      getField(SensorComponentType.Ugrid, "dcAcConverter", "_5_11U101"),
+      getField(SensorComponentType.Ugrid, "dcAcConverter", "_05_11U101"),
     );
 
     expect(contexts.map(({ type, registerField }) => [type, registerField])).toEqual([

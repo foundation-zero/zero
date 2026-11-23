@@ -411,8 +411,12 @@
     "dc:dcTemperatureUgridSupply": "TemperatureSensor/1038-70",
     "dc:fwd": "DcConverter/dc:fwd",
     "dc:ugrid": "DcConverter/dc:ugrid",
-    "dcAcConverter:_5_11U101": "PowerConverter/dc:ugrid-1",
-    "dcAcConverter:_5_12U101": "PowerConverter/dc:ugrid-2",
+    "dc700VShoreConverter:_07_11Tbc1A": "PowerConverter/drives:shorepower-1a",
+    "dc700VShoreConverter:_07_11Tbc1B": "PowerConverter/drives:shorepower-1b",
+    "dc700VShoreConverter:_07_12Tbc1A": "PowerConverter/drives:shorepower-2a",
+    "dc700VShoreConverter:_07_12Tbc1B": "PowerConverter/drives:shorepower-2b",
+    "dcAcConverter:_05_11U101": "PowerConverter/dc:ugrid-1",
+    "dcAcConverter:_05_12U101": "PowerConverter/dc:ugrid-2",
     "dcConverters": "ExchangeCircuit/dhw:dcConverters",
     "dhw": "ExchangeCircuit/pcm:dhw",
     "dhw:dhwAdsorptionExchanger": "HeatExchanger/1004",
@@ -494,6 +498,7 @@
     "drives:drivesTemperatureRecoveryReturn": "TemperatureSensor/1038-59",
     "drives:drivesTemperatureShorepowerReturn": "TemperatureSensor/1038-11",
     "drives:drivesTemperatureSupply": "TemperatureSensor/1038-14",
+    "drives:shorepower": "ConnectingCircuit/drives:shorepower",
     "fwd-1": "PowerConverter/dc:fwd-1",
     "fwd-2": "PowerConverter/dc:fwd-2",
     "highTemperature": "ExchangeCircuit/adsorption:highTemperature",
@@ -667,6 +672,10 @@
     "pvt:pvtTemperatureOwnersSupply": "TemperatureSensor/1038-21",
     "pvt:pvtTemperatureSupply": "TemperatureSensor/1038-24",
     "shorepower": "ShorePowerConverter/drives:shorepower",
+    "shorepower-1a": "PowerConverter/drives:shorepower-1a",
+    "shorepower-1b": "PowerConverter/drives:shorepower-1b",
+    "shorepower-2a": "PowerConverter/drives:shorepower-2a",
+    "shorepower-2b": "PowerConverter/drives:shorepower-2b",
     "thrusters:pcm": "ConnectingCircuit/thrusters:pcm",
     "thrusters:thrustersFlowAft": "FlowSensor/1218-02",
     "thrusters:thrustersFlowcontrolAft": "FlowControlValve/1215",
@@ -1265,6 +1274,25 @@
           "mqttTopic": ".../dc-ugrid-heat",
           "componentType": "DC/AC group 1 loop",
           "yardTag": "dc:ugrid"
+        }
+      },
+      "drives:shorepower": {
+        "custom": {
+          "circuitName": "Drives shorepower",
+          "modeModule": "drives"
+        },
+        "source": [
+          "sensor:heatTransferDevice",
+          "drives",
+          "drivesShorepowerHeat",
+          null
+        ],
+        "tooltip": {
+          "title": "Connecting circuit",
+          "technicalName": "drives-shorepower-heat",
+          "mqttTopic": ".../drives-shorepower-heat",
+          "componentType": "Shorepower loop",
+          "yardTag": "drives:shorepower"
         }
       },
       "pcm:freshwater": {
@@ -4191,6 +4219,34 @@
           "componentType": "2 way valve DN 15"
         }
       },
+      "1080-02": {
+        "tooltip": {
+          "yardTag": "1080-02",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1080-03": {
+        "tooltip": {
+          "yardTag": "1080-03",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1080-04": {
+        "tooltip": {
+          "yardTag": "1080-04",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
+      "1080-05": {
+        "tooltip": {
+          "yardTag": "1080-05",
+          "title": "Manual valve",
+          "componentType": "2 way valve DN 15"
+        }
+      },
       "1084-01": {
         "tooltip": {
           "yardTag": "1084-01",
@@ -5953,14 +6009,14 @@
         "source": [
           "sensor:ugrid",
           "dcAcConverter",
-          "_5_11U101",
+          "_05_11U101",
           null
         ],
         "tooltip": {
           "title": "U-Grid 1",
           "yardTag": "45002082",
-          "technicalName": "5-11-u-101",
-          "mqttTopic": ".../5-11-u-101",
+          "technicalName": "05-11-u-101",
+          "mqttTopic": ".../05-11-u-101",
           "componentType": "DC converter"
         }
       },
@@ -5976,15 +6032,107 @@
         "source": [
           "sensor:ugrid",
           "dcAcConverter",
-          "_5_12U101",
+          "_05_12U101",
           null
         ],
         "tooltip": {
           "title": "U-Grid 2",
           "yardTag": "45002081",
-          "technicalName": "5-12-u-101",
-          "mqttTopic": ".../5-12-u-101",
+          "technicalName": "05-12-u-101",
+          "mqttTopic": ".../05-12-u-101",
           "componentType": "DC converter"
+        }
+      },
+      "drives:shorepower-1a": {
+        "sensors": {
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "drives",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:shorePowerConverter",
+          "dc700VShoreConverter",
+          "_07_11Tbc1A",
+          null
+        ],
+        "tooltip": {
+          "title": "Shore power converter 1A",
+          "yardTag": "45002001",
+          "technicalName": "07-11-tbc-1-a",
+          "mqttTopic": ".../07-11-tbc-1-a",
+          "componentType": "Shorepower converter"
+        }
+      },
+      "drives:shorepower-1b": {
+        "sensors": {
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "drives",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:shorePowerConverter",
+          "dc700VShoreConverter",
+          "_07_11Tbc1B",
+          null
+        ],
+        "tooltip": {
+          "title": "Shore power converter 1B",
+          "yardTag": "45002001",
+          "technicalName": "07-11-tbc-1-b",
+          "mqttTopic": ".../07-11-tbc-1-b",
+          "componentType": "Shorepower converter"
+        }
+      },
+      "drives:shorepower-2a": {
+        "sensors": {
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "drives",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:shorePowerConverter",
+          "dc700VShoreConverter",
+          "_07_12Tbc1A",
+          null
+        ],
+        "tooltip": {
+          "title": "Shore power converter 2A",
+          "yardTag": "45002001",
+          "technicalName": "07-12-tbc-1-a",
+          "mqttTopic": ".../07-12-tbc-1-a",
+          "componentType": "Shorepower converter"
+        }
+      },
+      "drives:shorepower-2b": {
+        "sensors": {
+          "heatTransfer": [
+            "sensor:heatTransferDevice",
+            "drives",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:shorePowerConverter",
+          "dc700VShoreConverter",
+          "_07_12Tbc1B",
+          null
+        ],
+        "tooltip": {
+          "title": "Shore power converter 2B",
+          "yardTag": "45002001",
+          "technicalName": "07-12-tbc-1-b",
+          "mqttTopic": ".../07-12-tbc-1-b",
+          "componentType": "Shorepower converter"
         }
       }
     },
@@ -7646,6 +7794,7 @@
     "ShorePowerConverter": {
       "drives:shorepower": {
         "custom": {
+          "mimic": "drives-shorepower",
           "converters": [
             [
               "sensor:shorePowerConverter",
