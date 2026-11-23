@@ -43,7 +43,8 @@ grouped_topics = [
   "marpower/pvt/",
   "marpower/thruster/",
   "power-tags/",
-  "termodinamica/ac/"
+  "termodinamica/ac/",
+  "termodinamica/ventilation/"
 ]
 
 managed_tables = {
