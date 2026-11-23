@@ -1,6 +1,7 @@
 from datetime import UTC, datetime, timedelta
 from functools import partial
 from types import SimpleNamespace
+from unittest import mock
 from unittest.mock import AsyncMock, Mock, call
 
 from tests.helpers.collector import PolarsCollector
@@ -33,16 +34,6 @@ from thrs.runtime.runners.simulator import SimulationRunner
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.io_mapping import ThrsModelIoMapping, flatten_model_values
 from thrs.simulation.models.fmu_paths import thrusters_path
-
-
-class ModelDumpable:
-    """Minimal stand-in for a ThrsValues instance: identity-based equality (like
-    `mock.sentinel`) plus a `model_dump()`, since `Module.get_persistence_snapshot()`
-    is now called on every tick by the persistence-wired runners and would otherwise
-    blow up on a plain sentinel/dict test double."""
-
-    def model_dump(self, mode: str = "json", exclude: set | None = None) -> dict:
-        return {}
 
 
 def _mock_description(control: Mock, alarms: Mock) -> Mock:
@@ -116,7 +107,7 @@ def test_simulation_test_runner():
 async def test_lockstep_runner_ticks_and_publishes_channels():
     control_values = simple_control_values(flow=1.0)
     controller_state = simple_controller_state()
-    parameters = ModelDumpable()
+    parameters = mock.sentinel.parameters
     sensor_values = Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
 
     combined_sensor_values = CombinedValues(values={"module": sensor_values})
@@ -240,7 +231,7 @@ async def test_control_runner_ticks_and_uses_channels():
     control_values = simple_control_values(flow=1.0)
     control_values_new = simple_control_values(flow=2.0)
     controller_state = simple_controller_state()
-    parameters = ModelDumpable()
+    parameters = mock.sentinel.parameters
     sensor_values = Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
 
     mock_liveness = Mock()

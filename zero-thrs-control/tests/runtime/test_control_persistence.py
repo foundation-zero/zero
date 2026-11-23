@@ -1,6 +1,7 @@
 from typing import cast
 from unittest import mock
 
+from tests.helpers.modules import ConfigurableControllerState, ConfigurableParameters
 from thrs.classes.persistence.engine import (
     InMemoryPersistentEngine,
     NoopPersistentEngine,
@@ -12,11 +13,17 @@ from thrs.runtime.liveness import Liveness
 from thrs.runtime.runners.control import ControlRunner
 
 
-def make_module(name: str, snapshot: ModulePersistenceSnapshot) -> mock.AsyncMock:
+def make_module(name: str, setpoint: float = 50.0) -> mock.AsyncMock:
+    """A module whose tick sends a controller state with the given setpoint."""
     module = mock.AsyncMock()
     module.name = name
     module.sync_control_channels_state.return_value = None
-    module.get_persistence_snapshot = mock.Mock(return_value=snapshot)
+    module.tick.return_value = (
+        mock.sentinel.control_values,
+        ConfigurableControllerState(
+            parameters=ConfigurableParameters(setpoint=setpoint)
+        ),
+    )
     return module
 
 
@@ -29,33 +36,33 @@ def make_runner(
     )
 
 
-async def test_control_runner_persists_module_snapshot_on_tick():
+async def test_control_runner_persists_the_controller_state_a_tick_sends():
     store = InMemoryPersistentEngine()
-    snapshot = ModulePersistenceSnapshot(parameters={"setpoint": 55.0})
-    runner = make_runner([make_module("dhw", snapshot)], store)
+    runner = make_runner([make_module("dhw", setpoint=55.0)], store)
 
     await runner.tick()
 
-    assert store.snapshots["dhw"] == snapshot
+    assert store.snapshots["dhw"] == ModulePersistenceSnapshot(
+        parameters={"setpoint": 55.0}, control_mode="manual"
+    )
 
 
 async def test_control_runner_does_not_rewrite_unchanged_snapshot():
     store = InMemoryPersistentEngine()
     store.save = mock.AsyncMock(wraps=store.save)
-    runner = make_runner([make_module("dhw", ModulePersistenceSnapshot())], store)
+    runner = make_runner([make_module("dhw")], store)
 
     await runner.tick()
     await runner.tick()
 
     assert store.save.await_count == 1
-    assert store.snapshots["dhw"] == ModulePersistenceSnapshot()
 
 
 async def test_control_runner_runs_with_persistence_disabled():
     """`module_persistence` off in the CLI still wires up a PersistManager, backed by
     a no-op engine - the runner never has to special-case a missing persistence
     manager."""
-    module = make_module("dhw", ModulePersistenceSnapshot())
+    module = make_module("dhw")
     persistence = PersistManager(NoopPersistentEngine())
     runner = ControlRunner(
         cast(list[Module], [module]), mock.Mock(spec=Liveness), persistence

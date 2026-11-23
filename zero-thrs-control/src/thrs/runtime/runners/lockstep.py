@@ -45,16 +45,12 @@ class LockstepRunner[
 
         await self.simulation_module.send_simulation_updates(sim_result)
 
-        control_values_map = {
-            module.name: control_values
-            for module in self.control_modules
-            if (
-                control_values := await module.tick(
-                    sim_result.sensor_values.values.get(module.name)
-                )
+        control_values_map = {}
+        for module in self.control_modules:
+            control_values, controller_state = await module.tick(
+                sim_result.sensor_values.values.get(module.name)
             )
-        }
+            control_values_map[module.name] = control_values
+            await self._persistence.persist(module.name, controller_state)
 
         self._control_values = CombinedValues(values=control_values_map)
-
-        await self._persistence.persist_all(self.control_modules)
