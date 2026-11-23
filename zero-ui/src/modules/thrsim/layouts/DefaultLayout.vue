@@ -8,6 +8,7 @@ import TopNav from "@/modules/common/components/navigation/TopNav.vue";
 import TopNavAppLogo from "@/modules/common/components/navigation/TopNavAppLogo.vue";
 import TopNavToolbar from "@/modules/common/components/navigation/TopNavToolbar.vue";
 import ControlActions from "@/modules/thrapp/components/control-actions/ControlActions.vue";
+import { getControlModule } from "@/modules/thrapp/components/sub-navigation";
 import { mqttGraphqlClient } from "@/modules/thrapp/graphql/client";
 import { ControlledModule } from "@/modules/thrapp/lib/consts";
 import { MimicKey } from "@/modules/thrapp/router/mimics";
@@ -33,12 +34,19 @@ const modules: Array<MimicKey> = [
   "pvt-main-heat",
   "pcm",
   "dc",
+  "dc-aft",
+  "dc-ugrid",
+  "dc-fwd",
   "drives",
   "adsorption",
 ];
 const currentModuleKey = computed(() => (currentRoute.params.module as string) ?? "simulation");
 
-provide("currentModule", currentModuleKey);
+// The controls, monitoring and parameters views show a sub-mimic's parent module (e.g. dc for
+// dc-aft); only the mimic view reads the sub-mimic from the route.
+const currentControlModule = computed(() => getControlModule(currentModuleKey.value as MimicKey));
+
+provide("currentModule", currentControlModule);
 
 const { startPolling, stopPolling } = useSimulationStore();
 
@@ -95,7 +103,7 @@ onUnmounted(stopPolling);
         v-if="currentRoute.params.module"
         #right
       >
-        <ControlActions :active-module="currentModuleKey as ControlledModule" />
+        <ControlActions :active-module="currentControlModule as ControlledModule" />
       </template>
     </TopNavToolbar>
   </TopNav>

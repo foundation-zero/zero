@@ -117,6 +117,18 @@ export const DC_MIMIC_QUERY = gql`
   ${F.DC_AC_CONVERTER_SENSOR_VALUES_FRAGMENT}
 `;
 
+/** Shared by the dc-aft, dc-ugrid and dc-fwd mimics, one per converter group. */
+export const DC_SECTION_MIMIC_QUERY = gql`
+  query DcSectionMimic {
+    ...DcSensorValues
+    ...DcControlValues
+    ...DcAcConverterSensorValues
+  }
+  ${F.DC_SENSOR_VALUES_FRAGMENT}
+  ${F.DC_CONTROL_VALUES_FRAGMENT}
+  ${F.DC_AC_CONVERTER_SENSOR_VALUES_FRAGMENT}
+`;
+
 export const ADSORPTION_MIMIC_QUERY = gql`
   query AdsorptionMimic {
     ...AdsorptionSensorValues

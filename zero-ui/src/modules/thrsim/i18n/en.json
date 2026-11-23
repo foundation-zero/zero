@@ -14,7 +14,10 @@
       "simulation": "Simulation",
       "pvt-main": "PVT Main",
       "pvt-main-heat": "PVT Main (Heat)",
-      "pvt-owners": "PVT Owners"
+      "pvt-owners": "PVT Owners",
+      "dc-aft": "DC/DC group 1",
+      "dc-ugrid": "DC/AC group 1",
+      "dc-fwd": "DC/DC group 2"
     },
     "title": "HMI",
     "views": {

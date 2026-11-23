@@ -20,7 +20,7 @@ describe("getModuleOptionGroups", () => {
       {
         key: "producers",
         modules: [
-          { key: "dc", disabled: false, subModules: [] },
+          { key: "dc", disabled: false, subModules: ["dc-aft", "dc-ugrid", "dc-fwd"] },
           { key: "drives", disabled: false, subModules: [] },
           {
             key: "pvt",

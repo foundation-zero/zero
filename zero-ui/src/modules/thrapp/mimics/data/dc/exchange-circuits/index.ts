@@ -2,7 +2,7 @@ import { MimicComponentType } from "@/modules/thrapp/types";
 import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { toFieldsMap } from "../../../modules";
 import { getField } from "../../../providers";
-import { toExchangeCircuit, toSeawaterCircuit } from "../../helpers";
+import { toConnectingCircuit, toExchangeCircuit, toSeawaterCircuit } from "../../helpers";
 
 export const DC_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
   [MimicComponentType.SeawaterCircuit]: {
@@ -18,6 +18,30 @@ export const DC_EXCHANGE_CIRCUIT_DATA = toFieldsMap({
         source: getField(SensorComponentType.HeatTransferDevice, "dhw", "dhwDcExchanger"),
       },
       { componentType: "Domestic Hot Water loop" },
+    ),
+  },
+  // The converter groups as their sub-mimics see them.
+  [MimicComponentType.ConnectingCircuit]: {
+    aft: toConnectingCircuit(
+      {
+        custom: { circuitName: "DC converters", modeModule: "dc" },
+        source: getField(SensorComponentType.HeatTransferDevice, "dc", "dcAftHeat"),
+      },
+      { componentType: "DC/DC group 1 loop" },
+    ),
+    ugrid: toConnectingCircuit(
+      {
+        custom: { circuitName: "DC converters", modeModule: "dc" },
+        source: getField(SensorComponentType.HeatTransferDevice, "dc", "dcUgridHeat"),
+      },
+      { componentType: "DC/AC group 1 loop" },
+    ),
+    fwd: toConnectingCircuit(
+      {
+        custom: { circuitName: "DC converters", modeModule: "dc" },
+        source: getField(SensorComponentType.HeatTransferDevice, "dc", "dcFwdHeat"),
+      },
+      { componentType: "DC/DC group 2 loop" },
     ),
   },
 });

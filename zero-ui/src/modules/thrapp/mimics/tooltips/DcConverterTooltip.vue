@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ControllerStateComponentType, SensorComponentType } from "@/modules/thrapp/types/thrs";
+import { RiRepeatLine } from "@remixicon/vue";
+import { useRouter } from "vue-router";
 import { useTranslations } from ".";
 import {
   MimicTooltip,
   NoopTooltipProvider,
   TooltipComponentContext,
 } from "../../components/tooltip";
-import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
+import { TooltipList, TooltipListHeader, TooltipListItem } from "../../components/tooltip-list";
+import TooltipListItemActionButton from "../../components/tooltip-list/TooltipListItemActionButton.vue";
 import { useDcMode } from "../../state";
 import { MimicComponentType } from "../../types";
 import { DcMode } from "../components/dc-converter";
@@ -15,7 +18,7 @@ import { DcConverterInstance } from "../instances";
 import { getField, getMimicDataProvider, ModuleField, SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
-const { items, labels } = useTranslations();
+const { actions, items, labels } = useTranslations();
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.DcConverter>>();
 
@@ -24,6 +27,8 @@ const { getComponentState } = getMimicDataProvider();
 const state = getComponentState();
 
 const modeKey = useDcMode(props.custom.group);
+
+const { currentRoute } = useRouter();
 </script>
 
 <template>
@@ -66,6 +71,20 @@ const modeKey = useDcMode(props.custom.group);
     </TooltipList>
 
     <TooltipList>
+      <TooltipListItem v-if="props.custom.mimic">
+        &nbsp;
+        <RouterLink
+          v-slot="{ navigate }"
+          custom
+          :to="{ name: currentRoute.name, params: { module: props.custom.mimic } }"
+        >
+          <TooltipListItemActionButton @click="navigate">
+            <RiRepeatLine />
+            {{ actions("viewCircuitMimic") }}
+          </TooltipListItemActionButton>
+        </RouterLink>
+      </TooltipListItem>
+
       <TooltipListHeader>{{ labels("heatExchange") }}</TooltipListHeader>
       <Partials.ExchangeCircuit :source="sensors.heatTransfer" />
     </TooltipList>
