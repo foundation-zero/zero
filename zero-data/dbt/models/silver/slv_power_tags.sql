@@ -12,7 +12,8 @@ metadata as (
     select
         topic,
         main_group,
-        sub_group
+        sub_group,
+        excluded
     from {{ source('metadata', 'power_tag_metadata') }}
 )
 
@@ -29,3 +30,4 @@ left join metadata as meta
     on pt.topic = meta.topic
 where pt.active_power_total is not null
 and meta.main_group is not null
+and meta.excluded is not true
