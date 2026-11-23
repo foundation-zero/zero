@@ -54,6 +54,11 @@ class ValuesWithTopics(ThrsValues):
         )
 
 
+class ValuesWithOptional(ThrsValues):
+    flow: FlowSensor
+    mode: SimpleMode | None = None
+
+
 class MergeSensorValues(ThrsValues):
     pump: FlowSensor
     temperature: TemperatureSensor
@@ -135,6 +140,17 @@ class TestPartialMqttMapping:
         assert "base/flow-delta" in topics
         topic = topics["base/flow-delta"]
         assert json.loads(topic) == {"DeltaT": {"Value": 2.0, "TimeStamp": mock.ANY}}
+
+    def test_split_none_clears_the_topic(self):
+        mapping = PartialMqttMapping(ValuesWithOptional, "base", "module")
+        model = ValuesWithOptional(
+            flow=FlowSensor(flow=Stamped.stamp(10.0), temperature=Stamped.stamp(25.0))
+        )
+
+        topics = mapping.split_to_topics(model)
+
+        assert topics["base/module/mode"] == ""
+        assert topics["base/module/flow"] != ""
 
     def test_subscribe_topic(self):
         mapping_no_suffix = PartialMqttMapping(ValuesWithTopics, "base", "module")

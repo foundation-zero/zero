@@ -137,14 +137,17 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         )
 
     def split_to_topics(self, model: M) -> dict[str, str]:
+        """A `None` component sends an empty payload, which clears its topic."""
         fields = (
             self._cls.model_computed_fields
             if self._only_computed_fields
             else self._cls.model_fields
         )
         return {
-            self._topic(key, field): getattr(model, key).model_dump_json(
-                by_alias=True, context=self._context
+            self._topic(key, field): (
+                ""
+                if (component := getattr(model, key)) is None
+                else component.model_dump_json(by_alias=True, context=self._context)
             )
             for key, field in fields.items()
         }
