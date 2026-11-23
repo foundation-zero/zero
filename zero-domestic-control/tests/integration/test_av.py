@@ -24,7 +24,7 @@ from domestic_control.services.stubs.av import AV_STUB_TELEMETRY_INTERVAL, AvStu
 
 @fixture
 def settings():
-    return Settings()  # type: ignore
+    return Settings()
 
 
 async def _mqtt_client(settings):

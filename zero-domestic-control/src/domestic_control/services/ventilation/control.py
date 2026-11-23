@@ -128,7 +128,7 @@ class VentilationControl:
                 )
                 await self._data_collection.send(self._rooms[message.room])
             else:
-                assert_never(message)  # type: ignore
+                assert_never(message)
 
     async def run(self) -> Coroutine[None, None, None]:
         """Run the VentilationControl service.
