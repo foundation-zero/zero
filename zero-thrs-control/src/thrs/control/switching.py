@@ -1,32 +1,12 @@
 import logging
-from typing import Literal
 
 from thrs.classes.control import Control
 from thrs.control.manual import ManualControl
+from thrs.control.state import AutomationMode, ControlModes, ControlState
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.root_types import AmcsModeSensorValues
 
-type ControlModes = Literal["manual", "automatic"]
-
 logger = logging.getLogger(__name__)
-
-
-class AutomationMode(ThrsValues):
-    mode: ControlModes
-
-
-class ControlState[C: ThrsValues, P: ThrsValues, M: ThrsValues](ThrsValues):
-    """What a module's controller publishes about itself, besides its own controllers.
-
-    A module's controller state subclasses this and adds its controllers as components.
-    """
-
-    automation_mode: AutomationMode = AutomationMode(mode="manual")
-    # The manual controls, which Switching fills; `None` only without it.
-    manual_values: C | None = None
-    # The automatic control's mode, `None` while manual.
-    control_mode: M | None = None
-    parameters: P
 
 
 class Switching[

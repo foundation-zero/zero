@@ -1,5 +1,5 @@
 from thrs.classes.persistence.manager import PersistManager
-from thrs.control.switching import ControlState
+from thrs.control.state import ControlState
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
 from thrs.orchestration.module import Module

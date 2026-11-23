@@ -14,7 +14,7 @@ from aiomqtt import Client
 from pydantic import TypeAdapter
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
-from thrs.control.switching import AutomationMode
+from thrs.control.state import AutomationMode
 from thrs.input_output.base import CombinedValues, ThrsValues, get_topic
 from thrs.input_output.definitions.wire_context import (
     AMCS_RECEIVE_CONTEXT,

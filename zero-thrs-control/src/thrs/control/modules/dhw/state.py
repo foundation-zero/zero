@@ -4,7 +4,7 @@ from pydantic import Field, model_validator
 
 from thrs.classes.control import ControlMode
 from thrs.control.modules.dhw.io import DhwControlValues
-from thrs.control.switching import ControlState
+from thrs.control.state import ControlState
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions.controllers import (
     PidControllerValues,

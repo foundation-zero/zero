@@ -7,11 +7,8 @@ from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.manual import ManualControl
-from thrs.control.switching import (
-    AutomationMode,
-    ControlState,
-    Switching,
-)
+from thrs.control.state import AutomationMode, ControlState
+from thrs.control.switching import Switching
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.definitions.system import AmcsExternalAvailable
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues

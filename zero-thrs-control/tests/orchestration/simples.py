@@ -7,7 +7,7 @@ from thrs.classes.machine_state_logger import (
     MachineStateLoggingServiceNoop,
     StateLogger,
 )
-from thrs.control.switching import ControlState
+from thrs.control.state import ControlState
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions.sensor import FlowSensor

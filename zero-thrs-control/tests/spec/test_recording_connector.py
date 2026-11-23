@@ -8,7 +8,7 @@ from pydantic import computed_field
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.classes.control import ControlMode
-from thrs.control.switching import AutomationMode, ControlState
+from thrs.control.state import AutomationMode, ControlState
 from thrs.input_output.base import ThrsValues, component_meta, computed_meta
 from thrs.orchestration.comms import (
     ControlChannels,

@@ -12,7 +12,7 @@ from tests.orchestration.simples import (
     SimpleMode,
     SimpleParameters,
 )
-from thrs.control.switching import AutomationMode
+from thrs.control.state import AutomationMode
 from thrs.input_output.base import (
     CombinedValues,
     Stamped,

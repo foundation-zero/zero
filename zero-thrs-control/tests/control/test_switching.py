@@ -12,10 +12,8 @@ from tests.orchestration.simples import (
     simple_non_advisory_values,
 )
 from thrs.control.manual import ManualControl
-from thrs.control.switching import (
-    AutomationMode,
-    Switching,
-)
+from thrs.control.state import AutomationMode
+from thrs.control.switching import Switching
 
 
 def test_switching_control(switching):

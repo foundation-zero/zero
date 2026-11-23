@@ -21,7 +21,7 @@ from thrs.control.modules.thrusters.io import (
 from thrs.control.modules.thrusters.state import (
     ThrustersParameters,
 )
-from thrs.control.switching import AutomationMode
+from thrs.control.state import AutomationMode
 from thrs.input_output.base import CombinedValues, Stamped
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping

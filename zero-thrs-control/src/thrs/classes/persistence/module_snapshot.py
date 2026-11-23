@@ -2,7 +2,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from thrs.control.switching import ControlModes
+from thrs.control.state import ControlModes
 
 
 def _deep_diff(old: Any, new: Any, path: str) -> dict[str, tuple[Any, Any]]:

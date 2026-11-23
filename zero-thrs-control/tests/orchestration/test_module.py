@@ -12,7 +12,7 @@ from tests.orchestration.simples import (
     simple_controller_state,
 )
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
-from thrs.control.switching import AutomationMode
+from thrs.control.state import AutomationMode
 
 
 async def test_module_returns_control_when_sensor_values_are_none(
