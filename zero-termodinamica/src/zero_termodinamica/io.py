@@ -59,9 +59,91 @@ class ACMisc(BaseModel):
     ]
 
 
+class VentilationUnit(BaseModel):
+    """One DVS air handler slot on a ventilation bridge (Fw 8.14.18 Custom DVS)."""
+
+    air_flow: Annotated[int | None, ModbusField(offset=0)]
+    setpoint_air_flow: Annotated[int | None, ModbusField(offset=1)]
+    co2_level: Annotated[int | None, ModbusField(offset=2)]
+    setpoint_co2: Annotated[int | None, ModbusField(offset=3)]
+    humidity: Annotated[float | None, ModbusField(offset=4, scale_factor=0.1)]
+    setpoint_humidity: Annotated[float | None, ModbusField(offset=5, scale_factor=0.1)]
+    co2_level_2: Annotated[int | None, ModbusField(offset=6)]
+    setpoint_co2_2: Annotated[int | None, ModbusField(offset=7)]
+    humidity_2: Annotated[float | None, ModbusField(offset=8, scale_factor=0.1)]
+    setpoint_humidity_2: Annotated[
+        float | None, ModbusField(offset=9, scale_factor=0.1)
+    ]
+    errors: Annotated[int | None, ModbusField(offset=10)]
+
+
+class HeatPump(BaseModel):
+    """The HPB, wired to its own bridge as slave unit 2 of the base register map.
+
+    The external water pump may only stop once ``compressor_speed`` reads zero.
+    """
+
+    system_disabled: Annotated[int | None, ModbusField(register=30)]
+    compressor_speed: Annotated[
+        float | None, ModbusField(register=140, scale_factor=0.1)
+    ]
+    water_pump_speed: Annotated[
+        float | None, ModbusField(register=141, scale_factor=0.1)
+    ]
+    # The map says hundredths of W; live it reads 13 at 0.54 A, so tens of W.
+    compressor_power: Annotated[
+        float | None, ModbusField(register=182, scale_factor=10.0)
+    ]
+    compressor_current: Annotated[
+        float | None, ModbusField(register=185, scale_factor=0.01)
+    ]
+    active_error: Annotated[int | None, ModbusField(register=190)]
+    power: Annotated[int | None, ModbusField(register=210)]
+    setpoint_temperature: Annotated[
+        float | None, ModbusField(register=211, scale_factor=0.01)
+    ]
+    temperature: Annotated[float | None, ModbusField(register=213, scale_factor=0.01)]
+    status: Annotated[int | None, ModbusField(register=214)]
+
+
+class ColdRoom(BaseModel):
+    """The fridge or freezer, each on its own bridge and slave slot of the base map.
+
+    The slot fields are offsets from the topic's ``start_register``: 210 for the
+    fridge (slot 2), 220 for the freezer (slot 3). Temperatures are signed: the
+    freezer runs between -5 and -20 °C.
+    """
+
+    system_disabled: Annotated[int | None, ModbusField(register=30)]
+    compressor_speed: Annotated[
+        float | None, ModbusField(register=140, scale_factor=0.1)
+    ]
+    # The map says hundredths of W; live it reads 13 at 0.54 A, so tens of W.
+    compressor_power: Annotated[
+        float | None, ModbusField(register=182, scale_factor=10.0)
+    ]
+    compressor_current: Annotated[
+        float | None, ModbusField(register=185, scale_factor=0.01)
+    ]
+    active_error: Annotated[int | None, ModbusField(register=190)]
+    power: Annotated[int | None, ModbusField(offset=0)]
+    setpoint_temperature: Annotated[
+        float | None,
+        ModbusField(offset=1, data_type="int16", scale_factor=0.01),
+    ]
+    temperature: Annotated[
+        float | None,
+        ModbusField(offset=3, data_type="int16", scale_factor=0.01),
+    ]
+    status: Annotated[int | None, ModbusField(offset=4)]
+
+
 _MODEL_REGISTRY: dict[str, type[BaseModel]] = {
     "air_conditioning_room": AirConditioningRoom,
     "ac_misc": ACMisc,
+    "ventilation_unit": VentilationUnit,
+    "heat_pump": HeatPump,
+    "cold_room": ColdRoom,
 }
 
 
@@ -73,7 +155,7 @@ def _parse_topic(t: dict, unit_id: int) -> ModbusTopic:
             f"Topic {t['topic']} has unknown model key "
             f"{model_key!r}; expected one of {sorted(_MODEL_REGISTRY)}"
         )
-    start_register = t["modbus_fields"][0]["modbus_register"]
+    start_register = t.get("start_register", t["modbus_fields"][0]["modbus_register"])
     extra_fields_raw = t.get("extra_fields", {})
     if isinstance(extra_fields_raw, list):
         extra_fields = {ef["field_name"]: ef["value"] for ef in extra_fields_raw}

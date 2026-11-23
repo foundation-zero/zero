@@ -4,6 +4,7 @@
     "topics": [
       {
         "topic": "termodinamica/ac/01",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 200,
@@ -14,8 +15,8 @@
           {
             "modbus_register": 201,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 202,
@@ -26,8 +27,8 @@
           {
             "modbus_register": 203,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 204,
@@ -54,20 +55,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "01"
-          },
-          {
-            "field_name": "room",
-            "value": "Tech room"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "01",
+          "room": "Tech room"
+        }
       },
       {
         "topic": "termodinamica/ac/02",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 210,
@@ -78,8 +73,8 @@
           {
             "modbus_register": 211,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 212,
@@ -90,8 +85,8 @@
           {
             "modbus_register": 213,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 214,
@@ -118,20 +113,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "02"
-          },
-          {
-            "field_name": "room",
-            "value": "Lounge"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "02",
+          "room": "Lounge"
+        }
       },
       {
         "topic": "termodinamica/ac/03",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 220,
@@ -142,8 +131,8 @@
           {
             "modbus_register": 221,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 222,
@@ -154,8 +143,8 @@
           {
             "modbus_register": 223,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 224,
@@ -182,20 +171,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "03"
-          },
-          {
-            "field_name": "room",
-            "value": "Guest cabin (Aft SB)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "03",
+          "room": "Guest cabin (Aft SB)"
+        }
       },
       {
         "topic": "termodinamica/ac/04",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 230,
@@ -206,8 +189,8 @@
           {
             "modbus_register": 231,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 232,
@@ -218,8 +201,8 @@
           {
             "modbus_register": 233,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 234,
@@ -246,20 +229,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "04"
-          },
-          {
-            "field_name": "room",
-            "value": "Bathroom (Aft SB)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "04",
+          "room": "Bathroom (Aft SB)"
+        }
       },
       {
         "topic": "termodinamica/ac/05",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 240,
@@ -270,8 +247,8 @@
           {
             "modbus_register": 241,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 242,
@@ -282,8 +259,8 @@
           {
             "modbus_register": 243,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 244,
@@ -310,20 +287,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "05"
-          },
-          {
-            "field_name": "room",
-            "value": "Guest cabin (PS)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "05",
+          "room": "Guest cabin (PS)"
+        }
       },
       {
         "topic": "termodinamica/ac/06",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 250,
@@ -334,8 +305,8 @@
           {
             "modbus_register": 251,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 252,
@@ -346,8 +317,8 @@
           {
             "modbus_register": 253,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 254,
@@ -374,20 +345,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "06"
-          },
-          {
-            "field_name": "room",
-            "value": "Master bathroom cabin (PS)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "06",
+          "room": "Master bathroom cabin (PS)"
+        }
       },
       {
         "topic": "termodinamica/ac/07",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 260,
@@ -398,8 +363,8 @@
           {
             "modbus_register": 261,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 262,
@@ -410,8 +375,8 @@
           {
             "modbus_register": 263,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 264,
@@ -438,20 +403,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "07"
-          },
-          {
-            "field_name": "room",
-            "value": "Master cabin (PS)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "07",
+          "room": "Master cabin (PS)"
+        }
       },
       {
         "topic": "termodinamica/ac/08",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 270,
@@ -462,8 +421,8 @@
           {
             "modbus_register": 271,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 272,
@@ -474,8 +433,8 @@
           {
             "modbus_register": 273,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 274,
@@ -502,20 +461,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "08"
-          },
-          {
-            "field_name": "room",
-            "value": "Master cabin (SB)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "08",
+          "room": "Master cabin (SB)"
+        }
       },
       {
         "topic": "termodinamica/ac/09",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 280,
@@ -526,8 +479,8 @@
           {
             "modbus_register": 281,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 282,
@@ -538,8 +491,8 @@
           {
             "modbus_register": 283,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 284,
@@ -566,20 +519,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "09"
-          },
-          {
-            "field_name": "room",
-            "value": "Guest cabin (SB)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "09",
+          "room": "Guest cabin (SB)"
+        }
       },
       {
         "topic": "termodinamica/ac/10",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 290,
@@ -590,8 +537,8 @@
           {
             "modbus_register": 291,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 292,
@@ -602,8 +549,8 @@
           {
             "modbus_register": 293,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 294,
@@ -630,20 +577,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "10"
-          },
-          {
-            "field_name": "room",
-            "value": "Office area (Fwd)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "10",
+          "room": "Office area (Fwd)"
+        }
       },
       {
         "topic": "termodinamica/ac/11",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 300,
@@ -654,8 +595,8 @@
           {
             "modbus_register": 301,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 302,
@@ -666,8 +607,8 @@
           {
             "modbus_register": 303,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 304,
@@ -694,20 +635,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "11"
-          },
-          {
-            "field_name": "room",
-            "value": "Guest cabin (Fr.42 Mid PS)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "11",
+          "room": "Guest cabin (Fr.42 Mid PS)"
+        }
       },
       {
         "topic": "termodinamica/ac/12",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 310,
@@ -718,8 +653,8 @@
           {
             "modbus_register": 311,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 312,
@@ -730,8 +665,8 @@
           {
             "modbus_register": 313,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 314,
@@ -758,20 +693,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "12"
-          },
-          {
-            "field_name": "room",
-            "value": "Mission Room"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "12",
+          "room": "Mission Room"
+        }
       },
       {
         "topic": "termodinamica/ac/13",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 320,
@@ -782,8 +711,8 @@
           {
             "modbus_register": 321,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 322,
@@ -794,8 +723,8 @@
           {
             "modbus_register": 323,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 324,
@@ -822,20 +751,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "13"
-          },
-          {
-            "field_name": "room",
-            "value": "Laundry"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "13",
+          "room": "Laundry"
+        }
       },
       {
         "topic": "termodinamica/ac/14",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 330,
@@ -846,8 +769,8 @@
           {
             "modbus_register": 331,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 332,
@@ -858,8 +781,8 @@
           {
             "modbus_register": 333,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 334,
@@ -886,20 +809,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "14"
-          },
-          {
-            "field_name": "room",
-            "value": "Captain cabin"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "14",
+          "room": "Captain cabin"
+        }
       },
       {
         "topic": "termodinamica/ac/15",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 340,
@@ -910,8 +827,8 @@
           {
             "modbus_register": 341,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 342,
@@ -922,8 +839,8 @@
           {
             "modbus_register": 343,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 344,
@@ -950,20 +867,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "15"
-          },
-          {
-            "field_name": "room",
-            "value": "Crew area (Fwd)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "15",
+          "room": "Crew area (Fwd)"
+        }
       },
       {
         "topic": "termodinamica/ac/16",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 350,
@@ -974,8 +885,8 @@
           {
             "modbus_register": 351,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 352,
@@ -986,8 +897,8 @@
           {
             "modbus_register": 353,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 354,
@@ -1014,20 +925,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "16"
-          },
-          {
-            "field_name": "room",
-            "value": "Crew cabin (Fwd PS)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "16",
+          "room": "Crew cabin (Fwd PS)"
+        }
       },
       {
         "topic": "termodinamica/ac/17",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 360,
@@ -1038,8 +943,8 @@
           {
             "modbus_register": 361,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 362,
@@ -1050,8 +955,8 @@
           {
             "modbus_register": 363,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 364,
@@ -1078,20 +983,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "17"
-          },
-          {
-            "field_name": "room",
-            "value": "Watersport storage"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "17",
+          "room": "Watersport storage"
+        }
       },
       {
         "topic": "termodinamica/ac/18",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 370,
@@ -1102,8 +1001,8 @@
           {
             "modbus_register": 371,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 372,
@@ -1114,8 +1013,8 @@
           {
             "modbus_register": 373,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 374,
@@ -1142,20 +1041,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "18"
-          },
-          {
-            "field_name": "room",
-            "value": "Galley"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "18",
+          "room": "Galley"
+        }
       },
       {
         "topic": "termodinamica/ac/19",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 380,
@@ -1166,8 +1059,8 @@
           {
             "modbus_register": 381,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 382,
@@ -1178,8 +1071,8 @@
           {
             "modbus_register": 383,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 384,
@@ -1206,20 +1099,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "19"
-          },
-          {
-            "field_name": "room",
-            "value": "Crew mess"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "19",
+          "room": "Crew mess"
+        }
       },
       {
         "topic": "termodinamica/ac/20",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 390,
@@ -1230,8 +1117,8 @@
           {
             "modbus_register": 391,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 392,
@@ -1242,8 +1129,8 @@
           {
             "modbus_register": 393,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 394,
@@ -1270,20 +1157,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "20"
-          },
-          {
-            "field_name": "room",
-            "value": "Crew cabin (Aft)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "20",
+          "room": "Crew cabin (Aft)"
+        }
       },
       {
         "topic": "termodinamica/ac/21",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 400,
@@ -1294,8 +1175,8 @@
           {
             "modbus_register": 401,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 402,
@@ -1306,8 +1187,8 @@
           {
             "modbus_register": 403,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 404,
@@ -1334,20 +1215,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "21"
-          },
-          {
-            "field_name": "room",
-            "value": "Crew cabin (Mid SB)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "21",
+          "room": "Crew cabin (Mid SB)"
+        }
       },
       {
         "topic": "termodinamica/ac/22",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 410,
@@ -1358,8 +1233,8 @@
           {
             "modbus_register": 411,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 412,
@@ -1370,8 +1245,8 @@
           {
             "modbus_register": 413,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 414,
@@ -1398,20 +1273,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "22"
-          },
-          {
-            "field_name": "room",
-            "value": "Crew cabin (SB)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "22",
+          "room": "Crew cabin (SB)"
+        }
       },
       {
         "topic": "termodinamica/ac/23",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 420,
@@ -1422,8 +1291,8 @@
           {
             "modbus_register": 421,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 422,
@@ -1434,8 +1303,8 @@
           {
             "modbus_register": 423,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 424,
@@ -1462,20 +1331,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "23"
-          },
-          {
-            "field_name": "room",
-            "value": "Main deckhouse"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "23",
+          "room": "Main deckhouse"
+        }
       },
       {
         "topic": "termodinamica/ac/24",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 430,
@@ -1486,8 +1349,8 @@
           {
             "modbus_register": 431,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 432,
@@ -1498,8 +1361,8 @@
           {
             "modbus_register": 433,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 434,
@@ -1526,20 +1389,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "24"
-          },
-          {
-            "field_name": "room",
-            "value": "Aft area"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "24",
+          "room": "Aft area"
+        }
       },
       {
         "topic": "termodinamica/ac/25",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 440,
@@ -1550,8 +1407,8 @@
           {
             "modbus_register": 441,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 442,
@@ -1562,8 +1419,8 @@
           {
             "modbus_register": 443,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 444,
@@ -1590,20 +1447,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "25"
-          },
-          {
-            "field_name": "room",
-            "value": "Aft area (Slave)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "25",
+          "room": "Aft area (Slave)"
+        }
       },
       {
         "topic": "termodinamica/ac/26",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 450,
@@ -1614,8 +1465,8 @@
           {
             "modbus_register": 451,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 452,
@@ -1626,8 +1477,8 @@
           {
             "modbus_register": 453,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 454,
@@ -1654,20 +1505,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "26"
-          },
-          {
-            "field_name": "room",
-            "value": "Office area (Fwd)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "26",
+          "room": "Office area (Fwd)"
+        }
       },
       {
         "topic": "termodinamica/ac/27",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 460,
@@ -1678,8 +1523,8 @@
           {
             "modbus_register": 461,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 462,
@@ -1690,8 +1535,8 @@
           {
             "modbus_register": 463,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 464,
@@ -1718,20 +1563,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "27"
-          },
-          {
-            "field_name": "room",
-            "value": "Guest cabin (Fr.42 Mid PS)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "27",
+          "room": "Guest cabin (Fr.42 Mid PS)"
+        }
       },
       {
         "topic": "termodinamica/ac/28",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 470,
@@ -1742,8 +1581,8 @@
           {
             "modbus_register": 471,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 472,
@@ -1754,8 +1593,8 @@
           {
             "modbus_register": 473,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 474,
@@ -1782,20 +1621,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "28"
-          },
-          {
-            "field_name": "room",
-            "value": "Guest cabin (FR.55 Aft PS)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "28",
+          "room": "Guest cabin (FR.55 Aft PS)"
+        }
       },
       {
         "topic": "termodinamica/ac/29",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 480,
@@ -1806,8 +1639,8 @@
           {
             "modbus_register": 481,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 482,
@@ -1818,8 +1651,8 @@
           {
             "modbus_register": 483,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 484,
@@ -1846,20 +1679,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "29"
-          },
-          {
-            "field_name": "room",
-            "value": "Navcom"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "29",
+          "room": "Navcom"
+        }
       },
       {
         "topic": "termodinamica/ac/30",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 490,
@@ -1870,8 +1697,8 @@
           {
             "modbus_register": 491,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 492,
@@ -1882,8 +1709,8 @@
           {
             "modbus_register": 493,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 494,
@@ -1910,20 +1737,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "30"
-          },
-          {
-            "field_name": "room",
-            "value": "HM10 Backup Cooling Panels"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "30",
+          "room": "HM10 Backup Cooling Panels"
+        }
       },
       {
         "topic": "termodinamica/ac/31",
+        "model": "air_conditioning_room",
         "modbus_fields": [
           {
             "modbus_register": 500,
@@ -1934,8 +1755,8 @@
           {
             "modbus_register": 501,
             "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C -> Range: 18..30\u00b0C\"",
-            "scale_factor": 1.0
+            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 502,
@@ -1946,8 +1767,8 @@
           {
             "modbus_register": 503,
             "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
-            "scale_factor": 1.0
+            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
+            "scale_factor": 0.01
           },
           {
             "modbus_register": 504,
@@ -1974,20 +1795,14 @@
             "scale_factor": 1.0
           }
         ],
-        "extra_fields": [
-          {
-            "field_name": "reg_split",
-            "value": "31"
-          },
-          {
-            "field_name": "room",
-            "value": "Crew cabin (Fwd SB)"
-          }
-        ],
-        "model": "air_conditioning_room"
+        "extra_fields": {
+          "reg_split": "31",
+          "room": "Crew cabin (Fwd SB)"
+        }
       },
       {
         "topic": "termodinamica/ac-misc",
+        "model": "ac_misc",
         "modbus_fields": [
           {
             "modbus_register": 140,
@@ -2010,7 +1825,7 @@
           {
             "modbus_register": 145,
             "field_name": "engine_box_t_sea_water",
-            "description": "Engine Box Sea Water Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 \u00b0C",
+            "description": "Engine Box Sea Water Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
             "scale_factor": 0.01
           },
           {
@@ -2073,9 +1888,1816 @@
             "description": "Instantaneous absorption control of the AC Sea Water Pump (1=0,01 Ampere)",
             "scale_factor": 0.01
           }
+        ]
+      }
+    ]
+  },
+  {
+    "unit_id": 33,
+    "topics": [
+      {
+        "topic": "termodinamica/ventilation/1/02",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 70,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 71,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 72,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 73,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 74,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 75,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 76,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 77,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 78,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 79,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 80,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
         ],
-        "extra_fields": [],
-        "model": "ac_misc"
+        "extra_fields": {
+          "bridge": "1",
+          "unit": "02"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/1/03",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 90,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 91,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 92,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 93,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 94,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 95,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 96,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 97,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 98,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 99,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 100,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "1",
+          "unit": "03"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/1/04",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 110,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 111,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 112,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 113,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 114,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 115,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 116,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 117,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 118,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 119,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 120,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "1",
+          "unit": "04"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/1/05",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 130,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 131,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 132,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 133,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 134,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 135,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 136,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 137,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 138,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 139,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 140,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "1",
+          "unit": "05"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/1/06",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 150,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 151,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 152,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 153,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 154,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 155,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 156,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 157,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 158,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 159,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 160,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "1",
+          "unit": "06"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/1/07",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 170,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 171,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 172,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 173,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 174,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 175,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 176,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 177,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 178,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 179,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 180,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "1",
+          "unit": "07"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/1/08",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 190,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 191,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 192,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 193,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 194,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 195,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 196,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 197,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 198,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 199,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 200,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "1",
+          "unit": "08"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/1/09",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 210,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 211,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 212,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 213,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 214,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 215,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 216,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 217,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 218,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 219,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 220,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "1",
+          "unit": "09"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/1/10",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 230,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 231,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 232,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 233,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 234,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 235,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 236,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 237,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 238,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 239,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 240,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "1",
+          "unit": "10"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/1/11",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 250,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 251,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 252,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 253,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 254,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 255,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 256,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 257,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 258,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 259,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 260,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "1",
+          "unit": "11"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/1/12",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 270,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 271,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 272,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 273,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 274,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 275,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 276,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 277,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 278,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 279,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 280,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "1",
+          "unit": "12"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/1/13",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 290,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 291,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 292,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 293,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 294,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 295,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 296,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 297,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 298,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 299,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 300,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "1",
+          "unit": "13"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/1/14",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 310,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 311,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 312,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 313,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 314,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 315,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 316,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 317,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 318,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 319,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 320,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "1",
+          "unit": "14"
+        }
+      }
+    ]
+  },
+  {
+    "unit_id": 34,
+    "topics": [
+      {
+        "topic": "termodinamica/ventilation/2/02",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 70,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 71,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 72,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 73,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 74,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 75,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 76,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 77,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 78,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 79,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 80,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "2",
+          "unit": "02"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/2/03",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 90,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 91,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 92,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 93,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 94,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 95,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 96,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 97,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 98,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 99,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 100,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "2",
+          "unit": "03"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/2/04",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 110,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 111,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 112,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 113,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 114,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 115,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 116,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 117,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 118,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 119,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 120,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "2",
+          "unit": "04"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/2/05",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 130,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 131,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 132,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 133,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 134,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 135,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 136,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 137,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 138,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 139,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 140,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "2",
+          "unit": "05"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/2/06",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 150,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 151,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 152,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 153,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 154,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 155,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 156,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 157,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 158,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 159,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 160,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "2",
+          "unit": "06"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/2/07",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 170,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 171,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 172,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 173,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 174,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 175,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 176,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 177,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 178,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 179,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 180,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "2",
+          "unit": "07"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/2/08",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 190,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 191,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 192,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 193,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 194,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 195,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 196,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 197,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 198,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 199,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 200,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "2",
+          "unit": "08"
+        }
+      },
+      {
+        "topic": "termodinamica/ventilation/2/09",
+        "model": "ventilation_unit",
+        "modbus_fields": [
+          {
+            "modbus_register": 210,
+            "field_name": "air_flow",
+            "description": "Unit AirFlow reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 211,
+            "field_name": "setpoint_air_flow",
+            "description": "Unit AirFlow Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 212,
+            "field_name": "co2_level",
+            "description": "Unit CO2 Level reading",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 213,
+            "field_name": "setpoint_co2",
+            "description": "Unit CO2 Set Point",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 214,
+            "field_name": "humidity",
+            "description": "Unit Humidity Level reading",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 215,
+            "field_name": "setpoint_humidity",
+            "description": "Unit Humidity Set Point",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 216,
+            "field_name": "co2_level_2",
+            "description": "Unit CO2 Level reading sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 217,
+            "field_name": "setpoint_co2_2",
+            "description": "Unit CO2 Set Point sensor 2 (when available)",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 218,
+            "field_name": "humidity_2",
+            "description": "Unit Humidity Level reading sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 219,
+            "field_name": "setpoint_humidity_2",
+            "description": "Unit Humidity Set Point sensor 2 (when available)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 220,
+            "field_name": "errors",
+            "description": "Errors (TBD)",
+            "scale_factor": 1.0
+          }
+        ],
+        "extra_fields": {
+          "bridge": "2",
+          "unit": "09"
+        }
+      }
+    ]
+  },
+  {
+    "unit_id": 35,
+    "topics": [
+      {
+        "topic": "termodinamica/heat-pump",
+        "model": "heat_pump",
+        "modbus_fields": [
+          {
+            "modbus_register": 30,
+            "field_name": "system_disabled",
+            "description": "Global On/Off System: 1=OFF 0=ON",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 140,
+            "field_name": "compressor_speed",
+            "description": "Inverter Compressor Speed (0.1 %)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 141,
+            "field_name": "water_pump_speed",
+            "description": "Inverter Water Pump Speed (0.1 %)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 182,
+            "field_name": "compressor_power",
+            "description": "Compressor absorption (W). The map says 1=0,01 Watt, but live it reads 13 at 0.54 A: 1=10 Watt",
+            "scale_factor": 10.0
+          },
+          {
+            "modbus_register": 185,
+            "field_name": "compressor_current",
+            "description": "Compressor absorption (1=0,01 Ampere)",
+            "scale_factor": 0.01
+          },
+          {
+            "modbus_register": 190,
+            "field_name": "active_error",
+            "description": "General Active Error bit field",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 210,
+            "field_name": "power",
+            "description": "Unit Power On/Off 0=OFF 1=ON",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 211,
+            "field_name": "setpoint_temperature",
+            "description": "Unit SetPoint (hundredths of degrees Celsius), range 6..70 °C",
+            "scale_factor": 0.01
+          },
+          {
+            "modbus_register": 213,
+            "field_name": "temperature",
+            "description": "Unit temperature (hundredths of degrees Celsius)",
+            "scale_factor": 0.01
+          },
+          {
+            "modbus_register": 214,
+            "field_name": "status",
+            "description": "Diagnostic communication status bit field",
+            "scale_factor": 1.0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "unit_id": 36,
+    "topics": [
+      {
+        "topic": "termodinamica/fridge",
+        "model": "cold_room",
+        "start_register": 210,
+        "modbus_fields": [
+          {
+            "modbus_register": 30,
+            "field_name": "system_disabled",
+            "description": "Global On/Off System: 1=OFF 0=ON",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 140,
+            "field_name": "compressor_speed",
+            "description": "Inverter Compressor Speed (0.1 %)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 182,
+            "field_name": "compressor_power",
+            "description": "Compressor absorption (W). The map says 1=0,01 Watt, but live it reads 13 at 0.54 A: 1=10 Watt",
+            "scale_factor": 10.0
+          },
+          {
+            "modbus_register": 185,
+            "field_name": "compressor_current",
+            "description": "Compressor absorption (1=0,01 Ampere)",
+            "scale_factor": 0.01
+          },
+          {
+            "modbus_register": 190,
+            "field_name": "active_error",
+            "description": "General Active Error bit field",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 210,
+            "field_name": "power",
+            "description": "Unit Power On/Off 0=OFF 1=ON",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 211,
+            "field_name": "setpoint_temperature",
+            "description": "Unit SetPoint (hundredths of degrees Celsius, signed)",
+            "scale_factor": 0.01
+          },
+          {
+            "modbus_register": 213,
+            "field_name": "temperature",
+            "description": "Unit temperature (hundredths of degrees Celsius, signed)",
+            "scale_factor": 0.01
+          },
+          {
+            "modbus_register": 214,
+            "field_name": "status",
+            "description": "Diagnostic communication status bit field",
+            "scale_factor": 1.0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "unit_id": 37,
+    "topics": [
+      {
+        "topic": "termodinamica/freezer",
+        "model": "cold_room",
+        "start_register": 220,
+        "modbus_fields": [
+          {
+            "modbus_register": 30,
+            "field_name": "system_disabled",
+            "description": "Global On/Off System: 1=OFF 0=ON",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 140,
+            "field_name": "compressor_speed",
+            "description": "Inverter Compressor Speed (0.1 %)",
+            "scale_factor": 0.1
+          },
+          {
+            "modbus_register": 182,
+            "field_name": "compressor_power",
+            "description": "Compressor absorption (W). The map says 1=0,01 Watt, but live it reads 13 at 0.54 A: 1=10 Watt",
+            "scale_factor": 10.0
+          },
+          {
+            "modbus_register": 185,
+            "field_name": "compressor_current",
+            "description": "Compressor absorption (1=0,01 Ampere)",
+            "scale_factor": 0.01
+          },
+          {
+            "modbus_register": 190,
+            "field_name": "active_error",
+            "description": "General Active Error bit field",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 220,
+            "field_name": "power",
+            "description": "Unit Power On/Off 0=OFF 1=ON",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 221,
+            "field_name": "setpoint_temperature",
+            "description": "Unit SetPoint (hundredths of degrees Celsius, signed)",
+            "scale_factor": 0.01
+          },
+          {
+            "modbus_register": 223,
+            "field_name": "temperature",
+            "description": "Unit temperature (hundredths of degrees Celsius, signed)",
+            "scale_factor": 0.01
+          },
+          {
+            "modbus_register": 224,
+            "field_name": "status",
+            "description": "Diagnostic communication status bit field",
+            "scale_factor": 1.0
+          }
+        ]
       }
     ]
   }
