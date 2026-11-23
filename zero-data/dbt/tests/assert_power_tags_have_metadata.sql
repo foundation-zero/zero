@@ -1,6 +1,6 @@
 /*
  * This test asserts that all active power tags have corresponding metadata records.
- * A record with main_group NULL is a deliberate exclusion (see load_power_tag_metadata), not missing metadata.
+ * Tags marked as excluded in load_power_tag_metadata are left out of the energy data on purpose and skipped.
  */
 
 {% set query %}
@@ -16,7 +16,8 @@
     from power_tag_data as pt
     left join {{ source('metadata', 'power_tag_metadata') }} as meta
         on pt.topic = meta.topic
-    where meta.topic is null
+    where meta.main_group is null
+    and meta.excluded is not true
 {% endset %}
 
 {% if execute %}

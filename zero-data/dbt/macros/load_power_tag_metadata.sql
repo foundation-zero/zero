@@ -26,12 +26,11 @@
             topic STRING,
             main_group STRING,
             sub_group STRING,
+            excluded BOOLEAN DEFAULT false,
             TIME INDEX (ts),
             PRIMARY KEY (topic)
         );
 
-        -- A tag with main_group NULL is excluded on purpose (slv_power_tags drops it), e.g. a sub-board
-        -- feeder whose consumers all have their own tag. A tag without a row here is missing metadata.
         INSERT INTO {{ target_table }} (ts, power_tag_id, panel, breaker, "description", "name", topic, main_group, sub_group)
         VALUES
             ('1970-01-01 00:00:00', 1, '10P0.1', 'PT183F01', 'BNWAS', 'bnwas', 'power-tags/10P0-1/bnwas', 'Technical', 'NavComm'),
@@ -68,8 +67,6 @@
             ('1970-01-01 00:00:00', 1, '10P0.1', 'PT201F01', 'Peplink 5G', 'peplink-5g', 'power-tags/10P0-1/peplink-5g', 'Technical', 'NavComm'),
             ('1970-01-01 00:00:00', 1, '10P0.1', 'PT207F01', 'Discharge Pump Technical Space', 'discharge-pump-technical-space', 'power-tags/10P0-1/discharge-pump-technical-space', 'Technical', 'Grey water'),
             ('1970-01-01 00:00:00', 1, '10P0.1', 'PT131F01', 'Technical Space Ventilator - In', 'technical-space-ventilator-in', 'power-tags/10P0-1/technical-space-ventilator-in', 'HVAC', 'Ventilation'),
-            -- Feeder of sub-board 10P1: every consumer on 10P1 has its own tag, so no main group (counted once).
-            ('1970-01-01 00:00:00', 1, '10P0.1', 'PT135Q01', 'Power Distr. Panel Aft -10P1', 'power-distr-panel-aft-10p1', 'power-tags/10P0-1/power-distr-panel-aft-10p1', NULL, NULL),
             ('1970-01-01 00:00:00', 1, '10P0.1', 'PT136Q01', 'Dishwasher', 'dishwasher', 'power-tags/10P0-1/dishwasher', 'Domestic', 'Galley'),
             ('1970-01-01 00:00:00', 1, '10P0.1', 'PT156Q01', 'Heat Recovery Pump Compression Chiller', 'heat-recovery-pump-compression-chiller', 'power-tags/10P0-1/heat-recovery-pump-compression-chiller', 'Technical', 'THRS'),
             ('1970-01-01 00:00:00', 1, '10P0.1', 'PT157F01', 'FWD RACK MAIN SUPPLY', 'fwd-rack-main-supply', 'power-tags/10P0-1/fwd-rack-main-supply', 'Technical', 'Technical'),
@@ -100,8 +97,6 @@
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT380F01', 'EREC 2 Power Supply Heat Recovery', 'erec-2-power-supply-heat-recovery', 'power-tags/10P0-3/erec-2-power-supply-heat-recovery', 'Technical', 'THRS'),
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT331F01', 'Technical Space Ventilator - Out', 'technical-space-ventilator-out', 'power-tags/10P0-3/technical-space-ventilator-out', 'HVAC', 'Ventilation'),
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT333F01', 'AHU LAUNDRY', 'ahu-laundry', 'power-tags/10P0-3/ahu-laundry', 'HVAC', 'Air handling units'),
-            -- Feeder of sub-board 10P2: every consumer on 10P2 has its own tag, so no main group (counted once).
-            ('1970-01-01 00:00:00', 2, '10P0.3', 'PT335Q01', 'Power Distr. Panel Galley - 10P2', 'power-distr-panel-galley-10p2', 'power-tags/10P0-3/power-distr-panel-galley-10p2', NULL, NULL),
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT355Q01', 'Compressor 1 and 2', 'compressor-1-and-2', 'power-tags/10P0-3/compressor-1-and-2', 'Technical', 'Technical'),
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT356F01', 'Cooling pump  Fore Peak', 'cooling-pump-fore-peak', 'power-tags/10P0-3/cooling-pump-fore-peak', 'Technical', 'Cooling'),
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT357F01', 'Cooling Pump Halyard Pit', 'cooling-pump-halyard-pit', 'power-tags/10P0-3/cooling-pump-halyard-pit', 'Technical', 'Cooling'),
@@ -160,6 +155,13 @@
             ('1970-01-01 00:00:00', 4, '10P2', 'PT53F01', 'Galley Hood', 'galley-hood', 'power-tags/10P2/galley-hood', 'Domestic', 'Galley'),
             ('1970-01-01 00:00:00', 4, '10P2', 'PT60F01', 'Outlets Galley - EMP 111-1', 'outlets-galley-emp-111-1', 'power-tags/10P2/outlets-galley-emp-111-1', 'Domestic', 'Galley'),
             ('1970-01-01 00:00:00', 4, '10P2', 'PT61F01', 'Outlets Galley - EMP 111-2', 'outlets-galley-emp-111-2', 'power-tags/10P2/outlets-galley-emp-111-2', 'Domestic', 'Galley');
+
+        -- Excluded tags are left out of the energy data on purpose (slv_power_tags drops them). They are
+        -- sub-board feeders whose consumers all have their own tag, so their power is counted once.
+        INSERT INTO {{ target_table }} (ts, power_tag_id, panel, breaker, "description", "name", topic, main_group, sub_group, excluded)
+        VALUES
+            ('1970-01-01 00:00:00', 1, '10P0.1', 'PT135Q01', 'Power Distr. Panel Aft -10P1', 'power-distr-panel-aft-10p1', 'power-tags/10P0-1/power-distr-panel-aft-10p1', NULL, NULL, true),
+            ('1970-01-01 00:00:00', 2, '10P0.3', 'PT335Q01', 'Power Distr. Panel Galley - 10P2', 'power-distr-panel-galley-10p2', 'power-tags/10P0-3/power-distr-panel-galley-10p2', NULL, NULL, true);
     {% endset %}
 
     {% do log("Create power tag metadata table and insert data...", info=True) %}

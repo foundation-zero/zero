@@ -31,6 +31,8 @@ sources:
             description: "The main group classification of the power tag."
           - name: sub_group
             description: "The sub group classification, within the main group, of the power tag."
+          - name: excluded
+            description: "Left out of the energy data on purpose, e.g. a sub-board feeder whose consumers all have their own tag."
       - name: dc_24v_metadata
         description: "Static metadata for 24V DC system."
         database: public
