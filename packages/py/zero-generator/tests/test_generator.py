@@ -7,7 +7,7 @@ from pytest import fixture
 
 import generator.gen as gen
 from generator import DataGenerator, GeneratorConfig, create_generator
-from generator.base import JSONGenerator
+from generator.base import Generator, JSONGenerator
 
 
 async def _mqtt_client(settings):
@@ -63,7 +63,7 @@ async def test_generator(mqtt_client_send, mqtt_client_receive):
 
 
 def test_create_generator():
-    test: dict[gen.GeneratorType, gen.MarpowerGenerator] = {
+    test: dict[gen.GeneratorType, Generator] = {
         "int": gen.int_(),
         "float": gen.float_(),
         "str": gen.str_(),
