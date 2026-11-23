@@ -1260,14 +1260,45 @@ mod tests {
     #[test_log::test]
     async fn test_query_errors_on_a_value_not_in_the_enum() {
         let cache = Arc::new(TopicCache::new());
-        cache.insert("room/fan", json!({"mode": "turbo"}));
+        cache.insert(
+            "room/fan",
+            json!({"mode": "turbo", "speeds": ["auto", "turbo"], "level": 1}),
+        );
         let service = service(&cache, None);
 
-        let response = execute(&cache, &service, "{ room { fan { mode } } }").await;
+        let response = execute(&cache, &service, "{ room { fan { mode speeds level } } }").await;
 
+        // The values not in the enum are null, the rest is still served. A
+        // list of enums cannot hold a null, so it is null as a whole.
+        let data = response.data.into_json().unwrap();
         assert_eq!(
-            response.errors[0].message,
-            "\"turbo\" is not one of the values of enum FanMode"
+            data["room"]["fan"],
+            json!({"mode": null, "speeds": null, "level": "LOW"}),
+            "{:?}",
+            response.errors
+        );
+        let errors: Vec<(String, JsonValue)> = response
+            .errors
+            .iter()
+            .map(|error| {
+                (
+                    error.message.clone(),
+                    serde_json::to_value(&error.path).unwrap(),
+                )
+            })
+            .collect();
+        assert_eq!(
+            errors,
+            [
+                (
+                    "\"turbo\" is not one of the values of enum FanMode".to_string(),
+                    json!(["room", "fan", "mode"])
+                ),
+                (
+                    "\"turbo\" is not one of the values of enum FanMode".to_string(),
+                    json!(["room", "fan", "speeds", 1])
+                ),
+            ]
         );
     }
 

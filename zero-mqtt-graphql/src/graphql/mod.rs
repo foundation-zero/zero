@@ -372,19 +372,22 @@ fn payload_field(name_prefix: &str, name: &str, def: &FieldDef) -> Option<(Field
                 }
                 return Ok(None);
             };
-            let mut null_elements = Vec::new();
-            let value = output_value(&def.field_type, value, &mut null_elements)?;
-            for indices in null_elements {
-                let message =
-                    format!("\"{raw_name}\" has a null element, but the Spec requires a value");
+            let mut violations = Vec::new();
+            let value = output_value(&def.field_type, value, &raw_name, &mut violations);
+            for (indices, message) in violations {
                 report_spec_violation(ctx.ctx, message, indices);
             }
-            Ok(Some(FieldValue::value(value)))
+            Ok(non_null(Some(value)).map(FieldValue::value))
         })
     });
 
     Some((field, types))
 }
+
+/// A value that breaks the Spec below a field: the indices of its list
+/// element, per level of nested lists, empty for the field's own value, and
+/// the message reporting it.
+type Violation = (Vec<usize>, String);
 
 /// Report a value that breaks the Spec at the current field, or at the
 /// list element at `indices` in it, without failing the field. A resolver
@@ -398,49 +401,79 @@ fn report_spec_violation(ctx: &async_graphql::Context<'_>, message: String, indi
     ctx.add_error(error);
 }
 
-/// `value` as the output of a field of `field_type`: enum values by their
-/// GraphQL name. Errors on a value that is not one of the enum's, so a Spec
-/// that no longer matches what is published shows. Adds to `null_elements`
-/// the indices, per level of nested lists, of each `null` element the Spec
-/// rules out.
+/// `value` as the output of field `raw_name` of `field_type`: enum values by
+/// their GraphQL name. A value that is not one of the enum's, so a Spec that
+/// no longer matches what is published, and a `null` element the Spec rules
+/// out are `null`, added to `violations`. A list holding a `null` element
+/// async-graphql cannot serve is `null` as a whole.
 fn output_value(
     field_type: &FieldType,
     value: GraphQlValue,
-    null_elements: &mut Vec<Vec<usize>>,
-) -> async_graphql::Result<GraphQlValue> {
+    raw_name: &Name,
+    violations: &mut Vec<Violation>,
+) -> GraphQlValue {
     match (field_type, value) {
         (FieldType::Enum(name, values), value) => {
             let raw = value.clone().into_json().ok();
-            values
-                .iter()
-                .find(|enum_value| {
-                    raw.as_ref()
-                        .is_some_and(|raw| equal_value(raw, &enum_value.raw, None))
-                })
-                .map(|enum_value| GraphQlValue::Enum(Name::new(&enum_value.name)))
-                .ok_or_else(|| format!("{value} is not one of the values of enum {name}").into())
+            let found = values.iter().find(|enum_value| {
+                raw.as_ref()
+                    .is_some_and(|raw| equal_value(raw, &enum_value.raw, None))
+            });
+            if let Some(enum_value) = found {
+                GraphQlValue::Enum(Name::new(&enum_value.name))
+            } else {
+                let message = format!("{value} is not one of the values of enum {name}");
+                violations.push((Vec::new(), message));
+                GraphQlValue::Null
+            }
         }
         (FieldType::List(element), GraphQlValue::List(items)) => {
             let mut outputs = Vec::with_capacity(items.len());
+            let mut servable = true;
             for (index, item) in items.into_iter().enumerate() {
-                if item == GraphQlValue::Null {
+                let reported = violations.len();
+                let output = if item == GraphQlValue::Null {
                     if element.non_null {
-                        null_elements.push(vec![index]);
+                        let message = format!(
+                            "\"{raw_name}\" has a null element, but the Spec requires a value"
+                        );
+                        violations.push((vec![index], message));
                     }
-                    outputs.push(GraphQlValue::Null);
-                    continue;
+                    GraphQlValue::Null
+                } else {
+                    let mut nested = Vec::new();
+                    let output = output_value(&element.field_type, item, raw_name, &mut nested);
+                    violations.extend(nested.into_iter().map(|(mut indices, message)| {
+                        indices.insert(0, index);
+                        (indices, message)
+                    }));
+                    output
+                };
+                if output == GraphQlValue::Null && !holds_null(&element.field_type) {
+                    if violations.len() == reported {
+                        let message = format!(
+                            "\"{raw_name}\" has a null element, which async-graphql cannot serve in this list"
+                        );
+                        violations.push((vec![index], message));
+                    }
+                    servable = false;
                 }
-                let mut nested = Vec::new();
-                outputs.push(output_value(&element.field_type, item, &mut nested)?);
-                null_elements.extend(nested.into_iter().map(|mut indices| {
-                    indices.insert(0, index);
-                    indices
-                }));
+                outputs.push(output);
             }
-            Ok(GraphQlValue::List(outputs))
+            if servable {
+                GraphQlValue::List(outputs)
+            } else {
+                GraphQlValue::Null
+            }
         }
-        (_, value) => Ok(value),
+        (_, value) => value,
     }
+}
+
+/// Whether async-graphql can serve a `null` element of `element_type` in a
+/// list. It fails the whole response on one in a list of enums or of lists.
+fn holds_null(element_type: &FieldType) -> bool {
+    !matches!(element_type, FieldType::Enum(..) | FieldType::List(_))
 }
 
 /// The enum type of a field of type [`FieldType::Enum`].
@@ -723,6 +756,65 @@ mod tests {
                 "for {payload}"
             );
         }
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_list_that_cannot_hold_its_null_element_is_null_with_an_error() {
+        let mode = FieldType::Enum(
+            "mode".to_string(),
+            vec![EnumValue {
+                name: "AUTO".to_string(),
+                raw: json!("auto"),
+            }],
+        );
+        let list = |element| FieldType::List(Box::new(FieldDef::nullable(element)));
+        let topic = TopicDef {
+            topic: "a/b".to_string(),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from([
+                    ("modes".to_string(), FieldDef::nullable(list(mode))),
+                    (
+                        "grid".to_string(),
+                        FieldDef::nullable(list(list(FieldType::Int))),
+                    ),
+                    ("x".to_string(), FieldDef::nullable(FieldType::Float)),
+                ]),
+            }),
+            operation: Direction::Send,
+            ttl_secs: None,
+            setter: None,
+            kind: TopicKind::Single,
+        };
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "a/b",
+            json!({"modes": ["auto", null], "grid": [null, [1]], "x": 1.0}),
+        );
+        let schema = build_schema(&mock_api(vec![topic]), &cache, None).unwrap();
+
+        let response = schema.execute("{ a { b { modes grid x } } }").await;
+
+        // async-graphql fails the whole response on a null in a list of
+        // enums or of lists, though the Spec allows it here.
+        let data: serde_json::Value = response.data.into_json().unwrap();
+        assert_eq!(
+            data["a"]["b"],
+            json!({"modes": null, "grid": null, "x": 1.0}),
+            "{:?}",
+            response.errors
+        );
+        let mut paths: Vec<serde_json::Value> = response
+            .errors
+            .iter()
+            .map(|error| serde_json::to_value(&error.path).unwrap())
+            .collect();
+        paths.sort_by_key(ToString::to_string);
+        assert_eq!(
+            paths,
+            [json!(["a", "b", "grid", 0]), json!(["a", "b", "modes", 1])]
+        );
     }
 
     #[tokio::test]
