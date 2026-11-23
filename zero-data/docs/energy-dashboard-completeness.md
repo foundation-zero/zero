@@ -533,6 +533,41 @@ Domestic. The notebook is not part of this ticket.
 - The new gold views have no dbt tests: as with the power tag gold views (#1114), a test aggregates the whole
   history.
 
+### F21 (added 2026-11-23): bidirectional converters, and power that flows back
+
+- **What:** all converters between the 700 VDC bus and its sources and loads, from the drawings and the
+  functional descriptions, against Zero's data (sign and opposing flows):
+
+  | Converter | Type | Connects | Data |
+  |---|---|---|---|
+  | Battery converters =05.41–05.46-T101 | Brightloop, 3 DC/DC channels per module, 80 A each | Battery strings (760–930 V) and the bus segments | 13 pack channels, −55 to +36 kW |
+  | Shore converters =07.11-TBC1, =07.12-TBC1 | Marpower ESI AC/DC, 2 × 2 × 50 kW | Shore 400 VAC and SB.01.P01 / P04 | Never negative (14–21 Nov) |
+  | uGrid =05.11-U101, =05.12-U101 | Aradex DC/AC inverter | Bus (SB.01.P04, SB.02.P02) and the 400 VAC switchboard, in parallel with droop load sharing | Never negative, no opposing flows (14–21 Nov) |
+  | Thruster drives =13.11-U101/U102, =13.31-U101/U102 | Aradex DC/AC inverters | Bus and the thruster motors, also hydrogeneration | Split by sign (Propulsion / Hydrogeneration) |
+  | 350 VDC converters =02.71/02.72-T101/T102 | Epic Power bidirectional DC/DC, 8 kW | Bus (aft SB.01.P04, fwd SB.02.P02) and the 350 VDC network; bus tie 02.71-Q001 closed | Aft converters negative in 19 % and 34 % of the samples (F20), also on the busbar topics since 1 Sep |
+  | 24 VDC supplies 14E1, 14E2 | 700/24 VDC converters | Bus and the 24 VDC service and emergency boards; 14E2 also has two 24 V battery packs | Never negative; the 14E2 battery averages ≈ 10 W |
+
+- **Battery packs charge each other:** from 1 Sep to 21 Nov, one pack discharges while another charges
+  in 5,243 of 58,760 minutes (9 %), with about 15 kW passed between them on average. The EMS design
+  (9445234-1, 7.1.3) first decides whether the system charges or discharges, then selects the packs; it
+  doesn't describe packs charging each other.
+- **The 350 VDC network passes power between bus segments:** with the bus tie closed, power goes in fwd
+  (SB.02.P02) and comes out aft (SB.01.P04), up to about 2 kW (18 Nov).
+- **Meaning:**
+  - The flow diagram adds the charging and the discharging packs up separately, so in those minutes it shows
+    both, about 15 kW too high on each side. The production and consumption graphs don't use the battery data.
+  - The 350 VDC sum (step 6) is right; the losses of the loop are part of it.
+  - PR D (step 8) subtracts each 350 VDC converter from its own segment, not the sum, and the battery
+    converters per segment as measured.
+  - Step 7 checks the two uGrids for opposing flows before it adds their AC output.
+  - The 24 VDC battery is too small to matter for the 24 VDC remainder (F19).
+- **Open items (new):**
+  - 19: ask Marpower whether battery packs charging each other is intended (Marpower, check).
+  - 20: ask Marpower / Epic Power whether the 350 VDC converters should share the load instead of passing
+    power aft (Marpower, check).
+  - 21: the flow diagram shows the net battery power per minute instead of the charging and discharging
+    packs separately (Data, dashboards).
+
 ## Work log
 
 | Date | PR | Step | What |
@@ -549,3 +584,4 @@ Domestic. The notebook is not part of this ticket.
 | 2026-11-23 | – | – | Status, F19, F20 and the B2 change added: cut-over and history on greptime-zero, open PRs on the same files, the 24 VDC remainder, the 350 VDC outputs reading 0. |
 | 2026-11-23 | B2 | 5 | `slv_24vdc_power_supplies` → `gld_24vdc_unallocated_power_per_minute_per_group` (Technical / 24VDC unallocated: power supplies minus breakers per minute), in the graphs, flow diagram and treemaps of both dashboards. Checked on 18 Nov 08:00–14:00 in a local Greptime: 15.6 kWh from the power supplies, 4.3 kWh behind breakers, 11.3 kWh unallocated, the same in every panel and as computed on Zero. |
 | 2026-11-23 | B2 | 6 | `stg_marpower__dc_350v_converters` → `slv_350vdc_converters` → `gld_350vdc_power_per_minute_per_group` (Domestic / Lighting: the sum of the four converters), in the same panels. Checked on the same window: 20.5 kWh, the same in every panel and as computed on Zero. No split per output and no 350 VDC converter losses (F20). |
+| 2026-11-23 | – | – | F21 added: converter types and connections from the drawings, battery packs charging each other, the 350 VDC network passing power between segments; open items 19–21. |
