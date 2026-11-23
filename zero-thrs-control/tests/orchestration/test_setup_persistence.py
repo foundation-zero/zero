@@ -5,7 +5,7 @@ from unittest import mock
 import pytest
 from sqlalchemy.exc import OperationalError
 
-from tests.helpers.modules import make_module
+from tests.helpers.modules import ConfigurableParameters, make_module
 from thrs.classes.database import PostgresDatabase
 from thrs.classes.persistence.engine import (
     NoopPersistentEngine,
@@ -73,7 +73,8 @@ async def test_falls_back_to_noop_when_postgres_is_unreachable(
     # And, concretely: no restore takes place - the module keeps its defaults.
     module = make_module()
     assert await manager.restore(module) is False
-    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+    _, state = await module.tick(None)
+    assert state.parameters == ConfigurableParameters()
 
 
 async def test_uses_postgres_engine_when_reachable():

@@ -6,11 +6,12 @@ from pydantic import ValidationError
 from sqlalchemy.exc import OperationalError
 
 from tests.helpers.modules import (
-    ConfigurableModule,
+    ConfigurableControllerState,
+    ConfigurableParameters,
     make_async_channels,
     make_module,
 )
-from tests.orchestration.simples import SimpleInOut, simple_control_values
+from tests.orchestration.simples import SimpleInOut
 from thrs.classes.persistence.engine import (
     InMemoryPersistentEngine,
     NoopPersistentEngine,
@@ -18,8 +19,10 @@ from thrs.classes.persistence.engine import (
 )
 from thrs.classes.persistence.manager import PersistManager
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
+from thrs.control.state import AutomationMode, ControlModes
 
 HEARTBEAT = timedelta(seconds=60)
+DEFAULTS = ConfigurableParameters()
 
 
 class FailingSnapshotStore(PersistentEngine):
@@ -53,70 +56,50 @@ def make_manager(
     return PersistManager(store, HEARTBEAT, apply_module_defaults_on_corrupt_database)
 
 
-def change_setpoint(module: ConfigurableModule, setpoint: float) -> None:
-    module.apply_persistence_snapshot(
-        ModulePersistenceSnapshot(parameters={"setpoint": setpoint})
+def controller_state(
+    setpoint: float = 50.0, mode: ControlModes = "manual"
+) -> ConfigurableControllerState:
+    return ConfigurableControllerState(
+        parameters=ConfigurableParameters(setpoint=setpoint),
+        automation_mode=AutomationMode(mode=mode),
+    )
+
+
+def test_snapshot_takes_parameters_and_mode_from_the_controller_state():
+    snapshot = ModulePersistenceSnapshot.from_controller_state(
+        controller_state(60.0, "automatic")
+    )
+
+    assert snapshot == ModulePersistenceSnapshot(
+        parameters={"setpoint": 60.0}, control_mode="automatic"
     )
 
 
 async def test_persist_writes_on_first_call():
     store = InMemoryPersistentEngine()
     manager = make_manager(store)
-    module = make_module()
 
-    assert await manager.persist(module) is True
-    assert store.snapshots["test"] == module.get_persistence_snapshot()
+    assert await manager.persist("test", controller_state()) is True
+    assert store.snapshots["test"] == ModulePersistenceSnapshot(
+        parameters={"setpoint": 50.0}, control_mode="manual"
+    )
 
 
 async def test_persist_skips_unchanged_snapshot():
     store = InMemoryPersistentEngine()
     manager = make_manager(store)
-    module = make_module()
 
-    assert await manager.persist(module) is True
-
-    assert await manager.persist(module) is False
-    assert store.snapshots["test"] == module.get_persistence_snapshot()
-
-
-async def test_persist_skips_snapshot_that_only_changed_timestamps():
-    """A re-published manual control value with the same value but a fresher
-    Stamped timestamp (e.g. a dashboard re-sending the current setpoint) must
-    not be treated as a config change - only actual value changes should."""
-    store = InMemoryPersistentEngine()
-    manager = make_manager(store)
-    channels = make_async_channels()
-    channels.get_manual_controls.side_effect = lambda: simple_control_values(3.5)
-    module = make_module(channels=channels)
-    await module.sync_control_channels_state()
-
-    assert await manager.persist(module) is True
-
-    # Re-sync with the identical value - `manual_values` re-stamps on every call.
-    await module.sync_control_channels_state()
-
-    assert await manager.persist(module) is False
+    assert await manager.persist("test", controller_state()) is True
+    assert await manager.persist("test", controller_state()) is False
 
 
 async def test_persist_writes_when_config_changes():
     store = InMemoryPersistentEngine()
     manager = make_manager(store)
-    module = make_module()
 
-    assert await manager.persist(module) is True
-    change_setpoint(module, 60.0)
-
-    assert await manager.persist(module) is True
+    assert await manager.persist("test", controller_state(50.0)) is True
+    assert await manager.persist("test", controller_state(60.0)) is True
     assert store.snapshots["test"].parameters == {"setpoint": 60.0}
-
-
-async def test_persist_all_covers_every_module():
-    store = InMemoryPersistentEngine()
-    manager = make_manager(store)
-
-    await manager.persist_all([make_module("test"), make_module("pvt")])
-
-    assert set(store.snapshots) == {"test", "pvt"}
 
 
 async def test_restore_without_stored_config_keeps_defaults():
@@ -124,7 +107,9 @@ async def test_restore_without_stored_config_keeps_defaults():
     module = make_module()
 
     assert await manager.restore(module) is False
-    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+
+    _, state = await module.tick(None)
+    assert state.parameters == DEFAULTS
 
 
 async def test_restore_applies_stored_snapshot():
@@ -136,8 +121,10 @@ async def test_restore_applies_stored_snapshot():
     module = make_module()
 
     assert await manager.restore(module) is True
-    assert module.get_persistence_snapshot().parameters == {"setpoint": 60.0}
-    assert module.get_persistence_snapshot().control_mode == "automatic"
+
+    _, state = await module.tick(None)
+    assert state.parameters == ConfigurableParameters(setpoint=60.0)
+    assert state.automation_mode == AutomationMode(mode="automatic")
 
 
 async def test_restore_does_not_trigger_an_immediate_rewrite():
@@ -147,8 +134,9 @@ async def test_restore_does_not_trigger_an_immediate_rewrite():
     module = make_module()
 
     await manager.restore(module)
+    _, state = await module.tick(None)
 
-    assert await manager.persist(module) is False
+    assert await manager.persist(module.name, state) is False
     assert store.snapshots["test"] == stored
 
 
@@ -157,12 +145,14 @@ async def test_restore_all_covers_every_module():
         {"test": ModulePersistenceSnapshot(control_mode="automatic")}
     )
     manager = make_manager(store)
-    modules = [make_module("test"), make_module("pvt")]
+    restored, untouched = make_module("test"), make_module("pvt")
 
-    await manager.restore_all(modules)
+    await manager.restore_all([restored, untouched])
 
-    assert modules[0].get_persistence_snapshot().control_mode == "automatic"
-    assert modules[1].get_persistence_snapshot().control_mode == "manual"
+    _, restored_state = await restored.tick(None)
+    _, untouched_state = await untouched.tick(None)
+    assert restored_state.automation_mode == AutomationMode(mode="automatic")
+    assert untouched_state.automation_mode == AutomationMode(mode="manual")
 
 
 async def test_restore_raises_when_stored_config_no_longer_validates():
@@ -175,18 +165,18 @@ async def test_restore_raises_when_stored_config_no_longer_validates():
     with pytest.raises(ValidationError):
         await manager.restore(module)
 
-    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+    _, state = await module.tick(None)
+    assert state.parameters == DEFAULTS
 
 
 async def test_database_errors_propagate_from_restore_and_persist():
     manager = make_manager(FailingSnapshotStore())
-    module = make_module()
 
     with pytest.raises(OperationalError):
-        await manager.restore(module)
+        await manager.restore(make_module())
 
     with pytest.raises(OperationalError):
-        await manager.persist(module)
+        await manager.persist("test", controller_state())
 
 
 async def test_corrupt_stored_snapshot_raises_by_default():
@@ -213,8 +203,10 @@ async def test_corrupt_stored_snapshot_keeps_defaults_instead_of_crashing(
     module = make_module()
 
     assert await manager.restore(module) is False
-    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
     assert "corrupt" in caplog.text
+
+    _, state = await module.tick(None)
+    assert state.parameters == DEFAULTS
 
 
 async def test_restore_all_survives_one_module_with_a_corrupt_snapshot():
@@ -226,7 +218,8 @@ async def test_restore_all_survives_one_module_with_a_corrupt_snapshot():
     await manager.restore_all(modules)
 
     for module in modules:
-        assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+        _, state = await module.tick(None)
+        assert state.parameters == DEFAULTS
 
 
 async def test_restore_all_stops_on_first_corrupt_snapshot_by_default():
@@ -243,18 +236,17 @@ async def test_failed_write_is_retried_next_call():
     manager = make_manager(FailingSnapshotStore())
 
     with pytest.raises(OperationalError):
-        await manager.persist(make_module())
+        await manager.persist("test", controller_state())
 
-    assert manager._persisted_at == {}
+    assert manager._persisted == {}
 
 
 async def test_noop_store_never_returns_a_snapshot():
     store = NoopPersistentEngine()
     manager = make_manager(store)
-    module = make_module()
 
-    assert await manager.restore(module) is False
-    assert await manager.persist(module) is True
+    assert await manager.restore(make_module()) is False
+    assert await manager.persist("test", controller_state()) is True
     assert await store.load("test") is None
 
 
@@ -290,7 +282,8 @@ async def test_restore_raises_on_bad_parameters(bad_parameters):
         await manager.restore(module)
 
     # The rejected snapshot must never have been (partially) applied to the module.
-    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+    _, state = await module.tick(None)
+    assert state.parameters == DEFAULTS
 
 
 @pytest.mark.parametrize(
@@ -308,7 +301,9 @@ async def test_restore_accepts_parameters_that_validate_via_field_defaults(param
     module = make_module()
 
     assert await manager.restore(module) is True
-    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+
+    _, state = await module.tick(None)
+    assert state.parameters == DEFAULTS
 
 
 async def test_restore_with_out_of_bound_value_never_reaches_mqtt():
@@ -341,8 +336,9 @@ async def test_restore_with_malformed_control_mode_keeps_module_untouched():
     with pytest.raises(ValidationError):
         await manager.restore(module)
 
-    assert module.get_persistence_snapshot().control_mode == "manual"
-    assert module.get_persistence_snapshot().parameters == {"setpoint": 50.0}
+    _, state = await module.tick(None)
+    assert state.automation_mode == AutomationMode(mode="manual")
+    assert state.parameters == DEFAULTS
 
 
 async def test_restore_all_stops_on_first_module_with_invalid_persisted_values():

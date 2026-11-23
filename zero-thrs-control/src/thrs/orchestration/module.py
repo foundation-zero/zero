@@ -109,13 +109,6 @@ class Module[
     def set_automation_mode(self, mode: AutomationMode) -> None:
         self._control.switch_mode(mode)
 
-    def get_persistence_snapshot(self) -> ModulePersistenceSnapshot:
-        """Serialize the configuration a restart should be able to pick up again."""
-        return ModulePersistenceSnapshot(
-            parameters=self._control.parameters.model_dump(mode="json"),
-            control_mode=self._control.control_mode,
-        )
-
     def apply_persistence_snapshot(self, snapshot: ModulePersistenceSnapshot) -> None:
         """Apply a configuration snapshot."""
 
@@ -161,7 +154,7 @@ class Module[
         if actuated_control_values is not None:
             await self._channels.send_actuated_control_values(actuated_control_values)
 
-    async def tick(self, sensor_values: S | None) -> C:
+    async def tick(self, sensor_values: S | None) -> tuple[C, CS]:
         if sensor_values is None:
             logger.warning(
                 "Module %s has no sensor values - sending last known manual control values",
@@ -177,4 +170,4 @@ class Module[
 
         await self.send_control_updates(sensor_values, control_values, controller_state)
 
-        return control_values
+        return control_values, controller_state

@@ -11,11 +11,11 @@ assert the restored parameters match what was changed - not the defaults.
 """
 
 from datetime import UTC, datetime
-from unittest import mock
 
 import pytest
 from pydantic import ValidationError
 
+from tests.helpers.modules import make_async_channels
 from thrs.classes.persistence.engine import InMemoryPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
@@ -98,16 +98,10 @@ def _make_module(name: str, description: ModuleDescription) -> Module:
     """Build a real Module for `description`, with mocked control channels since
     we never send anything over MQTT in these tests - only persistence is under
     test here."""
-    channels = mock.Mock()
-    channels.get_sensor_values.return_value = None
-    channels.get_parameters.return_value = None
-    channels.get_manual_controls.return_value = None
-    channels.get_automation_modes.return_value = None
-
     return Module(
         name,
         description=description,
-        channels=channels,
+        channels=make_async_channels(),
         time_fn=lambda: datetime.now(UTC),
     )
 
@@ -131,7 +125,8 @@ async def test_changed_parameter_is_stored_and_restored(
         ModulePersistenceSnapshot(parameters=changed.model_dump(mode="json"))
     )
 
-    assert await manager.persist(module) is True
+    _, state = await module.tick(None)
+    assert await manager.persist(name, state) is True
     assert store.snapshots[name].parameters == changed.model_dump(mode="json")
 
     # A fresh module and a fresh manager, as if the process had restarted - the
@@ -140,6 +135,6 @@ async def test_changed_parameter_is_stored_and_restored(
     restored = await PersistManager(store).restore(restarted_module)
 
     assert restored is True
-    restored_parameters = restarted_module.get_persistence_snapshot().parameters
-    assert restored_parameters == changed.model_dump(mode="json")
-    assert restored_parameters != defaults.model_dump(mode="json")
+    _, restored_state = await restarted_module.tick(None)
+    assert restored_state.parameters == changed
+    assert restored_state.parameters != defaults

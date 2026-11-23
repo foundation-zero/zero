@@ -131,7 +131,7 @@ def make_module(
     return Module(
         name,
         description=CONFIGURABLE_MODULE_DESCRIPTION,
-        channels=channels or make_channels(),
+        channels=channels or make_async_channels(),
         time_fn=datetime.now,
     )
 
