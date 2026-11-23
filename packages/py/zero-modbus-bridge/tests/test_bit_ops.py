@@ -1,7 +1,9 @@
 from zero_modbus_bridge.bit_ops import (
     float_to_lsw_registers,
+    int16_to_uint16,
     is_finite_float,
     lsw_registers_to_float,
+    uint16_to_int16,
 )
 
 
@@ -44,3 +46,19 @@ def test_is_finite_float_accepts_normal():
 def test_is_finite_float_rejects_infinity():
     assert is_finite_float(float("inf")) is False
     assert is_finite_float(float("-inf")) is False
+
+
+def test_uint16_to_int16_reads_twos_complement():
+    assert uint16_to_int16(0xFFFF) == -1
+    assert uint16_to_int16(0x10000 - 1000) == -1000
+    assert uint16_to_int16(0x7FFF) == 0x7FFF
+    assert uint16_to_int16(0x8000) == -0x8000
+
+
+def test_int16_to_uint16_round_trip():
+    assert [uint16_to_int16(int16_to_uint16(v)) for v in (-0x8000, -1, 0, 0x7FFF)] == [
+        -0x8000,
+        -1,
+        0,
+        0x7FFF,
+    ]

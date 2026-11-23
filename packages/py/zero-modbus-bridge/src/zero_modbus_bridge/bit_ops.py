@@ -26,6 +26,16 @@ def float_to_lsw_registers(value: float) -> list[int]:
     return list(regs)
 
 
+def uint16_to_int16(raw: int) -> int:
+    """Read a raw register as a two's complement signed value: 65535 -> -1."""
+    return raw - 0x10000 if raw & 0x8000 else raw
+
+
+def int16_to_uint16(value: int) -> int:
+    """Store a signed value as a raw two's complement register: -1 -> 65535."""
+    return value & 0xFFFF
+
+
 def is_finite_float(raw: RawModbusValue) -> bool:
     """Validator for float fields: reject non-finite values (NaN sentinels, ±inf).
 

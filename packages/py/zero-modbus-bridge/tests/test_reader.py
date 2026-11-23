@@ -1,3 +1,4 @@
+from typing import Annotated
 from unittest.mock import MagicMock
 
 import pytest
@@ -58,6 +59,24 @@ async def test_reader_annotated_uint16():
     assert result is not None
     assert result.val == 42
     assert result.flag is True
+
+
+class _SignedModel(BaseModel):
+    temperature: Annotated[
+        float | None, ModbusField(register=10, data_type="int16", scale_factor=0.01)
+    ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(("raw", "expected"), [(0x10000 - 1850, -18.5), (450, 4.5)])
+async def test_reader_annotated_int16(raw: int, expected: float):
+    mock_modbus = MagicMock()
+    mock_modbus.read_holding_registers.return_value = [raw]
+
+    topic = AnnotationModbusTopic(topic="test/i", model=_SignedModel)
+    result = ModbusReader(mock_modbus, [topic]).read_topic(topic)
+
+    assert result.temperature == pytest.approx(expected)
 
 
 @pytest.mark.asyncio

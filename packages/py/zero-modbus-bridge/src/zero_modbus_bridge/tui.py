@@ -24,12 +24,13 @@ from textual.widgets import (
     TabPane,
 )
 
+from zero_modbus_bridge.bit_ops import int16_to_uint16, uint16_to_int16
 from zero_modbus_bridge.io import ModbusField, ModbusTopic, extract_modbus_fields
 from zero_modbus_bridge.stub import MultiUnitDataHandler, Stub
 
 logger = logging.getLogger(__name__)
 
-type EditableDataType = Literal["uint16", "float32"]
+type EditableDataType = Literal["uint16", "int16", "float32"]
 
 
 class FieldRow(BaseModel):
@@ -106,7 +107,10 @@ def build_rows(topics: Sequence[ModbusTopic]) -> list[FieldRow]:
 def human_value(handler: MultiUnitDataHandler, row: FieldRow) -> float:
     if row.data_type == "float32":
         return handler.read_float(row.unit_id, row.address) * row.scale_factor
-    return handler.read_register(row.unit_id, row.address) * row.scale_factor
+    raw = handler.read_register(row.unit_id, row.address)
+    if row.data_type == "int16":
+        raw = uint16_to_int16(raw)
+    return raw * row.scale_factor
 
 
 def format_value(value: float, data_type: EditableDataType) -> str:
@@ -119,6 +123,10 @@ def write_value(handler: MultiUnitDataHandler, row: FieldRow, text: str) -> None
     value = float(text) / row.scale_factor
     if row.data_type == "float32":
         handler.set_float(row.unit_id, row.address, value)
+        return
+    if row.data_type == "int16":
+        signed = max(-0x8000, min(0x7FFF, round(value)))
+        handler.set_register(row.unit_id, row.address, int16_to_uint16(signed))
         return
     raw = max(0, min(65535, round(value)))
     handler.set_register(row.unit_id, row.address, raw)

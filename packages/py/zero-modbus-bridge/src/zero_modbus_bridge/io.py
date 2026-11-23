@@ -18,7 +18,7 @@ class ModbusField:
 
     register: int | None = None
     offset: int | None = None
-    data_type: Literal["uint16", "float32", "bool"] = "uint16"
+    data_type: Literal["uint16", "int16", "float32", "bool"] = "uint16"
     modbus_type: Literal["holding", "coil"] = "holding"
     scale_factor: float = 1.0
     validator: Callable[[RawModbusValue], bool] | None = None
@@ -28,7 +28,7 @@ class ModbusField:
         *,
         register: int | None = None,
         offset: int | None = None,
-        data_type: Literal["uint16", "float32", "bool"] = "uint16",
+        data_type: Literal["uint16", "int16", "float32", "bool"] = "uint16",
         modbus_type: Literal["holding", "coil"] = "holding",
         scale_factor: float = 1.0,
         validator: Callable[[RawModbusValue], bool] | None = None,

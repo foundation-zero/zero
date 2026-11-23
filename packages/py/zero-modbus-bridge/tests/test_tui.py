@@ -207,3 +207,22 @@ async def test_tui_tab_cycles_focus_and_arrows_switch_servers():
         await pilot.press("tab")
         assert isinstance(app.focused, DataTable)
         assert (app.query_one("#filter", Input).region, content.region) == regions
+
+
+def test_int16_row_reads_and_writes_signed_values():
+    class FreezerModel(BaseModel):
+        temperature: Annotated[
+            float | None, ModbusField(offset=0, data_type="int16", scale_factor=0.01)
+        ]
+
+    topic = AnnotationModbusTopic(
+        topic="test/freezer", model=FreezerModel, start_register=10, unit_id=4
+    )
+    handler = MultiUnitDataHandler([topic], default_value=0)
+    (row,) = build_rows([topic])
+
+    write_value(handler, row, "-18.5")
+
+    assert row.data_type == "int16"
+    assert handler.read_register(4, 10) == 0x10000 - 1850
+    assert human_value(handler, row) == pytest.approx(-18.5)
