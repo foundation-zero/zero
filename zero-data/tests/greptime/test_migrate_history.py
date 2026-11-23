@@ -218,10 +218,20 @@ def test_run_copies_a_wide_day_in_parts(
     assert check(greptime, load(greptime, SPEC)) == []
 
 
-def test_run_sends_a_statement_again_when_greptime_fails_internally(
-    tables: Query, greptime: Greptime, monkeypatch: pytest.MonkeyPatch
+@pytest.mark.parametrize(
+    "dropped",
+    [
+        psycopg.errors.InternalError_("Internal error: 1003"),
+        psycopg.errors.OperatorIntervention("operation was canceled"),
+    ],
+)
+def test_run_sends_a_statement_again_when_greptime_drops_it(
+    tables: Query,
+    greptime: Greptime,
+    monkeypatch: pytest.MonkeyPatch,
+    dropped: psycopg.Error,
 ) -> None:
-    failures = [psycopg.errors.InternalError_("Internal error: 1003")]
+    failures = [dropped]
     waits: list[float] = []
 
     def failing_once(sql: str) -> None:

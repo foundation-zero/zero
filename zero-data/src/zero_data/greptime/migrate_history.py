@@ -39,7 +39,8 @@ LOCK_TABLE = "migrate_history_running"
 VALUES_PER_INSERT = 4_000_000
 # Greptime's frontend drops its connection to the datanode every few hours of copying
 # ("locally-reset streams reached limit"), and the statement in flight fails with an
-# internal error.
+# internal error or as cancelled.
+CONNECTION_DROPPED = (psycopg.errors.InternalError, psycopg.errors.OperatorIntervention)
 ATTEMPTS = 5
 RETRY_WAIT = 60.0
 
@@ -565,14 +566,14 @@ def lock(greptime: Greptime, unlock: bool = False) -> Generator[None]:
 
 
 def _retried[T](action: Callable[[], T], sleep: Callable[[float], None]) -> T:
-    """The action's result, trying again when Greptime fails internally.
+    """The action's result, trying again when Greptime drops the statement.
 
     Safe for an insert: it leaves out the timestamps a failed attempt already wrote.
     """
     for attempt in range(1, ATTEMPTS):
         try:
             return action()
-        except psycopg.errors.InternalError as error:
+        except CONNECTION_DROPPED as error:
             logger.warning("Attempt %d failed, trying again: %s", attempt, error)
             sleep(RETRY_WAIT)
     return action()
