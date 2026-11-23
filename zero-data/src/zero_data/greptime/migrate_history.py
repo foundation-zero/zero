@@ -17,7 +17,7 @@ import signal
 import socket
 import time
 from collections import defaultdict
-from collections.abc import Callable, Iterable, Iterator
+from collections.abc import Callable, Generator, Iterable, Iterator
 from contextlib import contextmanager
 from datetime import UTC, date, datetime
 from typing import Any
@@ -79,12 +79,12 @@ class Greptime:
 
     def rows(self, sql: str) -> list[tuple[Any, ...]]:
         with self._handle.cursor() as cursor:
-            cursor.execute(sql)
+            cursor.execute(sql)  # pyrefly: ignore[no-matching-overload]
             return cursor.fetchall()
 
     def run(self, sql: str) -> None:
         with self._handle.cursor() as cursor:
-            cursor.execute(sql)
+            cursor.execute(sql)  # pyrefly: ignore[no-matching-overload]
 
     def count(self, sql: str) -> int:
         ((found,),) = self.rows(sql)
@@ -513,7 +513,7 @@ def report(migration: Migration, leftovers: dict[str, Leftover]) -> str:
 
 
 @contextmanager
-def lock(greptime: Greptime, unlock: bool = False) -> Iterator[None]:
+def lock(greptime: Greptime, unlock: bool = False) -> Generator[None]:
     """Hold the lock that keeps runs and drops apart; `unlock` first clears one left behind.
 
     A run that loses its connection can't release the lock, and its last insert may still be

@@ -38,7 +38,7 @@ def test_status_set_rejects_a_pause_at_without_time_zone():
 
 async def test_clear_previous_clears_the_status():
     channels = AsyncMock()
-    handling = DirectiveHandling(channels, Mode("thrs", {}, None), lambda: START)  # type: ignore[arg-type]
+    handling = DirectiveHandling(channels, Mode("thrs", {}, None), lambda: START)
 
     await handling.clear_previous()
 
@@ -47,7 +47,7 @@ async def test_clear_previous_clears_the_status():
 
 async def test_status_reports_the_request():
     channels = AsyncMock()
-    handling = DirectiveHandling(channels, Mode("thrs", {}, None), lambda: START)  # type: ignore[arg-type]
+    handling = DirectiveHandling(channels, Mode("thrs", {}, None), lambda: START)
     loop = Loop(timedelta(seconds=1), lambda: START)
     loop.requested = Request("running", 2.0, START + timedelta(hours=1))
 

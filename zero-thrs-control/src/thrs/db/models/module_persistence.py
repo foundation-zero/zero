@@ -13,7 +13,7 @@ class ModulePersistenceBase(SQLModel):
 class ModulePersistence(ModulePersistenceBase, table=True):
     """Last known control configuration of a module, one row per module."""
 
-    __tablename__ = "module_persistence"  # type: ignore
+    __tablename__ = "module_persistence"
     module_name: str = Field(primary_key=True)
     parameters: dict[str, Any] | None = Field(
         default=None, sa_column=Column(JSONB, nullable=True)

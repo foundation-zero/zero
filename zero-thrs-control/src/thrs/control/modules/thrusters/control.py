@@ -328,12 +328,12 @@ class ThrustersControl(
 
     @property
     def initial_mode(self) -> ThrustersControlMode:
-        initial_mode: str = self._state_machine.initial  # type: ignore
+        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
         return ThrustersControlMode(mode=initial_mode)
 
     @property
     def mode(self) -> ThrustersControlMode:
-        mode: str = self.state  # type: ignore
+        mode: str = self.state
         return ThrustersControlMode(mode=mode)
 
     def initial(self) -> tuple[ThrustersControlValues, ThrustersControllerState]:
@@ -346,21 +346,21 @@ class ThrustersControl(
         self._current_control_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
-        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
         self._init_controllers(self._parameters)
 
     @StateLogger.log_warnings
     def control(
         self, sensor_values: ThrustersSensorValues
     ) -> tuple[ThrustersControlValues, ThrustersControllerState]:
-        self._check_pcs_mode(sensor_values)  # type: ignore
-        self._check_overheat(sensor_values)  # type: ignore
+        self._check_pcs_mode(sensor_values)  # pyrefly: ignore[missing-attribute]
+        self._check_overheat(sensor_values)  # pyrefly: ignore[missing-attribute]
         self._control_heat_dump(sensor_values)
 
         # Recovery controls
         if self.mode.is_warmup or self.mode.is_recovery:
             self._control_warmup_mix(sensor_values)
-            self._check_warmup_mix(sensor_values)  # type: ignore
+            self._check_warmup_mix(sensor_values)  # pyrefly: ignore[missing-attribute]
         if self.mode.is_warmup:
             self._set_warmup_flow_setpoints(sensor_values)
         if self.mode.is_recovery:

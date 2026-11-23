@@ -259,12 +259,12 @@ class DrivesControl(
 
     @property
     def initial_mode(self) -> ThrustersControlMode:
-        initial_mode: str = self._state_machine.initial  # type: ignore
+        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
         return ThrustersControlMode(mode=initial_mode)
 
     @property
     def mode(self) -> DrivesControlMode:
-        mode: str = self.state  # type: ignore
+        mode: str = self.state
         return DrivesControlMode(mode=mode)
 
     def initial(self) -> tuple[DrivesControlValues, DrivesControllerState]:
@@ -277,7 +277,7 @@ class DrivesControl(
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
-        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
         self._init_controllers()
 
     @StateLogger.log_warnings
@@ -285,9 +285,9 @@ class DrivesControl(
         self, sensor_values: DrivesSensorValues
     ) -> tuple[DrivesControlValues, DrivesControllerState]:
         if not self.mode.is_propulsion:
-            self._check_shorepower(sensor_values)  # type: ignore
+            self._check_shorepower(sensor_values)  # pyrefly: ignore[missing-attribute]
         if not self.mode.is_shorepower:
-            self._check_thrusters(sensor_values)  # type: ignore
+            self._check_thrusters(sensor_values)  # pyrefly: ignore[missing-attribute]
         self._control_heat_dump(sensor_values)
         self._control_flow_balance(sensor_values)
         self._control_pump_shorepower(sensor_values)

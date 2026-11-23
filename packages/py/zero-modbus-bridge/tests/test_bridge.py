@@ -232,7 +232,7 @@ async def test_failed_publish_is_buffered_and_replayed_in_order(error: Exception
     _probe_yields(reader, 4)
     await bridge.run_once()
 
-    assert [payload.value for _, payload, _ in publisher.accepted] == [1, 2, 3, 4]  # type: ignore[attr-defined]
+    assert [payload.value for _, payload, _ in publisher.accepted] == [1, 2, 3, 4]  # pyrefly: ignore[missing-attribute]
     assert bridge.buffered_count == 0
     assert bridge.dropped_count == 0
 
@@ -254,14 +254,14 @@ async def test_partial_flush_keeps_order_and_never_resends():
     _probe_yields(reader, 1, 2, 3, 4)
     await bridge.run_once()
 
-    assert [p.value for _, p, _ in publisher.accepted] == [1, 2]  # type: ignore[attr-defined]
+    assert [p.value for _, p, _ in publisher.accepted] == [1, 2]  # pyrefly: ignore[missing-attribute]
     assert bridge.buffered_count == 2
 
     publisher.error = None
     _probe_yields(reader, 5)
     await bridge.run_once()
 
-    assert [p.value for _, p, _ in publisher.accepted] == [1, 2, 3, 4, 5]  # type: ignore[attr-defined]
+    assert [p.value for _, p, _ in publisher.accepted] == [1, 2, 3, 4, 5]  # pyrefly: ignore[missing-attribute]
     assert bridge.buffered_count == 0
 
 
@@ -302,7 +302,7 @@ async def test_oldest_dropped_when_buffer_is_full():
     _probe_yields(reader)
     await bridge.run_once()
 
-    assert [payload.value for _, payload, _ in publisher.accepted] == [3, 4, 5]  # type: ignore[attr-defined]
+    assert [payload.value for _, payload, _ in publisher.accepted] == [3, 4, 5]  # pyrefly: ignore[missing-attribute]
 
 
 @pytest.mark.asyncio
@@ -319,7 +319,7 @@ async def test_recovery_probe_does_not_push_out_a_full_backlog():
     _probe_yields(reader, 4)
     await bridge.run_once()
 
-    assert [payload.value for _, payload, _ in publisher.accepted] == [1, 2, 3, 4]  # type: ignore[attr-defined]
+    assert [payload.value for _, payload, _ in publisher.accepted] == [1, 2, 3, 4]  # pyrefly: ignore[missing-attribute]
     assert bridge.dropped_count == 0
 
 

@@ -21,10 +21,10 @@ def groupby(iterable, key):
 def included_in_fmu(field: FieldInfo | ComputedFieldInfo) -> bool:
     """Check if the field should be included in the FMU."""
     return (
-        field.json_schema_extra.get("included_in_fmu", True)
+        bool(field.json_schema_extra.get("included_in_fmu", True))
         if field.json_schema_extra and isinstance(field.json_schema_extra, dict)
         else True
-    )  # type: ignore
+    )
 
 
 def _field_type(field: FieldInfo | ComputedFieldInfo) -> type[ThrsValues]:
@@ -41,7 +41,7 @@ def _fmu_key_for_field(
         field.return_type if isinstance(field, ComputedFieldInfo) else field.annotation
     )
 
-    meta = unit_meta(unit_for_annotation(annotation))  # type: ignore
+    meta = unit_meta(unit_for_annotation(annotation))
     if meta:
         return f"{component_name}__{field_name}__{meta.modelica_name}"
     return f"{component_name}__{field_name}"

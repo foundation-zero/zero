@@ -233,9 +233,7 @@ class DirectMqttMapping[M: ThrsValues](
     def handle_message(self, topic: str, json: str | bytes):
         awaitables: list[Awaitable] = []
         if topic == self._topic:
-            self._value = cast(
-                M, self._adapter.validate_json(json, context=self._context)
-            )
+            self._value = self._adapter.validate_json(json, context=self._context)
             if not self._first_received.is_set():
                 self._first_value = self._value
                 self._first_received.set()

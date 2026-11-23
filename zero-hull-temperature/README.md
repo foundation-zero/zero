@@ -135,7 +135,7 @@ uv sync --locked --group test       # test dependencies only
 uv sync --locked --group dev --group test   # test + linting/type-checking
 uv run pytest
 uv run ruff check
-uv run pyright
+uv run pyrefly check
 ```
 
 > Tests require a running MQTT broker on `localhost:1883`. The Modbus server is spun up in-process on port `11502`.

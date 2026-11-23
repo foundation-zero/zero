@@ -122,7 +122,7 @@ class PidController[ActuatorUnit: float, MeasurementUnit: float]:
 
     @property
     def error(self) -> MeasurementUnit | None:
-        return cast(MeasurementUnit | None, self._pid._last_error)  # type: ignore
+        return cast(MeasurementUnit | None, self._pid._last_error)  # pyrefly: ignore[missing-attribute]
 
     def values(self) -> PidControllerValues:
         self._sync_parameters()

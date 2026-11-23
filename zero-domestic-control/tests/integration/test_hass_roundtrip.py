@@ -15,7 +15,7 @@ from domestic_control.services.hass import Hass, HassControl
 
 @fixture
 def settings():
-    return Settings()  # type: ignore
+    return Settings()
 
 
 @fixture
@@ -81,13 +81,13 @@ async def test_hass_lighting_group_to_control_to_mqtt(
     await asyncio.sleep(0.2)
 
     result = await anext(mqtt_two.messages)
-    if LightingGroup.model_validate_json(result.payload).level == 0.1:  # type: ignore
+    if LightingGroup.model_validate_json(result.payload).level == 0.1:
         result = await anext(mqtt_two.messages)
-    if LightingGroup.model_validate_json(result.payload).level == 0.1:  # type: ignore
+    if LightingGroup.model_validate_json(result.payload).level == 0.1:
         result = await anext(mqtt_two.messages)
 
     assert result.topic.value == "domestic/lighting-groups"
-    assert LightingGroup.model_validate_json(result.payload) == msg  # type: ignore
+    assert LightingGroup.model_validate_json(result.payload) == msg
 
     control_task.cancel()
 
@@ -129,12 +129,12 @@ async def test_hass_blind_to_control_to_mqtt(
     await hass_wrapped.set_blind(msg)
 
     result = await anext(mqtt_two.messages)
-    if Blind.model_validate_json(result.payload).level == 0.1:  # type: ignore
+    if Blind.model_validate_json(result.payload).level == 0.1:
         result = await anext(mqtt_two.messages)
-    if Blind.model_validate_json(result.payload).level == 0.1:  # type: ignore
+    if Blind.model_validate_json(result.payload).level == 0.1:
         result = await anext(mqtt_two.messages)
 
     assert result.topic.value == "domestic/blinds"
-    assert Blind.model_validate_json(result.payload) == msg  # type: ignore
+    assert Blind.model_validate_json(result.payload) == msg
 
     control_task.cancel()

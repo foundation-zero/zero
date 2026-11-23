@@ -1,5 +1,5 @@
 from collections import deque
-from collections.abc import Callable, Hashable, Iterator
+from collections.abc import Callable, Hashable, Iterator, Mapping
 from copy import deepcopy
 from datetime import timedelta
 from functools import partial
@@ -55,7 +55,7 @@ class _CombinedControlAdapter[
 ]:
     def __init__(
         self,
-        controls: dict[str, Control[ThrsValues, ThrsValues, P, M, ThrsValues]],
+        controls: Mapping[str, Control[ThrsValues, ThrsValues, P, M, ThrsValues]],
     ) -> None:
         self._controls = controls
         self.parameters = CombinedValues(
@@ -91,7 +91,7 @@ class _CombinedControlAdapter[
         results = {
             name: control.initial()
             if (sensors := sensor_values.values.get(name)) is None
-            else control.control(cast(ThrsValues, sensors))
+            else control.control(sensors)
             for name, control in self._controls.items()
         }
         return (
@@ -114,7 +114,7 @@ class _CombinedControlAdapter[
 
 
 class _CombinedAlarmsAdapter:
-    def __init__(self, alarms: dict[str, BaseAlarms]):
+    def __init__(self, alarms: Mapping[str, BaseAlarms]):
         self._alarms = alarms
 
     def check(
@@ -152,23 +152,14 @@ class SimulationTestRunner[
         simulation: Simulation[S, C, I, O],
         simulation_inputs: I,
         control: Control[S, C, P, M, CS]
-        | dict[str, Control[ThrsValues, ThrsValues, Any, Any, ThrsValues]],
-        alarms: BaseAlarms | dict[str, BaseAlarms],
+        | Mapping[str, Control[Any, Any, Any, Any, Any]],
+        alarms: BaseAlarms | Mapping[str, BaseAlarms],
     ):
-        if isinstance(control, dict):
-            combined_control = cast(
-                Control,
-                _CombinedControlAdapter(
-                    cast(
-                        dict[
-                            str, Control[ThrsValues, ThrsValues, Any, Any, ThrsValues]
-                        ],
-                        control,
-                    )
-                ),
-            )
+        if isinstance(control, Mapping):
+            combined_control = cast(Control, _CombinedControlAdapter(control))
             combined_alarms = cast(
-                BaseAlarms, _CombinedAlarmsAdapter(cast(dict[str, BaseAlarms], alarms))
+                BaseAlarms,
+                _CombinedAlarmsAdapter(cast(Mapping[str, BaseAlarms], alarms)),
             )
             self._control = combined_control
             self._alarms = combined_alarms

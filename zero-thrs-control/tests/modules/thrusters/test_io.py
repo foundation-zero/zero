@@ -63,9 +63,9 @@ def test_set_module_temperature(
 ):
     control_values, _ = control.initial()
 
-    simulation_inputs.thrusters_thruster_aft.heat_flow.value = 0  # type: ignore
-    simulation_inputs.thrusters_thruster_fwd.heat_flow.value = 0  # type: ignore
-    simulation_inputs.thrusters_pcm_supply.temperature.value = 60  # type: ignore
+    simulation_inputs.thrusters_thruster_aft.heat_flow.value = 0
+    simulation_inputs.thrusters_thruster_fwd.heat_flow.value = 0
+    simulation_inputs.thrusters_pcm_supply.temperature.value = 60
 
     control_values.thrusters_pump1.dutypoint.value = 1
     control_values.thrusters_mix_recovery.setpoint.value = Valve.MIXING_A_TO_AB

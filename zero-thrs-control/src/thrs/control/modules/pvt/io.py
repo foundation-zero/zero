@@ -1,4 +1,4 @@
-from typing import Annotated, cast
+from typing import Annotated
 
 from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
@@ -14,7 +14,6 @@ from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import (
     GLYCOL_20_HEAT_TRANSFER_CONVERSION,
-    Celsius,
 )
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
 
@@ -1721,6 +1720,4 @@ class PvtSimulationOutputs(ThrsValues):
     )
     @property
     def pcm_temperature_producers_supply(self) -> sensor.TemperatureSensor:
-        return sensor.TemperatureSensor(
-            temperature=cast(Stamped[Celsius], self.pvt_pcm_return.temperature)
-        )
+        return sensor.TemperatureSensor(temperature=self.pvt_pcm_return.temperature)

@@ -26,7 +26,7 @@ dynamic = ["version"]
 license-files = ["LICENSE"]
 
 [dependency-groups]
-dev = ["ruff==0.17.5", "pygraphviz~=2.0.4", "pyright~=1.1.414"]
+dev = ["ruff==0.17.5", "pygraphviz~=2.0.4", "pyrefly~=1.5"]
 
 # Notebooks and plotting for the analysis/ folder; not installed in the images.
 analysis = [
@@ -76,6 +76,18 @@ exclude_also = [
   '^\s*\.\.\.$',
 ]
 
+[tool.pyrefly]
+project-includes = ["**/*.py*", "**/*.ipynb"]
+type-ignore-unknown-tag-behavior = "no-effect"
+# Notebooks written against APIs that no longer exist.
+project-excludes = [
+  "analysis/old_notebooks/paper_figures.ipynb",
+  "src/thrs/simulation/models/SolarTestModel/control_test.ipynb",
+]
+# Tests and notebooks import `tests.helpers` and `analysis` from the project root;
+# the manual skill's scripts import each other from their own directory.
+search-path = [".", "docs/skills/thrs-module-manual/scripts"]
+
 [tool.ruff]
 fix = true
 
@@ -102,7 +114,6 @@ ignore = [
   "ARG",      # Ignore unused arguments rules for now
   "DTZ",      # Ignore datetime timezone rules for now
   "CPY",      # Ignore copyright rules for now
-  "PGH003",   # TODO: Fix me
   "B017",     # TODO: Fix me
   "SLF001",   # TODO: Fix me
 ]

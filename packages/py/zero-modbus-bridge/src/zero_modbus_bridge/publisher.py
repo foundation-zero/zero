@@ -37,7 +37,7 @@ def with_timestamp[T: BaseModel](model: type[T]) -> type[T]:
     ``timestamped_body`` at publish time. Vector reads ``TimeStamp`` exactly
     (not ``timestamp``) as the event time.
     """
-    return create_model(  # type: ignore[call-overload,no-any-return]
+    return create_model(
         model.__name__,
         __base__=model,
         __module__=model.__module__,
@@ -100,7 +100,7 @@ class MappingPublisher:
             fn = self._mappers.get(topic)
             mapped = fn(payload) if fn is not None else payload
         else:
-            mapped = self._mapper(payload)  # type: ignore[operator]
+            mapped = self._mapper(payload)
         await self._inner.publish(topic, mapped, read_at)
 
 
@@ -297,7 +297,7 @@ class ParametrizedMQTTPublisher(MQTTPublisher):
                 return None
         return values
 
-    async def publish(  # type: ignore[override]
+    async def publish(  # pyrefly: ignore[bad-override]
         self, topic: str, payload: BaseModel, read_at: datetime
     ) -> None:
         """Publish to the concrete topic, creating its publisher on first use."""

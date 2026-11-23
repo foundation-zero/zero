@@ -124,8 +124,8 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     parameters = ModelDumpable()
     sensor_values = Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
 
-    combined_sensor_values = CombinedValues(values={"module": sensor_values})  # type: ignore
-    combined_control_values = CombinedValues(values={"module": control_values})  # type: ignore
+    combined_sensor_values = CombinedValues(values={"module": sensor_values})
+    combined_control_values = CombinedValues(values={"module": control_values})  # pyrefly: ignore[bad-assignment]
 
     control = Mock()
     control.initial.return_value = (control_values, controller_state)

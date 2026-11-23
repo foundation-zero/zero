@@ -1,7 +1,7 @@
 import asyncio
 import os
 import socket
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from unittest.mock import AsyncMock, Mock
 
@@ -21,7 +21,7 @@ def settings():
     os.environ["MQTT_CONTROL_TOPIC_SUFFIX"] = "control"
     os.environ["MQTT_CONTROLLER_TOPIC_SUFFIX"] = "set"
     os.environ["MQTT_SIMULATOR_TOPIC_SUFFIX"] = "set"
-    return Config()  # type: ignore
+    return Config()
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -58,10 +58,10 @@ def mock_session() -> Mock:
 @pytest.fixture
 def postgres_db(mock_session: Mock) -> Mock:
     @asynccontextmanager
-    async def session_factory() -> AsyncIterator[Mock]:
+    async def session_factory() -> AsyncGenerator[Mock]:
         yield mock_session
 
-    session_factory.begin = session_factory  # type: ignore[attr-defined]
+    session_factory.begin = session_factory  # pyrefly: ignore[missing-attribute]
 
     postgres_db = Mock(spec=PostgresDatabase)
     postgres_db.session_factory = session_factory

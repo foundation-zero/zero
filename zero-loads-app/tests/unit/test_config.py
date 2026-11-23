@@ -19,33 +19,33 @@ def _required_env(monkeypatch: pytest.MonkeyPatch):
 
 
 def test_mqtt_api_client_id_default():
-    settings = Settings(_env_file=None)  # type: ignore[call-arg]
+    settings = Settings(_env_file=None)
     assert re.fullmatch(r"loads-api-[0-9a-f]{8}", settings.mqtt_api_client_id)
 
 
 def test_mqtt_api_client_id_from_env(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("MQTT_API_CLIENT_ID", "custom-id")
-    settings = Settings(_env_file=None)  # type: ignore[call-arg]
+    settings = Settings(_env_file=None)
     assert settings.mqtt_api_client_id == "custom-id"
 
 
 def test_mqtt_control_client_id_default():
-    settings = Settings(_env_file=None)  # type: ignore[call-arg]
+    settings = Settings(_env_file=None)
     assert re.fullmatch(r"loads-control-[0-9a-f]{8}", settings.mqtt_control_client_id)
 
 
 def test_mqtt_control_client_id_from_env(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("MQTT_CONTROL_CLIENT_ID", "custom-id")
-    settings = Settings(_env_file=None)  # type: ignore[call-arg]
+    settings = Settings(_env_file=None)
     assert settings.mqtt_control_client_id == "custom-id"
 
 
 def test_mqtt_stub_client_id_default():
-    settings = Settings(_env_file=None)  # type: ignore[call-arg]
+    settings = Settings(_env_file=None)
     assert re.fullmatch(r"loads-stub-[0-9a-f]{8}", settings.mqtt_stub_client_id)
 
 
 def test_mqtt_stub_client_id_from_env(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("MQTT_STUB_CLIENT_ID", "custom-id")
-    settings = Settings(_env_file=None)  # type: ignore[call-arg]
+    settings = Settings(_env_file=None)
     assert settings.mqtt_stub_client_id == "custom-id"

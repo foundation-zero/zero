@@ -150,16 +150,16 @@ class Module[
         if snapshot.manual_control_values is None:
             return None
 
-        control_values_cls = type(self._control.manual_controls)
-        return control_values_cls.model_validate(snapshot.manual_control_values)
+        return self._control.manual_controls.model_validate(
+            snapshot.manual_control_values
+        )
 
     def _validate_parameters(self, snapshot: ModulePersistenceSnapshot) -> P | None:
         """Validate control parameters from a snapshot without applying them."""
         if snapshot.parameters is None:
             return None
 
-        parameters_cls = type(self._control.parameters)
-        return parameters_cls.model_validate(snapshot.parameters)
+        return self._control.parameters.model_validate(snapshot.parameters)
 
     @StateLogger.log_alarms
     def _check_alarms(

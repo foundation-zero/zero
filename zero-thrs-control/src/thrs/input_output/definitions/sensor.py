@@ -234,15 +234,15 @@ class HeatTransferDevice(ThrsValues):
         heat = Stamped.combine(delta_t, flow, value=heat_value)
         return cls(
             temperature_supply=StampedWithSource.from_stamped(
-                temperature_supply,  # type: ignore
+                temperature_supply,  # pyrefly: ignore[bad-argument-type]
                 temperature_supply_source,
             ),
             temperature_return=StampedWithSource.from_stamped(
-                temperature_return,  # type: ignore
+                temperature_return,  # pyrefly: ignore[bad-argument-type]
                 temperature_return_source,
             ),
             delta_t=delta_t,
-            flow=StampedWithSource.from_stamped(flow, flow_source),  # type: ignore
+            flow=StampedWithSource.from_stamped(flow, flow_source),  # pyrefly: ignore[bad-argument-type]
             heat=heat,
         )
 
@@ -304,12 +304,12 @@ def extract_source_yardtag(model: ThrsValues, key: str) -> str:
     computed_field_info = klass.model_computed_fields.get(key)
 
     if not field_info and computed_field_info:
-        yard_tag: str = computed_field_info.json_schema_extra.get("yard_tag")  # type: ignore
+        yard_tag: str = computed_field_info.json_schema_extra.get("yard_tag")  # pyrefly: ignore[missing-attribute]
         if not yard_tag:
             return "calculated"
         return yard_tag
 
-    return field_info.json_schema_extra.get("yard_tag", "unknown")  # type: ignore
+    return field_info.json_schema_extra.get("yard_tag", "unknown")  # pyrefly: ignore[missing-attribute]
 
 
 class Valve(AmcsComponentAlarms, ThrsValues):

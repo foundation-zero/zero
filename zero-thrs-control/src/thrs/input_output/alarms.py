@@ -55,7 +55,7 @@ def alarm[**P](
             message = f(*args, **kwargs)
             return Alarm(code, message, severity) if message is not None else None
 
-        _do.__alarm_code__ = code  # type: ignore
+        _do.__alarm_code__ = code  # pyrefly: ignore[missing-attribute]
         return _do
 
     return _check

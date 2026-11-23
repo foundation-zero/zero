@@ -411,7 +411,7 @@ async def test_restore_with_malformed_control_mode_keeps_module_untouched():
     corrupt = ModulePersistenceSnapshot.model_construct(
         parameters={"setpoint": 60.0},
         manual_control_values=None,
-        control_mode="deleted-enum-value",  # type: ignore[arg-type]
+        control_mode="deleted-enum-value",  # pyrefly: ignore[bad-argument-type]
     )
     manager = make_manager(InMemoryPersistentEngine({"test": corrupt}))
     module = make_module()

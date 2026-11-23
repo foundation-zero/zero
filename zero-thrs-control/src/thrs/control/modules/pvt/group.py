@@ -192,12 +192,12 @@ class PvtGroupControl(
 
     @property
     def initial_mode(self) -> PvtGroupControlMode:
-        initial_mode: str = self._state_machine.initial  # type: ignore
+        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
         return PvtGroupControlMode(mode=initial_mode)
 
     @property
     def mode(self) -> PvtGroupControlMode:
-        mode: str = self.state  # type: ignore
+        mode: str = self.state
         return PvtGroupControlMode(mode=mode)
 
     @StateLogger.log_parameters
@@ -269,10 +269,10 @@ class PvtGroupControl(
     def control(
         self, sensor_values: PvtGroupSensorValues
     ) -> tuple[PvtGroupControlValues, PvtGroupControllerState]:
-        self._check_temperatures(sensor_values)  # type: ignore
+        self._check_temperatures(sensor_values)  # pyrefly: ignore[missing-attribute]
         self._control_warmup_mix(sensor_values)
         if not self.mode.is_idle:
-            self._check_mix(sensor_values)  # type: ignore
+            self._check_mix(sensor_values)  # pyrefly: ignore[missing-attribute]
         self._control_pump(sensor_values)
 
         return (

@@ -74,7 +74,7 @@ def test_apply_snapshot_is_atomic_when_control_mode_is_invalid():
     corrupt = ModulePersistenceSnapshot.model_construct(
         parameters={"setpoint": 60.0},
         manual_control_values=None,
-        control_mode="deleted-enum-value",  # type: ignore[arg-type]
+        control_mode="deleted-enum-value",  # pyrefly: ignore[bad-argument-type]
     )
 
     with pytest.raises(ValidationError):

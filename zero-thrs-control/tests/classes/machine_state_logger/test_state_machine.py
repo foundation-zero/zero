@@ -33,7 +33,7 @@ def test_transition_is_logged_to_database(
         control, make_transitions(), make_states(), initial="idle"
     )
 
-    control.dummy_trigger("sensor_values")  # type: ignore[attr-defined]
+    control.dummy_trigger("sensor_values")  # pyrefly: ignore[missing-attribute]
 
     assert control.state == "running"
     model = added_model(mock_session)
@@ -55,7 +55,7 @@ def test_failed_condition_logs_nothing(
         control, make_transitions(), make_states(), initial="idle"
     )
 
-    control.dummy_trigger("sensor_values")  # type: ignore[attr-defined]
+    control.dummy_trigger("sensor_values")  # pyrefly: ignore[missing-attribute]
 
     assert control.state == "idle"
     mock_session.add.assert_not_called()
@@ -65,10 +65,10 @@ def test_setup_transition_tracking_records_trigger_name(
     service: MachineStateLoggingService,
 ) -> None:
     control = DummyControl()
-    control.dummy_trigger = Mock(return_value=True)  # type: ignore[attr-defined]
+    control.dummy_trigger = Mock(return_value=True)  # pyrefly: ignore[missing-attribute]
 
     service.setup_transition_tracking(make_transitions(), control)
-    control.dummy_trigger("sensor_values")  # type: ignore[attr-defined]
+    control.dummy_trigger("sensor_values")  # pyrefly: ignore[missing-attribute]
 
     assert service.last_trigger_name == "dummy_trigger"
 
