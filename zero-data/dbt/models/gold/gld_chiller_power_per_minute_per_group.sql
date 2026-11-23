@@ -1,4 +1,5 @@
--- Power of the compression chiller: the sum of its devices' averages per minute.
+-- Power of the compression chiller: the sum of its devices' averages per minute, as HVAC / Chiller. Like the
+-- Aradexes, it has one view for both main group and sub group panels, as its sub group is a constant.
 with device_power_per_minute as (
     select
         date_bin('1 minute'::interval, ts) as time,

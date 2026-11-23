@@ -1,4 +1,7 @@
--- Aradex power per minute per sub group: all four Aradexes (AFT and FWD thruster) are Thrusters.
+-- Aradex power per minute, with its main group (Propulsion or Hydrogeneration) and sub group: all four
+-- Aradexes (AFT and FWD thruster) are Thrusters. Unlike the power tag, 24 VDC, shore and solar sources there's
+-- no separate _per_main_group view: the sub group is a constant, so a main group panel reads this view at no
+-- extra cost and selects only the columns it needs.
 with aradex_power_per_minute as (
     select
         date_bin('1 minute'::interval, ts)       as time,
