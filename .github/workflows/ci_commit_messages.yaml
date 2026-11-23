@@ -1,0 +1,32 @@
+name: "Commit messages: no AI attribution"
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Reject Claude attribution in commit messages
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          pattern='^(co-authored-by:.*(claude|anthropic)|.*generated with \[?claude code\]?|claude-session:)'
+          offending=$(git log --format=%H "$BASE_SHA..$HEAD_SHA" | while read -r sha; do
+            git log -1 --format=%B "$sha" | grep -qiE "$pattern" && git log -1 --format='%h %s' "$sha"
+          done || true)
+          if [ -n "$offending" ]; then
+            echo "::error::These commits carry Claude attribution. Remove it (run 'just setup-hooks' to strip it automatically) and force-push:"
+            echo "$offending"
+            exit 1
+          fi

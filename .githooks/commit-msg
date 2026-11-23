@@ -1,0 +1,6 @@
+#!/bin/sh
+# Strip Claude / Anthropic attribution from commit messages.
+msg="$1"
+tmp="$msg.tmp.$$"
+grep -viE '^(co-authored-by:.*(claude|anthropic)|.*generated with \[?claude code\]?|claude-session:)' "$msg" | git stripspace > "$tmp"
+mv "$tmp" "$msg"

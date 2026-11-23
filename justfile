@@ -55,3 +55,7 @@ test:
 
 check:
     @just run-all check
+
+# Use the repository's git hooks (strips Claude attribution from commit messages)
+setup-hooks:
+    git config core.hooksPath .githooks
