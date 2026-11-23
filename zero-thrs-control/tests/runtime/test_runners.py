@@ -216,9 +216,9 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     # )
     alarms.check.assert_has_calls(
         [
-            call(sensor_values, control_values, parameters, controller_state),
-            call(sensor_values, control_values, parameters, controller_state),
-            call(sensor_values, control_values, parameters, controller_state),
+            call(sensor_values, control_values, controller_state),
+            call(sensor_values, control_values, controller_state),
+            call(sensor_values, control_values, controller_state),
         ]
     )
 

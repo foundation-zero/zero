@@ -27,9 +27,7 @@ class ConfigurableControllerState(
 
 
 class ConfigurableAlarms(
-    BaseAlarms[
-        SimpleInOut, SimpleInOut, ConfigurableParameters, ConfigurableControllerState
-    ]
+    BaseAlarms[SimpleInOut, SimpleInOut, ConfigurableControllerState]
 ):
     pass
 

@@ -45,7 +45,7 @@ class ModuleDescription[
         ],
         control_mode_cls: type[M],
         controller_state_cls: type[CS],
-        alarms: Callable[[], BaseAlarms[S, C, P, CS]],
+        alarms: Callable[[], BaseAlarms[S, C, CS]],
     ):
         self.sensor_values_cls = sensor_values_cls
         self.control_values_cls = control_values_cls
@@ -173,7 +173,6 @@ class Module[
         alarms: list[Alarm] = self._alarms.check(
             sensor_values,
             control_values,
-            self._control.parameters,
             controller_state,
         )
 
