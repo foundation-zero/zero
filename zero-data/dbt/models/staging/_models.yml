@@ -3078,8 +3078,6 @@ models:
         description: "Timestamp of SoH calculation on string 3."
       - name: soh_3__value
         description: "Calculated battery State of Health for string 3 (%)."
-      - name: source_type
-        description: "Source type identifier reported by MQTT producer."
       - name: sp_voltage__has_value
         description: "Indicates if setpoint voltage contains a value."
       - name: sp_voltage__is_valid
@@ -3248,8 +3246,6 @@ models:
         description: "Timestamp of system monitoring error."
       - name: system_monitoring_error__value
         description: "Master alarm indicating internal diagnostics or watchdog failure."
-      - name: table
-        description: "Source table name as set in MQTT ingestion."
       - name: temperature_spread_plausibility_err_1__has_value
         description: "Indicates if temperature spread error on string 1 contains a value."
       - name: temperature_spread_plausibility_err_1__is_valid
