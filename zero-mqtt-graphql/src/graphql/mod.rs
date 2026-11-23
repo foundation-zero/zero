@@ -25,7 +25,7 @@ use std::sync::Arc;
 use anyhow::{Context, bail};
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{
-    Enum, Field, FieldValue, Object, Scalar, Schema, SchemaBuilder, Type, TypeRef,
+    Directive, Enum, Field, FieldValue, Object, Scalar, Schema, SchemaBuilder, Type, TypeRef,
 };
 use async_graphql::{Name, PathSegment, ServerError};
 use log::{info, warn};
@@ -353,6 +353,7 @@ fn payload_field(name_prefix: &str, name: &str, def: &FieldDef) -> Option<(Field
 
     let raw_name = Name::new(name);
     let (type_ref, types) = graphql_type_ref(name_prefix, &def.field_type);
+    let directive = semantic_non_null(def);
     let def = def.clone();
 
     let field = Field::new(field_name, type_ref, move |ctx| {
@@ -381,7 +382,49 @@ fn payload_field(name_prefix: &str, name: &str, def: &FieldDef) -> Option<(Field
         })
     });
 
+    let field = match directive {
+        Some(directive) => field.directive(directive),
+        None => field,
+    };
     Some((field, types))
+}
+
+/// The definition of `@semanticNonNull`, which async-graphql's dynamic
+/// schema has no way to register, for the SDL clients generate types from:
+/// <https://specs.apollo.dev/nullability/v0.4/#@semanticNonNull>.
+pub const SEMANTIC_NON_NULL_DEFINITION: &str =
+    "directive @semanticNonNull(levels: [Int!]! = [0]) on FIELD_DEFINITION";
+
+/// `@semanticNonNull` for a field the Spec rules out as `null` at some
+/// level: 0 the field itself, 1 its list elements, and so on. Clients may
+/// type those non-null: a `null` there always comes with an error. `None`
+/// when the Spec allows `null` at every level.
+fn semantic_non_null(def: &FieldDef) -> Option<Directive> {
+    let mut levels = Vec::new();
+    let mut level = Some(def);
+    let mut depth = 0;
+    while let Some(def) = level {
+        if def.non_null {
+            levels.push(GraphQlValue::from(depth));
+        }
+        level = match &def.field_type {
+            FieldType::List(element) => Some(element),
+            _ => None,
+        };
+        depth += 1;
+    }
+    let directive = Directive::new("semanticNonNull");
+    match levels.as_slice() {
+        [] => None,
+        [only] if *only == GraphQlValue::from(0) => Some(directive),
+        _ => Some(directive.argument("levels", GraphQlValue::List(levels))),
+    }
+}
+
+/// The SDL of `schema` with the definition of the directives it uses.
+#[must_use]
+pub fn schema_sdl(schema: &Schema) -> String {
+    format!("{SEMANTIC_NON_NULL_DEFINITION}\n\n{}", schema.sdl())
 }
 
 /// A value that breaks the Spec below a field: the indices of its list
@@ -756,6 +799,53 @@ mod tests {
                 "for {payload}"
             );
         }
+    }
+
+    #[test_log::test]
+    fn test_sdl_marks_what_the_spec_rules_out_as_semantic_non_null() {
+        let list = |element| FieldType::List(Box::new(element));
+        let topic = TopicDef {
+            topic: "a/b".to_string(),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from([
+                    ("on".to_string(), FieldDef::non_null(FieldType::Boolean)),
+                    ("setpoint".to_string(), FieldDef::nullable(FieldType::Float)),
+                    (
+                        "codes".to_string(),
+                        FieldDef::non_null(list(FieldDef::non_null(FieldType::Int))),
+                    ),
+                    (
+                        "readings".to_string(),
+                        FieldDef::non_null(list(FieldDef::nullable(FieldType::Float))),
+                    ),
+                    (
+                        "labels".to_string(),
+                        FieldDef::nullable(list(FieldDef::non_null(FieldType::String))),
+                    ),
+                ]),
+            }),
+            operation: Direction::Send,
+            ttl_secs: None,
+            setter: None,
+            kind: TopicKind::Single,
+        };
+        let schema =
+            build_schema(&mock_api(vec![topic]), &Arc::new(TopicCache::new()), None).unwrap();
+
+        let sdl = schema_sdl(&schema);
+
+        assert!(sdl.starts_with(SEMANTIC_NON_NULL_DEFINITION), "{sdl}");
+        for line in [
+            "on: Boolean @semanticNonNull\n",
+            "setpoint: Float\n",
+            "codes: [Int] @semanticNonNull(levels: [0, 1])\n",
+            "readings: [Float] @semanticNonNull\n",
+            "labels: [String] @semanticNonNull(levels: [1])\n",
+        ] {
+            assert!(sdl.contains(line), "{line} in {sdl}");
+        }
+        assert!(async_graphql::parser::parse_schema(&sdl).is_ok(), "{sdl}");
     }
 
     #[tokio::test]
