@@ -4,7 +4,7 @@ import pytest
 from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
-from thrs.input_output.modules.dc import (
+from thrs.control.modules.dc.io import (
     DcControlValues,
     DcSensorValues,
     DcSimulationInputs,

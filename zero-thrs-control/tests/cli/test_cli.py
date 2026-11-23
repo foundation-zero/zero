@@ -12,15 +12,15 @@ from aiomqtt import Client
 from thrs.classes.database import PostgresDatabase
 from thrs.classes.persistence.engine import NoopPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
-from thrs.control.modules.thrusters import ThrustersParameters
-from thrs.control.switching import AutomationMode
-from thrs.input_output.definitions.wire_context import AMCS_WRITE_CONTEXT
-from thrs.input_output.model_builder import PartialModelBuilder
-from thrs.input_output.modules.thrusters import (
+from thrs.control.modules.thrusters.io import (
     ThrustersControlValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
+from thrs.control.modules.thrusters.state import ThrustersParameters
+from thrs.control.switching import AutomationMode
+from thrs.input_output.definitions.wire_context import AMCS_WRITE_CONTEXT
+from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
 from thrs.orchestration.setup import setup_control_modules, setup_simulation_module

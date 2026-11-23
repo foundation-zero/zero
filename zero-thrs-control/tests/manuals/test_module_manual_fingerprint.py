@@ -3,7 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from thrs.control.modules import dhw, pvt_group
+from thrs.control.modules.dhw import control as dhw_control
+from thrs.control.modules.pvt import group as pvt_group
 
 MODULE_FACTS = (
     Path(__file__).parents[2] / "docs/skills/thrs-module-manual/scripts/module_facts.py"
@@ -54,7 +55,7 @@ def test_changed_control_loop_check_changes_fingerprint(module_facts, edit_sourc
     before = module_facts.fingerprint("dhw")
 
     edit_source(
-        dhw,
+        dhw_control,
         "shortfall.total_seconds() < self._parameters.boosting_stall_window",
         "shortfall.total_seconds() <= self._parameters.boosting_stall_window",
     )
@@ -65,6 +66,6 @@ def test_changed_control_loop_check_changes_fingerprint(module_facts, edit_sourc
 def test_changed_helper_class_changes_fingerprint(module_facts, edit_source):
     before = module_facts.fingerprint("dhw")
 
-    edit_source(dhw, "and tank.enabled\n", "")
+    edit_source(dhw_control, "and tank.enabled\n", "")
 
     assert module_facts.fingerprint("dhw") != before

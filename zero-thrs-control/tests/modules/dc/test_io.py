@@ -5,7 +5,7 @@ from tests.modules.conftest import (
     compare_modelica_names,
     compare_yard_tags,
 )
-from thrs.input_output.modules.dc import (
+from thrs.control.modules.dc.io import (
     DcControlValues,
     DcSensorValues,
     DcSimulationInputs,

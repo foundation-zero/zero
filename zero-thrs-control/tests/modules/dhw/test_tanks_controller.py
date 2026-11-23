@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 
-from thrs.control.modules.dhw import BoostingSource, DhwParameters, TanksController
+from thrs.control.modules.dhw.control import BoostingSource, TanksController
+from thrs.control.modules.dhw.io import DhwSensorValues
+from thrs.control.modules.dhw.state import DhwParameters
 from thrs.input_output.definitions.units import TankState
-from thrs.input_output.modules.dhw import DhwSensorValues
 
 
 def run_tick_boosting(

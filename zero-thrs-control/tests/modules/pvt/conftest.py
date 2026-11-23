@@ -4,9 +4,14 @@ from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.control.modules.pvt import (
-    PvtAlarms,
-    PvtControl,
+from thrs.control.modules.pvt.control import PvtAlarms, PvtControl
+from thrs.control.modules.pvt.io import (
+    PvtControlValues,
+    PvtSensorValues,
+    PvtSimulationInputs,
+    PvtSimulationOutputs,
+)
+from thrs.control.modules.pvt.state import (
     PvtControllerState,
     PvtControlMode,
     PvtParameters,
@@ -18,12 +23,6 @@ from thrs.input_output.definitions.simulation import (
     TemperatureBoundary,
 )
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
-from thrs.input_output.modules.pvt import (
-    PvtControlValues,
-    PvtSensorValues,
-    PvtSimulationInputs,
-    PvtSimulationOutputs,
-)
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import pvt_path

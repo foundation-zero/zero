@@ -4,7 +4,7 @@ import pytest
 from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
-from thrs.input_output.modules.adsorption import (
+from thrs.control.modules.adsorption.io import (
     AdsorptionSensorValues,
     AdsorptionSimulationInputs,
     AdsorptionSimulationOutputs,

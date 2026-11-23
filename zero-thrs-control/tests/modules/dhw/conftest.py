@@ -3,14 +3,22 @@ from datetime import UTC, datetime, timedelta
 from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.control.modules.dhw import (
+from thrs.control.modules.dhw.control import (
     DhwAlarms,
     DhwControl,
+    Tank,
+    TanksController,
+)
+from thrs.control.modules.dhw.io import (
+    DhwControlValues,
+    DhwSensorValues,
+    DhwSimulationInputs,
+    DhwSimulationOutputs,
+)
+from thrs.control.modules.dhw.state import (
     DhwControllerState,
     DhwControlMode,
     DhwParameters,
-    Tank,
-    TanksController,
 )
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
@@ -21,12 +29,6 @@ from thrs.input_output.definitions.simulation import (
     TemperatureBoundary,
 )
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
-from thrs.input_output.modules.dhw import (
-    DhwControlValues,
-    DhwSensorValues,
-    DhwSimulationInputs,
-    DhwSimulationOutputs,
-)
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import dhw_path

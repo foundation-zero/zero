@@ -3,12 +3,13 @@ from datetime import timedelta
 from pytest import approx
 
 from tests.modules.consumers.conftest import ConsumersRunner
-from thrs.control.modules.consumers import ConsumersControl, ConsumersParameters
-from thrs.input_output.definitions.control import Valve
-from thrs.input_output.modules.consumers import (
+from thrs.control.modules.consumers.control import ConsumersControl
+from thrs.control.modules.consumers.io import (
     ConsumersControlValues,
     ConsumersSensorValues,
 )
+from thrs.control.modules.consumers.state import ConsumersParameters
+from thrs.input_output.definitions.control import Valve
 
 
 def _update(control: ConsumersControl, **updates: object) -> None:

@@ -5,11 +5,11 @@ from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from tests.modules.pcm.conftest import PcmSimulation
-from thrs.control.modules.pcm import PcmControl
+from thrs.control.modules.pcm.control import PcmControl
+from thrs.control.modules.pcm.io import PcmSimulationInputs
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.simulation import Boundary
-from thrs.input_output.modules.pcm import PcmSimulationInputs
 
 
 @fixture
