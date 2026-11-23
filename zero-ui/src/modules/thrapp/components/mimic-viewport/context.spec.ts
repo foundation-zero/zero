@@ -90,6 +90,18 @@ describe("createMimicZoomContext", () => {
     expect(context.zoom.value).toBe(1);
   });
 
+  test("follows a change of the SVG's viewBox", async () => {
+    await mount({ width: 800, height: 400 }, { width: 1000, height: 400 });
+    const svg = content.querySelector("svg")!;
+
+    // A mimic with a mini map stacks it above the diagram in portrait, so it becomes taller.
+    Object.assign(svg.viewBox.baseVal, { width: 1000, height: 800 });
+    svg.setAttribute("viewBox", "0 0 1000 800");
+
+    await vi.waitFor(() => expect(context.zoom.value).toBe(0.5));
+    expect(context.contentStyle.value).toEqual({ width: "500px", height: "400px" });
+  });
+
   test("shows a mimic that fits at its actual size instead of zooming in", async () => {
     await mount({ width: 800, height: 400 }, { width: 400, height: 100 });
 
