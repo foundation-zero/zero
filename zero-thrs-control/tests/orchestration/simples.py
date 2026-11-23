@@ -114,7 +114,7 @@ class SimpleControl(
 
     @property
     def mode(self) -> SimpleMode | None:
-        return None
+        return SimpleMode()
 
     @property
     def parameters(self) -> SimpleParameters:

@@ -86,8 +86,8 @@ async def test_module_forces_manual_and_seeds_actuated_when_not_advisory(
 
     await module.tick(manual_values)
 
-    assert module._control.mode.automatic is False
-    assert module._control._manual_control._control_values == actuated
+    assert mock_channels.send_control_modes.await_args == mock.call(None)
+    assert mock_channels.send_manual_control.await_args == mock.call(actuated)
 
 
 async def test_module_forces_manual_even_without_actuated_values(
@@ -107,7 +107,7 @@ async def test_module_forces_manual_even_without_actuated_values(
 
     await module.tick(local_sensor_values)
 
-    assert module._control.mode.automatic is False
+    assert mock_channels.send_control_modes.await_args == mock.call(None)
     assert mock_channels.get_actuated_control_values.called
     # The manual controls keep the initial value: without actuated feedback
     # there is nothing to seed them with.
