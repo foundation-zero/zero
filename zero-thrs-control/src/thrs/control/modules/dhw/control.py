@@ -766,12 +766,12 @@ class DhwControl(
 
     @property
     def initial_mode(self) -> DhwControlMode:
-        initial_mode: str = self._state_machine.initial  # type: ignore
+        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
         return DhwControlMode(boosting_mode=initial_mode, filling_mode="idle")
 
     @property
     def mode(self) -> DhwControlMode:
-        mode: str = self.state  # type: ignore
+        mode: str = self.state
         filling_mode: str = "idle" if not self._tanks_controller.filling else "filling"
         return DhwControlMode(boosting_mode=mode, filling_mode=filling_mode)
 
@@ -788,7 +788,7 @@ class DhwControl(
         self._boosting_entered_at = None
         self._boosting_shortfall_since = None
         self._stall_tracking_key = None
-        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
         self._init_controllers()
 
     @StateLogger.log_warnings
@@ -797,7 +797,7 @@ class DhwControl(
     ) -> tuple[DhwControlValues, DhwControllerState]:
         self._lock_out_stalled_boosting_tank(sensor_values)
         self._tanks_controller(sensor_values, self._parameters)
-        self._try_boosting(sensor_values)  # type: ignore
+        self._try_boosting(sensor_values)  # pyrefly: ignore[missing-attribute]
         self._tanks_controller.apply_boosting(self._boosting_source)
         self._track_boosting_stall()
         self._enforce_boosting_source_valves()

@@ -196,12 +196,12 @@ class AdsorptionControl(
 
     @property
     def initial_mode(self) -> AdsorptionControlMode:
-        initial_mode: str = self._state_machine.initial  # type: ignore
+        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
         return AdsorptionControlMode(mode=initial_mode)
 
     @property
     def mode(self) -> AdsorptionControlMode:
-        mode: str = self.state  # type: ignore
+        mode: str = self.state
         return AdsorptionControlMode(mode=mode)
 
     def initial(self) -> tuple[AdsorptionControlValues, AdsorptionControllerState]:
@@ -214,7 +214,7 @@ class AdsorptionControl(
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
-        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
         self._init_controllers()
 
     @StateLogger.log_warnings
@@ -222,7 +222,7 @@ class AdsorptionControl(
         self, sensor_values: AdsorptionSensorValues
     ) -> tuple[AdsorptionControlValues, AdsorptionControllerState]:
         self._update_adsorption_inputs(sensor_values)
-        self._check_adsorption_status(sensor_values)  # type: ignore
+        self._check_adsorption_status(sensor_values)  # pyrefly: ignore[missing-attribute]
         controller_state = self._control_temperature_controllers(sensor_values)
 
         return (self._current_values, controller_state)

@@ -178,7 +178,7 @@ def control() -> Callable[[CombinedValues], tuple[CombinedValues, CombinedValues
         for name, module in modules.items():
             sensors = sensor_values.values.get(name, None)
             if sensors:
-                control_value, controller_state = module.control(sensors)
+                control_value, controller_state = module.control(sensors)  # pyrefly: ignore[bad-argument-type]
             else:
                 control_value, controller_state = module.initial()
 

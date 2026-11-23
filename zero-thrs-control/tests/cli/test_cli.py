@@ -3,7 +3,6 @@ import logging
 from asyncio import create_task, sleep
 from contextlib import suppress
 from datetime import datetime, timedelta
-from typing import cast
 from unittest import mock
 
 import pytest
@@ -586,7 +585,7 @@ async def test_simulation_controls_set_simulation_inputs(
         initial_model = ThrustersSimulationInputs.model_validate_json(
             initial_inputs.payload
         )
-        assert cast(float, initial_model.thrusters_thruster_aft.heat_flow.value) != 0.0
+        assert initial_model.thrusters_thruster_aft.heat_flow.value != 0.0
 
         new_inputs = ThrustersSimulationInputs.zero()
         await controls_client.publish(
@@ -611,11 +610,11 @@ async def test_simulation_controls_set_simulation_inputs(
             updated_model = ThrustersSimulationInputs.model_validate_json(
                 updated_inputs.payload
             )
-            if cast(float, updated_model.thrusters_thruster_aft.heat_flow.value) == 0.0:
+            if updated_model.thrusters_thruster_aft.heat_flow.value == 0.0:
                 break
 
         assert updated_model is not None
-        assert cast(float, updated_model.thrusters_thruster_aft.heat_flow.value) == 0.0
+        assert updated_model.thrusters_thruster_aft.heat_flow.value == 0.0
     finally:
         run_task.cancel()
         with suppress(asyncio.CancelledError):
@@ -673,7 +672,7 @@ async def test_simulation_controls_simulation_output(
         output_model = ThrustersSimulationOutputs.model_validate_json(
             simulation_output.payload
         )
-        assert cast(float, output_model.thrusters_pcm_return.temperature.value) > 0
+        assert output_model.thrusters_pcm_return.temperature.value > 0
     finally:
         run_task.cancel()
         with suppress(asyncio.CancelledError):

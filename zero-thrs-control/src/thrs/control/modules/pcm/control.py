@@ -272,12 +272,12 @@ class PcmControl(
 
     @property
     def initial_mode(self) -> PcmControlMode:
-        initial_mode: str = self._state_machine.initial  # type: ignore
+        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
         return PcmControlMode(mode=initial_mode)
 
     @property
     def mode(self) -> PcmControlMode:
-        mode: str = self.state  # type: ignore
+        mode: str = self.state
         return PcmControlMode(mode=mode)
 
     def initial(self) -> tuple[PcmControlValues, PcmControllerState]:
@@ -295,7 +295,7 @@ class PcmControl(
         self._dropped_modules = set()
         self._charging_retry_until = None
         self._supplying_retry_until = None
-        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
         self._init_controllers()
 
     @StateLogger.log_parameters
@@ -309,21 +309,21 @@ class PcmControl(
     def control(
         self, sensor_values: PcmSensorValues
     ) -> tuple[PcmControlValues, PcmControllerState]:
-        self._try_supplying(sensor_values) if self.mode.is_idle else None  # type: ignore
-        self._try_charging(sensor_values) if self.mode.is_idle else None  # type: ignore
+        self._try_supplying(sensor_values) if self.mode.is_idle else None  # pyrefly: ignore[missing-attribute]
+        self._try_charging(sensor_values) if self.mode.is_idle else None  # pyrefly: ignore[missing-attribute]
 
         if self.mode.is_charging:
             self._update_dropped_modules(
                 PcmChargingState.CHARGING, PcmChargeStatus.FULL
             )
             self._set_charging_flow_setpoints(sensor_values)
-            self._check_charging_conditions(sensor_values)  # type: ignore
+            self._check_charging_conditions(sensor_values)  # pyrefly: ignore[missing-attribute]
         elif self.mode.is_supplying:
             self._update_dropped_modules(
                 PcmChargingState.DISCHARGING, PcmChargeStatus.EMPTY
             )
             self._set_supplying_flow_setpoints(sensor_values)
-            self._check_supplying_conditions(sensor_values)  # type: ignore
+            self._check_supplying_conditions(sensor_values)  # pyrefly: ignore[missing-attribute]
 
         controller_state = self._update_controllers(sensor_values)
 

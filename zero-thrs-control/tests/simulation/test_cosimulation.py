@@ -49,7 +49,7 @@ class MockFmu(Fmu):
     def __enter__(self) -> Self:
         return self
 
-    def __exit__(self, *_) -> bool:
+    def __exit__(self, *_) -> bool:  # pyrefly: ignore[bad-override]
         return True
 
     @property

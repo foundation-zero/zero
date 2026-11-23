@@ -321,7 +321,7 @@ def test_boosting_pump_held_until_boosting_loop_open(
     )
 
     # while the boosting valves travel the pump must not be driven
-    while not control._boosting_loop_open(runner.tick()[0]):  # type: ignore
+    while not control._boosting_loop_open(runner.tick()[0]):
         assert control._current_values.dhw_pump.dutypoint.value == 0.1
         assert not control._pump_flow_controller.enabled()
 
@@ -363,7 +363,7 @@ def test_minimum_pump_dutypoint_rejects_below_pump_floor(
     parameters: DhwParameters,
 ):
     with pytest.raises(ValueError, match=r"greater than or equal to 0\.1"):
-        DhwParameters(**{**parameters.model_dump(), "minimum_pump_dutypoint": 0.05})
+        DhwParameters(**{**parameters.model_dump(), "minimum_pump_dutypoint": 0.05})  # pyrefly: ignore[bad-argument-type]
 
 
 def test_reset_restores_initial_control_state(
@@ -580,7 +580,7 @@ def test_control_loop_aborts_stalled_heatpump_boost(parameters: DhwParameters):
 
 def test_boosting_stall_window_rejects_negative(parameters: DhwParameters):
     with pytest.raises(ValueError, match=r"greater than or equal to 0"):
-        DhwParameters(**{**parameters.model_dump(), "boosting_stall_window": -1})
+        DhwParameters(**{**parameters.model_dump(), "boosting_stall_window": -1})  # pyrefly: ignore[bad-argument-type]
 
 
 def _stalling_ht_control(

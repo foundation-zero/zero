@@ -31,7 +31,7 @@ class ModulePersistenceSnapshot(BaseModel):
         manual control values) are compared recursively so only the fields that
         actually changed show up, instead of the whole containing dict."""
         diffs: dict[str, tuple[Any, Any]] = {}
-        for field in self.model_fields:
+        for field in type(self).model_fields:
             diffs.update(_deep_diff(getattr(self, field), getattr(other, field), field))
         return diffs
 

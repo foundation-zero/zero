@@ -47,7 +47,7 @@ class ControlCmd(BaseSettings):
 
     async def cli_cmd(self) -> None:
         logger.debug("Starting control command: %s", self.mode)
-        settings = Config()  # type: ignore
+        settings = Config()
 
         liveness_check = Liveness(settings.liveness_path)
 
@@ -101,7 +101,7 @@ class SimulationCmd(BaseSettings):
 
     async def cli_cmd(self) -> None:
         logger.debug("Starting simulation command: %s", self.mode)
-        settings = Config()  # type: ignore
+        settings = Config()
 
         liveness_check = Liveness(settings.liveness_path)
 
@@ -212,7 +212,7 @@ class LockstepCmd(BaseSettings):
         )
 
     async def cli_cmd(self) -> None:
-        settings = Config()  # type: ignore
+        settings = Config()
 
         async with (
             MqttClient(
@@ -230,7 +230,7 @@ class LockstepCmd(BaseSettings):
             if self.play:
                 await runtime.loop.play()
 
-            async with control_shutdown_context(runtime.runner.control_modules):  # type: ignore
+            async with control_shutdown_context(runtime.runner.control_modules):  # pyrefly: ignore[missing-attribute]
                 await runtime.start()
 
 

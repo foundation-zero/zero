@@ -92,7 +92,7 @@ def test_strip_none_errors_on_multi_type_unions():
 
 
 def test_field_annotation_with_standard_field():
-    field = FieldInfo(annotation=int | None)  # type: ignore
+    field = FieldInfo(annotation=int | None)
     assert _field_annotation(field) is int
 
 
@@ -177,12 +177,12 @@ def test_describe_mapping_module_recursive(settings: Config):
 
 def test_describe_mapping_merged_module_returns_empty(settings: Config):
     mapping = MergedModuleMqttMapping({}, {}, "")
-    assert _describe_mapping(settings, mapping) == []  # type: ignore[arg-type]
+    assert _describe_mapping(settings, mapping) == []  # pyrefly: ignore[bad-argument-type]
 
 
 def test_describe_mapping_unsupported_type_raises(settings: Config):
     with pytest.raises(TypeError, match="Don't know how to describe"):
-        _describe_mapping(settings, object())  # type: ignore[arg-type]
+        _describe_mapping(settings, object())  # pyrefly: ignore[bad-argument-type]
 
 
 # ---------------------------------------------------------------------------
@@ -265,9 +265,9 @@ def test_control_channels_pair_state_with_its_set(
         sensor_values_cls=ThrsValues,
         control_values_cls=ThrsValues,
         parameters_cls=ThrsValues,
-        control=None,  # type: ignore
+        control=None,  # pyrefly: ignore[bad-argument-type]
         controller_state_cls=EmptyControllerState,
-        alarms=None,  # type: ignore
+        alarms=None,  # pyrefly: ignore[bad-argument-type]
     )
 
     ControlChannels(connector, settings, "test", description)
@@ -294,12 +294,12 @@ def test_collect_topics_wires_channels(settings: Config):
                 sensor_values_cls=ThrsValues,
                 control_values_cls=ThrsValues,
                 parameters_cls=ThrsValues,
-                control=None,  # type: ignore
+                control=None,  # pyrefly: ignore[bad-argument-type]
                 controller_state_cls=EmptyControllerState,
-                alarms=None,  # type: ignore
+                alarms=None,  # pyrefly: ignore[bad-argument-type]
             ),
         },
-        simulation_description=SimulationDescription(ThrsValues, None, ThrsValues()),  # type: ignore
+        simulation_description=SimulationDescription(ThrsValues, None, ThrsValues()),  # pyrefly: ignore[bad-argument-type]
     )
     mock_sim_desc = MagicMock()
     mock_sim_desc.simulation_inputs = DummyPayloadModel(speed=1, temperature=20.0)
