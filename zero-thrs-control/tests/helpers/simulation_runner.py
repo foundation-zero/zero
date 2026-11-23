@@ -216,7 +216,7 @@ class SimulationTestRunner[
         )
 
         if collector is not None:
-            collector.collect(  # TODO: fix the fmu key mapping here, this is just a quick fix to get the tests working
+            collector.collect(
                 {
                     **flatten_model_values(result.sensor_values, _all_keys),
                     **flatten_model_values(result.control_values, _all_keys),
