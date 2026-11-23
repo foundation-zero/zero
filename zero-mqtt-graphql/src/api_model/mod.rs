@@ -51,7 +51,7 @@ pub struct Payload {
     /// same format.
     pub name: String,
     /// Payload fields by raw field name.
-    pub fields: BTreeMap<String, FieldType>,
+    pub fields: BTreeMap<String, FieldDef>,
 }
 
 /// Which way data flows through a topic, seen from the service whose Spec
@@ -136,12 +136,43 @@ impl TopicDef {
     }
 }
 
+/// A payload field or list element: its type, and whether the Spec rules
+/// out `null` there.
+#[derive(Debug, Clone, PartialEq)]
+pub struct FieldDef {
+    pub field_type: FieldType,
+    /// Whether the Spec rules out a missing or `null` value: a field that is
+    /// `required` and has no `null` arm, or a list element without one.
+    /// Partial payloads are still served, so this is no GraphQL `!`.
+    pub non_null: bool,
+}
+
+impl FieldDef {
+    /// A field the Spec allows to be missing or `null`.
+    #[must_use]
+    pub fn nullable(field_type: FieldType) -> Self {
+        Self {
+            field_type,
+            non_null: false,
+        }
+    }
+
+    /// A field the Spec requires to have a value.
+    #[must_use]
+    pub fn non_null(field_type: FieldType) -> Self {
+        Self {
+            field_type,
+            non_null: true,
+        }
+    }
+}
+
 /// The type of a payload field.
 #[derive(Debug, Clone, PartialEq)]
 pub enum FieldType {
-    Object(String, Box<BTreeMap<String, FieldType>>),
-    /// An array whose elements all have this type.
-    List(Box<FieldType>),
+    Object(String, Box<BTreeMap<String, FieldDef>>),
+    /// An array whose elements are all this.
+    List(Box<FieldDef>),
     /// Any JSON value: an array whose element type is not known, such as a
     /// tuple written with JSON Schema 2020-12 `prefixItems`, which the
     /// AsyncAPI 3.0 (draft-07) parser drops.
@@ -293,7 +324,7 @@ mod tests {
             topic: topic.to_owned(),
             payload: Some(Payload {
                 name: "payload".to_owned(),
-                fields: BTreeMap::from([("x".to_owned(), FieldType::Float)]),
+                fields: BTreeMap::from([("x".to_owned(), FieldDef::nullable(FieldType::Float))]),
             }),
             ttl_secs,
             operation: Direction::Send,

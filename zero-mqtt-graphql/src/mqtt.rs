@@ -347,7 +347,7 @@ fn flatten_payload(value: Value) -> Value {
 mod tests {
     use super::*;
     use crate::api_model::{
-        Api, Direction, FieldType, GroupDef, Payload, Spec, TopicDef, TopicKind,
+        Api, Direction, FieldDef, FieldType, GroupDef, Payload, Spec, TopicDef, TopicKind,
     };
     use serde_json::json;
     use std::collections::BTreeMap;
@@ -357,9 +357,9 @@ mod tests {
             topic: topic.to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![(
+                fields: BTreeMap::from([(
                     "active_power_total".to_string(),
-                    FieldType::Float,
+                    FieldDef::nullable(FieldType::Float),
                 )]),
             }),
             ttl_secs: None,

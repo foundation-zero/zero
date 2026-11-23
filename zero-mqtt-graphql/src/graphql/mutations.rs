@@ -18,7 +18,7 @@ use serde_json::{Map, Value as JsonValue};
 use tokio::sync::broadcast::{Receiver, error::RecvError};
 use tokio::time::Instant;
 
-use crate::api_model::{Direction, FieldType, GraphqlPath, TopicDef};
+use crate::api_model::{Direction, FieldDef, FieldType, GraphqlPath, TopicDef};
 use crate::cache::TopicCache;
 use crate::graphql::{
     DATE_SCALAR, DATE_TIME_SCALAR, DURATION_SCALAR, JSON_SCALAR, Leaf, TIME_SCALAR, enum_type,
@@ -135,17 +135,17 @@ fn set_field(name: &str, input_type: Option<&str>, return_type: TypeRef, target:
 /// types of its nested objects. Every field is optional: with a State topic
 /// omitted fields are filled from its value, without one the JSON Schema
 /// decides which fields are required.
-fn input_objects(spec: &str, name: &str, fields: &BTreeMap<String, FieldType>) -> Vec<InputObject> {
+fn input_objects(spec: &str, name: &str, fields: &BTreeMap<String, FieldDef>) -> Vec<InputObject> {
     let type_name = format!("{}Input", payload_type_name(spec, name));
     let mut nested = Vec::new();
     let mut object = InputObject::new(type_name.as_str());
-    for (raw_name, field_type) in fields {
+    for (raw_name, field) in fields {
         let field_name = sanitize_to_graphql_name(raw_name);
         if field_name.is_empty() {
             warn!("Skipping input field '{raw_name}' sanitizes to empty GraphQL name");
             continue;
         }
-        let type_ref = input_type_ref(spec, field_type, &mut nested);
+        let type_ref = input_type_ref(spec, &field.field_type, &mut nested);
         object = object.field(InputValue::new(field_name, type_ref));
     }
     nested.insert(0, object);
@@ -166,7 +166,9 @@ fn input_type_ref(spec: &str, field_type: &FieldType, nested: &mut Vec<InputObje
         FieldType::Time => TypeRef::named(TIME_SCALAR),
         FieldType::Duration => TypeRef::named(DURATION_SCALAR),
         FieldType::Enum(name, _) => TypeRef::named(payload_type_name(spec, name)),
-        FieldType::List(element) => TypeRef::List(Box::new(input_type_ref(spec, element, nested))),
+        FieldType::List(element) => {
+            TypeRef::List(Box::new(input_type_ref(spec, &element.field_type, nested)))
+        }
         FieldType::Object(name, fields) => {
             let objects = input_objects(spec, name, fields);
             let type_ref = TypeRef::named(objects[0].type_name());
@@ -178,17 +180,17 @@ fn input_type_ref(spec: &str, field_type: &FieldType, nested: &mut Vec<InputObje
 
 /// The enum types of `fields`, also inside objects and lists, for the input
 /// types that refer to them.
-fn field_enums(spec: &str, fields: &BTreeMap<String, FieldType>) -> Vec<Type> {
+fn field_enums(spec: &str, fields: &BTreeMap<String, FieldDef>) -> Vec<Type> {
     fields
         .values()
-        .flat_map(|field_type| field_type_enums(spec, field_type))
+        .flat_map(|field| field_type_enums(spec, &field.field_type))
         .collect()
 }
 
 fn field_type_enums(spec: &str, field_type: &FieldType) -> Vec<Type> {
     match field_type {
         FieldType::Enum(name, values) => vec![enum_type(spec, name, values).into()],
-        FieldType::List(element) => field_type_enums(spec, element),
+        FieldType::List(element) => field_type_enums(spec, &element.field_type),
         FieldType::Object(_, fields) => field_enums(spec, fields),
         FieldType::Json
         | FieldType::DateTime
@@ -208,7 +210,7 @@ fn field_type_enums(spec: &str, field_type: &FieldType) -> Vec<Type> {
 /// One mutable Receive Topic, as its resolver needs it.
 struct Target {
     topic: String,
-    fields: BTreeMap<String, FieldType>,
+    fields: BTreeMap<String, FieldDef>,
     validator: Validator,
     state_topic: Option<String>,
     cache: Arc<TopicCache>,
@@ -293,15 +295,15 @@ async fn next_update(updates: &mut Receiver<String>, topic: &str, deadline: Inst
 /// `value`, an input object of `fields`, as a payload keyed by raw field
 /// names. Omitted fields stay out; explicit nulls are kept.
 fn input_fields(
-    fields: &BTreeMap<String, FieldType>,
+    fields: &BTreeMap<String, FieldDef>,
     value: &ValueAccessor<'_>,
 ) -> anyhow::Result<JsonValue> {
     let object = value.object().map_err(graphql_error)?;
     fields
         .iter()
-        .filter_map(|(raw_name, field_type)| {
+        .filter_map(|(raw_name, field)| {
             let value = object.get(sanitize_to_graphql_name(raw_name).as_str())?;
-            Some(input_value(field_type, &value).map(|json| (raw_name.clone(), json)))
+            Some(input_value(&field.field_type, &value).map(|json| (raw_name.clone(), json)))
         })
         .collect::<anyhow::Result<Map<_, _>>>()
         .map(JsonValue::Object)
@@ -329,7 +331,7 @@ fn input_value(field_type: &FieldType, value: &ValueAccessor<'_>) -> anyhow::Res
             .list()
             .map_err(graphql_error)?
             .iter()
-            .map(|item| input_value(element, &item))
+            .map(|item| input_value(&element.field_type, &item))
             .collect::<anyhow::Result<Vec<_>>>()
             .map(JsonValue::Array),
         _ => Ok(value.as_value().clone().into_json()?),
@@ -343,15 +345,15 @@ fn graphql_error(error: async_graphql::Error) -> anyhow::Error {
 
 /// The part of a State value that the Receive Topic's `fields` describe,
 /// leaving out read-only State fields and the keys the cache flattened in.
-fn project(state: &JsonValue, fields: &BTreeMap<String, FieldType>) -> JsonValue {
+fn project(state: &JsonValue, fields: &BTreeMap<String, FieldDef>) -> JsonValue {
     let JsonValue::Object(state) = state else {
         return JsonValue::Object(Map::new());
     };
     fields
         .iter()
-        .filter_map(|(raw_name, graphql_type)| {
+        .filter_map(|(raw_name, field)| {
             let value = state.get(raw_name)?;
-            let projected = match (graphql_type, value) {
+            let projected = match (&field.field_type, value) {
                 (FieldType::Object(_, nested), JsonValue::Object(_)) => project(value, nested),
                 _ => value.clone(),
             };
@@ -394,12 +396,13 @@ fn merge_level(base: JsonValue, given: &JsonValue, root: bool) -> JsonValue {
 fn equal_fields(
     state: &JsonValue,
     given: &JsonValue,
-    fields: Option<&BTreeMap<String, FieldType>>,
+    fields: Option<&BTreeMap<String, FieldDef>>,
 ) -> bool {
     given.as_object().is_some_and(|given| {
         given.iter().all(|(key, given)| {
             state.get(key).is_some_and(|state| {
-                equal_value(state, given, fields.and_then(|fields| fields.get(key)))
+                let field = fields.and_then(|fields| fields.get(key));
+                equal_value(state, given, field.map(|field| &field.field_type))
             })
         })
     })
@@ -428,7 +431,7 @@ pub(super) fn equal_value(
         }
         (JsonValue::Array(state), JsonValue::Array(given), _) => {
             let element = match field_type {
-                Some(FieldType::List(element)) => Some(element.as_ref()),
+                Some(FieldType::List(element)) => Some(&element.field_type),
                 _ => None,
             };
             state.len() == given.len()
@@ -522,7 +525,9 @@ mod tests {
                 name: address.replace('/', "-"),
                 fields: fields
                     .iter()
-                    .map(|(name, field_type)| ((*name).to_string(), field_type.clone()))
+                    .map(|(name, field_type)| {
+                        ((*name).to_string(), FieldDef::nullable(field_type.clone()))
+                    })
                     .collect(),
             }),
             ttl_secs: None,
@@ -537,8 +542,11 @@ mod tests {
         FieldType::Object(
             name.to_string(),
             Box::new(BTreeMap::from([
-                ("Value".to_string(), value),
-                ("TimeStamp".to_string(), FieldType::DateTime),
+                ("Value".to_string(), FieldDef::nullable(value)),
+                (
+                    "TimeStamp".to_string(),
+                    FieldDef::nullable(FieldType::DateTime),
+                ),
             ])),
         )
     }
@@ -704,7 +712,10 @@ mod tests {
         );
         [
             ("mode", fan_mode.clone()),
-            ("speeds", FieldType::List(Box::new(fan_mode))),
+            (
+                "speeds",
+                FieldType::List(Box::new(FieldDef::non_null(fan_mode))),
+            ),
             ("level", fan_level),
         ]
     }
@@ -714,7 +725,10 @@ mod tests {
     fn heater_fields() -> [(&'static str, FieldType); 2] {
         [
             ("tuning", FieldType::Json),
-            ("curve", FieldType::List(Box::new(FieldType::Float))),
+            (
+                "curve",
+                FieldType::List(Box::new(FieldDef::non_null(FieldType::Float))),
+            ),
         ]
     }
 
@@ -1364,9 +1378,9 @@ mod tests {
         let fields = BTreeMap::from([
             (
                 "pump".to_string(),
-                stamped("StampedFloat", FieldType::Float),
+                FieldDef::nullable(stamped("StampedFloat", FieldType::Float)),
             ),
-            ("label".to_string(), FieldType::String),
+            ("label".to_string(), FieldDef::nullable(FieldType::String)),
         ]);
         let pump = |time: &str| json!({"pump": {"Value": 0.3, "TimeStamp": time}});
         let state = pump("2026-11-10T09:30:00.123000Z");
@@ -1390,9 +1404,9 @@ mod tests {
         let fields = BTreeMap::from([
             (
                 "dutypoint".to_string(),
-                stamped("StampedFloat32", FieldType::Float32),
+                FieldDef::nullable(stamped("StampedFloat32", FieldType::Float32)),
             ),
-            ("measured".to_string(), FieldType::Float),
+            ("measured".to_string(), FieldDef::nullable(FieldType::Float)),
         ]);
         let equal =
             |state: &JsonValue, given: JsonValue| equal_fields(state, &given, Some(&fields));
@@ -1465,10 +1479,13 @@ mod tests {
     fn test_project_keeps_only_input_fields() {
         let fields = BTreeMap::from([(
             "a".to_string(),
-            FieldType::Object(
+            FieldDef::nullable(FieldType::Object(
                 "A".to_string(),
-                Box::new(BTreeMap::from([("x".to_string(), FieldType::Int)])),
-            ),
+                Box::new(BTreeMap::from([(
+                    "x".to_string(),
+                    FieldDef::nullable(FieldType::Int),
+                )])),
+            )),
         )]);
         let state = json!({"a": {"x": 1, "y": 2}, "x": 1, "b": 3});
         assert_eq!(project(&state, &fields), json!({"a": {"x": 1}}));

@@ -37,7 +37,8 @@ use crate::graphql::topics::payload_query_field;
 use crate::naming::{pascal_case_graphql_name, sanitize_to_graphql_name};
 use crate::{
     api_model::{
-        Api, Direction, EnumValue, FieldType, GraphqlPath, PathNode, TopicDef, TopicKind, Tree,
+        Api, Direction, EnumValue, FieldDef, FieldType, GraphqlPath, PathNode, TopicDef, TopicKind,
+        Tree,
     },
     cache::TopicCache,
 };
@@ -318,11 +319,7 @@ fn payload_type_name(name_prefix: &str, name: &str) -> String {
 
 /// One concrete topic's `<Topic>` payload object, named
 /// [`payload_type_name`], followed by the types of its nested fields.
-fn payload_object(
-    name_prefix: &str,
-    name: &str,
-    fields: &BTreeMap<String, FieldType>,
-) -> Vec<Type> {
+fn payload_object(name_prefix: &str, name: &str, fields: &BTreeMap<String, FieldDef>) -> Vec<Type> {
     if fields.is_empty() {
         warn!("Object {name} can't have zero fields!");
     }
@@ -330,7 +327,7 @@ fn payload_object(
     let type_name = payload_type_name(name_prefix, name);
     let (object, mut types) = fields
         .iter()
-        .filter_map(|(name, field_type)| payload_field(name_prefix, name, field_type))
+        .filter_map(|(name, field)| payload_field(name_prefix, name, &field.field_type))
         .fold(
             (Object::new(type_name.as_str()), Vec::new()),
             |(obj, mut types), (field, new_types)| {
@@ -401,7 +398,7 @@ fn output_value(
             .into_iter()
             .map(|item| match item {
                 GraphQlValue::Null => Ok(GraphQlValue::Null),
-                item => output_value(element, item),
+                item => output_value(&element.field_type, item),
             })
             .collect::<async_graphql::Result<_>>()
             .map(GraphQlValue::List),
@@ -443,7 +440,7 @@ fn graphql_type_ref(name_prefix: &str, field_type: &FieldType) -> (TypeRef, Vec<
             )
         }
         FieldType::List(element) => {
-            let (element, types) = graphql_type_ref(name_prefix, element);
+            let (element, types) = graphql_type_ref(name_prefix, &element.field_type);
             (TypeRef::List(Box::new(element)), types)
         }
         FieldType::Json => (TypeRef::named(JSON_SCALAR), vec![]),
@@ -512,7 +509,7 @@ mod tests {
             topic: topic.to_string(),
             payload: Some(Payload {
                 name: format!("{field}payload"),
-                fields: BTreeMap::from_iter(vec![(field.to_string(), FieldType::Float)]),
+                fields: BTreeMap::from([(field.to_string(), FieldDef::nullable(FieldType::Float))]),
             }),
             operation: Direction::Send,
             ttl_secs: None,
@@ -566,7 +563,10 @@ mod tests {
                 topic: "aB/c".to_string(),
                 payload: Some(Payload {
                     name: "query-a".to_string(),
-                    fields: BTreeMap::from_iter(vec![("field".to_string(), FieldType::Float)]),
+                    fields: BTreeMap::from([(
+                        "field".to_string(),
+                        FieldDef::nullable(FieldType::Float),
+                    )]),
                 }),
                 operation: Direction::Send,
                 ttl_secs: None,
@@ -652,12 +652,15 @@ mod tests {
                 fields: BTreeMap::from([
                     (
                         "inner".to_string(),
-                        FieldType::Object(
+                        FieldDef::nullable(FieldType::Object(
                             "inner".to_string(),
-                            Box::new(BTreeMap::from([("x".to_string(), FieldType::Float)])),
-                        ),
+                            Box::new(BTreeMap::from([(
+                                "x".to_string(),
+                                FieldDef::nullable(FieldType::Float),
+                            )])),
+                        )),
                     ),
-                    ("y".to_string(), FieldType::Float),
+                    ("y".to_string(), FieldDef::nullable(FieldType::Float)),
                 ]),
             }),
             operation: Direction::Send,

@@ -312,7 +312,7 @@ mod tests {
 
     use super::*;
     use zero_mqtt_graphql::{
-        api_model::{Direction, FieldType, Payload, Spec, TopicDef, TopicKind},
+        api_model::{Direction, FieldDef, FieldType, Payload, Spec, TopicDef, TopicKind},
         topic_map::TopicMap,
     };
 
@@ -321,7 +321,7 @@ mod tests {
             topic: "test/topic".to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![("x".to_string(), FieldType::Float)]),
+                fields: BTreeMap::from([("x".to_string(), FieldDef::nullable(FieldType::Float))]),
             }),
             operation: Direction::Send,
             ttl_secs: None,
