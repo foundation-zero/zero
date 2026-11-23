@@ -33,7 +33,7 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
 <template>
   <div
     ref="root"
-    class="splash-screen bg-background text-foreground relative grid min-h-0 flex-1 grid-rows-[auto_1fr] overflow-y-auto"
+    class="splash-screen text-foreground relative grid min-h-0 flex-1 grid-rows-[auto_1fr] overflow-y-auto bg-(--splash-background)"
   >
     <SplashScreenBackground />
 
@@ -81,6 +81,9 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
 .splash-screen {
   scrollbar-width: none;
 
+  /* The design's light launcher sits on neutral white rather than the app's cool grey-0. */
+  --splash-background: var(--color-neutral-0);
+
   --splash-grid-minor: rgb(68 106 136 / 0.042);
   --splash-grid-major: rgb(68 106 136 / 0.096);
   --splash-vignette: rgb(0 0 0 / 0.12);
@@ -119,6 +122,7 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
 }
 
 .dark .splash-screen {
+  --splash-background: var(--background);
   --splash-grid-minor: rgb(153 182 204 / 0.07);
   --splash-grid-major: rgb(153 182 204 / 0.16);
   --splash-vignette: rgb(0 0 0 / 0.28);
