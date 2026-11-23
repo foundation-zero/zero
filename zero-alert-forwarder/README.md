@@ -112,7 +112,7 @@ Add `--dry-run` to log what would be sent instead of notifying anyone.
 uv sync --locked
 uv run pytest
 uv run ruff check
-uv run pyright
+uv run pyrefly check
 ```
 
 The tests need neither a database nor network access.
