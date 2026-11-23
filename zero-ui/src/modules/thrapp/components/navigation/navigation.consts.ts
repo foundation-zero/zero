@@ -1,3 +1,4 @@
+import { MODULE_MONITORING } from "@/modules/thrapp/monitoring/monitoring.consts";
 import { MIMICS, MimicKey } from "@/modules/thrapp/router/mimics";
 import { PARAMETERS } from "@/modules/thrapp/router/parameters";
 import { MainTab } from "./navigation.types";
@@ -9,6 +10,7 @@ export const DOCUMENTATION_ROUTE = "thrs/documentation";
 export const MAIN_TABS: MainTab[] = [
   { name: "thrs/mimics", label: "mimics", views: MIMICS },
   { name: "thrs/control", label: "controls", views: PARAMETERS },
+  { name: "thrs/monitoring", label: "monitoring", views: MODULE_MONITORING },
 ];
 
 // 36 px icon buttons, grown to a 44 px touch target on coarse pointers.

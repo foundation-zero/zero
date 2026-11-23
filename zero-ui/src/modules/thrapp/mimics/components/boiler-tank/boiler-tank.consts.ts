@@ -1,6 +1,6 @@
 import { BoilerTankState } from "@/modules/thrapp/types/thrs";
 import { MimicComponentState } from "..";
-import { ModeBadgeMode } from "../mode-badge";
+import { DHW_TANK_STATE_MODES, ModeBadgeMode } from "../mode-badge";
 
 export const DHW_TANK_WIDTH = 204;
 export const DHW_TANK_HEIGHT = 148;
@@ -24,15 +24,8 @@ export const DHW_TANK_MODE_COLORS: Record<BoilerTankState | MimicComponentState,
 };
 
 export const DHW_TANK_MODE_MODES: Record<BoilerTankState | MimicComponentState, ModeBadgeMode> = {
-  [BoilerTankState.InUse]: ModeBadgeMode.Using,
-  [BoilerTankState.Boosting]: ModeBadgeMode.Boosting,
-  [BoilerTankState.Standby]: ModeBadgeMode.Idle,
-  [BoilerTankState.Disabled]: ModeBadgeMode.Disabled,
+  ...DHW_TANK_STATE_MODES,
   [MimicComponentState.Manual]: ModeBadgeMode.ManualControl,
   [MimicComponentState.Alarm]: ModeBadgeMode.Active,
   [MimicComponentState.Normal]: ModeBadgeMode.Active,
-  [BoilerTankState.Filling]: ModeBadgeMode.Filling,
-  [BoilerTankState.NeedsBoost]: ModeBadgeMode.BoostingLow,
-  [BoilerTankState.NeedsFill]: ModeBadgeMode.FillingLow,
-  [BoilerTankState.OnTemperature]: ModeBadgeMode.Idle,
 };
