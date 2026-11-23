@@ -135,7 +135,7 @@
                   },
                   "custom": {
                     "axisBorderShow": true,
-                    "axisCenteredZero": true,
+                    "axisCenteredZero": false,
                     "axisColorMode": "text",
                     "axisGridShow": true,
                     "axisLabel": "",
