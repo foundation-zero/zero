@@ -61,7 +61,6 @@ class RunCmd(BaseSettings):
     min_priority: AlertPriority = AlertPriority.WARNING
     updates: set[AlertUpdate] = {AlertUpdate.ACTIVATED}
     attempts: Annotated[int, Field(ge=1)] = 3
-    reminder_delays_seconds: list[Annotated[float, Field(gt=0)]] = [20, 10, 5, 3, 1]
     dry_run: bool = False
     poll_timeout_seconds: Annotated[float, Field(gt=0)] = 10
     history_timeout_seconds: Annotated[float, Field(gt=0)] = 60
@@ -124,7 +123,6 @@ class RunCmd(BaseSettings):
                 self.updates,
                 self.attempts,
                 interval,
-                [timedelta(seconds=delay) for delay in self.reminder_delays_seconds],
                 alarms,
             )
             tasks.create_task(forwarder.run())

@@ -1,10 +1,8 @@
 import asyncio
 import logging
-from collections.abc import Sequence
 from datetime import timedelta
-from itertools import chain, repeat
 
-from zero_alert_forwarder.alarm_list import AlarmKey, AlarmList, alarm_key
+from zero_alert_forwarder.alarm_list import AlarmList
 from zero_alert_forwarder.alert import Alert, AlertPriority, AlertUpdate
 from zero_alert_forwarder.ntfy import Notifier
 from zero_alert_forwarder.source import AlertSource
@@ -21,7 +19,6 @@ class Forwarder:
         updates: set[AlertUpdate],
         attempts: int,
         retry_delay: timedelta,
-        reminder_delays: Sequence[timedelta] = (),
         alarms: AlarmList | None = None,
     ):
         self._source = source
@@ -30,54 +27,17 @@ class Forwarder:
         self._updates = updates
         self._attempts = attempts
         self._retry_delay = retry_delay
-        self._reminder_delays = reminder_delays
         self._alarms = alarms
-        self._reminders: dict[AlarmKey, asyncio.Task[None]] = {}
 
     async def run(self) -> None:
-        try:
-            async for alert in self._source.alerts():
-                if self._alarms:
-                    self._alarms.apply(alert)
-                self._silence(alert)
-                if self._wanted(alert):
-                    await self._forward(alert)
-                    self._remind(alert)
-        finally:
-            for reminder in self._reminders.values():
-                reminder.cancel()
-            self._reminders.clear()
+        async for alert in self._source.alerts():
+            if self._alarms:
+                self._alarms.apply(alert)
+            if self._wanted(alert):
+                await self._forward(alert)
 
     def _wanted(self, alert: Alert) -> bool:
         return alert.update in self._updates and alert.priority.rank >= self._min_rank
-
-    def _silence(self, alert: Alert) -> None:
-        """Only an acknowledgement ends the reminders, also when the alarm went idle meanwhile.
-
-        Seen for every alert, since the filters only apply to what gets forwarded.
-        """
-        if alert.update is AlertUpdate.ACKNOWLEDGED and (
-            reminder := self._reminders.pop(alarm_key(alert), None)
-        ):
-            reminder.cancel()
-            logger.info(f"Stopped reminding of {alert.tag}: acknowledged")
-
-    def _remind(self, alert: Alert) -> None:
-        if not self._reminder_delays:
-            return
-        if previous := self._reminders.pop(alarm_key(alert), None):
-            previous.cancel()
-        self._reminders[alarm_key(alert)] = asyncio.create_task(self._ping(alert))
-
-    async def _ping(self, alert: Alert) -> None:
-        """Re-notifies at growing urgency: each delay once, the last one for ever after."""
-        for delay in chain(self._reminder_delays, repeat(self._reminder_delays[-1])):
-            await asyncio.sleep(delay.total_seconds())
-            try:
-                await self._notifier.notify(alert)
-            except Exception:
-                # The next reminder follows soon, so no retries of its own.
-                logger.exception(f"Reminding of alert {alert.id} failed")
 
     async def _forward(self, alert: Alert) -> None:
         for attempt in range(1, self._attempts + 1):

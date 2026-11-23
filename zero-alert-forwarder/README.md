@@ -15,15 +15,6 @@ seconds and sends each new alert that passes the filters to ntfy.
 - On startup the existing alerts of the day are skipped, only alerts raised afterwards are forwarded.
 - A failed poll is retried at the next interval, a failed notification `--attempts` times.
 
-### Reminders
-
-An alarm that nobody acknowledges is notified again, with growing urgency: 20 seconds after
-the alert, then after 10, 5 and 3 more seconds, and every second from then on. Only an `Acknowledged`
-update of the same alarm (matched on system, tag and location) stops the reminders; an alarm
-that went `Idle` unacknowledged keeps pinging, and a new `Activated` restarts the progression. Reminders reuse the alert's sequence ID, so they update the notification
-instead of stacking. They are kept in memory, so a restart forgets them. Set
-`--reminder-delays-seconds '[]'` to turn them off.
-
 ### Mirrored databases
 
 With several `--mysql-hosts` the service treats them as mirrors of one database, which
@@ -70,7 +61,7 @@ only follow an alarm that was already forwarded.
 
 With `--mqtt-host` the service also keeps a list of alarms and publishes it to
 `alerts/alarm-list` every `--alarm-list-interval-seconds`. An alarm is identified by its system,
-tag and location, like the reminders, and is folded from every row of `--alarm-list-min-priority`
+tag and location, and is folded from every row of `--alarm-list-min-priority`
 and up, whatever `--updates` forwards to ntfy:
 
 | Update | Active | Acknowledged |
@@ -117,7 +108,6 @@ The container runs `run` by default, with its settings in the environment.
 | `--min-priority` | `MIN_PRIORITY` | `Warning` |
 | `--updates` | `UPDATES` | `["Activated"]` |
 | `--attempts` | `ATTEMPTS` | `3` |
-| `--reminder-delays-seconds` | `REMINDER_DELAYS_SECONDS` | `[20, 10, 5, 3, 1]`, last repeats |
 | `--dry-run` | `DRY_RUN` | `false` |
 | `--poll-timeout-seconds` | `POLL_TIMEOUT_SECONDS` | `10` |
 | `--history-timeout-seconds` | `HISTORY_TIMEOUT_SECONDS` | `60` |
