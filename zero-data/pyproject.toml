@@ -29,9 +29,9 @@ zero-data = "zero_data.__main__:run"
 [dependency-groups]
 dev = [
     "ipykernel>=7.4,<8",
-    "mypy>=2.4,<3",
     "notebook>=7.3.2,<8",
     "pandas>=3.0.6,<4",
+    "pyrefly~=1.5",
     "python-dotenv>=1.1.0,<2",
     "ruff>=0.17.2,<0.18",
     "types-openpyxl>=3.1.5.20250602,<4",
@@ -53,9 +53,11 @@ test = [
     "pytest-cov>=7.0.0,<8",
 ]
 
-[tool.mypy]
-plugins = "pydantic.mypy"
-check_untyped_defs = true
+[tool.pyrefly]
+project-includes = ["**/*.py*", "**/*.ipynb"]
+type-ignore-unknown-tag-behavior = "no-effect"
+# The greptime tests import their helpers as `tests.greptime.conftest`.
+search-path = ["."]
 
 [tool.uv]
 default-groups = ["dev", "test"]
