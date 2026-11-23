@@ -69,7 +69,7 @@ export const PVT_MIMIC_QUERY = gql`
   ${F.PCM_SENSOR_VALUES_FRAGMENT}
 `;
 
-/** Shared by the pvt-main, pvt-owners and pvt-main-heat mimics. */
+/** Shared by the pvt-main and pvt-owners mimics. */
 export const PVT_SECTION_MIMIC_QUERY = gql`
   query PvtSectionMimic {
     ...PvtSensorValues

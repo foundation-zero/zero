@@ -22,11 +22,7 @@ describe("getModuleOptionGroups", () => {
         modules: [
           { key: "dc", disabled: false, subModules: ["dc-aft", "dc-ugrid", "dc-fwd"] },
           { key: "drives", disabled: false, subModules: ["drives-shorepower"] },
-          {
-            key: "pvt",
-            disabled: false,
-            subModules: ["pvt-main", "pvt-owners", "pvt-main-heat"],
-          },
+          { key: "pvt", disabled: false, subModules: ["pvt-main", "pvt-owners"] },
           { key: "thrusters", disabled: false, subModules: [] },
         ],
       },
@@ -60,7 +56,7 @@ describe("getModuleOptionGroups", () => {
 
 describe("getParentModule", () => {
   it("finds the module of a sub-module", () => {
-    expect(getParentModule("pvt-main-heat")).toBe("pvt");
+    expect(getParentModule("pvt-owners")).toBe("pvt");
   });
 
   it("has no parent for a module", () => {

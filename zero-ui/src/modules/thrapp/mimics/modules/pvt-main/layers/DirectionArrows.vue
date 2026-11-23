@@ -203,16 +203,22 @@ import { LayerFilterOption } from "../../../components/layer-filter/layer-filter
         y2="643"
       />
       <line
-        x1="1332"
-        y1="151"
-        x2="1332"
-        y2="191"
+        x1="1327"
+        y1="66"
+        x2="1327"
+        y2="106"
       />
       <line
         x1="1355"
-        y1="151"
+        y1="66"
         x2="1355"
-        y2="191"
+        y2="106"
+      />
+      <line
+        x1="1351"
+        y1="273"
+        x2="1351"
+        y2="313"
       />
       <line
         x1="1334"

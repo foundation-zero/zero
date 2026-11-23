@@ -32,9 +32,31 @@ describe("getModuleModes", () => {
     });
 
     expect(getModuleModes("pvt", control, t)).toEqual([
-      { mode: ModeBadgeMode.Using, label: "FW - Recovery" },
+      { mode: ModeBadgeMode.Using, label: "FWD - Recovery" },
       { mode: ModeBadgeMode.Using, label: "AFT - Recovery" },
       { mode: ModeBadgeMode.Idle, label: "Owners - Idle" },
+    ]);
+  });
+
+  it("only shows the requested targets, prefixed while there are several", () => {
+    const control = automatic("pvt", {
+      fwd: { mode: PvtMode.Recovery },
+      aft: { mode: PvtMode.Warmup },
+      owners: { mode: PvtMode.Idle },
+    });
+
+    expect(getModuleModes("pvt", control, t, ["fwd", "aft"])).toEqual([
+      { mode: ModeBadgeMode.Using, label: "FWD - Recovery" },
+      { mode: ModeBadgeMode.BoostingLow, label: "AFT - Warmup" },
+    ]);
+    expect(getModuleModes("pvt", control, t, ["owners"])).toEqual([
+      { mode: ModeBadgeMode.Idle, label: "Idle" },
+    ]);
+  });
+
+  it("shows one unprefixed manual control badge for a single requested target", () => {
+    expect(getModuleModes("pvt", automatic("pvt", null), t, ["owners"])).toEqual([
+      { mode: ModeBadgeMode.ManualControl, label: "Manual control" },
     ]);
   });
 
@@ -62,7 +84,7 @@ describe("getModuleModes", () => {
 
   it("shows one manual control badge per target under manual control", () => {
     expect(getModuleModes("pvt", automatic("pvt", null), t)).toEqual([
-      { mode: ModeBadgeMode.ManualControl, label: "FW - Manual control" },
+      { mode: ModeBadgeMode.ManualControl, label: "FWD - Manual control" },
       { mode: ModeBadgeMode.ManualControl, label: "AFT - Manual control" },
       { mode: ModeBadgeMode.ManualControl, label: "Owners - Manual control" },
     ]);

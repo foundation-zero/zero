@@ -8,7 +8,6 @@ export type MimicKey =
   | keyof ThrsModules
   | "pvt-main"
   | "pvt-owners"
-  | "pvt-main-heat"
   | "dc-aft"
   | "dc-ugrid"
   | "dc-fwd"
@@ -78,12 +77,6 @@ export const MIMICS: Partial<Record<MimicKey, MimicDefinition>> = {
     ),
     query: Queries.PVT_SECTION_MIMIC_QUERY,
     layerFilters: BASE_FILTERS,
-  },
-  "pvt-main-heat": {
-    component: defineAsyncComponent(
-      () => import("@/modules/thrapp/mimics/modules/pvt-main-heat/PvtMainHeatModule.vue"),
-    ),
-    query: Queries.PVT_SECTION_MIMIC_QUERY,
   },
   pcm: {
     component: defineAsyncComponent(

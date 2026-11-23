@@ -17,7 +17,6 @@ const modules: Array<MimicKey> = [
   "pvt",
   "pvt-main",
   "pvt-owners",
-  "pvt-main-heat",
   "pcm",
   "dc",
   "dc-aft",

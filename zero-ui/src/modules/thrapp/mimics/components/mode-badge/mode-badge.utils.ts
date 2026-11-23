@@ -83,6 +83,7 @@ export function getModuleModes(
   module: keyof ThrsModules,
   control: ControlStatus | undefined,
   t: Translate,
+  targets?: string[],
 ): ModuleModeBadge[] {
   if (!isControlledModule(module)) {
     return [];
@@ -92,8 +93,15 @@ export function getModuleModes(
   const automaticMode = status?.controlMode?.automaticMode;
   const amcsMode = status?.sensorValues?.mode?.mode.value;
 
+  // Only the requested targets of a multi-target module, e.g. the PVT groups of one sub-mimic.
+  const shownTargets = (MODULE_TARGETS[module] ?? []).filter(
+    (target) => !targets || targets.includes(target),
+  );
+  // A prefix tells targets apart, so a single target is shown without it.
   const prefixed = (target: string, label: string) =>
-    t("prefixed", { prefix: t(`prefixes.${module}.${target}`), label });
+    shownTargets.length > 1
+      ? t("prefixed", { prefix: t(`prefixes.${module}.${target}`), label })
+      : label;
 
   if (amcsMode !== AmcsControlMode.External) {
     const label = amcsMode && AMCS_MODES.includes(amcsMode) ? t(`amcs.${amcsMode}`) : undefined;
@@ -107,9 +115,8 @@ export function getModuleModes(
 
   if (!status.controlMode.automatic) {
     const label = t(`modes.${ModeBadgeMode.ManualControl}`);
-    const targets = MODULE_TARGETS[module];
-    return targets
-      ? targets.map((target) => ({
+    return MODULE_TARGETS[module]
+      ? shownTargets.map((target) => ({
           mode: ModeBadgeMode.ManualControl,
           label: prefixed(target, label),
         }))
@@ -123,14 +130,14 @@ export function getModuleModes(
   switch (module) {
     case "pvt": {
       const pvtMode = automaticMode as PvtAutomaticMode;
-      return PVT_TARGETS.map((target) => {
+      return (shownTargets as PvtGroup[]).map((target) => {
         const { mode } = pvtMode[target];
         return { mode: PVT_MODES[mode], label: prefixed(target, t(`modes.pvt.${mode}`)) };
       });
     }
     case "dc": {
       const dcMode = automaticMode as DcAutomaticMode;
-      return DC_TARGETS.map((target) => {
+      return (shownTargets as DcConverterGroup[]).map((target) => {
         const { mode } = dcMode[target];
         return { mode: DC_MODES[mode], label: prefixed(target, t(`modes.dc.${mode}`)) };
       });
@@ -167,12 +174,15 @@ export function getModuleModes(
   }
 }
 
-export const useModuleMode = (moduleRef?: MaybeRef<keyof ThrsModules | undefined>) => {
+export const useModuleMode = (
+  moduleRef?: MaybeRef<keyof ThrsModules | undefined>,
+  targetsRef?: MaybeRef<string[] | undefined>,
+) => {
   const t = tScoped("thrapp.mimics.modeBadge");
   const automation = useAutomationStore();
 
   return computed(() => {
     const module = unref(moduleRef);
-    return module ? getModuleModes(module, automation.control, t) : [];
+    return module ? getModuleModes(module, automation.control, t, unref(targetsRef)) : [];
   });
 };

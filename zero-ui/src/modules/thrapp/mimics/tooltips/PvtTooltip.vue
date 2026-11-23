@@ -14,7 +14,6 @@ import { MimicComponentType } from "../../types";
 import { ComponentOrientation } from "../components";
 import { SensorGraph } from "../components/sensor-graph";
 import { PvtInstance } from "../instances";
-import { SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
 import Circuit from "./partials/ExchangeCircuitPartial.vue";
@@ -76,17 +75,6 @@ const { currentRoute } = useRouter();
           <FieldRenderer.PvtMode :value="mode" />
         </template>
       </Partials.ListItem>
-      <SensorValue
-        :source="source"
-        field="power"
-      >
-        <Partials.ListItem
-          no-source
-          :renderer="FieldRenderer.Power"
-        >
-          {{ items("electricGeneration") }}
-        </Partials.ListItem>
-      </SensorValue>
     </TooltipList>
   </MimicTooltip>
 </template>

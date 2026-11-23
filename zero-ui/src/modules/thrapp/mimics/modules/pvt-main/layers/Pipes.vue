@@ -28,17 +28,23 @@
       />
     </g>
 
-    <!-- Connections to the supply/demand circuits -->
+    <!-- AFT bank (strings 1-6) to and from the PVT AFT circuit -->
     <path
-      d="M586.32 597.66H607.48V650.73H1361.91V357.31H1508.38M1508.38 336.05H1340.99V598.24H1236.92"
+      d="M585.99 36.28H607.21V1H1317.72V31.68C1320.48 31.68 1322.71 33.67 1322.71 36.16C1322.71 38.64 1320.48 40.66 1317.72 40.66V373.71H1389.96"
       class="stroke-flows-pipe"
     />
     <path
-      d="M1508.22 315.27H1340.99V36.05H1236.72"
+      d="M586.32 597.66H607.48V650.73H1361.91V443.2H1392.74"
+      class="stroke-flows-pipe"
+    />
+
+    <!-- FWD bank (strings 7-13) to and from the PVT FWD circuit -->
+    <path
+      d="M1389.93 159.37H1362.05V36.05H1236.72"
       class="stroke-flows-pipe"
     />
     <path
-      d="M585.99 36.28H607.21L607.21 1H1362.12V294.32H1508.6"
+      d="M1392.38 219.15H1340.99V369.16C1343.75 369.16 1346.02 371.15 1346.02 373.63C1346.02 376.12 1343.75 378.15 1340.99 378.15V598.24H1236.91"
       class="stroke-flows-pipe"
     />
 

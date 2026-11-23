@@ -10,9 +10,9 @@ const circuits = getTooltipContexts(MimicComponentType.ConnectingCircuit, ["pvt:
   <g>
     <ConnectingCircuitInstance
       x="851"
-      y="213.5"
+      y="216.07"
       width="196"
-      height="240"
+      height="183"
       inverted
       v-bind="circuits['pvt:owners']"
     />

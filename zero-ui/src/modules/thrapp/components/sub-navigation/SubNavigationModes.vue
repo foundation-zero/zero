@@ -4,7 +4,11 @@ import { ThrsModules } from "@/modules/thrapp/lib/consts";
 import { ModeBadges, ModeBadgeSize } from "@/modules/thrapp/mimics/components/mode-badge";
 import { HTMLAttributes } from "vue";
 
-const props = defineProps<{ module?: keyof ThrsModules; class?: HTMLAttributes["class"] }>();
+const props = defineProps<{
+  module?: keyof ThrsModules;
+  targets?: string[];
+  class?: HTMLAttributes["class"];
+}>();
 
 const t = tScoped("thrapp.components.subNavigation");
 </script>
@@ -16,6 +20,7 @@ const t = tScoped("thrapp.components.subNavigation");
     <div class="flex min-w-0 flex-wrap items-center gap-2">
       <ModeBadges
         :module="module"
+        :targets="targets"
         :size="ModeBadgeSize.Navigation"
       />
     </div>

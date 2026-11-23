@@ -503,6 +503,8 @@
     "fwd-2": "PowerConverter/dc:fwd-2",
     "highTemperature": "ExchangeCircuit/adsorption:highTemperature",
     "highTempLoop": "ExchangeCircuit/dhw:highTempLoop",
+    "main-aft": "ConnectingCircuit/pvt:main-aft",
+    "main-fwd": "ConnectingCircuit/pvt:main-fwd",
     "owners": "ConnectingCircuit/pvt:owners",
     "owners-string-1": "PvtString/pvt:owners-string-1",
     "owners-string-2": "PvtString/pvt:owners-string-2",
@@ -544,7 +546,6 @@
     "propulsionDrive:pcsAftAra2": "PropulsionDrive/drives:propdriveAft2",
     "propulsionDrive:pcsFwdAra1": "PropulsionDrive/drives:propdriveFwd1",
     "propulsionDrive:pcsFwdAra2": "PropulsionDrive/drives:propdriveFwd2",
-    "pvt:main": "ConnectingCircuit/pvt:main",
     "pvt:pcm": "ConnectingCircuit/pvt:pcm",
     "pvt:pvtFlowMainAftRecovery": "FlowSensor/1058-13",
     "pvt:pvtFlowMainFwdRecovery": "FlowSensor/1058-12",
@@ -612,6 +613,8 @@
     "pvt:pvtPumpMainAft": "Pump/1019",
     "pvt:pvtPumpMainFwd": "Pump/1018",
     "pvt:pvtPumpOwners": "Pump/1021",
+    "pvt:pvtPvtMainAftHeat": "ConnectingCircuit/pvt:main-aft",
+    "pvt:pvtPvtMainFwdHeat": "ConnectingCircuit/pvt:main-fwd",
     "pvt:pvtPvtOwnersHeat": "ConnectingCircuit/pvt:owners",
     "pvt:pvtPyranometerPs": "Pyranometer/9043",
     "pvt:pvtPyranometerSb": "Pyranometer/9044",
@@ -1351,29 +1354,57 @@
           "yardTag": "pcm:thrusters"
         }
       },
-      "pvt:main": {
+      "pvt:main-aft": {
         "custom": {
-          "circuitName": "PVT",
-          "modeModule": "pvt"
+          "circuitName": "PVT AFT",
+          "modeModule": "pvt",
+          "modeTargets": [
+            "aft"
+          ]
         },
         "source": [
           "sensor:heatTransferDevice",
           "pvt",
-          "pvtPvtMainHeat",
+          "pvtPvtMainAftHeat",
           null
         ],
         "tooltip": {
           "title": "Connecting circuit",
-          "technicalName": "pvt-pvt-main-heat",
-          "mqttTopic": ".../pvt-pvt-main-heat",
-          "componentType": "PVT main loop",
-          "yardTag": "pvt:main"
+          "yardTag": "9002-01",
+          "technicalName": "pvt-pvt-main-aft-heat",
+          "mqttTopic": ".../pvt-pvt-main-aft-heat",
+          "componentType": "PVT AFT loop"
+        }
+      },
+      "pvt:main-fwd": {
+        "custom": {
+          "circuitName": "PVT FWD",
+          "modeModule": "pvt",
+          "modeTargets": [
+            "fwd"
+          ]
+        },
+        "source": [
+          "sensor:heatTransferDevice",
+          "pvt",
+          "pvtPvtMainFwdHeat",
+          null
+        ],
+        "tooltip": {
+          "title": "Connecting circuit",
+          "yardTag": "9001-01",
+          "technicalName": "pvt-pvt-main-fwd-heat",
+          "mqttTopic": ".../pvt-pvt-main-fwd-heat",
+          "componentType": "PVT FWD loop"
         }
       },
       "pvt:owners": {
         "custom": {
           "circuitName": "PVT",
-          "modeModule": "pvt"
+          "modeModule": "pvt",
+          "modeTargets": [
+            "owners"
+          ]
         },
         "source": [
           "sensor:heatTransferDevice",
@@ -7229,7 +7260,8 @@
       },
       "9001-03": {
         "custom": {
-          "group": "owners"
+          "group": "owners",
+          "mimic": "pvt-owners"
         },
         "source": [
           "sensor:pvt",

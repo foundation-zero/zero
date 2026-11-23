@@ -36,6 +36,7 @@ const state = getComponentState();
 
     <ModeBadges
       :module="custom.modeModule"
+      :targets="custom.modeTargets"
       :size="ModeBadgeSize.Circuit"
     />
 

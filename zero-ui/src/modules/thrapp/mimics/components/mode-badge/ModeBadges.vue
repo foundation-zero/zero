@@ -6,13 +6,15 @@ import { ModeBadge, ModeBadgeSize, useModuleMode } from ".";
 const props = withDefaults(
   defineProps<{
     module?: keyof ThrsModules;
+    /** Only show these targets of a multi-target module, e.g. `["owners"]` for PVT. */
+    targets?: string[];
     size: ModeBadgeSize;
     class?: HTMLAttributes["class"];
   }>(),
   {},
 );
 
-const modes = useModuleMode(toRef(props, "module"));
+const modes = useModuleMode(toRef(props, "module"), toRef(props, "targets"));
 </script>
 
 <template>

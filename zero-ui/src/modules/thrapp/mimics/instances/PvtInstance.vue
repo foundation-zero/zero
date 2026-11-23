@@ -12,7 +12,6 @@ import {
   ValueListDeltaTItem,
   ValueListFlowItem,
   ValueListHeatPowerItem,
-  ValueListPowerItem,
   ValueListSeparator,
 } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
@@ -65,7 +64,6 @@ const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
         <ValueListHeatPowerItem :source="sensors.heatTransfer" />
         <ValueListDeltaTItem :source="sensors.heatTransfer" />
         <ValueListFlowItem :source="sensors.heatTransfer" />
-        <ValueListPowerItem :source="source" />
 
         <ValueListSeparator />
       </ValueList>
