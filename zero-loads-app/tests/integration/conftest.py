@@ -1,3 +1,4 @@
+from typing import Any, cast
 from uuid import uuid4
 
 import pytest
@@ -26,7 +27,7 @@ from loads.api.schema import (
 from loads.config import Settings
 from loads.registry import at_sensors, fiber_optic_sensors, sail_system_sensors
 
-_INTEGRATION_SETTINGS = Settings()  # type: ignore[call-arg]
+_INTEGRATION_SETTINGS = Settings()
 
 
 def clear_mutating_tables(
@@ -115,7 +116,7 @@ def configure_integration_db(integration_db_name: str):
     monkeypatch.setenv("PG_DB", integration_db_name)
 
     # Rehydrate runtime settings/session manager so app lifespan uses the cloned DB.
-    api_dependencies.settings = Settings()  # type: ignore[call-arg]
+    api_dependencies.settings = Settings()
     api_dependencies.sessionmanager = SessionManager()
 
     yield
@@ -211,8 +212,9 @@ class ScenarioFactory:
         sails: list[str],
     ) -> str:
         sail_set_id = await self._get_sail_set_id(sails)
-        payload = LoadCaseFactory.build(
-            name=name, awa=awa, aws=aws, sail_set_id=sail_set_id
+        payload = cast(
+            dict[str, Any],
+            LoadCaseFactory.build(name=name, awa=awa, aws=aws, sail_set_id=sail_set_id),
         )
 
         async with self._manager.session() as session:
@@ -230,11 +232,14 @@ class ScenarioFactory:
     ) -> None:
         aws_range_id = await self._get_aws_range_id(aws_range)
         sail_set_id = await self._get_sail_set_id(sails)
-        payload = LoadCaseMappingFactory.build(
-            load_case_id=load_case_id,
-            awa_range_id=awa_range_id,
-            aws_range_id=aws_range_id,
-            sail_set_id=sail_set_id,
+        payload = cast(
+            dict[str, Any],
+            LoadCaseMappingFactory.build(
+                load_case_id=load_case_id,
+                awa_range_id=awa_range_id,
+                aws_range_id=aws_range_id,
+                sail_set_id=sail_set_id,
+            ),
         )
 
         async with self._manager.session() as session:
@@ -252,15 +257,18 @@ class ScenarioFactory:
         warning_high: float | None = None,
         alarm_high: float | None = None,
     ) -> None:
-        payload = ReferenceValueFactory.build(
-            load_case_id=load_case_id,
-            variable_id=variable_id,
-            tack=tack,
-            alarm_low=alarm_low,
-            warning_low=warning_low,
-            target=target,
-            warning_high=warning_high,
-            alarm_high=alarm_high,
+        payload = cast(
+            dict[str, Any],
+            ReferenceValueFactory.build(
+                load_case_id=load_case_id,
+                variable_id=variable_id,
+                tack=tack,
+                alarm_low=alarm_low,
+                warning_low=warning_low,
+                target=target,
+                warning_high=warning_high,
+                alarm_high=alarm_high,
+            ),
         )
         async with self._manager.session() as session:
             session.add(ReferenceValues(**payload))

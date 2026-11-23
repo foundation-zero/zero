@@ -39,7 +39,7 @@ dev = [
     "matplotlib>=3.10.8,<4",
     "seaborn>=0.13.2,<0.14",
     "bs4>=0.0.2,<0.0.3",
-    "pyright>=1.1.411",
+    "pyrefly~=1.5",
     "xlsxwriter>=3.2,<4",
     "pypdfium2>=5.14,<6",
 ]
@@ -62,10 +62,9 @@ default-groups = ["dev", "test"]
 [tool.uv.sources]
 generator = { path = "../packages/py/zero-generator", editable = true }
 
-[tool.mypy]
-plugins = "pydantic.mypy,strawberry.ext.mypy_plugin"
-ignore_missing_imports = true
-check_untyped_defs = true
+[tool.pyrefly]
+project-includes = ["**/*.py*", "**/*.ipynb"]
+type-ignore-unknown-tag-behavior = "no-effect"
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"

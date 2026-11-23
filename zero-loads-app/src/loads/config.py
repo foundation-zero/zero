@@ -50,4 +50,4 @@ class Settings(BaseSettings):
         return self.env == "production"
 
 
-settings = Settings()  # type: ignore
+settings = Settings()
