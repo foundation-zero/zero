@@ -287,17 +287,8 @@ class FlowDistributionController:
             )
 
         total_flow = sum(measurements)
-
-        setpoints = [
-            (
-                total_flow * ratio if ratio is not None else 0.0
-            )  # 0s for inactive to comply with PID typing
-            for ratio, active in zip(
-                self._ratios,
-                self._flow_balance_controller.get_active_valves(),
-                strict=False,
-            )
-        ]
+        # Inactive valves have their PID disabled, so their 0 setpoint is never used
+        setpoints = [total_flow * (ratio or 0.0) for ratio in self._ratios]
         self._flow_balance_controller.set_setpoints(setpoints)
         self._flow_balance_controller(measurements)
 

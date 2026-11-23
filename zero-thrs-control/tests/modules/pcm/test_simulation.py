@@ -28,7 +28,6 @@ def simulation_inputs(simulation_inputs: PcmSimulationInputs) -> PcmSimulationIn
         simulator_input_field_setters(
             PcmSimulationInputs,
             ignore=[
-                "mode",  # Not a physical quantity
                 # The FMU tolerates these, even with the control running
                 ("pcm_thrusters_supply", "flow"),
                 ("pcm_pvt_supply", "flow"),

@@ -237,6 +237,11 @@ def test_recording_connector_create_publisher(settings: Config):
     )
 
 
+# ---------------------------------------------------------------------------
+# Channel Pairing Tests
+# ---------------------------------------------------------------------------
+
+
 def test_directives_channels_pair_status_with_status_set(settings: Config):
     connector = RecordingConnector(settings)
 

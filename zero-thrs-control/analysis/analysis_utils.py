@@ -1,15 +1,8 @@
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 import polars as pl
 import seaborn as sns  # pyrefly: ignore[untyped-import]
-
-
-def compute_heat(temp1, temp2, flow):
-    return (
-        (temp1 - temp2) * flow * 3769 / 60
-    )  # 3769 is specific heat capacity of 20% glycol mixture
 
 
 def strip_names(df):
@@ -385,16 +378,13 @@ def plot_result(result: pl.DataFrame, path: str):
     ncols = len(modules)
 
     fig, axes = plt.subplots(
-        nrows, ncols, figsize=(18, nrows * 2.5), sharex=True, sharey="row"
+        nrows,
+        ncols,
+        figsize=(18, nrows * 2.5),
+        sharex=True,
+        sharey="row",
+        squeeze=False,
     )
-
-    # Ensure axes are always 2D for consistent indexing
-    if nrows == 1 and ncols == 1:
-        axes = axes.reshape((1, 1))
-    elif nrows == 1:
-        axes = axes[np.newaxis, :]
-    elif ncols == 1:
-        axes = axes[:, np.newaxis]
 
     # Plot each module's data
     for j, module in enumerate(modules):

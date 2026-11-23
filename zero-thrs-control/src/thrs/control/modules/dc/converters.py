@@ -258,10 +258,13 @@ class ConvertersControl(
         )
 
     def _control_flow(self, sensor_values: ConvertersSensorValues):
-        self._pump_controller.setpoint = (
-            self._parameters.converter_flow_setpoint
-            * sum(switch.position_rel.value**2 for switch in sensor_values.switches)
-        )  # Control flow based on switch valves to prevent pumping against closed valves, as well as having insufficient flow during the closing of valves (when components are already inacive). Assuming possible flow is approximately quadratic to valve opening.
+        # Control flow based on switch valves to prevent pumping against closed
+        # valves, as well as having insufficient flow during the closing of valves
+        # (when components are already inactive). Assuming possible flow is
+        # approximately quadratic to valve opening.
+        self._pump_controller.setpoint = self._parameters.converter_flow_setpoint * sum(
+            switch.position_rel.value**2 for switch in sensor_values.switches
+        )
 
         self._current_values.pump.dutypoint = Stamped(
             value=self._pump_controller(sensor_values.total_flow),

@@ -77,15 +77,14 @@ class Fmu:
 
             extract(file_path, self._cached_unzip_dir)
 
-        # Due to test issues, use an instance-local extraction directory to avoid file locking
-        # collisions when multiple tests/processes initialize the same FMU.
+        # The cache is shared by every process (e.g. pytest workers), so each instance
+        # loads its binaries from a private copy and never locks another's.
         self._temp_dir = TemporaryDirectory(
             prefix=f"fmu_instance_{file_key}_",
             ignore_cleanup_errors=True,
         )
         self._temp_unzip_dir = self._temp_dir.name
 
-        # Copy cached extraction into an instance-local directory to keep DLLs isolated.
         shutil.copytree(
             self._cached_unzip_dir,
             self._temp_unzip_dir,

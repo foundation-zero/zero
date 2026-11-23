@@ -111,7 +111,6 @@ class ThrustersControl(
             deep=True
         )
 
-        # State machine setup
         self._init_state_machine_states()
         self._init_state_machine_transitions()
         self._state_machine = self.state_logger.create_logged_state_machine(
