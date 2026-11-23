@@ -90,6 +90,8 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> PcmControllerState:  # noq
         pcm_module2_flow_controller=PidController.zero(timestamp),
         pcm_module3_flow_controller=PidController.zero(timestamp),
         pcm_module4_flow_controller=PidController.zero(timestamp),
+        parameters=PcmParameters(),
+        control_mode=None,
     )
 
 
@@ -349,6 +351,8 @@ class PcmControl(
             pcm_module2_flow_controller=self.module2_flow_controller.values(),
             pcm_module3_flow_controller=self.module3_flow_controller.values(),
             pcm_module4_flow_controller=self.module4_flow_controller.values(),
+            parameters=self._parameters,
+            control_mode=self.mode,
         )
 
     def _modules(self) -> list[PcmChargeController]:
@@ -589,7 +593,6 @@ PCM_MODULE_DESCRIPTION = ModuleDescription(
     PcmControlValues,
     PcmParameters,
     PcmControl,
-    PcmControlMode,
     PcmControllerState,
     PcmAlarms,
 )

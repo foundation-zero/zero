@@ -4,6 +4,8 @@ from pydantic import Field, model_validator
 
 from thrs.classes.control import ControlMode
 from thrs.control.modules.pvt.group import PvtGroupControlMode
+from thrs.control.modules.pvt.io import PvtControlValues
+from thrs.control.state import ControlState
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
@@ -57,7 +59,7 @@ class PvtParameters(ThrsValues):
         return self
 
 
-class PvtControllerState(ThrsValues):
+class PvtControllerState(ControlState[PvtControlValues, PvtParameters, PvtControlMode]):
     pvt_heat_dump_controller: Annotated[
         PidControllerValues, component_meta(component_type="pid_controller")
     ]

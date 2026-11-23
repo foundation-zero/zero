@@ -3,6 +3,8 @@ from typing import Annotated
 from pydantic import Field, model_validator
 
 from thrs.classes.control import ControlMode
+from thrs.control.modules.dhw.io import DhwControlValues
+from thrs.control.state import ControlState
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions.controllers import (
     PidControllerValues,
@@ -139,7 +141,7 @@ class DhwParameters(ThrsValues):
         return self
 
 
-class DhwControllerState(ThrsValues):
+class DhwControllerState(ControlState[DhwControlValues, DhwParameters, DhwControlMode]):
     dhw_tanks_controller: Annotated[
         TanksControllerValues,
         component_meta(component_type="tank_controller"),

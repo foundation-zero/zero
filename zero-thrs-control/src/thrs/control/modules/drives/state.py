@@ -1,6 +1,8 @@
 from typing import Annotated
 
 from thrs.classes.control import ControlMode
+from thrs.control.modules.drives.io import DrivesControlValues
+from thrs.control.state import ControlState
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Celsius, LMin, Tuning
@@ -35,7 +37,9 @@ class DrivesParameters(ThrsValues):
     fwd_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
 
 
-class DrivesControllerState(ThrsValues):
+class DrivesControllerState(
+    ControlState[DrivesControlValues, DrivesParameters, DrivesControlMode]
+):
     drives_heat_dump_controller: Annotated[
         PidControllerValues, component_meta(component_type="pid_controller")
     ]

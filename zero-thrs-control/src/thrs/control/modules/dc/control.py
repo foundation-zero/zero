@@ -80,6 +80,8 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DcControllerState:  # noqa
         dc_brightloops_fwd_warmup_mix_controller=converter_state.converters_warmup_mix_controller,
         dc_ugrids_pump_controller=converter_state.converters_pump_controller,
         dc_ugrids_warmup_mix_controller=converter_state.converters_warmup_mix_controller,
+        parameters=DcParameters(),
+        control_mode=None,
     )
 
 
@@ -276,6 +278,8 @@ class DcControl(
                 dc_ugrids_warmup_mix_controller=converter_state[
                     "dc_ugrids"
                 ].converters_warmup_mix_controller,
+                parameters=self._parameters,
+                control_mode=self.mode,
             ),
         )
 
@@ -424,7 +428,6 @@ DC_MODULE_DESCRIPTION = ModuleDescription(
     DcControlValues,
     DcParameters,
     DcControl,
-    DcControlMode,
     DcControllerState,
     DcAlarms,
 )

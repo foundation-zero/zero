@@ -18,7 +18,7 @@ from thrs.control.modules.thrusters.io import (
     ThrustersSimulationOutputs,
 )
 from thrs.control.modules.thrusters.state import ThrustersParameters
-from thrs.control.switching import AutomationMode
+from thrs.control.state import AutomationMode
 from thrs.input_output.definitions.wire_context import AMCS_WRITE_CONTEXT
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector

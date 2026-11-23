@@ -49,6 +49,8 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> ConsumersControllerState: 
         consumers_dhw_flow_controller=PidController.zero(timestamp),
         consumers_bypass_flow_controller=PidController.zero(timestamp),
         consumers_adsorption_flow_controller=PidController.zero(timestamp),
+        parameters=ConsumersParameters(),
+        control_mode=None,
     )
 
 
@@ -190,6 +192,8 @@ class ConsumersControl(
             consumers_dhw_flow_controller=self._dhw_flow_controller.values(),
             consumers_bypass_flow_controller=self._bypass_flow_controller.values(),
             consumers_adsorption_flow_controller=self._adsorption_flow_controller.values(),
+            parameters=self._parameters,
+            control_mode=self.mode,
         )
 
         return (self._current_values, controller_state)
@@ -225,7 +229,6 @@ CONSUMERS_MODULE_DESCRIPTION = ModuleDescription(
     ConsumersControlValues,
     ConsumersParameters,
     ConsumersControl,
-    ConsumersControlMode,
     ConsumersControllerState,
     ConsumersAlarms,
 )

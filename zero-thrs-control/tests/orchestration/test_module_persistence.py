@@ -10,7 +10,7 @@ from tests.helpers.modules import (
 from thrs.classes.persistence.engine import InMemoryPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
-from thrs.control.switching import AutomationMode
+from thrs.control.state import AutomationMode
 
 
 def test_persistence_snapshot_starts_in_manual_with_defaults():

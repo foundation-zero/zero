@@ -7,6 +7,7 @@ from thrs.classes.machine_state_logger import (
     MachineStateLoggingServiceNoop,
     StateLogger,
 )
+from thrs.control.state import ControlState
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions.sensor import FlowSensor
@@ -74,7 +75,7 @@ class SimpleMode(ThrsValues):
     pass
 
 
-class SimpleControllerState(ThrsValues):
+class SimpleControllerState(ControlState[SimpleInOut, SimpleParameters, SimpleMode]):
     pass
 
 
@@ -97,12 +98,18 @@ class SimpleControl(
         self._current_values: SimpleInOut = SimpleInOut.zero()
 
     def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
-        return (SimpleInOut.zero(), SimpleControllerState())
+        return (
+            SimpleInOut.zero(),
+            SimpleControllerState(parameters=SimpleParameters()),
+        )
 
     def control(
         self, sensor_values: SimpleInOut
     ) -> tuple[SimpleInOut, SimpleControllerState]:
-        return (sensor_values, SimpleControllerState())
+        return (
+            sensor_values,
+            SimpleControllerState(parameters=self._parameters, control_mode=self.mode),
+        )
 
     @staticmethod
     def modes() -> list[str]:
@@ -128,6 +135,10 @@ class SimpleControl(
 
     def reset(self) -> None:
         self._current_values = SimpleInOut.zero()
+
+
+def simple_controller_state() -> SimpleControllerState:
+    return SimpleControllerState(parameters=SimpleParameters())
 
 
 def simple_advisory_values(flow: float) -> SimpleInOut:
@@ -158,7 +169,5 @@ def simple_control_values(flow: float) -> SimpleInOut:
     )
 
 
-class SimpleAlarms(
-    BaseAlarms[SimpleInOut, SimpleInOut, SimpleParameters, SimpleControllerState]
-):
+class SimpleAlarms(BaseAlarms[SimpleInOut, SimpleInOut, SimpleControllerState]):
     pass

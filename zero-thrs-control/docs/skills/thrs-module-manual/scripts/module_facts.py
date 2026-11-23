@@ -167,7 +167,7 @@ def describe_modes(description: Any, control: Any) -> None:
     """
     print("## Control modes (what the operator sees)\n")
     print("Mode dimensions reported by this module:\n")
-    for name in description.control_mode_cls.model_fields:
+    for name in type(control.mode).model_fields:
         print(f"- {name}")
     print()
     for label, member in (

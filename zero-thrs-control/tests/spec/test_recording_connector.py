@@ -8,7 +8,7 @@ from pydantic import computed_field
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.classes.control import ControlMode
-from thrs.control.switching import AutomationMode
+from thrs.control.state import AutomationMode, ControlState
 from thrs.input_output.base import ThrsValues, component_meta, computed_meta
 from thrs.orchestration.comms import (
     ControlChannels,
@@ -35,6 +35,10 @@ from thrs.spec.recording_connector import (
 
 class SampleStatus(ThrsValues):
     code: int
+
+
+class EmptyControllerState(ControlState[ThrsValues, ThrsValues, ThrsValues]):
+    """A controller state with no controllers, only what every module publishes."""
 
 
 class CustomMode(ControlMode):
@@ -248,6 +252,7 @@ def test_directives_channels_pair_status_with_status_set(settings: Config):
     ("state", "payload_type"),
     [
         ("automation-mode", AutomationMode),
+        ("parameters", ThrsValues),
         ("control-values", ThrsValues),
         ("manual-values", ThrsValues),
     ],
@@ -261,8 +266,7 @@ def test_control_channels_pair_state_with_its_set(
         control_values_cls=ThrsValues,
         parameters_cls=ThrsValues,
         control=None,  # type: ignore
-        control_mode_cls=ThrsValues,
-        controller_state_cls=ThrsValues,
+        controller_state_cls=EmptyControllerState,
         alarms=None,  # type: ignore
     )
 
@@ -291,8 +295,7 @@ def test_collect_topics_wires_channels(settings: Config):
                 control_values_cls=ThrsValues,
                 parameters_cls=ThrsValues,
                 control=None,  # type: ignore
-                control_mode_cls=ThrsValues,
-                controller_state_cls=ThrsValues,
+                controller_state_cls=EmptyControllerState,
                 alarms=None,  # type: ignore
             ),
         },
@@ -312,7 +315,15 @@ def test_collect_topics_wires_channels(settings: Config):
     assert isinstance(topics, list)
     assert topics == [
         TopicMapping(
-            topic="test_controller_topic/test/parameters",
+            topic="test_controller_topic/test/automation-mode",
+            payload_type=AutomationMode,
+            direction="send",
+            component_type=None,
+            qos=1,
+            retain=False,
+        ),
+        TopicMapping(
+            topic="test_controller_topic/test/manual-values",
             payload_type=ThrsValues,
             direction="send",
             component_type=None,
@@ -328,15 +339,7 @@ def test_collect_topics_wires_channels(settings: Config):
             retain=False,
         ),
         TopicMapping(
-            topic="test_controller_topic/test/automation-mode",
-            payload_type=AutomationMode,
-            direction="send",
-            component_type=None,
-            qos=1,
-            retain=False,
-        ),
-        TopicMapping(
-            topic="test_controller_topic/test/control-values",
+            topic="test_controller_topic/test/parameters",
             payload_type=ThrsValues,
             direction="send",
             component_type=None,
@@ -344,7 +347,7 @@ def test_collect_topics_wires_channels(settings: Config):
             retain=False,
         ),
         TopicMapping(
-            topic="test_controller_topic/test/manual-values",
+            topic="test_controller_topic/test/control-values",
             payload_type=ThrsValues,
             direction="send",
             component_type=None,

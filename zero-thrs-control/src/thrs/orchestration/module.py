@@ -7,10 +7,8 @@ from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.manual import ManualControl
-from thrs.control.switching import (
-    AutomationMode,
-    Switching,
-)
+from thrs.control.state import AutomationMode, ControlState
+from thrs.control.switching import Switching
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.definitions.system import AmcsExternalAvailable
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
@@ -32,7 +30,7 @@ class ModuleDescription[
     M: ThrsValues,
     CS: ThrsValues,
 ]:
-    """Description of a module with sensor values, control values, control parameters and control mode models and the control & alarm logic"""
+    """Description of a module with sensor values, control values, control parameters and controller state models and the control & alarm logic"""
 
     def __init__(
         self,
@@ -42,14 +40,12 @@ class ModuleDescription[
         control: Callable[
             [P, Callable[[], datetime], StateLogger], Control[S, C, P, M, CS]
         ],
-        control_mode_cls: type[M],
         controller_state_cls: type[CS],
-        alarms: Callable[[], BaseAlarms[S, C, P, CS]],
+        alarms: Callable[[], BaseAlarms[S, C, CS]],
     ):
         self.sensor_values_cls = sensor_values_cls
         self.control_values_cls = control_values_cls
         self.parameters_cls = parameters_cls
-        self.control_mode_cls = control_mode_cls
         self.controller_state_cls = controller_state_cls
         self.control = control
         self.alarms = alarms
@@ -60,7 +56,7 @@ class Module[
     C: AmcsWatchdogControlValues,
     P: ThrsValues,
     M: ThrsValues,
-    CS: ThrsValues,
+    CS: ControlState,
 ]:
     def __init__(
         self,
@@ -172,7 +168,6 @@ class Module[
         alarms: list[Alarm] = self._alarms.check(
             sensor_values,
             control_values,
-            self._control.parameters,
             controller_state,
         )
 
@@ -190,15 +185,9 @@ class Module[
             await self._channels.send_computed_values(sensor_values)
         await self._channels.send_control_values(control_values)
         await self._channels.send_controller_state(controller_state)
-        await self._channels.send_parameters(self._control.parameters)
-        await self._channels.send_control_modes(self._control.mode)
-        await self._channels.send_automation_mode(
-            AutomationMode(mode=self._control.control_mode)
-        )
         actuated_control_values = self._channels.get_actuated_control_values()
         if actuated_control_values is not None:
             await self._channels.send_actuated_control_values(actuated_control_values)
-        await self._channels.send_manual_control(self._control.manual_controls)
 
     async def tick(self, sensor_values: S | None) -> C:
         if sensor_values is None:
@@ -207,7 +196,7 @@ class Module[
                 self._name,
             )
             control_values = self._control.manual_controls
-            _, controller_state = self._control.automatic_control.initial()
+            controller_state = self._control.idle_state()
         else:
             control_values, controller_state = self.execute_control(sensor_values)
 

@@ -73,6 +73,8 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DrivesControllerState:  # 
         drives_pump_controller_propulsion=PidController.zero(timestamp),
         drives_aft_flow_controller=PidController.zero(timestamp),
         drives_fwd_flow_controller=PidController.zero(timestamp),
+        parameters=DrivesParameters(),
+        control_mode=None,
     )
 
 
@@ -303,6 +305,8 @@ class DrivesControl(
             drives_pump_controller_propulsion=self._pump_controller_propulsion.values(),
             drives_aft_flow_controller=self._aft_flow_controller.values(),
             drives_fwd_flow_controller=self._fwd_flow_controller.values(),
+            parameters=self._parameters,
+            control_mode=self.mode,
         )
 
         return (self._current_values, controller_state)
@@ -481,7 +485,6 @@ DRIVES_MODULE_DESCRIPTION = ModuleDescription(
     DrivesControlValues,
     DrivesParameters,
     DrivesControl,
-    DrivesControlMode,
     DrivesControllerState,
     DrivesAlarms,
 )

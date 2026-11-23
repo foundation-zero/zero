@@ -401,8 +401,8 @@ async def test_restore_with_out_of_bound_value_never_reaches_mqtt():
 
     await module.tick(SimpleInOut.zero())
 
-    sent_parameters = channels.send_parameters.call_args.args[0]
-    assert sent_parameters.setpoint == 50.0
+    sent_controller_state = channels.send_controller_state.call_args.args[0]
+    assert sent_controller_state.parameters.setpoint == 50.0
 
 
 async def test_restore_with_malformed_control_mode_keeps_module_untouched():

@@ -65,6 +65,8 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> AdsorptionControllerState:
         adsorption_hot_mix_controller=PidController.zero(timestamp),
         adsorption_recovery_controller=PidController.zero(timestamp),
         adsorption_waste_cooling_controller=PidController.zero(timestamp),
+        parameters=AdsorptionParameters(),
+        control_mode=None,
     )
 
 
@@ -257,6 +259,8 @@ class AdsorptionControl(
             adsorption_hot_mix_controller=self._hot_mix_controller.values(),
             adsorption_recovery_controller=self._recovery_controller.values(),
             adsorption_waste_cooling_controller=self._waste_cooling_controller.values(),
+            parameters=self._parameters,
+            control_mode=self.mode,
         )
 
     def _disable_hot_mix(self):
@@ -344,7 +348,6 @@ ADSORPTION_MODULE_DESCRIPTION = ModuleDescription(
     AdsorptionControlValues,
     AdsorptionParameters,
     AdsorptionControl,
-    AdsorptionControlMode,
     AdsorptionControllerState,
     AdsorptionAlarms,
 )

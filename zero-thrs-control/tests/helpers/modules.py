@@ -3,17 +3,13 @@ from unittest import mock
 
 from pydantic import Field
 
-from tests.orchestration.simples import (
-    SimpleControllerState,
-    SimpleInOut,
-    SimpleMode,
-    simple_control_values,
-)
+from tests.orchestration.simples import SimpleInOut, SimpleMode, simple_control_values
 from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import (
     MachineStateLoggingServiceNoop,
     StateLogger,
 )
+from thrs.control.state import ControlState
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import ThrsValues
 from thrs.orchestration.module import Module, ModuleDescription
@@ -24,8 +20,14 @@ class ConfigurableParameters(ThrsValues):
     setpoint: float = Field(default=50.0, ge=0.0, le=100.0)
 
 
+class ConfigurableControllerState(
+    ControlState[SimpleInOut, ConfigurableParameters, SimpleMode]
+):
+    pass
+
+
 class ConfigurableAlarms(
-    BaseAlarms[SimpleInOut, SimpleInOut, ConfigurableParameters, SimpleControllerState]
+    BaseAlarms[SimpleInOut, SimpleInOut, ConfigurableControllerState]
 ):
     pass
 
@@ -36,7 +38,7 @@ class ConfigurableControl(
         SimpleInOut,
         ConfigurableParameters,
         SimpleMode,
-        SimpleControllerState,
+        ConfigurableControllerState,
     ]
 ):
     def __init__(
@@ -52,13 +54,21 @@ class ConfigurableControl(
         )
         self._current_values: SimpleInOut = SimpleInOut.zero()
 
-    def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
-        return (SimpleInOut.zero(), SimpleControllerState())
+    def initial(self) -> tuple[SimpleInOut, ConfigurableControllerState]:
+        return (
+            SimpleInOut.zero(),
+            ConfigurableControllerState(parameters=ConfigurableParameters()),
+        )
 
     def control(
         self, sensor_values: SimpleInOut
-    ) -> tuple[SimpleInOut, SimpleControllerState]:
-        return (sensor_values, SimpleControllerState())
+    ) -> tuple[SimpleInOut, ConfigurableControllerState]:
+        return (
+            sensor_values,
+            ConfigurableControllerState(
+                parameters=self._parameters, control_mode=self.mode
+            ),
+        )
 
     @property
     def parameters(self) -> ConfigurableParameters:
@@ -83,7 +93,7 @@ type ConfigurableModule = Module[
     SimpleInOut,
     ConfigurableParameters,
     SimpleMode,
-    SimpleControllerState,
+    ConfigurableControllerState,
 ]
 
 
@@ -110,7 +120,6 @@ def make_async_channels() -> mock.Mock:
     channels.send_control_modes = mock.AsyncMock()
     channels.send_automation_mode = mock.AsyncMock()
     channels.send_actuated_control_values = mock.AsyncMock()
-    channels.send_manual_control = mock.AsyncMock()
     return channels
 
 
@@ -119,8 +128,7 @@ CONFIGURABLE_MODULE_DESCRIPTION = ModuleDescription(
     SimpleInOut,
     ConfigurableParameters,
     ConfigurableControl,
-    SimpleMode,
-    SimpleControllerState,
+    ConfigurableControllerState,
     ConfigurableAlarms,
 )
 

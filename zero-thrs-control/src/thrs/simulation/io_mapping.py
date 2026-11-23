@@ -1,5 +1,6 @@
 import operator
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from datetime import datetime
 from enum import Enum
 from functools import reduce
@@ -21,18 +22,26 @@ def get_value(model, component: str, field: str) -> Any:
     return val
 
 
+type KeyMapping = Callable[[type[ThrsValues]], dict[tuple[str, str], str]]
+
+
 def flatten_model_values(
-    model: ThrsValues | CombinedValues, fmu_key_mapping: dict[tuple[str, str], str]
+    model: ThrsValues | CombinedValues, key_mapping: KeyMapping
 ) -> dict[str, float]:
+    """The model's values by key, the keys and what they hold coming from `key_mapping`.
+
+    It maps a model's class to `{(component, field): key}`, so each model of combined
+    values is flattened with keys of its own.
+    """
     if isinstance(model, CombinedValues):
         return reduce(
             operator.ior,
-            [flatten_model_values(v, fmu_key_mapping) for v in model.values.values()],
+            [flatten_model_values(v, key_mapping) for v in model.values.values()],
             {},
         )
     return {
-        fmu_key: get_value(model, component, field)
-        for (component, field), fmu_key in fmu_key_mapping.items()
+        key: get_value(model, component, field)
+        for (component, field), key in key_mapping(type(model)).items()
     }
 
 
@@ -81,16 +90,8 @@ class CombinedIoMapping[I: ThrsValues, O: ThrsValues](
         simulation_inputs: I,
     ) -> dict[str, Any]:
         return {
-            **{
-                key: value
-                for model in control_values.values.values()
-                for key, value in flatten_model_values(
-                    model, self._fmu_key_mapping(type(model))
-                ).items()
-            },
-            **flatten_model_values(
-                simulation_inputs, self._fmu_key_mapping(type(simulation_inputs))
-            ),
+            **flatten_model_values(control_values, self._fmu_key_mapping),
+            **flatten_model_values(simulation_inputs, self._fmu_key_mapping),
         }
 
     def construct_outputs(

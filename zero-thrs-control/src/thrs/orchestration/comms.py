@@ -14,7 +14,7 @@ from aiomqtt import Client
 from pydantic import TypeAdapter
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
-from thrs.control.switching import AutomationMode
+from thrs.control.state import AutomationMode
 from thrs.input_output.base import CombinedValues, ThrsValues, get_topic
 from thrs.input_output.definitions.wire_context import (
     AMCS_RECEIVE_CONTEXT,
@@ -137,14 +137,17 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         )
 
     def split_to_topics(self, model: M) -> dict[str, str]:
+        """A `None` component sends an empty payload, which clears its topic."""
         fields = (
             self._cls.model_computed_fields
             if self._only_computed_fields
             else self._cls.model_fields
         )
         return {
-            self._topic(key, field): getattr(model, key).model_dump_json(
-                by_alias=True, context=self._context
+            self._topic(key, field): (
+                ""
+                if (component := getattr(model, key)) is None
+                else component.model_dump_json(by_alias=True, context=self._context)
             )
             for key, field in fields.items()
         }
@@ -470,50 +473,12 @@ class ControlChannels[
             ),
             qos=publish_qos,
         )
-        self.send_parameters = connector._create_publisher(
-            DirectMqttMapping[P].for_module(
-                control_module.parameters_cls,
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="parameters",
-            ),
-            qos=publish_qos,
-        )
-
-        # Cleared while the module is manual.
-        self.send_control_modes = connector._create_publisher(
-            DirectMqttMapping[M].for_module(
-                control_module.control_mode_cls,
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="control-mode",
-            ),
-            qos=publish_qos,
-        )
-        self.send_automation_mode = connector._create_publisher(
-            DirectMqttMapping[AutomationMode].for_module(
-                AutomationMode,
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="automation-mode",
-            ),
-            qos=publish_qos,
-        )
         self.send_actuated_control_values = connector._create_publisher(
             DirectMqttMapping[C].for_module(
                 control_module.control_values_cls,
                 config.mqtt_controller_topic_prefix,
                 module_name,
                 type_topic="control-values",
-            ),
-            qos=publish_qos,
-        )
-        self.send_manual_control = connector._create_publisher(
-            DirectMqttMapping[C].for_module(
-                control_module.control_values_cls,
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="manual-values",
             ),
             qos=publish_qos,
         )

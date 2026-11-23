@@ -14,7 +14,7 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
-from thrs.control.switching import AutomationMode
+from thrs.control.state import AutomationMode
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
 from thrs.orchestration.log import setup_logging

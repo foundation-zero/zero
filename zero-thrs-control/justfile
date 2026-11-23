@@ -32,7 +32,7 @@ run module='thrs': (run_lockstep module)
 [parallel]
 run_split module='thrs': (run_control module) (run_simulation module)
 
-check: lint type_check test test_mqtt
+check: lint format type_check test test_mqtt
 
 check_static: lint_no_fix format type_check
 

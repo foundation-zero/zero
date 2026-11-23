@@ -19,7 +19,7 @@ class Alarm:
     severity: Severity
 
 
-class BaseAlarms[SensorValues, ControlValues, Parameters, ControllerState]:
+class BaseAlarms[SensorValues, ControlValues, ControllerState]:
     def __init__(self) -> None:
         self._checks = getmembers(
             self, lambda f: hasattr(f, "__alarm_code__") and f.__alarm_code__
@@ -35,12 +35,11 @@ class BaseAlarms[SensorValues, ControlValues, Parameters, ControllerState]:
         self,
         sensor_values: SensorValues,
         control_values: ControlValues,
-        parameters: Parameters,
         controller_state: ControllerState,
     ) -> list[Alarm]:
         def _check():
             for _, f in self._checks:
-                alarm = f(sensor_values, control_values, parameters, controller_state)
+                alarm = f(sensor_values, control_values, controller_state)
                 if alarm is not None:
                     yield alarm
 
