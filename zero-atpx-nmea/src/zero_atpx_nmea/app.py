@@ -34,14 +34,12 @@ def build_app(
     the same `vernemq` instance) because in production `ATPX_MQTT_HOST` is a
     different, unauthenticated broker on A+T's side.
     """
-    # Required fields are sourced from the environment by pydantic-settings
-    # at runtime; pyright can't see that, hence the ignores below.
-    input_settings = input_settings or InputMqttSettings()  # type: ignore[call-arg]
-    output_settings = output_settings or OutputMqttSettings()  # type: ignore[call-arg]
+    input_settings = input_settings or InputMqttSettings()
+    output_settings = output_settings or OutputMqttSettings()
 
     input_broker = input_settings.make_broker()
     output_broker = output_settings.make_broker()
-    dropped = 0
+    dropped: int = 0
 
     @input_broker.subscriber(INPUT_TOPIC, description="Raw A+T NMEA 0183 sentences")
     async def handle(raw_sentence: str, message: MQTTMessage) -> None:
