@@ -1,4 +1,5 @@
 from datetime import UTC, datetime, timedelta
+from functools import partial
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, Mock, call
 
@@ -11,7 +12,6 @@ from thrs.control.modules.thrusters.control import ThrustersAlarms, ThrustersCon
 from thrs.control.modules.thrusters.io import (
     ThrustersControlValues,
     ThrustersSensorValues,
-    ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
 from thrs.control.modules.thrusters.state import (
@@ -97,55 +97,17 @@ def test_simulation_test_runner():
         assert frame is not None
         assert frame["time"][-1] - frame["time"][0] == timedelta(seconds=19)
 
-        not_in_fmu = set(
-            {
-                **flatten_model_values(
-                    ThrustersSensorValues.zero(),
-                    fmu_key_mapping=build_fmu_key_mapping(
-                        ThrustersSensorValues, fmu_only=False
-                    ),
-                ),
-                **flatten_model_values(
-                    ThrustersControlValues.zero(),
-                    fmu_key_mapping=build_fmu_key_mapping(
-                        ThrustersControlValues, fmu_only=False
-                    ),
-                ),
-                **flatten_model_values(
-                    ThrustersControllerState.zero(),
-                    fmu_key_mapping=build_fmu_key_mapping(
-                        ThrustersControllerState, fmu_only=False
-                    ),
-                ),
-                **flatten_model_values(
-                    simulation_inputs,
-                    fmu_key_mapping=build_fmu_key_mapping(
-                        ThrustersSimulationInputs, fmu_only=False
-                    ),
-                ),
-            }
-        ) - set(
-            {
-                **flatten_model_values(
-                    ThrustersSensorValues.zero(),
-                    fmu_key_mapping=build_fmu_key_mapping(
-                        ThrustersSensorValues, fmu_only=True
-                    ),
-                ),
-                **flatten_model_values(
-                    ThrustersControlValues.zero(),
-                    fmu_key_mapping=build_fmu_key_mapping(
-                        ThrustersControlValues, fmu_only=True
-                    ),
-                ),
-                **flatten_model_values(
-                    simulation_inputs,
-                    fmu_key_mapping=build_fmu_key_mapping(
-                        ThrustersSimulationInputs, fmu_only=True
-                    ),
-                ),
-            }
-        )
+        all_keys = partial(build_fmu_key_mapping, fmu_only=False)
+        not_in_fmu = {
+            *flatten_model_values(ThrustersSensorValues.zero(), all_keys),
+            *flatten_model_values(ThrustersControlValues.zero(), all_keys),
+            *flatten_model_values(ThrustersControllerState.zero(), all_keys),
+            *flatten_model_values(simulation_inputs, all_keys),
+        } - {
+            *flatten_model_values(ThrustersSensorValues.zero(), build_fmu_key_mapping),
+            *flatten_model_values(ThrustersControlValues.zero(), build_fmu_key_mapping),
+            *flatten_model_values(simulation_inputs, build_fmu_key_mapping),
+        }
 
         assert (
             set(frame.columns)

@@ -2,6 +2,7 @@ from collections import deque
 from collections.abc import Callable, Hashable, Iterator
 from copy import deepcopy
 from datetime import timedelta
+from functools import partial
 from itertools import groupby
 from math import ceil
 from typing import Any, cast
@@ -16,22 +17,8 @@ from thrs.orchestration.comms import SimulationChannels
 from thrs.orchestration.simulation import Simulation, SimulationUnit
 from thrs.simulation.io_mapping import flatten_model_values
 
-
-def _flatten_for_collector(values: ThrsValues | CombinedValues) -> dict[str, float]:
-    if isinstance(values, CombinedValues):
-        return {
-            key: value
-            for model in values.values.values()
-            for key, value in flatten_model_values(
-                model,
-                build_fmu_key_mapping(type(model), fmu_only=False),
-            ).items()
-        }
-
-    return flatten_model_values(
-        values,
-        build_fmu_key_mapping(type(values), fmu_only=False),
-    )
+# The collector also keeps what the FMU does not exchange.
+_all_keys = partial(build_fmu_key_mapping, fmu_only=False)
 
 
 class _CombinedControlAdapter[
@@ -209,11 +196,11 @@ class SimulationTestRunner[
         if collector is not None:
             collector.collect(  # TODO: fix the fmu key mapping here, this is just a quick fix to get the tests working
                 {
-                    **_flatten_for_collector(result.sensor_values),
-                    **_flatten_for_collector(result.control_values),
-                    **_flatten_for_collector(self._controller_state),
-                    **_flatten_for_collector(result.simulation_outputs),
-                    **_flatten_for_collector(result.simulation_inputs),
+                    **flatten_model_values(result.sensor_values, _all_keys),
+                    **flatten_model_values(result.control_values, _all_keys),
+                    **flatten_model_values(self._controller_state, _all_keys),
+                    **flatten_model_values(result.simulation_outputs, _all_keys),
+                    **flatten_model_values(result.simulation_inputs, _all_keys),
                 },
                 str(self._control.mode),
                 result.timestamp,
