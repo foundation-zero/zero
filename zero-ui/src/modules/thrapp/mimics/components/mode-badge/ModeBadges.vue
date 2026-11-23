@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ThrsModules } from "@/modules/thrapp/lib/consts";
 import { HTMLAttributes, toRef } from "vue";
-import { ModeBadge, ModeBadgeSize, useModuleMode } from ".";
+import { ModeBadge, ModeBadgeSize, ModeTarget, useModuleMode } from ".";
 
 const props = withDefaults(
   defineProps<{
     module?: keyof ThrsModules;
     /** Only show these targets of a multi-target module, e.g. `["owners"]` for PVT. */
-    targets?: string[];
+    targets?: ModeTarget[];
     size: ModeBadgeSize;
     class?: HTMLAttributes["class"];
   }>(),

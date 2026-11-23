@@ -1,3 +1,4 @@
+import { ModeTarget } from "@/modules/thrapp/mimics/components/mode-badge";
 import { MimicKey } from "@/modules/thrapp/router/mimics";
 import { ModuleGroup } from "./sub-navigation.types";
 
@@ -30,7 +31,7 @@ export const MODULE_GROUPS: ModuleGroup[] = [
  * biminis show the state of their own groups: main bimini 9001-01 (FWD) and 9002-01 (AFT), owners
  * bimini 9001-03.
  */
-export const SUB_MODULE_MODE_TARGETS: Partial<Record<MimicKey, string[]>> = {
+export const SUB_MODULE_MODE_TARGETS: Partial<Record<MimicKey, ModeTarget[]>> = {
   "pvt-main": ["fwd", "aft"],
   "pvt-owners": ["owners"],
 };

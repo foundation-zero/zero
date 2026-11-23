@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { cn, tScoped } from "@/modules/common/lib/utils";
 import { ThrsModules } from "@/modules/thrapp/lib/consts";
-import { ModeBadges, ModeBadgeSize } from "@/modules/thrapp/mimics/components/mode-badge";
+import {
+  ModeBadges,
+  ModeBadgeSize,
+  ModeTarget,
+} from "@/modules/thrapp/mimics/components/mode-badge";
 import { HTMLAttributes } from "vue";
 
 const props = defineProps<{
   module?: keyof ThrsModules;
-  targets?: string[];
+  targets?: ModeTarget[];
   class?: HTMLAttributes["class"];
 }>();
 

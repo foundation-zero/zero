@@ -553,7 +553,6 @@
         "heat": "Heat",
         "charged": "Charged",
         "estBatteryLoad": "Est. battery load",
-        "electricGeneration": "Electric generation",
         "internalTemperature": "Internal temp",
         "power": "Power"
       }

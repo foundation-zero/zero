@@ -323,7 +323,7 @@ export type CustomFieldDefinitions = CustomFields<{
     circuitName: string;
     modeModule?: keyof ControlStatus["modules"];
     /** Only show the modes of these targets of `modeModule`, e.g. one PVT group. */
-    modeTargets?: string[];
+    modeTargets?: (PvtGroup | DcConverterGroup)[];
   };
   [MimicComponentType.FreshwaterCircuit]: {
     width?: number | string;
