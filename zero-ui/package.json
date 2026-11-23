@@ -20,7 +20,9 @@
     "render-manual": "tsx scripts/render-manual.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@foundation-zero/graphql-subscriptions-mock": "^1.0.2",
@@ -99,7 +101,11 @@
     "vitepress": "2.0.0-alpha.21",
     "vitest": "5.1.0",
     "vue-eslint-parser": "10.4.2",
-    "vue-tsc": "3.3.14"
+    "vue-tsc": "3.3.14",
+    "storybook": "10.6.6",
+    "@storybook/vue3-vite": "10.6.6",
+    "@storybook/addon-docs": "10.6.6",
+    "eslint-plugin-storybook": "10.6.6"
   },
   "packageManager": "pnpm@12.18.0+sha512.9d7882d5dc82147ecfc4e062aa34834e0ad0296710a1837a1115ae012127d36b7109e321ac1598a1dd0a65597681b1e99917e12ed0d749eae91187943363beb3"
 }
