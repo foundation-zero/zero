@@ -229,7 +229,6 @@ CONSUMERS_MODULE_DESCRIPTION = ModuleDescription(
     ConsumersControlValues,
     ConsumersParameters,
     ConsumersControl,
-    ConsumersControlMode,
     ConsumersControllerState,
     ConsumersAlarms,
 )

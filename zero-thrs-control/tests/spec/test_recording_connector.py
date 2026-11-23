@@ -266,7 +266,6 @@ def test_control_channels_pair_state_with_its_set(
         control_values_cls=ThrsValues,
         parameters_cls=ThrsValues,
         control=None,  # type: ignore
-        control_mode_cls=ThrsValues,
         controller_state_cls=EmptyControllerState,
         alarms=None,  # type: ignore
     )
@@ -296,7 +295,6 @@ def test_collect_topics_wires_channels(settings: Config):
                 control_values_cls=ThrsValues,
                 parameters_cls=ThrsValues,
                 control=None,  # type: ignore
-                control_mode_cls=ThrsValues,
                 controller_state_cls=EmptyControllerState,
                 alarms=None,  # type: ignore
             ),

@@ -1381,7 +1381,6 @@ DHW_MODULE_DESCRIPTION = ModuleDescription(
     DhwControlValues,
     DhwParameters,
     DhwControl,
-    DhwControlMode,
     DhwControllerState,
     DhwAlarms,
 )

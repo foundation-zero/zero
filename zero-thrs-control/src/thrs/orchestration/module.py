@@ -33,7 +33,7 @@ class ModuleDescription[
     M: ThrsValues,
     CS: ThrsValues,
 ]:
-    """Description of a module with sensor values, control values, control parameters and control mode models and the control & alarm logic"""
+    """Description of a module with sensor values, control values, control parameters and controller state models and the control & alarm logic"""
 
     def __init__(
         self,
@@ -43,14 +43,12 @@ class ModuleDescription[
         control: Callable[
             [P, Callable[[], datetime], StateLogger], Control[S, C, P, M, CS]
         ],
-        control_mode_cls: type[M],
         controller_state_cls: type[CS],
         alarms: Callable[[], BaseAlarms[S, C, CS]],
     ):
         self.sensor_values_cls = sensor_values_cls
         self.control_values_cls = control_values_cls
         self.parameters_cls = parameters_cls
-        self.control_mode_cls = control_mode_cls
         self.controller_state_cls = controller_state_cls
         self.control = control
         self.alarms = alarms

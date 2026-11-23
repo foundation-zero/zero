@@ -635,7 +635,6 @@ THRUSTERS_MODULE_DESCRIPTION = ModuleDescription(
     ThrustersControlValues,
     ThrustersParameters,
     ThrustersControl,
-    ThrustersControlMode,
     ThrustersControllerState,
     ThrustersAlarms,
 )

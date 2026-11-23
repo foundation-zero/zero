@@ -314,7 +314,6 @@ class TestControlChannelsAutoclear:
             SimpleInOut,
             SimpleParameters,
             lambda *_args, **_kwargs: mock.Mock(),
-            SimpleMode,
             SimpleControllerState,
             mock.Mock,
         )
@@ -365,7 +364,6 @@ class TestControlChannelsPublishQos:
             SimpleInOut,
             SimpleParameters,
             lambda *_args, **_kwargs: mock.Mock(),
-            SimpleMode,
             SimpleControllerState,
             mock.Mock,
         )

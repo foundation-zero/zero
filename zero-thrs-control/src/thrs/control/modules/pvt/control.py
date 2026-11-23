@@ -344,7 +344,6 @@ PVT_MODULE_DESCRIPTION = ModuleDescription(
     PvtControlValues,
     PvtParameters,
     PvtControl,
-    PvtControlMode,
     PvtControllerState,
     PvtAlarms,
 )

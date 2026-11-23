@@ -485,7 +485,6 @@ DRIVES_MODULE_DESCRIPTION = ModuleDescription(
     DrivesControlValues,
     DrivesParameters,
     DrivesControl,
-    DrivesControlMode,
     DrivesControllerState,
     DrivesAlarms,
 )

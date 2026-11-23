@@ -593,7 +593,6 @@ PCM_MODULE_DESCRIPTION = ModuleDescription(
     PcmControlValues,
     PcmParameters,
     PcmControl,
-    PcmControlMode,
     PcmControllerState,
     PcmAlarms,
 )

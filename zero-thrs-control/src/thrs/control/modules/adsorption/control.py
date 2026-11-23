@@ -348,7 +348,6 @@ ADSORPTION_MODULE_DESCRIPTION = ModuleDescription(
     AdsorptionControlValues,
     AdsorptionParameters,
     AdsorptionControl,
-    AdsorptionControlMode,
     AdsorptionControllerState,
     AdsorptionAlarms,
 )

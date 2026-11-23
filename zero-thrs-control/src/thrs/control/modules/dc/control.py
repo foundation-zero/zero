@@ -428,7 +428,6 @@ DC_MODULE_DESCRIPTION = ModuleDescription(
     DcControlValues,
     DcParameters,
     DcControl,
-    DcControlMode,
     DcControllerState,
     DcAlarms,
 )

@@ -128,7 +128,6 @@ CONFIGURABLE_MODULE_DESCRIPTION = ModuleDescription(
     SimpleInOut,
     ConfigurableParameters,
     ConfigurableControl,
-    SimpleMode,
     ConfigurableControllerState,
     ConfigurableAlarms,
 )
