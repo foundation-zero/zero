@@ -17,7 +17,7 @@ dynamic = ["version"]
 [dependency-groups]
 dev = [
     "ruff>=0.17.2,<0.18",
-    "pyright>=1.1.403,<2",
+    "pyrefly~=1.5",
     "fastexcel>=0.21,<0.22",
     "polars>=2.0.0,<3",
     "zero-modbus-bridge[tui]",
@@ -35,6 +35,10 @@ fix = true
 
 [tool.ruff.lint]
 select = ["E4", "E7", "E9", "F", "W", "I"]
+
+[tool.pyrefly]
+project-includes = ["**/*.py*", "**/*.ipynb"]
+type-ignore-unknown-tag-behavior = "no-effect"
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"
