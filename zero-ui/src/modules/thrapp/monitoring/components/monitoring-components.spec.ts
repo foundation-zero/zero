@@ -142,6 +142,53 @@ describe("trendOption", () => {
     ]);
   });
 
+  type Tooltip = { formatter: (params: unknown) => string };
+  const tooltipOf = (option: ReturnType<typeof trendOption>) =>
+    (option.tooltip as Tooltip).formatter;
+  const hovered = (time: number, values: [string, number | null][]) => [
+    { seriesId: "band-0", seriesName: "", value: [time, null], axisValue: time },
+    ...values.map(([name, value]) => ({
+      seriesName: name,
+      value: [time, value],
+      color: "red",
+      axisValue: time,
+    })),
+  ];
+
+  it("lists the hovered values with their unit, skipping bands and missing values", () => {
+    const html = tooltipOf(trendOption(input))(
+      hovered(Date.parse("2026-11-10T09:30:00"), [
+        ["Tank <1>", 48.375],
+        ["tank2", null],
+      ]),
+    );
+    expect(html).toContain("Tank &lt;1&gt;");
+    expect(html).toContain("48.38 °C");
+    expect(html).not.toContain("tank2");
+  });
+
+  it("names the period a point averages, and sums stacked sources", () => {
+    const time = Date.parse("2026-11-10T09:30:00");
+    const html = tooltipOf(
+      trendOption({ ...input, unit: "kW", kind: "stacked", binWidth: 600_000, totalLabel: "Sum" }),
+    )(
+      hovered(time, [
+        ["HT", 2],
+        ["DC", 3.5],
+      ]),
+    );
+    // The point sits in the middle of its 10-minute period: 09:25 to 09:35.
+    const short = (at: string) =>
+      new Date(Date.parse(at)).toLocaleTimeString(undefined, { timeStyle: "short" });
+    expect(html).toContain(short("2026-11-10T09:25:00"));
+    expect(html).toContain(short("2026-11-10T09:35:00"));
+    expect(html).toMatch(/Sum<\/span><span class="tabular-nums">5.5 kW/);
+  });
+
+  it("shows nothing when only bands are hovered", () => {
+    expect(tooltipOf(trendOption(input))(hovered(0, []).slice(0, 1))).toBe("");
+  });
+
   it("shows one line on a first click, then adds and removes, and shows all when complete", () => {
     const all = ["a", "b", "c"];
     const first = toggleShown(null, "a", all);
