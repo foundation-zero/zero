@@ -42,17 +42,6 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ConsumersControlValues:  # n
     )
 
 
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> ConsumersControllerState:  # noqa: N802
-
-    return ConsumersControllerState(
-        consumers_dhw_flow_controller=PidController.zero(timestamp),
-        consumers_bypass_flow_controller=PidController.zero(timestamp),
-        consumers_adsorption_flow_controller=PidController.zero(timestamp),
-        parameters=ConsumersParameters(),
-        control_mode=None,
-    )
-
-
 class ConsumersControl(
     Control[
         ConsumersSensorValues,
@@ -113,7 +102,7 @@ class ConsumersControl(
     def initial(self) -> tuple[ConsumersControlValues, ConsumersControllerState]:
         return (
             _INITIAL_CONTROL_VALUES(self._time()),
-            _INITIAL_CONTROLLER_STATE(self._time()),
+            ConsumersControllerState.zero(self._time()),
         )
 
     def _control_flow_distribution(self, sensor_values: ConsumersSensorValues):

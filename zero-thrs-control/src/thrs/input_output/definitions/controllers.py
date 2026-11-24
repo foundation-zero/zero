@@ -1,6 +1,7 @@
 from enum import Enum
+from typing import Annotated
 
-from thrs.input_output.base import Stamped, ThrsValues
+from thrs.input_output.base import Stamped, ThrsValues, field_meta
 from thrs.input_output.definitions.units import (
     Celsius,
     DeltaT,
@@ -73,9 +74,15 @@ class PidControllerValues(ThrsValues):
 
 
 class TanksControllerValues(ThrsValues):
-    tank1_state: Stamped[TankState]
-    tank2_state: Stamped[TankState]
-    tank3_state: Stamped[TankState]
+    tank1_state: Annotated[
+        Stamped[TankState], field_meta(zero_value=TankState.NEEDS_FILL.value)
+    ]
+    tank2_state: Annotated[
+        Stamped[TankState], field_meta(zero_value=TankState.NEEDS_FILL.value)
+    ]
+    tank3_state: Annotated[
+        Stamped[TankState], field_meta(zero_value=TankState.NEEDS_FILL.value)
+    ]
     time_to_fill: Stamped[Seconds | None]
     time_to_hot: Stamped[Seconds | None]
 

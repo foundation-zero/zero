@@ -71,13 +71,6 @@ class PvtGroupControllerState(ControlMode):
     ]
 
 
-def _INITIAL_PVT_GROUP_CONTROLLER_STATE(timestamp: datetime) -> PvtGroupControllerState:  # noqa: N802
-    return PvtGroupControllerState(
-        pvt_group_warmup_mix_controller=PidController.zero(timestamp),
-        pvt_group_pump_controller=PidController.zero(timestamp),
-    )
-
-
 class PvtGroupControl(
     Control[
         PvtGroupSensorValues,
@@ -195,7 +188,7 @@ class PvtGroupControl(
     def initial(self) -> tuple[PvtGroupControlValues, PvtGroupControllerState]:
         return (
             self._current_values,
-            _INITIAL_PVT_GROUP_CONTROLLER_STATE(self._time()),
+            PvtGroupControllerState.zero(self._time()),
         )
 
     def _string_warm(self, sensor_values: PvtGroupSensorValues):

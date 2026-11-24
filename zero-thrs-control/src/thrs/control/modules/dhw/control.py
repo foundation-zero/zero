@@ -86,24 +86,6 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:  # noqa: N
     )
 
 
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:  # noqa: N802
-
-    return DhwControllerState(
-        dhw_tanks_controller=TanksControllerValues(
-            tank1_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
-            tank2_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
-            tank3_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
-            time_to_fill=Stamped(value=None, timestamp=timestamp),
-            time_to_hot=Stamped(value=None, timestamp=timestamp),
-        ),
-        dhw_drives_flow_controller=PidController.zero(timestamp),
-        dhw_dc_flow_controller=PidController.zero(timestamp),
-        dhw_pump_flow_controller=PidController.zero(timestamp, setpoint=0.0),
-        parameters=DhwParameters(),
-        control_mode=None,
-    )
-
-
 class Tank:
     def __init__(
         self,
@@ -757,11 +739,9 @@ class DhwControl(
         return DhwControlMode(boosting_mode=mode, filling_mode=filling_mode)
 
     def initial(self) -> tuple[DhwControlValues, DhwControllerState]:
-        controller_state = _INITIAL_CONTROLLER_STATE(self._time())
-
         return (
             _INITIAL_CONTROL_VALUES(self._time()).model_copy(deep=True),
-            controller_state.model_copy(deep=True),
+            DhwControllerState.zero(self._time()),
         )
 
     def control(

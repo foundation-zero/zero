@@ -4,7 +4,6 @@ from datetime import datetime
 from thrs.classes.control import Control
 from thrs.control.controllers import PidController
 from thrs.control.modules.dc.converters import (
-    _INITIAL_CONVERTERS_CONTROLLER_STATE,
     ConvertersControl,
     ConvertersControllerState,
     ConvertersControlValues,
@@ -65,22 +64,6 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DcControlValues:  # noqa: N8
         dc_switch_ugrid1=Valve(
             setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
         ),
-    )
-
-
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DcControllerState:  # noqa: N802
-    converter_state = _INITIAL_CONVERTERS_CONTROLLER_STATE(timestamp)
-    return DcControllerState(
-        dc_heat_dump_controller=PidController.zero(timestamp),
-        dc_recovery_mix_controller=PidController.zero(timestamp),
-        dc_brightloops_aft_pump_controller=converter_state.converters_pump_controller,
-        dc_brightloops_aft_warmup_mix_controller=converter_state.converters_warmup_mix_controller,
-        dc_brightloops_fwd_pump_controller=converter_state.converters_pump_controller,
-        dc_brightloops_fwd_warmup_mix_controller=converter_state.converters_warmup_mix_controller,
-        dc_ugrids_pump_controller=converter_state.converters_pump_controller,
-        dc_ugrids_warmup_mix_controller=converter_state.converters_warmup_mix_controller,
-        parameters=DcParameters(),
-        control_mode=None,
     )
 
 
@@ -214,7 +197,7 @@ class DcControl(
     def initial(self) -> tuple[DcControlValues, DcControllerState]:
         return (
             _INITIAL_CONTROL_VALUES(self._time()),
-            _INITIAL_CONTROLLER_STATE(self._time()),
+            DcControllerState.zero(self._time()),
         )
 
     def control(

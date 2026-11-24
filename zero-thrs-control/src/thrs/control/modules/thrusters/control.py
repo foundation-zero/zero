@@ -62,20 +62,6 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ThrustersControlValues:  # n
     )
 
 
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> ThrustersControllerState:  # noqa: N802
-    return ThrustersControllerState(
-        thrusters_heat_dump_controller=PidController.zero(timestamp),
-        thrusters_warmup_mix_controller=PidController.zero(timestamp),
-        thrusters_pump_controller=PidController.zero(timestamp),
-        thrusters_aft_recovery_temperature_controller=PidController.zero(timestamp),
-        thrusters_fwd_recovery_temperature_controller=PidController.zero(timestamp),
-        thrusters_aft_flow_controller=PidController.zero(timestamp),
-        thrusters_fwd_flow_controller=PidController.zero(timestamp),
-        parameters=ThrustersParameters(),
-        control_mode=None,
-    )
-
-
 class ThrustersControl(
     Control[
         ThrustersSensorValues,
@@ -315,7 +301,7 @@ class ThrustersControl(
     def initial(self) -> tuple[ThrustersControlValues, ThrustersControllerState]:
         return (
             _INITIAL_CONTROL_VALUES(self._time()),
-            _INITIAL_CONTROLLER_STATE(self._time()),
+            ThrustersControllerState.zero(self._time()),
         )
 
     def control(

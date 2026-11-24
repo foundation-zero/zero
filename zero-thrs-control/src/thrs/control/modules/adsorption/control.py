@@ -58,17 +58,6 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:  # 
     )
 
 
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> AdsorptionControllerState:  # noqa: N802
-
-    return AdsorptionControllerState(
-        adsorption_hot_mix_controller=PidController.zero(timestamp),
-        adsorption_recovery_controller=PidController.zero(timestamp),
-        adsorption_waste_cooling_controller=PidController.zero(timestamp),
-        parameters=AdsorptionParameters(),
-        control_mode=None,
-    )
-
-
 class AdsorptionControl(
     Control[
         AdsorptionSensorValues,
@@ -191,7 +180,7 @@ class AdsorptionControl(
     def initial(self) -> tuple[AdsorptionControlValues, AdsorptionControllerState]:
         return (
             _INITIAL_CONTROL_VALUES(self._time()),
-            _INITIAL_CONTROLLER_STATE(self._time()),
+            AdsorptionControllerState.zero(self._time()),
         )
 
     def control(
