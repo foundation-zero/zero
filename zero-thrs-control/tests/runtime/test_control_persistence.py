@@ -2,13 +2,13 @@ from typing import cast
 from unittest import mock
 
 from tests.helpers.modules import ConfigurableControllerState, ConfigurableParameters
-from thrs.classes.persistence.engine import (
+from thrs.orchestration.module import Module
+from thrs.persistence.engine import (
     InMemoryPersistentEngine,
     NoopPersistentEngine,
 )
-from thrs.classes.persistence.manager import PersistManager
-from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
-from thrs.orchestration.module import Module
+from thrs.persistence.manager import PersistManager
+from thrs.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.runtime.liveness import Liveness
 from thrs.runtime.runners.control import ControlRunner
 

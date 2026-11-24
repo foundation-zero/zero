@@ -10,8 +10,6 @@ from tests.helpers.simulation_runner import (
     flatten_controller_state,
 )
 from tests.orchestration.simples import simple_control_values, simple_controller_state
-from thrs.classes.persistence.engine import NoopPersistentEngine
-from thrs.classes.persistence.manager import PersistManager
 from thrs.control.modules.thrusters.control import ThrustersAlarms, ThrustersControl
 from thrs.control.modules.thrusters.io import (
     ThrustersControlValues,
@@ -27,6 +25,8 @@ from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 from thrs.orchestration.module import Module
 from thrs.orchestration.simulation import Simulation, SimulationUnit
+from thrs.persistence.engine import NoopPersistentEngine
+from thrs.persistence.manager import PersistManager
 from thrs.runtime.descriptions.simulation import SIMULATION_INPUTS
 from thrs.runtime.runners.control import ControlRunner
 from thrs.runtime.runners.lockstep import LockstepRunner
