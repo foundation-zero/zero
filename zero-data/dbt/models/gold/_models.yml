@@ -224,3 +224,19 @@ models:
         description: "The sub group classification, always 'Lighting'."
       - name: power
         description: "Power the 350 VDC network draws from the 700 VDC bus in W."
+  - name: gld_grid_converter_power_per_minute_per_group
+    description: >
+      The AC side per minute, as two series: Technical / AC unallocated, the grid converters' AC output minus
+      the power tag total; and Losses / Grid converters, their DC input minus AC output. Read by both the main
+      group and the sub group panels. No tests: like the power tag gold views, a test would aggregate the whole
+      history.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the minute interval."
+      - name: main_group
+        description: "The main group classification: 'Technical' or 'Losses'."
+      - name: sub_group
+        description: "The sub group classification: 'AC unallocated' or 'Grid converters'."
+      - name: power
+        description: "AC load without a power tag, or grid converter loss, in W."

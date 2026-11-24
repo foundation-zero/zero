@@ -3970,3 +3970,49 @@ sources:
             description: "Timestamp of the LVDC (low side, 350 VDC) voltage in V reading."
           - name: lvdc_voltage__value
             description: "LVDC (low side, 350 VDC) voltage in V."
+      - name: marpower__dc_ac__inverter
+        description: "The two uGrid grid converters (Aradex DC/AC inverters =05.11-U101 aft, =05.12-U101 fwd) between the 700 VDC bus and the 400 VAC switchboard, from Marpower, one row per converter. Only the columns we model are listed."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: topic
+            description: "MQTT topic associated with the raw message."
+          - name: technical_name
+            description: "The device within the table: the topic's last level."
+          - name: pv_current__has_value
+            description: "Indicates whether a value is present for the DC input current in A."
+          - name: pv_current__is_valid
+            description: "Indicates whether the DC input current in A value is valid."
+          - name: pv_current__timestamp
+            description: "Timestamp of the DC input current in A reading."
+          - name: pv_current__value
+            description: "DC input current in A."
+          - name: pv_power__has_value
+            description: "Indicates whether a value is present for the DC input power from the 700 VDC bus in kW."
+          - name: pv_power__is_valid
+            description: "Indicates whether the DC input power from the 700 VDC bus in kW value is valid."
+          - name: pv_power__timestamp
+            description: "Timestamp of the DC input power from the 700 VDC bus in kW reading."
+          - name: pv_power__value
+            description: "DC input power from the 700 VDC bus in kW."
+      - name: marpower__ac_400v__breaker
+        description: "The incoming breakers of the 400 VAC switchboard from the grid converters (10P0-1 Q01 from =05.11-U101, 10P0-3 Q01 from =05.12-U101), from Marpower, one row per breaker. Only the columns we model are listed."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: topic
+            description: "MQTT topic associated with the raw message."
+          - name: technical_name
+            description: "The device within the table: the topic's last level."
+          - name: active_power__has_value
+            description: "Indicates whether a value is present for the active power through the breaker in W, positive into the 400 VAC switchboard."
+          - name: active_power__is_valid
+            description: "Indicates whether the active power through the breaker in W, positive into the 400 VAC switchboard value is valid."
+          - name: active_power__timestamp
+            description: "Timestamp of the active power through the breaker in W, positive into the 400 VAC switchboard reading."
+          - name: active_power__value
+            description: "Active power through the breaker in W, positive into the 400 VAC switchboard."

@@ -257,3 +257,35 @@ models:
         description: "HVDC (700 VDC side) power in W, positive from the 700 VDC bus to the 350 VDC network."
         tests:
           - not_null
+  - name: slv_grid_converters
+    description: >
+      Power of the two grid converters on both sides in W: the DC input from the 700 VDC bus and the AC
+      output into the 400 VAC switchboard, measured at its incoming breaker.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: converter
+        description: "The grid converter's designation; the AC breakers are mapped to the converter that feeds them."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["05-11-u101", "05-12-u101"]
+      - name: side
+        description: "'dc' for the input from the 700 VDC bus, 'ac' for the output into the 400 VAC switchboard."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["dc", "ac"]
+      - name: power
+        description: "Power in W, positive from the 700 VDC bus to the 400 VAC switchboard."
+        tests:
+          - not_null
