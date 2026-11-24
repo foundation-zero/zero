@@ -723,7 +723,7 @@ class DhwControl(
             time_fn=self._time,
         )
 
-    def update_controller_state(self, sensor_values: DhwSensorValues):
+    def _update_controller_state(self, sensor_values: DhwSensorValues):
         self._current_controller_state.dhw_tanks_controller = (
             self._tanks_controller.values(
                 sensor_values=sensor_values,
@@ -786,7 +786,7 @@ class DhwControl(
         self._control_filling_flow(sensor_values)
         self._control_boosting_flow(sensor_values)
 
-        self.update_controller_state(sensor_values)
+        self._update_controller_state(sensor_values)
 
         return (self._current_values, self._current_controller_state)
 
