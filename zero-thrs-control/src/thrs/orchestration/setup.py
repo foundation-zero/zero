@@ -12,6 +12,7 @@ from thrs.classes.persistence.engine import (
     PostgresPersistentEngine,
 )
 from thrs.classes.persistence.manager import PersistManager
+from thrs.control.state import ControlModes
 from thrs.orchestration.comms import (
     ControlChannels,
     MqttConnector,
@@ -110,27 +111,40 @@ async def _is_postgres_reachable(database: PostgresDatabase) -> bool:
     return True
 
 
-def setup_control_modules(
+async def setup_control_modules(
     connector: MqttConnector,
     config: Config,
     control_modules: dict[str, ModuleDescription],
     time_fn: Callable[[], datetime],
-    database: PostgresDatabase | None,
+    persistence: PersistManager,
     publish_qos: int = 1,
 ) -> list[Module]:
+    """Build the control modules, each starting from its stored configuration if
+    there is one, or else its default parameters in manual. Raises if a stored
+    configuration no longer validates against its module's parameters."""
     result = []
 
-    for module_name, module in control_modules.items():
-        channel = ControlChannels(
-            connector, config, module_name, module, publish_qos=publish_qos
-        )
+    for module_name, description in control_modules.items():
+        parameters = None
+        automation_mode: ControlModes = "manual"
+        stored = await persistence.load(module_name)
+        if stored is not None:
+            automation_mode = stored.control_mode
+            if stored.parameters is not None:
+                parameters = description.parameters_cls.model_validate(
+                    stored.parameters
+                )
 
         result.append(
             Module(
                 module_name,
-                description=module,
-                channels=channel,
+                description=description,
+                channels=ControlChannels(
+                    connector, config, module_name, description, publish_qos=publish_qos
+                ),
                 time_fn=time_fn,
+                parameters=parameters,
+                automation_mode=automation_mode,
             )
         )
 

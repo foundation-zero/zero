@@ -14,7 +14,6 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
-from thrs.control.state import AutomationMode
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
 from thrs.orchestration.log import setup_logging
@@ -68,15 +67,13 @@ class ControlCmd(BaseSettings):
         ) as mqtt_client:
             connector = MqttConnector(mqtt_client)
 
-            control_modules: list[Module] = setup_control_modules(
+            control_modules: list[Module] = await setup_control_modules(
                 connector,
                 settings,
                 control_mode.control_modules,
                 datetime.now,
-                database,
+                persistence,
             )
-
-            await persistence.restore_all(control_modules)
 
             runner = ControlRunner(control_modules, liveness_check, persistence)
             runtime = Runtime(RealtimeLoop(), runner, connector)
@@ -155,20 +152,15 @@ class LockstepCmd(BaseSettings):
             self.allow_boot_without_persistence_having_active_postgres,
         )
 
-        control_modules: list[Module] = setup_control_modules(
+        control_modules: list[Module] = await setup_control_modules(
             connector,
             settings,
             mode.control_modules,
             time_fn=simulation_module.time,
-            database=database,
+            persistence=persistence,
             # Lockstep trades delivery guarantees for speed; every tick republishes these values
             publish_qos=0,
         )
-
-        for module in control_modules:
-            module.set_automation_mode(AutomationMode(mode="automatic"))
-
-        await persistence.restore_all(control_modules)
 
         runner = LockstepRunner(control_modules, simulation_module, persistence)
 

@@ -11,7 +11,6 @@ from tests.orchestration.simples import (
     simple_control_values,
     simple_controller_state,
 )
-from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.state import AutomationMode
 
 
@@ -294,13 +293,9 @@ async def test_parameters_changed_while_manual_survive_engage():
     assert module._control.parameters.setpoint == 77.0
 
 
-async def test_snapshot_with_custom_params_restores_into_first_automatic_tick():
-    module = make_module(channels=make_async_channels())
-    module.apply_persistence_snapshot(
-        ModulePersistenceSnapshot(
-            parameters={"setpoint": 77.0},
-            control_mode="automatic",
-        )
+async def test_starting_parameters_carry_into_the_first_automatic_tick():
+    module = make_module(
+        parameters=ConfigurableParameters(setpoint=77.0), automation_mode="automatic"
     )
     assert module._control.parameters.setpoint == 77.0
     automatic = module._control.automatic_control

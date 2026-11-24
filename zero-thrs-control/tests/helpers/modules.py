@@ -5,7 +5,7 @@ from pydantic import Field
 
 from tests.orchestration.simples import SimpleInOut, SimpleMode, simple_control_values
 from thrs.classes.control import Control
-from thrs.control.state import ControlState
+from thrs.control.state import ControlModes, ControlState
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import ThrsValues
 from thrs.orchestration.module import Module, ModuleDescription
@@ -126,13 +126,18 @@ CONFIGURABLE_MODULE_DESCRIPTION = ModuleDescription(
 
 
 def make_module(
-    name: str = "test", channels: mock.Mock | None = None
+    name: str = "test",
+    channels: mock.Mock | None = None,
+    parameters: ConfigurableParameters | None = None,
+    automation_mode: ControlModes = "manual",
 ) -> ConfigurableModule:
     return Module(
         name,
         description=CONFIGURABLE_MODULE_DESCRIPTION,
         channels=channels or make_async_channels(),
         time_fn=datetime.now,
+        parameters=parameters,
+        automation_mode=automation_mode,
     )
 
 

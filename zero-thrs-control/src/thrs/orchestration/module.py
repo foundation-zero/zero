@@ -4,9 +4,8 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from thrs.classes.control import Control
-from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.manual import ManualControl
-from thrs.control.state import AutomationMode, ControlState
+from thrs.control.state import AutomationMode, ControlModes, ControlState
 from thrs.control.switching import Switching
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.definitions.system import AmcsExternalAvailable
@@ -61,15 +60,21 @@ class Module[
         description: ModuleDescription[S, C, P, M, CS],
         channels: ControlChannels[S, C, P, M, CS],
         time_fn: Callable[[], datetime],
+        parameters: P | None = None,
+        automation_mode: ControlModes = "manual",
     ):
+        """Starts with the given parameters, or the defaults, and automation mode."""
         self._name = name
-        parameters = description.parameters_cls()
-        control = description.control(parameters, time_fn)
+        control = description.control(
+            parameters if parameters is not None else description.parameters_cls(),
+            time_fn,
+        )
         self._control = Switching(
             ManualControl(control.initial()[0]),
             control,
             name=name,
         )
+        self._control.switch_mode(AutomationMode(mode=automation_mode))
         self._alarms = description.alarms()
         self._channels = channels
 
@@ -108,24 +113,6 @@ class Module[
 
     def set_automation_mode(self, mode: AutomationMode) -> None:
         self._control.switch_mode(mode)
-
-    def apply_persistence_snapshot(self, snapshot: ModulePersistenceSnapshot) -> None:
-        """Apply a configuration snapshot."""
-
-        parameters = self._validate_parameters(snapshot)
-        automation_mode = AutomationMode(mode=snapshot.control_mode)
-
-        if parameters is not None:
-            self._control.update_parameters(parameters)
-
-        self._control.switch_mode(automation_mode)
-
-    def _validate_parameters(self, snapshot: ModulePersistenceSnapshot) -> P | None:
-        """Validate control parameters from a snapshot without applying them."""
-        if snapshot.parameters is None:
-            return None
-
-        return self._control.parameters.model_validate(snapshot.parameters)
 
     def _check_alarms(
         self, sensor_values: S, control_values: C, controller_state: CS
