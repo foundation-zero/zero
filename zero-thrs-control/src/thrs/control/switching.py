@@ -33,23 +33,11 @@ class Switching[
         self._name = name
         self._mode: ControlModes = "manual"
         self._last_mode: ControlModes = "manual"
-        self._was_advisory: bool | None = None
+        self._was_advisory = False
 
     @property
     def automatic_control(self):
         return self._automatic_control
-
-    @property
-    def manual_control(self):
-        return self._manual_control
-
-    def initial(
-        self,
-    ) -> tuple[ControlValues, ControllerState]:
-        return (
-            self._manual_control.initial()[0],
-            self._automatic_control.initial()[1],
-        )
 
     def control(
         self,
@@ -70,12 +58,14 @@ class Switching[
             )
         self._was_advisory = is_advisory
         if not is_advisory:
-            if actuated_control_values is not None:
-                self.update_manual_controls(actuated_control_values)
             self._mode = "manual"
 
         if self._mode == "manual":
-            if self._last_mode == "automatic" and actuated_control_values is not None:
+            # Track what was actually actuated: by the AMCS while it is in control,
+            # or by our automatic control on the tick we leave it.
+            if actuated_control_values is not None and (
+                not is_advisory or self._last_mode == "automatic"
+            ):
                 self.update_manual_controls(actuated_control_values)
             control_values, _ = self._manual_control.control(sensor_values)
             self._last_mode = "manual"
@@ -109,24 +99,8 @@ class Switching[
     def switch_mode(self, mode: AutomationMode):
         self._mode = mode.mode
 
-    @property
-    def parameters(self) -> ControlParameters:
-        return self._automatic_control.parameters
-
     def update_parameters(self, parameters: ControlParameters):
         self._automatic_control.update_parameters(parameters)
-
-    @staticmethod
-    def modes() -> list[AutomationMode]:
-        return [AutomationMode(mode="manual"), AutomationMode(mode="automatic")]
-
-    @staticmethod
-    def initial_mode() -> AutomationMode:
-        return AutomationMode(mode="manual")
-
-    @property
-    def control_mode(self) -> ControlModes:
-        return self._mode
 
     @property
     def manual_controls(self) -> ControlValues:

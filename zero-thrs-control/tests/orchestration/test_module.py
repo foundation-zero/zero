@@ -290,21 +290,19 @@ async def test_parameters_changed_while_manual_survive_engage():
 
     assert module._control.automatic_control is automatic
     assert automatic.parameters.setpoint == 77.0
-    assert module._control.parameters.setpoint == 77.0
 
 
 async def test_starting_parameters_carry_into_the_first_automatic_tick():
     module = make_module(
         parameters=ConfigurableParameters(setpoint=77.0), automation_mode="automatic"
     )
-    assert module._control.parameters.setpoint == 77.0
     automatic = module._control.automatic_control
+    assert automatic.parameters.setpoint == 77.0
 
     await module.tick(simple_advisory_values(flow=2.0))
 
     assert module._control.automatic_control is automatic
     assert automatic.parameters.setpoint == 77.0
-    assert module._control.parameters.setpoint == 77.0
 
 
 async def test_automatic_to_manual_snaps_to_actuated_while_advisory(
@@ -380,16 +378,16 @@ async def test_stale_automation_mode_not_reapplied_after_advisory_return(
     module = module_factory()
 
     await module.sync_control_channels_state()
-    await module.tick(advisory_sensor_values)
-    assert module._control.control_mode == "automatic"
+    _, controller_state = await module.tick(advisory_sensor_values)
+    assert controller_state.automation_mode == AutomationMode(mode="automatic")
 
     await module.sync_control_channels_state()
-    await module.tick(manual_values)
-    assert module._control.control_mode == "manual"
+    _, controller_state = await module.tick(manual_values)
+    assert controller_state.automation_mode == AutomationMode(mode="manual")
 
     await module.sync_control_channels_state()
-    await module.tick(advisory_sensor_values)
-    assert module._control.control_mode == "manual"
+    _, controller_state = await module.tick(advisory_sensor_values)
+    assert controller_state.automation_mode == AutomationMode(mode="manual")
 
 
 async def test_tick_without_sensors_echoes_actuated(manual_values):
