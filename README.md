@@ -6,6 +6,7 @@ This directory contains the Docker Compose configuration for the Foundation Zero
 
  - Create a `.env` based on `.env.example`.
  - Secrets can be found in Bitwarden
+ - Run `just setup-hooks` to install the repository's git hooks.
 
 ## Profiles
 

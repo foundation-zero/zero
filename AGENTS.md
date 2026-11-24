@@ -24,3 +24,9 @@ holding a `SKILL.md` plus any scripts and references it needs:
 A `SKILL.md` starts with a `description` saying when it applies. Read the ones
 that match your task before you start; commands in them are written to run from
 the service directory (`zero-thrs-control`), not from the repository root.
+
+## Commits and pull requests
+
+Do not credit Claude or any other AI tool in commit messages or PR
+descriptions: no `Co-Authored-By: Claude` trailer, no "Generated with Claude
+Code" line. CI rejects pull requests whose commits contain them.
