@@ -18,14 +18,14 @@ models:
         description: "Panel identifier associated with the tag."
       - name: consumer
         description: "Consumer identifier associated with the tag."
-        tests:
-          - not_null
       - name: active_power_total
         description: "Total active power consumption."
         tests:
           - not_null
       - name: main_group
         description: "The main group classification of the power tag."
+        tests:
+          - not_null
       - name: sub_group
         description: "The sub group classification, within the main group, of the power tag."
   - name: slv_batteries
