@@ -274,18 +274,6 @@ class PcmControl(
             _INITIAL_CONTROLLER_STATE(self._time()),
         )
 
-    def reset(self) -> None:
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
-        self._mode_entered_at = None
-        self._module_last_active = {}
-        self._dropped_modules = set()
-        self._charging_retry_until = None
-        self._supplying_retry_until = None
-        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
-        self._init_controllers()
-
     def update_parameters(self, parameters: PcmParameters):
         self._parameters = parameters
 

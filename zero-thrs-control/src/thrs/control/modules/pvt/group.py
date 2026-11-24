@@ -198,11 +198,6 @@ class PvtGroupControl(
             _INITIAL_PVT_GROUP_CONTROLLER_STATE(self._time()),
         )
 
-    def reset(self) -> None:
-        raise NotImplementedError(
-            "Reset is not implemented as this control is intended to be used as a subcontrol of PvtControl"
-        )
-
     def _string_warm(self, sensor_values: PvtGroupSensorValues):
         return (
             sensor_values.max_temperature_strings.temperature.value is not None

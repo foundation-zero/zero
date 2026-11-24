@@ -1,4 +1,5 @@
 import logging
+from collections.abc import Callable
 
 from thrs.classes.control import Control
 from thrs.control.state import AutomationMode, ControlModes, ControlState
@@ -17,18 +18,25 @@ class Switching[
 ]:
     def __init__(
         self,
-        manual_controls: ControlValues,
-        automatic: Control[
-            SensorValues,
-            ControlValues,
-            ControlParameters,
-            ControlMode,
-            ControllerState,
+        create_automatic: Callable[
+            [ControlParameters],
+            Control[
+                SensorValues,
+                ControlValues,
+                ControlParameters,
+                ControlMode,
+                ControllerState,
+            ],
         ],
+        parameters: ControlParameters,
         name: str,
     ):
-        self._manual_controls = manual_controls
-        self._automatic_control = automatic
+        """Builds a fresh automatic control from the current parameters each time
+        automatic control engages; the manual values start at its initial values."""
+        self._create_automatic = create_automatic
+        self._parameters = parameters
+        self._automatic_control = create_automatic(parameters)
+        self._manual_controls, _ = self._automatic_control.initial()
         self._name = name
         self._mode: ControlModes = "manual"
         self._last_mode: ControlModes = "manual"
@@ -70,7 +78,7 @@ class Switching[
             return self.manual_controls, self.idle_state()
 
         if self._last_mode == "manual":
-            self._automatic_control.reset()
+            self._automatic_control = self._create_automatic(self._parameters)
         control_values, controller_state = self._automatic_control.control(
             sensor_values
         )
@@ -86,7 +94,7 @@ class Switching[
         initial state, with the current parameters and modes.
         """
         _, controller_state = self._automatic_control.initial()
-        controller_state.parameters = self._automatic_control.parameters
+        controller_state.parameters = self._parameters
         controller_state.control_mode = (
             self._automatic_control.mode if self._mode == "automatic" else None
         )
@@ -98,6 +106,7 @@ class Switching[
         self._mode = mode.mode
 
     def update_parameters(self, parameters: ControlParameters):
+        self._parameters = parameters
         self._automatic_control.update_parameters(parameters)
 
     @property

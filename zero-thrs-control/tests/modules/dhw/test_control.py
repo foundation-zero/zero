@@ -9,7 +9,7 @@ from thrs.control.modules.dhw.io import (
     DhwSensorValues,
     DhwSimulationInputs,
 )
-from thrs.control.modules.dhw.state import DhwControlMode, DhwParameters
+from thrs.control.modules.dhw.state import DhwParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.units import TankState
 from thrs.orchestration.simulation import Simulation
@@ -364,67 +364,6 @@ def test_minimum_pump_dutypoint_rejects_below_pump_floor(
 ):
     with pytest.raises(ValueError, match=r"greater than or equal to 0\.1"):
         DhwParameters(**{**parameters.model_dump(), "minimum_pump_dutypoint": 0.05})  # pyrefly: ignore[bad-argument-type]
-
-
-def test_reset_restores_initial_control_state(
-    control: DhwControl, parameters, sensor_values: DhwSensorValues
-):
-    # Dirty all mutable state: tick once, then force the rest.
-    control.control(sensor_values)
-    control._current_values.dhw_pump.dutypoint = Stamped.stamp(0.9)
-    for pid in (
-        control._drives_flow_controller,
-        control._dc_flow_controller,
-        control._pump_flow_controller,
-    ):
-        if not pid.enabled():
-            pid.enable()
-    control._pump_flow_controller(control._pump_flow_controller.setpoint)
-    control._state_machine.set_state("boosting_heatpump")
-    control._tanks_controller._filling_tank = control._tanks_controller._tanks[0]
-    control._boosting_entered_at = datetime.now()
-    control._boosting_shortfall_since = datetime.now()
-    control._stall_tracking_key = (
-        "boosting_heatpump",
-        control._tanks_controller._tanks[2],
-    )
-    control._tanks_controller._boosting_tank = control._tanks_controller._tanks[2]
-    control._tanks_controller.lock_out_boosting_tank(
-        "boosting_heatpump", datetime.now()
-    )
-
-    control.reset()
-
-    # Parameters, time function and logger are kept (same objects, no re-log).
-    assert control.parameters is parameters
-    # State machine is back at its initial state without firing transitions.
-    assert control.mode == DhwControlMode(boosting_mode="idle", filling_mode="idle")
-    assert control.mode.is_boosting_idle
-    # Current controls are back at initial values.
-    assert control._current_values.dhw_pump.dutypoint.value == approx(0.1)
-    assert control._current_values.dhw_pump.on.value is False
-    assert control._current_values.dhw_heatpump.on.value is False
-    assert control._current_values.dhw_flowcontrol_drives.setpoint.value == approx(0.0)
-    assert control._current_values.dhw_flowcontrol_dc.setpoint.value == approx(0.0)
-    # Sub-controllers are fresh: PIDs disabled with no integral state, pump
-    # selection cleared, tanks controller rebound to the new control values.
-    assert not control._drives_flow_controller.enabled()
-    assert not control._dc_flow_controller.enabled()
-    assert not control._pump_flow_controller.enabled()
-    assert control._boosting_entered_at is None
-    assert control._boosting_shortfall_since is None
-    assert control._stall_tracking_key is None
-    assert control._tanks_controller._boost_lockout_until == {}
-    assert not control._tanks_controller.filling
-    assert not control._tanks_controller.boosting
-    assert (
-        control._tanks_controller._tanks[0]._inlet
-        is control._current_values.dhw_switch_tank1_inlet
-    )
-    assert (
-        control._current_controller_state.dhw_tanks_controller.tank1_state.value
-        == TankState.NEEDS_FILL.value
-    )
 
 
 class _Clock:
