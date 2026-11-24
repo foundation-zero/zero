@@ -187,17 +187,6 @@ class ConvertersControl(
     def update_parameters(self, parameters: ConvertersParameters):
         self._parameters = parameters
 
-    def update_controls(self, control_values: ConvertersControlValues):
-        self._current_values.update_in_place(control_values)
-
-    def modes(self) -> list[str]:
-        return list(self._state_machine.states.keys())
-
-    @property
-    def initial_mode(self) -> ConvertersControlMode:
-        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
-        return ConvertersControlMode(mode=initial_mode)
-
     @property
     def mode(self) -> ConvertersControlMode:
         mode: str = self.state

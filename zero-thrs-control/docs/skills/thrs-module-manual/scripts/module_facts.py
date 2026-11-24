@@ -153,20 +153,9 @@ def describe_modes(description: Any, control: Any) -> None:
     for name in type(control.mode).model_fields:
         print(f"- {name}")
     print()
-    for label, member in (
-        ("mode", type(control).mode),
-        ("initial_mode", type(control).initial_mode),
-        ("modes()", getattr(type(control), "modes", None)),
-    ):
-        target = getattr(member, "fget", member)
-        if target is None:
-            continue
-        try:
-            print(f"### `{label}`\n")
-            print(inspect.getsource(target).rstrip())
-            print()
-        except OSError, TypeError:
-            continue
+    print("### `mode`\n")
+    print(inspect.getsource(type(control).mode.fget).rstrip())
+    print()
 
 
 def describe_io(description: Any) -> None:

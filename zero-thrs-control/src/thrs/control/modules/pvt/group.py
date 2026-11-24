@@ -184,14 +184,6 @@ class PvtGroupControl(
     def parameters(self) -> PvtGroupParameters:
         return self._parameters
 
-    def modes(self) -> list[str]:
-        return list(self._state_machine.states.keys())
-
-    @property
-    def initial_mode(self) -> PvtGroupControlMode:
-        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
-        return PvtGroupControlMode(mode=initial_mode)
-
     @property
     def mode(self) -> PvtGroupControlMode:
         mode: str = self.state
@@ -199,9 +191,6 @@ class PvtGroupControl(
 
     def update_parameters(self, parameters: PvtGroupParameters):
         self._parameters = parameters
-
-    def update_controls(self, control_values: PvtGroupControlValues):
-        self._current_values.update_in_place(control_values)
 
     def initial(self) -> tuple[PvtGroupControlValues, PvtGroupControllerState]:
         return (

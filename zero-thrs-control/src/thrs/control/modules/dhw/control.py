@@ -750,17 +750,6 @@ class DhwControl(
     def update_parameters(self, parameters: DhwParameters):
         self._parameters = parameters
 
-    def update_controls(self, control_values: DhwControlValues):
-        self._current_values.update_in_place(control_values)
-
-    def modes(self) -> list[str]:
-        return list(self._state_machine.states.keys())
-
-    @property
-    def initial_mode(self) -> DhwControlMode:
-        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
-        return DhwControlMode(boosting_mode=initial_mode, filling_mode="idle")
-
     @property
     def mode(self) -> DhwControlMode:
         mode: str = self.state

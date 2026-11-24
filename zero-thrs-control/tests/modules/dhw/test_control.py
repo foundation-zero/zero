@@ -9,7 +9,7 @@ from thrs.control.modules.dhw.io import (
     DhwSensorValues,
     DhwSimulationInputs,
 )
-from thrs.control.modules.dhw.state import DhwParameters
+from thrs.control.modules.dhw.state import DhwControlMode, DhwParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.units import TankState
 from thrs.orchestration.simulation import Simulation
@@ -398,7 +398,7 @@ def test_reset_restores_initial_control_state(
     # Parameters, time function and logger are kept (same objects, no re-log).
     assert control.parameters is parameters
     # State machine is back at its initial state without firing transitions.
-    assert control.mode == control.initial_mode
+    assert control.mode == DhwControlMode(boosting_mode="idle", filling_mode="idle")
     assert control.mode.is_boosting_idle
     # Current controls are back at initial values.
     assert control._current_values.dhw_pump.dutypoint.value == approx(0.1)
