@@ -25,7 +25,12 @@ from textual.widgets import (
 )
 
 from zero_modbus_bridge.bit_ops import int16_to_uint16, uint16_to_int16
-from zero_modbus_bridge.io import ModbusField, ModbusTopic, extract_modbus_fields
+from zero_modbus_bridge.io import (
+    ModbusField,
+    ModbusTopic,
+    extract_modbus_fields,
+    scale_decimals,
+)
 from zero_modbus_bridge.stub import MultiUnitDataHandler, Stub
 
 logger = logging.getLogger(__name__)
@@ -113,10 +118,12 @@ def human_value(handler: MultiUnitDataHandler, row: FieldRow) -> float:
     return raw * row.scale_factor
 
 
-def format_value(value: float, data_type: EditableDataType) -> str:
+def format_value(
+    value: float, data_type: EditableDataType, scale_factor: float = 1.0
+) -> str:
     if data_type == "float32":
         return f"{value:g}"
-    return str(round(value))
+    return f"{value:.{scale_decimals(scale_factor)}f}"
 
 
 def write_value(handler: MultiUnitDataHandler, row: FieldRow, text: str) -> None:
@@ -232,7 +239,9 @@ class StubTui(App):
                 row.name,
                 str(row.address),
                 row.data_type,
-                format_value(human_value(tab.handler, row), row.data_type),
+                format_value(
+                    human_value(tab.handler, row), row.data_type, row.scale_factor
+                ),
                 row.unit or "",
                 key=str(row_index),
             )
@@ -251,7 +260,9 @@ class StubTui(App):
     def _edit_row(self, index: int, row_index: int) -> None:
         tab = self._tabs[index]
         row = tab.rows[row_index]
-        current = format_value(human_value(tab.handler, row), row.data_type)
+        current = format_value(
+            human_value(tab.handler, row), row.data_type, row.scale_factor
+        )
         self._editing = (index, row_index)
         self.push_screen(EditScreen(row, current), self._apply_edit)
 

@@ -130,3 +130,18 @@ def test_stub_rejects_writes_to_unknown_unit():
     ret = handler.write_h_regs(10, [1], _srv_info(99))
 
     assert ret.exp_code == EXP_SLAVE_DEVICE_FAILURE
+
+
+def test_stub_write_to_a_float_register_shows_in_float_reads():
+    class FloatModel(BaseModel):
+        value: Annotated[float | None, ModbusField(offset=0, data_type="float32")]
+
+    topic = AnnotationModbusTopic(
+        topic="test/float", model=FloatModel, start_register=10
+    )
+    handler = MultiUnitDataHandler([topic], default_value=0)
+
+    handler.write_h_regs(10, [0x4248, 0x0000], _srv_info(1))
+
+    assert handler.read_h_regs(10, 2, _srv_info(1)).data == [0x4248, 0x0000]
+    assert handler.read_float(1, 10) == 50.0

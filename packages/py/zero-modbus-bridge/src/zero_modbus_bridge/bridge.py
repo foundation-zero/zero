@@ -162,10 +162,15 @@ class ModbusBridge:
     async def run(self) -> None:
         loop = asyncio.get_running_loop()
         next_probe_at = loop.time()
-        while True:
-            await self.run_once()
-            next_probe_at += self._probe_interval
-            await asyncio.sleep(max(0.0, next_probe_at - loop.time()))
+        try:
+            while True:
+                await self.run_once()
+                next_probe_at += self._probe_interval
+                await asyncio.sleep(max(0.0, next_probe_at - loop.time()))
+        finally:
+            # Drop queued reads and writes; only a call already running can
+            # still hold up exit, for at most the Modbus timeout.
+            self._modbus_thread.shutdown(wait=False, cancel_futures=True)
 
     async def run_once(self) -> None:
         readings = await self._probe()

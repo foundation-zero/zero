@@ -547,3 +547,17 @@ async def test_write_goes_between_two_topic_reads():
     await asyncio.gather(probe, command)
 
     assert calls == [("read", 10), ("write", 30), ("read", 20)]
+
+
+@pytest.mark.asyncio
+async def test_stopping_run_shuts_the_modbus_thread_down():
+    bridge = _command_bridge(MagicMock(is_open=True), None)
+    run = asyncio.create_task(bridge.run())
+    await asyncio.sleep(0.05)
+
+    run.cancel()
+    with pytest.raises(asyncio.CancelledError):
+        await run
+
+    with pytest.raises(RuntimeError, match="shutdown"):
+        bridge._modbus_thread.submit(print)

@@ -154,6 +154,10 @@ class MultiUnitDataHandler(DataHandler):
         for register, value in enumerate(words_l, start=address):
             logging.info("Unit %s: register %s set to %s", unit_id, register, value)
             self.data[unit_id][register] = value
+        written = range(address, address + len(words_l))
+        for start, pair in self._float_registers[unit_id].items():
+            if start in written or start + 1 in written:
+                pair[:] = [self.data[unit_id][start], self.data[unit_id][start + 1]]
         return DataHandler.Return(EXP_NONE)
 
     def read_coils(self, address: int, count: int, srv_info):

@@ -226,3 +226,11 @@ def test_int16_row_reads_and_writes_signed_values():
     assert row.data_type == "int16"
     assert handler.read_register(4, 10) == 0x10000 - 1850
     assert human_value(handler, row) == pytest.approx(-18.5)
+
+
+@pytest.mark.parametrize(
+    ("value", "scale_factor", "expected"),
+    [(-18.5, 0.01, "-18.50"), (23.0, 0.1, "23.0"), (42.0, 1.0, "42")],
+)
+def test_format_value_shows_the_decimals_of_the_scale(value, scale_factor, expected):
+    assert format_value(value, "int16", scale_factor) == expected
