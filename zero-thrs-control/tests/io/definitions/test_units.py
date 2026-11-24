@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import (
     PcsMode,
@@ -38,6 +40,10 @@ def test_zero_for_unit_float_alias():
 
 def test_zero_for_enum():
     assert zero_for_unit(PcsMode) == PcsMode.OFF
+
+
+def test_zero_for_a_time_is_the_epoch():
+    assert zero_for_unit(datetime) == datetime.fromtimestamp(0, UTC)
 
 
 def test_zero_for_unnested():

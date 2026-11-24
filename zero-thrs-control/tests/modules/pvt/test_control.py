@@ -6,12 +6,11 @@ from pytest import approx
 from tests.modules.pvt.conftest import PvtRunner
 from thrs.control.modules.pvt.control import PvtControl
 from thrs.control.modules.pvt.group import (
-    IDLE_MIX_POSITION,
     RECOVERY_MIX_LOWER_BOUND,
     RECOVERY_MIX_UPPER_BOUND,
     PvtGroupControlMode,
 )
-from thrs.control.modules.pvt.io import PvtSimulationInputs
+from thrs.control.modules.pvt.io import IDLE_MIX_POSITION, PvtSimulationInputs
 from thrs.control.modules.pvt.state import PvtControlMode
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary, HeatSource

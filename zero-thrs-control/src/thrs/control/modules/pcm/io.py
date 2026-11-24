@@ -1,5 +1,5 @@
 from datetime import UTC, datetime
-from typing import Annotated, cast
+from typing import Annotated, Self, cast
 
 from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
@@ -433,6 +433,22 @@ class PcmControlValues(AmcsWatchdogControlValues):
     pcm_module1: Annotated[
         control.Pcm, component_meta(yard_tag="50001049", component_type="pcm")
     ] = control.Pcm(on=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC)))
+
+    @classmethod
+    def zero(cls, timestamp: datetime | None = None) -> Self:
+        """The starting control values: every component at its zero, except the
+        valves that start away from 0."""
+        stamped_at = timestamp or datetime.now(UTC)
+        values = super().zero(stamped_at)
+        for valve, setpoint in (
+            (values.pcm_flowcontrol_module1, control.Valve.OPEN),
+            (values.pcm_flowcontrol_module2, control.Valve.OPEN),
+            (values.pcm_flowcontrol_module3, control.Valve.OPEN),
+            (values.pcm_flowcontrol_module4, control.Valve.OPEN),
+            (values.pcm_switch_consumers, control.Valve.OPEN),
+        ):
+            valve.setpoint = Stamped(value=setpoint, timestamp=stamped_at)
+        return values
 
 
 class PcmSimulationInputs(ThrsValues):

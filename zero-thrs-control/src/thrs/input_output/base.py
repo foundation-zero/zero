@@ -30,7 +30,7 @@ class ThrsValues(BaseModel):
         stamped_at = timestamp or datetime.now(UTC)
         return cls(
             **{
-                name: zero_component(field.annotation, stamped_at)
+                name: zero_field(field, stamped_at)
                 for name, field in cls.model_fields.items()
             }
         )
@@ -137,19 +137,7 @@ class StampedWithSource[T](Stamped[T]):
 
 
 def zero_component(component: Any, stamped_at: datetime) -> Any:
-    """A component at its zero value: a field's `zero_value` override, else the zero
-    of its unit."""
-
-    def _zero_value(field: FieldInfo):
-        if isinstance(field.json_schema_extra, dict):
-            override = field.json_schema_extra.get("zero_value")
-            if override is not None:
-                return override
-        unit = unit_for_annotation(field.annotation)
-        if unit is datetime:
-            return datetime.fromtimestamp(0, UTC)
-        return zero_for_unit(unit) if unit else 0.0
-
+    """A component at its zero value, its own components through their fields."""
     if isinstance(component, type):
         if issubclass(component, StampedWithSource):
             return StampedWithSource(
@@ -165,12 +153,21 @@ def zero_component(component: Any, stamped_at: datetime) -> Any:
         if issubclass(component, ThrsValues):
             return component(
                 **{
-                    field_name: Stamped(value=_zero_value(field), timestamp=stamped_at)
+                    field_name: zero_field(field, stamped_at)
                     for field_name, field in component.model_fields.items()
                 }
             )
-    unit = unit_for_annotation(component)
-    return zero_for_unit(unit) if unit else 0.0
+    return zero_for_unit(unit_for_annotation(component))
+
+
+def zero_field(field: FieldInfo, stamped_at: datetime) -> Any:
+    """A field at its zero value: its `zero_value` override, stamped, else the zero
+    of its component."""
+    if isinstance(field.json_schema_extra, dict):
+        override = field.json_schema_extra.get("zero_value")
+        if override is not None:
+            return Stamped(value=override, timestamp=stamped_at)
+    return zero_component(field.annotation, stamped_at)
 
 
 def _factory[R, **P](

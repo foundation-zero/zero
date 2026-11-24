@@ -136,27 +136,29 @@ class Pcm(ThrsValues):
 class AdsorptionChiller(ThrsValues):
     enable: Stamped[OnOff]
     mode: Stamped[AdsorptionChillerMode]
-    cooling_setpoint: Stamped[Celsius]
+    cooling_setpoint: Annotated[Stamped[Celsius], field_meta(zero_value=17.0)]
     free_cooling_mode: Annotated[
-        Stamped[FreeCoolingMode], field_meta(included_in_fmu=False)
+        Stamped[FreeCoolingMode],
+        field_meta(included_in_fmu=False, zero_value=FreeCoolingMode.AUTO.value),
     ]
     available_seawater_temperature: Annotated[
-        Stamped[Celsius], field_meta(included_in_fmu=False)
+        Stamped[Celsius], field_meta(included_in_fmu=False, zero_value=20.0)
     ]
-    available_hot_temperature: Stamped[Celsius]
-    available_cold_temperature: Stamped[Celsius]
-    cold_minimum: Stamped[Celsius]
-    hot_minimum: Stamped[Celsius]
-    cold_hysteresis: Stamped[DeltaT]
-    hot_hysteresis: Stamped[DeltaT]
+    available_hot_temperature: Annotated[Stamped[Celsius], field_meta(zero_value=20.0)]
+    available_cold_temperature: Annotated[Stamped[Celsius], field_meta(zero_value=20.0)]
+    cold_minimum: Annotated[Stamped[Celsius], field_meta(zero_value=15.0)]
+    hot_minimum: Annotated[Stamped[Celsius], field_meta(zero_value=53.0)]
+    cold_hysteresis: Annotated[Stamped[DeltaT], field_meta(zero_value=2.0)]
+    hot_hysteresis: Annotated[Stamped[DeltaT], field_meta(zero_value=2.0)]
     tank_control_mode: Annotated[
-        Stamped[TankControlMode], field_meta(included_in_fmu=False)
+        Stamped[TankControlMode],
+        field_meta(included_in_fmu=False, zero_value=TankControlMode.BOTH.value),
     ]
 
 
 class HeatPump(ThrsValues):
     on: Stamped[OnOff]
-    temperature_setpoint: Stamped[Celsius]
+    temperature_setpoint: Annotated[Stamped[Celsius], field_meta(zero_value=50.0)]
 
 
 __all__ = ["AdsorptionChiller", "HeatPump", "Pcm", "Pump", "Valve"]
