@@ -263,14 +263,6 @@ class PcmControl(
     def parameters(self) -> PcmParameters:
         return self._parameters
 
-    def modes(self) -> list[str]:
-        return list(self._state_machine.states.keys())
-
-    @property
-    def initial_mode(self) -> PcmControlMode:
-        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
-        return PcmControlMode(mode=initial_mode)
-
     @property
     def mode(self) -> PcmControlMode:
         mode: str = self.state
@@ -296,9 +288,6 @@ class PcmControl(
 
     def update_parameters(self, parameters: PcmParameters):
         self._parameters = parameters
-
-    def update_controls(self, control_values: PcmControlValues):
-        self._current_values.update_in_place(control_values)
 
     def control(
         self, sensor_values: PcmSensorValues

@@ -73,9 +73,6 @@ class ConfigurableControl(
     def update_parameters(self, parameters: ConfigurableParameters) -> None:
         self._parameters = parameters
 
-    def update_controls(self, control_values: SimpleInOut) -> None:
-        self._current_values.update_in_place(control_values)
-
     def reset(self) -> None:
         self._current_values = SimpleInOut.zero()
 
