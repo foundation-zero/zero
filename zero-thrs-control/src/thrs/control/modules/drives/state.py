@@ -1,8 +1,7 @@
 from typing import Annotated
 
-from thrs.classes.control import ControlMode
 from thrs.control.modules.drives.io import DrivesControlValues
-from thrs.control.state import ControlState
+from thrs.control.state import ControlMode, ControlState
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Celsius, LMin, Tuning
