@@ -18,6 +18,8 @@ models:
         description: "Panel identifier associated with the tag."
       - name: consumer
         description: "Consumer identifier associated with the tag."
+        tests:
+          - not_null
       - name: active_power_total
         description: "Total active power consumption."
         tests:
