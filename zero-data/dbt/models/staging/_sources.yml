@@ -57,6 +57,47 @@ sources:
             description: "The main group classification of the 24V DC component."
           - name: sub_group
             description: "The sub group classification, within the main group, of the 24V DC component."
+      - name: dc_ring_switch_metadata
+        description: "The DC switches of the 700 VDC ring, with the sign that turns the power through each switch into the flow between its two segments."
+        columns:
+          - name: ts
+            description: "Mandatory timestamp without valid value."
+          - name: technical_name
+            description: "The DC switch, e.g. 05-71-q101."
+            tests:
+              - unique
+              - not_null
+          - name: sign
+            description: "1 or -1: the flow from upstream_segment to downstream_segment is sign × the power through the switch."
+          - name: upstream_segment
+            description: "The segment the flow comes from."
+          - name: downstream_segment
+            description: "The segment the flow goes to."
+      - name: dc_ring_source_metadata
+        description: "The measured sources on each segment of the 700 VDC ring."
+        columns:
+          - name: ts
+            description: "Mandatory timestamp without valid value."
+          - name: kind
+            description: "The kind of source, as slv_dc_ring_sources names it, e.g. battery."
+          - name: unit
+            description: "The unit within the source, e.g. 05-41."
+          - name: segment
+            description: "The segment the unit is connected to."
+      - name: dc_ring_segment_metadata
+        description: "The class of each 700 VDC ring segment's unallocated load."
+        columns:
+          - name: ts
+            description: "Mandatory timestamp without valid value."
+          - name: segment
+            description: "The segment, e.g. SB.01.P01."
+            tests:
+              - unique
+              - not_null
+          - name: main_group
+            description: "The main group of the segment's unallocated load; NULL for the cable segments."
+          - name: sub_group
+            description: "The sub group of the segment's unallocated load; NULL for the cable segments."
       - name: marpower__device_metadata
         description: "Devices on the Marpower topic convention, one row per topic: the device's yard tag and functional name."
         database: public
@@ -3775,6 +3816,49 @@ sources:
             description: "Timestamp of the running state of the converter module reading."
           - name: running__value
             description: "Running state of the converter module."
+      - name: marpower__dc_700v__dc_switch
+        description: "The DC switches =05.71 to =05.78 of the 700 VDC ring, from Marpower, one row per switch. Only the columns we model are listed."
+        columns:
+          - name: timestamp
+            description: "Ingest time index. Always present; the raw-schema assumption we rely on."
+            tests:
+              - not_null
+          - name: topic
+            description: "MQTT topic associated with the raw message."
+          - name: technical_name
+            description: "The DC switch (05-71-q101 to 05-78-q101)."
+          - name: dcc_s_0__has_value
+            description: "Indicates whether a value is present for the DC current on section 0 in A."
+          - name: dcc_s_0__is_valid
+            description: "Indicates whether the DC current on section 0 in A value is valid."
+          - name: dcc_s_0__timestamp
+            description: "Timestamp of the DC current on section 0 in A reading."
+          - name: dcc_s_0__value
+            description: "DC current on section 0 in A."
+          - name: dcc_s_1__has_value
+            description: "Indicates whether a value is present for the DC current on section 1 in A."
+          - name: dcc_s_1__is_valid
+            description: "Indicates whether the DC current on section 1 in A value is valid."
+          - name: dcc_s_1__timestamp
+            description: "Timestamp of the DC current on section 1 in A reading."
+          - name: dcc_s_1__value
+            description: "DC current on section 1 in A."
+          - name: dcv_s_0__has_value
+            description: "Indicates whether a value is present for the DC voltage on section 0 in V."
+          - name: dcv_s_0__is_valid
+            description: "Indicates whether the DC voltage on section 0 in V value is valid."
+          - name: dcv_s_0__timestamp
+            description: "Timestamp of the DC voltage on section 0 in V reading."
+          - name: dcv_s_0__value
+            description: "DC voltage on section 0 in V."
+          - name: dcv_s_1__has_value
+            description: "Indicates whether a value is present for the DC voltage on section 1 in V."
+          - name: dcv_s_1__is_valid
+            description: "Indicates whether the DC voltage on section 1 in V value is valid."
+          - name: dcv_s_1__timestamp
+            description: "Timestamp of the DC voltage on section 1 in V reading."
+          - name: dcv_s_1__value
+            description: "DC voltage on section 1 in V."
       - name: marpower__fire_detection__call_point
         description: "Fire detection manual call points from the AMCS, one row per device."
         columns:

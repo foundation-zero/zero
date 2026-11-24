@@ -298,3 +298,35 @@ models:
         description: "Power in W, positive from the 700 VDC bus to the 400 VAC switchboard."
         tests:
           - not_null
+  - name: slv_dc_ring_sources
+    description: >
+      The measured sources on the 700 VDC ring per minute and per unit: what each unit takes from the bus, so a
+      source that feeds the bus is negative. dc_ring_source_metadata places each unit on its segment.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the minute interval."
+      - name: kind
+        description: "The kind of source: shore_converter, battery, grid_converter, dc_350v_converter, dc_24v_converter, aradex or chiller."
+      - name: unit
+        description: "The unit within the source, e.g. 05-41 or W14E1_01."
+      - name: power
+        description: "Power the unit takes from the 700 VDC bus in W, averaged per minute per device and summed per unit; negative when it feeds the bus."
+  - name: slv_dc_ring_segments
+    description: >
+      The load per segment of the 700 VDC ring per minute: the power that flows into the segment through its DC
+      switches and doesn't flow out, the part its measured sources take, and the rest. Only minutes in which all
+      8 switches report. No tests: a test would aggregate the whole history.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the minute interval."
+      - name: segment
+        description: "The bus segment, e.g. SB.01.P01, or one of the two cable segments."
+      - name: load_power
+        description: "Net power into the segment through its DC switches in W."
+      - name: measured_power
+        description: "Net power the segment's measured sources take from the bus in W."
+      - name: unallocated_power
+        description: "load_power minus measured_power in W: the load no signal covers, or for a cable segment the measurement error of the switches."
+
