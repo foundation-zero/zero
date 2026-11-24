@@ -56,8 +56,9 @@ test = [
 [tool.pyrefly]
 project-includes = ["**/*.py*", "**/*.ipynb"]
 type-ignore-unknown-tag-behavior = "no-effect"
-# The greptime tests import their helpers as `tests.greptime.conftest`.
-search-path = ["."]
+# The import root first, so modules are named as they are imported; the greptime
+# tests import their helpers as `tests.greptime.conftest`.
+search-path = ["src", "."]
 
 [tool.uv]
 default-groups = ["dev", "test"]

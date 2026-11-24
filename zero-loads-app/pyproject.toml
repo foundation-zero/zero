@@ -65,6 +65,8 @@ generator = { path = "../packages/py/zero-generator", editable = true }
 [tool.pyrefly]
 project-includes = ["**/*.py*", "**/*.ipynb"]
 type-ignore-unknown-tag-behavior = "no-effect"
+# The import root, so modules are named as they are imported.
+search-path = ["src"]
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"

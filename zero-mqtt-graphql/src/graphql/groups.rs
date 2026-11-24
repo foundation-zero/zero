@@ -481,7 +481,9 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, Direction, FieldType, MetadataByTopic, Spec, TopicDef, TopicKind};
+    use crate::api_model::{
+        Api, Direction, FieldDef, FieldType, MetadataByTopic, Spec, TopicDef, TopicKind,
+    };
     use crate::graphql::build_schema;
     use crate::topic_map::TopicMap;
     use serde_json::json;
@@ -497,9 +499,15 @@ mod tests {
             topic: "power-tags/+/+".to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![
-                    ("active_power_total".to_string(), FieldType::Float),
-                    ("current_a".to_string(), FieldType::Float),
+                fields: BTreeMap::from([
+                    (
+                        "active_power_total".to_string(),
+                        FieldDef::nullable(FieldType::Float),
+                    ),
+                    (
+                        "current_a".to_string(),
+                        FieldDef::nullable(FieldType::Float),
+                    ),
                 ]),
             }),
             operation: Direction::Send,

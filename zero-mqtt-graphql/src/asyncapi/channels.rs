@@ -226,7 +226,7 @@ fn wildcard_from_address(address: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::FieldType;
+    use crate::api_model::{FieldDef, FieldType};
     use serde_json::{Value, json};
 
     /// The topics `load_spec` reads from a document, before they go into a
@@ -239,7 +239,7 @@ mod tests {
     }
 
     /// The payload fields of a topic that must have a payload.
-    fn fields(topic: &TopicDef) -> &BTreeMap<String, FieldType> {
+    fn fields(topic: &TopicDef) -> &BTreeMap<String, FieldDef> {
         &topic.payload.as_ref().unwrap().fields
     }
 
@@ -294,7 +294,10 @@ mod tests {
             "termodinamica/compressor/temperature:Publisher"
         );
         assert_eq!(fields(&topics[0]).len(), 3);
-        assert_eq!(fields(&topics[0]).get("celsius"), Some(&FieldType::Float));
+        assert_eq!(
+            fields(&topics[0]).get("celsius"),
+            Some(&FieldDef::non_null(FieldType::Float))
+        );
     }
 
     #[test_log::test]
@@ -351,7 +354,10 @@ mod tests {
         assert_eq!(groups.len(), 1);
         assert_eq!(groups[0].topic, "power-tags/+/+");
         assert_eq!(fields(&groups[0]).len(), 3);
-        assert_eq!(fields(&groups[0]).get("celsius"), Some(&FieldType::Float));
+        assert_eq!(
+            fields(&groups[0]).get("celsius"),
+            Some(&FieldDef::non_null(FieldType::Float))
+        );
     }
 
     #[test_log::test]
@@ -389,7 +395,10 @@ mod tests {
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "test/channel:Publisher");
         assert_eq!(fields(&topics[0]).len(), 1);
-        assert_eq!(fields(&topics[0]).get("value"), Some(&FieldType::Float));
+        assert_eq!(
+            fields(&topics[0]).get("value"),
+            Some(&FieldDef::nullable(FieldType::Float))
+        );
     }
 
     #[test_log::test]
@@ -484,7 +493,10 @@ mod tests {
 
         assert_eq!(topics.len(), 1);
         assert_eq!(topics[0].topic, "ref/channel");
-        assert_eq!(fields(&topics[0]).get("x"), Some(&FieldType::Int));
+        assert_eq!(
+            fields(&topics[0]).get("x"),
+            Some(&FieldDef::nullable(FieldType::Int))
+        );
     }
 
     #[test_log::test]
