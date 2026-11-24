@@ -3,7 +3,7 @@
     "unit_id": 32,
     "topics": [
       {
-        "topic": "termodinamica/ac/01",
+        "topic": "termodinamica/ac/tech-room",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -61,7 +61,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/02",
+        "topic": "termodinamica/ac/lounge",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -119,7 +119,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/03",
+        "topic": "termodinamica/ac/aft-stbd-guest-cabin",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -177,7 +177,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/04",
+        "topic": "termodinamica/ac/master-bathroom-stbd",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -235,7 +235,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/05",
+        "topic": "termodinamica/ac/fwd-port-guest-cabin-fr-55",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -293,7 +293,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/06",
+        "topic": "termodinamica/ac/aft-port-guest-cabin",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -351,7 +351,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/07",
+        "topic": "termodinamica/ac/master-bathroom-port",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -409,7 +409,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/08",
+        "topic": "termodinamica/ac/master-cabin-port",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -467,7 +467,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/09",
+        "topic": "termodinamica/ac/master-deckhouse",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -525,7 +525,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/10",
+        "topic": "termodinamica/ac/office",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -583,7 +583,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/11",
+        "topic": "termodinamica/ac/port-guest-cabin-fr-42",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -641,7 +641,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/12",
+        "topic": "termodinamica/ac/mission-room",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -699,7 +699,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/13",
+        "topic": "termodinamica/ac/laundry",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -757,7 +757,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/14",
+        "topic": "termodinamica/ac/captain-cabin",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -815,7 +815,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/15",
+        "topic": "termodinamica/ac/mid-port-crew-cabin",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -873,7 +873,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/16",
+        "topic": "termodinamica/ac/fwd-port-crew-cabin",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -931,7 +931,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/17",
+        "topic": "termodinamica/ac/watersport-storage",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -989,7 +989,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/18",
+        "topic": "termodinamica/ac/aft-galley",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -1047,7 +1047,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/19",
+        "topic": "termodinamica/ac/crew-mess",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -1105,7 +1105,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/20",
+        "topic": "termodinamica/ac/aft-stbd-crew-cabin",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -1163,7 +1163,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/21",
+        "topic": "termodinamica/ac/mid-ship-stbd-crew-cabin",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -1221,7 +1221,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/22",
+        "topic": "termodinamica/ac/fwd-stbd-crew-cabin",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -1279,7 +1279,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/23",
+        "topic": "termodinamica/ac/main-deckhouse-fwd-stbd",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -1337,7 +1337,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/24",
+        "topic": "termodinamica/ac/aft-area-air-handler",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -1395,7 +1395,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/25",
+        "topic": "termodinamica/ac/aft-area-extraction",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -1453,7 +1453,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/26",
+        "topic": "termodinamica/ac/fwd-area-air-handler",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -1511,7 +1511,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/27",
+        "topic": "termodinamica/ac/fwd-area-extraction",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -1569,7 +1569,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/28",
+        "topic": "termodinamica/ac/rack",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -1627,7 +1627,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/29",
+        "topic": "termodinamica/ac/navcom",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -1685,7 +1685,7 @@
         }
       },
       {
-        "topic": "termodinamica/ac/30",
+        "topic": "termodinamica/ac/hm10-backup-cooling-panels",
         "model": "air_conditioning_room",
         "modbus_fields": [
           {
@@ -1838,7 +1838,7 @@
     "unit_id": 33,
     "topics": [
       {
-        "topic": "termodinamica/ventilation/1/02",
+        "topic": "termodinamica/ventilation/main-deckhouse",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -1915,7 +1915,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/1/03",
+        "topic": "termodinamica/ventilation/office",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -1992,7 +1992,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/1/04",
+        "topic": "termodinamica/ventilation/galley",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -2069,7 +2069,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/1/05",
+        "topic": "termodinamica/ventilation/guest-fr-42-port",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -2146,7 +2146,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/1/06",
+        "topic": "termodinamica/ventilation/guest-fr-38-port",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -2223,7 +2223,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/1/07",
+        "topic": "termodinamica/ventilation/crew-mess",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -2300,7 +2300,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/1/08",
+        "topic": "termodinamica/ventilation/laundry",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -2377,7 +2377,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/1/09",
+        "topic": "termodinamica/ventilation/captain-cabin",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -2454,7 +2454,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/1/10",
+        "topic": "termodinamica/ventilation/crew-cabin-1",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -2531,7 +2531,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/1/11",
+        "topic": "termodinamica/ventilation/crew-cabin-2",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -2608,7 +2608,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/1/12",
+        "topic": "termodinamica/ventilation/crew-cabin-3",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -2685,7 +2685,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/1/13",
+        "topic": "termodinamica/ventilation/crew-cabin-4",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -2762,7 +2762,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/1/14",
+        "topic": "termodinamica/ventilation/crew-cabin-5",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -2844,7 +2844,7 @@
     "unit_id": 34,
     "topics": [
       {
-        "topic": "termodinamica/ventilation/2/02",
+        "topic": "termodinamica/ventilation/watersport-storage",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -2921,7 +2921,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/2/03",
+        "topic": "termodinamica/ventilation/lower-salon",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -2998,7 +2998,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/2/04",
+        "topic": "termodinamica/ventilation/guest-aft-stbd",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -3075,7 +3075,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/2/05",
+        "topic": "termodinamica/ventilation/day-head",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -3152,7 +3152,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/2/06",
+        "topic": "termodinamica/ventilation/master-cabin-1",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -3229,7 +3229,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/2/07",
+        "topic": "termodinamica/ventilation/master-deckhouse",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -3306,7 +3306,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/2/08",
+        "topic": "termodinamica/ventilation/guest-fr-55-port",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -3383,7 +3383,7 @@
         }
       },
       {
-        "topic": "termodinamica/ventilation/2/09",
+        "topic": "termodinamica/ventilation/guest-aft-port",
         "model": "ventilation_unit",
         "modbus_fields": [
           {
@@ -3467,6 +3467,7 @@
       {
         "topic": "termodinamica/heat-pump",
         "model": "heat_pump",
+        "start_register": 210,
         "modbus_fields": [
           {
             "modbus_register": 30,

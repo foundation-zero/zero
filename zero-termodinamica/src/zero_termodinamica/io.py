@@ -87,7 +87,10 @@ class VentilationUnit(BaseModel):
 
 
 class HeatPump(BaseModel):
-    """The HPB, wired to its own bridge as slave unit 2 of the base register map.
+    """The HPB, wired to its own bridge as a slave of the base register map.
+
+    The slot fields are offsets from the topic's ``start_register``: 210 for
+    slave 2. The heat pump commands select the slave that block belongs to.
 
     The external water pump may only stop once ``compressor_speed`` reads zero.
     """
@@ -99,7 +102,7 @@ class HeatPump(BaseModel):
     water_pump_speed: Annotated[
         float | None, ModbusField(register=141, scale_factor=0.1)
     ]
-    # The map says hundredths of W; live it reads 13 at 0.54 A, so tens of W.
+    # The register says 0.01 W; from the data we assume 0.01 kW, i.e. 10 W.
     compressor_power: Annotated[
         float | None, ModbusField(register=182, scale_factor=10.0)
     ]
@@ -107,12 +110,12 @@ class HeatPump(BaseModel):
         float | None, ModbusField(register=185, scale_factor=0.01)
     ]
     active_error: Annotated[int | None, ModbusField(register=190)]
-    power: Annotated[int | None, ModbusField(register=210)]
+    power: Annotated[int | None, ModbusField(offset=0)]
     setpoint_temperature: Annotated[
-        float | None, ModbusField(register=211, scale_factor=0.01)
+        float | None, ModbusField(offset=1, scale_factor=0.01)
     ]
-    temperature: Annotated[float | None, ModbusField(register=213, scale_factor=0.01)]
-    status: Annotated[int | None, ModbusField(register=214)]
+    temperature: Annotated[float | None, ModbusField(offset=3, scale_factor=0.01)]
+    status: Annotated[int | None, ModbusField(offset=4)]
 
 
 class ColdRoom(BaseModel):
@@ -127,7 +130,7 @@ class ColdRoom(BaseModel):
     compressor_speed: Annotated[
         float | None, ModbusField(register=140, scale_factor=0.1)
     ]
-    # The map says hundredths of W; live it reads 13 at 0.54 A, so tens of W.
+    # The register says 0.01 W; from the data we assume 0.01 kW, i.e. 10 W.
     compressor_power: Annotated[
         float | None, ModbusField(register=182, scale_factor=10.0)
     ]

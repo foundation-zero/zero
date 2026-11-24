@@ -9,22 +9,26 @@ from zero_termodinamica.commands import HeatPumpSet, heat_pump_writes, modbus_co
 from zero_termodinamica.io import read_modbus_topics
 
 
-def test_switching_on_enables_the_system_before_the_unit():
-    writes = heat_pump_writes(HeatPumpSet(power=True, setpoint_temperature=45))
+@pytest.mark.parametrize("power", [True, False])
+def test_unit_batch_goes_before_the_global_switch(power: bool):
+    writes = heat_pump_writes(
+        HeatPumpSet(power=power, setpoint_temperature=45), slave=2
+    )
 
-    assert writes == [(30, 0), (11, 1), (12, 4500), (10, 2)]
-
-
-def test_switching_off_stops_the_unit_before_the_system():
-    writes = heat_pump_writes(HeatPumpSet(power=False, setpoint_temperature=45))
-
-    assert writes == [(11, 0), (12, 4500), (10, 2), (30, 1)]
+    assert writes == [(11, int(power)), (12, 4500), (10, 2), (30, 0 if power else 1)]
 
 
-def test_setpoint_is_rounded_to_whole_degrees():
-    writes = dict(heat_pump_writes(HeatPumpSet(power=True, setpoint_temperature=44.6)))
+@pytest.mark.parametrize(
+    ("setpoint", "written"), [(44.5, 4500), (45.5, 4600), (44.4, 4400)]
+)
+def test_setpoint_is_rounded_half_up_to_whole_degrees(setpoint: float, written: int):
+    writes = dict(
+        heat_pump_writes(
+            HeatPumpSet(power=True, setpoint_temperature=setpoint), slave=2
+        )
+    )
 
-    assert writes[12] == 4500
+    assert writes[12] == written
 
 
 @pytest.mark.parametrize("setpoint", [5.9, 70.1])
@@ -38,6 +42,16 @@ def test_heat_pump_command_writes_to_the_unit_it_reads():
 
     assert command.topic == "termodinamica/heat-pump/set"
     assert command.unit_id == 35
+    # The read topic's block starts at 210, so the command selects slave 2
+    assert (
+        dict(command.to_writes(HeatPumpSet(power=True, setpoint_temperature=45)))[10]
+        == 2
+    )
+
+
+def test_missing_heat_pump_topic_is_named():
+    with pytest.raises(ValueError, match="termodinamica/heat-pump"):
+        modbus_commands([])
 
 
 @pytest.mark.asyncio

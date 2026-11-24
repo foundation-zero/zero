@@ -15,9 +15,8 @@ from zero_termodinamica.io import (
 
 def test_io():
     topics = read_modbus_topics()
-    # AC: the 30 units on the wiring schematic + ac-misc; ventilation: the
-    # populated slots of both bridges;
-    # heat pump, fridge and freezer
+    # AC: the 30 units on the wiring schematic and ac-misc. Ventilation: the
+    # populated slots of each bridge. Heat pump, fridge and freezer: one each.
     assert Counter(t.unit_id for t in topics) == {
         32: 31,
         33: 13,
@@ -36,7 +35,9 @@ def test_ventilation_topics_follow_dvs_register_map():
     ]
 
     assert {t.unit_id for t in ventilation} == {33, 34}
-    unit_5 = next(t for t in ventilation if t.topic == "termodinamica/ventilation/2/05")
+    unit_5 = next(
+        t for t in ventilation if t.topic == "termodinamica/ventilation/day-head"
+    )
     assert unit_5.model is VentilationUnit
     assert unit_5.start_register == 130
     assert unit_5.extra_fields == {"bridge": "2", "unit": "05", "room": "Day head"}
@@ -49,12 +50,11 @@ def test_heat_pump_topic_reads_control_registers():
 
     assert heat_pump.unit_id == 35
     assert heat_pump.model is HeatPump
-    registers = {
-        name: field.register for name, field in extract_modbus_fields(HeatPump).items()
-    }
-    assert registers["system_disabled"] == 30
-    assert registers["compressor_speed"] == 140
-    assert registers["setpoint_temperature"] == 211
+    fields = extract_modbus_fields(HeatPump)
+    assert fields["system_disabled"].register == 30
+    assert fields["compressor_speed"].register == 140
+    assert heat_pump.start_register == 210
+    assert fields["setpoint_temperature"].offset == 1
 
 
 def test_cold_rooms_read_signed_temperatures():
@@ -80,7 +80,9 @@ def test_cold_rooms_read_signed_temperatures():
 
 
 def test_ac_room_temperatures_are_in_degrees_celsius():
-    room = next(t for t in read_modbus_topics() if t.topic == "termodinamica/ac/01")
+    room = next(
+        t for t in read_modbus_topics() if t.topic == "termodinamica/ac/tech-room"
+    )
     # Live room 01: set point 22.00 °C, 18.90 °C
     registers = {201: 2200, 203: 1890}
     modbus = MagicMock()
@@ -97,7 +99,9 @@ def test_ac_room_temperatures_are_in_degrees_celsius():
 
 def test_ventilation_payload_names_its_room():
     unit = next(
-        t for t in read_modbus_topics() if t.topic == "termodinamica/ventilation/2/03"
+        t
+        for t in read_modbus_topics()
+        if t.topic == "termodinamica/ventilation/lower-salon"
     )
 
     payload = ModbusReader(

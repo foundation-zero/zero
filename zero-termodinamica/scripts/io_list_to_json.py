@@ -1,6 +1,7 @@
 """Generate modbus_bridges.json from the Termodinamica Excel file."""
 
 import json
+import re
 from pathlib import Path
 
 import polars as pl
@@ -45,11 +46,16 @@ REG_ROOM_MAPPING = {
 }
 
 
+def topic_name(room: str) -> str:
+    """A room as a topic segment: "Guest Fr.42 port" becomes "guest-fr-42-port"."""
+    return re.sub(r"[^a-z0-9]+", "-", room.lower()).strip("-")
+
+
 def _ac_topic_dict(
     reg_split: str, room: str, fields: list[dict], topic_prefix: str
 ) -> dict:
     return {
-        "topic": f"{topic_prefix}/{reg_split}",
+        "topic": f"{topic_prefix}/{topic_name(room)}",
         "model": "air_conditioning_room",
         "modbus_fields": fields,
         "extra_fields": {"reg_split": reg_split, "room": room},
@@ -95,7 +101,7 @@ def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> list[dict]:
     for name, data in df.group_by("reg_split"):
         reg_split = str(name[0])
         if reg_split not in REG_ROOM_MAPPING:
-            continue  # not on the wiring schematic
+            continue
         room = REG_ROOM_MAPPING[reg_split]
         fields = [
             {
@@ -189,44 +195,57 @@ VENTILATION_ROOMS = {
         "09": "Guest aft port",
     },
 }
-HEAT_PUMP_UNIT_ID = 35
-# Each cold room sits on its own slave slot; its block starts at 200 + 10 * (slot - 1).
+# Unit ID and slave slot per bridge.
+HEAT_PUMP_UNIT = (35, 2)
 COLD_ROOM_UNITS = {"fridge": (36, 2), "freezer": (37, 3)}
 
-# The HPB bridge uses the base register map (Fw 8.14.17, see docs/), with the
-# heat pump as slave unit 2: slot 1 (200..204) only holds placeholders. It is
-# controlled through registers 30 (global on/off) and 10/11/12 (slave
-# selection, on/off and set point); 210..214 read the slave back.
-HEAT_PUMP_FIELDS = [
-    (30, "system_disabled", "Global On/Off System: 1=OFF 0=ON", 1.0),
-    (140, "compressor_speed", "Inverter Compressor Speed (0.1 %)", 0.1),
-    (141, "water_pump_speed", "Inverter Water Pump Speed (0.1 %)", 0.1),
-    (
-        182,
-        "compressor_power",
-        "Compressor absorption (W). The map says 1=0,01 Watt, but live it reads "
-        "13 at 0.54 A: 1=10 Watt",
-        10.0,
-    ),
-    (185, "compressor_current", "Compressor absorption (1=0,01 Ampere)", 0.01),
-    (190, "active_error", "General Active Error bit field", 1.0),
-    (210, "power", "Unit Power On/Off 0=OFF 1=ON", 1.0),
-    (
-        211,
-        "setpoint_temperature",
-        "Unit SetPoint (hundredths of degrees Celsius), range 6..70 °C",
-        0.01,
-    ),
-    (213, "temperature", "Unit temperature (hundredths of degrees Celsius)", 0.01),
-    (214, "status", "Diagnostic communication status bit field", 1.0),
-]
+
+def slave_block(slot: int) -> int:
+    """First register of a slave's read-back block: 200 for slave 1, 210 for 2."""
+    return 200 + 10 * (slot - 1)
+
+
+# The HPB bridge uses the base register map (Fw 8.14.17, see docs/); slot 1
+# (200..204) only holds placeholders. It is controlled through registers 30
+# (global on/off) and 10/11/12 (slave selection, on/off and set point); its
+# slot's block reads the slave back.
+def heat_pump_fields(slot: int) -> list[tuple[int, str, str, float]]:
+    start = slave_block(slot)
+    return [
+        (30, "system_disabled", "Global On/Off System: 1=OFF 0=ON", 1.0),
+        (140, "compressor_speed", "Inverter Compressor Speed (0.1 %)", 0.1),
+        (141, "water_pump_speed", "Inverter Water Pump Speed (0.1 %)", 0.1),
+        (
+            182,
+            "compressor_power",
+            "Compressor absorption (W). The map says 1=0,01 Watt, but live it "
+            "reads 13 at 0.54 A: 1=10 Watt",
+            10.0,
+        ),
+        (185, "compressor_current", "Compressor absorption (1=0,01 Ampere)", 0.01),
+        (190, "active_error", "General Active Error bit field", 1.0),
+        (start, "power", "Unit Power On/Off 0=OFF 1=ON", 1.0),
+        (
+            start + 1,
+            "setpoint_temperature",
+            "Unit SetPoint (hundredths of degrees Celsius), range 6..70 °C",
+            0.01,
+        ),
+        (
+            start + 3,
+            "temperature",
+            "Unit temperature (hundredths of degrees Celsius)",
+            0.01,
+        ),
+        (start + 4, "status", "Diagnostic communication status bit field", 1.0),
+    ]
 
 
 # The fridge and freezer bridges expose the same subset of the base map, with
 # signed temperatures (two's complement): fridge 1..20 °C, freezer -5..-20 °C.
 # Unlike the heat pump, their slot differs per bridge (see COLD_ROOM_UNITS).
 def cold_room_fields(slot: int) -> list[tuple[int, str, str, float]]:
-    start = 200 + 10 * (slot - 1)
+    start = slave_block(slot)
     return [
         (30, "system_disabled", "Global On/Off System: 1=OFF 0=ON", 1.0),
         (140, "compressor_speed", "Inverter Compressor Speed (0.1 %)", 0.1),
@@ -281,7 +300,8 @@ def select_ventilation_topics(df: pl.DataFrame, bridge: str) -> list[dict]:
     )
     return [
         {
-            "topic": f"termodinamica/ventilation/{bridge}/{unit}",
+            "topic": f"termodinamica/ventilation/"
+            f"{topic_name(VENTILATION_ROOMS[bridge][unit])}",
             "model": "ventilation_unit",
             "modbus_fields": [
                 {
@@ -369,9 +389,14 @@ def load_modbus_data(excel_path: Path) -> list[dict]:
             for bridge, unit_id in VENTILATION_UNIT_IDS.items()
         ),
         {
-            "unit_id": HEAT_PUMP_UNIT_ID,
+            "unit_id": HEAT_PUMP_UNIT[0],
             "topics": [
-                fixed_topic("termodinamica/heat-pump", "heat_pump", HEAT_PUMP_FIELDS)
+                fixed_topic(
+                    "termodinamica/heat-pump",
+                    "heat_pump",
+                    heat_pump_fields(HEAT_PUMP_UNIT[1]),
+                    start_register=slave_block(HEAT_PUMP_UNIT[1]),
+                )
             ],
         },
         *(
@@ -382,7 +407,7 @@ def load_modbus_data(excel_path: Path) -> list[dict]:
                         f"termodinamica/{room}",
                         "cold_room",
                         cold_room_fields(slot),
-                        start_register=200 + 10 * (slot - 1),
+                        start_register=slave_block(slot),
                     )
                 ],
             }
@@ -391,8 +416,15 @@ def load_modbus_data(excel_path: Path) -> list[dict]:
     ]
 
 
+def check_unique_topics(modbus_data: list[dict]) -> None:
+    topics = [topic["topic"] for unit in modbus_data for topic in unit["topics"]]
+    if duplicates := {topic for topic in topics if topics.count(topic) > 1}:
+        raise ValueError(f"Rooms share a topic: {sorted(duplicates)}")
+
+
 if __name__ == "__main__":
     modbus_data = load_modbus_data(excel_path=EXCEL_PATH)
+    check_unique_topics(modbus_data)
     result_filename = SCRIPTS_FOLDER / "../modbus_bridges.json"
     with open(result_filename, "w", encoding="utf-8") as f:
         json.dump(modbus_data, f, indent=2, ensure_ascii=False)
