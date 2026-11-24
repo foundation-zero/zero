@@ -18,53 +18,8 @@ from thrs.control.modules.dc.state import (
 )
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, Ratio
 from thrs.orchestration.module import ModuleDescription
-
-
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DcControlValues:  # noqa: N802
-    return DcControlValues(
-        dc_pump_aft=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        dc_pump_fwd=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        dc_pump_ugrid=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        dc_mix_fwd=Valve(
-            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
-        ),
-        dc_mix_aft=Valve(
-            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
-        ),
-        dc_mix_ugrid=Valve(
-            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
-        ),
-        dc_mix_recovery=Valve(
-            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
-        ),
-        dc_mix_exchanger=Valve(
-            setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=timestamp)
-        ),
-        dc_switch_aft4=Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
-        dc_switch_aft3=Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
-        dc_switch_aft2=Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
-        dc_switch_aft1=Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
-        dc_switch_fwd2=Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
-        dc_switch_fwd1=Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
-        dc_switch_ugrid2=Valve(
-            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
-        ),
-        dc_switch_ugrid1=Valve(
-            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
-        ),
-    )
 
 
 def brightloops_aft_parameters(dc_parameters: DcParameters) -> ConvertersParameters:
@@ -106,9 +61,7 @@ class DcControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
+        self._current_values = DcControlValues.zero(self._time())
 
         self._init_controllers(parameters)
 
@@ -195,9 +148,10 @@ class DcControl(
         )
 
     def initial(self) -> tuple[DcControlValues, DcControllerState]:
+        timestamp = self._time()
         return (
-            _INITIAL_CONTROL_VALUES(self._time()),
-            DcControllerState.zero(self._time()),
+            DcControlValues.zero(timestamp),
+            DcControllerState.zero(timestamp),
         )
 
     def control(

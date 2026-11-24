@@ -4,7 +4,6 @@ from datetime import datetime
 from thrs.classes.control import Control
 from thrs.control.controllers import PidController
 from thrs.control.modules.pvt.group import (
-    IDLE_MIX_POSITION,
     PvtGroupControl,
     PvtGroupControllerState,
     PvtGroupControlValues,
@@ -19,50 +18,8 @@ from thrs.control.modules.pvt.state import (
 )
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.control import Pump, Valve
 from thrs.input_output.definitions.units import Celsius, Ratio
 from thrs.orchestration.module import ModuleDescription
-
-
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PvtControlValues:  # noqa: N802
-    return PvtControlValues(
-        pvt_pump_main_fwd=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        pvt_pump_main_aft=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        pvt_pump_owners=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        pvt_mix_main_fwd=Valve(
-            setpoint=Stamped(value=IDLE_MIX_POSITION, timestamp=timestamp)
-        ),
-        pvt_mix_main_aft=Valve(
-            setpoint=Stamped(value=IDLE_MIX_POSITION, timestamp=timestamp)
-        ),
-        pvt_mix_owners=Valve(
-            setpoint=Stamped(value=IDLE_MIX_POSITION, timestamp=timestamp)
-        ),
-        pvt_switch_main_fwd=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        pvt_switch_main_aft=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        pvt_switch_owners=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        pvt_mix_exchanger=Valve(
-            setpoint=Stamped(
-                value=Valve.MIXING_A_TO_AB,
-                timestamp=timestamp,
-            )
-        ),
-    )
 
 
 def main_pvt_group_parameters(pvt_parameters: PvtParameters) -> PvtGroupParameters:
@@ -117,9 +74,7 @@ class PvtControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
+        self._current_values = PvtControlValues.zero(self._time())
 
         self._init_controllers(parameters, time_fn)
 
@@ -173,9 +128,10 @@ class PvtControl(
         )
 
     def initial(self) -> tuple[PvtControlValues, PvtControllerState]:
+        timestamp = self._time()
         return (
-            _INITIAL_CONTROL_VALUES(self._time()),
-            PvtControllerState.zero(self._time()),
+            PvtControlValues.zero(timestamp),
+            PvtControllerState.zero(timestamp),
         )
 
     def update_parameters(self, parameters: PvtParameters):

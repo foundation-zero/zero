@@ -19,49 +19,6 @@ from thrs.input_output.definitions.units import Celsius, LMin, Ratio
 from thrs.orchestration.module import ModuleDescription
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DrivesControlValues:  # noqa: N802
-    return DrivesControlValues(
-        drives_pump1=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        drives_pump2=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        drives_mix_exchanger=Valve(
-            setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=timestamp)
-        ),
-        drives_mix_recovery=Valve(
-            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
-        ),
-        drives_flowcontrol_propdrive_aft=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        drives_flowcontrol_propdrive_fwd=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        drives_switch_shorepower_supply=Valve(
-            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
-        ),
-        drives_switch_shorepower_return=Valve(
-            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
-        ),
-        drives_switch_propdrive_aft1=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        drives_switch_propdrive_aft2=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        drives_switch_propdrive_fwd1=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        drives_switch_propdrive_fwd2=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-    )
-
-
 class DrivesControl(
     Control[
         DrivesSensorValues,
@@ -80,9 +37,7 @@ class DrivesControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
+        self._current_values = DrivesControlValues.zero(self._time())
 
         self._init_state_machine_states()
         self._init_state_machine_transitions()
@@ -237,9 +192,10 @@ class DrivesControl(
         return DrivesControlMode(mode=mode)
 
     def initial(self) -> tuple[DrivesControlValues, DrivesControllerState]:
+        timestamp = self._time()
         return (
-            _INITIAL_CONTROL_VALUES(self._time()),
-            DrivesControllerState.zero(self._time()),
+            DrivesControlValues.zero(timestamp),
+            DrivesControllerState.zero(timestamp),
         )
 
     def control(

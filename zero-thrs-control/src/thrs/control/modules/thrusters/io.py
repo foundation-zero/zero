@@ -1,5 +1,5 @@
 from datetime import UTC, datetime
-from typing import Annotated, cast
+from typing import Annotated, Self, cast
 
 from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
@@ -345,6 +345,19 @@ class ThrustersControlValues(AmcsWatchdogControlValues):
         control.Valve,
         valve_meta(yard_tag="50001091-02", component_type="valve", valve_type="switch"),
     ]
+
+    @classmethod
+    def zero(cls, timestamp: datetime | None = None) -> Self:
+        """The starting control values: every component at its zero, except the
+        valves that start away from 0."""
+        stamped_at = timestamp or datetime.now(UTC)
+        values = super().zero(stamped_at)
+        for valve, setpoint in (
+            (values.thrusters_mix_exchanger, control.Valve.MIXING_A_TO_AB),
+            (values.thrusters_switch_recovery, control.Valve.OPEN),
+        ):
+            valve.setpoint = Stamped(value=setpoint, timestamp=stamped_at)
+        return values
 
 
 class ThrustersSimulationInputs(ThrsValues):

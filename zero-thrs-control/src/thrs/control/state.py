@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from typing import Literal, Self, cast
 
-from thrs.input_output.base import ThrsValues, zero_component
+from thrs.input_output.base import ThrsValues, zero_field
 
 type ControlModes = Literal["manual", "automatic"]
 
@@ -45,7 +45,7 @@ class ControlState[C: ThrsValues, P: ThrsValues, M: ThrsValues](ThrsValues):
         )
         return cls(
             **{
-                name: zero_component(field.annotation, stamped_at)
+                name: zero_field(field, stamped_at)
                 for name, field in cls.model_fields.items()
                 if name not in ControlState.model_fields
             },

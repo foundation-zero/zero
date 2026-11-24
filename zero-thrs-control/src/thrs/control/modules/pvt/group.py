@@ -7,13 +7,13 @@ from transitions import Machine, State
 
 from thrs.classes.control import Control
 from thrs.control.controllers import PidController
+from thrs.control.modules.pvt.io import IDLE_MIX_POSITION
 from thrs.control.state import ControlMode
 from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions import control, sensor
 from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 
-IDLE_MIX_POSITION: Ratio = 0.2
 RECOVERY_MIX_UPPER_BOUND: Ratio = 0.2
 RECOVERY_MIX_LOWER_BOUND: Ratio = 0.05
 
