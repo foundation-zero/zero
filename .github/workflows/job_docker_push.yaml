@@ -73,8 +73,7 @@ jobs:
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
         with:
           images: ${{ env.IMAGE }}
-          # Artifact Registry expires dev- images (cleanup policy in foundation-zero/gcp-common). Only versions with a
-          # suffix are dev builds: a re-run on a released commit gets plain X.Y.Z and must not expire.
+          # dev- images expire after 7 days (gcp-common). Only a release version has no "-".
           tags: |
             type=raw,value=${{ steps.version.outputs.version }}
             type=raw,value=dev-${{ steps.version.outputs.version }},enable=${{ contains(steps.version.outputs.version, '-') }}
