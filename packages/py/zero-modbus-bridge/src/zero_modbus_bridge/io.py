@@ -1,5 +1,6 @@
 """I/O types for Modbus bridges."""
 
+from decimal import Decimal
 from typing import Any, Callable, Literal, get_type_hints
 
 from pydantic import BaseModel, Field, PrivateAttr
@@ -148,7 +149,17 @@ def apply_modbus_field(raw: RawModbusValue, field: ModbusField) -> RawModbusValu
         return None
     if isinstance(raw, bool):
         return raw
-    return float(raw) * field.scale_factor
+    scaled = float(raw) * field.scale_factor
+    if isinstance(raw, int):
+        # Drop float noise (40.400000000000006): an integer register scaled by
+        # 0.1 has exactly one decimal.
+        return round(scaled, _decimals(field.scale_factor))
+    return scaled
+
+
+def _decimals(scale_factor: float) -> int:
+    exponent = Decimal(str(scale_factor)).normalize().as_tuple().exponent
+    return max(0, -int(exponent))
 
 
 def build_annotation_converter[T: BaseModel](
