@@ -20,18 +20,18 @@ def _required_env(monkeypatch: pytest.MonkeyPatch):
 
 
 def test_mqtt_control_client_id_default():
-    config = Config(_env_file=None)  # type: ignore[call-arg]
+    config = Config(_env_file=None)
     assert re.fullmatch(r"thrs-control-[0-9a-f]{8}", config.mqtt_control_client_id)
 
 
 def test_mqtt_control_client_id_from_env(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("MQTT_CONTROL_CLIENT_ID", "custom-id")
-    config = Config(_env_file=None)  # type: ignore[call-arg]
+    config = Config(_env_file=None)
     assert config.mqtt_control_client_id == "custom-id"
 
 
 def test_mqtt_simulation_client_id_default():
-    config = Config(_env_file=None)  # type: ignore[call-arg]
+    config = Config(_env_file=None)
     assert re.fullmatch(
         r"thrs-simulation-[0-9a-f]{8}", config.mqtt_simulation_client_id
     )
@@ -39,16 +39,16 @@ def test_mqtt_simulation_client_id_default():
 
 def test_mqtt_simulation_client_id_from_env(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("MQTT_SIMULATION_CLIENT_ID", "custom-id")
-    config = Config(_env_file=None)  # type: ignore[call-arg]
+    config = Config(_env_file=None)
     assert config.mqtt_simulation_client_id == "custom-id"
 
 
 def test_mqtt_lockstep_client_id_default():
-    config = Config(_env_file=None)  # type: ignore[call-arg]
+    config = Config(_env_file=None)
     assert re.fullmatch(r"thrs-lockstep-[0-9a-f]{8}", config.mqtt_lockstep_client_id)
 
 
 def test_mqtt_lockstep_client_id_from_env(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("MQTT_LOCKSTEP_CLIENT_ID", "custom-id")
-    config = Config(_env_file=None)  # type: ignore[call-arg]
+    config = Config(_env_file=None)
     assert config.mqtt_lockstep_client_id == "custom-id"

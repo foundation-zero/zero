@@ -12,7 +12,7 @@ from tests.orchestration.simples import (
     SimpleMode,
     SimpleParameters,
 )
-from thrs.control.switching import AutomationMode
+from thrs.control.state import AutomationMode
 from thrs.input_output.base import (
     CombinedValues,
     Stamped,
@@ -52,6 +52,11 @@ class ValuesWithTopics(ThrsValues):
             temperature_supply=self.go_with_the.temperature,
             temperature_return=self.go_with_the_topic.temperature,
         )
+
+
+class ValuesWithOptional(ThrsValues):
+    flow: FlowSensor
+    mode: SimpleMode | None = None
 
 
 class MergeSensorValues(ThrsValues):
@@ -136,6 +141,17 @@ class TestPartialMqttMapping:
         topic = topics["base/flow-delta"]
         assert json.loads(topic) == {"DeltaT": {"Value": 2.0, "TimeStamp": mock.ANY}}
 
+    def test_split_none_clears_the_topic(self):
+        mapping = PartialMqttMapping(ValuesWithOptional, "base", "module")
+        model = ValuesWithOptional(
+            flow=FlowSensor(flow=Stamped.stamp(10.0), temperature=Stamped.stamp(25.0))
+        )
+
+        topics = mapping.split_to_topics(model)
+
+        assert topics["base/module/mode"] == ""
+        assert topics["base/module/flow"] != ""
+
     def test_subscribe_topic(self):
         mapping_no_suffix = PartialMqttMapping(ValuesWithTopics, "base", "module")
 
@@ -181,6 +197,11 @@ class TestDirectMqttMapping:
 
         assert "sensors/data" in topics
         assert topics["sensors/data"] == model.model_dump_json(by_alias=True)
+
+    def test_split_none_clears_the_topic(self):
+        mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
+
+        assert mapping.split_to_topics(None) == {"sensors/data": ""}
 
     def test_subscribe_topic(self):
         mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
@@ -293,7 +314,6 @@ class TestControlChannelsAutoclear:
             SimpleInOut,
             SimpleParameters,
             lambda *_args, **_kwargs: mock.Mock(),
-            SimpleMode,
             SimpleControllerState,
             mock.Mock,
         )
@@ -344,7 +364,6 @@ class TestControlChannelsPublishQos:
             SimpleInOut,
             SimpleParameters,
             lambda *_args, **_kwargs: mock.Mock(),
-            SimpleMode,
             SimpleControllerState,
             mock.Mock,
         )
@@ -354,7 +373,7 @@ class TestControlChannelsPublishQos:
         publisher_qos = [
             call.kwargs["qos"] for call in connector._create_publisher.call_args_list
         ]
-        assert publisher_qos == [expected_qos] * 8
+        assert publisher_qos == [expected_qos] * 4
 
 
 class TestCombinedMqttMapping:

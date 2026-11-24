@@ -1,37 +1,38 @@
 import logging
 from collections.abc import Callable
 from datetime import datetime, timedelta
-from typing import Annotated, Literal
+from typing import Literal
 
-from pydantic import Field, model_validator
 from transitions import State
 
-from thrs.classes.control import Control, ControlMode
+from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import (
     MachineStateLoggingServiceNoop,
     StateLogger,
 )
 from thrs.control.controllers import PidController
+from thrs.control.modules.dhw.io import DhwControlValues, DhwSensorValues
+from thrs.control.modules.dhw.state import (
+    DhwControllerState,
+    DhwControlMode,
+    DhwParameters,
+)
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
-from thrs.input_output.base import Stamped, ThrsValues, component_meta
+from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import HeatPump, Pump, Valve
 from thrs.input_output.definitions.controllers import (
-    PidControllerValues,
     TanksControllerValues,
 )
 from thrs.input_output.definitions.units import (
     SPECIFIC_HEAT_WATER,
     Celsius,
-    DeltaT,
     Liter,
     LMin,
     Ratio,
     Seconds,
     TankState,
-    Tuning,
     Watt,
 )
-from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
 from thrs.orchestration.module import ModuleDescription
 
 logger = logging.getLogger(__name__)
@@ -41,116 +42,6 @@ BOOSTING_SOURCES: tuple[BoostingSource, ...] = (
     "boosting_high_temperature",
     "boosting_heatpump",
 )
-
-
-class DhwControllerState(ThrsValues):
-    dhw_tanks_controller: Annotated[
-        TanksControllerValues,
-        component_meta(component_type="tank_controller"),
-    ]
-    dhw_pump_flow_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    dhw_drives_flow_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    dhw_dc_flow_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-
-
-class DhwParameters(ThrsValues):
-    heatpump_boosting_enabled: bool = False
-    ht_boosting_enabled: bool = True
-    heatpump_flow_setpoint: LMin = 25
-    heatpump_temperature_setpoint: Celsius = 65
-    ht_boosting_flow_setpoint: LMin = 10
-    minimum_tank_temperature: Celsius = 45
-    maximum_tank_temperature: Celsius = 60
-    ht_boosting_minimum_delta: Annotated[
-        DeltaT,
-        Field(
-            description="Minimum delta T between the HT boosting source and the tank to start or continue HT boosting"
-        ),
-    ] = 3
-    boosting_startup_grace: Annotated[
-        Seconds,
-        Field(
-            description="Grace period after boosting starts on a source or tank before the stall guard checks heat transfer, covering valve travel, pump ramp and heatpump spin-up",
-            ge=0,
-        ),
-    ] = 180
-    boosting_stall_window: Annotated[
-        Seconds,
-        Field(
-            description="How long boosting heat transfer must stay below boosting_minimum_heat before the tank counts as stalled",
-            ge=0,
-        ),
-    ] = 120
-    boosting_stall_lockout: Annotated[
-        Seconds,
-        Field(
-            description="Lockout before a boosting source boosts a tank again after it stalled on that tank",
-            ge=0,
-        ),
-    ] = 900
-    boosting_minimum_heat: Annotated[
-        Watt,
-        Field(
-            description="Minimum heat transfer to the tank in Watt (~1 kW) below which boosting is considered stalled",
-            ge=0,
-        ),
-    ] = 1000
-    drives_flowcontrol_minimum_setpoint: Annotated[
-        Ratio,
-        Field(
-            description="Minimum pump dutypoint to guarantee sufficient flow for a temperature measurement"
-        ),
-    ] = 0.1
-    dc_flowcontrol_minimum_setpoint: Annotated[
-        Ratio,
-        Field(
-            description="Minimum pump dutypoint to guarantee sufficient flow for a temperature measurement"
-        ),
-    ] = 0.1
-    minimum_pump_dutypoint: Annotated[
-        Ratio,
-        Field(
-            description="Minimum output of the boosting pump controllers",
-            ge=0.1,
-            le=1.0,
-        ),
-    ] = 0.3
-    filling_temperature_setpoint: Celsius = 40
-    minimum_tank_level: Liter = 30
-    maximum_tank_level: Annotated[Liter, Field(le=275)] = 230
-    full_level_lower_band: Annotated[
-        Liter, Field(description="Level above which a non-filling tank counts as full")
-    ] = 200
-    tank1_enabled: bool = True
-    tank2_enabled: bool = True
-    tank3_enabled: bool = True
-    pump_flow_tuning: Tuning = (0.01, 0.001, 0.0)
-    dc_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
-    drives_flow_tuning: Tuning = (-0.01, -0.001, 0.0)
-
-    @model_validator(mode="after")
-    def check_tank_setpoints(self):
-        if self.minimum_tank_temperature > self.maximum_tank_temperature:
-            raise ValueError(
-                "Maximum tank temperature must be greater than minimum tank temperature"
-            )
-        if self.minimum_tank_level > self.maximum_tank_level:
-            raise ValueError(
-                "Maximum tank level must be greater than minimum tank level"
-            )
-        if self.full_level_lower_band > self.maximum_tank_level:
-            raise ValueError("Full level lower band must not exceed maximum tank level")
-        if self.minimum_tank_level > self.full_level_lower_band:
-            raise ValueError(
-                "Full level lower band must not be below minimum tank level"
-            )
-        return self
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:  # noqa: N802
@@ -212,6 +103,8 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:  # noq
         dhw_drives_flow_controller=PidController.zero(timestamp),
         dhw_dc_flow_controller=PidController.zero(timestamp),
         dhw_pump_flow_controller=PidController.zero(timestamp, setpoint=0.0),
+        parameters=DhwParameters(),
+        control_mode=None,
     )
 
 
@@ -683,31 +576,6 @@ class TanksController:
         )
 
 
-class DhwControlMode(ControlMode):
-    boosting_mode: str
-    filling_mode: str
-
-    @property
-    def is_boosting_idle(self) -> bool:
-        return self.boosting_mode == "idle"
-
-    @property
-    def is_boosting(self) -> bool:
-        return not self.is_boosting_idle
-
-    @property
-    def is_boosting_low_temperature(self) -> bool:
-        return self.boosting_mode == "boosting_low_temperature"
-
-    @property
-    def is_boosting_high_temperature(self) -> bool:
-        return self.boosting_mode == "boosting_high_temperature"
-
-    @property
-    def is_boosting_heatpump(self) -> bool:
-        return self.boosting_mode == "boosting_heatpump"
-
-
 class DhwControl(
     Control[
         DhwSensorValues,
@@ -879,6 +747,8 @@ class DhwControl(
         self._current_controller_state.dhw_pump_flow_controller = (
             self._pump_flow_controller.values()
         )
+        self._current_controller_state.parameters = self._parameters
+        self._current_controller_state.control_mode = self.mode
 
     @property
     def parameters(self) -> DhwParameters:
@@ -896,12 +766,12 @@ class DhwControl(
 
     @property
     def initial_mode(self) -> DhwControlMode:
-        initial_mode: str = self._state_machine.initial  # type: ignore
+        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
         return DhwControlMode(boosting_mode=initial_mode, filling_mode="idle")
 
     @property
     def mode(self) -> DhwControlMode:
-        mode: str = self.state  # type: ignore
+        mode: str = self.state
         filling_mode: str = "idle" if not self._tanks_controller.filling else "filling"
         return DhwControlMode(boosting_mode=mode, filling_mode=filling_mode)
 
@@ -918,7 +788,7 @@ class DhwControl(
         self._boosting_entered_at = None
         self._boosting_shortfall_since = None
         self._stall_tracking_key = None
-        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
         self._init_controllers()
 
     @StateLogger.log_warnings
@@ -927,7 +797,7 @@ class DhwControl(
     ) -> tuple[DhwControlValues, DhwControllerState]:
         self._lock_out_stalled_boosting_tank(sensor_values)
         self._tanks_controller(sensor_values, self._parameters)
-        self._try_boosting(sensor_values)  # type: ignore
+        self._try_boosting(sensor_values)  # pyrefly: ignore[missing-attribute]
         self._tanks_controller.apply_boosting(self._boosting_source)
         self._track_boosting_stall()
         self._enforce_boosting_source_valves()
@@ -1304,7 +1174,6 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
         controller_state: DhwControllerState,
     ) -> str | None:
         tanks_controller = controller_state.dhw_tanks_controller
@@ -1327,9 +1196,9 @@ class DhwAlarms(BaseAlarms):
         ]:
             if (
                 TankState(state) is TankState.IN_USE
-                and temperature < parameters.minimum_tank_temperature
+                and temperature < controller_state.parameters.minimum_tank_temperature
             ):
-                return f"Tank {tank_number} in use at {temperature:.1f}°C, below minimum {parameters.minimum_tank_temperature}°C, because no other tank is available"
+                return f"Tank {tank_number} in use at {temperature:.1f}°C, below minimum {controller_state.parameters.minimum_tank_temperature}°C, because no other tank is available"
         return None
 
     @alarm("Tank 1 high temperature warning", severity=Severity.WARNING)
@@ -1337,14 +1206,13 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
         controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             1,
             sensor_values.dhw_temperature_tank1.temperature.value,
             DhwSensorValues.yard_tag("dhw_temperature_tank1"),
-            parameters.maximum_tank_temperature,
+            controller_state.parameters.maximum_tank_temperature,
             2,
         )
 
@@ -1353,14 +1221,13 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
         controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             2,
             sensor_values.dhw_temperature_tank2.temperature.value,
             DhwSensorValues.yard_tag("dhw_temperature_tank2"),
-            parameters.maximum_tank_temperature,
+            controller_state.parameters.maximum_tank_temperature,
             2,
         )
 
@@ -1369,14 +1236,13 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
         controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             3,
             sensor_values.dhw_temperature_tank3.temperature.value,
             DhwSensorValues.yard_tag("dhw_temperature_tank3"),
-            parameters.maximum_tank_temperature,
+            controller_state.parameters.maximum_tank_temperature,
             2,
         )
 
@@ -1385,14 +1251,13 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
         controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             1,
             sensor_values.dhw_temperature_tank1.temperature.value,
             DhwSensorValues.yard_tag("dhw_temperature_tank1"),
-            parameters.maximum_tank_temperature,
+            controller_state.parameters.maximum_tank_temperature,
             5,
         )
 
@@ -1401,14 +1266,13 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
         controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             2,
             sensor_values.dhw_temperature_tank2.temperature.value,
             DhwSensorValues.yard_tag("dhw_temperature_tank2"),
-            parameters.maximum_tank_temperature,
+            controller_state.parameters.maximum_tank_temperature,
             5,
         )
 
@@ -1417,14 +1281,13 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
         controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_temperature(
             3,
             sensor_values.dhw_temperature_tank3.temperature.value,
             DhwSensorValues.yard_tag("dhw_temperature_tank3"),
-            parameters.maximum_tank_temperature,
+            controller_state.parameters.maximum_tank_temperature,
             5,
         )
 
@@ -1433,7 +1296,6 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
         controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
@@ -1448,7 +1310,6 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
         controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
@@ -1463,7 +1324,6 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
         controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
@@ -1478,7 +1338,6 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
         controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
@@ -1493,7 +1352,6 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
         controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
@@ -1508,7 +1366,6 @@ class DhwAlarms(BaseAlarms):
         self,
         sensor_values: DhwSensorValues,
         control_values: DhwControlValues,
-        parameters: DhwParameters,
         controller_state: DhwControllerState,
     ) -> str | None:
         return self._check_tank_level(
@@ -1524,7 +1381,6 @@ DHW_MODULE_DESCRIPTION = ModuleDescription(
     DhwControlValues,
     DhwParameters,
     DhwControl,
-    DhwControlMode,
     DhwControllerState,
     DhwAlarms,
 )

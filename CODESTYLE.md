@@ -12,6 +12,7 @@
 ```
 Package:  snake_case, uv, hatch-vcs
 Types:    pydantic BaseModel/BaseSettings, 3.12+ generics (list[T] not List[T])
+Checker:  pyrefly, [tool.pyrefly] in pyproject.toml, # pyrefly: ignore[<kind>]
 Async:    asyncio.TaskGroup, aiomqtt, @asynccontextmanager
 Log:      %(asctime)s | %(levelname)-8s | %(message)s
 Testing:  pytest + pytest-asyncio, asyncio_mode=auto, function loop scope
@@ -132,6 +133,20 @@ stock_ms = 20 # Unclear between milliseconds and MicroSoft
   )
   ```
 - Use `Annotated` for Pydantic fields that need extra metadata.
+- Type-check with [pyrefly](https://pyrefly.org) at its default preset: `pyrefly~=<version>`
+  in the `dev` group and a `[tool.pyrefly]` section in `pyproject.toml` that checks the whole
+  project:
+  ```toml
+  [tool.pyrefly]
+  project-includes = ["**/*.py*", "**/*.ipynb"]
+  type-ignore-unknown-tag-behavior = "no-effect"
+  ```
+- Silence an error you can't fix with `# pyrefly: ignore[<kind>]` on its line, naming the
+  error kind (e.g. `# pyrefly: ignore[bad-argument-type]`).
+  `pyrefly suppress --comment-location same-line` writes them and
+  `pyrefly suppress --remove-unused` drops the ones no longer needed. Not `# type: ignore` or
+  `# pyright: ignore` (with `no-effect`, a `# type: ignore[...]` with a mypy or pyright code
+  silences nothing), and no baseline file.
 
 ### 2.4 Logging
 
@@ -182,7 +197,7 @@ Projects use three scopes:
 | Scope | Purpose | Key packages |
 |-------|---------|-------------|
 | `dependencies` (top-level) | Runtime | aiomqtt, pydantic-settings, fastapi, strawberry-graphql |
-| `[dependency-groups] dev` | Development | ruff, mypy/pyright, python-dotenv, Jupyter |
+| `[dependency-groups] dev` | Development | ruff, pyrefly, python-dotenv, Jupyter |
 | `[dependency-groups] test` | Testing (optional) | pytest, pytest-asyncio, httpx, pytest-mock |
 
 ### 2.7 Idioms & Comment Style
@@ -538,7 +553,7 @@ check: lint type_check test
 lint:
     uv run ruff check
 type_check:
-    uv run pyright
+    uv run pyrefly check
 test *args:
     uv run pytest {{ args }}
 ```
@@ -565,7 +580,7 @@ test (lint → type-check → unit test → integration test)
 
 | Language | Pipeline |
 |----------|----------|
-| Python | `uv sync --locked` → `ruff check` + `ruff format --check` → `pyright`/`mypy` → `pytest` (unit, then integration against `docker compose` services) |
+| Python | `uv sync --locked` → `ruff check` + `ruff format --check` → `pyrefly check` → `pytest` (unit, then integration against `docker compose` services) |
 | Rust | `setup-rust-toolchain` (clippy, rustfmt, llvm-tools-preview) → `cargo fmt --check` + `cargo clippy --locked` → `cargo llvm-cov --locked --cobertura` |
 | TypeScript | `pnpm install` → `pnpm lint --max-warnings 0` → `pnpm test:unit` → `docker compose` services → `pnpm test:api` → `pnpm exec playwright test` → Cloudflare Pages deploy |
 

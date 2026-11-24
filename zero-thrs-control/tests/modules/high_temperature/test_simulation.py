@@ -5,15 +5,15 @@ from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.input_output.base import CombinedValues
-from thrs.input_output.modules.consumers import ConsumersSensorValues
-from thrs.input_output.modules.high_temperature import (
+from thrs.control.modules.consumers.io import ConsumersSensorValues
+from thrs.control.modules.high_temperature.io import (
     HighTemperatureSimulationInputs,
     HighTemperatureSimulationOutputs,
 )
-from thrs.input_output.modules.pcm import PcmSensorValues
-from thrs.input_output.modules.pvt import PvtSensorValues
-from thrs.input_output.modules.thrusters import ThrustersSensorValues
+from thrs.control.modules.pcm.io import PcmSensorValues
+from thrs.control.modules.pvt.io import PvtSensorValues
+from thrs.control.modules.thrusters.io import ThrustersSensorValues
+from thrs.input_output.base import CombinedValues
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import high_temperature_path

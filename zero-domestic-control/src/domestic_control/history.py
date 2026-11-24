@@ -41,13 +41,13 @@ class GreptimeLog(SQLModel, ABC):
             time_col = func.date_bin(period, cls.timestamp).label("timestamp")
             statement = (
                 select(cls.room_column(), *operations, *cls.extra_columns(), time_col)
-                .where(cls.timestamp >= start_time, cls.timestamp <= end_time)  # type: ignore
-                .where(cls.room_column().in_(room_ids))  # type: ignore
+                .where(cls.timestamp >= start_time, cls.timestamp <= end_time)  # pyrefly: ignore[bad-argument-type]
+                .where(cls.room_column().in_(room_ids))
                 .group_by(cls.room_column(), *cls.extra_columns(), time_col)
                 .order_by(cls.room_column(), *cls.extra_columns(), time_col)
             )
 
-            results = (await session.exec(statement)).all()  # type: ignore
+            results = (await session.exec(statement)).all()  # pyrefly: ignore[no-matching-overload]
             print(results)
             return {
                 room_id: list(rows)
@@ -58,7 +58,7 @@ class GreptimeLog(SQLModel, ABC):
 
 
 class AcLog(GreptimeLog, table=True):
-    __tablename__ = "domestic__ac"  # type: ignore
+    __tablename__ = "domestic__ac"
 
     id: str
     temperature_setpoint: float
@@ -72,7 +72,7 @@ class AcLog(GreptimeLog, table=True):
 
 
 class VentilationLog(GreptimeLog, table=True):
-    __tablename__ = "domestic__ventilation"  # type: ignore
+    __tablename__ = "domestic__ventilation"
 
     id: str
     co2_setpoint: Annotated[float, Field(sa_column=Column("co_2_setpoint"))]
@@ -84,7 +84,7 @@ class VentilationLog(GreptimeLog, table=True):
 
 
 class AmplifiersLog(GreptimeLog, table=True):
-    __tablename__ = "domestic__amplifiers"  # type: ignore
+    __tablename__ = "domestic__amplifiers"
 
     id: str
     on: bool
@@ -95,7 +95,7 @@ class AmplifiersLog(GreptimeLog, table=True):
 
 
 class BlindsLog(GreptimeLog, table=True):
-    __tablename__ = "domestic__blinds"  # type: ignore
+    __tablename__ = "domestic__blinds"
 
     id: str
     room_id: str
@@ -111,7 +111,7 @@ class BlindsLog(GreptimeLog, table=True):
 
 
 class LightingGroupsLog(GreptimeLog, table=True):
-    __tablename__ = "domestic__lighting_groups"  # type: ignore
+    __tablename__ = "domestic__lighting_groups"
 
     id: str
     room_id: str

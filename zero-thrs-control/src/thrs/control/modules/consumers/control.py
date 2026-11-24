@@ -1,35 +1,26 @@
 from collections.abc import Callable
 from datetime import datetime
-from typing import Annotated
 
-from pydantic import Field
-
-from thrs.classes.control import Control, ControlMode
+from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import (
     FlowDistributionController,
     PidController,
 )
-from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsValues, component_meta
-from thrs.input_output.definitions.control import Valve
-from thrs.input_output.definitions.controllers import PidControllerValues
-from thrs.input_output.definitions.units import LMin, Ratio, Tuning
-from thrs.input_output.modules.consumers import (
+from thrs.control.modules.consumers.io import (
     ConsumersControlValues,
     ConsumersSensorValues,
 )
+from thrs.control.modules.consumers.state import (
+    ConsumersControllerState,
+    ConsumersControlMode,
+    ConsumersParameters,
+)
+from thrs.input_output.alarms import BaseAlarms
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.control import Valve
+from thrs.input_output.definitions.units import LMin, Ratio
 from thrs.orchestration.module import ModuleDescription
-
-
-class ConsumersParameters(ThrsValues):
-    dhw_enabled: bool = True
-    dhw_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)] = 0.3
-    adsorption_enabled: bool = True
-    adsorption_flow_ratio_setpoint: Annotated[Ratio, Field(ge=0.0, le=1.0)] = 0.3
-    dhw_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
-    bypass_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
-    adsorption_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ConsumersControlValues:  # noqa: N802
@@ -52,28 +43,14 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ConsumersControlValues:  # n
     )
 
 
-class ConsumersControlMode(ControlMode):
-    pass
-
-
-class ConsumersControllerState(ThrsValues):
-    consumers_dhw_flow_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    consumers_bypass_flow_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    consumers_adsorption_flow_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-
-
 def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> ConsumersControllerState:  # noqa: N802
 
     return ConsumersControllerState(
         consumers_dhw_flow_controller=PidController.zero(timestamp),
         consumers_bypass_flow_controller=PidController.zero(timestamp),
         consumers_adsorption_flow_controller=PidController.zero(timestamp),
+        parameters=ConsumersParameters(),
+        control_mode=None,
     )
 
 
@@ -215,6 +192,8 @@ class ConsumersControl(
             consumers_dhw_flow_controller=self._dhw_flow_controller.values(),
             consumers_bypass_flow_controller=self._bypass_flow_controller.values(),
             consumers_adsorption_flow_controller=self._adsorption_flow_controller.values(),
+            parameters=self._parameters,
+            control_mode=self.mode,
         )
 
         return (self._current_values, controller_state)
@@ -250,7 +229,6 @@ CONSUMERS_MODULE_DESCRIPTION = ModuleDescription(
     ConsumersControlValues,
     ConsumersParameters,
     ConsumersControl,
-    ConsumersControlMode,
     ConsumersControllerState,
     ConsumersAlarms,
 )

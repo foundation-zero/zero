@@ -167,7 +167,7 @@ def describe_modes(description: Any, control: Any) -> None:
     """
     print("## Control modes (what the operator sees)\n")
     print("Mode dimensions reported by this module:\n")
-    for name in description.control_mode_cls.model_fields:
+    for name in type(control.mode).model_fields:
         print(f"- {name}")
     print()
     for label, member in (
@@ -272,7 +272,7 @@ def find_machine(control: Any) -> tuple[Any, Any, Any] | None:
 
 
 def module_description(module_name: str) -> Any:
-    module = importlib.import_module(f"thrs.control.modules.{module_name}")
+    module = importlib.import_module(f"thrs.control.modules.{module_name}.control")
     description = next(
         (
             getattr(module, attr)

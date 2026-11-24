@@ -1,11 +1,12 @@
 from pytest import approx
 
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.control.modules.dc import DcControl, DcParameters
+from thrs.control.modules.dc.control import DcControl
+from thrs.control.modules.dc.io import DcSensorValues, DcSimulationInputs
+from thrs.control.modules.dc.state import DcParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.input_output.definitions.simulation import ActiveHeatSource
-from thrs.input_output.modules.dc import DcSensorValues, DcSimulationInputs
 
 
 def test_all_idle(
@@ -13,7 +14,7 @@ def test_all_idle(
     runner: SimulationTestRunner,
     simulation_inputs_inactive: DcSimulationInputs,
 ):
-    runner.update_simulation_inputs(simulation_inputs_inactive)  # type: ignore
+    runner.update_simulation_inputs(simulation_inputs_inactive)
 
     sensor_values, *_ = runner.run(90)
 
@@ -32,9 +33,7 @@ def test_only_brightloops_aft(
     runner: SimulationTestRunner,
     simulation_inputs_brightloops_aft_active: DcSimulationInputs,
 ):
-    runner.update_simulation_inputs(  # type: ignore
-        simulation_inputs_brightloops_aft_active
-    )
+    runner.update_simulation_inputs(simulation_inputs_brightloops_aft_active)
 
     sensor_values, *_ = runner.run(180)
 
@@ -61,7 +60,7 @@ def test_only_one_brightloop(
     simulation_inputs_aft1_active = simulation_inputs_inactive.model_copy(
         update={"dc_brightloop_aft1": ActiveHeatSource(heat_flow=Stamped.stamp(500))}
     )
-    runner.update_simulation_inputs(simulation_inputs_aft1_active)  # type: ignore
+    runner.update_simulation_inputs(simulation_inputs_aft1_active)
 
     sensor_values, *_ = runner.run(240)
 

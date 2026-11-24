@@ -86,7 +86,7 @@ class Query:
             alarms = [strawberry.ID(alarm_id) for alarm_id in ALARMS.keys()]
         valid_alarms = model_get_alarms([str(alarm_id) for alarm_id in alarms])
         if active is not None:
-            return [alarm for alarm in valid_alarms if alarm.active(info) == active]  # type: ignore[arg-type]
+            return [alarm for alarm in valid_alarms if alarm.active(info) == active]  # pyrefly: ignore[bad-argument-type]
         return valid_alarms
 
 

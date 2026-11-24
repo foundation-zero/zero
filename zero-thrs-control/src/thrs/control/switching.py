@@ -1,34 +1,20 @@
 import logging
-from typing import Literal
 
 from thrs.classes.control import Control
 from thrs.control.manual import ManualControl
+from thrs.control.state import AutomationMode, ControlModes, ControlState
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.root_types import AmcsModeSensorValues
 
-type ControlModes = Literal["manual", "automatic"]
-
 logger = logging.getLogger(__name__)
-
-
-class SwitchingControlMode[Mode](ThrsValues):
-    automatic_mode: Mode | None
-
-    @property
-    def automatic(self) -> bool:
-        return self.automatic_mode is not None
-
-
-class AutomationMode(ThrsValues):
-    mode: ControlModes
 
 
 class Switching[
     SensorValues: AmcsModeSensorValues,
     ControlValues: ThrsValues,
     ControlParameters: ThrsValues,
-    ControlMode,
-    ControllerState: ThrsValues,
+    ControlMode: ThrsValues,
+    ControllerState: ControlState,
 ]:
     def __init__(
         self,
@@ -88,20 +74,37 @@ class Switching[
                 self.update_manual_controls(actuated_control_values)
             self._mode = "manual"
 
-        if self.control_mode == "manual":
+        if self._mode == "manual":
             if self._last_mode == "automatic" and actuated_control_values is not None:
                 self.update_manual_controls(actuated_control_values)
             control_values, _ = self._manual_control.control(sensor_values)
-            _, controller_state = self._automatic_control.initial()
             self._last_mode = "manual"
-            return control_values, controller_state
+            return control_values, self.idle_state()
+
         if self._last_mode == "manual":
             self._automatic_control.reset()
         control_values, controller_state = self._automatic_control.control(
             sensor_values
         )
+        controller_state.automation_mode = AutomationMode(mode="automatic")
+        controller_state.manual_values = self.manual_controls
         self._last_mode = "automatic"
         return control_values, controller_state
+
+    def idle_state(self) -> ControllerState:
+        """The controller state while the automatic control does not run.
+
+        That is while manual, or without sensor values: the automatic control's
+        initial state, with the current parameters and modes.
+        """
+        _, controller_state = self._automatic_control.initial()
+        controller_state.parameters = self._automatic_control.parameters
+        controller_state.control_mode = (
+            self._automatic_control.mode if self._mode == "automatic" else None
+        )
+        controller_state.automation_mode = AutomationMode(mode=self._mode)
+        controller_state.manual_values = self.manual_controls
+        return controller_state
 
     def switch_mode(self, mode: AutomationMode):
         self._mode = mode.mode
@@ -120,22 +123,6 @@ class Switching[
     @staticmethod
     def initial_mode() -> AutomationMode:
         return AutomationMode(mode="manual")
-
-    @property
-    def mode(self) -> SwitchingControlMode[ControlMode]:
-        return (
-            SwitchingControlMode(automatic_mode=None)
-            if self.control_mode == "manual"
-            else SwitchingControlMode(automatic_mode=self._automatic_control.mode)
-        )
-
-    @property
-    def automatic(self) -> bool:
-        return self.control_mode == "automatic"
-
-    @property
-    def manual(self) -> bool:
-        return self.control_mode == "manual"
 
     @property
     def control_mode(self) -> ControlModes:

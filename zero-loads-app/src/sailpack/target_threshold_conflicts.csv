@@ -99,10 +99,52 @@ main-checkstay-ps-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,port,13.043,11.7,,,11.
 main-checkstay-ps-load,M3R SJ Rchng 20261008,port,13.022,11.7,,,11.7,13.8
 main-checkstay-sb-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,starboard,13.043,11.7,,,11.7,13.8
 main-checkstay-sb-load,M3R SJ Rchng 20261008,starboard,13.022,11.7,,,11.7,13.8
+main-cunningham-load,LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410,port,7.138,5.1,,,5.1,6.0
+main-cunningham-load,LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410,starboard,7.138,5.1,,,5.1,6.0
+main-cunningham-load,M1R B Rchng TWA70 20261009,port,7.138,5.1,,,5.1,6.0
+main-cunningham-load,M1R B Rchng TWA70 20261009,starboard,7.138,5.1,,,5.1,6.0
+main-cunningham-load,M1R MZ2R B Upwind 20261007,port,6.118,5.1,,,5.1,6.0
+main-cunningham-load,M1R MZ2R B Upwind 20261007,starboard,6.118,5.1,,,5.1,6.0
 main-headstay-combined-load,FM B Upwind 20261006,port,53.705,46.8,,,46.8,55.0
 main-headstay-combined-load,FM B Upwind 20261006,starboard,53.705,46.8,,,46.8,55.0
 main-headstay-combined-load,M1R MZ2R B Upwind 20261007,port,47.039,46.8,,,46.8,55.0
 main-headstay-combined-load,M1R MZ2R B Upwind 20261007,starboard,47.039,46.8,,,46.8,55.0
+main-mast-compression-load,FM B Upwind 20261006,port,228.616,189.6,,,189.6,223.0
+main-mast-compression-load,FM B Upwind 20261006,starboard,228.616,189.6,,,189.6,223.0
+main-mast-compression-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,port,199.696,189.6,,,189.6,223.0
+main-mast-compression-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,starboard,199.696,189.6,,,189.6,223.0
+main-mast-compression-load,LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409,port,201.649,189.6,,,189.6,223.0
+main-mast-compression-load,LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409,starboard,201.649,189.6,,,189.6,223.0
+main-mast-compression-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,port,196.671,189.6,,,189.6,223.0
+main-mast-compression-load,LC10_ SJ_TWA60_TWS45_RM10_20240419,starboard,196.671,189.6,,,189.6,223.0
+main-mast-compression-load,LC11_ SS_M1R_TWA50_TWS24_RM18_20240410,port,219.146,189.6,,,189.6,223.0
+main-mast-compression-load,LC11_ SS_M1R_TWA50_TWS24_RM18_20240410,starboard,219.146,189.6,,,189.6,223.0
+main-mast-compression-load,LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409,port,206.464,189.6,,,189.6,223.0
+main-mast-compression-load,LC2_ B_FM_MZ1R_TWA45_TWS16_RM22_20240409,starboard,206.464,189.6,,,189.6,223.0
+main-mast-compression-load,LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410,port,199.795,189.6,,,189.6,223.0
+main-mast-compression-load,LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410,starboard,199.795,189.6,,,189.6,223.0
+main-mast-compression-load,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,port,200.112,189.6,,,189.6,223.0
+main-mast-compression-load,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,starboard,200.112,189.6,,,189.6,223.0
+main-mast-compression-load,LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508,port,219.132,189.6,,,189.6,223.0
+main-mast-compression-load,LC6-R_ SS_M1R_MZ2R_TWA90_TWS25_RM20_20240508,starboard,219.132,189.6,,,189.6,223.0
+main-mast-compression-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,port,219.691,189.6,,,189.6,223.0
+main-mast-compression-load,LC6_ SS_M1R_MZ2R_TWA45_TWS24_RM20_20240410,starboard,219.691,189.6,,,189.6,223.0
+main-mast-compression-load,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,port,216.56,189.6,,,189.6,223.0
+main-mast-compression-load,LC7-R_ SS_M2R_MZ2R_TWA90_TWS28_RM20_20240418,starboard,216.56,189.6,,,189.6,223.0
+main-mast-compression-load,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,port,218.679,189.6,,,189.6,223.0
+main-mast-compression-load,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,starboard,218.679,189.6,,,189.6,223.0
+main-mast-compression-load,M1R B Rchng TWA70 20261009,port,214.248,189.6,,,189.6,223.0
+main-mast-compression-load,M1R B Rchng TWA70 20261009,starboard,214.248,189.6,,,189.6,223.0
+main-mast-compression-load,M1R M12R SS Upwind 20261009,port,209.623,189.6,,,189.6,223.0
+main-mast-compression-load,M1R M12R SS Upwind 20261009,starboard,209.623,189.6,,,189.6,223.0
+main-mast-compression-load,M1R MZ2R B Upwind 20261007,port,214.136,189.6,,,189.6,223.0
+main-mast-compression-load,M1R MZ2R B Upwind 20261007,starboard,214.136,189.6,,,189.6,223.0
+main-mast-compression-load,M2R SJ Upwind 20261008,port,205.273,189.6,,,189.6,223.0
+main-mast-compression-load,M2R SJ Upwind 20261008,starboard,205.273,189.6,,,189.6,223.0
+main-mast-compression-load,M2R SS Upwind 20261008,port,206.717,189.6,,,189.6,223.0
+main-mast-compression-load,M2R SS Upwind 20261008,starboard,206.717,189.6,,,189.6,223.0
+main-mast-compression-load,M3R SJ Upwind 20261008,port,195.487,189.6,,,189.6,223.0
+main-mast-compression-load,M3R SJ Upwind 20261008,starboard,195.487,189.6,,,189.6,223.0
 main-outhaul-load,FM B Upwind 20261006,port,13.946,13.6,,,13.6,16.0
 main-outhaul-load,FM B Upwind 20261006,starboard,13.946,13.6,,,13.6,16.0
 main-outhaul-load,M1R M12R SS Upwind 20261009,port,15.386,13.6,,,13.6,16.0
@@ -147,10 +189,32 @@ mizzen-checkstay-sb-load,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,starboard
 mizzen-checkstay-sb-load,LC66_TSOnly_TWS45_TWA45,starboard,2.269,2.0,,,2.0,2.4
 mizzen-checkstay-sb-load,LC66_TSOnly_TWS45_TWA70,starboard,2.269,2.0,,,2.0,2.4
 mizzen-checkstay-sb-load,M1R B Rchng TWA70 20261009,starboard,2.955,2.0,,,2.0,2.4
+mizzen-cunningham-load,LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410,port,4.079,3.4,,,3.4,4.0
+mizzen-cunningham-load,LC3_ B_M1R_MZ1R_TWA45_TWS19_RM22_20240410,starboard,4.079,3.4,,,3.4,4.0
+mizzen-cunningham-load,M1R M12R SS Upwind 20261009,port,6.741,3.4,,,3.4,4.0
+mizzen-cunningham-load,M1R M12R SS Upwind 20261009,starboard,6.741,3.4,,,3.4,4.0
 mizzen-headsail-tack-adjuster-load,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,port,15.257,12.3,,,12.3,14.5
 mizzen-headsail-tack-adjuster-load,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,starboard,15.257,12.3,,,12.3,14.5
 mizzen-headsail-tack-adjuster-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,port,13.692,12.3,,,12.3,14.5
 mizzen-headsail-tack-adjuster-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,starboard,13.692,12.3,,,12.3,14.5
+mizzen-mast-compression-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,port,109.177,108.4,,,108.4,127.5
+mizzen-mast-compression-load,LC1-2R_ B_FM_FMZ_TWA110_TWS18_RM22_20240418,starboard,109.177,108.4,,,108.4,127.5
+mizzen-mast-compression-load,LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409,port,109.815,108.4,,,108.4,127.5
+mizzen-mast-compression-load,LC1-2_ B_FM_FMZ_TWA45_TWS14_RM22_20240409,starboard,109.815,108.4,,,108.4,127.5
+mizzen-mast-compression-load,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,port,125.704,108.4,,,108.4,127.5
+mizzen-mast-compression-load,LC22_ B_FM_FMZ_MZJ_ TWA55_TWS14_RM22_20240519,starboard,125.704,108.4,,,108.4,127.5
+mizzen-mast-compression-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,port,117.922,108.4,,,108.4,127.5
+mizzen-mast-compression-load,LC35_B_FM_FMZ_MZSS_ TWA115_TWS14_RM17_5_20240411,starboard,117.922,108.4,,,108.4,127.5
+mizzen-mast-compression-load,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,port,110.355,108.4,,,108.4,127.5
+mizzen-mast-compression-load,LC5-R_ SS_M1R_MZ1R_TWA110_TWS25_RM20_20240418,starboard,110.355,108.4,,,108.4,127.5
+mizzen-mast-compression-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,port,112.769,108.4,,,108.4,127.5
+mizzen-mast-compression-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,starboard,112.769,108.4,,,108.4,127.5
+mizzen-mast-compression-load,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,port,109.216,108.4,,,108.4,127.5
+mizzen-mast-compression-load,LC7_ SS_M2R_MZ2R_TWA45_TWS26_RM20_20240410,starboard,109.216,108.4,,,108.4,127.5
+mizzen-mast-compression-load,M1R M12R SS Upwind 20261009,port,118.978,108.4,,,108.4,127.5
+mizzen-mast-compression-load,M1R M12R SS Upwind 20261009,starboard,118.978,108.4,,,108.4,127.5
+mizzen-mast-compression-load,M1R MZ2R B Upwind 20261007,port,109.368,108.4,,,108.4,127.5
+mizzen-mast-compression-load,M1R MZ2R B Upwind 20261007,starboard,109.368,108.4,,,108.4,127.5
 mizzen-outhaul-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,port,9.949,9.4,,,9.4,11.0
 mizzen-outhaul-load,LC53_FM_FMZ_TWA120_TWS20_RM20_PV_20240419,starboard,9.949,9.4,,,9.4,11.0
 mizzen-outhaul-load,M1R M12R SS Upwind 20261009,port,9.759,9.4,,,9.4,11.0

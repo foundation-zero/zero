@@ -89,7 +89,7 @@ const hasAmcsMode = (module: ControlledModule): boolean =>
 type ControllerModes = {
   [K in keyof ControlModes]?: {
     automationMode?: { mode?: "MANUAL" | "AUTOMATIC" | null } | null;
-    controlMode?: { automaticMode?: ControlModes[K] | null } | null;
+    controlMode?: ControlModes[K] | null;
   } | null;
 };
 
@@ -104,7 +104,7 @@ export type ControlResponse = {
 // invalid, so consumers' control mode is not queried.
 const controllerSelection = (module: ControlledModule): string => {
   const automaticMode = AUTOMATIC_MODE_SELECTIONS[module];
-  const controlMode = automaticMode ? `controlMode { automaticMode { ${automaticMode} } }` : "";
+  const controlMode = automaticMode ? `controlMode { ${automaticMode} }` : "";
   return `${module} { automationMode { mode } ${controlMode} }`;
 };
 
@@ -129,22 +129,21 @@ export const CONTROL_QUERY = gql`
 // The control status from the MQTT GraphQL response, in the shape the views have read since
 // thrs-api: a module is automatic when its automation mode is, and its control mode is unknown
 // (`null`) until the module has published an automation mode. The automatic mode says what the
-// automatic controller is doing.
+// automatic controller is doing, so a manual module has none.
 const toControlStatus = (response: ControlResponse): ControlStatus => {
   const modules = Object.fromEntries(
     CONTROLLED_MODULES.map((module) => {
       const controller = response.thrs?.controller?.[module];
       const automationMode = controller?.automationMode?.mode;
-      const automaticMode = controller?.controlMode?.automaticMode ?? null;
+      const automatic = automationMode === "AUTOMATIC";
+      const automaticMode = automatic ? (controller?.controlMode ?? null) : null;
       const sensorValues = hasAmcsMode(module)
         ? { mode: response.marpower?._500000Thrs?.[module]?.mode ?? undefined }
         : {};
       return [
         module,
         {
-          controlMode: automationMode
-            ? { automatic: automationMode === "AUTOMATIC", automaticMode }
-            : null,
+          controlMode: automationMode ? { automatic, automaticMode } : null,
           sensorValues,
         },
       ];

@@ -1,58 +1,31 @@
 from collections.abc import Callable
 from datetime import datetime
-from typing import Annotated
 
-from pydantic import model_validator
 from transitions import State
 
-from thrs.classes.control import Control, ControlMode
+from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
+from thrs.control.modules.adsorption.io import (
+    AdsorptionControlValues,
+    AdsorptionSensorValues,
+)
+from thrs.control.modules.adsorption.state import (
+    AdsorptionControllerState,
+    AdsorptionControlMode,
+    AdsorptionParameters,
+)
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsValues, component_meta
+from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import AdsorptionChiller, Valve
-from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import (
     AdsorptionChillerMode,
     Celsius,
     FreeCoolingMode,
     Ratio,
     TankControlMode,
-    Tuning,
-)
-from thrs.input_output.modules.adsorption import (
-    AdsorptionControlValues,
-    AdsorptionSensorValues,
 )
 from thrs.orchestration.module import ModuleDescription
-
-
-class AdsorptionParameters(ThrsValues):
-    chiller_enabled: bool = True
-    waste_cooling_temperature_setpoint: Celsius = 35.0
-    waste_recovery_temperature_setpoint: Celsius = 34.0
-    hot_supply_temperature_setpoint: Celsius = 60.0
-    adsorption_cooling_setpoint: Celsius = 17.0
-    adsorption_hot_minimum: Celsius = 50.0
-    adsorption_hot_trigger: Celsius = 55.0
-    adsorption_cold_minimum: Celsius = 10.0
-    adsorption_cold_trigger: Celsius = 17.0
-    hot_mix_tuning: Tuning = (0.05, 0.001, 0)
-    recovery_tuning: Tuning = (0.05, 0.001, 0)
-    waste_cooling_tuning: Tuning = (0.05, 0.01, 0)
-    free_cooling_enabled: bool = False
-
-    @model_validator(mode="after")
-    def check_temperature_setpoints(self):
-        if self.adsorption_hot_trigger <= self.adsorption_hot_minimum:
-            raise ValueError(
-                "Hot trigger temperature must be greater than hot minimum temperature"
-            )
-        if self.adsorption_cold_trigger <= self.adsorption_cold_minimum:
-            raise ValueError(
-                "Cold trigger temperature must be greater than cold minimum temperature"
-            )
-        return self
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:  # noqa: N802
@@ -86,28 +59,14 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:  # 
     )
 
 
-class AdsorptionControlMode(ControlMode):
-    mode: str
-
-
-class AdsorptionControllerState(ThrsValues):
-    adsorption_hot_mix_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    adsorption_recovery_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    adsorption_waste_cooling_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-
-
 def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> AdsorptionControllerState:  # noqa: N802
 
     return AdsorptionControllerState(
         adsorption_hot_mix_controller=PidController.zero(timestamp),
         adsorption_recovery_controller=PidController.zero(timestamp),
         adsorption_waste_cooling_controller=PidController.zero(timestamp),
+        parameters=AdsorptionParameters(),
+        control_mode=None,
     )
 
 
@@ -237,12 +196,12 @@ class AdsorptionControl(
 
     @property
     def initial_mode(self) -> AdsorptionControlMode:
-        initial_mode: str = self._state_machine.initial  # type: ignore
+        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
         return AdsorptionControlMode(mode=initial_mode)
 
     @property
     def mode(self) -> AdsorptionControlMode:
-        mode: str = self.state  # type: ignore
+        mode: str = self.state
         return AdsorptionControlMode(mode=mode)
 
     def initial(self) -> tuple[AdsorptionControlValues, AdsorptionControllerState]:
@@ -255,7 +214,7 @@ class AdsorptionControl(
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
-        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
         self._init_controllers()
 
     @StateLogger.log_warnings
@@ -263,7 +222,7 @@ class AdsorptionControl(
         self, sensor_values: AdsorptionSensorValues
     ) -> tuple[AdsorptionControlValues, AdsorptionControllerState]:
         self._update_adsorption_inputs(sensor_values)
-        self._check_adsorption_status(sensor_values)  # type: ignore
+        self._check_adsorption_status(sensor_values)  # pyrefly: ignore[missing-attribute]
         controller_state = self._control_temperature_controllers(sensor_values)
 
         return (self._current_values, controller_state)
@@ -300,6 +259,8 @@ class AdsorptionControl(
             adsorption_hot_mix_controller=self._hot_mix_controller.values(),
             adsorption_recovery_controller=self._recovery_controller.values(),
             adsorption_waste_cooling_controller=self._waste_cooling_controller.values(),
+            parameters=self._parameters,
+            control_mode=self.mode,
         )
 
     def _disable_hot_mix(self):
@@ -387,7 +348,6 @@ ADSORPTION_MODULE_DESCRIPTION = ModuleDescription(
     AdsorptionControlValues,
     AdsorptionParameters,
     AdsorptionControl,
-    AdsorptionControlMode,
     AdsorptionControllerState,
     AdsorptionAlarms,
 )

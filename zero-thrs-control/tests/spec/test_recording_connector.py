@@ -8,7 +8,7 @@ from pydantic import computed_field
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.classes.control import ControlMode
-from thrs.control.switching import AutomationMode, SwitchingControlMode
+from thrs.control.state import AutomationMode, ControlState
 from thrs.input_output.base import ThrsValues, component_meta, computed_meta
 from thrs.orchestration.comms import (
     ControlChannels,
@@ -35,6 +35,10 @@ from thrs.spec.recording_connector import (
 
 class SampleStatus(ThrsValues):
     code: int
+
+
+class EmptyControllerState(ControlState[ThrsValues, ThrsValues, ThrsValues]):
+    """A controller state with no controllers, only what every module publishes."""
 
 
 class CustomMode(ControlMode):
@@ -88,7 +92,7 @@ def test_strip_none_errors_on_multi_type_unions():
 
 
 def test_field_annotation_with_standard_field():
-    field = FieldInfo(annotation=int | None)  # type: ignore
+    field = FieldInfo(annotation=int | None)
     assert _field_annotation(field) is int
 
 
@@ -173,12 +177,12 @@ def test_describe_mapping_module_recursive(settings: Config):
 
 def test_describe_mapping_merged_module_returns_empty(settings: Config):
     mapping = MergedModuleMqttMapping({}, {}, "")
-    assert _describe_mapping(settings, mapping) == []  # type: ignore[arg-type]
+    assert _describe_mapping(settings, mapping) == []  # pyrefly: ignore[bad-argument-type]
 
 
 def test_describe_mapping_unsupported_type_raises(settings: Config):
     with pytest.raises(TypeError, match="Don't know how to describe"):
-        _describe_mapping(settings, object())  # type: ignore[arg-type]
+        _describe_mapping(settings, object())  # pyrefly: ignore[bad-argument-type]
 
 
 # ---------------------------------------------------------------------------
@@ -248,6 +252,7 @@ def test_directives_channels_pair_status_with_status_set(settings: Config):
     ("state", "payload_type"),
     [
         ("automation-mode", AutomationMode),
+        ("parameters", ThrsValues),
         ("control-values", ThrsValues),
         ("manual-values", ThrsValues),
     ],
@@ -260,10 +265,9 @@ def test_control_channels_pair_state_with_its_set(
         sensor_values_cls=ThrsValues,
         control_values_cls=ThrsValues,
         parameters_cls=ThrsValues,
-        control=None,  # type: ignore
-        control_mode_cls=ThrsValues,
-        controller_state_cls=ThrsValues,
-        alarms=None,  # type: ignore
+        control=None,  # pyrefly: ignore[bad-argument-type]
+        controller_state_cls=EmptyControllerState,
+        alarms=None,  # pyrefly: ignore[bad-argument-type]
     )
 
     ControlChannels(connector, settings, "test", description)
@@ -290,13 +294,12 @@ def test_collect_topics_wires_channels(settings: Config):
                 sensor_values_cls=ThrsValues,
                 control_values_cls=ThrsValues,
                 parameters_cls=ThrsValues,
-                control=None,  # type: ignore
-                control_mode_cls=ThrsValues,
-                controller_state_cls=ThrsValues,
-                alarms=None,  # type: ignore
+                control=None,  # pyrefly: ignore[bad-argument-type]
+                controller_state_cls=EmptyControllerState,
+                alarms=None,  # pyrefly: ignore[bad-argument-type]
             ),
         },
-        simulation_description=SimulationDescription(ThrsValues, None, ThrsValues()),  # type: ignore
+        simulation_description=SimulationDescription(ThrsValues, None, ThrsValues()),  # pyrefly: ignore[bad-argument-type]
     )
     mock_sim_desc = MagicMock()
     mock_sim_desc.simulation_inputs = DummyPayloadModel(speed=1, temperature=20.0)
@@ -312,22 +315,6 @@ def test_collect_topics_wires_channels(settings: Config):
     assert isinstance(topics, list)
     assert topics == [
         TopicMapping(
-            topic="test_controller_topic/test/parameters",
-            payload_type=ThrsValues,
-            direction="send",
-            component_type=None,
-            qos=1,
-            retain=False,
-        ),
-        TopicMapping(
-            topic="test_controller_topic/test/control-mode",
-            payload_type=SwitchingControlMode[ThrsValues],
-            direction="send",
-            component_type=None,
-            qos=1,
-            retain=False,
-        ),
-        TopicMapping(
             topic="test_controller_topic/test/automation-mode",
             payload_type=AutomationMode,
             direction="send",
@@ -336,7 +323,7 @@ def test_collect_topics_wires_channels(settings: Config):
             retain=False,
         ),
         TopicMapping(
-            topic="test_controller_topic/test/control-values",
+            topic="test_controller_topic/test/manual-values",
             payload_type=ThrsValues,
             direction="send",
             component_type=None,
@@ -344,7 +331,23 @@ def test_collect_topics_wires_channels(settings: Config):
             retain=False,
         ),
         TopicMapping(
-            topic="test_controller_topic/test/manual-values",
+            topic="test_controller_topic/test/control-mode",
+            payload_type=ThrsValues,
+            direction="send",
+            component_type=None,
+            qos=1,
+            retain=False,
+        ),
+        TopicMapping(
+            topic="test_controller_topic/test/parameters",
+            payload_type=ThrsValues,
+            direction="send",
+            component_type=None,
+            qos=1,
+            retain=False,
+        ),
+        TopicMapping(
+            topic="test_controller_topic/test/control-values",
             payload_type=ThrsValues,
             direction="send",
             component_type=None,

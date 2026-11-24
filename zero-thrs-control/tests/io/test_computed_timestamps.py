@@ -4,16 +4,16 @@ from typing import Any
 
 import pytest
 
+from thrs.control.modules.adsorption.io import AdsorptionSensorValues
+from thrs.control.modules.consumers.io import ConsumersSensorValues
+from thrs.control.modules.dc.io import DcSensorValues
+from thrs.control.modules.dhw.io import DhwSensorValues
+from thrs.control.modules.drives.io import DrivesSensorValues
+from thrs.control.modules.pcm.io import PcmSensorValues
+from thrs.control.modules.pvt.io import PvtSensorValues
+from thrs.control.modules.thrusters.io import ThrustersSensorValues
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions import sensor
-from thrs.input_output.modules.adsorption import AdsorptionSensorValues
-from thrs.input_output.modules.consumers import ConsumersSensorValues
-from thrs.input_output.modules.dc import DcSensorValues
-from thrs.input_output.modules.dhw import DhwSensorValues
-from thrs.input_output.modules.drives import DrivesSensorValues
-from thrs.input_output.modules.pcm import PcmSensorValues
-from thrs.input_output.modules.pvt import PvtSensorValues
-from thrs.input_output.modules.thrusters import ThrustersSensorValues
 
 SENSOR_TIME = datetime(2026, 1, 1, tzinfo=UTC)
 VALVE_POSITIONS = (0.0, 0.5, 1.0)

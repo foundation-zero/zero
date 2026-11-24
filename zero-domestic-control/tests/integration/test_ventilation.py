@@ -19,7 +19,7 @@ from domestic_control.services.ventilation import (
 
 @fixture
 def settings():
-    return Settings()  # type: ignore
+    return Settings()
 
 
 async def _mqtt_client(settings):

@@ -4,17 +4,14 @@ import pytest
 from pytest import approx
 
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.control.modules.dhw import (
-    DhwControl,
-    DhwParameters,
-    TanksController,
-)
-from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.units import TankState
-from thrs.input_output.modules.dhw import (
+from thrs.control.modules.dhw.control import DhwControl, TanksController
+from thrs.control.modules.dhw.io import (
     DhwSensorValues,
     DhwSimulationInputs,
 )
+from thrs.control.modules.dhw.state import DhwParameters
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.units import TankState
 from thrs.orchestration.simulation import Simulation
 
 
@@ -61,6 +58,17 @@ async def test_filling_flow(
     assert isinstance(sensor_values, DhwSensorValues)
     assert sensor_values.dhw_flow_drives.flow.value == approx(0.0, abs=0.01)
     assert sensor_values.dhw_flow_dc.flow.value > 0.1
+
+
+def test_controller_state_carries_parameters_and_mode(runner, control: DhwControl):
+    control.update_parameters(
+        control.parameters.model_copy(update={"minimum_tank_level": 2})
+    )
+
+    _sensor_values, _control_values, controller_state = runner.run(1)
+
+    assert controller_state.parameters == control.parameters
+    assert controller_state.control_mode == control.mode
 
 
 @pytest.mark.parametrize("overpressure", [0.1, 0.2, 0.3, 0.5])
@@ -313,7 +321,7 @@ def test_boosting_pump_held_until_boosting_loop_open(
     )
 
     # while the boosting valves travel the pump must not be driven
-    while not control._boosting_loop_open(runner.tick()[0]):  # type: ignore
+    while not control._boosting_loop_open(runner.tick()[0]):
         assert control._current_values.dhw_pump.dutypoint.value == 0.1
         assert not control._pump_flow_controller.enabled()
 
@@ -355,7 +363,7 @@ def test_minimum_pump_dutypoint_rejects_below_pump_floor(
     parameters: DhwParameters,
 ):
     with pytest.raises(ValueError, match=r"greater than or equal to 0\.1"):
-        DhwParameters(**{**parameters.model_dump(), "minimum_pump_dutypoint": 0.05})
+        DhwParameters(**{**parameters.model_dump(), "minimum_pump_dutypoint": 0.05})  # pyrefly: ignore[bad-argument-type]
 
 
 def test_reset_restores_initial_control_state(
@@ -572,7 +580,7 @@ def test_control_loop_aborts_stalled_heatpump_boost(parameters: DhwParameters):
 
 def test_boosting_stall_window_rejects_negative(parameters: DhwParameters):
     with pytest.raises(ValueError, match=r"greater than or equal to 0"):
-        DhwParameters(**{**parameters.model_dump(), "boosting_stall_window": -1})
+        DhwParameters(**{**parameters.model_dump(), "boosting_stall_window": -1})  # pyrefly: ignore[bad-argument-type]
 
 
 def _stalling_ht_control(

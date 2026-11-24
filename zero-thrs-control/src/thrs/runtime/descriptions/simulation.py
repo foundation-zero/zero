@@ -1,14 +1,43 @@
 from dataclasses import dataclass
 from typing import Literal
 
-from thrs.control.modules.adsorption import ADSORPTION_MODULE_DESCRIPTION
-from thrs.control.modules.consumers import CONSUMERS_MODULE_DESCRIPTION
-from thrs.control.modules.dc import DC_MODULE_DESCRIPTION
-from thrs.control.modules.dhw import DHW_MODULE_DESCRIPTION
-from thrs.control.modules.drives import DRIVES_MODULE_DESCRIPTION
-from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION
-from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION
-from thrs.control.modules.thrusters import THRUSTERS_MODULE_DESCRIPTION
+from thrs.control.modules.adsorption.control import ADSORPTION_MODULE_DESCRIPTION
+from thrs.control.modules.adsorption.io import (
+    AdsorptionSimulationInputs,
+    AdsorptionSimulationOutputs,
+)
+from thrs.control.modules.consumers.control import CONSUMERS_MODULE_DESCRIPTION
+from thrs.control.modules.consumers.io import (
+    ConsumersSimulationInputs,
+    ConsumersSimulationOutputs,
+)
+from thrs.control.modules.dc.control import DC_MODULE_DESCRIPTION
+from thrs.control.modules.dc.io import DcSimulationInputs, DcSimulationOutputs
+from thrs.control.modules.dhw.control import DHW_MODULE_DESCRIPTION
+from thrs.control.modules.dhw.io import DhwSimulationInputs, DhwSimulationOutputs
+from thrs.control.modules.drives.control import DRIVES_MODULE_DESCRIPTION
+from thrs.control.modules.drives.io import (
+    DrivesSimulationInputs,
+    DrivesSimulationOutputs,
+)
+from thrs.control.modules.high_temperature.io import (
+    HighTemperatureSimulationInputs,
+    HighTemperatureSimulationOutputs,
+)
+from thrs.control.modules.pcm.control import PCM_MODULE_DESCRIPTION
+from thrs.control.modules.pcm.io import PcmSimulationInputs, PcmSimulationOutputs
+from thrs.control.modules.pvt.control import PVT_MODULE_DESCRIPTION
+from thrs.control.modules.pvt.io import PvtSimulationInputs, PvtSimulationOutputs
+from thrs.control.modules.thrs.io import (
+    ThrsSimulationInputs,
+    ThrsSimulationOutputs,
+    thrs_cosimulation,
+)
+from thrs.control.modules.thrusters.control import THRUSTERS_MODULE_DESCRIPTION
+from thrs.control.modules.thrusters.io import (
+    ThrustersSimulationInputs,
+    ThrustersSimulationOutputs,
+)
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
     ActiveHeatSource,
@@ -26,35 +55,6 @@ from thrs.input_output.definitions.simulation import (
 )
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.definitions.units import PcsMode
-from thrs.input_output.modules.adsorption import (
-    AdsorptionSimulationInputs,
-    AdsorptionSimulationOutputs,
-)
-from thrs.input_output.modules.consumers import (
-    ConsumersSimulationInputs,
-    ConsumersSimulationOutputs,
-)
-from thrs.input_output.modules.dc import DcSimulationInputs, DcSimulationOutputs
-from thrs.input_output.modules.dhw import DhwSimulationInputs, DhwSimulationOutputs
-from thrs.input_output.modules.drives import (
-    DrivesSimulationInputs,
-    DrivesSimulationOutputs,
-)
-from thrs.input_output.modules.high_temperature import (
-    HighTemperatureSimulationInputs,
-    HighTemperatureSimulationOutputs,
-)
-from thrs.input_output.modules.pcm import PcmSimulationInputs, PcmSimulationOutputs
-from thrs.input_output.modules.pvt import PvtSimulationInputs, PvtSimulationOutputs
-from thrs.input_output.modules.thrs import (
-    ThrsSimulationInputs,
-    ThrsSimulationOutputs,
-    thrs_cosimulation,
-)
-from thrs.input_output.modules.thrusters import (
-    ThrustersSimulationInputs,
-    ThrustersSimulationOutputs,
-)
 from thrs.orchestration.module import ModuleDescription
 from thrs.orchestration.simulation import SimulationDescription
 from thrs.simulation.fmu import Fmu

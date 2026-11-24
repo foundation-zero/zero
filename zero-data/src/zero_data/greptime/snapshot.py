@@ -6,7 +6,7 @@ local Greptime to recreate prod's table shapes (empty) for offline dbt developme
 """
 
 import logging
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 @contextmanager
 def connect(
     connection: GreptimeConnection,
-) -> Iterator["psycopg.Connection"]:
+) -> Generator["psycopg.Connection"]:
     """A Greptime connection over the Postgres wire endpoint, auto-committing DDL."""
     handle = psycopg.connect(
         host=connection.host,
@@ -46,7 +46,7 @@ def dump_table_ddl(handle: "psycopg.Connection", table: str) -> str:
     Greptime returns two columns (table name, create statement); we keep the statement.
     """
     with handle.cursor() as cursor:
-        cursor.execute(f'SHOW CREATE TABLE "{table}"')
+        cursor.execute(f'SHOW CREATE TABLE "{table}"')  # pyrefly: ignore[no-matching-overload]
         row = cursor.fetchone()
     if row is None:
         raise ValueError(f"SHOW CREATE TABLE returned no rows for table {table!r}")
@@ -78,7 +78,7 @@ def ensure_databases(
     """Create the databases dbt materializes into if absent."""
     with handle.cursor() as cursor:
         for database in databases:
-            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {database}")
+            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {database}")  # pyrefly: ignore[no-matching-overload]
 
 
 def load_snapshot(connection: GreptimeConnection, snapshot_dir: Path) -> list[str]:
@@ -93,7 +93,7 @@ def load_snapshot(connection: GreptimeConnection, snapshot_dir: Path) -> list[st
         ensure_databases(handle)
         with handle.cursor() as cursor:
             for path in sorted(snapshot_dir.glob("*.sql")):
-                cursor.execute(path.read_text())
+                cursor.execute(path.read_text())  # pyrefly: ignore[no-matching-overload]
                 logger.info("Loaded %s", path.name)
                 loaded.append(path.stem)
     return loaded

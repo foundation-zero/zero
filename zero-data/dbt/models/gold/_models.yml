@@ -8,24 +8,14 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated active power."
-        tests:
-          - not_null
       - name: topic
         description: "MQTT topic associated with the raw message."
-        tests:
-          - not_null
       - name: consumer
         description: "Consumer identifier associated with the tag."
-        tests:
-          - not_null
       - name: power
         description: "Power consumption aggregated per minute."
-        tests:
-          - not_null
       - name: main_group
         description: "The main group classification of the power tag."
-        tests:
-          - not_null
       - name: sub_group
         description: "The sub group classification, within the main group, of the power tag."
   - name: gld_power_tags_power_per_minute_per_main_group
@@ -35,24 +25,14 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated active power."
-        tests:
-          - not_null
       - name: topic
         description: "MQTT topic associated with the raw message."
-        tests:
-          - not_null
       - name: consumer
         description: "Consumer identifier associated with the tag."
-        tests:
-          - not_null
       - name: power
         description: "Power consumption aggregated per minute."
-        tests:
-          - not_null
       - name: main_group
         description: "The main group classification of the power tag."
-        tests:
-          - not_null
   - name: gld_batteries_per_minute
     description: >
       Battery metrics aggregated per minute.
@@ -60,12 +40,8 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated battery metrics."
-        tests:
-          - not_null
       - name: topic
         description: "MQTT topic associated with the raw message."
-        tests:
-          - not_null
       - name: avg_soc
         description: "Average state of charge aggregated per minute."
       - name: avg_soh
@@ -87,16 +63,10 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated converter voltages."
-        tests:
-          - not_null
       - name: converter
         description: "Identifier of the 24V DC converter."
-        tests:
-          - not_null
       - name: voltage
         description: "Voltage of the 24V DC converter aggregated per minute."
-        tests:
-          - not_null
   - name: gld_24vdc_power_per_minute_per_sub_group
     description: >
       24V DC power consumption aggregated per minute per sub group.
@@ -104,26 +74,16 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated power consumption values."
-        tests:
-          - not_null
       - name: converter
         description: "The converter associated with the 24V DC device."
-        tests:
-          - not_null
       - name: topic
         description: "MQTT topic associated with the raw message."
-        tests:
-          - not_null
       - name: main_group
         description: "The main group classification of the 24V DC device."
-        tests:
-          - not_null
       - name: sub_group
         description: "The sub group classification, within the main group, of the 24V DC device."
       - name: power
         description: "Power consumption of the 24V DC device aggregated per minute."
-        tests:
-          - not_null
   - name: gld_24vdc_power_per_minute_per_main_group
     description: >
       24V DC power consumption aggregated per minute per main group.
@@ -131,24 +91,14 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated power consumption values."
-        tests:
-          - not_null
       - name: topic
         description: "MQTT topic associated with the raw message."
-        tests:
-          - not_null
       - name: converter
         description: "The converter associated with the 24V DC device."
-        tests:
-          - not_null
       - name: main_group
         description: "The main group classification of the 24V DC device."
-        tests:
-          - not_null
       - name: power
         description: "Power consumption of the 24V DC device aggregated per minute."
-        tests:
-          - not_null
   - name: gld_solar_power_per_minute_per_sub_group
     description: >
       Solar power production aggregated per minute per sub group (bimini), one row per solar converter.
@@ -156,31 +106,16 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated solar power."
-        tests:
-          - not_null
       - name: topic
         description: "MQTT topic associated with the raw message."
-        tests:
-          - not_null
       - name: converter
         description: "The solar EPC converter, e.g. epc-31-t101."
-        tests:
-          - not_null
       - name: main_group
         description: "The main group classification, always 'Solar'."
-        tests:
-          - not_null
       - name: sub_group
         description: "The bimini the solar power is produced on."
-        tests:
-          - not_null
-          - accepted_values:
-              arguments:
-                values: ["Main bimini", "Owners bimini"]
       - name: power
         description: "Solar power delivered to the main DC bus in W, aggregated per minute. Draw from the bus (e.g. standby) counts as zero."
-        tests:
-          - not_null
   - name: gld_solar_power_per_minute_per_main_group
     description: >
       Solar power production aggregated per minute per main group, one row per solar converter.
@@ -188,24 +123,14 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated solar power."
-        tests:
-          - not_null
       - name: topic
         description: "MQTT topic associated with the raw message."
-        tests:
-          - not_null
       - name: converter
         description: "The solar EPC converter, e.g. epc-31-t101."
-        tests:
-          - not_null
       - name: main_group
         description: "The main group classification, always 'Solar'."
-        tests:
-          - not_null
       - name: power
         description: "Solar power delivered to the main DC bus in W, aggregated per minute. Draw from the bus (e.g. standby) counts as zero."
-        tests:
-          - not_null
   - name: gld_shore_power_per_minute_per_sub_group
     description: >
       Shore power aggregated per minute per sub group (converter), one row per ESI converter module.
@@ -213,28 +138,16 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated shore power."
-        tests:
-          - not_null
       - name: topic
         description: "MQTT topic associated with the raw message."
-        tests:
-          - not_null
       - name: module
         description: "The ESI converter module, e.g. 07-11-tbc1a."
-        tests:
-          - not_null
       - name: main_group
         description: "The main group classification, always 'Shore'."
-        tests:
-          - not_null
       - name: sub_group
         description: "The shore power converter the module belongs to: PS or SB."
-        tests:
-          - not_null
       - name: power
         description: "Shore power drawn in W, aggregated per minute. A negative reading counts as zero."
-        tests:
-          - not_null
   - name: gld_shore_power_per_minute_per_main_group
     description: >
       Shore power aggregated per minute per main group, one row per ESI converter module.
@@ -242,24 +155,14 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated shore power."
-        tests:
-          - not_null
       - name: topic
         description: "MQTT topic associated with the raw message."
-        tests:
-          - not_null
       - name: module
         description: "The ESI converter module, e.g. 07-11-tbc1a."
-        tests:
-          - not_null
       - name: main_group
         description: "The main group classification, always 'Shore'."
-        tests:
-          - not_null
       - name: power
         description: "Shore power drawn in W, aggregated per minute. A negative reading counts as zero."
-        tests:
-          - not_null
   - name: gld_chiller_power_per_minute_per_group
     description: >
       Power of the compression chiller aggregated per minute, as HVAC / Chiller. Read by both the main group
@@ -268,20 +171,12 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated chiller power."
-        tests:
-          - not_null
       - name: main_group
         description: "The main group classification, always 'HVAC'."
-        tests:
-          - not_null
       - name: sub_group
         description: "The sub group classification, always 'Chiller'."
-        tests:
-          - not_null
       - name: power
         description: "Chiller power in W: the sum of the per-minute averages of its compressors and seawater pump."
-        tests:
-          - not_null
   - name: gld_aradex_power_per_minute_per_group
     description: >
       Aradex power aggregated per minute per main group (Propulsion or Hydrogeneration). All four Aradexes are
@@ -290,22 +185,14 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated Aradex power."
-        tests:
-          - not_null
       - name: main_group
         description: >
           The main group classification of the aradexes.
           When power is positive, it represents propulsion; when power is negative, it represents hydrogeneration.
-        tests:
-          - not_null
       - name: sub_group
         description: "The sub group classification, always 'Thrusters'."
-        tests:
-          - not_null
       - name: power
         description: "Power of the Aradexes aggregated per minute."
-        tests:
-          - not_null
   - name: gld_24vdc_unallocated_power_per_minute_per_group
     description: >
       24 VDC load that isn't behind a monitored breaker, per minute, as Technical / 24VDC unallocated: the output

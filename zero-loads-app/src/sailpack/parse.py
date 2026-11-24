@@ -27,7 +27,7 @@ def parse_sailpack(file_path: Path) -> pl.DataFrame:
         soup = BeautifulSoup(f, "html.parser")
 
     calc_id = (
-        soup.find("b", string="Calculation ID").find_next("i").get_text(strip=True)  # type: ignore
+        soup.find("b", string="Calculation ID").find_next("i").get_text(strip=True)  # pyrefly: ignore[missing-attribute]
     )
 
     frames = [*parse_tables(file_path, soup), extract_notes(soup)]

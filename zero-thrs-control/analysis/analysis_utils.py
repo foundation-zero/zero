@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import polars as pl
-import seaborn as sns
+import seaborn as sns  # pyrefly: ignore[untyped-import]
 
 
 def compute_heat(temp1, temp2, flow):
@@ -48,7 +48,7 @@ def plot_result_by_variables(
     variable_names: dict[str, str],
     name_styles: dict[str, tuple],
     control_mode_styles: dict[str, tuple],
-    selected_keys: list[tuple[str, str]],
+    selected_keys: list[tuple[list[str], str]],
     path: str,
     figure_width: float = 10,
 ):
@@ -101,16 +101,16 @@ def plot_result_by_variables(
             .squeeze()
         )
 
-        last_modes = control_modes[control_modes != control_modes.shift(-1)]  # type: ignore
-        start = control_modes.index[0]  # type: ignore
-        for end, mode in last_modes.items():  # type: ignore
+        last_modes = control_modes[control_modes != control_modes.shift(-1)]  # pyrefly: ignore[bad-index, missing-attribute]
+        start = control_modes.index[0]  # pyrefly: ignore[missing-attribute]
+        for end, mode in last_modes.items():  # pyrefly: ignore[missing-attribute]
             for ax in axes.flatten():
-                ax.axvspan(start, end, color=control_mode_styles[mode], alpha=0.1)  # type: ignore
+                ax.axvspan(start, end, color=control_mode_styles[mode], alpha=0.1)
 
             for ax in axes:
                 ax.annotate(
                     mode,
-                    xy=(start + (end - start) / 4, 1.02),  # type: ignore
+                    xy=(start + (end - start) / 4, 1.02),
                     xycoords=("data", "axes fraction"),
                     ha="center",
                     va="bottom",
@@ -194,16 +194,16 @@ def plot_result_no_signal(
             .squeeze()
         )
 
-        last_modes = control_modes[control_modes != control_modes.shift(-1)]  # type: ignore
-        start = control_modes.index[0]  # type: ignore
-        for end, mode in last_modes.items():  # type: ignore
+        last_modes = control_modes[control_modes != control_modes.shift(-1)]  # pyrefly: ignore[bad-index, missing-attribute]
+        start = control_modes.index[0]  # pyrefly: ignore[missing-attribute]
+        for end, mode in last_modes.items():  # pyrefly: ignore[missing-attribute]
             for ax in axes.flatten():
-                ax.axvspan(start, end, color=control_mode_styles[mode], alpha=0.1)  # type: ignore
+                ax.axvspan(start, end, color=control_mode_styles[mode], alpha=0.1)
 
             for ax in axes:
                 ax.annotate(
                     mode,
-                    xy=(start + (end - start) / 4, 1.02),  # type: ignore
+                    xy=(start + (end - start) / 4, 1.02),
                     xycoords=("data", "axes fraction"),
                     ha="center",
                     va="bottom",
@@ -295,16 +295,16 @@ def plot_signal_vs_actuator(
             .squeeze()
         )
 
-        last_modes = control_modes[control_modes != control_modes.shift(-1)]  # type: ignore
-        start = control_modes.index[0]  # type: ignore
-        for end, mode in last_modes.items():  # type: ignore
+        last_modes = control_modes[control_modes != control_modes.shift(-1)]  # pyrefly: ignore[bad-index, missing-attribute]
+        start = control_modes.index[0]  # pyrefly: ignore[missing-attribute]
+        for end, mode in last_modes.items():  # pyrefly: ignore[missing-attribute]
             for ax in axes.flatten():
-                ax.axvspan(start, end, color=control_mode_styles[mode], alpha=0.1)  # type: ignore
+                ax.axvspan(start, end, color=control_mode_styles[mode], alpha=0.1)
 
             for ax in axes:
                 ax.annotate(
                     mode,
-                    xy=(start + (end - start) / 4, 1.02),  # type: ignore
+                    xy=(start + (end - start) / 4, 1.02),
                     xycoords=("data", "axes fraction"),
                     ha="center",
                     va="bottom",
@@ -419,21 +419,21 @@ def plot_result(result: pl.DataFrame, path: str):
             .set_index("time")
             .squeeze()
         )
-        palette = sns.color_palette("pastel", control_modes.nunique())  # type: ignore
+        palette = sns.color_palette("pastel", control_modes.nunique())  # pyrefly: ignore[missing-attribute]
         mode_colors = {
             mode: palette[i]
-            for i, mode in enumerate(control_modes.unique())  # type: ignore
+            for i, mode in enumerate(control_modes.unique())  # pyrefly: ignore[missing-attribute]
         }
-        last_modes = control_modes[control_modes != control_modes.shift(-1)]  # type: ignore
-        start = control_modes.index[0]  # type: ignore
-        for end, mode in last_modes.items():  # type: ignore
+        last_modes = control_modes[control_modes != control_modes.shift(-1)]  # pyrefly: ignore[bad-index, missing-attribute]
+        start = control_modes.index[0]  # pyrefly: ignore[missing-attribute]
+        for end, mode in last_modes.items():  # pyrefly: ignore[missing-attribute]
             for ax in axes.flatten():
                 ax.axvspan(start, end, color=mode_colors[mode], alpha=0.2)
 
             for ax in axes[0, :]:
                 ax.annotate(
                     mode,
-                    xy=(start + (end - start) / 4, 1.02),  # type: ignore
+                    xy=(start + (end - start) / 4, 1.02),
                     xycoords=("data", "axes fraction"),
                     ha="center",
                     va="bottom",

@@ -261,7 +261,7 @@ def _build_at_variable_definitions(model: type[LoadsModel]) -> VariableDefinitio
         name=model.class_display_name(),
         topic=model.TOPIC,
         payload_key=_payload_key(field_info),
-        get_actual=lambda model_instance: model_instance.value,  # type: ignore[attr-defined]
+        get_actual=lambda model_instance: model_instance.value,  # pyrefly: ignore[missing-attribute]
         unit=variable_meta.unit,
         scale_min=variable_meta.scale_min,
         scale_max=variable_meta.scale_max,

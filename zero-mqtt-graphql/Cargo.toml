@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-jsonschema = { version = "0.60.2", default-features = false }
+jsonschema = { version = "0.61.0", default-features = false }
 tokio = { version = "1.54.1", features = ["full", "sync"] }
 axum = "0.8"
 async-graphql = { version = "8.0.0-rc.5", features = ["dynamic-schema"] }

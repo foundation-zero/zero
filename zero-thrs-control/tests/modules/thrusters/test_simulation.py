@@ -9,13 +9,13 @@ from tests.helpers.collector import PolarsCollector
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from tests.helpers.simulation_runner import SimulationTestRunner
 from tests.modules.thrusters.conftest import ThrustersSimulation
-from thrs.control.modules.thrusters import ThrustersControl
-from thrs.input_output.definitions.control import Valve
-from thrs.input_output.modules.thrusters import (
+from thrs.control.modules.thrusters.control import ThrustersControl
+from thrs.control.modules.thrusters.io import (
     ThrustersSensorValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
+from thrs.input_output.definitions.control import Valve
 from thrs.orchestration.simulation import Simulation
 
 

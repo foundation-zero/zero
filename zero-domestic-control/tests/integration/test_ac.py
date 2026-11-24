@@ -16,7 +16,7 @@ from domestic_control.services.stubs.ac import AcStub
 
 @fixture
 def settings():
-    return Settings()  # type: ignore
+    return Settings()
 
 
 async def _mqtt_client(settings):

@@ -98,7 +98,7 @@ def generate_data(
     logger.info("Generating data for all IO lists")
     if excluded_io_list_names:
         logger.info(f"Excluding IO lists: {excluded_io_list_names}")
-    mqtt_config = MQTTConfig()  # pyright: ignore
+    mqtt_config = MQTTConfig()
     logger.info(f"Using MQTTConfig: {mqtt_config.model_dump_json()}")
     asyncio.run(
         _run_all_generators(mqtt_config, interval, excluded_io_list_names, cache_dir)

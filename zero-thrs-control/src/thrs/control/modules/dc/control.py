@@ -1,76 +1,28 @@
 from collections.abc import Callable
 from datetime import datetime
-from typing import Annotated
 
-from thrs.classes.control import Control, ControlMode
+from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
-from thrs.control.modules.converters import (
+from thrs.control.modules.dc.converters import (
     _INITIAL_CONVERTERS_CONTROLLER_STATE,
     ConvertersControl,
     ConvertersControllerState,
-    ConvertersControlMode,
     ConvertersControlValues,
     ConvertersParameters,
     ConvertersSensorValues,
 )
+from thrs.control.modules.dc.io import DcControlValues, DcSensorValues
+from thrs.control.modules.dc.state import (
+    DcControllerState,
+    DcControlMode,
+    DcParameters,
+)
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsValues, component_meta
+from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Pump, Valve
-from thrs.input_output.definitions.controllers import PidControllerValues
-from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
-from thrs.input_output.modules.dc import DcControlValues, DcSensorValues
+from thrs.input_output.definitions.units import Celsius, Ratio
 from thrs.orchestration.module import ModuleDescription
-
-
-class DcControlMode(ControlMode):
-    brightloops_aft: ConvertersControlMode
-    brightloops_fwd: ConvertersControlMode
-    ugrids: ConvertersControlMode
-
-
-class DcControllerState(ThrsValues):
-    dc_heat_dump_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    dc_recovery_mix_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    dc_brightloops_aft_pump_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    dc_brightloops_aft_warmup_mix_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    dc_brightloops_fwd_pump_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    dc_brightloops_fwd_warmup_mix_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    dc_ugrids_pump_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    dc_ugrids_warmup_mix_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-
-
-class DcParameters(ThrsValues):
-    maximum_supply_temperature: Celsius = 63
-    recovery_temperature: Celsius = 60
-    brightloop_flow_setpoint: LMin = 5
-    ugrid_flow_setpoint: LMin = 15
-    brightloop_return_temperature: Celsius = 60
-    ugrid_return_temperature: Celsius = 60
-    heat_dump_tuning: Tuning = (0.01, 0.001, 0.001)
-    recovery_mix_tuning: Tuning = (-0.01, -0.001, -0.01)
-    brightloops_fwd_mix_tuning: Tuning = (-0.01, -0.001, -0.01)
-    brightloops_aft_mix_tuning: Tuning = (-0.01, -0.001, -0.01)
-    ugrids_mix_tuning: Tuning = (-0.01, -0.001, -0.01)
-    brightloops_fwd_pump_tuning: Tuning = (0.01, 0.001, 0)
-    brightloops_aft_pump_tuning: Tuning = (0.01, 0.001, 0)
-    ugrids_pump_tuning: Tuning = (0.01, 0.001, 0)
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DcControlValues:  # noqa: N802
@@ -128,6 +80,8 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DcControllerState:  # noqa
         dc_brightloops_fwd_warmup_mix_controller=converter_state.converters_warmup_mix_controller,
         dc_ugrids_pump_controller=converter_state.converters_pump_controller,
         dc_ugrids_warmup_mix_controller=converter_state.converters_warmup_mix_controller,
+        parameters=DcParameters(),
+        control_mode=None,
     )
 
 
@@ -324,6 +278,8 @@ class DcControl(
                 dc_ugrids_warmup_mix_controller=converter_state[
                     "dc_ugrids"
                 ].converters_warmup_mix_controller,
+                parameters=self._parameters,
+                control_mode=self.mode,
             ),
         )
 
@@ -472,7 +428,6 @@ DC_MODULE_DESCRIPTION = ModuleDescription(
     DcControlValues,
     DcParameters,
     DcControl,
-    DcControlMode,
     DcControllerState,
     DcAlarms,
 )

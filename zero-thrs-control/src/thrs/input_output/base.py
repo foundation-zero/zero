@@ -137,7 +137,7 @@ class StampedWithSource[T](Stamped[T]):
     source: str
 
     @staticmethod
-    def stamp[V](value: V, source: str) -> StampedWithSource[V]:  # type: ignore
+    def stamp[V](value: V, source: str) -> StampedWithSource[V]:  # pyrefly: ignore[bad-override]
         return StampedWithSource(
             value=value, timestamp=datetime.now(UTC), source=source
         )
@@ -152,7 +152,7 @@ class StampedWithSource[T](Stamped[T]):
         )
 
     @staticmethod
-    def combine[V](  # type: ignore
+    def combine[V](  # pyrefly: ignore[bad-override]
         *stamped: Stamped[Any], value: V, source: str
     ) -> StampedWithSource[V]:
         return StampedWithSource(
@@ -216,12 +216,12 @@ class BaseMeta(BaseModel):
 
 
 class ValveMeta(BaseMeta):
-    component_type: Literal["valve"]  # type: ignore
+    component_type: Literal["valve"]  # pyrefly: ignore[bad-override]
     valve_type: Literal["shutoff", "switch", "mix", "flowcontrol"] | None = None
 
 
 class ComponentMeta(ValveMeta):
-    component_type: ComponentType = None  # type: ignore
+    component_type: ComponentType = None  # pyrefly: ignore[bad-override]
 
 
 @_factory(BaseMeta)
@@ -243,7 +243,7 @@ def get_topic(field: FieldInfo | ComputedFieldInfo) -> str | None:
     if not field.json_schema_extra or not isinstance(field.json_schema_extra, dict):
         return None
 
-    return field.json_schema_extra.get("topic_override")  # type: ignore
+    return field.json_schema_extra.get("topic_override")  # pyrefly: ignore[bad-return]
 
 
 def get_component_type(
@@ -252,7 +252,7 @@ def get_component_type(
     if not field.json_schema_extra or not isinstance(field.json_schema_extra, dict):
         return None
 
-    return field.json_schema_extra.get("component_type")  # type: ignore
+    return field.json_schema_extra.get("component_type")  # pyrefly: ignore[bad-return]
 
 
 def get_yard_tag(field: FieldInfo | ComputedFieldInfo) -> str | None:
@@ -260,7 +260,7 @@ def get_yard_tag(field: FieldInfo | ComputedFieldInfo) -> str | None:
         return None
 
     # BaseMeta defaults the yard tag to "", which means it has none.
-    return field.json_schema_extra.get("yard_tag") or None  # type: ignore
+    return field.json_schema_extra.get("yard_tag") or None  # pyrefly: ignore[bad-return]
 
 
 @dataclass

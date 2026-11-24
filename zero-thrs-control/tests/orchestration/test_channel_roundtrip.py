@@ -71,7 +71,6 @@ async def test_actuated_control_values_roundtrip(
         SharedDemoControlValues,
         DemoParameters,
         lambda *_args, **_kwargs: mock.Mock(),
-        DemoMode,
         DemoControllerState,
         mock.Mock,
     )

@@ -213,10 +213,7 @@ class PcmSensorValues(AmcsModeSensorValues):
                 self.pcm_temperature_producers_return.temperature,
             )
         if self._supply_from_consumers:
-            return cast(
-                Stamped[OptionalCelsius],
-                self.pcm_temperature_consumers_return.temperature,
-            )
+            return self.pcm_temperature_consumers_return.temperature
 
         return sensor.stamped_by_valves(
             [

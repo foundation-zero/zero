@@ -1,70 +1,24 @@
 from collections.abc import Callable
 from datetime import datetime
-from typing import Annotated, Literal
+from typing import Literal
 
 from transitions import State
 
-from thrs.classes.control import Control, ControlMode
+from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import FlowBalanceController, PidController
-from thrs.control.modules.thrusters import ThrustersControlMode
+from thrs.control.modules.drives.io import DrivesControlValues, DrivesSensorValues
+from thrs.control.modules.drives.state import (
+    DrivesControllerState,
+    DrivesControlMode,
+    DrivesParameters,
+)
+from thrs.control.modules.thrusters.state import ThrustersControlMode
 from thrs.input_output.alarms import BaseAlarms
-from thrs.input_output.base import Stamped, ThrsValues, component_meta
+from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Pump, Valve
-from thrs.input_output.definitions.controllers import PidControllerValues
-from thrs.input_output.definitions.units import Celsius, LMin, Ratio, Tuning
-from thrs.input_output.modules.drives import DrivesControlValues, DrivesSensorValues
+from thrs.input_output.definitions.units import Celsius, LMin, Ratio
 from thrs.orchestration.module import ModuleDescription
-
-
-class DrivesControlMode(ControlMode):
-    mode: str
-
-    @property
-    def is_idle(self) -> bool:
-        return self.mode == "idle"
-
-    @property
-    def is_shorepower(self) -> bool:
-        return self.mode == "shorepower"
-
-    @property
-    def is_propulsion(self) -> bool:
-        return self.mode == "propulsion"
-
-
-class DrivesControllerState(ThrsValues):
-    drives_heat_dump_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    drives_recovery_mix_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    drives_pump_controller_shorepower: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    drives_pump_controller_propulsion: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    drives_aft_flow_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-    drives_fwd_flow_controller: Annotated[
-        PidControllerValues, component_meta(component_type="pid_controller")
-    ]
-
-
-class DrivesParameters(ThrsValues):
-    shorepower_maximum_supply_temperature: Celsius = 35
-    propulsion_maximum_supply_temperature: Celsius = 60
-    recovery_temperature: Celsius = 50
-    shorepower_flow_setpoint: LMin = 20
-    propulsion_drives_flow_setpoint: LMin = 30
-    pump_tuning: Tuning = (0.01, 0.001, 0)
-    recovery_mix_tuning: Tuning = (-0.1, -0.0005, 0)
-    heat_dump_tuning: Tuning = (0.05, 0.01, 0)
-    aft_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
-    fwd_flow_balance_tuning: Tuning = (0.01, 0.001, 0)
 
 
 def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DrivesControlValues:  # noqa: N802
@@ -119,6 +73,8 @@ def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DrivesControllerState:  # 
         drives_pump_controller_propulsion=PidController.zero(timestamp),
         drives_aft_flow_controller=PidController.zero(timestamp),
         drives_fwd_flow_controller=PidController.zero(timestamp),
+        parameters=DrivesParameters(),
+        control_mode=None,
     )
 
 
@@ -303,12 +259,12 @@ class DrivesControl(
 
     @property
     def initial_mode(self) -> ThrustersControlMode:
-        initial_mode: str = self._state_machine.initial  # type: ignore
+        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
         return ThrustersControlMode(mode=initial_mode)
 
     @property
     def mode(self) -> DrivesControlMode:
-        mode: str = self.state  # type: ignore
+        mode: str = self.state
         return DrivesControlMode(mode=mode)
 
     def initial(self) -> tuple[DrivesControlValues, DrivesControllerState]:
@@ -321,7 +277,7 @@ class DrivesControl(
         self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
-        self._state_machine.set_state(self._state_machine.initial)  # type: ignore
+        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
         self._init_controllers()
 
     @StateLogger.log_warnings
@@ -329,9 +285,9 @@ class DrivesControl(
         self, sensor_values: DrivesSensorValues
     ) -> tuple[DrivesControlValues, DrivesControllerState]:
         if not self.mode.is_propulsion:
-            self._check_shorepower(sensor_values)  # type: ignore
+            self._check_shorepower(sensor_values)  # pyrefly: ignore[missing-attribute]
         if not self.mode.is_shorepower:
-            self._check_thrusters(sensor_values)  # type: ignore
+            self._check_thrusters(sensor_values)  # pyrefly: ignore[missing-attribute]
         self._control_heat_dump(sensor_values)
         self._control_flow_balance(sensor_values)
         self._control_pump_shorepower(sensor_values)
@@ -349,6 +305,8 @@ class DrivesControl(
             drives_pump_controller_propulsion=self._pump_controller_propulsion.values(),
             drives_aft_flow_controller=self._aft_flow_controller.values(),
             drives_fwd_flow_controller=self._fwd_flow_controller.values(),
+            parameters=self._parameters,
+            control_mode=self.mode,
         )
 
         return (self._current_values, controller_state)
@@ -527,7 +485,6 @@ DRIVES_MODULE_DESCRIPTION = ModuleDescription(
     DrivesControlValues,
     DrivesParameters,
     DrivesControl,
-    DrivesControlMode,
     DrivesControllerState,
     DrivesAlarms,
 )

@@ -2,7 +2,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from thrs.control.switching import ControlModes
+from thrs.control.state import ControlModes
 
 
 def _deep_diff(old: Any, new: Any, path: str) -> dict[str, tuple[Any, Any]]:
@@ -31,7 +31,7 @@ class ModulePersistenceSnapshot(BaseModel):
         manual control values) are compared recursively so only the fields that
         actually changed show up, instead of the whole containing dict."""
         diffs: dict[str, tuple[Any, Any]] = {}
-        for field in self.model_fields:
+        for field in type(self).model_fields:
             diffs.update(_deep_diff(getattr(self, field), getattr(other, field), field))
         return diffs
 

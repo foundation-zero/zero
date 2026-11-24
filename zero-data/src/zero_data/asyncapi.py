@@ -6,7 +6,7 @@ from collections import defaultdict
 from enum import IntEnum
 from typing import Any
 
-import stringcase  # type: ignore
+import stringcase
 
 from zero_data.io_list.enums import ENUMS
 from zero_data.io_list.extra_topics import EXTRA_TOPICS
@@ -42,7 +42,7 @@ SCHEMA_REF_PREFIX = "#/components/schemas/"
 def value_type(field: str, data_type: str) -> str:
     """What a field's value is: its enum when it has one, else its JSON type."""
     enum = ENUMS.get(field)
-    return enum.__name__ if enum else JSON_TYPES[data_type]
+    return enum.__name__ if enum is not None else JSON_TYPES[data_type]
 
 
 def stamped_schema_name(value_type: str) -> str:

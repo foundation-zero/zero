@@ -10,7 +10,7 @@ from tests.helpers.modules import (
 from thrs.classes.persistence.engine import InMemoryPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
 from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
-from thrs.control.switching import AutomationMode
+from thrs.control.state import AutomationMode
 
 
 def test_persistence_snapshot_starts_in_manual_with_defaults():
@@ -74,7 +74,7 @@ def test_apply_snapshot_is_atomic_when_control_mode_is_invalid():
     corrupt = ModulePersistenceSnapshot.model_construct(
         parameters={"setpoint": 60.0},
         manual_control_values=None,
-        control_mode="deleted-enum-value",  # type: ignore[arg-type]
+        control_mode="deleted-enum-value",  # pyrefly: ignore[bad-argument-type]
     )
 
     with pytest.raises(ValidationError):

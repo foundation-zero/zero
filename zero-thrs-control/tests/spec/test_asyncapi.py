@@ -92,14 +92,14 @@ def test_operation_key_generation(topic: Mock, expected: str):
 
 
 def test_message_key_standard_class():
-    assert _message_key(SimplePayload) == "test_asyncapiSimplePayload"
+    assert _message_key(SimplePayload) == "SimplePayload"
 
 
 def test_message_key_removes_brackets():
     class MockGeneric[T](ThrsValues):
         pass
 
-    assert _message_key(MockGeneric[int]) == "test_asyncapiMockGenericint"
+    assert _message_key(MockGeneric[int]) == "MockGenericint"
 
 
 def test_build_asyncapi_top_level_metadata():
@@ -135,12 +135,11 @@ def test_build_asyncapi_channel_and_operation_mapping(
         assert isinstance(channel, Channel)
         assert channel.address == topic_data.topic
 
-        ttl = getattr(channel, "x-ttl", None) or getattr(
-            channel, "model_extra", {}
-        ).get("x-ttl")
-        component_type = getattr(channel, "x-zero-component-type", None) or getattr(
-            channel, "model_extra", {}
-        ).get("x-zero-component-type")
+        extra = channel.model_extra or {}
+        ttl = getattr(channel, "x-ttl", None) or extra.get("x-ttl")
+        component_type = getattr(channel, "x-zero-component-type", None) or extra.get(
+            "x-zero-component-type"
+        )
         assert ttl == CHANNEL_TTL
         assert component_type == topic_data.component_type
 
@@ -158,7 +157,7 @@ def test_build_asyncapi_yard_tag_on_channel():
         TopicMapping("a/tagged", SimplePayload, "send", "pump", yard_tag="50001018"),
         TopicMapping("a/untagged", SimplePayload, "send", "pump"),
     ]
-    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # type: ignore[arg-type]
+    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # pyrefly: ignore[bad-argument-type]
 
     assert doc.channels
     channels = {
@@ -170,7 +169,7 @@ def test_build_asyncapi_yard_tag_on_channel():
 
 
 def test_build_asyncapi_message_deduplication(sample_topics: list[TopicMapping]):
-    doc = _build_asyncapi("THRS Control", "1.0.0", Mode("", {}, None), sample_topics)  # type: ignore[arg-type]
+    doc = _build_asyncapi("THRS Control", "1.0.0", Mode("", {}, None), sample_topics)  # pyrefly: ignore[bad-argument-type]
 
     assert doc.components
     assert doc.components.messages
@@ -178,8 +177,8 @@ def test_build_asyncapi_message_deduplication(sample_topics: list[TopicMapping])
 
     # SimplePayload is shared between actuators/valve and sensors/pressure
     expected_message_keys = {
-        "test_asyncapiSimplePayload",
-        "test_asyncapiComplexPayload",
+        "SimplePayload",
+        "ComplexPayload",
     }
     assert set(doc.components.messages.root.keys()) == expected_message_keys
 
@@ -198,7 +197,7 @@ class LevelPayload(ThrsValues):
 
 def test_build_asyncapi_names_enum_values():
     topics = [TopicMapping("pump/level", LevelPayload, "send", "pump")]
-    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # type: ignore[arg-type]
+    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # pyrefly: ignore[bad-argument-type]
 
     assert doc.components
     assert doc.components.schemas
@@ -219,7 +218,7 @@ class StampedPayload(ThrsValues):
 
 def test_build_asyncapi_stamped_values_may_leave_out_their_timestamp():
     topics = [TopicMapping("valve/set", StampedPayload, "receive", "valve")]
-    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # type: ignore[arg-type]
+    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # pyrefly: ignore[bad-argument-type]
 
     assert doc.components
     assert doc.components.schemas
@@ -239,7 +238,7 @@ class Float32Payload(ThrsValues):
 
 def test_build_asyncapi_stamped_numbers_are_float32():
     topics = [TopicMapping("valve/set", Float32Payload, "receive", "valve")]
-    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # type: ignore[arg-type]
+    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # pyrefly: ignore[bad-argument-type]
 
     assert doc.components
     assert doc.components.schemas
@@ -266,7 +265,7 @@ def test_build_asyncapi_topics_are_sorted():
         TopicMapping("a/topic", SimplePayload, "receive", "valve"),
         TopicMapping("m/topic", SimplePayload, "receive", "valve"),
     ]
-    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # type: ignore[arg-type]
+    doc = _build_asyncapi("THRS", "1.0", Mode("", {}, None), topics)  # pyrefly: ignore[bad-argument-type]
 
     assert doc.channels
     channel_keys = list(doc.channels.root.keys())

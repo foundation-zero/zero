@@ -14,7 +14,7 @@ def test_run_cmd_settings_from_env():
     os.environ["MQTT_PORT"] = "1883"
 
     try:
-        settings = RunCmd()  # pyright: ignore
+        settings = RunCmd()
         assert settings.modbus_host == "127.0.0.1"
         assert settings.modbus_port == 502
         assert settings.mqtt_host == "localhost"
@@ -41,9 +41,9 @@ def required_env(monkeypatch: pytest.MonkeyPatch):
 
 
 def test_run_cmd_default_client_id(required_env):
-    assert re.fullmatch(r"termodinamica-[0-9a-f]{8}", RunCmd().mqtt_client_id)  # pyright: ignore
+    assert re.fullmatch(r"termodinamica-[0-9a-f]{8}", RunCmd().mqtt_client_id)
 
 
 def test_run_cmd_client_id_from_env(required_env, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
-    assert RunCmd().mqtt_client_id == "custom-id"  # pyright: ignore
+    assert RunCmd().mqtt_client_id == "custom-id"

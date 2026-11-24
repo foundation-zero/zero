@@ -5,7 +5,7 @@ from tests.modules.conftest import (
     compare_modelica_names,
     compare_yard_tags,
 )
-from thrs.input_output.modules.drives import (
+from thrs.control.modules.drives.io import (
     DrivesControlValues,
     DrivesSensorValues,
     DrivesSimulationInputs,
