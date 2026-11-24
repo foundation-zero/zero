@@ -17,8 +17,6 @@ import pytest
 from pydantic import ValidationError
 
 from tests.helpers.modules import make_async_channels
-from thrs.classes.persistence.engine import InMemoryPersistentEngine
-from thrs.classes.persistence.manager import PersistManager
 from thrs.control.modules.adsorption.control import ADSORPTION_MODULE_DESCRIPTION
 from thrs.control.modules.consumers.control import CONSUMERS_MODULE_DESCRIPTION
 from thrs.control.modules.dc.control import DC_MODULE_DESCRIPTION
@@ -31,6 +29,8 @@ from thrs.orchestration.comms import MqttConnector
 from thrs.orchestration.config import Config
 from thrs.orchestration.module import Module, ModuleDescription
 from thrs.orchestration.setup import setup_control_modules
+from thrs.persistence.engine import InMemoryPersistentEngine
+from thrs.persistence.manager import PersistManager
 
 ALL_MODULE_DESCRIPTIONS: dict[str, ModuleDescription] = {
     "adsorption": ADSORPTION_MODULE_DESCRIPTION,

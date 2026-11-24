@@ -4,8 +4,8 @@ from unittest import mock
 import pytest
 from pydantic import ValidationError
 
-from thrs.classes.database import PostgresDatabase
-from thrs.classes.persistence.engine import PostgresPersistentEngine
+from thrs.persistence.database import PostgresDatabase
+from thrs.persistence.engine import PostgresPersistentEngine
 
 
 def _stored_row(automation_mode: str) -> SimpleNamespace:

@@ -5,12 +5,12 @@ from unittest import mock
 import pytest
 from sqlalchemy.exc import OperationalError
 
-from thrs.classes.database import PostgresDatabase
-from thrs.classes.persistence.engine import (
+from thrs.orchestration.setup import setup_persistence_manager
+from thrs.persistence.database import PostgresDatabase
+from thrs.persistence.engine import (
     NoopPersistentEngine,
     PostgresPersistentEngine,
 )
-from thrs.orchestration.setup import setup_persistence_manager
 
 
 def _connection_error() -> OperationalError:
