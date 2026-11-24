@@ -5,7 +5,6 @@ import { ModuleField, ParameterValueForm } from "@/modules/thrapp/mimics/provide
 import { FieldRenderer } from "@/modules/thrapp/mimics/renderers";
 import { ParametersType } from "@/modules/thrapp/types/thrs";
 import * as Parameters from "..";
-import { SimpleInfoTooltip } from "@/modules/common/components/info-tooltip";
 
 const quantities = tScoped("quantities");
 const units = tScoped("units");
@@ -21,7 +20,7 @@ defineProps<{ source: ModuleField<ParametersType.Flow> }>();
     >
       <Parameters.ListItemTitle>
         <slot />
-        <SimpleInfoTooltip :description="source[2]" />
+        <Parameters.ListItemInfo :source="source" />
       </Parameters.ListItemTitle>
       <Parameters.Quantity>
         {{ quantities("flow") }}
