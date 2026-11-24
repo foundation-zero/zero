@@ -6,6 +6,7 @@ import pytest
 from tests.orchestration.simples import (
     SimpleControllerState,
     SimpleInOut,
+    SimpleMode,
     SimpleParameters,
     simple_advisory_values,
     simple_control_values,
@@ -27,9 +28,10 @@ def test_switching_control(switching):
         simple_advisory_values(flow=42.0)
     )
     assert control_values.go_with_the.flow.value == 42.0
-    assert controller_state == switching_control.automatic_control.initial()[
-        1
-    ].model_copy(update={"manual_values": switching_control.manual_controls})
+    assert controller_state == SimpleControllerState(
+        parameters=SimpleParameters.zero(),
+        manual_values=switching_control.manual_controls,
+    )
     assert controller_state.automation_mode == AutomationMode(mode="manual")
     assert controller_state.parameters == SimpleParameters.zero()
 
@@ -39,7 +41,7 @@ def test_switching_control(switching):
     )
 
     assert controller_state.automation_mode == AutomationMode(mode="automatic")
-    assert controller_state.control_mode == switching_control.automatic_control.mode
+    assert controller_state.control_mode == SimpleMode()
     assert controller_state.parameters == SimpleParameters.zero()
     assert control_values.go_with_the.flow.value == 30.0
 

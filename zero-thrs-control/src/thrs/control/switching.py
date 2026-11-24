@@ -42,10 +42,6 @@ class Switching[
         self._last_mode: ControlModes = "manual"
         self._was_advisory = False
 
-    @property
-    def automatic_control(self):
-        return self._automatic_control
-
     def control(
         self,
         sensor_values: SensorValues,
