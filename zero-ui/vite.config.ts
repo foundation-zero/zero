@@ -30,6 +30,13 @@ export default defineConfig(({ mode }) => {
             return path.replace(/^\/api\/loads/, "");
           },
         },
+        "/api/thrs-monitoring": {
+          target: env.VITE_THRS_MONITORING_API_SERVER,
+          changeOrigin: true,
+          rewrite(path) {
+            return path.replace(/^\/api\/thrs-monitoring/, "");
+          },
+        },
         "/api/mqtt-graphql": {
           target: env.VITE_MQTT_GRAPHQL_API_SERVER,
           changeOrigin: true,

@@ -376,6 +376,9 @@
       "documentation": {
         "title": "Documentation",
         "empty": "No documentation for this module yet."
+      },
+      "monitoring": {
+        "title": "Monitoring"
       }
     },
     "dialogs": {
@@ -973,6 +976,7 @@
         "mimics": "Mimics",
         "controls": "Controls",
         "documentation": "Documentation",
+        "monitoring": "Monitoring",
         "menu": "Menu",
         "openMenu": "Open menu",
         "closeMenu": "Close menu"
@@ -1006,6 +1010,216 @@
       "dc-fwd": "DC/DC group 2",
       "drives-shorepower": "Shorepower converters",
       "thrusters": "Thrusters"
+    },
+    "monitoring": {
+      "title": "Monitoring - {module}",
+      "sections": {
+        "modesAndStates": "Modes & states",
+        "advisoryMode": "Advisory mode",
+        "boostMode": "Boost mode",
+        "fillingMode": "Fill mode",
+        "tankState": "Tank states",
+        "heatExchange": "Heat exchange",
+        "heatTransfer": "Heat transfer",
+        "heatDistribution": "Heat distribution",
+        "functional": "Functional",
+        "sensorsAndActuators": "Sensors & actuators",
+        "tankTemperatures": "Tank temperatures",
+        "tankLevels": "Tank levels",
+        "waterUsage": "Water usage",
+        "pumps": "Pumps",
+        "valves": "Valves",
+        "flow": "Flow",
+        "temperatures": "Temperatures",
+        "pressure": "Pressure"
+      },
+      "rows": {
+        "advisory": "Advisory",
+        "boosting": "Boosting",
+        "filling": "Filling",
+        "tank": "Tank {number}"
+      },
+      "distribution": {
+        "mode": "Mode",
+        "tankState": "Tank state",
+        "operationTime": "Operation time",
+        "empty": "No data in this range",
+        "treemap": "Heat per exchanger",
+        "pie": "Share per exchanger",
+        "noHeat": "No heat delivered in this range",
+        "captured": "Total captured"
+      },
+      "states": {
+        "AMCS_MODE": {
+          "amcs_local": "AMCS local",
+          "amcs_manual": "AMCS manual",
+          "amcs_auto": "AMCS auto",
+          "advisory": "Advisory"
+        },
+        "BOOSTING_MODE": {
+          "idle": "Idle",
+          "boosting_high_temperature": "Boosting HT",
+          "boosting_heatpump": "Boosting HP",
+          "boosting_low_temperature": "Boosting LT",
+          "manual": "Manual"
+        },
+        "FILLING_MODE": {
+          "idle": "Idle",
+          "filling": "Filling",
+          "manual": "Manual"
+        },
+        "TANK": {
+          "in_use": "In use",
+          "filling": "Filling",
+          "boosting": "Boosting",
+          "disabled": "Disabled",
+          "needs_boost": "Needs boost",
+          "needs_fill": "Needs fill",
+          "standby": "Standby"
+        }
+      },
+      "duration": {
+        "days": "{count}d",
+        "hours": "{count}hr",
+        "minutes": "{count} min",
+        "seconds": "{count} sec"
+      },
+      "metrics": {
+        "TEMPERATURE": "Temperature",
+        "LEVEL": "Level",
+        "PRESSURE": "Pressure",
+        "FLOW": "Flow",
+        "FLOW_TEMPERATURE": "Temperature",
+        "FLOW_QUANTITY": "Quantity",
+        "PUMP_SPEED": "Speed",
+        "PUMP_FLOW": "Flow",
+        "PUMP_PRESSURE": "Pressure",
+        "PUMP_POWER_INPUT": "Power input",
+        "PUMP_ENERGY_CONSUMPTION": "Energy consumption",
+        "PUMP_OPERATION_TIME": "Operation time",
+        "PUMP_DUTY_POINT": "Duty point",
+        "PUMP_CONTROL_MODE": "Control mode",
+        "PUMP_ON_OFF": "On / Off",
+        "VALVE_POSITION_ABSOLUTE": "Absolute position",
+        "VALVE_POSITION_RELATIVE": "Relative position",
+        "VALVE_SETPOINT": "Setpoint",
+        "MINIMUM_TANK_TEMPERATURE": "Minimum temperature",
+        "MAXIMUM_TANK_TEMPERATURE": "Maximum temperature",
+        "MINIMUM_TANK_LEVEL": "Minimum fill",
+        "MAXIMUM_TANK_LEVEL": "Maximum fill",
+        "HEAT": "Heat",
+        "CALCULATED_FLOW": "Flow"
+      },
+      "table": {
+        "asset": "Asset",
+        "lastChange": "Last change",
+        "totals": "Totals",
+        "ago": "{age} ago",
+        "never": "–",
+        "title": "Last values",
+        "share": "Share"
+      },
+      "chart": {
+        "empty": "No data in this range",
+        "error": "Couldn't load this chart: {message}",
+        "metric": "Metric",
+        "overlays": {
+          "BOOSTING_MODE": "Boost mode overlay",
+          "FILLING_MODE": "Fill mode overlay"
+        },
+        "showAll": "Show all",
+        "showGroup": "Show only {group}",
+        "total": "Total"
+      },
+      "timeRange": {
+        "label": "Time range",
+        "previous": "Previous period",
+        "next": "Next period",
+        "zoomOut": "Zoom out",
+        "refresh": "Refresh",
+        "autoRefresh": "Auto-refresh",
+        "presets": {
+          "15m": "Last 15 minutes",
+          "1h": "Last hour",
+          "6h": "Last 6 hours",
+          "12h": "Last 12 hours",
+          "24h": "Last 24 hours",
+          "7d": "Last 7 days",
+          "30d": "Last 30 days"
+        },
+        "custom": "{start} – {end}",
+        "intervals": {
+          "0": "Off",
+          "10000": "Every 10 s",
+          "30000": "Every 30 s",
+          "60000": "Every minute",
+          "300000": "Every 5 minutes"
+        },
+        "customTitle": "Custom range",
+        "from": "From",
+        "to": "To",
+        "apply": "Apply",
+        "quickRanges": "Quick ranges",
+        "errors": {
+          "invalid": "Enter a start and end time.",
+          "order": "The end must be at least a minute after the start.",
+          "tooLong": "Pick a range of 30 days or less."
+        }
+      },
+      "notAvailable": "Monitoring is not available for this module yet.",
+      "modules": {
+        "dhw": "Domestic Hot Water"
+      },
+      "groups": {
+        "boostingHighTemperature": "Boosting HT circuit",
+        "boostingHeatpump": "Boosting heat pump circuit",
+        "boostingTanks": "Boosting (tanks)",
+        "filling": "Filling circuit",
+        "hotWaterUse": "Hot water use circuit",
+        "boilers": "Boilers",
+        "boostingCircuit": "Boosting circuit",
+        "fillingPreheat": "Filling preheat chain"
+      },
+      "totals": {
+        "heat": {
+          "title": "Heat delivered in range",
+          "asset": "Source",
+          "value": "Energy"
+        },
+        "water": {
+          "title": "Water in range",
+          "asset": "Flow",
+          "value": "Volume"
+        }
+      },
+      "annotations": {
+        "show": "Show",
+        "add": "Add annotation",
+        "time": "Time",
+        "note": "Note",
+        "notePlaceholder": "What happened, or what did you change?",
+        "author": "Your name",
+        "authorPlaceholder": "Shown with the note",
+        "noteRequired": "Write a note first.",
+        "save": "Save",
+        "delete": "Delete",
+        "by": "By {author}",
+        "parametersChanged": "Parameters changed ({count})",
+        "kinds": {
+          "CREW": "Crew notes",
+          "PARAMETERS": "Parameter changes",
+          "ALARM": "Alarms"
+        },
+        "alarm": {
+          "raised": "Module alarm raised",
+          "cleared": "Module alarm cleared"
+        }
+      },
+      "water": {
+        "in": "Fresh water in",
+        "out": "Hot water out",
+        "net": "Change in tank volume"
+      }
     }
   }
 }

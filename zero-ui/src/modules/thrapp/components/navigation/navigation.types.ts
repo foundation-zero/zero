@@ -7,11 +7,11 @@ export type SubNavigationProps = {
   activeModule?: MimicKey;
 };
 
-export type MainTabName = "thrs/mimics" | "thrs/control";
+export type MainTabName = "thrs/mimics" | "thrs/control" | "thrs/monitoring";
 
 export type MainTab = {
   name: MainTabName;
-  label: "mimics" | "controls";
+  label: "mimics" | "controls" | "monitoring";
   views: Partial<Record<MimicKey, unknown>>;
 };
 

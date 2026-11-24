@@ -4,6 +4,7 @@ import socket
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from unittest.mock import AsyncMock, Mock
+from urllib.parse import urlsplit
 
 import pytest
 
@@ -68,7 +69,7 @@ def postgres_db(mock_session: Mock) -> Mock:
     return postgres_db
 
 
-def _mqtt_is_available(host: str, port: int, timeout_s: float = 0.2) -> bool:
+def _port_is_open(host: str, port: int, timeout_s: float = 0.2) -> bool:
     try:
         with socket.create_connection((host, port), timeout=timeout_s):
             return True
@@ -77,10 +78,16 @@ def _mqtt_is_available(host: str, port: int, timeout_s: float = 0.2) -> bool:
 
 
 def pytest_runtest_setup(item):
+    if "greptime" in item.keywords:
+        url = urlsplit(os.environ.get("GREPTIME_TEST_URL", "mysql://localhost:14002"))
+        host, port = url.hostname or "localhost", url.port or 4002
+        if not _port_is_open(host, port):
+            pytest.skip(f"GreptimeDB not available at {host}:{port}")
+
     if "mqtt" not in item.keywords:
         return
 
     host = os.environ.get("MQTT_HOST", "localhost")
     port = int(os.environ.get("MQTT_PORT", "1883"))
-    if not _mqtt_is_available(host, port):
+    if not _port_is_open(host, port):
         pytest.skip(f"MQTT broker not available at {host}:{port}")

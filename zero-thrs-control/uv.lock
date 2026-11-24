@@ -20,6 +20,18 @@ wheels = [
 ]
 
 [[package]]
+name = "aiomysql"
+version = "0.3.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pymysql" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/29/e0/302aeffe8d90853556f47f3106b89c16cc2ec2a4d269bdfd82e3f4ae12cc/aiomysql-0.3.2.tar.gz", hash = "sha256:72d15ef5cfc34c03468eb41e1b90adb9fd9347b0b589114bd23ead569a02ac1a", size = 108311, upload-time = "2025-10-22T00:15:21.278Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4c/af/aae0153c3e28712adaf462328f6c7a3c196a1c1c27b491de4377dd3e6b52/aiomysql-0.3.2-py3-none-any.whl", hash = "sha256:c82c5ba04137d7afd5c693a258bea8ead2aad77101668044143a991e04632eb2", size = 71834, upload-time = "2025-10-22T00:15:15.905Z" },
+]
+
+[[package]]
 name = "annotated-types"
 version = "0.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1748,6 +1760,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pymysql"
+version = "1.2.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c8/69/808dc3d9bcc7d2841cdc2909b978c64eb1c450b7cd7b42d5907f7de7567d/pymysql-1.2.4.tar.gz", hash = "sha256:491558165b8e11f3644c5f9cfb30cc9c9111ffd54e53d3aa91b9a0a20be2294f", size = 51598, upload-time = "2026-11-09T09:37:09.356Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a3/60/acffa1e7261fdc68fadf6f196b66058e03dcb3df239f2c0acbfd11165845/pymysql-1.2.4-py3-none-any.whl", hash = "sha256:e169bed906168fffd0088925f45b3df024c2775c6fd128da0df773d47c458840", size = 46892, upload-time = "2026-11-09T09:37:07.987Z" },
+]
+
+[[package]]
 name = "pyparsing"
 version = "3.3.3"
 source = { registry = "https://pypi.org/simple" }
@@ -2319,6 +2340,7 @@ source = { editable = "." }
 default-groups = ["analysis", "dev", "test"]
 dependencies = [
     { name = "aiomqtt" },
+    { name = "aiomysql" },
     { name = "asyncapi3" },
     { name = "asyncpg" },
     { name = "fmpy" },
@@ -2363,6 +2385,7 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "aiomqtt", specifier = ">=2.3.0,<3.0.0" },
+    { name = "aiomysql", specifier = ">=0.3.2,<0.4.0" },
     { name = "asyncapi3", specifier = "==0.0.2" },
     { name = "asyncpg", specifier = ">=0.30.0,<1.0.0" },
     { name = "fmpy", specifier = ">=0.3.22,<0.4.0" },

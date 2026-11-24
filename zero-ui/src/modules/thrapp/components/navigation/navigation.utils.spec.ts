@@ -39,6 +39,7 @@ describe("useThrappNavigation", () => {
     expect(tabs.value.map(({ name, active }) => [name, active])).toEqual([
       ["thrs/mimics", false],
       ["thrs/control", true],
+      ["thrs/monitoring", false],
     ]);
     expect(documentation.value.active).toBe(false);
   });
@@ -50,6 +51,7 @@ describe("useThrappNavigation", () => {
     expect(tabs.value.map(({ to }) => to)).toEqual([
       { name: "thrs/mimics", params: { module: "pvt-owners" } },
       { name: "thrs/control", params: { module: "dhw" } },
+      { name: "thrs/monitoring", params: { module: "dhw" } },
     ]);
   });
 

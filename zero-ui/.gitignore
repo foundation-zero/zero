@@ -29,3 +29,6 @@ dist-ssr
 /playwright/.cache/
 /screenshots
 /coverage
+
+*storybook.log
+storybook-static

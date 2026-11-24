@@ -1,3 +1,4 @@
+import { MODULE_MONITORING } from "@/modules/thrapp/monitoring/monitoring.consts";
 import { defineAsyncComponent } from "vue";
 import { RouteRecordRaw } from "vue-router";
 import { DOCUMENTATION } from "./documentation";
@@ -35,6 +36,18 @@ export const thrappRoutes: RouteRecordRaw = {
       meta: {
         subNavigation: SUB_NAVIGATION,
         views: PARAMETERS,
+      },
+    },
+    {
+      path: "monitoring/:module",
+      name: "thrs/monitoring",
+      component: () => import("@/modules/thrapp/views/Monitoring.vue"),
+      meta: {
+        subNavigation: defineAsyncComponent(
+          () =>
+            import("@/modules/thrapp/monitoring/components/monitoring-sub-navigation/MonitoringSubNavigation.vue"),
+        ),
+        views: MODULE_MONITORING,
       },
     },
     {

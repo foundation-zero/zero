@@ -14,7 +14,11 @@ import {
 import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
 import { computed, MaybeRef, unref } from "vue";
 import { NamedValue } from "vue-i18n";
-import { ModeBadgeMode } from "./mode-badge.consts";
+import {
+  DHW_BOOSTING_MODE_MODES,
+  DHW_FILLING_MODE_MODES,
+  ModeBadgeMode,
+} from "./mode-badge.consts";
 import { ModuleModeBadge } from "./mode-badge.types";
 
 /** Translates a key relative to `thrapp.mimics.modeBadge`. */
@@ -50,18 +54,6 @@ const PCM_MODES: Record<string, ModeBadgeMode> = {
   supplying: ModeBadgeMode.Using,
   boosting: ModeBadgeMode.BoostingLow,
   charging: ModeBadgeMode.Boosting,
-};
-
-const DHW_BOOSTING_MODES: Record<string, ModeBadgeMode> = {
-  idle: ModeBadgeMode.Idle,
-  boosting_low_temperature: ModeBadgeMode.BoostingLow,
-  boosting_high_temperature: ModeBadgeMode.Boosting,
-  boosting_heatpump: ModeBadgeMode.BoostingHigh,
-};
-
-const DHW_FILLING_MODES: Record<string, ModeBadgeMode> = {
-  idle: ModeBadgeMode.Idle,
-  filling: ModeBadgeMode.Filling,
 };
 
 const THRUSTERS_MODES: Record<string, ModeBadgeMode> = {
@@ -147,11 +139,11 @@ export function getModuleModes(
       const { boostingMode, fillingMode } = automaticMode as DhwAutomaticMode;
       return [
         {
-          mode: DHW_BOOSTING_MODES[boostingMode],
+          mode: DHW_BOOSTING_MODE_MODES[boostingMode],
           label: t(`modes.dhw.boosting.${boostingMode}`),
         },
         {
-          mode: DHW_FILLING_MODES[fillingMode],
+          mode: DHW_FILLING_MODE_MODES[fillingMode],
           label: t(`modes.dhw.filling.${fillingMode}`),
         },
       ];

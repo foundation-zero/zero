@@ -1,3 +1,5 @@
+import { BoilerTankState } from "@/modules/thrapp/types/thrs";
+
 export const enum ModeBadgeMode {
   Idle = "Idle",
 
@@ -51,4 +53,27 @@ export const MODE_COLORS: Record<ModeBadgeMode, string> = {
   [ModeBadgeMode.ManualControl]: "var(--warning)",
   [ModeBadgeMode.AdvisoryOff]: "var(--brand-muted)",
   [ModeBadgeMode.Disabled]: "var(--destructive-muted)",
+};
+
+export const DHW_BOOSTING_MODE_MODES: Record<string, ModeBadgeMode> = {
+  idle: ModeBadgeMode.Idle,
+  boosting_low_temperature: ModeBadgeMode.BoostingLow,
+  boosting_high_temperature: ModeBadgeMode.Boosting,
+  boosting_heatpump: ModeBadgeMode.BoostingHigh,
+};
+
+export const DHW_FILLING_MODE_MODES: Record<string, ModeBadgeMode> = {
+  idle: ModeBadgeMode.Idle,
+  filling: ModeBadgeMode.Filling,
+};
+
+export const DHW_TANK_STATE_MODES: Record<BoilerTankState, ModeBadgeMode> = {
+  [BoilerTankState.InUse]: ModeBadgeMode.Using,
+  [BoilerTankState.Boosting]: ModeBadgeMode.Boosting,
+  [BoilerTankState.Standby]: ModeBadgeMode.Idle,
+  [BoilerTankState.Disabled]: ModeBadgeMode.Disabled,
+  [BoilerTankState.Filling]: ModeBadgeMode.Filling,
+  [BoilerTankState.NeedsBoost]: ModeBadgeMode.BoostingLow,
+  [BoilerTankState.NeedsFill]: ModeBadgeMode.FillingLow,
+  [BoilerTankState.OnTemperature]: ModeBadgeMode.Idle,
 };

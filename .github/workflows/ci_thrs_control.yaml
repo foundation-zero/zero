@@ -57,10 +57,13 @@ jobs:
       - run: just check_static
         working-directory: zero-thrs-control
 
-      - run: docker compose --profile thrs up -d --quiet-pull --wait vernemq
+      # GreptimeDB for the monitoring tests (marker greptime); they skip without it.
+      - run: docker compose --profile thrs --profile data-collection up -d --quiet-pull --wait vernemq greptimedb
 
       - run: just test --cov-report=xml -v
         working-directory: zero-thrs-control
+        env:
+          GREPTIME_TEST_URL: mysql://localhost:4002/public
 
       - run: just test_mqtt --cov-append --cov-report=xml -v
         working-directory: zero-thrs-control

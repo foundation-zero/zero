@@ -36,6 +36,8 @@ export default defineConfig(({ mode }) => {
           "modules/**/graphql/queries/**",
           // Mock data for the development mock provider.
           "modules/**/*mock*.ts",
+          // Storybook stories render components for review; Vitest doesn't run them.
+          "**/*.stories.ts",
         ],
         reporter: ["text-summary"],
       },
