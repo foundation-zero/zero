@@ -4,6 +4,8 @@ import asyncio
 import logging
 import time
 from collections import deque
+from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from typing import Any
 
@@ -12,10 +14,12 @@ from pydantic import BaseModel
 from pyModbusTCP.client import ModbusClient
 from zmqtt import MQTTDisconnectedError, MQTTPublishError, MQTTTimeoutError
 
+from zero_modbus_bridge.commands import ModbusCommand
 from zero_modbus_bridge.io import ModbusTopic
 from zero_modbus_bridge.publisher import MqttPublisher, TopicPublisher
 from zero_modbus_bridge.reader import ModbusReader
 from zero_modbus_bridge.settings import ModbusSettings
+from zero_modbus_bridge.writer import ModbusWriteError, ModbusWriter
 
 logger = logging.getLogger(__name__)
 
@@ -41,8 +45,12 @@ class ModbusBridge:
         probe_interval: float = 10.0,
         *,
         buffer_size: int,
+        writer: ModbusWriter | None = None,
     ):
-        """``buffer_size`` bounds the in-memory queue of readings whose publish
+        """``writer`` executes commands; it may share the reader's client, as all
+        Modbus I/O runs on one thread.
+
+        ``buffer_size`` bounds the in-memory queue of readings whose publish
         failed with a transient broker error (see ``TRANSIENT_PUBLISH_ERRORS``).
         They are replayed in order, with their original read time, once the
         broker accepts again; when the queue is full the oldest is dropped."""
@@ -53,6 +61,11 @@ class ModbusBridge:
         self._dropped = 0
         self._failing = False
         self._reader = reader
+        self._writer = writer
+        # pyModbusTCP isn't thread-safe, so reads and writes share one thread.
+        # Its queue is FIFO and a probe queues one topic at a time, so a
+        # command waits for at most one topic read.
+        self._modbus_thread = ThreadPoolExecutor(1, thread_name_prefix="modbus")
         self._publisher = publisher
         if probe_interval <= 0:
             raise ValueError("probe_interval must be > 0")
@@ -84,14 +97,15 @@ class ModbusBridge:
         *,
         buffer_size: int,
     ) -> "ModbusBridge":
-        reader = ModbusReader(modbus_settings.modbus_client(), topics)
+        client = modbus_settings.modbus_client()
         publisher = MqttPublisher(broker, topics)
         return ModbusBridge(
-            reader,
+            ModbusReader(client, topics),
             publisher,
             topics,
             modbus_settings.modbus_probe_interval,
             buffer_size=buffer_size,
+            writer=ModbusWriter(client),
         )
 
     @classmethod
@@ -116,14 +130,34 @@ class ModbusBridge:
             if modbus_timeout <= 0:
                 raise ValueError("modbus_timeout must be > 0")
             client_kwargs["timeout"] = modbus_timeout
-        reader = ModbusReader(ModbusClient(host, port, **client_kwargs), topics)
+        client = ModbusClient(host, port, **client_kwargs)
         return cls(
-            reader,
+            ModbusReader(client, topics),
             publisher,
             topics,
             probe_interval,
             buffer_size=buffer_size,
+            writer=ModbusWriter(client),
         )
+
+    async def _on_modbus_thread[R](self, call: Callable[..., R], *args: object) -> R:
+        return await asyncio.get_running_loop().run_in_executor(
+            self._modbus_thread, call, *args
+        )
+
+    async def write(self, command: ModbusCommand, message: BaseModel) -> None:
+        """Write a validated command message to its unit.
+
+        A failed write is logged, not retried: the sender sees the state that
+        took effect on the read topics and sends again if needed.
+        """
+        if self._writer is None:
+            raise RuntimeError("This bridge has no writer for commands")
+        writes = command.to_writes(message)
+        try:
+            await self._on_modbus_thread(self._writer.write, command.unit_id, writes)
+        except ModbusWriteError as exc:
+            logger.error("Command on %s not applied: %s", command.topic, exc)
 
     async def run(self) -> None:
         loop = asyncio.get_running_loop()
@@ -134,9 +168,7 @@ class ModbusBridge:
             await asyncio.sleep(max(0.0, next_probe_at - loop.time()))
 
     async def run_once(self) -> None:
-        # One worker-thread call per probe: keeps the loop responsive to MQTT
-        # keepalives, and the client on one thread (pyModbusTCP isn't thread-safe).
-        readings = await asyncio.to_thread(self._probe)
+        readings = await self._probe()
         if readings:
             self._last_read_at = time.monotonic()
         # Replay the backlog before queueing this probe, so a full buffer only
@@ -191,19 +223,27 @@ class ModbusBridge:
             self._failing = False
         return True
 
-    def _probe(self) -> list[_Reading] | None:
+    async def _probe(self) -> list[_Reading] | None:
         """Run the blocking Modbus probe; ``None`` means the gateway is down.
 
-        Each reading is stamped when the lazy ``read_all()`` yields it, i.e.
-        right after its registers were read.
+        Each topic is read in its own call on the Modbus thread, so commands
+        queued meanwhile go between two topics, and the loop stays responsive
+        to MQTT keepalives. Each reading is stamped right after its registers
+        were read.
 
         ``read_all()`` reopens per topic, so the up-front ``ensure_open`` only
         tells a dead gateway (skip the probe) from a mid-cycle drop (skip the
         rest); it doesn't re-dial a live socket.
         """
-        if not self._reader.ensure_open():
+        if not await self._on_modbus_thread(self._reader.ensure_open):
             return None
-        return [
-            (topic_name, payload, datetime.now(UTC))
-            for topic_name, payload in self._reader.read_all()
-        ]
+        topic_readings = iter(self._reader.read_all())
+
+        def next_reading() -> tuple[str, Any] | None:
+            return next(topic_readings, None)
+
+        readings: list[_Reading] = []
+        while reading := await self._on_modbus_thread(next_reading):
+            topic_name, payload = reading
+            readings.append((topic_name, payload, datetime.now(UTC)))
+        return readings

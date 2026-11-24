@@ -1,4 +1,7 @@
+import asyncio
+import threading
 from datetime import UTC, datetime
+from typing import Annotated
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -12,10 +15,12 @@ from zmqtt import (
 
 from tests.conftest import FloatModel
 from zero_modbus_bridge.bridge import ModbusBridge
-from zero_modbus_bridge.io import AnnotationModbusTopic
+from zero_modbus_bridge.commands import ModbusCommand
+from zero_modbus_bridge.io import AnnotationModbusTopic, ModbusField, ModbusTopic
 from zero_modbus_bridge.publisher import MqttPublisher
 from zero_modbus_bridge.reader import ModbusReader
 from zero_modbus_bridge.settings import ModbusSettings
+from zero_modbus_bridge.writer import ModbusWriter
 
 
 @pytest.mark.asyncio
@@ -449,3 +454,96 @@ async def test_a_probe_that_reads_nothing_is_not_a_reading():
     await bridge.run_once()
 
     assert not bridge.has_read_recently()
+
+
+class _First(BaseModel):
+    value: Annotated[int | None, ModbusField(register=10)]
+
+
+class _Second(BaseModel):
+    value: Annotated[int | None, ModbusField(register=20)]
+
+
+class _Switch(BaseModel):
+    on: bool
+
+
+_SWITCH = ModbusCommand(
+    topic="test/switch/set",
+    model=_Switch,
+    unit_id=7,
+    to_writes=lambda message: [(30, int(message.on))],
+)
+
+
+def _command_bridge(modbus: MagicMock, writer: ModbusWriter | None) -> ModbusBridge:
+    topics: list[ModbusTopic] = [
+        AnnotationModbusTopic(topic="test/first", model=_First),
+        AnnotationModbusTopic(topic="test/second", model=_Second),
+    ]
+    publisher = MagicMock()
+    publisher.publish = AsyncMock()
+    return ModbusBridge(
+        ModbusReader(modbus, topics), publisher, topics, buffer_size=10, writer=writer
+    )
+
+
+@pytest.mark.asyncio
+async def test_write_sends_command_to_its_unit():
+    modbus = MagicMock(is_open=True)
+    modbus.write_single_register.return_value = True
+
+    await _command_bridge(modbus, ModbusWriter(modbus)).write(_SWITCH, _Switch(on=True))
+
+    assert modbus.unit_id == 7
+    modbus.write_single_register.assert_called_once_with(30, 1)
+
+
+@pytest.mark.asyncio
+async def test_failed_write_is_logged_not_raised(caplog):
+    modbus = MagicMock(is_open=True)
+    modbus.write_single_register.return_value = None
+
+    await _command_bridge(modbus, ModbusWriter(modbus)).write(_SWITCH, _Switch(on=True))
+
+    assert "Command on test/switch/set not applied" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_write_without_writer_raises():
+    with pytest.raises(RuntimeError):
+        await _command_bridge(MagicMock(is_open=True), None).write(
+            _SWITCH, _Switch(on=True)
+        )
+
+
+@pytest.mark.asyncio
+async def test_write_goes_between_two_topic_reads():
+    calls: list[tuple[str, int]] = []
+    first_read_started = threading.Event()
+    release_first_read = threading.Event()
+
+    def read(register: int, count: int) -> list[int]:
+        calls.append(("read", register))
+        if register == 10:
+            first_read_started.set()
+            release_first_read.wait(5)
+        return [1]
+
+    def write(register: int, value: int) -> bool:
+        calls.append(("write", register))
+        return True
+
+    modbus = MagicMock(is_open=True)
+    modbus.read_holding_registers.side_effect = read
+    modbus.write_single_register.side_effect = write
+    bridge = _command_bridge(modbus, ModbusWriter(modbus))
+
+    probe = asyncio.create_task(bridge.run_once())
+    await asyncio.to_thread(first_read_started.wait, 5)
+    command = asyncio.create_task(bridge.write(_SWITCH, _Switch(on=True)))
+    await asyncio.sleep(0.05)  # the write is queued behind the first topic
+    release_first_read.set()
+    await asyncio.gather(probe, command)
+
+    assert calls == [("read", 10), ("write", 30), ("read", 20)]

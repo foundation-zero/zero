@@ -141,6 +141,21 @@ class MultiUnitDataHandler(DataHandler):
         values = [unit_registers[register] for register in registers]
         return DataHandler.Return(EXP_NONE, data=values)
 
+    def write_h_regs(self, address: int, words_l: list[int], srv_info):
+        """Store written registers of a known unit, also ones no topic reads.
+
+        Commands often write registers (selection, set points) that are only
+        read back elsewhere; accepting them lets a stub take any command.
+        """
+        unit_id = srv_info.recv_frame.mbap.unit_id
+        if unit_id not in self.data:
+            logging.warning("Unit ID %s not found", unit_id)
+            return DataHandler.Return(exp_code=EXP_SLAVE_DEVICE_FAILURE)
+        for register, value in enumerate(words_l, start=address):
+            logging.info("Unit %s: register %s set to %s", unit_id, register, value)
+            self.data[unit_id][register] = value
+        return DataHandler.Return(EXP_NONE)
+
     def read_coils(self, address: int, count: int, srv_info):
         unit_id = srv_info.recv_frame.mbap.unit_id
         if unit_id not in self._coils:

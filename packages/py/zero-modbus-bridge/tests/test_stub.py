@@ -108,3 +108,25 @@ def test_stub_topic_groups_have_isolated_register_spaces():
     assert ret_a.data == [3, 3]
     assert ret_b.data == [3, 3]
     assert stub.servers[0].data_hdl is not stub.servers[1].data_hdl
+
+
+def test_stub_stores_writes_to_registers_no_topic_reads():
+    topic = AnnotationModbusTopic(
+        topic="test/regs", model=TwoRegistersModel, start_register=10, unit_id=35
+    )
+    handler = MultiUnitDataHandler([topic], default_value=0)
+
+    ret = handler.write_h_regs(11, [1], _srv_info(35))
+
+    assert ret.exp_code == EXP_NONE
+    assert handler.read_register(35, 11) == 1
+    assert handler.read_register(35, 10) == 0
+
+
+def test_stub_rejects_writes_to_unknown_unit():
+    topic = AnnotationModbusTopic(topic="test/regs", model=TwoRegistersModel)
+    handler = MultiUnitDataHandler([topic], default_value=0)
+
+    ret = handler.write_h_regs(10, [1], _srv_info(99))
+
+    assert ret.exp_code == EXP_SLAVE_DEVICE_FAILURE
