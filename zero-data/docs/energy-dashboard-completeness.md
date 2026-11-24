@@ -476,6 +476,98 @@ that the treemaps read instead of the main-group view. The segment remainders of
 name, the 10P3 feeder included (F13). Since 10P3 has no tags behind it, the report misses ≈ 40 kWh/day of
 Domestic. The notebook is not part of this ticket.
 
+### Status (2026-11-23)
+
+- **PR A (#1085) is merged**; PR B (#1089) is open, rebased on main.
+- **The 450000 cut-over is on main** (#1051–#1057) **and on greptime-zero.** The new per-kind tables hold the
+  history: the 24 VDC power supplies and the 350 VDC converters from 28 Aug, the 350 VDC outputs from 24 Sep.
+  The old tables stop on 20 Nov. Steps 5 and 6 can go ahead (B2).
+- **Open PRs on the same files** (none changes the logic of steps 5 and 6):
+  - #1112 refreshes the 24 VDC snapshots and edits the staging YAML;
+  - #1114 drops the not-null tests on the power tag gold views, after they ran Greptime out of memory in
+    `dbt-deploy`;
+  - #1115 drops the busbar source and edits the staging YAML and the snapshot list;
+  - #1113 multiplies the Aradex power by 1000 instead of 100, so Propulsion goes up from 10 Nov on.
+
+### F19 (added 2026-11-23): the 24 VDC remainder is ≈ 43 kWh/day
+
+- **What:** on 14–21 Nov the 11 power supplies (`marpower__dc_24v__power_supply`, `power__value`, = V × I in W)
+  deliver 2.53 kW, or 60.6 kWh/day. For the same days the breaker-level view gives 15.4 kWh/day, not the
+  2.6 kWh/day of F4, which was read from the old tables. The remainder is 1.86 kW on average and 0.64–2.48 kW
+  per minute, never below zero: **43.3 kWh/day**.
+- **Per converter group:** the breakers cover most of W14E1_02 (511 of 594 W) and hardly any of W14E2_01
+  (1 of ≈ 700 W).
+- **Not used:** the 24 V battery on 14E2 (`marpower__dc_24v__battery`, −0.36 A at 27 V on average, ≈ 10 W) and
+  the distribution boards, which publish no power.
+- **Also:** about a fifth of the power-supply rows carry a valid power value. Per minute every supply has
+  one, except in 2 of the 9,766 minutes.
+
+### F20 (added 2026-11-23): 350 VDC: the outputs read 0, and the converters pass power back
+
+- **Outputs:** the six DcOpp outputs publish rows: on the old topics, and since 20 Nov on
+  `marpower__dc_350v__breaker`. But power, current and voltage read 0 since 7 Oct (aft) and 26 Oct (fwd).
+  02-72-u101 has a few non-zero values until 12 Nov. The Status of 16 Nov ("the feed is back") counted rows,
+  not values, so open item 12 is still open: the DcOpp outputs publish 0.
+- **Converters** (`marpower__dc_350v__dc_dc_converter`, `hvdc_power__value` in W, positive from 700 VDC to
+  350 VDC), averages on 14–21 Nov: 02-71-t101 380 W, 02-71-t102 −55 W, 02-72-t101 1,583 W, 02-72-t102
+  1,237 W. Together that is 3.15 kW, or **75.5 kWh/day** (F5: 67 kWh/day on the old tables).
+- **Power flows back:** per minute the aft pair ranges from −2.0 to +1.8 kW. Power goes into the 350 VDC
+  network fwd and partly back to the 700 VDC bus aft. The sum over all four stays positive (one minute of
+  9,764 at −1.4 W), so only that sum is the load of the 350 VDC network.
+- **No losses from the converters:** high side minus low side power (hvdc power − lvdc V × I) is negative for
+  both fwd converters (−50 and −85 W), so the converters' own measurements can't give their losses.
+- **Meaning:** step 6 books the sum of the four converters' hvdc power as Domestic / Lighting, converter
+  losses included. There is no split per output and no *Losses / 350 VDC converters* until the outputs
+  report power.
+
+### Changes to the plan (2026-11-23)
+
+**B2** holds steps 5 and 6, on branch `feature/ZERO-2619-add-24vdc-350vdc`, on top of PR B (#1089).
+
+- **Step 5:** `slv_24vdc_power_supplies` → `gld_24vdc_unallocated_power_per_minute_per_group`: per minute, the
+  power-supply total minus the breaker-level total, as *Technical / 24VDC unallocated*.
+- **Step 6:** `stg_marpower__dc_350v_converters` → `slv_350vdc_converters` →
+  `gld_350vdc_power_per_minute_per_group`: the sum of the four converters, as *Domestic / Lighting*. There is
+  no split per output and no *Losses / 350 VDC converters* (F20).
+- Like the Aradex and chiller views, each has one gold view for the main group and the sub group panels.
+- The new gold views have no dbt tests: as with the power tag gold views (#1114), a test aggregates the whole
+  history.
+
+### F21 (added 2026-11-23): bidirectional converters, and power that flows back
+
+- **What:** all converters between the 700 VDC bus and its sources and loads, from the drawings and the
+  functional descriptions, against Zero's data (sign and opposing flows):
+
+  | Converter | Type | Connects | Data |
+  |---|---|---|---|
+  | Battery converters =05.41–05.46-T101 | Brightloop, 3 DC/DC channels per module, 80 A each | Battery strings (760–930 V) and the bus segments | 13 pack channels, −55 to +36 kW |
+  | Shore converters =07.11-TBC1, =07.12-TBC1 | Marpower ESI AC/DC, 2 × 2 × 50 kW | Shore 400 VAC and SB.01.P01 / P04 | Never negative (14–21 Nov) |
+  | uGrid =05.11-U101, =05.12-U101 | Aradex DC/AC inverter | Bus (SB.01.P04, SB.02.P02) and the 400 VAC switchboard, in parallel with droop load sharing | Never negative, no opposing flows (14–21 Nov) |
+  | Thruster drives =13.11-U101/U102, =13.31-U101/U102 | Aradex DC/AC inverters | Bus and the thruster motors, also hydrogeneration | Split by sign (Propulsion / Hydrogeneration) |
+  | 350 VDC converters =02.71/02.72-T101/T102 | Epic Power bidirectional DC/DC, 8 kW | Bus (aft SB.01.P04, fwd SB.02.P02) and the 350 VDC network; bus tie 02.71-Q001 closed | Aft converters negative in 19 % and 34 % of the samples (F20), also on the busbar topics since 1 Sep |
+  | 24 VDC supplies 14E1, 14E2 | 700/24 VDC converters | Bus and the 24 VDC service and emergency boards; 14E2 also has two 24 V battery packs | Never negative; the 14E2 battery averages ≈ 10 W |
+
+- **Battery packs charge each other:** from 1 Sep to 21 Nov, one pack discharges while another charges
+  in 5,243 of 58,760 minutes (9 %), with about 15 kW passed between them on average. The EMS design
+  (9445234-1, 7.1.3) first decides whether the system charges or discharges, then selects the packs; it
+  doesn't describe packs charging each other.
+- **The 350 VDC network passes power between bus segments:** with the bus tie closed, power goes in fwd
+  (SB.02.P02) and comes out aft (SB.01.P04), up to about 2 kW (18 Nov).
+- **Meaning:**
+  - The flow diagram adds the charging and the discharging packs up separately, so in those minutes it shows
+    both, about 15 kW too high on each side. The production and consumption graphs don't use the battery data.
+  - The 350 VDC sum (step 6) is right; the losses of the loop are part of it.
+  - PR D (step 8) subtracts each 350 VDC converter from its own segment, not the sum, and the battery
+    converters per segment as measured.
+  - Step 7 checks the two uGrids for opposing flows before it adds their AC output.
+  - The 24 VDC battery is too small to matter for the 24 VDC remainder (F19).
+- **Open items (new):**
+  - 19: ask Marpower whether battery packs charging each other is intended (Marpower, check).
+  - 20: ask Marpower / Epic Power whether the 350 VDC converters should share the load instead of passing
+    power aft (Marpower, check).
+  - 21: the flow diagram shows the net battery power per minute instead of the charging and discharging
+    packs separately (Data, dashboards).
+
 ## Work log
 
 | Date | PR | Step | What |
@@ -489,3 +581,7 @@ Domestic. The notebook is not part of this ticket.
 | 2026-11-18 | B | 7 (part) | 10P3 feeder from Technical / Technical to Domestic / Crew & laundry. Checked on 9 Nov 08:00–14:00 in a local Greptime: 12.8 kWh moves. |
 | 2026-11-18 | B | classification | Aradex in the sub group Propulsion / Thrusters (`gld_aradex_power_per_minute_per_sub_group`), read by both treemaps. Same totals as the main-group view on 9 Nov 08:00–14:00 (Propulsion 87.0 kWh, Hydrogeneration 0.2 kWh). |
 | 2026-11-23 | B | review | One gold view each for the Aradexes and the chiller, `gld_aradex_power_per_minute_per_group` and `gld_chiller_power_per_minute_per_group`, read by the main group and the sub group panels; their sub group is a constant, so a separate main-group view saves nothing. Not `gld_aradex_power_per_minute`: that name is an F15 orphan view. After the deploy, drop `views.gld_aradex_power_per_minute_per_main_group` on greptime-zero by hand, as the views of F15. |
+| 2026-11-23 | – | – | Status, F19, F20 and the B2 change added: cut-over and history on greptime-zero, open PRs on the same files, the 24 VDC remainder, the 350 VDC outputs reading 0. |
+| 2026-11-23 | B2 | 5 | `slv_24vdc_power_supplies` → `gld_24vdc_unallocated_power_per_minute_per_group` (Technical / 24VDC unallocated: power supplies minus breakers per minute), in the graphs, flow diagram and treemaps of both dashboards. Checked on 18 Nov 08:00–14:00 in a local Greptime: 15.6 kWh from the power supplies, 4.3 kWh behind breakers, 11.3 kWh unallocated, the same in every panel and as computed on Zero. |
+| 2026-11-23 | B2 | 6 | `stg_marpower__dc_350v_converters` → `slv_350vdc_converters` → `gld_350vdc_power_per_minute_per_group` (Domestic / Lighting: the sum of the four converters), in the same panels. Checked on the same window: 20.5 kWh, the same in every panel and as computed on Zero. No split per output and no 350 VDC converter losses (F20). |
+| 2026-11-23 | – | – | F21 added: converter types and connections from the drawings, battery packs charging each other, the 350 VDC network passing power between segments; open items 19–21. |

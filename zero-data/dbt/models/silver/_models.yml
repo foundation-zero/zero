@@ -211,3 +211,49 @@ models:
         description: "Power of the device in W. The source reports kW and is converted here."
         tests:
           - not_null
+  - name: slv_24vdc_power_supplies
+    description: >
+      Output power of the 24 VDC power supplies, labelled with their converter group.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic of the power supply."
+        tests:
+          - not_null
+      - name: converter
+        description: "The converter group the power supply belongs to, e.g. W14E1_01."
+        tests:
+          - not_null
+      - name: power
+        description: "Output power of the power supply in W."
+        tests:
+          - not_null
+  - name: slv_350vdc_converters
+    description: >
+      Power each 350 VDC converter draws from the 700 VDC bus. A converter can run backwards; only the sum
+      over the four is the load of the 350 VDC network.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: converter
+        description: "The converter's designation, e.g. 02-71-t101."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["02-71-t101", "02-71-t102", "02-72-t101", "02-72-t102"]
+      - name: power
+        description: "HVDC (700 VDC side) power in W, positive from the 700 VDC bus to the 350 VDC network."
+        tests:
+          - not_null
