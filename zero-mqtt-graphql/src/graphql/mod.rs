@@ -23,11 +23,11 @@ use std::collections::{BTreeMap, HashMap};
 use std::sync::Arc;
 
 use anyhow::{Context, bail};
-use async_graphql::Name;
 use async_graphql::Value as GraphQlValue;
 use async_graphql::dynamic::{
-    Enum, Field, FieldValue, Object, Scalar, Schema, SchemaBuilder, Type, TypeRef,
+    Directive, Enum, Field, FieldValue, Object, Scalar, Schema, SchemaBuilder, Type, TypeRef,
 };
+use async_graphql::{Name, PathSegment, ServerError};
 use log::{info, warn};
 
 use crate::graphql::groups::register_group_queries;
@@ -37,7 +37,8 @@ use crate::graphql::topics::payload_query_field;
 use crate::naming::{pascal_case_graphql_name, sanitize_to_graphql_name};
 use crate::{
     api_model::{
-        Api, Direction, EnumValue, FieldType, GraphqlPath, PathNode, TopicDef, TopicKind, Tree,
+        Api, Direction, EnumValue, FieldDef, FieldType, GraphqlPath, PathNode, TopicDef, TopicKind,
+        Tree,
     },
     cache::TopicCache,
 };
@@ -318,11 +319,7 @@ fn payload_type_name(name_prefix: &str, name: &str) -> String {
 
 /// One concrete topic's `<Topic>` payload object, named
 /// [`payload_type_name`], followed by the types of its nested fields.
-fn payload_object(
-    name_prefix: &str,
-    name: &str,
-    fields: &BTreeMap<String, FieldType>,
-) -> Vec<Type> {
+fn payload_object(name_prefix: &str, name: &str, fields: &BTreeMap<String, FieldDef>) -> Vec<Type> {
     if fields.is_empty() {
         warn!("Object {name} can't have zero fields!");
     }
@@ -330,7 +327,7 @@ fn payload_object(
     let type_name = payload_type_name(name_prefix, name);
     let (object, mut types) = fields
         .iter()
-        .filter_map(|(name, field_type)| payload_field(name_prefix, name, field_type))
+        .filter_map(|(name, field)| payload_field(name_prefix, name, field))
         .fold(
             (Object::new(type_name.as_str()), Vec::new()),
             |(obj, mut types), (field, new_types)| {
@@ -343,12 +340,10 @@ fn payload_object(
 }
 
 /// One payload field on a `<Topic>` object: projects the raw field name
-/// from the object value returned by [`topic_query_field`].
-fn payload_field(
-    name_prefix: &str,
-    name: &str,
-    field_type: &FieldType,
-) -> Option<(Field, Vec<Type>)> {
+/// from the object value returned by [`topic_query_field`]. A value the
+/// Spec rules out as missing or `null` resolves to `null` with an error,
+/// so the rest of the payload is still served.
+fn payload_field(name_prefix: &str, name: &str, def: &FieldDef) -> Option<(Field, Vec<Type>)> {
     let field_name = sanitize_to_graphql_name(name);
 
     if field_name.is_empty() {
@@ -357,56 +352,171 @@ fn payload_field(
     }
 
     let raw_name = Name::new(name);
-    let (type_ref, types) = graphql_type_ref(name_prefix, field_type);
-    let field_type = field_type.clone();
+    let (type_ref, types) = graphql_type_ref(name_prefix, &def.field_type);
+    let directive = semantic_non_null(def);
+    let def = def.clone();
 
     let field = Field::new(field_name, type_ref, move |ctx| {
         let raw_name = raw_name.clone();
-        let field_type = field_type.clone();
+        let def = def.clone();
         async_graphql::dynamic::FieldFuture::new(async move {
-            let parent = ctx.parent_value.try_to_value()?;
-            let value = match parent {
-                GraphQlValue::Object(map) => map.get(&raw_name).cloned(),
-                _ => None,
+            // async-graphql resolves a `null` element of a list of objects
+            // as an object; that element is reported, its fields are not.
+            let GraphQlValue::Object(parent) = ctx.parent_value.try_to_value()? else {
+                return Ok(None);
             };
-            non_null(value)
-                .map(|value| output_value(&field_type, value).map(FieldValue::value))
-                .transpose()
+            let Some(value) = non_null(parent.get(&raw_name).cloned()) else {
+                if def.non_null {
+                    let message =
+                        format!("\"{raw_name}\" is missing or null, but the Spec requires a value");
+                    report_spec_violation(ctx.ctx, message, Vec::new());
+                }
+                return Ok(None);
+            };
+            let mut violations = Vec::new();
+            let value = output_value(&def.field_type, value, &raw_name, &mut violations);
+            for (indices, message) in violations {
+                report_spec_violation(ctx.ctx, message, indices);
+            }
+            Ok(non_null(Some(value)).map(FieldValue::value))
         })
     });
 
+    let field = match directive {
+        Some(directive) => field.directive(directive),
+        None => field,
+    };
     Some((field, types))
 }
 
-/// `value` as the output of a field of `field_type`: enum values by their
-/// GraphQL name. Errors on a value that is not one of the enum's, so a Spec
-/// that no longer matches what is published shows.
+/// The definition of `@semanticNonNull`, which async-graphql's dynamic
+/// schema has no way to register, for the SDL clients generate types from:
+/// <https://specs.apollo.dev/nullability/v0.4/#@semanticNonNull>.
+pub const SEMANTIC_NON_NULL_DEFINITION: &str =
+    "directive @semanticNonNull(levels: [Int!]! = [0]) on FIELD_DEFINITION";
+
+/// `@semanticNonNull` for a field the Spec rules out as `null` at some
+/// level: 0 the field itself, 1 its list elements, and so on. Clients may
+/// type those non-null: a `null` there always comes with an error. `None`
+/// when the Spec allows `null` at every level.
+fn semantic_non_null(def: &FieldDef) -> Option<Directive> {
+    let mut levels = Vec::new();
+    let mut level = Some(def);
+    let mut depth = 0;
+    while let Some(def) = level {
+        if def.non_null {
+            levels.push(GraphQlValue::from(depth));
+        }
+        level = match &def.field_type {
+            FieldType::List(element) => Some(element),
+            _ => None,
+        };
+        depth += 1;
+    }
+    let directive = Directive::new("semanticNonNull");
+    match levels.as_slice() {
+        [] => None,
+        [only] if *only == GraphQlValue::from(0) => Some(directive),
+        _ => Some(directive.argument("levels", GraphQlValue::List(levels))),
+    }
+}
+
+/// The SDL of `schema` with the definition of the directives it uses.
+#[must_use]
+pub fn schema_sdl(schema: &Schema) -> String {
+    format!("{SEMANTIC_NON_NULL_DEFINITION}\n\n{}", schema.sdl())
+}
+
+/// A value that breaks the Spec below a field: the indices of its list
+/// element, per level of nested lists, empty for the field's own value, and
+/// the message reporting it.
+type Violation = (Vec<usize>, String);
+
+/// Report a value that breaks the Spec at the current field, or at the
+/// list element at `indices` in it, without failing the field. A resolver
+/// error would null the whole response: async-graphql's dynamic schema
+/// propagates it to the root, not to the nearest nullable field.
+fn report_spec_violation(ctx: &async_graphql::Context<'_>, message: String, indices: Vec<usize>) {
+    let mut error = ctx.set_error_path(ServerError::new(message, Some(ctx.item.pos)));
+    error
+        .path
+        .extend(indices.into_iter().map(PathSegment::Index));
+    ctx.add_error(error);
+}
+
+/// `value` as the output of field `raw_name` of `field_type`: enum values by
+/// their GraphQL name. A value that is not one of the enum's, so a Spec that
+/// no longer matches what is published, and a `null` element the Spec rules
+/// out are `null`, added to `violations`. A list holding a `null` element
+/// async-graphql cannot serve is `null` as a whole.
 fn output_value(
     field_type: &FieldType,
     value: GraphQlValue,
-) -> async_graphql::Result<GraphQlValue> {
+    raw_name: &Name,
+    violations: &mut Vec<Violation>,
+) -> GraphQlValue {
     match (field_type, value) {
         (FieldType::Enum(name, values), value) => {
             let raw = value.clone().into_json().ok();
-            values
-                .iter()
-                .find(|enum_value| {
-                    raw.as_ref()
-                        .is_some_and(|raw| equal_value(raw, &enum_value.raw, None))
-                })
-                .map(|enum_value| GraphQlValue::Enum(Name::new(&enum_value.name)))
-                .ok_or_else(|| format!("{value} is not one of the values of enum {name}").into())
+            let found = values.iter().find(|enum_value| {
+                raw.as_ref()
+                    .is_some_and(|raw| equal_value(raw, &enum_value.raw, None))
+            });
+            if let Some(enum_value) = found {
+                GraphQlValue::Enum(Name::new(&enum_value.name))
+            } else {
+                let message = format!("{value} is not one of the values of enum {name}");
+                violations.push((Vec::new(), message));
+                GraphQlValue::Null
+            }
         }
-        (FieldType::List(element), GraphQlValue::List(items)) => items
-            .into_iter()
-            .map(|item| match item {
-                GraphQlValue::Null => Ok(GraphQlValue::Null),
-                item => output_value(element, item),
-            })
-            .collect::<async_graphql::Result<_>>()
-            .map(GraphQlValue::List),
-        (_, value) => Ok(value),
+        (FieldType::List(element), GraphQlValue::List(items)) => {
+            let mut outputs = Vec::with_capacity(items.len());
+            let mut servable = true;
+            for (index, item) in items.into_iter().enumerate() {
+                let reported = violations.len();
+                let output = if item == GraphQlValue::Null {
+                    if element.non_null {
+                        let message = format!(
+                            "\"{raw_name}\" has a null element, but the Spec requires a value"
+                        );
+                        violations.push((vec![index], message));
+                    }
+                    GraphQlValue::Null
+                } else {
+                    let mut nested = Vec::new();
+                    let output = output_value(&element.field_type, item, raw_name, &mut nested);
+                    violations.extend(nested.into_iter().map(|(mut indices, message)| {
+                        indices.insert(0, index);
+                        (indices, message)
+                    }));
+                    output
+                };
+                if output == GraphQlValue::Null && !holds_null(&element.field_type) {
+                    if violations.len() == reported {
+                        let message = format!(
+                            "\"{raw_name}\" has a null element, which async-graphql cannot serve in this list"
+                        );
+                        violations.push((vec![index], message));
+                    }
+                    servable = false;
+                }
+                outputs.push(output);
+            }
+            if servable {
+                GraphQlValue::List(outputs)
+            } else {
+                GraphQlValue::Null
+            }
+        }
+        (_, value) => value,
     }
+}
+
+/// Whether async-graphql can serve a `null` element of `element_type` in a
+/// list. It fails the whole response on one in a list of enums or of lists.
+fn holds_null(element_type: &FieldType) -> bool {
+    !matches!(element_type, FieldType::Enum(..) | FieldType::List(_))
 }
 
 /// The enum type of a field of type [`FieldType::Enum`].
@@ -443,7 +553,7 @@ fn graphql_type_ref(name_prefix: &str, field_type: &FieldType) -> (TypeRef, Vec<
             )
         }
         FieldType::List(element) => {
-            let (element, types) = graphql_type_ref(name_prefix, element);
+            let (element, types) = graphql_type_ref(name_prefix, &element.field_type);
             (TypeRef::List(Box::new(element)), types)
         }
         FieldType::Json => (TypeRef::named(JSON_SCALAR), vec![]),
@@ -512,7 +622,7 @@ mod tests {
             topic: topic.to_string(),
             payload: Some(Payload {
                 name: format!("{field}payload"),
-                fields: BTreeMap::from_iter(vec![(field.to_string(), FieldType::Float)]),
+                fields: BTreeMap::from([(field.to_string(), FieldDef::nullable(FieldType::Float))]),
             }),
             operation: Direction::Send,
             ttl_secs: None,
@@ -566,7 +676,10 @@ mod tests {
                 topic: "aB/c".to_string(),
                 payload: Some(Payload {
                     name: "query-a".to_string(),
-                    fields: BTreeMap::from_iter(vec![("field".to_string(), FieldType::Float)]),
+                    fields: BTreeMap::from([(
+                        "field".to_string(),
+                        FieldDef::nullable(FieldType::Float),
+                    )]),
                 }),
                 operation: Direction::Send,
                 ttl_secs: None,
@@ -652,12 +765,15 @@ mod tests {
                 fields: BTreeMap::from([
                     (
                         "inner".to_string(),
-                        FieldType::Object(
+                        FieldDef::nullable(FieldType::Object(
                             "inner".to_string(),
-                            Box::new(BTreeMap::from([("x".to_string(), FieldType::Float)])),
-                        ),
+                            Box::new(BTreeMap::from([(
+                                "x".to_string(),
+                                FieldDef::nullable(FieldType::Float),
+                            )])),
+                        )),
                     ),
-                    ("y".to_string(), FieldType::Float),
+                    ("y".to_string(), FieldDef::nullable(FieldType::Float)),
                 ]),
             }),
             operation: Direction::Send,
@@ -683,5 +799,210 @@ mod tests {
                 "for {payload}"
             );
         }
+    }
+
+    #[test_log::test]
+    fn test_sdl_marks_what_the_spec_rules_out_as_semantic_non_null() {
+        let list = |element| FieldType::List(Box::new(element));
+        let topic = TopicDef {
+            topic: "a/b".to_string(),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from([
+                    ("on".to_string(), FieldDef::non_null(FieldType::Boolean)),
+                    ("setpoint".to_string(), FieldDef::nullable(FieldType::Float)),
+                    (
+                        "codes".to_string(),
+                        FieldDef::non_null(list(FieldDef::non_null(FieldType::Int))),
+                    ),
+                    (
+                        "readings".to_string(),
+                        FieldDef::non_null(list(FieldDef::nullable(FieldType::Float))),
+                    ),
+                    (
+                        "labels".to_string(),
+                        FieldDef::nullable(list(FieldDef::non_null(FieldType::String))),
+                    ),
+                ]),
+            }),
+            operation: Direction::Send,
+            ttl_secs: None,
+            setter: None,
+            kind: TopicKind::Single,
+        };
+        let schema =
+            build_schema(&mock_api(vec![topic]), &Arc::new(TopicCache::new()), None).unwrap();
+
+        let sdl = schema_sdl(&schema);
+
+        assert!(sdl.starts_with(SEMANTIC_NON_NULL_DEFINITION), "{sdl}");
+        for line in [
+            "on: Boolean @semanticNonNull\n",
+            "setpoint: Float\n",
+            "codes: [Int] @semanticNonNull(levels: [0, 1])\n",
+            "readings: [Float] @semanticNonNull\n",
+            "labels: [String] @semanticNonNull(levels: [1])\n",
+        ] {
+            assert!(sdl.contains(line), "{line} in {sdl}");
+        }
+        assert!(async_graphql::parser::parse_schema(&sdl).is_ok(), "{sdl}");
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_list_that_cannot_hold_its_null_element_is_null_with_an_error() {
+        let mode = FieldType::Enum(
+            "mode".to_string(),
+            vec![EnumValue {
+                name: "AUTO".to_string(),
+                raw: json!("auto"),
+            }],
+        );
+        let list = |element| FieldType::List(Box::new(FieldDef::nullable(element)));
+        let topic = TopicDef {
+            topic: "a/b".to_string(),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from([
+                    ("modes".to_string(), FieldDef::nullable(list(mode))),
+                    (
+                        "grid".to_string(),
+                        FieldDef::nullable(list(list(FieldType::Int))),
+                    ),
+                    ("x".to_string(), FieldDef::nullable(FieldType::Float)),
+                ]),
+            }),
+            operation: Direction::Send,
+            ttl_secs: None,
+            setter: None,
+            kind: TopicKind::Single,
+        };
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "a/b",
+            json!({"modes": ["auto", null], "grid": [null, [1]], "x": 1.0}),
+        );
+        let schema = build_schema(&mock_api(vec![topic]), &cache, None).unwrap();
+
+        let response = schema.execute("{ a { b { modes grid x } } }").await;
+
+        // async-graphql fails the whole response on a null in a list of
+        // enums or of lists, though the Spec allows it here.
+        let data: serde_json::Value = response.data.into_json().unwrap();
+        assert_eq!(
+            data["a"]["b"],
+            json!({"modes": null, "grid": null, "x": 1.0}),
+            "{:?}",
+            response.errors
+        );
+        let mut paths: Vec<serde_json::Value> = response
+            .errors
+            .iter()
+            .map(|error| serde_json::to_value(&error.path).unwrap())
+            .collect();
+        paths.sort_by_key(ToString::to_string);
+        assert_eq!(
+            paths,
+            [json!(["a", "b", "grid", 0]), json!(["a", "b", "modes", 1])]
+        );
+    }
+
+    #[tokio::test]
+    #[test_log::test]
+    async fn test_value_the_spec_rules_out_is_null_with_an_error() {
+        let alarm = FieldType::Object(
+            "alarm".to_string(),
+            Box::new(BTreeMap::from([
+                ("code".to_string(), FieldDef::non_null(FieldType::Int)),
+                ("text".to_string(), FieldDef::nullable(FieldType::String)),
+            ])),
+        );
+        let list = |element| FieldType::List(Box::new(element));
+        let topic = TopicDef {
+            topic: "a/b".to_string(),
+            payload: Some(Payload {
+                name: "payload".to_string(),
+                fields: BTreeMap::from([
+                    ("on".to_string(), FieldDef::non_null(FieldType::Boolean)),
+                    ("setpoint".to_string(), FieldDef::nullable(FieldType::Float)),
+                    (
+                        "alarms".to_string(),
+                        FieldDef::non_null(list(FieldDef::non_null(alarm))),
+                    ),
+                    (
+                        "readings".to_string(),
+                        FieldDef::non_null(list(FieldDef::nullable(FieldType::Float))),
+                    ),
+                    (
+                        "grid".to_string(),
+                        FieldDef::non_null(list(FieldDef::non_null(list(FieldDef::non_null(
+                            FieldType::Int,
+                        ))))),
+                    ),
+                ]),
+            }),
+            operation: Direction::Send,
+            ttl_secs: None,
+            setter: None,
+            kind: TopicKind::Single,
+        };
+        let cache = Arc::new(TopicCache::new());
+        cache.insert(
+            "a/b",
+            json!({
+                "setpoint": null,
+                "alarms": [{"code": 1}, null, {"text": "low"}],
+                "readings": [1.0, null],
+                "grid": [[1, null], [2]],
+            }),
+        );
+        let schema = build_schema(&mock_api(vec![topic]), &cache, None).unwrap();
+
+        let response = schema
+            .execute("{ a { b { on setpoint alarms { code text } readings grid } } }")
+            .await;
+
+        // Everything that arrived is served. async-graphql shows a `null`
+        // element of a list of objects as an object of `null` fields.
+        let data: serde_json::Value = response.data.into_json().unwrap();
+        assert_eq!(
+            data["a"]["b"],
+            json!({
+                "on": null,
+                "setpoint": null,
+                "alarms": [
+                    {"code": 1, "text": null},
+                    {"code": null, "text": null},
+                    {"code": null, "text": "low"},
+                ],
+                "readings": [1.0, null],
+                "grid": [[1, null], [2]],
+            }),
+            "{:?}",
+            response.errors
+        );
+        // An error for each value the Spec rules out, and only for those.
+        let mut paths: Vec<serde_json::Value> = response
+            .errors
+            .iter()
+            .map(|error| serde_json::to_value(&error.path).unwrap())
+            .collect();
+        paths.sort_by_key(ToString::to_string);
+        assert_eq!(
+            paths,
+            [
+                json!(["a", "b", "alarms", 1]),
+                json!(["a", "b", "alarms", 2, "code"]),
+                json!(["a", "b", "grid", 0, 1]),
+                json!(["a", "b", "on"]),
+            ]
+        );
+        assert!(
+            response.errors[0]
+                .message
+                .contains("but the Spec requires a value"),
+            "{:?}",
+            response.errors
+        );
     }
 }
