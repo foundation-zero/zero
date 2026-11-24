@@ -2,9 +2,8 @@ from typing import Annotated
 
 from pydantic import model_validator
 
-from thrs.classes.control import ControlMode
 from thrs.control.modules.adsorption.io import AdsorptionControlValues
-from thrs.control.state import ControlState
+from thrs.control.state import ControlMode, ControlState
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Celsius, Tuning

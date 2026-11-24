@@ -1,9 +1,8 @@
 from typing import Annotated
 
-from thrs.classes.control import ControlMode
 from thrs.control.modules.dc.converters import ConvertersControlMode
 from thrs.control.modules.dc.io import DcControlValues
-from thrs.control.state import ControlState
+from thrs.control.state import ControlMode, ControlState
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Celsius, LMin, Tuning

@@ -9,7 +9,8 @@ from typing import Any, cast
 
 from analysis.simulation_values import SimulationValues
 from tests.helpers.collector import Collector
-from thrs.classes.control import Control, ControlMode
+from thrs.classes.control import Control
+from thrs.control.state import ControlMode
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import CombinedValues, ThrsValues
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping

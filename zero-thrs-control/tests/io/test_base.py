@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 from pydantic import ValidationError
 from pytest import raises
 
-from thrs.classes.control import ControlMode
+from thrs.control.state import ControlMode
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.input_output.definitions.simulation import HeatSource
