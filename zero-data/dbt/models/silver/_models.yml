@@ -18,14 +18,14 @@ models:
         description: "Panel identifier associated with the tag."
       - name: consumer
         description: "Consumer identifier associated with the tag."
-        tests:
-          - not_null
       - name: active_power_total
         description: "Total active power consumption."
         tests:
           - not_null
       - name: main_group
         description: "The main group classification of the power tag."
+        tests:
+          - not_null
       - name: sub_group
         description: "The sub group classification, within the main group, of the power tag."
   - name: slv_batteries
@@ -188,5 +188,26 @@ models:
           - not_null
       - name: power
         description: "3-phase AC active power the module draws from shore in W. TODO: the source reports kW and is converted here; remove the conversion once the source reports W."
+        tests:
+          - not_null
+  - name: slv_chiller
+    description: >
+      Power of the compression chiller's two compressors and its seawater pump, one row per device.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: device
+        description: "The chiller device: Compressor 1, Compressor 2 or Seawater pump."
+        tests:
+          - not_null
+      - name: power
+        description: "Power of the device in W. The source reports kW and is converted here."
         tests:
           - not_null

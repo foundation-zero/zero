@@ -16,3 +16,4 @@ marpower__dc_700v__shore_converter
 marpower__fire_detection__call_point
 marpower__fire_detection__detector
 marpower__fire_detection__sounder
+termodinamica__ac_misc

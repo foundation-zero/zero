@@ -3701,3 +3701,22 @@ models:
         description: "Timestamp of the test status."
       - name: test__value
         description: "Whether the device is in test (true/false)."
+  - name: stg_termodinamica__ac_misc
+    description: >
+      Staging view for the Termodinamica compression chiller: the power of its two compressors and its
+      seawater pump, in kW.
+    columns:
+      - name: ts
+        description: "Time index of the measurement record (renamed from timestamp)."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: watt_ac_compressor_1
+        description: "Power of AC compressor 1 in kW."
+      - name: watt_ac_compressor_2
+        description: "Power of AC compressor 2 in kW."
+      - name: watt_sea_water_pump
+        description: "Power of the AC seawater pump in kW."

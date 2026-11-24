@@ -416,6 +416,66 @@ converter total. Input minus outputs becomes *Losses / 350 VDC converters*.
 3. **Freshness:** the age of the last sample for every source of a main group, so a stopped feed or a
    broken view is named directly.
 
+### Status (2026-11-18)
+
+- **PR A (#1085) is open.** The 450000 stack (#1052 → #1051 → #1055 → #1054 → #1053 → #1057) is approved but
+  not merged, and none of the new per-kind tables exist on greptime-zero yet.
+- **The chiller feed** is still stopped (open item 11).
+
+### F17 (added 2026-11-18): the 350 VDC converters also move with the 450000 cut-over
+
+- **What:** F14 lists steps 3 and 5–8 as affected, but the device list in #1054 also has the 350 VDC
+  converters (`marpower/45-dc-350v/dc-dc-converter/02-71-t101` … `02-72-t102`) and the DcOpp outputs
+  (`45-dc-350v/breaker/02-7x-u10x`). Today their data is only in the old tables
+  (`marpower__450000_dc_distribution__350v_conv_*`, `marpower__450000_350vdc_system`).
+- **Meaning:** step 6 waits for the cut-over as well. Only the chiller doesn't depend on it.
+
+### F18 (added 2026-11-18): the chiller reports kW, and its data covers four test days
+
+- **What:** the Termodinamica IO list (`zero-termodinamica/docs/Vent en AC lijst Termodynamica.xls`) and the
+  bridge (`zero-termodinamica/modbus_bridges.json`) describe registers 182–184 (`watt_ac_compressor_1/2`,
+  `watt_sea_water_pump`) as "1=0,01 Watt". The stored values are kW:
+  - power / current (registers 185–187, "1=0,01 Ampere") is 239 V for all three devices, on every day;
+  - on 26 Jun 2026 (240 minutes, chiller 0–6.8 kW) the load of segment SB.01.P02 (switches 05.72/05.73)
+    followed the chiller at 0.93 kW per kW, r = 0.996;
+  - the seawater pump reads up to 0.69; its datasheet (9441204 TMD453) gives a motor output of 1.2–2.2 kW.
+- **Coverage:** the power columns have values only from 26 Jun to 3 Jul 2026. The chiller ran on 26, 27, 29
+  and 30 Jun, during working hours (≈ 6.2 kW with both compressors on); 28 Jun has no rows; 1–3 Jul reads 0.
+  Since then the rows arrive with empty power columns, and since 30 Oct there are no rows (open item 11).
+  Within a running window there is a sample every 20 s.
+- **Checks that pass:** power against current and against compressor and pump speed agree (1–2 samples of
+  4,020 differ, at start and stop); the two compressors are not copies of each other; no duplicate
+  timestamps.
+- **Odd:** `engine_box_p_gas` goes from ≈ 10 to 34.5 on 30 Jun and stays at exactly 34.5 until 3 Jul, while
+  the seawater temperature keeps changing. This may be a trip that stopped the unit; the data doesn't say.
+  In June the DC switches publish on other topics than now (`keb6-0572`, `keb6-0573`), at an implausible
+  level (≈ −680 kW); only their difference was used.
+- **Meaning:** the data is good enough to build and test the chiller models on, not to state its typical
+  consumption. The models convert kW to W. The thermal test dashboard shows these columns with unit `watt`,
+  so it reads 3 W instead of 3 kW; that is outside this ticket.
+
+### Changes to the plan (2026-11-18)
+
+**PR grouping.** PR B holds what doesn't depend on the cut-over: the chiller (ZERO-2688), on the current table
+`termodinamica__ac_misc`, and two classification changes on existing data. It sits on top of PR A. Steps 5
+and 6 move to a PR of their own after the cut-over (B2). The cut-over also moves the DC ring switches
+(`45-dc-700v/dc-switch/05-7x-q101`, #1054) and the uGrid grid converters (`45-dc-ac/inverter/05-1x-u101`,
+#1055), so steps 7–9 keep waiting, except for the 10P3 reclassification of step 7.
+
+| PR | When | Steps |
+|---|---|---|
+| B | now, on PR A | chiller; 10P3 → Domestic / Crew & laundry (from step 7); Aradex → Propulsion / Thrusters |
+| B2 | after the cut-over (F14, F17) | 5, 6 |
+| C | after the cut-over | 7 without the 10P3 reclassification |
+
+**Aradex.** The Aradex data gets the sub group *Thrusters* (classification table), in a sub-group gold view
+that the treemaps read instead of the main-group view. The segment remainders of SB.01.P01 and P04 become
+*Propulsion / Thrusters (unallocated)* in PR D, as planned.
+
+**10P3.** The energy report notebook (`notebooks/energy_report.py`) leaves out every tag with "DISTR" in its
+name, the 10P3 feeder included (F13). Since 10P3 has no tags behind it, the report misses ≈ 40 kWh/day of
+Domestic. The notebook is not part of this ticket.
+
 ## Work log
 
 | Date | PR | Step | What |
@@ -425,3 +485,7 @@ converter total. Input minus outputs becomes *Losses / 350 VDC converters*.
 | 2026-11-16 | A | 2 | Aradex snapshot files updated to `DOUBLE` (F12). Aradex logic checked inline on Zero. Views are repaired by the deploy. |
 | 2026-11-16 | A | 4 | Losses added to the graphs and treemaps of both dashboards and to the flow diagram, whose background image gets a fifth consumer row. |
 | 2026-11-17 | A | 4 | Losses icon in the flow diagram is now a corner-right-down arrow; Losses colour `#646464` (Grafana has no named grey). Consumers stack in their own group in both production/consumption graphs, so they show below zero also when there is production. Checked with 2 hours of Zero's data in a local Greptime. |
+| 2026-11-18 | B | chiller | Status, F17, F18 and the PR B change added. Chiller models (`stg_termodinamica__ac_misc` → `slv_chiller` → `gld_chiller_power_per_minute_per_main/sub_group`) as HVAC / Chiller, kW converted to W; added to the graphs, flow diagram and treemaps of both dashboards. Checked with the chiller data of 26 Jun – 3 Jul in a local Greptime: 57.6 kWh, the same in every panel. |
+| 2026-11-18 | B | 7 (part) | 10P3 feeder from Technical / Technical to Domestic / Crew & laundry. Checked on 9 Nov 08:00–14:00 in a local Greptime: 12.8 kWh moves. |
+| 2026-11-18 | B | classification | Aradex in the sub group Propulsion / Thrusters (`gld_aradex_power_per_minute_per_sub_group`), read by both treemaps. Same totals as the main-group view on 9 Nov 08:00–14:00 (Propulsion 87.0 kWh, Hydrogeneration 0.2 kWh). |
+| 2026-11-23 | B | review | One gold view each for the Aradexes and the chiller, `gld_aradex_power_per_minute_per_group` and `gld_chiller_power_per_minute_per_group`, read by the main group and the sub group panels; their sub group is a constant, so a separate main-group view saves nothing. Not `gld_aradex_power_per_minute`: that name is an F15 orphan view. After the deploy, drop `views.gld_aradex_power_per_minute_per_main_group` on greptime-zero by hand, as the views of F15. |
