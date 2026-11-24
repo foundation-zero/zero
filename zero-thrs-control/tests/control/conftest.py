@@ -9,7 +9,6 @@ from tests.orchestration.simples import (
     SimpleParameters,
     simple_control_values,
 )
-from thrs.control.manual import ManualControl
 from thrs.control.modules.thrusters.control import ThrustersControl
 from thrs.control.modules.thrusters.io import (
     ThrustersSensorValues,
@@ -52,10 +51,9 @@ def thrusters_control(simulation: ThrustersSimulation, postgres_db) -> Thrusters
 @fixture
 def switching() -> Callable[[float], Switching]:
     def _make(manual_flow: float = 1.0) -> Switching:
-        manual = ManualControl(simple_control_values(flow=manual_flow))
         automatic = SimpleControl(SimpleParameters.zero(), datetime.now)
         return Switching(
-            manual,
+            simple_control_values(flow=manual_flow),
             automatic,
             name="simple",
         )

@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from thrs.classes.control import Control
-from thrs.control.manual import ManualControl
 from thrs.control.state import AutomationMode, ControlModes, ControlState
 from thrs.control.switching import Switching
 from thrs.input_output.base import ThrsValues
@@ -69,11 +68,7 @@ class Module[
             parameters if parameters is not None else description.parameters_cls(),
             time_fn,
         )
-        self._control = Switching(
-            ManualControl(control.initial()[0]),
-            control,
-            name=name,
-        )
+        self._control = Switching(control.initial()[0], control, name=name)
         self._control.switch_mode(AutomationMode(mode=automation_mode))
         self._alarms = description.alarms()
         self._channels = channels
