@@ -116,6 +116,7 @@ manual_pdf module:
 manual_publish module:
     cp /tmp/thrs-manuals/{{ module }}.html {{ manuals }}/{{ module }}.html
     cd ../zero-ui && pnpm exec prettier --write src/modules/thrapp/documentation/{{ module }}.html
+    cd ../zero-ui && pnpm exec vitest run src/modules/thrapp/components/manual/manual.utils.spec.ts
 
 manual_stamp module:
     uv run python {{ manual_scripts }}/manual_version.py {{ module }} {{ manuals }}/{{ module }}.html

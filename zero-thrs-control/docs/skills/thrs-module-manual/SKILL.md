@@ -128,10 +128,15 @@ that fires it. Keep both. Translate `_set_valves_to_boosting_heatpump` into
 "open the heatpump source valve", not into nothing. A box with only a name in it
 has lost the engineering content and is not worth the space it takes.
 
-**The shipped figure** you write by hand as a Mermaid `stateDiagram-v2`, embedded
-in the manual. Mermaid rather than an image because the front-end renders it in
-the mimic colours and in dark mode, and the next person edits text instead of
-redrawing a picture. `references/template.md` has the house style.
+**The shipped figure** you write by hand in Mermaid's `stateDiagram-v2` syntax,
+embedded in the manual. Text rather than an image, because the next person edits
+text instead of redrawing a picture. The front-end does not draw it with Mermaid:
+it draws each state as a card with its mode badge and entry and exit actions, in
+a row, with transitions to the right above the row and to the left below it, in
+the mimic colours. The Documentation tab and the PDF draw it the same way. It
+reads only the subset of the syntax in `references/template.md`; a figure that
+strays outside it falls back to a plain Mermaid drawing that looks nothing like
+the rest, so stay inside it.
 
 Before shipping, compare the two pictures state by state and edge by edge. Same
 states, same transitions, same direction. If your figure is missing an edge, the
@@ -150,12 +155,15 @@ Three things that come up nearly every time:
   wait for behaviour that will never come.
 - **Two states that swap back and forth.** Keep them as two separate arrows with
   their own conditions — the conditions are different in each direction, and a
-  merged label reads as nothing at all. If the labels collide, fix the layout
-  (`direction`, shorter lines), not the content.
-- **Check the rendered figure, don't trust the source.** Mermaid lays out the
-  graph itself, and long edge labels can make it far wider than tall. Look at
-  the preview PNG from step 5; switch `direction` or break label lines with
-  `<br/>` if it is wider than about 4:1.
+  merged label reads as nothing at all. The drawing routes them apart, one above
+  the row and one below; if labels still crowd, shorten their lines, not the
+  content.
+- **Check the rendered figure, don't trust the source.** States are drawn left
+  to right in the order you declare them, the start state first, so declare them
+  in the order the module moves through them. Long label lines widen the gaps
+  between cards, and the PDF shrinks a figure wider than the page to fit it. Look
+  at the preview PNG from step 5; if the cards' text is too small to read there,
+  break label lines with `<br/>` and shorten bullets.
 
 ## 4. Write it
 
@@ -332,7 +340,8 @@ somewhere — grouped, never omitted.
 ## 5. Render the PDF
 
 The PDF is printed by headless Chromium from the front-end's own manual
-component, so it has the mimic fonts, colours and diagram styling:
+component, so it looks like the Documentation tab: the same fonts, colours,
+state cards, tables and callouts, in light mode and scaled to A4:
 
 ```bash
 just manual_pdf <module>
@@ -347,6 +356,21 @@ It writes `<module>.pdf` and a full-length preview
 `<module>.png` next to the fragment, and counts the words of prose above
 *Tuning* against the limit. Look at the PNG — it is the quickest way to see the
 diagram as the reader will.
+
+The render also checks the two things that make the Documentation tab show the
+manual as designed, and **fails, after writing the PDF, when either is off**:
+
+- **The state diagram is drawn as cards.** A diagram using syntax the cards do
+  not cover falls back to a plain Mermaid drawing; the error names the line or
+  construct. Rewrite it within the syntax in `references/template.md`.
+- **Every parameter links to the Controls page.** Each name in the tuning
+  tables links to that parameter on its module's Controls page, which selects
+  it. A name the page has no row for would link to nothing: the error names it.
+  Usually it is misspelled — fix it against the step-1 output. If it is spelled
+  right, the control has a parameter the Controls page does not show yet; tell
+  the user rather than renaming it, since the page needs a new row.
+
+Neither is optional: fix the fragment and render again until it passes.
 
 ## 6. Check it before handing it over
 
@@ -371,6 +395,8 @@ diagram as the reader will.
   comes from the code or from the user. Ask about any that came from neither.
 - The prose above *Tuning* is within 425 words. Check it rather than guessing —
   the render in step 5 counts it, and says so when the prose is too long.
+- `just manual_pdf` passed: the diagram is drawn as cards and every parameter
+  links to its row on the Controls page (step 5).
 - Read it once as the engineer: could you take this to the plant, find the
   parameter on the panel, and know which way to move it? If not, the tuning
   column is still restating names.
@@ -383,13 +409,21 @@ board, so publishing is the user's call, not a default — a draft they still wa
 to review, or a manual for a branch that has not shipped, must not land there.
 
 On yes, copy the fragment in and format it with zero-ui's Prettier, which CI
-checks and which leaves the Mermaid block's content as it is:
+checks and which leaves the diagram block's content as it is:
 
 ```bash
 just manual_publish <module>
 ```
 
-The tab picks up every file in that directory; nothing needs registering. The
+It then runs zero-ui's published-manual test, the step-5 check over every
+manual in the tab; CI runs it too. If it fails, fix the fragment in
+`/tmp/thrs-manuals/`, render and publish again. Do not hand over a manual that
+fails it.
+
+The tab picks up every file in that directory; nothing needs registering, and
+nothing in the fragment sets its look: the front-end lays out every manual the
+same way — the state cards, the parameter tables, the version and issue date
+from the stamp, and the links to the Controls page. The
 file name is the module tab it appears under (`dhw`, `pvt`, `pcm`, `thrusters`,
 `adsorption`, `dc`, `drives`, or a mimic key such as `pvt-main`). A module with
 no tab of its own, like `consumers`, has nowhere to appear — ask which tab it

@@ -2,15 +2,21 @@
 import { cn } from "@common/lib/utils";
 import { onMounted, useTemplateRef, watch } from "vue";
 import "./manual.css";
+import "./manual-app.css";
 import { decorateManual } from "./manual.utils";
 
-const props = defineProps<{ html: string; class?: string }>();
+const props = defineProps<{
+  html: string;
+  /** Lay the manual out on A4, as the crew PDF and the print view show it. */
+  printed?: boolean;
+  class?: string;
+}>();
 const emit = defineEmits<{ rendered: [] }>();
 
 const article = useTemplateRef<HTMLElement>("article");
 
 const decorate = async () => {
-  await decorateManual(article.value!);
+  await decorateManual(article.value!, { fitDiagrams: props.printed });
   emit("rendered");
 };
 
@@ -23,7 +29,7 @@ watch(() => props.html, decorate, { flush: "post" });
   <!-- eslint-disable vue/no-v-html -->
   <article
     ref="article"
-    :class="cn('manual', props.class)"
+    :class="cn('manual manual-app', printed && 'printed', props.class)"
     v-html="html"
   />
 </template>

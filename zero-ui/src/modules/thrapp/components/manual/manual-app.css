@@ -1,0 +1,252 @@
+@reference "@/assets/index.css";
+
+/* The manual as the design has it, on top of the base styling in manual.css.
+   ManualDocument always sets `manual-app`; the printed manual adds `printed`,
+   at the end of this file. */
+
+.manual.manual-app {
+  @apply text-base/8;
+}
+
+.manual.manual-app h1 {
+  @apply mb-4 text-[2rem]/9;
+}
+
+.manual.manual-app .lede {
+  @apply mb-8 text-xl/snug font-medium;
+}
+
+.manual.manual-app h2 {
+  @apply mt-10 mb-4 scroll-mt-6 border-b-0 pb-0 text-2xl/7;
+}
+
+.manual.manual-app h3 {
+  @apply mt-6 mb-3 text-xl/6 tracking-normal normal-case;
+}
+
+.manual.manual-app p,
+.manual.manual-app ul,
+.manual.manual-app dl {
+  @apply mb-4;
+}
+
+.manual.manual-app code {
+  @apply text-brand-dull text-[0.9375rem] underline decoration-from-font underline-offset-2;
+}
+
+.manual.manual-app a:has(> code):hover code {
+  @apply text-brand;
+}
+
+.manual.manual-app p.version {
+  @apply hidden;
+}
+
+/* Mode values */
+
+.manual.manual-app [data-mode],
+.manual.manual-app [data-severity] {
+  @apply h-6.5 rounded-xl px-3 text-base/4;
+}
+
+.manual.manual-app dl.modes {
+  @apply border-border-subtle grid-cols-[12.5rem_1fr] items-stretch gap-0 border-t;
+}
+
+.manual.manual-app dl.modes dt,
+.manual.manual-app dl.modes dd {
+  @apply border-border-subtle flex items-center border-b py-3;
+}
+
+.manual.manual-app dl.modes dt {
+  @apply pr-6 font-medium;
+}
+
+.manual.manual-app dl.modes dd {
+  @apply m-0 gap-2;
+}
+
+/* State diagram */
+
+.manual.manual-app figure.diagram {
+  @apply bg-muted border-foreground/10 mt-4 mb-8 rounded-sm bg-none px-6 py-8;
+}
+
+.manual.manual-app figure.diagram figcaption {
+  @apply mt-5 text-xs;
+}
+
+.manual.manual-app figure.diagram pre.mermaid[hidden] {
+  @apply hidden;
+}
+
+/* State diagrams drawn as cards (state-diagram.utils.ts) */
+
+.manual.manual-app .state-diagram-scroll {
+  @apply overflow-x-auto;
+}
+
+.manual.manual-app .state-diagram {
+  @apply relative mx-auto w-max;
+}
+
+.manual.manual-app .state-diagram-row {
+  @apply flex items-start gap-29;
+}
+
+.manual.manual-app .state-diagram-state {
+  @apply bg-background dark:bg-dull flex w-max max-w-64 shrink-0 flex-col gap-2.5 rounded-xl border-2 p-3.5;
+}
+
+.manual.manual-app .state-diagram-state [data-mode] {
+  @apply self-start;
+}
+
+.manual.manual-app .state-diagram-state hr {
+  @apply border-border-subtle m-0 w-full;
+}
+
+.manual.manual-app .state-diagram-section {
+  @apply flex flex-col gap-1;
+}
+
+.manual.manual-app .state-diagram-section p {
+  @apply text-foreground m-0 text-sm/3.5 font-semibold;
+}
+
+.manual.manual-app .state-diagram-section ul {
+  @apply m-0 flex list-none flex-col gap-1 p-0;
+}
+
+.manual.manual-app .state-diagram-section li {
+  @apply text-muted-foreground text-xs/4 before:content-['•_'];
+}
+
+.manual.manual-app .state-diagram code {
+  @apply text-[length:inherit] whitespace-normal;
+}
+
+.manual.manual-app .state-diagram-label {
+  @apply bg-background dark:bg-dull border-brand-dull text-foreground absolute flex -translate-1/2 flex-col items-center rounded-2xl border-2 px-3 py-1 text-center text-[10px]/3.5 whitespace-nowrap;
+}
+
+.manual.manual-app .state-diagram-edges {
+  @apply pointer-events-none absolute inset-0 overflow-visible;
+}
+
+.manual.manual-app .state-diagram-edges path {
+  @apply stroke-brand-dull fill-none stroke-[1.5px];
+}
+
+.manual.manual-app .state-diagram-edges circle.initial {
+  @apply fill-foreground;
+}
+
+/* Parameter tables: cells on a 1px grid of the border colour. */
+
+.manual.manual-app table {
+  @apply bg-border-subtle mb-6 border-separate border-spacing-px overflow-hidden rounded-sm text-sm/5;
+}
+
+.manual.manual-app th,
+.manual.manual-app td {
+  @apply bg-background dark:bg-dull border-0 px-3 py-2.5;
+}
+
+.manual.manual-app th {
+  @apply font-ui text-muted-foreground font-medium;
+}
+
+.manual.manual-app table.parameters tbody tr {
+  @apply border-0;
+}
+
+.manual.manual-app table.parameters ~ table.parameters thead {
+  @apply not-sr-only;
+}
+
+.manual.manual-app table.parameters td:nth-child(1) code {
+  @apply text-[0.8125rem]/5;
+}
+
+.manual.manual-app table.parameters td:nth-child(2) {
+  @apply font-medium;
+}
+
+@media screen and (width < 48rem) {
+  .manual.manual-app table.parameters {
+    @apply rounded-none bg-transparent;
+  }
+
+  .manual.manual-app table.parameters thead {
+    @apply sr-only;
+  }
+
+  .manual.manual-app table.parameters td {
+    @apply bg-transparent;
+  }
+
+  .manual.manual-app table.parameters tr {
+    @apply border-border-subtle border-b;
+  }
+}
+
+/* Hard constraints on the parameter set */
+
+.manual.manual-app .constraints {
+  @apply border-warning bg-warning/10 text-foreground relative mb-6 rounded-sm border py-3 pr-4 pl-12 text-base/8;
+}
+
+.manual.manual-app .constraints::before {
+  @apply absolute top-4.5 left-4 size-5 bg-[url(./alert-line.svg)] bg-contain bg-no-repeat content-[""];
+}
+
+/* The printed manual, on A4: the crew PDF (scripts/manual-print) and the in-app
+   print view both set `printed`, so the two cannot drift apart. The page is
+   scaled down as a whole, so it keeps the screen's proportions. The PDF carries
+   the version in its page footer; the print view sets `stamped` to keep it on
+   the page instead. */
+
+.manual.manual-app.printed {
+  @apply [zoom:0.75];
+}
+
+/* On paper a parameter name is not a link, so it is not underlined as one. */
+.manual.manual-app.printed code {
+  @apply no-underline;
+}
+
+.manual.manual-app.printed.stamped p.version {
+  @apply text-muted-foreground mt-8 block text-xs;
+}
+
+.manual.manual-app.printed h2:has(+ figure.diagram),
+.manual.manual-app.printed h2:has(+ p + figure.diagram) {
+  @apply break-after-avoid;
+}
+
+.manual.manual-app.printed figure.diagram,
+.manual.manual-app.printed .constraints {
+  @apply break-inside-avoid;
+}
+
+.manual.manual-app.printed table.parameters col.name {
+  @apply w-[38%];
+}
+
+.manual.manual-app.printed table.parameters col.default {
+  @apply w-[17%];
+}
+
+/* On paper the table grid is drawn with borders: the screen's grid is the table's
+   background showing between cells, which Chromium paints down to the foot of the
+   page where a table breaks. */
+
+.manual.manual-app.printed table {
+  @apply border-collapse rounded-none bg-transparent;
+}
+
+.manual.manual-app.printed th,
+.manual.manual-app.printed td {
+  @apply border-border border bg-transparent;
+}

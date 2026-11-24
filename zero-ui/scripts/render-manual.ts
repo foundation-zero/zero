@@ -32,7 +32,8 @@ const footer = (title: string, version: string) => `
 
 const render = async (fragmentPath: string) => {
   const html = await readFile(fragmentPath, "utf8");
-  const outputBase = join(dirname(fragmentPath), basename(fragmentPath, ".html"));
+  const module = basename(fragmentPath, ".html");
+  const outputBase = join(dirname(fragmentPath), module);
 
   const server = await createServer({
     configFile: join(ZERO_UI, "vite.config.ts"),
@@ -56,7 +57,9 @@ const render = async (fragmentPath: string) => {
         ),
       ),
     );
-    await page.goto(new URL("scripts/manual-print/index.html", server.resolvedUrls!.local[0]).href);
+    const url = new URL("scripts/manual-print/index.html", server.resolvedUrls!.local[0]);
+    url.searchParams.set("module", module);
+    await page.goto(url.href);
     await Promise.race([
       page.waitForSelector("body[data-rendered]", { timeout: 30_000 }),
       pageError,
@@ -90,6 +93,14 @@ const render = async (fragmentPath: string) => {
       `Prose above Tuning: ${proseWords} of ${PROSE_WORD_LIMIT} words` +
         (proseWords > PROSE_WORD_LIMIT ? " — too long, cut the prose" : ""),
     );
+
+    // The Documentation tab shows the manual as designed only if these hold;
+    // the published-manual test fails on the same check.
+    const problems: Array<string> = JSON.parse(
+      await page.$eval("body", (body) => body.dataset.problems ?? "[]"),
+    );
+    problems.forEach((problem) => console.error(`✗ ${problem}`));
+    if (problems.length) process.exitCode = 1;
   } finally {
     await browser.close();
     await server.close();
