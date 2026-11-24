@@ -9,7 +9,12 @@ from unittest.mock import AsyncMock, MagicMock, Mock
 import pytest
 
 from thrs.runtime.directives import DirectiveHandling
-from thrs.runtime.loop import ControllableLoop, Loop, Request
+from thrs.runtime.loop import (
+    ControllableLoop,
+    Loop,
+    RealtimeLoop,
+    Request,
+)
 from thrs.runtime.messages import SimulationStatus
 
 START = datetime(2026, 11, 13, 10, tzinfo=UTC)
@@ -199,3 +204,41 @@ async def test_loop_play_runs_until_pause():
 
     assert runner.calls.call_count == 1
     assert hooks.calls[:4] == ["available", "running", "running", "available"]
+
+
+async def test_loop_play_runs_at_the_normal_rate():
+    clock = Clock(timedelta(seconds=1))
+    hooks = RecordingHooks()
+    loop = ControllableLoop(clock.tick_duration, clock, hooks)
+    runner = make_runner(clock, block_after_first_call=True)
+
+    async with looping(loop, runner):
+        await loop.play()
+        await asyncio.wait_for(runner.started.wait(), timeout=1)
+        runner.release.set()
+
+    assert runner.calls.call_count == 1
+    assert loop.requested == Request("running", 1.0, None)
+    assert hooks.calls[:2] == ["available", "running"]
+
+
+async def test_loop_clear_previous_clears_the_directive_handling():
+    directive_handling = Mock(DirectiveHandling)
+    loop = ControllableLoop(
+        timedelta(seconds=1), Clock(timedelta(seconds=1)), directive_handling
+    )
+
+    await loop.clear_previous()
+
+    assert directive_handling.clear_previous.await_count == 1
+
+
+async def test_realtime_loop_ticks_the_runner():
+    clock = Clock(timedelta(seconds=1))
+    loop = RealtimeLoop()
+    runner = make_runner(clock)
+
+    async with looping(loop, runner):
+        await asyncio.wait_for(runner.started.wait(), timeout=1)
+
+    assert runner.calls.call_count == 1
