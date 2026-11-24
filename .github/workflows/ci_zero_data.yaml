@@ -127,10 +127,11 @@ jobs:
           images: |
             ${{ env.IMAGE }}
             ${{ env.GHCR_URL }}/${{ github.repository }}/io_validation_tool
-          # Artifact Registry deletes dev- images after 7 days (cleanup policy in foundation-zero/gcp-common).
+          # Artifact Registry expires dev- images (cleanup policy in foundation-zero/gcp-common). Only versions with a
+          # suffix are dev builds: a re-run on a released commit gets plain X.Y.Z and must not expire.
           tags: |
             type=raw,value=${{ steps.version.outputs.version }}
-            type=raw,value=dev-${{ steps.version.outputs.version }},enable=${{ github.event_name != 'release' }}
+            type=raw,value=dev-${{ steps.version.outputs.version }},enable=${{ contains(steps.version.outputs.version, '-') }}
       - run: 'echo "$GSHEET_SA_KEY" > .gsheet-sa-key.json'
         working-directory: zero-data
         env:
