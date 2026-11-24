@@ -50,7 +50,8 @@ const print = () => window.print();
       <ManualDocument
         v-if="html"
         :html="html"
-        class="printed stamped"
+        printed
+        class="stamped"
       />
     </div>
   </div>

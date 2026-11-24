@@ -134,7 +134,7 @@ Notes:
 - Leave out the `<p class="version">` line at the end; `just manual_pdf` adds
   it, and replaces it when you refresh a manual.
 - Escape `<`, `>` and `&` in prose as `&lt;`, `&gt;`, `&amp;`. Inside the
-  Mermaid block, `-->` and `<br/>` are fine as they are.
+  diagram block, `-->` and `<br/>` are fine as they are.
 
 ### Mode badges
 
@@ -206,18 +206,20 @@ Rules:
   — the label the mimic shows for that mode, such as "Not Boosting". Under it,
   a `<b>On entry</b>` line, then one `• ` bullet per action, then the same for
   `<b>On exit</b>`. Leave out a heading with no actions under it.
-- **One action per bullet, one line per bullet.** Physical actions — "open the
-  charging valves", not `_set_valves_to_charging`. Text never wraps (the
-  front-end turns Mermaid's wrapping off), so a bullet that needs a second line
-  is two actions or too wordy: split or rephrase it. "Hold the return at
-  `recovery_temperature` with the pump" beats "enable pump flow control, so the
-  pump / holds the return…".
-- A line must not end in a colon — Mermaid rejects it, and the render in step 5
-  fails.
+- **One action per bullet.** Physical actions — "open the charging valves", not
+  `_set_valves_to_charging`. The cards are narrow, so a bullet wraps after about
+  35 characters; one that runs past two lines is two actions or too wordy: split
+  or rephrase it. "Hold the return at `recovery_temperature` with the pump"
+  beats "enable pump flow control, so the pump / holds the return…".
+- A line must not end in a colon — Mermaid rejects it, and a figure that falls
+  back to Mermaid fails to render in step 5.
 - **Edge label**: the real condition, naming the parameter it compares against.
-  Never a method name or a lambda. Mermaid does not wrap it, so break it yourself
+  Never a method name or a lambda. Labels do not wrap, so break them yourself
   with `<br/>` — only between phrases, at "and" / "or" or after a comma, never
   inside one. Lines of up to about 60 characters are fine.
+- A parameter name in a bullet or label is shown as code and, like every
+  parameter name in the manual, links to that parameter on the Controls page;
+  write it exactly as the parameter is named, or the link finds nothing.
 - **Both directions get their own arrow and their own condition.**
 - **Start marker** `[*] -->` on the state the module starts in, so the eye finds
   the starting point.
@@ -225,7 +227,13 @@ Rules:
   mode badge name as in *Mode badges* above. Do not add `classDef` styles; the
   front-end owns the colours.
 - Leave unreachable states out entirely.
-- `direction LR`: states read left to right, in the order the module moves
-  through them. The front-end gives the diagram the full page width, so a wide
-  figure is fine there; the PDF scales it to the page width, and the reader
-  zooms in.
+- **Declare the states in the order the module moves through them.** They are
+  drawn left to right in that order, the start state first; `direction LR` is
+  kept for anyone reading the source but does not change the drawing. The
+  Documentation tab scrolls a wide figure; the PDF shrinks it to the page width.
+- **Only this syntax**: `state "…" as id`, `id : …` lines, `[*] --> id` once,
+  `a --> b : …`, `class ids Mode`, `direction` and `%%` comments. Anything else —
+  a composite state (`state x { … }`), a note, an arrow into `[*]`, an arrow
+  from a state to itself, or two arrows between the same states in the same
+  direction — makes the front-end fall back to a plain Mermaid drawing that does
+  not match the design. Put such detail in the prose or the caption instead.

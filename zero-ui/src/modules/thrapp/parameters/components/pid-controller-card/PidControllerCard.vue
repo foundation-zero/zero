@@ -22,7 +22,7 @@ const props = defineProps<PidControllerTuning>();
 
 <template>
   <NoopTooltipProvider>
-    <Parameters.Card>
+    <Parameters.Card :data-parameter="parameter[2]">
       <hgroup class="flex items-baseline justify-between">
         <Parameters.CardTitle>
           {{ t(`${controller[2]}.title`) }}

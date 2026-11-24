@@ -10,13 +10,13 @@ import {
   outlineManual,
   readManualStamp,
 } from "@/modules/thrapp/components/manual";
-import "@/modules/thrapp/components/manual/manual-app.css";
 import { RiPrinterLine } from "@remixicon/vue";
-import { computedAsync, useTimeoutFn } from "@vueuse/core";
+import { computedAsync } from "@vueuse/core";
 import { computed, ref, useTemplateRef } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { DOCUMENTATION } from "../router/documentation";
 import { MimicKey } from "../router/mimics";
+import { PARAMETERS } from "../router/parameters";
 
 // How far below the top of the page a section heading counts as the one being read.
 const READING_LINE = 96;
@@ -24,7 +24,17 @@ const READING_LINE = 96;
 const t = tScoped("thrapp.views.documentation");
 
 const route = useRoute();
-const loadManual = computed(() => DOCUMENTATION[route.params.module as MimicKey]);
+const router = useRouter();
+const module = computed(() => route.params.module as MimicKey);
+
+// A parameter's link opens the Controls page with that parameter selected.
+const controlsHref = (field: string) =>
+  router.resolve({
+    name: "thrs/control",
+    params: { module: module.value },
+    query: { parameter: field },
+  }).href;
+const loadManual = computed(() => DOCUMENTATION[module.value]);
 const html = computedAsync(async () => loadManual.value?.());
 const stamp = computed(() => html.value && readManualStamp(html.value));
 const issued = computed(
@@ -42,7 +52,7 @@ const active = ref<string>();
 const onRendered = () => {
   const article = page.value!.querySelector<HTMLElement>("article.manual")!;
   sections.value = outlineManual(article);
-  linkParameters(article);
+  if (module.value in PARAMETERS) linkParameters(article, controlsHref);
   followReading();
 };
 
@@ -56,29 +66,24 @@ const followReading = () => {
   active.value = (atBottom ? sections.value : read).slice(-1)[0]?.id ?? sections.value[0]?.id;
 };
 
-const highlighted = ref<HTMLElement>();
-const { start: fadeHighlight } = useTimeoutFn(
-  () => highlighted.value?.removeAttribute("data-highlighted"),
-  1500,
-  { immediate: false },
-);
-
-// In-page links (the outline and parameter mentions) scroll the page rather than
-// the router, which would otherwise treat the hash as a navigation.
+// The outline's links scroll the page rather than the router, which would treat the
+// hash as a navigation. The manual's parameter links go through the router, so the
+// app stays loaded; a modified click still opens them as the browser would.
 const followLink = (event: MouseEvent) => {
-  const link = (event.target as Element).closest<HTMLAnchorElement>('a[href^="#"]');
-  const target = link && document.getElementById(decodeURIComponent(link.hash.slice(1)));
-  if (!target) return;
-  event.preventDefault();
-
-  const row = target.closest("tr");
-  target.scrollIntoView({ behavior: "smooth", block: row ? "center" : "start" });
-  if (row) {
-    highlighted.value?.removeAttribute("data-highlighted");
-    row.dataset.highlighted = "";
-    highlighted.value = row;
-    fadeHighlight();
+  const target = event.target as Element;
+  const section = target.closest<HTMLAnchorElement>('a[href^="#"]');
+  const heading = section && document.getElementById(decodeURIComponent(section.hash.slice(1)));
+  if (heading) {
+    event.preventDefault();
+    heading.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
   }
+
+  const parameter = target.closest<HTMLAnchorElement>("article.manual a[href]");
+  const plainClick = !(event.metaKey || event.ctrlKey || event.shiftKey || event.altKey);
+  if (!parameter || !plainClick || event.button !== 0) return;
+  event.preventDefault();
+  router.push(parameter.getAttribute("href")!);
 };
 </script>
 
@@ -137,7 +142,6 @@ const followLink = (event: MouseEvent) => {
         <ManualDocument
           v-if="html"
           :html="html"
-          class="manual-app"
           @rendered="onRendered"
         />
       </div>

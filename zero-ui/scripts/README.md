@@ -10,6 +10,11 @@ Prints a THRS module manual (an HTML fragment) to an A4 PDF and a full-length PN
 preview, using the same `ManualDocument` component as the Documentation tab.
 Used by the `thrs-module-manual` skill in `zero-thrs-control`.
 
+It exits with an error, after writing both files, when the manual would not show
+as designed: a state diagram the state cards cannot draw, or a parameter with no
+row on its module's Controls page (`checkManual` in `components/manual`). The
+published-manual test in `manual.utils.spec.ts` runs the same check.
+
 ```bash
 pnpm exec playwright install chromium   # once
 pnpm render-manual /tmp/thrs-manuals/dhw.html
