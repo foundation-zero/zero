@@ -9,9 +9,13 @@ from zero_modbus_bridge.io import AnnotationModbusTopic, ModbusField, ModbusTopi
 
 class AirConditioningRoom(BaseModel):
     power: Annotated[int | None, ModbusField(offset=0)]
-    setpoint_room_temperature: Annotated[int | None, ModbusField(offset=1)]
+    setpoint_room_temperature: Annotated[
+        float | None, ModbusField(offset=1, scale_factor=0.01)
+    ]
     fan_speed: Annotated[int | None, ModbusField(offset=2)]
-    air_temperature_in: Annotated[int | None, ModbusField(offset=3)]
+    air_temperature_in: Annotated[
+        float | None, ModbusField(offset=3, scale_factor=0.01)
+    ]
     status: Annotated[int | None, ModbusField(offset=4)]
     ahu_mode: Annotated[int | None, ModbusField(offset=5)]
     heater_power: Annotated[int | None, ModbusField(offset=6)]

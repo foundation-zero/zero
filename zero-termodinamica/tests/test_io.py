@@ -76,3 +76,18 @@ def test_cold_rooms_read_signed_temperatures():
     assert payload.setpoint_temperature == pytest.approx(-18.0)
     assert payload.temperature == pytest.approx(-12.53)
     assert cold_rooms["termodinamica/fridge"].start_register == 210
+
+
+def test_ac_room_temperatures_are_in_degrees_celsius():
+    room = next(t for t in read_modbus_topics() if t.topic == "termodinamica/ac/01")
+    # Live room 01: set point 22.00 °C, 18.90 °C
+    registers = {201: 2200, 203: 1890}
+    modbus = MagicMock()
+    modbus.read_holding_registers.side_effect = lambda register, _: [
+        registers.get(register, 0)
+    ]
+
+    payload = ModbusReader(modbus, [room]).read_topic(room)
+
+    assert payload.setpoint_room_temperature == 22.0
+    assert payload.air_temperature_in == 18.9
