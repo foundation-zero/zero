@@ -1,7 +1,6 @@
 import logging
 
 from thrs.classes.control import Control
-from thrs.control.manual import ManualControl
 from thrs.control.state import AutomationMode, ControlModes, ControlState
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.root_types import AmcsModeSensorValues
@@ -18,7 +17,7 @@ class Switching[
 ]:
     def __init__(
         self,
-        manual: ManualControl[SensorValues, ControlValues],
+        manual_controls: ControlValues,
         automatic: Control[
             SensorValues,
             ControlValues,
@@ -28,7 +27,7 @@ class Switching[
         ],
         name: str,
     ):
-        self._manual_control = manual
+        self._manual_controls = manual_controls
         self._automatic_control = automatic
         self._name = name
         self._mode: ControlModes = "manual"
@@ -67,9 +66,8 @@ class Switching[
                 not is_advisory or self._last_mode == "automatic"
             ):
                 self.update_manual_controls(actuated_control_values)
-            control_values, _ = self._manual_control.control(sensor_values)
             self._last_mode = "manual"
-            return control_values, self.idle_state()
+            return self.manual_controls, self.idle_state()
 
         if self._last_mode == "manual":
             self._automatic_control.reset()
@@ -104,7 +102,7 @@ class Switching[
 
     @property
     def manual_controls(self) -> ControlValues:
-        return self._manual_control.controls
+        return self._manual_controls
 
     def update_manual_controls(self, values: ControlValues):
-        self._manual_control.update_controls(values)
+        self._manual_controls = values

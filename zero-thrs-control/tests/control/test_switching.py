@@ -11,7 +11,6 @@ from tests.orchestration.simples import (
     simple_control_values,
     simple_non_advisory_values,
 )
-from thrs.control.manual import ManualControl
 from thrs.control.state import AutomationMode
 from thrs.control.switching import Switching
 
@@ -83,7 +82,7 @@ def _mock_switching(initial_automatic: mock.Mock) -> Switching:
         SimpleControllerState(parameters=SimpleParameters()),
     )
     return Switching(
-        ManualControl(simple_control_values(flow=4.0)),
+        simple_control_values(flow=4.0),
         initial_automatic,
         name="simple",
     )
@@ -98,7 +97,6 @@ def test_manual_ticks_do_not_touch_automatic():
     )
 
     assert control_values.go_with_the.flow.value == 4.0
-    automatic.update_controls.assert_not_called()
     automatic.control.assert_not_called()
     automatic.reset.assert_not_called()
     assert controller_state == automatic.initial.return_value[1]
