@@ -127,8 +127,10 @@ jobs:
           images: |
             ${{ env.IMAGE }}
             ${{ env.GHCR_URL }}/${{ github.repository }}/io_validation_tool
+          # Artifact Registry deletes dev- images after 7 days (cleanup policy in foundation-zero/gcp-common).
           tags: |
             type=raw,value=${{ steps.version.outputs.version }}
+            type=raw,value=dev-${{ steps.version.outputs.version }},enable=${{ github.event_name != 'release' }}
       - run: 'echo "$GSHEET_SA_KEY" > .gsheet-sa-key.json'
         working-directory: zero-data
         env:
