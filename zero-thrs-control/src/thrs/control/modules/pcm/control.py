@@ -204,28 +204,28 @@ class PcmControl(
             output_limits=(0.1, 1),
         )
 
-        self.module1_flow_controller = PidController[Ratio, LMin](
+        self._module1_flow_controller = PidController[Ratio, LMin](
             self._current_values.pcm_flowcontrol_module1.setpoint.value,
             0,
             lambda: self._parameters.module1_flow_balance_tuning,
             self._time,
         )
 
-        self.module2_flow_controller = PidController[Ratio, LMin](
+        self._module2_flow_controller = PidController[Ratio, LMin](
             self._current_values.pcm_flowcontrol_module2.setpoint.value,
             0,
             lambda: self._parameters.module2_flow_balance_tuning,
             self._time,
         )
 
-        self.module3_flow_controller = PidController[Ratio, LMin](
+        self._module3_flow_controller = PidController[Ratio, LMin](
             self._current_values.pcm_flowcontrol_module3.setpoint.value,
             0,
             lambda: self._parameters.module3_flow_balance_tuning,
             self._time,
         )
 
-        self.module4_flow_controller = PidController[Ratio, LMin](
+        self._module4_flow_controller = PidController[Ratio, LMin](
             self._current_values.pcm_flowcontrol_module4.setpoint.value,
             0,
             lambda: self._parameters.module4_flow_balance_tuning,
@@ -240,24 +240,24 @@ class PcmControl(
                 self._current_values.pcm_flowcontrol_module4,
             ],
             [
-                self.module1_flow_controller,
-                self.module2_flow_controller,
-                self.module3_flow_controller,
-                self.module4_flow_controller,
+                self._module1_flow_controller,
+                self._module2_flow_controller,
+                self._module3_flow_controller,
+                self._module4_flow_controller,
             ],
             self._current_values.pcm_pump,
             self._pump_flow_controller,
             self._time,
         )
 
-        self.module1_charge_controller = PcmChargeController(
+        self._module1_charge_controller = PcmChargeController(
             self._time,
             (PCM_MODULE1_PURGE_VOLUME, PCM_MODULE1_FRESHWATER_PURGE_VOLUME),
             heating_power=PCM_HEATING_ELEMENT_POWER,
         )
-        self.module2_charge_controller = PcmChargeController(self._time)
-        self.module3_charge_controller = PcmChargeController(self._time)
-        self.module4_charge_controller = PcmChargeController(self._time)
+        self._module2_charge_controller = PcmChargeController(self._time)
+        self._module3_charge_controller = PcmChargeController(self._time)
+        self._module4_charge_controller = PcmChargeController(self._time)
 
     @property
     def parameters(self) -> PcmParameters:
@@ -315,35 +315,35 @@ class PcmControl(
     def _update_controllers(self, sensor_values: PcmSensorValues) -> PcmControllerState:
         self._control_flow_balance(sensor_values)
 
-        self.module1_charge_controller(
+        self._module1_charge_controller(
             sensor_values.pcm_heat_module1,
             sensor_values.pcm_heat_module1_freshwater,
             heating=self._current_values.pcm_module1.on.value,
         )
-        self.module2_charge_controller(sensor_values.pcm_heat_module2)
-        self.module3_charge_controller(sensor_values.pcm_heat_module3)
-        self.module4_charge_controller(sensor_values.pcm_heat_module4)
+        self._module2_charge_controller(sensor_values.pcm_heat_module2)
+        self._module3_charge_controller(sensor_values.pcm_heat_module3)
+        self._module4_charge_controller(sensor_values.pcm_heat_module4)
 
         return PcmControllerState(
             pcm_pump_flow_controller=self._pump_flow_controller.values(),
-            pcm_module1_charge_controller=self.module1_charge_controller.values(),
-            pcm_module2_charge_controller=self.module2_charge_controller.values(),
-            pcm_module3_charge_controller=self.module3_charge_controller.values(),
-            pcm_module4_charge_controller=self.module4_charge_controller.values(),
-            pcm_module1_flow_controller=self.module1_flow_controller.values(),
-            pcm_module2_flow_controller=self.module2_flow_controller.values(),
-            pcm_module3_flow_controller=self.module3_flow_controller.values(),
-            pcm_module4_flow_controller=self.module4_flow_controller.values(),
+            pcm_module1_charge_controller=self._module1_charge_controller.values(),
+            pcm_module2_charge_controller=self._module2_charge_controller.values(),
+            pcm_module3_charge_controller=self._module3_charge_controller.values(),
+            pcm_module4_charge_controller=self._module4_charge_controller.values(),
+            pcm_module1_flow_controller=self._module1_flow_controller.values(),
+            pcm_module2_flow_controller=self._module2_flow_controller.values(),
+            pcm_module3_flow_controller=self._module3_flow_controller.values(),
+            pcm_module4_flow_controller=self._module4_flow_controller.values(),
             parameters=self._parameters,
             control_mode=self.mode,
         )
 
     def _modules(self) -> list[PcmChargeController]:
         return [
-            self.module1_charge_controller,
-            self.module2_charge_controller,
-            self.module3_charge_controller,
-            self.module4_charge_controller,
+            self._module1_charge_controller,
+            self._module2_charge_controller,
+            self._module3_charge_controller,
+            self._module4_charge_controller,
         ]
 
     def _eligible(
