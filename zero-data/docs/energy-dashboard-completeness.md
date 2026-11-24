@@ -604,6 +604,80 @@ Domestic. The notebook is not part of this ticket.
   whole AC output as unallocated, as in the 24 VDC view.
 - Like the views of B2, one gold view for the main group and the sub group panels, and no dbt tests.
 
+### Status (2026-11-24, PR D)
+
+- **PR C (#1134) is open.** PR D (steps 3, 8, 9) is on top of it, on branch
+  `feature/ZERO-2619-add-dc-ring-segments`. This is the last PR of the plan: it deletes this document.
+- **New backlog tickets:** ZERO-2736 (cable offset and load per segment on the Load balance dashboard, from the
+  raw tables) and ZERO-2737 (the ESI DC current offset, F23).
+
+### F23 (added 2026-11-24): the ESI DC current reads an offset while a module is idle
+
+- **What:** `marpower__dc_700v__shore_converter` has the DC side (`esi_battery_current__value` ×
+  `esi_battery_voltage__value`) and a `running` flag. While a module is idle its AC power is 0, but its DC
+  current isn't (14–24 Nov):
+
+  | Module | DC current while idle | DC power while idle |
+  |---|---|---|
+  | 07-11-tbc1a | −0.07 A | −44 W |
+  | 07-11-tbc1b | −0.11 A | −71 W |
+  | 07-12-tbc1a | +1.8 A | +1.2 kW into the bus |
+  | 07-12-tbc1b | −0.55 A | −0.37 kW |
+
+  An idle converter can't deliver power, so these are sensor offsets, not standby use. The offset likely stays
+  while a module runs: 07-12-tbc1a then reads about 1.2 kW too much DC (efficiency 91 % against 89 % for
+  07-11-tbc1a).
+- **Losses** (AC − DC) while running: 2–4.4 kW per module, rising with load; ≈ 59 kWh/day over 14–24 Nov (F3:
+  84 kWh/day on the old tables).
+- **Meaning:** a module counts only while `running` is set. Shore stays the AC power drawn from shore: with
+  Shore at its DC value, the converter losses would be counted twice. ZERO-2737 asks Marpower to check the
+  offsets.
+
+### F24 (added 2026-11-24): the DC ring on the new switch table
+
+- **Switch signs** (F7) hold on `marpower__dc_700v__dc_switch`: on 16–24 Nov the cable segments read −0.26 and
+  −0.71 kW. Before 20 Oct the currents mostly read about −1000 A, also when marked valid; those samples are left
+  out. The currents are whole amperes (≈ 665 W per step), fine for minute averages.
+- **Placement of the measured sources**, fitted on 16–24 Nov (coefficient 0.9–1.0, R² 0.98–1.00 per segment)
+  unless noted:
+
+  | Segment | Sources |
+  |---|---|
+  | SB.01.P01 | ESI 07.11, Brightloop 05.41, stern drive (one Aradex) |
+  | SB.01.P02 | Brightloop 05.42, 24 VDC W14E1_01 (drawings), chiller (F18) |
+  | SB.01.P03 | Brightloop 05.43, 24 VDC W14E2_01 (drawings) |
+  | SB.01.P04 | ESI 07.12, Brightloop 05.44, uGrid 05.11, 350 VDC 02.71 (both), stern drive (other Aradex) |
+  | SB.02.P01 | uGrid 05.12 (F8), Brightloop 05.45 (FD), 24 VDC W14E1_02 and W14E2_02 (drawings, FD), bow drive (one Aradex, 5 and 9 Nov) |
+  | SB.02.P02 | 350 VDC 02.72 (both), Brightloop 05.46 (FD), bow drive (other Aradex, 5 and 9 Nov) |
+
+  The 24 VDC supplies are too steady to fit. The drawings (9445450, 9445452) and FD v5.0 feed 14E1 from
+  SB.01.P02, 14E2 from SB.01.P03 and both from SB.02.P01; that group _01 takes the aft feed and _02 the fwd feed
+  is assumed. 05.45 and 05.46 are offline.
+- **The Aradex power before 10 Nov** fits at about 0.08 of the value the dbt models give (× 1000 since #1113):
+  on older days with thruster use, the remainders of SB.01.P01 and P04 go far below zero.
+- **Remainders**, 16–24 Nov: SB.01.P01 0.26 kW, P02 1.49 kW, P03 0.71 kW, P04 0.92 kW, SB.02.P01 0.24 kW,
+  SB.02.P02 0.85 kW. As classed: *Technical / 700VDC unallocated* 3.3 kW (79 kWh/day), *Propulsion / Thrusters
+  (unallocated)* 1.2 kW (28 kWh/day); the cable offset −1.0 kW stays out. SB.01.P02 reaches 8 kW (95th
+  percentile): it has power pack 1, the general service pumps 1–2 and the chiller.
+- **Balance:** on 18 Nov 08:00–14:00, Shore (413.62 kWh) equals the consumers with losses (207.98 kWh), battery
+  charging (210.60 kWh) and the cable offset (−4.94 kWh) to 0.02 kWh.
+
+### Changes to the plan (2026-11-24, PR D)
+
+- **Step 3:** Shore stays the AC power drawn from shore, counted while a module runs; *Losses / Shore
+  converters* is AC − DC (`gld_shore_converter_losses_per_minute_per_group`). The DC value is used only in the
+  segment model (F23).
+- **Step 8:** the switch signs, the placement of each source and the class of each segment are in metadata
+  tables (`load_dc_ring_metadata`). `stg_marpower__dc_switches` → `slv_dc_ring_segments`, with the measured
+  sources from `slv_dc_ring_sources` → `gld_dc_ring_unallocated_power_per_minute_per_group`. The 24 VDC
+  supplies, the thruster drives and the chiller are subtracted as well. No dbt tests on the new views.
+- **Step 9:** no balance panels on the energy dashboards. The electrical energy dashboard gets a *Stale data*
+  link in its top bar (ZERO-2644): the number of sources of the dashboard without a sample in the last 15
+  minutes, the list on hover, and a click opens the Load balance dashboard. The cable offset and the load per
+  segment go to the Load balance dashboard, from the raw tables (ZERO-2736).
+- **Not done:** *Losses / 24VDC converters* (their input isn't measured, so their losses stay in the segment
+  remainders), open item 21, and the class of the water heaters (open item 18; noted in the segment metadata).
+
 ## Work log
 
 | Date | PR | Step | What |
@@ -623,3 +697,7 @@ Domestic. The notebook is not part of this ticket.
 | 2026-11-23 | – | – | F21 added: converter types and connections from the drawings, battery packs charging each other, the 350 VDC network passing power between segments; open items 19–21. |
 | 2026-11-24 | – | – | Status, F22 and the PR C change added: grid converter sources after the cut-over, the AC remainder and the grid converter losses. |
 | 2026-11-24 | C | 7 | `stg_marpower__dc_ac_inverters` + `stg_marpower__ac_400v_breakers` → `slv_grid_converters` → `gld_grid_converter_power_per_minute_per_group` (Technical / AC unallocated, Losses / Grid converters), in the graphs, flow diagram and treemaps of both dashboards. Checked in a local Greptime: losses 63.3 kWh on 16–17 Nov, the same as computed on Zero; on 18 Nov 08:00–14:00 losses 8.9 kWh and AC unallocated 23.6 kWh, the same in every panel and as computed on Zero (without the 10P1/10P2 feeders). |
+| 2026-11-24 | – | – | Status, F23, F24 and the PR D change added. |
+| 2026-11-24 | D | 3 | `slv_shore_power_converters` with both sides and the running state; Shore while a module runs; `gld_shore_converter_losses_per_minute_per_group` (Losses / Shore converters) in the graphs, flow diagram and treemaps of both dashboards. Checked on 18 Nov 08:00–14:00 in a local Greptime: Shore 413.6 kWh, losses 38.0 kWh, the same in every panel and as computed on Zero. |
+| 2026-11-24 | D | 8 | `load_dc_ring_metadata`, `stg_marpower__dc_switches`, `slv_dc_ring_sources`, `slv_dc_ring_segments`, `gld_dc_ring_unallocated_power_per_minute_per_group` in the same panels. Checked on the same window: the remainder per segment the same as computed independently from Zero's data; Technical / 700VDC unallocated 16.0 kWh, Propulsion / Thrusters (unallocated) 8.5 kWh; the balance closes (F24). |
+| 2026-11-24 | D | 9 | Stale data link on the electrical energy dashboard (ZERO-2644). Checked in a local Grafana 13.3.1 against greptime-zero: none, 1 and 15 stale sources. |
