@@ -84,9 +84,10 @@ project-excludes = [
   "analysis/old_notebooks/paper_figures.ipynb",
   "src/thrs/simulation/models/SolarTestModel/control_test.ipynb",
 ]
-# Tests and notebooks import `tests.helpers` and `analysis` from the project root;
-# the manual skill's scripts import each other from their own directory.
-search-path = [".", "docs/skills/thrs-module-manual/scripts"]
+# The import root first, so modules are named as they are imported; tests and
+# notebooks import `tests.helpers` and `analysis` from the project root; the manual
+# skill's scripts import each other from their own directory.
+search-path = ["src", ".", "docs/skills/thrs-module-manual/scripts"]
 
 [tool.ruff]
 fix = true
