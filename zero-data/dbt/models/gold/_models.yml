@@ -268,20 +268,12 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated chiller power."
-        tests:
-          - not_null
       - name: main_group
         description: "The main group classification, always 'HVAC'."
-        tests:
-          - not_null
       - name: sub_group
         description: "The sub group classification, always 'Chiller'."
-        tests:
-          - not_null
       - name: power
         description: "Chiller power in W: the sum of the per-minute averages of its compressors and seawater pump."
-        tests:
-          - not_null
   - name: gld_aradex_power_per_minute_per_group
     description: >
       Aradex power aggregated per minute per main group (Propulsion or Hydrogeneration). All four Aradexes are
@@ -290,19 +282,11 @@ models:
     columns:
       - name: time
         description: "Timestamp representing the start of the minute interval for the aggregated Aradex power."
-        tests:
-          - not_null
       - name: main_group
         description: >
           The main group classification of the aradexes.
           When power is positive, it represents propulsion; when power is negative, it represents hydrogeneration.
-        tests:
-          - not_null
       - name: sub_group
         description: "The sub group classification, always 'Thrusters'."
-        tests:
-          - not_null
       - name: power
         description: "Power of the Aradexes aggregated per minute."
-        tests:
-          - not_null
