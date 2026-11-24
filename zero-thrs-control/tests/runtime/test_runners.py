@@ -172,7 +172,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     assert controller_state.automation_mode == AutomationMode(mode="automatic")
     assert controller_state.manual_values == control_values
 
-    assert control.initial.call_count == 2
+    assert control.initial.call_count == 1
     assert simulation.tick.call_count == 3
     assert control.control.call_count == 3
     assert alarms.check.call_count == 3

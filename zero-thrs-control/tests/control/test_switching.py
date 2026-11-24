@@ -19,7 +19,7 @@ from thrs.control.switching import Switching
 def test_switching_control(switching):
     switching_control = switching(manual_flow=42.0)
 
-    control_values, controller_state = switching_control.initial()
+    controller_state = switching_control.idle_state()
 
     assert controller_state.automation_mode == AutomationMode(mode="manual")
     assert controller_state.control_mode is None
@@ -32,7 +32,7 @@ def test_switching_control(switching):
         1
     ].model_copy(update={"manual_values": switching_control.manual_controls})
     assert controller_state.automation_mode == AutomationMode(mode="manual")
-    assert controller_state.parameters == switching_control.parameters
+    assert controller_state.parameters == switching_control.automatic_control.parameters
 
     switching_control.switch_mode(AutomationMode(mode="automatic"))
     control_values, controller_state = switching_control.control(
@@ -41,7 +41,7 @@ def test_switching_control(switching):
 
     assert controller_state.automation_mode == AutomationMode(mode="automatic")
     assert controller_state.control_mode == switching_control.automatic_control.mode
-    assert controller_state.parameters == switching_control.parameters
+    assert controller_state.parameters == switching_control.automatic_control.parameters
     assert control_values.go_with_the.flow.value == 30.0
 
 
