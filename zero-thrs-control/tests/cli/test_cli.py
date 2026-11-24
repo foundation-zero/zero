@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import pytest
 from aiomqtt import Client
 
+from thrs.cli.setup import setup_control_modules, setup_simulation_module
 from thrs.control.modules.thrusters.io import (
     ThrustersControlValues,
     ThrustersSimulationInputs,
@@ -17,7 +18,6 @@ from thrs.input_output.definitions.wire_context import AMCS_WRITE_CONTEXT
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
-from thrs.orchestration.setup import setup_control_modules, setup_simulation_module
 from thrs.persistence.engine import NoopPersistentEngine
 from thrs.persistence.manager import PersistManager
 from thrs.runtime.descriptions.simulation import Mode, lookup_mode

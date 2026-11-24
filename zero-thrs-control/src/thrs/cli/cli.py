@@ -14,16 +14,16 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
-from thrs.orchestration.comms import DirectivesChannels, MqttConnector
-from thrs.orchestration.config import Config
-from thrs.orchestration.log import setup_logging
-from thrs.orchestration.module import Module
-from thrs.orchestration.setup import (
+from thrs.cli.log import setup_logging
+from thrs.cli.setup import (
     setup_control_modules,
     setup_database,
     setup_persistence_manager,
     setup_simulation_module,
 )
+from thrs.orchestration.comms import DirectivesChannels, MqttConnector
+from thrs.orchestration.config import Config
+from thrs.orchestration.module import Module
 from thrs.orchestration.simulation import SimulationUnit
 from thrs.runtime.descriptions.simulation import ModeName, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
