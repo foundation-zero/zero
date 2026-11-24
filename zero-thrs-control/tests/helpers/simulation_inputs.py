@@ -12,7 +12,7 @@ def simulator_input_field_setters(cls: type[ThrsValues], ignore=None):
     if ignore is None:
         ignore = []
     for component_name, component in cls.model_fields.items():
-        if component_name in ignore:
+        if component_name in ignore or not included_in_fmu(component):
             continue
         for field_name, field in cast(
             type[BaseModel], component.annotation

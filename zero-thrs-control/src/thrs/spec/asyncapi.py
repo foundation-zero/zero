@@ -35,7 +35,6 @@ from thrs.orchestration.config import Config
 from thrs.runtime.descriptions.simulation import Mode
 from thrs.spec.recording_connector import TopicMapping, collect_topics
 
-# A served value never expires into null, as it never did in thrs-api.
 CHANNEL_TTL = "1h"
 
 

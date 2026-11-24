@@ -157,10 +157,11 @@ def collect_topics(config: Config, thrs_mode: Mode) -> list[TopicMapping]:
     SimulationChannels(
         connector,
         config,
-        {},  # The simulated devices are covered by other specs
-        {},  # The simulated devices are covered by other specs
-        type(simulation_description.simulation_inputs),
-        simulation_description.simulation_outputs_cls,
+        # The simulated devices are covered by other specs
+        sensor_values_clss={},
+        control_values_clss={},
+        simulation_inputs_cls=type(simulation_description.simulation_inputs),
+        simulation_outputs_cls=simulation_description.simulation_outputs_cls,
     )
     DirectivesChannels(connector, config)
 

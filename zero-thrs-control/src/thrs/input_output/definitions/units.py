@@ -6,7 +6,6 @@ from typing import (
     Annotated,
     Any,
     Literal,
-    TypeAlias,
     TypeAliasType,
     Union,
     get_args,
@@ -14,7 +13,6 @@ from typing import (
 )
 
 from pydantic import AfterValidator, Field
-from typing_extensions import _AnnotatedAlias
 
 
 @dataclass(eq=True, frozen=True)
@@ -48,6 +46,8 @@ def unit_for_annotation(annotation: Any) -> Any | None:
 
 
 def unit_meta(unit: Any) -> UnitMeta | None:
+    if isinstance(unit, TypeAliasType):
+        unit = unit.__value__
     return (
         next(
             (meta for meta in get_args(unit) if isinstance(meta, UnitMeta)),
@@ -61,10 +61,7 @@ def unit_meta(unit: Any) -> UnitMeta | None:
 def zero_for_unit(unit: Any) -> Any:
     if isinstance(unit, TypeAliasType):
         unit = unit.__value__
-        if isinstance(unit, _AnnotatedAlias):
-            unit = get_args(unit)[0]
-
-    elif get_origin(unit) is Annotated:
+    if get_origin(unit) is Annotated:
         unit = get_args(unit)[0]
 
     if get_origin(unit) in (UnionType, Union):
@@ -121,42 +118,38 @@ GLYCOL_20_HEAT_TRANSFER_CONVERSION = (  # W/((l/min)*K), ~5% below water
     SPECIFIC_HEAT_GLYCOL_20 * DENSITY_GLYCOL_20 / 1000 / 60
 )
 
-# ruff: noqa: UP040
-# These cannot be converted to proper type keyword statements because strawberry fails on those
-OptionalCelsius: TypeAlias = Annotated[
+type OptionalCelsius = Annotated[
     float | None, Field(ge=-273.15), UnitMeta(modelica_name="C")
 ]
-Celsius: TypeAlias = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
-DeltaT: TypeAlias = Annotated[float, UnitMeta(modelica_name="K")]
-LMin: TypeAlias = Annotated[float, UnitMeta(modelica_name="l_min")]
-Hz: TypeAlias = Annotated[float, Field(ge=-0.1), UnitMeta(modelica_name="Hz")]
-Ratio: TypeAlias = Annotated[
+type Celsius = Annotated[float, Field(ge=-273.15), UnitMeta(modelica_name="C")]
+type DeltaT = Annotated[float, UnitMeta(modelica_name="K")]
+type LMin = Annotated[float, UnitMeta(modelica_name="l_min")]
+type Hz = Annotated[float, Field(ge=-0.1), UnitMeta(modelica_name="Hz")]
+type Ratio = Annotated[
     float,
     AfterValidator(validate_ratio_within_precision),
     UnitMeta(modelica_name="ratio"),
 ]
-OptionalRatio: TypeAlias = Annotated[
+type OptionalRatio = Annotated[
     float | None,
     AfterValidator(validate_optional_ratio_within_precision),
     UnitMeta(modelica_name="ratio"),
 ]
-Bar: TypeAlias = Annotated[float, Field(ge=-1), UnitMeta(modelica_name="Bar")]
-Watt: TypeAlias = Annotated[float, UnitMeta(modelica_name="Watt")]
-WattMeter2: TypeAlias = Annotated[float, UnitMeta(modelica_name="W_m2")]
-Seconds: TypeAlias = Annotated[float, UnitMeta(modelica_name="s")]
-Joule: TypeAlias = Annotated[float, UnitMeta(modelica_name="Joule")]
-OptionalJoule: TypeAlias = Annotated[float | None, UnitMeta(modelica_name="Joule")]
-OnOff: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
-NoError: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
-Error: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
-Operating: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
-Empty: TypeAlias = Annotated[bool, UnitMeta(modelica_name="bool")]
-Tuning: TypeAlias = tuple[float, float, float]
-Overpressure: TypeAlias = Annotated[float, UnitMeta(modelica_name="Bar")]
-Liter: TypeAlias = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Liter")]
-Degree: TypeAlias = Annotated[
-    float, Field(ge=0, le=360), UnitMeta(modelica_name="Degree")
-]
+type Bar = Annotated[float, Field(ge=-1), UnitMeta(modelica_name="Bar")]
+type Watt = Annotated[float, UnitMeta(modelica_name="Watt")]
+type WattMeter2 = Annotated[float, UnitMeta(modelica_name="W_m2")]
+type Seconds = Annotated[float, UnitMeta(modelica_name="s")]
+type Joule = Annotated[float, UnitMeta(modelica_name="Joule")]
+type OptionalJoule = Annotated[float | None, UnitMeta(modelica_name="Joule")]
+type OnOff = Annotated[bool, UnitMeta(modelica_name="bool")]
+type NoError = Annotated[bool, UnitMeta(modelica_name="bool")]
+type Error = Annotated[bool, UnitMeta(modelica_name="bool")]
+type Operating = Annotated[bool, UnitMeta(modelica_name="bool")]
+type Empty = Annotated[bool, UnitMeta(modelica_name="bool")]
+type Tuning = tuple[float, float, float]
+type Overpressure = Annotated[float, UnitMeta(modelica_name="Bar")]
+type Liter = Annotated[float, Field(ge=0), UnitMeta(modelica_name="Liter")]
+type Degree = Annotated[float, Field(ge=0, le=360), UnitMeta(modelica_name="Degree")]
 
 
 class TankState(Enum):

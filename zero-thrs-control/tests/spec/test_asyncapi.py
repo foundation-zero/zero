@@ -4,7 +4,6 @@ from unittest.mock import Mock
 import pytest
 from asyncapi3.models import Channel, Operation, Server
 
-# Adjust the import to match your actual module location
 from thrs.input_output.base import Stamped, ThrsValues
 from thrs.runtime.descriptions.simulation import Mode
 from thrs.spec.asyncapi import (

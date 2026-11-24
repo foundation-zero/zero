@@ -36,7 +36,6 @@ def test_simulation(simulation, simulation_inputs, control, alarms):
         simulator_input_field_setters(
             DhwSimulationInputs,
             ignore=[
-                "mode",  # Not a physical quantity
                 # The FMU tolerates these, even with the control running
                 ("dhw_hvac_exchanger", "maximum_temperature"),
                 ("dhw_seawater_supply", "temperature"),

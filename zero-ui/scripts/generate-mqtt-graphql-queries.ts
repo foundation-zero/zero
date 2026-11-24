@@ -660,7 +660,7 @@ const addParameters = (context: ModuleContext): void => {
     const key = graphqlName(property);
     context.output.definitions.parameters.push({
       key,
-      componentType: `ParametersType.${parameterKind(context.module, key, schema)}`,
+      componentType: `ParametersType.${parameterKind(context.module, key, resolve(thrsControl, schema) ?? schema)}`,
       path: [...path, key],
     });
     context.output.selections.parameters.push({

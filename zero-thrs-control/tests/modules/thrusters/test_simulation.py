@@ -42,14 +42,7 @@ def test_simulation(simulation, simulation_inputs, control, alarms):
     assert result["time"].len() == 20
 
 
-@fixture(
-    params=list(
-        simulator_input_field_setters(
-            ThrustersSimulationInputs,
-            ignore=["mode"],  # Not a physical quantity
-        )
-    )
-)
+@fixture(params=list(simulator_input_field_setters(ThrustersSimulationInputs)))
 def incorrect_simulation_inputs(
     simulation_inputs: ThrustersSimulationInputs, request: pytest.FixtureRequest
 ) -> ThrustersSimulationInputs:

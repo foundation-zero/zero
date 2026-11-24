@@ -24,7 +24,7 @@ from types import ModuleType
 from typing import Any
 
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.input_output.definitions.units import UnitMeta
+from thrs.input_output.definitions.units import unit_meta
 
 # Display units for the `modelica_name` carried by each unit alias in
 # thrs.input_output.definitions.units.
@@ -43,32 +43,13 @@ UNITS: dict[str, str] = {
     "bool": "on/off",
 }
 
-# Bounds that belong to the unit itself (a Celsius cannot go below absolute
-# zero) rather than to the parameter. Reporting them would bury the handful of
-# bounds that actually constrain an engineer.
-INTRINSIC_BOUNDS: set[tuple[str, str, float]] = {
-    ("C", "ge", -273.15),
-    ("Hz", "ge", -0.1),
-    ("Bar", "ge", -1.0),
-    ("Liter", "ge", 0.0),
-    ("Degree", "ge", 0.0),
-    ("Degree", "le", 360.0),
-}
 
-
-def unit_of(metadata: list[Any]) -> str | None:
-    meta = next((m for m in metadata if isinstance(m, UnitMeta)), None)
-    return meta.modelica_name if meta else None
-
-
-def bounds_of(metadata: list[Any], unit: str | None) -> list[str]:
+def bounds_of(metadata: list[Any]) -> list[str]:
     out: list[str] = []
     for m in metadata:
         for attr, symbol in (("ge", "≥"), ("gt", ">"), ("le", "≤"), ("lt", "<")):
             value = getattr(m, attr, None)
             if value is None:
-                continue
-            if (unit, attr, float(value)) in INTRINSIC_BOUNDS:
                 continue
             out.append(f"{symbol} {value}")
     return out
@@ -105,12 +86,13 @@ def describe_parameters(parameters_cls: type) -> None:
     print("## Parameters\n")
     print("Each line: name | unit | default | bounds | description in the code")
     for name, field in parameters_cls.model_fields.items():
-        unit = unit_of(list(field.metadata))
+        meta = unit_meta(field.annotation)
+        unit = meta.modelica_name if meta else None
         display = UNITS.get(unit or "", unit or "")
         default = field.default
         if isinstance(default, tuple) and len(default) == 3:
             display = display or "PID (Kp, Ki, Kd)"
-        bounds = ", ".join(bounds_of(list(field.metadata), unit)) or "-"
+        bounds = ", ".join(bounds_of(field.metadata)) or "-"
         print(
             f"- {name} | {display or '-'} | {default!r} | {bounds} | "
             f"{field.description or '(none)'}"

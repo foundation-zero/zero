@@ -62,9 +62,7 @@ PCM_MODULE1_FRESHWATER_PURGE_VOLUME: Liter = PCM_EXCHANGER_AD_VOLUME
 PCM_MODULE_PURGE_VOLUME: Liter = PCM_EXCHANGER_BC_VOLUME + PCM_EXCHANGER_AD_VOLUME
 
 
-class PidControllerValues(
-    ThrsValues
-):  # Not using generics here for strawberry compatibility.
+class PidControllerValues(ThrsValues):
     target: Stamped[float]
     measurement: Stamped[float | None]
     output: Stamped[float | None]

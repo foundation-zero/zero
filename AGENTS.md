@@ -20,6 +20,9 @@ holding a `SKILL.md` plus any scripts and references it needs:
 - [zero-thrs-control/docs/skills/thrs-module-manual](./zero-thrs-control/docs/skills/thrs-module-manual)
   — write or refresh the functional description of a THRS control module,
   shown in the zero-ui Documentation tab and printed as a PDF for the crew.
+- [docs/skills/comment-review](./docs/skills/comment-review)
+  — review a service's comments one at a time and remove, reword or code away
+  those that restate the code, prop up a workaround or have gone stale.
 
 A `SKILL.md` starts with a `description` saying when it applies. Read the ones
 that match your task before you start; commands in them are written to run from

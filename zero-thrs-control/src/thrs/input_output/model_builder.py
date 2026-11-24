@@ -49,8 +49,6 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
             for field_name, field in cls.model_fields.items()
             if field.annotation is not None
         }
-        # An Event rather than a Future: since Python 3.14 a Future needs a running loop,
-        # and builders are fed outside one.
         self._first_value: T | None = None
         self._complete = Event()
 

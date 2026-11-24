@@ -16,7 +16,6 @@ from thrs.input_output.definitions.control import Valve
             PvtSimulationInputs,
             ignore=[
                 "pvt_pcm_supply",  # Switches don't lend themselves to absurdation
-                "mode",  # Not a physical quantity
             ],
         )
     )

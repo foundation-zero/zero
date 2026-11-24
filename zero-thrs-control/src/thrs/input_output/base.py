@@ -37,19 +37,20 @@ class ThrsValues(BaseModel):
                     return datetime.fromtimestamp(0, UTC)
                 return zero_for_unit(unit) if unit else 0.0
 
-            if issubclass(component, StampedWithSource):
-                return StampedWithSource.stamp(
-                    zero_for_unit(unit_for_annotation(component)), "initialization"
-                )
-            if issubclass(component, Stamped):
-                return Stamped.stamp(zero_for_unit(unit_for_annotation(component)))
-            if issubclass(component, ThrsValues):
-                return component(
-                    **{
-                        field_name: Stamped.stamp(_zero_value(field))
-                        for field_name, field in component.model_fields.items()
-                    }
-                )
+            if isinstance(component, type):
+                if issubclass(component, StampedWithSource):
+                    return StampedWithSource.stamp(
+                        zero_for_unit(unit_for_annotation(component)), "initialization"
+                    )
+                if issubclass(component, Stamped):
+                    return Stamped.stamp(zero_for_unit(unit_for_annotation(component)))
+                if issubclass(component, ThrsValues):
+                    return component(
+                        **{
+                            field_name: Stamped.stamp(_zero_value(field))
+                            for field_name, field in component.model_fields.items()
+                        }
+                    )
             unit = unit_for_annotation(component)
             return zero_for_unit(unit) if unit else 0.0
 
