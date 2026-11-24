@@ -35,7 +35,7 @@ def settings():
     os.environ.setdefault("PG_HOST", "localhost")
     os.environ.setdefault("MQTT_HOST", "localhost")
 
-    return Settings()  # type: ignore
+    return Settings()
 
 
 @pytest.fixture()

@@ -1,7 +1,6 @@
 import re
 
 import pytest
-from pydantic_settings import BaseSettings
 
 from zero_atpx_nmea.mqtt import RecoveringBroker
 from zero_atpx_nmea.settings import InputMqttSettings, OutputMqttSettings
@@ -18,24 +17,24 @@ def _mqtt_env(monkeypatch: pytest.MonkeyPatch):
 
 
 def test_input_client_id_default():
-    settings = InputMqttSettings(_env_file=None)  # type: ignore[call-arg]
+    settings = InputMqttSettings(_env_file=None)
     assert re.fullmatch(r"atpx-nmea-in-[0-9a-f]{8}", settings.atpx_mqtt_client_id)
 
 
 def test_input_client_id_from_env(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("ATPX_MQTT_CLIENT_ID", "custom-in")
-    settings = InputMqttSettings(_env_file=None)  # type: ignore[call-arg]
+    settings = InputMqttSettings(_env_file=None)
     assert settings.atpx_mqtt_client_id == "custom-in"
 
 
 def test_output_client_id_default():
-    settings = OutputMqttSettings(_env_file=None)  # type: ignore[call-arg]
+    settings = OutputMqttSettings(_env_file=None)
     assert re.fullmatch(r"atpx-nmea-out-[0-9a-f]{8}", settings.mqtt_client_id)
 
 
 def test_output_client_id_from_env(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("MQTT_CLIENT_ID", "custom-out")
-    settings = OutputMqttSettings(_env_file=None)  # type: ignore[call-arg]
+    settings = OutputMqttSettings(_env_file=None)
     assert settings.mqtt_client_id == "custom-out"
 
 
@@ -43,8 +42,10 @@ def test_output_client_id_from_env(monkeypatch: pytest.MonkeyPatch):
     ("settings", "name"),
     [(InputMqttSettings, "atpx-mqtt"), (OutputMqttSettings, "mqtt")],
 )
-def test_brokers_ride_out_outages(settings: type[BaseSettings], name: str):
-    broker = settings(_env_file=None).make_broker()  # type: ignore[call-arg]
+def test_brokers_ride_out_outages(
+    settings: type[InputMqttSettings] | type[OutputMqttSettings], name: str
+):
+    broker = settings(_env_file=None).make_broker()
     kwargs = broker._connection_kwargs
     assert isinstance(broker, RecoveringBroker)
     assert broker._name == name

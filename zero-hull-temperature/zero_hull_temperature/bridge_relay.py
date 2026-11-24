@@ -52,7 +52,7 @@ class RelaySwitchingBridge(ModbusBridge):
         self._activate_json_path = parse(activate_json_path)
 
     @staticmethod
-    def from_settings(  # type: ignore[override]
+    def from_settings(  # pyrefly: ignore[bad-override]
         modbus_settings: ModbusSettings,
         broker: MQTTBroker,
         activate_topic: str = TOPIC,

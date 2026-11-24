@@ -502,7 +502,7 @@ class DrivesSensorValues(AmcsModeSensorValues):
         return sensor.HeatTransferDevice.from_sensors_with_mix_valve(
             temperature_supply=self.drives_temperature_recovery_mix.temperature,
             temperature_return=self.drives_temperature_supply.temperature,
-            flow=flow,  # type: ignore
+            flow=flow,  # pyrefly: ignore[bad-argument-type]
             mix_valve=self.drives_mix_exchanger,
             heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,
             temperature_supply_source=sensor.extract_source_yardtag(

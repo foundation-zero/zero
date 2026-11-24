@@ -256,7 +256,7 @@ class ThrustersSensorValues(AmcsModeSensorValues):
     def thrusters_seawater_exchanger(self) -> sensor.HeatTransferDevice:
         return sensor.HeatTransferDevice.from_sensors_with_mix_valve(
             temperature_supply=self.thrusters_temperature_pre_cooler.temperature,
-            temperature_return=self.thrusters_temperature_supply.temperature,  # type: ignore
+            temperature_return=self.thrusters_temperature_supply.temperature,
             flow=self.thrusters_flow.flow,
             mix_valve=self.thrusters_mix_exchanger,
             heat_transfer_conversion=GLYCOL_20_HEAT_TRANSFER_CONVERSION,

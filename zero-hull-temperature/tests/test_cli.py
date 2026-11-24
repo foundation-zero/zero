@@ -72,35 +72,35 @@ def required_env(monkeypatch: pytest.MonkeyPatch):
 
 
 def test_read_with_mqtt_default_client_id(required_env):
-    cmd = ReadWithMqttCmd(_env_file=None)  # type: ignore[call-arg]
+    cmd = ReadWithMqttCmd(_env_file=None)
     assert re.fullmatch(r"hull-temperature-[0-9a-f]{8}", cmd.mqtt_client_id)
 
 
 def test_read_with_mqtt_client_id_from_env(required_env, monkeypatch):
     monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
-    cmd = ReadWithMqttCmd(_env_file=None)  # type: ignore[call-arg]
+    cmd = ReadWithMqttCmd(_env_file=None)
     assert cmd.mqtt_client_id == "custom-id"
 
 
 def test_run_default_client_id(required_env):
-    cmd = RunCmd(_env_file=None)  # type: ignore[call-arg]
+    cmd = RunCmd(_env_file=None)
     assert re.fullmatch(r"hull-temperature-[0-9a-f]{8}", cmd.mqtt_client_id)
 
 
 def test_run_client_id_from_env(required_env, monkeypatch):
     monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
-    cmd = RunCmd(_env_file=None)  # type: ignore[call-arg]
+    cmd = RunCmd(_env_file=None)
     assert cmd.mqtt_client_id == "custom-id"
 
 
 def test_stub_default_client_id(required_env):
-    cmd = StubCmd(_env_file=None)  # type: ignore[call-arg]
+    cmd = StubCmd(_env_file=None)
     assert re.fullmatch(r"hull-temperature-stub-[0-9a-f]{8}", cmd.mqtt_client_id)
 
 
 def test_stub_client_id_from_env(required_env, monkeypatch):
     monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
-    cmd = StubCmd(_env_file=None)  # type: ignore[call-arg]
+    cmd = StubCmd(_env_file=None)
     assert cmd.mqtt_client_id == "custom-id"
 
 
@@ -119,7 +119,7 @@ async def test_run_requires_the_gateway_for_health(required_env, monkeypatch):
 
     monkeypatch.setattr(cli, "run_with_health", fake_run_with_health)
 
-    await RunCmd(_env_file=None).cli_cmd()  # type: ignore[call-arg]
+    await RunCmd(_env_file=None).cli_cmd()
 
     [after_startup] = runs
     [bridge] = health_bridges

@@ -4,7 +4,7 @@ from unittest import mock
 import pytest
 
 from tests.helpers.modules import make_async_channels
-from tests.orchestration.simples import simple_non_advisory_values
+from tests.orchestration.simples import SimpleParameters, simple_non_advisory_values
 from thrs.classes.control import Control
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.input_output.alarms import BaseAlarms
@@ -15,7 +15,10 @@ from thrs.orchestration.module import Module
 
 @pytest.fixture
 def mock_control():
-    return mock.Mock(Control)
+    control = mock.Mock(Control)
+    control.parameters = SimpleParameters()
+    control.mode = None
+    return control
 
 
 @pytest.fixture

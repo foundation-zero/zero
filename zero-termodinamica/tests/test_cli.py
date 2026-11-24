@@ -132,7 +132,7 @@ async def test_run_requires_the_gateway_for_health(monkeypatch):
     monkeypatch.setattr(cli, "run_with_health", fake_run_with_health)
 
     await RunCmd(
-        _env_file=None,  # type: ignore[call-arg]
+        _env_file=None,
         modbus_host="127.0.0.1",
         modbus_port=502,
         mqtt_host="localhost",

@@ -199,12 +199,12 @@ class ConvertersControl(
 
     @property
     def initial_mode(self) -> ConvertersControlMode:
-        initial_mode: str = self._state_machine.initial  # type: ignore
+        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
         return ConvertersControlMode(mode=initial_mode)
 
     @property
     def mode(self) -> ConvertersControlMode:
-        mode: str = self.state  # type: ignore
+        mode: str = self.state
         return ConvertersControlMode(mode=mode)
 
     def initial(self) -> tuple[ConvertersControlValues, ConvertersControllerState]:
@@ -236,7 +236,7 @@ class ConvertersControl(
     def control(
         self, sensor_values: ConvertersSensorValues
     ) -> tuple[ConvertersControlValues, ConvertersControllerState]:
-        self._check_converters_active(sensor_values)  # type: ignore
+        self._check_converters_active(sensor_values)  # pyrefly: ignore[missing-attribute]
         self._control_warmup_mix(sensor_values)
         self._control_switch_valves(sensor_values)
         self._control_flow(sensor_values)

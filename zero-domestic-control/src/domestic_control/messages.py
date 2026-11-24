@@ -41,7 +41,7 @@ class Model(TopicMessageMixin, SQLModel):
 
 
 class AirConditioning(Model, table=True):
-    __tablename__ = "air_conditioning"  # type: ignore
+    __tablename__ = "air_conditioning"
     TOPIC: ClassVar[str] = "domestic/ac"
     id: Annotated[str, Field(primary_key=True)]
     actual_temperature: float | None
@@ -51,7 +51,7 @@ class AirConditioning(Model, table=True):
 
 
 class Amplifier(Model, table=True):
-    __tablename__ = "amplifiers"  # type: ignore
+    __tablename__ = "amplifiers"
 
     TOPIC: ClassVar[str] = "domestic/amplifiers"
     id: Annotated[str, Field(primary_key=True)]
@@ -59,7 +59,7 @@ class Amplifier(Model, table=True):
 
 
 class Blind(Model, table=True):
-    __tablename__ = "blinds"  # type: ignore
+    __tablename__ = "blinds"
     TOPIC: ClassVar[str] = "domestic/blinds"
     id: Annotated[str, Field(primary_key=True)]
     room_id: str
@@ -67,7 +67,7 @@ class Blind(Model, table=True):
 
 
 class LightingGroup(Model, table=True):
-    __tablename__ = "lighting_groups"  # type: ignore
+    __tablename__ = "lighting_groups"
     TOPIC: ClassVar[str] = "domestic/lighting-groups"
     id: Annotated[str, Field(primary_key=True)]
     room_id: str
@@ -75,7 +75,7 @@ class LightingGroup(Model, table=True):
 
 
 class Ventilation(Model, table=True):
-    __tablename__ = "ventilation"  # type: ignore
+    __tablename__ = "ventilation"
     TOPIC: ClassVar[str] = "domestic/ventilation"
     id: Annotated[str, Field(primary_key=True)]
     actual_co2: float | None

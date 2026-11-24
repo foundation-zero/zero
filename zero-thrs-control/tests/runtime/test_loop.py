@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import AsyncIterator, Callable
+from collections.abc import AsyncGenerator, Callable
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime, timedelta
 from functools import partial
@@ -75,7 +75,7 @@ class RecordingHooks:
 
 
 @asynccontextmanager
-async def looping(loop: Loop, runner, hooks: RecordingHooks) -> AsyncIterator[None]:
+async def looping(loop: Loop, runner, hooks: RecordingHooks) -> AsyncGenerator[None]:
     loop_task = asyncio.create_task(loop.loop(runner, hooks.hooks()))
     try:
         yield

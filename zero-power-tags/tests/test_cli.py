@@ -35,7 +35,7 @@ def _spec(panel: str) -> BridgeSpec:
 
 def _settings(**panels: str) -> PowerTagsSettings:
     # `_env_file=None` keeps the .env out of these unit tests.
-    return PowerTagsSettings(_env_file=None, modbus_panels=panels)  # type: ignore[call-arg]
+    return PowerTagsSettings(_env_file=None, modbus_panels=panels)
 
 
 class TestConfiguredModbusPorts:
@@ -126,7 +126,7 @@ class TestStubPorts:
 def test_make_broker_accepts_kwargs_on_real_broker():
     """The real MQTTBroker accepts our security + reconnect + keepalive kwargs."""
     cmd = RunCmd(
-        _env_file=None,  # type: ignore[call-arg]
+        _env_file=None,
         mqtt_host="broker",
         mqtt_port=1883,
         mqtt_username="u",
@@ -144,13 +144,13 @@ def test_buffer_size_covers_five_minutes_of_one_bridge():
 
 def test_run_cmd_default_client_id(monkeypatch):
     monkeypatch.delenv("MQTT_CLIENT_ID", raising=False)
-    cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
+    cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)
     assert re.fullmatch(r"power-tags-[0-9a-f]{8}", cmd.mqtt_client_id)
 
 
 def test_run_cmd_client_id_from_env(monkeypatch):
     monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
-    cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
+    cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)
     assert cmd.mqtt_client_id == "custom-id"
 
 
@@ -179,7 +179,7 @@ async def test_run_cmd_runs_a_bridge_per_configured_panel_on_the_outage_broker(
         started.append(bridge)
 
     monkeypatch.setattr(ModbusBridge, "run", fake_run)
-    cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)  # type: ignore[call-arg]
+    cmd = RunCmd(_env_file=None, mqtt_host="broker", mqtt_port=1883)
 
     await cmd.cli_cmd()
     [(broker, after_startup, health)] = runs
@@ -209,7 +209,7 @@ def test_stub_serves_only_the_deployed_panels(monkeypatch: pytest.MonkeyPatch):
     stub = MagicMock(servers=[])
     monkeypatch.setattr(cli.Stub, "from_topic_groups", stub.from_topic_groups)
 
-    StubCmd(_env_file=None).cli_cmd()  # type: ignore[call-arg]
+    StubCmd(_env_file=None).cli_cmd()
 
     [[(topics, port)]] = stub.from_topic_groups.call_args.args
     assert [topic.topic for topic in topics] == [

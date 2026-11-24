@@ -183,7 +183,7 @@ def test_read_all_reconnects_after_dead_unit_drops_socket():
         AnnotationModbusTopic(topic="t/2", model=FloatModel, unit_id=2),  # dead
         AnnotationModbusTopic(topic="t/3", model=FloatModel, unit_id=3),
     ]
-    reader = ModbusReader(gateway, topics)  # type: ignore[arg-type]
+    reader = ModbusReader(gateway, topics)  # pyrefly: ignore[bad-argument-type]
 
     results = {name: payload for name, payload in reader.read_all()}
 
@@ -216,7 +216,7 @@ def test_read_all_stops_on_unreachable_gateway():
         AnnotationModbusTopic(topic=f"t/{i}", model=FloatModel, unit_id=i)
         for i in range(1, 6)
     ]
-    reader = ModbusReader(gateway, topics)  # type: ignore[arg-type]
+    reader = ModbusReader(gateway, topics)  # pyrefly: ignore[bad-argument-type]
 
     assert list(reader.read_all()) == []
     # Breaks on the first failed open instead of retrying every remaining topic.

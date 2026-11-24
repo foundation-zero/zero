@@ -46,8 +46,6 @@ jobs:
       - run: uv sync --locked
         working-directory: zero-domestic-control
       - run: just check_static
-        env:
-          PYRIGHT_PYTHON_FORCE_VERSION: latest
         working-directory: zero-domestic-control
       - name: Unit Test
         run: just test_unit

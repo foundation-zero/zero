@@ -27,11 +27,11 @@ class Greptime:
 
     def execute(self, sql: str) -> None:
         with connect(self._connection) as handle, handle.cursor() as cursor:
-            cursor.execute(sql)
+            cursor.execute(sql)  # pyrefly: ignore[no-matching-overload]
 
     def fetch(self, sql: str) -> list[tuple[Any, ...]]:
         with connect(self._connection) as handle, handle.cursor() as cursor:
-            cursor.execute(sql)
+            cursor.execute(sql)  # pyrefly: ignore[no-matching-overload]
             return cursor.fetchall()
 
     def column_names(self, sql: str) -> list[str]:
@@ -41,7 +41,7 @@ class Greptime:
         read a view's actual output columns.
         """
         with connect(self._connection) as handle, handle.cursor() as cursor:
-            cursor.execute(sql)
+            cursor.execute(sql)  # pyrefly: ignore[no-matching-overload]
             description = cursor.description
             assert description is not None
             return [column.name for column in description]

@@ -14,18 +14,18 @@ def _mqtt_env(monkeypatch: pytest.MonkeyPatch):
 
 
 def test_mqtt_client_id_default():
-    settings = MqttSettings(_env_file=None)  # type: ignore[call-arg]
+    settings = MqttSettings(_env_file=None)
     assert re.fullmatch(r"modbus-bridge-[0-9a-f]{8}", settings.mqtt_client_id)
 
 
 def test_mqtt_client_id_from_env(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv("MQTT_CLIENT_ID", "custom-id")
-    settings = MqttSettings(_env_file=None)  # type: ignore[call-arg]
+    settings = MqttSettings(_env_file=None)
     assert settings.mqtt_client_id == "custom-id"
 
 
 def test_broker_rides_out_outages():
-    broker = MqttSettings(_env_file=None).make_broker()  # type: ignore[call-arg]
+    broker = MqttSettings(_env_file=None).make_broker()
     kwargs = broker._connection_kwargs
     assert isinstance(broker, RecoveringBroker)
     assert kwargs["reconnect"].max_attempts is None
@@ -34,5 +34,5 @@ def test_broker_rides_out_outages():
 
 
 def test_broker_defaults_can_be_overridden():
-    broker = MqttSettings(_env_file=None).make_broker(keepalive=30)  # type: ignore[call-arg]
+    broker = MqttSettings(_env_file=None).make_broker(keepalive=30)
     assert broker._connection_kwargs["keepalive"] == 30

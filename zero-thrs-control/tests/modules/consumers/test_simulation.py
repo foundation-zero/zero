@@ -7,11 +7,11 @@ from pytest import approx, fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from tests.modules.consumers.conftest import ConsumersRunner, ConsumersSimulation
-from thrs.control.modules.consumers import ConsumersControl
+from thrs.control.modules.consumers.control import ConsumersControl
+from thrs.control.modules.consumers.io import ConsumersSimulationInputs
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
-from thrs.input_output.modules.consumers import ConsumersSimulationInputs
 
 
 @fixture(

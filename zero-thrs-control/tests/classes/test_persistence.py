@@ -401,8 +401,8 @@ async def test_restore_with_out_of_bound_value_never_reaches_mqtt():
 
     await module.tick(SimpleInOut.zero())
 
-    sent_parameters = channels.send_parameters.call_args.args[0]
-    assert sent_parameters.setpoint == 50.0
+    sent_controller_state = channels.send_controller_state.call_args.args[0]
+    assert sent_controller_state.parameters.setpoint == 50.0
 
 
 async def test_restore_with_malformed_control_mode_keeps_module_untouched():
@@ -411,7 +411,7 @@ async def test_restore_with_malformed_control_mode_keeps_module_untouched():
     corrupt = ModulePersistenceSnapshot.model_construct(
         parameters={"setpoint": 60.0},
         manual_control_values=None,
-        control_mode="deleted-enum-value",  # type: ignore[arg-type]
+        control_mode="deleted-enum-value",  # pyrefly: ignore[bad-argument-type]
     )
     manager = make_manager(InMemoryPersistentEngine({"test": corrupt}))
     module = make_module()

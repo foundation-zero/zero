@@ -8,23 +8,39 @@ from pytest import fixture
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from tests.simulation.test_cosimulation import MockFmu
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.control.modules.adsorption import (
-    ADSORPTION_MODULE_DESCRIPTION,
-    AdsorptionParameters,
+from thrs.control.modules.adsorption.control import ADSORPTION_MODULE_DESCRIPTION
+from thrs.control.modules.adsorption.io import (
+    AdsorptionSensorValues,
 )
-from thrs.control.modules.consumers import (
-    CONSUMERS_MODULE_DESCRIPTION,
-    ConsumersParameters,
+from thrs.control.modules.adsorption.state import AdsorptionParameters
+from thrs.control.modules.consumers.control import CONSUMERS_MODULE_DESCRIPTION
+from thrs.control.modules.consumers.io import (
+    ConsumersSensorValues,
 )
-from thrs.control.modules.dc import DC_MODULE_DESCRIPTION, DcParameters
-from thrs.control.modules.dhw import DHW_MODULE_DESCRIPTION, DhwParameters
-from thrs.control.modules.drives import DRIVES_MODULE_DESCRIPTION, DrivesParameters
-from thrs.control.modules.pcm import PCM_MODULE_DESCRIPTION, PcmParameters
-from thrs.control.modules.pvt import PVT_MODULE_DESCRIPTION, PvtParameters
-from thrs.control.modules.thrusters import (
-    THRUSTERS_MODULE_DESCRIPTION,
-    ThrustersParameters,
+from thrs.control.modules.consumers.state import ConsumersParameters
+from thrs.control.modules.dc.control import DC_MODULE_DESCRIPTION
+from thrs.control.modules.dc.io import DcSensorValues
+from thrs.control.modules.dc.state import DcParameters
+from thrs.control.modules.dhw.control import DHW_MODULE_DESCRIPTION
+from thrs.control.modules.dhw.io import DhwSensorValues
+from thrs.control.modules.dhw.state import DhwParameters
+from thrs.control.modules.drives.control import DRIVES_MODULE_DESCRIPTION
+from thrs.control.modules.drives.io import DrivesSensorValues
+from thrs.control.modules.drives.state import DrivesParameters
+from thrs.control.modules.pcm.control import PCM_MODULE_DESCRIPTION
+from thrs.control.modules.pcm.io import PcmSensorValues
+from thrs.control.modules.pcm.state import PcmParameters
+from thrs.control.modules.pvt.control import PVT_MODULE_DESCRIPTION
+from thrs.control.modules.pvt.io import PvtSensorValues
+from thrs.control.modules.pvt.state import PvtParameters
+from thrs.control.modules.thrs.io import (
+    ThrsSimulationInputs,
+    ThrsSimulationOutputs,
+    participants,
 )
+from thrs.control.modules.thrusters.control import THRUSTERS_MODULE_DESCRIPTION
+from thrs.control.modules.thrusters.io import ThrustersSensorValues
+from thrs.control.modules.thrusters.state import ThrustersParameters
 from thrs.input_output.base import CombinedValues, Stamped
 from thrs.input_output.definitions.simulation import (
     ActiveHeatSource,
@@ -42,23 +58,6 @@ from thrs.input_output.definitions.simulation import (
 )
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.definitions.units import PcsMode
-from thrs.input_output.modules.adsorption import (
-    AdsorptionSensorValues,
-)
-from thrs.input_output.modules.consumers import (
-    ConsumersSensorValues,
-)
-from thrs.input_output.modules.dc import DcSensorValues
-from thrs.input_output.modules.dhw import DhwSensorValues
-from thrs.input_output.modules.drives import DrivesSensorValues
-from thrs.input_output.modules.pcm import PcmSensorValues
-from thrs.input_output.modules.pvt import PvtSensorValues
-from thrs.input_output.modules.thrs import (
-    ThrsSimulationInputs,
-    ThrsSimulationOutputs,
-    participants,
-)
-from thrs.input_output.modules.thrusters import ThrustersSensorValues
 from thrs.orchestration.module import ModuleClassMap, ModuleDescription
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.cosimulation import CoSimulationMaster, CoSimulationParticipant
@@ -179,7 +178,7 @@ def control() -> Callable[[CombinedValues], tuple[CombinedValues, CombinedValues
         for name, module in modules.items():
             sensors = sensor_values.values.get(name, None)
             if sensors:
-                control_value, controller_state = module.control(sensors)
+                control_value, controller_state = module.control(sensors)  # pyrefly: ignore[bad-argument-type]
             else:
                 control_value, controller_state = module.initial()
 

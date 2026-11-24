@@ -14,7 +14,7 @@ class MachineStateModelBase(SQLModel):
 
 
 class MachineStateIssue(MachineStateModelBase, table=True):
-    __tablename__ = "machinestate_issue"  # type: ignore
+    __tablename__ = "machinestate_issue"
     id: int | None = Field(default=None, primary_key=True)
     control_name: str
     severity_level: Severity = Field(
@@ -30,7 +30,7 @@ class MachineStateIssue(MachineStateModelBase, table=True):
 
 
 class MachineStateEvent(MachineStateModelBase, table=True):
-    __tablename__ = "machinestate_event"  # type: ignore
+    __tablename__ = "machinestate_event"
     id: int | None = Field(default=None, primary_key=True)
     control_name: str
     event_name: str
@@ -42,7 +42,7 @@ class MachineStateEvent(MachineStateModelBase, table=True):
 
 
 class MachineStateTransition(MachineStateModelBase, table=True):
-    __tablename__ = "machinestate_transition"  # type: ignore
+    __tablename__ = "machinestate_transition"
     id: int | None = Field(default=None, primary_key=True)
     control_name: str
     trigger_name: str
@@ -56,7 +56,7 @@ class MachineStateTransition(MachineStateModelBase, table=True):
 
 
 class MachineStateParametersUpdate(MachineStateModelBase, table=True):
-    __tablename__ = "machinestate_parameters"  # type: ignore
+    __tablename__ = "machinestate_parameters"
     id: int | None = Field(default=None, primary_key=True)
     control_name: str
     data_container_name: str

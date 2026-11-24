@@ -1,9 +1,10 @@
 from datetime import datetime
 
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.control.modules.dc import DcControl, DcParameters
+from thrs.control.modules.dc.control import DcControl
+from thrs.control.modules.dc.io import DcControlValues
+from thrs.control.modules.dc.state import DcParameters
 from thrs.input_output.base import Stamped
-from thrs.input_output.modules.dc import DcControlValues
 
 
 def test_update_controls_reaches_aliased_sub_control_components():

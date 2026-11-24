@@ -1,7 +1,8 @@
 from collections import deque
-from collections.abc import Callable, Hashable, Iterator
+from collections.abc import Callable, Hashable, Iterator, Mapping
 from copy import deepcopy
 from datetime import timedelta
+from functools import partial
 from itertools import groupby
 from math import ceil
 from typing import Any, cast
@@ -16,22 +17,33 @@ from thrs.orchestration.comms import SimulationChannels
 from thrs.orchestration.simulation import Simulation, SimulationUnit
 from thrs.simulation.io_mapping import flatten_model_values
 
+# The collector also keeps what the FMU does not exchange.
+_all_keys = partial(build_fmu_key_mapping, fmu_only=False)
 
-def _flatten_for_collector(values: ThrsValues | CombinedValues) -> dict[str, float]:
-    if isinstance(values, CombinedValues):
+
+def flatten_controller_state(state: ThrsValues | CombinedValues) -> dict[str, Any]:
+    """A controller state as `__`-joined columns, a stamped value as its value.
+
+    No controller state goes to the FMU, so it is flattened from its dump rather than
+    with the FMU mapping; combined states are keyed by module first.
+    """
+    if isinstance(state, CombinedValues):
+        return _flatten(
+            {name: model.model_dump() for name, model in state.values.items()}
+        )
+    return _flatten(state.model_dump())
+
+
+def _flatten(value: Any, key: str = "") -> dict[str, Any]:
+    if isinstance(value, dict) and "timestamp" not in value:
         return {
-            key: value
-            for model in values.values.values()
-            for key, value in flatten_model_values(
-                model,
-                build_fmu_key_mapping(type(model), fmu_only=False),
+            flat_key: flat_value
+            for name, item in value.items()
+            for flat_key, flat_value in _flatten(
+                item, f"{key}__{name}" if key else name
             ).items()
         }
-
-    return flatten_model_values(
-        values,
-        build_fmu_key_mapping(type(values), fmu_only=False),
-    )
+    return {key: value["value"] if isinstance(value, dict) else value}
 
 
 class _CombinedControlAdapter[
@@ -43,7 +55,7 @@ class _CombinedControlAdapter[
 ]:
     def __init__(
         self,
-        controls: dict[str, Control[ThrsValues, ThrsValues, P, M, ThrsValues]],
+        controls: Mapping[str, Control[ThrsValues, ThrsValues, P, M, ThrsValues]],
     ) -> None:
         self._controls = controls
         self.parameters = CombinedValues(
@@ -79,7 +91,7 @@ class _CombinedControlAdapter[
         results = {
             name: control.initial()
             if (sensors := sensor_values.values.get(name)) is None
-            else control.control(cast(ThrsValues, sensors))
+            else control.control(sensors)
             for name, control in self._controls.items()
         }
         return (
@@ -102,14 +114,13 @@ class _CombinedControlAdapter[
 
 
 class _CombinedAlarmsAdapter:
-    def __init__(self, alarms: dict[str, BaseAlarms]):
+    def __init__(self, alarms: Mapping[str, BaseAlarms]):
         self._alarms = alarms
 
     def check(
         self,
         sensor_values: CombinedValues,
         control_values: CombinedValues,
-        parameters: CombinedValues,
         controller_state: CombinedValues,
     ) -> list[Any]:
         return [
@@ -117,9 +128,8 @@ class _CombinedAlarmsAdapter:
             for name, alarms in self._alarms.items()
             if (s := sensor_values.values.get(name)) is not None
             and (c := control_values.values.get(name)) is not None
-            and (p := parameters.values.get(name)) is not None
             and (cs := controller_state.values.get(name)) is not None
-            for result in alarms.check(s, c, p, cs)
+            for result in alarms.check(s, c, cs)
         ]
 
 
@@ -142,23 +152,14 @@ class SimulationTestRunner[
         simulation: Simulation[S, C, I, O],
         simulation_inputs: I,
         control: Control[S, C, P, M, CS]
-        | dict[str, Control[ThrsValues, ThrsValues, Any, Any, ThrsValues]],
-        alarms: BaseAlarms | dict[str, BaseAlarms],
+        | Mapping[str, Control[Any, Any, Any, Any, Any]],
+        alarms: BaseAlarms | Mapping[str, BaseAlarms],
     ):
-        if isinstance(control, dict):
-            combined_control = cast(
-                Control,
-                _CombinedControlAdapter(
-                    cast(
-                        dict[
-                            str, Control[ThrsValues, ThrsValues, Any, Any, ThrsValues]
-                        ],
-                        control,
-                    )
-                ),
-            )
+        if isinstance(control, Mapping):
+            combined_control = cast(Control, _CombinedControlAdapter(control))
             combined_alarms = cast(
-                BaseAlarms, _CombinedAlarmsAdapter(cast(dict[str, BaseAlarms], alarms))
+                BaseAlarms,
+                _CombinedAlarmsAdapter(cast(Mapping[str, BaseAlarms], alarms)),
             )
             self._control = combined_control
             self._alarms = combined_alarms
@@ -202,18 +203,17 @@ class SimulationTestRunner[
         self._alarms.check(
             result.sensor_values,
             self._control_values,
-            self._control.parameters,
             self._controller_state,
         )
 
         if collector is not None:
-            collector.collect(  # TODO: fix the fmu key mapping here, this is just a quick fix to get the tests working
+            collector.collect(
                 {
-                    **_flatten_for_collector(result.sensor_values),
-                    **_flatten_for_collector(result.control_values),
-                    **_flatten_for_collector(self._controller_state),
-                    **_flatten_for_collector(result.simulation_outputs),
-                    **_flatten_for_collector(result.simulation_inputs),
+                    **flatten_model_values(result.sensor_values, _all_keys),
+                    **flatten_model_values(result.control_values, _all_keys),
+                    **flatten_controller_state(self._controller_state),
+                    **flatten_model_values(result.simulation_outputs, _all_keys),
+                    **flatten_model_values(result.simulation_inputs, _all_keys),
                 },
                 str(self._control.mode),
                 result.timestamp,

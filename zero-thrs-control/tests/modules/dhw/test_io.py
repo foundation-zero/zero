@@ -8,16 +8,16 @@ from tests.modules.conftest import (
     compare_modelica_names,
     compare_yard_tags,
 )
-from thrs.input_output.base import Stamped
-from thrs.input_output.definitions import control, sensor
-from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
-from thrs.input_output.fmu_mapping import included_in_fmu
-from thrs.input_output.modules.dhw import (
+from thrs.control.modules.dhw.io import (
     DhwControlValues,
     DhwSensorValues,
     DhwSimulationInputs,
     DhwSimulationOutputs,
 )
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions import control, sensor
+from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
+from thrs.input_output.fmu_mapping import included_in_fmu
 from thrs.simulation.models.fmu_paths import dhw_path
 
 

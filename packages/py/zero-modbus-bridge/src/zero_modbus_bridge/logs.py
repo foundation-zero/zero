@@ -8,7 +8,7 @@ zero-atpx-nmea has a copy of this module.
 """
 
 import logging
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from contextvars import ContextVar
 
@@ -16,7 +16,7 @@ _broker_name: ContextVar[str | None] = ContextVar("broker_name", default=None)
 
 
 @contextmanager
-def log_prefix(broker_name: str) -> Iterator[None]:
+def log_prefix(broker_name: str) -> Generator[None]:
     """zmqtt lines logged in this block, or by tasks started in it, start with the name."""
     token = _broker_name.set(broker_name)
     try:

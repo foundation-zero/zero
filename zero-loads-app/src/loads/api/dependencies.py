@@ -159,19 +159,19 @@ async def get_context(
         messaging=messaging,
         sessionmanager=sessionmanager,
         reference_by_case_input_loader=DataLoader(
-            load_fn=lambda keys: get_reference_values(keys, context),  # type: ignore
+            load_fn=lambda keys: get_reference_values(keys, context),
             cache=False,
         ),
         reference_by_case_id_loader=DataLoader(
-            load_fn=lambda keys: get_reference_values_by_case_id(keys, context),  # type: ignore
+            load_fn=lambda keys: get_reference_values_by_case_id(keys, context),
             cache=False,
         ),
         sails_by_case_id_loader=DataLoader(
-            load_fn=lambda keys: get_sails_by_case_id(keys, context),  # type: ignore
+            load_fn=lambda keys: get_sails_by_case_id(keys, context),
             cache=False,
         ),
         variables_loader=DataLoader(
-            load_fn=lambda keys: get_variables(keys, context),  # type: ignore
+            load_fn=lambda keys: get_variables(keys, context),
             cache=False,
         ),
     )

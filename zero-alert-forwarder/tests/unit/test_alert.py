@@ -22,7 +22,7 @@ def test_severity(priority: str, severity: int):
 
 
 def test_unknown_values_do_not_fail_validation():
-    alert = make_alert(priority="SomethingNew", update="Rebooted")  # type: ignore[arg-type]
+    alert = make_alert(priority="SomethingNew", update="Rebooted")  # pyrefly: ignore[bad-argument-type]
     assert alert.priority is AlertPriority.UNKNOWN
     assert alert.update is AlertUpdate.UNKNOWN
 

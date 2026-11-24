@@ -2,21 +2,21 @@ from typing import Annotated
 
 from pydantic import computed_field
 
+from thrs.control.modules.consumers.io import (
+    ConsumersSimulationOutputs,
+)
+from thrs.control.modules.pcm.io import (
+    PcmSimulationOutputs,
+)
+from thrs.control.modules.pvt.io import (
+    PvtSimulationOutputs,
+)
+from thrs.control.modules.thrusters.io import (
+    ThrustersSimulationOutputs,
+)
 from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
 from thrs.input_output.definitions import sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
-from thrs.input_output.modules.consumers import (
-    ConsumersSimulationOutputs,
-)
-from thrs.input_output.modules.pcm import (
-    PcmSimulationOutputs,
-)
-from thrs.input_output.modules.pvt import (
-    PvtSimulationOutputs,
-)
-from thrs.input_output.modules.thrusters import (
-    ThrustersSimulationOutputs,
-)
 
 
 class HighTemperatureSimulationInputs(ThrsValues):

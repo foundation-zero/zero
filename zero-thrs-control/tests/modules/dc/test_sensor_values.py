@@ -1,6 +1,6 @@
+from thrs.control.modules.dc.io import DcSensorValues
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions import sensor
-from thrs.input_output.modules.dc import DcSensorValues
 
 
 def _converter(

@@ -8,7 +8,7 @@ from pytest import fixture
 from tests.helpers.collector import PolarsCollector
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.input_output.modules.dhw import (
+from thrs.control.modules.dhw.io import (
     DhwControlValues,
     DhwSensorValues,
     DhwSimulationInputs,
