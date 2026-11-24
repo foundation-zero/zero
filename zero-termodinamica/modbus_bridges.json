@@ -173,7 +173,7 @@
         ],
         "extra_fields": {
           "reg_split": "03",
-          "room": "Guest cabin (Aft SB)"
+          "room": "Aft stbd guest cabin"
         }
       },
       {
@@ -231,7 +231,7 @@
         ],
         "extra_fields": {
           "reg_split": "04",
-          "room": "Bathroom (Aft SB)"
+          "room": "Master bathroom stbd"
         }
       },
       {
@@ -289,7 +289,7 @@
         ],
         "extra_fields": {
           "reg_split": "05",
-          "room": "Guest cabin (PS)"
+          "room": "Fwd port guest cabin Fr.55"
         }
       },
       {
@@ -347,7 +347,7 @@
         ],
         "extra_fields": {
           "reg_split": "06",
-          "room": "Master bathroom cabin (PS)"
+          "room": "Aft port guest cabin"
         }
       },
       {
@@ -405,7 +405,7 @@
         ],
         "extra_fields": {
           "reg_split": "07",
-          "room": "Master cabin (PS)"
+          "room": "Master bathroom port"
         }
       },
       {
@@ -463,7 +463,7 @@
         ],
         "extra_fields": {
           "reg_split": "08",
-          "room": "Master cabin (SB)"
+          "room": "Master cabin port"
         }
       },
       {
@@ -521,7 +521,7 @@
         ],
         "extra_fields": {
           "reg_split": "09",
-          "room": "Guest cabin (SB)"
+          "room": "Master deckhouse"
         }
       },
       {
@@ -579,7 +579,7 @@
         ],
         "extra_fields": {
           "reg_split": "10",
-          "room": "Office area (Fwd)"
+          "room": "Office"
         }
       },
       {
@@ -637,7 +637,7 @@
         ],
         "extra_fields": {
           "reg_split": "11",
-          "room": "Guest cabin (Fr.42 Mid PS)"
+          "room": "Port guest cabin Fr.42"
         }
       },
       {
@@ -695,7 +695,7 @@
         ],
         "extra_fields": {
           "reg_split": "12",
-          "room": "Mission Room"
+          "room": "Mission room"
         }
       },
       {
@@ -869,7 +869,7 @@
         ],
         "extra_fields": {
           "reg_split": "15",
-          "room": "Crew area (Fwd)"
+          "room": "Mid port crew cabin"
         }
       },
       {
@@ -927,7 +927,7 @@
         ],
         "extra_fields": {
           "reg_split": "16",
-          "room": "Crew cabin (Fwd PS)"
+          "room": "Fwd port crew cabin"
         }
       },
       {
@@ -1043,7 +1043,7 @@
         ],
         "extra_fields": {
           "reg_split": "18",
-          "room": "Galley"
+          "room": "Aft galley"
         }
       },
       {
@@ -1159,7 +1159,7 @@
         ],
         "extra_fields": {
           "reg_split": "20",
-          "room": "Crew cabin (Aft)"
+          "room": "Aft stbd crew cabin"
         }
       },
       {
@@ -1217,7 +1217,7 @@
         ],
         "extra_fields": {
           "reg_split": "21",
-          "room": "Crew cabin (Mid SB)"
+          "room": "Mid-ship stbd crew cabin"
         }
       },
       {
@@ -1275,7 +1275,7 @@
         ],
         "extra_fields": {
           "reg_split": "22",
-          "room": "Crew cabin (SB)"
+          "room": "Fwd stbd crew cabin"
         }
       },
       {
@@ -1333,7 +1333,7 @@
         ],
         "extra_fields": {
           "reg_split": "23",
-          "room": "Main deckhouse"
+          "room": "Main deckhouse fwd stbd"
         }
       },
       {
@@ -1391,7 +1391,7 @@
         ],
         "extra_fields": {
           "reg_split": "24",
-          "room": "Aft area"
+          "room": "Aft area air handler"
         }
       },
       {
@@ -1449,7 +1449,7 @@
         ],
         "extra_fields": {
           "reg_split": "25",
-          "room": "Aft area (Slave)"
+          "room": "Aft area extraction"
         }
       },
       {
@@ -1507,7 +1507,7 @@
         ],
         "extra_fields": {
           "reg_split": "26",
-          "room": "Office area (Fwd)"
+          "room": "Fwd area air handler"
         }
       },
       {
@@ -1565,7 +1565,7 @@
         ],
         "extra_fields": {
           "reg_split": "27",
-          "room": "Guest cabin (Fr.42 Mid PS)"
+          "room": "Fwd area extraction"
         }
       },
       {
@@ -1623,7 +1623,7 @@
         ],
         "extra_fields": {
           "reg_split": "28",
-          "room": "Guest cabin (FR.55 Aft PS)"
+          "room": "Rack"
         }
       },
       {
@@ -1739,65 +1739,7 @@
         ],
         "extra_fields": {
           "reg_split": "30",
-          "room": "HM10 Backup Cooling Panels"
-        }
-      },
-      {
-        "topic": "termodinamica/ac/31",
-        "model": "air_conditioning_room",
-        "modbus_fields": [
-          {
-            "modbus_register": 500,
-            "field_name": "power",
-            "description": "Unit Power On/Off 0=OFF 1=ON",
-            "scale_factor": 1.0
-          },
-          {
-            "modbus_register": 501,
-            "field_name": "setpoint_room_temperature",
-            "description": "Unit SetPoint: (hundredths of degrees Celsius) es: 2350 = 23.50 °C -> Range: 18..30°C\"",
-            "scale_factor": 0.01
-          },
-          {
-            "modbus_register": 502,
-            "field_name": "fan_speed",
-            "description": "Unit Fan Speed (with Syxthsense): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 7=Vel.5; 8=Vel.6; 9=Vel.Auto Unit Fan Speed (in other case): 1=Vel.Night; 2=Vel.1; 3=Vel.2; 4=Vel.3; 5=Vel.4; 6=Vel.5; 7=Vel.6; 8=Vel.7; 9=Vel.Auto",
-            "scale_factor": 1.0
-          },
-          {
-            "modbus_register": 503,
-            "field_name": "air_temperature_in",
-            "description": "Unit Input Air Temperature: (hundredths of degrees Celsius) es: 2350 = 23.50 °C",
-            "scale_factor": 0.01
-          },
-          {
-            "modbus_register": 504,
-            "field_name": "status",
-            "description": "Diagnostic Split Comunication Status: Bit 0=Unit not connected on the bus; Bit 1=Unit connected on the bus; Bit 2=Unit connected on the bus but offline; Bit 3=Unit in error.",
-            "scale_factor": 1.0
-          },
-          {
-            "modbus_register": 505,
-            "field_name": "ahu_mode",
-            "description": "AHU State 16 = Ventilation 32=Automatic ",
-            "scale_factor": 1.0
-          },
-          {
-            "modbus_register": 506,
-            "field_name": "heater_power",
-            "description": "Heater State 0 = OFF; 1 = ON ",
-            "scale_factor": 1.0
-          },
-          {
-            "modbus_register": 507,
-            "field_name": "humidity",
-            "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
-          }
-        ],
-        "extra_fields": {
-          "reg_split": "31",
-          "room": "Crew cabin (Fwd SB)"
+          "room": "HM10 backup cooling panels"
         }
       },
       {
@@ -1968,7 +1910,8 @@
         ],
         "extra_fields": {
           "bridge": "1",
-          "unit": "02"
+          "unit": "02",
+          "room": "Main deckhouse"
         }
       },
       {
@@ -2044,7 +1987,8 @@
         ],
         "extra_fields": {
           "bridge": "1",
-          "unit": "03"
+          "unit": "03",
+          "room": "Office"
         }
       },
       {
@@ -2120,7 +2064,8 @@
         ],
         "extra_fields": {
           "bridge": "1",
-          "unit": "04"
+          "unit": "04",
+          "room": "Galley"
         }
       },
       {
@@ -2196,7 +2141,8 @@
         ],
         "extra_fields": {
           "bridge": "1",
-          "unit": "05"
+          "unit": "05",
+          "room": "Guest Fr.42 port"
         }
       },
       {
@@ -2272,7 +2218,8 @@
         ],
         "extra_fields": {
           "bridge": "1",
-          "unit": "06"
+          "unit": "06",
+          "room": "Guest Fr.38 port"
         }
       },
       {
@@ -2348,7 +2295,8 @@
         ],
         "extra_fields": {
           "bridge": "1",
-          "unit": "07"
+          "unit": "07",
+          "room": "Crew mess"
         }
       },
       {
@@ -2424,7 +2372,8 @@
         ],
         "extra_fields": {
           "bridge": "1",
-          "unit": "08"
+          "unit": "08",
+          "room": "Laundry"
         }
       },
       {
@@ -2500,7 +2449,8 @@
         ],
         "extra_fields": {
           "bridge": "1",
-          "unit": "09"
+          "unit": "09",
+          "room": "Captain cabin"
         }
       },
       {
@@ -2576,7 +2526,8 @@
         ],
         "extra_fields": {
           "bridge": "1",
-          "unit": "10"
+          "unit": "10",
+          "room": "Crew cabin 1"
         }
       },
       {
@@ -2652,7 +2603,8 @@
         ],
         "extra_fields": {
           "bridge": "1",
-          "unit": "11"
+          "unit": "11",
+          "room": "Crew cabin 2"
         }
       },
       {
@@ -2728,7 +2680,8 @@
         ],
         "extra_fields": {
           "bridge": "1",
-          "unit": "12"
+          "unit": "12",
+          "room": "Crew cabin 3"
         }
       },
       {
@@ -2804,7 +2757,8 @@
         ],
         "extra_fields": {
           "bridge": "1",
-          "unit": "13"
+          "unit": "13",
+          "room": "Crew cabin 4"
         }
       },
       {
@@ -2880,7 +2834,8 @@
         ],
         "extra_fields": {
           "bridge": "1",
-          "unit": "14"
+          "unit": "14",
+          "room": "Crew cabin 5"
         }
       }
     ]
@@ -2961,7 +2916,8 @@
         ],
         "extra_fields": {
           "bridge": "2",
-          "unit": "02"
+          "unit": "02",
+          "room": "Watersport storage"
         }
       },
       {
@@ -3037,7 +2993,8 @@
         ],
         "extra_fields": {
           "bridge": "2",
-          "unit": "03"
+          "unit": "03",
+          "room": "Lower salon"
         }
       },
       {
@@ -3113,7 +3070,8 @@
         ],
         "extra_fields": {
           "bridge": "2",
-          "unit": "04"
+          "unit": "04",
+          "room": "Guest aft stbd"
         }
       },
       {
@@ -3189,7 +3147,8 @@
         ],
         "extra_fields": {
           "bridge": "2",
-          "unit": "05"
+          "unit": "05",
+          "room": "Day head"
         }
       },
       {
@@ -3265,7 +3224,8 @@
         ],
         "extra_fields": {
           "bridge": "2",
-          "unit": "06"
+          "unit": "06",
+          "room": "Master cabin 1"
         }
       },
       {
@@ -3341,7 +3301,8 @@
         ],
         "extra_fields": {
           "bridge": "2",
-          "unit": "07"
+          "unit": "07",
+          "room": "Master deckhouse"
         }
       },
       {
@@ -3417,7 +3378,8 @@
         ],
         "extra_fields": {
           "bridge": "2",
-          "unit": "08"
+          "unit": "08",
+          "room": "Guest Fr.55 port"
         }
       },
       {
@@ -3493,7 +3455,8 @@
         ],
         "extra_fields": {
           "bridge": "2",
-          "unit": "09"
+          "unit": "09",
+          "room": "Guest aft port"
         }
       }
     ]

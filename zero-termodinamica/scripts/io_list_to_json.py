@@ -8,38 +8,40 @@ import polars as pl
 SCRIPTS_FOLDER = Path(__file__).parent
 EXCEL_PATH = SCRIPTS_FOLDER / "../docs/Vent en AC lijst Termodynamica.xls"
 
+# Room per AC unit address, from docs/Termodinamica_Vitters_Wiring
+# schematic_REV.11_A.pdf (sheet 1). Some units drive slaves on the same address:
+# 8.1 (master cabin stbd), 18.1 (fwd galley) and 23.1-23.3 (main deckhouse).
 REG_ROOM_MAPPING = {
     "01": "Tech room",
     "02": "Lounge",
-    "03": "Guest cabin (Aft SB)",
-    "04": "Bathroom (Aft SB)",
-    "05": "Guest cabin (PS)",
-    "06": "Master bathroom cabin (PS)",
-    "07": "Master cabin (PS)",
-    "08": "Master cabin (SB)",
-    "09": "Guest cabin (SB)",
-    "10": "Office area (Fwd)",
-    "11": "Guest cabin (Fr.42 Mid PS)",
-    "12": "Mission Room",
+    "03": "Aft stbd guest cabin",
+    "04": "Master bathroom stbd",
+    "05": "Fwd port guest cabin Fr.55",
+    "06": "Aft port guest cabin",
+    "07": "Master bathroom port",
+    "08": "Master cabin port",
+    "09": "Master deckhouse",
+    "10": "Office",
+    "11": "Port guest cabin Fr.42",
+    "12": "Mission room",
     "13": "Laundry",
     "14": "Captain cabin",
-    "15": "Crew area (Fwd)",
-    "16": "Crew cabin (Fwd PS)",
+    "15": "Mid port crew cabin",
+    "16": "Fwd port crew cabin",
     "17": "Watersport storage",
-    "18": "Galley",
+    "18": "Aft galley",
     "19": "Crew mess",
-    "20": "Crew cabin (Aft)",
-    "21": "Crew cabin (Mid SB)",
-    "22": "Crew cabin (SB)",
-    "23": "Main deckhouse",
-    "24": "Aft area",
-    "25": "Aft area (Slave)",
-    "26": "Office area (Fwd)",
-    "27": "Guest cabin (Fr.42 Mid PS)",
-    "28": "Guest cabin (FR.55 Aft PS)",
+    "20": "Aft stbd crew cabin",
+    "21": "Mid-ship stbd crew cabin",
+    "22": "Fwd stbd crew cabin",
+    "23": "Main deckhouse fwd stbd",
+    "24": "Aft area air handler",
+    "25": "Aft area extraction",
+    "26": "Fwd area air handler",
+    "27": "Fwd area extraction",
+    "28": "Rack",
     "29": "Navcom",
-    "30": "HM10 Backup Cooling Panels",
-    "31": "Crew cabin (Fwd SB)",
+    "30": "HM10 backup cooling panels",
 }
 
 
@@ -92,6 +94,8 @@ def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> list[dict]:
     result: list[dict] = []
     for name, data in df.group_by("reg_split"):
         reg_split = str(name[0])
+        if reg_split not in REG_ROOM_MAPPING:
+            continue  # not on the wiring schematic
         room = REG_ROOM_MAPPING[reg_split]
         fields = [
             {
@@ -155,11 +159,35 @@ def load_ac_misc_topic(
 
 AC_UNIT_ID = 32
 # Two identical DVS bridges of 31 slots each. Only these slots hold an air
-# handler (read from the live bridges on 2026-11-24); the others read all zero.
+# handler: docs/Termodinamica_Vitters_Wiring schematic_REV.11_A.pdf (sheet 2),
+# matching the live bridges on 2026-11-24, where the other slots read all zero.
 VENTILATION_UNIT_IDS = {"1": 33, "2": 34}
-VENTILATION_SLOTS = {
-    "1": [f"{slot:02}" for slot in range(2, 15)],
-    "2": [f"{slot:02}" for slot in range(2, 10)],
+VENTILATION_ROOMS = {
+    "1": {
+        "02": "Main deckhouse",
+        "03": "Office",
+        "04": "Galley",
+        "05": "Guest Fr.42 port",
+        "06": "Guest Fr.38 port",
+        "07": "Crew mess",
+        "08": "Laundry",
+        "09": "Captain cabin",
+        "10": "Crew cabin 1",
+        "11": "Crew cabin 2",
+        "12": "Crew cabin 3",
+        "13": "Crew cabin 4",
+        "14": "Crew cabin 5",
+    },
+    "2": {
+        "02": "Watersport storage",
+        "03": "Lower salon",
+        "04": "Guest aft stbd",
+        "05": "Day head",
+        "06": "Master cabin 1",
+        "07": "Master deckhouse",
+        "08": "Guest Fr.55 port",
+        "09": "Guest aft port",
+    },
 }
 HEAT_PUMP_UNIT_ID = 35
 # Each cold room sits on its own slave slot; its block starts at 200 + 10 * (slot - 1).
@@ -264,10 +292,14 @@ def select_ventilation_topics(df: pl.DataFrame, bridge: str) -> list[dict]:
                 }
                 for d in data.iter_rows(named=True)
             ],
-            "extra_fields": {"bridge": bridge, "unit": unit},
+            "extra_fields": {
+                "bridge": bridge,
+                "unit": unit,
+                "room": VENTILATION_ROOMS[bridge][unit],
+            },
         }
         for (unit,), data in df.group_by("unit", maintain_order=True)
-        if unit in VENTILATION_SLOTS[bridge]
+        if unit in VENTILATION_ROOMS[bridge]
     ]
 
 

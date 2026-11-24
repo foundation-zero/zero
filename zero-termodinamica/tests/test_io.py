@@ -15,10 +15,11 @@ from zero_termodinamica.io import (
 
 def test_io():
     topics = read_modbus_topics()
-    # AC: 31 rooms + ac-misc; ventilation: the populated slots of both bridges;
+    # AC: the 30 units on the wiring schematic + ac-misc; ventilation: the
+    # populated slots of both bridges;
     # heat pump, fridge and freezer
     assert Counter(t.unit_id for t in topics) == {
-        32: 32,
+        32: 31,
         33: 13,
         34: 8,
         35: 1,
@@ -38,7 +39,7 @@ def test_ventilation_topics_follow_dvs_register_map():
     unit_5 = next(t for t in ventilation if t.topic == "termodinamica/ventilation/2/05")
     assert unit_5.model is VentilationUnit
     assert unit_5.start_register == 130
-    assert unit_5.extra_fields == {"bridge": "2", "unit": "05"}
+    assert unit_5.extra_fields == {"bridge": "2", "unit": "05", "room": "Day head"}
 
 
 def test_heat_pump_topic_reads_control_registers():
@@ -91,3 +92,16 @@ def test_ac_room_temperatures_are_in_degrees_celsius():
 
     assert payload.setpoint_room_temperature == 22.0
     assert payload.air_temperature_in == 18.9
+    assert payload.room == "Tech room"
+
+
+def test_ventilation_payload_names_its_room():
+    unit = next(
+        t for t in read_modbus_topics() if t.topic == "termodinamica/ventilation/2/03"
+    )
+
+    payload = ModbusReader(
+        MagicMock(**{"read_holding_registers.return_value": [0]}), [unit]
+    ).read_topic(unit)
+
+    assert (payload.bridge, payload.unit, payload.room) == ("2", "03", "Lower salon")

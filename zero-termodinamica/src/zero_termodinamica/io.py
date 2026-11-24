@@ -20,6 +20,8 @@ class AirConditioningRoom(BaseModel):
     ahu_mode: Annotated[int | None, ModbusField(offset=5)]
     heater_power: Annotated[int | None, ModbusField(offset=6)]
     humidity: Annotated[int | None, ModbusField(offset=7)]
+    reg_split: str | None = None
+    room: str | None = None
 
 
 class ACMisc(BaseModel):
@@ -79,6 +81,9 @@ class VentilationUnit(BaseModel):
         float | None, ModbusField(offset=9, scale_factor=0.1)
     ]
     errors: Annotated[int | None, ModbusField(offset=10)]
+    bridge: str | None = None
+    unit: str | None = None
+    room: str | None = None
 
 
 class HeatPump(BaseModel):
