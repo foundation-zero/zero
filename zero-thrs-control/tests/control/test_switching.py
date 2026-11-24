@@ -218,3 +218,14 @@ def test_advisory_disable_logs_warning_on_falling_edge_only(
         )
 
     assert caplog.records == []
+
+
+def test_idle_state_has_the_mode_once_the_automatic_control_runs(switching):
+    switching_control = switching()
+    switching_control.switch_mode(AutomationMode(mode="automatic"))
+    # Not run yet: no mode, as while manual.
+    assert switching_control.idle_state().control_mode is None
+
+    switching_control.control(simple_advisory_values(flow=8.0))
+
+    assert switching_control.idle_state().control_mode == SimpleMode()

@@ -87,12 +87,15 @@ class Switching[
         """The controller state while the automatic control does not run.
 
         That is while manual, or without sensor values: the automatic control's
-        initial state, with the current parameters and modes.
+        initial state, with the current parameters and modes. It has the automatic
+        control's mode only once that has run, as a fresh one is built on its first
+        tick: until then it has none, as while manual.
         """
         _, controller_state = self._automatic_control.initial()
         controller_state.parameters = self._parameters
+        running = self._mode == "automatic" and self._last_mode == "automatic"
         controller_state.control_mode = (
-            self._automatic_control.mode if self._mode == "automatic" else None
+            self._automatic_control.mode if running else None
         )
         controller_state.automation_mode = AutomationMode(mode=self._mode)
         controller_state.manual_values = self.manual_controls
