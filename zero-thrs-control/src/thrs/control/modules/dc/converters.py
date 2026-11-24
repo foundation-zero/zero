@@ -42,16 +42,6 @@ class ConvertersControllerState(ThrsValues):
     ]
 
 
-def _INITIAL_CONVERTERS_CONTROLLER_STATE(  # noqa: N802
-    timestamp: datetime,
-) -> ConvertersControllerState:
-
-    return ConvertersControllerState(
-        converters_pump_controller=PidController.zero(timestamp),
-        converters_warmup_mix_controller=PidController.zero(timestamp),
-    )
-
-
 class ConvertersSensorValues(ThrsValues):
     pump: sensor.Pump
     temperature_supply: sensor.TemperatureSensor
@@ -195,7 +185,7 @@ class ConvertersControl(
     def initial(self) -> tuple[ConvertersControlValues, ConvertersControllerState]:
         return (
             self._current_values,
-            _INITIAL_CONVERTERS_CONTROLLER_STATE(self._time()),
+            ConvertersControllerState.zero(self._time()),
         )
 
     def _close_circuit(self):

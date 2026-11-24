@@ -4,7 +4,6 @@ from datetime import datetime
 from thrs.classes.control import Control
 from thrs.control.controllers import PidController
 from thrs.control.modules.pvt.group import (
-    _INITIAL_PVT_GROUP_CONTROLLER_STATE,
     IDLE_MIX_POSITION,
     PvtGroupControl,
     PvtGroupControllerState,
@@ -63,21 +62,6 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PvtControlValues:  # noqa: N
                 timestamp=timestamp,
             )
         ),
-    )
-
-
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> PvtControllerState:  # noqa: N802
-    pvt_group_state = _INITIAL_PVT_GROUP_CONTROLLER_STATE(timestamp)
-    return PvtControllerState(
-        pvt_heat_dump_controller=PidController.zero(timestamp),
-        pvt_main_aft_warmup_mix_controller=pvt_group_state.pvt_group_warmup_mix_controller,
-        pvt_main_aft_pump_controller=pvt_group_state.pvt_group_pump_controller,
-        pvt_main_fwd_warmup_mix_controller=pvt_group_state.pvt_group_warmup_mix_controller,
-        pvt_main_fwd_pump_controller=pvt_group_state.pvt_group_pump_controller,
-        pvt_owners_warmup_mix_controller=pvt_group_state.pvt_group_warmup_mix_controller,
-        pvt_owners_pump_controller=pvt_group_state.pvt_group_pump_controller,
-        parameters=PvtParameters(),
-        control_mode=None,
     )
 
 
@@ -191,7 +175,7 @@ class PvtControl(
     def initial(self) -> tuple[PvtControlValues, PvtControllerState]:
         return (
             _INITIAL_CONTROL_VALUES(self._time()),
-            _INITIAL_CONTROLLER_STATE(self._time()),
+            PvtControllerState.zero(self._time()),
         )
 
     def update_parameters(self, parameters: PvtParameters):

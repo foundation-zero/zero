@@ -1,6 +1,4 @@
-from datetime import UTC, datetime
-
-from thrs.control.modules.dhw.control import _INITIAL_CONTROLLER_STATE, DhwAlarms
+from thrs.control.modules.dhw.control import DhwAlarms
 from thrs.control.modules.dhw.io import DhwControlValues, DhwSensorValues
 from thrs.control.modules.dhw.state import DhwControllerState, DhwParameters
 from thrs.input_output.definitions.units import TankState
@@ -11,7 +9,7 @@ WARNING_CODE = "Tank in use below minimum temperature"
 def controller_state(
     tank1_state: TankState, parameters: DhwParameters
 ) -> DhwControllerState:
-    state = _INITIAL_CONTROLLER_STATE(datetime.now(UTC))
+    state = DhwControllerState.zero()
     state.parameters = parameters
     state.dhw_tanks_controller.tank1_state.value = tank1_state
     state.dhw_tanks_controller.tank2_state.value = TankState.STANDBY

@@ -22,7 +22,6 @@ from thrs.input_output.definitions.controllers import (
     PCM_HEATING_ELEMENT_POWER,
     PCM_MODULE1_FRESHWATER_PURGE_VOLUME,
     PCM_MODULE1_PURGE_VOLUME,
-    PcmChargeControllerValues,
     PcmChargeStatus,
     PcmChargingState,
 )
@@ -64,33 +63,6 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:  # noqa: N
             setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
         ),
         pcm_module1=Pcm(on=Stamped(value=False, timestamp=timestamp)),
-    )
-
-
-def _INITIAL_CHARGE_CONTROLLER_VALUES(  # noqa: N802
-    timestamp: datetime,
-) -> PcmChargeControllerValues:
-    return PcmChargeControllerValues(
-        charge=Stamped(value=None, timestamp=timestamp),
-        energy=Stamped(value=None, timestamp=timestamp),
-        charge_status=Stamped(value=PcmChargeStatus.UNKNOWN, timestamp=timestamp),
-        charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
-    )
-
-
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> PcmControllerState:  # noqa: N802
-    return PcmControllerState(
-        pcm_pump_flow_controller=PidController.zero(timestamp),
-        pcm_module1_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
-        pcm_module2_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
-        pcm_module3_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
-        pcm_module4_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
-        pcm_module1_flow_controller=PidController.zero(timestamp),
-        pcm_module2_flow_controller=PidController.zero(timestamp),
-        pcm_module3_flow_controller=PidController.zero(timestamp),
-        pcm_module4_flow_controller=PidController.zero(timestamp),
-        parameters=PcmParameters(),
-        control_mode=None,
     )
 
 
@@ -271,7 +243,7 @@ class PcmControl(
     def initial(self) -> tuple[PcmControlValues, PcmControllerState]:
         return (
             _INITIAL_CONTROL_VALUES(self._time()),
-            _INITIAL_CONTROLLER_STATE(self._time()),
+            PcmControllerState.zero(self._time()),
         )
 
     def update_parameters(self, parameters: PcmParameters):

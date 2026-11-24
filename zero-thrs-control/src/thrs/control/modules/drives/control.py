@@ -62,20 +62,6 @@ def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DrivesControlValues:  # noqa
     )
 
 
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DrivesControllerState:  # noqa: N802
-
-    return DrivesControllerState(
-        drives_heat_dump_controller=PidController.zero(timestamp),
-        drives_recovery_mix_controller=PidController.zero(timestamp),
-        drives_pump_controller_shorepower=PidController.zero(timestamp),
-        drives_pump_controller_propulsion=PidController.zero(timestamp),
-        drives_aft_flow_controller=PidController.zero(timestamp),
-        drives_fwd_flow_controller=PidController.zero(timestamp),
-        parameters=DrivesParameters(),
-        control_mode=None,
-    )
-
-
 class DrivesControl(
     Control[
         DrivesSensorValues,
@@ -253,7 +239,7 @@ class DrivesControl(
     def initial(self) -> tuple[DrivesControlValues, DrivesControllerState]:
         return (
             _INITIAL_CONTROL_VALUES(self._time()),
-            _INITIAL_CONTROLLER_STATE(self._time()),
+            DrivesControllerState.zero(self._time()),
         )
 
     def control(
