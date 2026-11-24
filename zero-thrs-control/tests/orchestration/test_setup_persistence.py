@@ -5,7 +5,6 @@ from unittest import mock
 import pytest
 from sqlalchemy.exc import OperationalError
 
-from tests.helpers.modules import ConfigurableParameters, make_module
 from thrs.classes.database import PostgresDatabase
 from thrs.classes.persistence.engine import (
     NoopPersistentEngine,
@@ -70,11 +69,8 @@ async def test_falls_back_to_noop_when_postgres_is_unreachable(
     assert isinstance(manager._persistence_engine, NoopPersistentEngine)
     assert "not reachable" in caplog.text
 
-    # And, concretely: no restore takes place - the module keeps its defaults.
-    module = make_module()
-    assert await manager.restore(module) is False
-    _, state = await module.tick(None)
-    assert state.parameters == ConfigurableParameters()
+    # And, concretely: nothing is loaded, so modules start from their defaults.
+    assert await manager.load("dhw") is None
 
 
 async def test_uses_postgres_engine_when_reachable():
@@ -93,16 +89,6 @@ async def test_uses_the_persist_managers_own_default_heartbeat():
     manager = await setup_persistence_manager(database, module_persistence_enabled=True)
 
     assert manager._heartbeat == timedelta(seconds=60)
-
-
-async def test_persistence_manager_defaults_to_not_applying_module_defaults_on_corrupt_database():
-    """`setup_persistence_manager` doesn't expose this as a setting - it always
-    builds a `PersistManager` with that option at its own default (False)."""
-    database = _fake_database(_WorkingSessionFactory())
-
-    manager = await setup_persistence_manager(database, module_persistence_enabled=True)
-
-    assert manager._apply_module_defaults_on_corrupt_database is False
 
 
 async def test_stays_noop_when_persistence_disabled_even_if_postgres_is_up():

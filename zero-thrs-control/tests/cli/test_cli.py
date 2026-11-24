@@ -3,12 +3,10 @@ import logging
 from asyncio import create_task, sleep
 from contextlib import suppress
 from datetime import datetime, timedelta
-from unittest import mock
 
 import pytest
 from aiomqtt import Client
 
-from thrs.classes.database import PostgresDatabase
 from thrs.classes.persistence.engine import NoopPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
 from thrs.control.modules.thrusters.io import (
@@ -17,7 +15,6 @@ from thrs.control.modules.thrusters.io import (
     ThrustersSimulationOutputs,
 )
 from thrs.control.modules.thrusters.state import ThrustersParameters
-from thrs.control.state import AutomationMode
 from thrs.input_output.definitions.wire_context import AMCS_WRITE_CONTEXT
 from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector
@@ -84,11 +81,10 @@ async def request_status(
     )
 
 
-def setup_lockstep(
+async def setup_lockstep(
     mode: Mode,
     settings: Config,
     mqtt_client: Client,
-    database: PostgresDatabase | None = None,
 ) -> Runtime:
     """Test helper mirroring LockstepCmd.setup() from the CLI."""
     connector = MqttConnector(mqtt_client)
@@ -103,19 +99,16 @@ def setup_lockstep(
         mode.simulation_description,
     )
 
-    control_modules = setup_control_modules(
+    persistence = PersistManager(NoopPersistentEngine())
+    control_modules = await setup_control_modules(
         connector,
         settings,
         mode.control_modules,
         time_fn=simulation_module.time,
-        database=database or mock.Mock(spec=PostgresDatabase),
+        persistence=persistence,
         publish_qos=0,
     )
 
-    for module in control_modules:
-        module.set_automation_mode(AutomationMode(mode="automatic"))
-
-    persistence = PersistManager(NoopPersistentEngine())
     runner = LockstepRunner(control_modules, simulation_module, persistence)
 
     directives_channels = DirectivesChannels(connector, settings)
@@ -141,7 +134,7 @@ async def test_simulation_status_goes_available_running_available(
 ):
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
 
-    runtime = setup_lockstep(
+    runtime = await setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
@@ -205,7 +198,7 @@ async def test_higher_playback_rate_publishes_more_outputs(
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
-    runtime = setup_lockstep(
+    runtime = await setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
@@ -281,7 +274,7 @@ async def test_step_directive_advances_and_publishes(
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
-    runtime = setup_lockstep(
+    runtime = await setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
@@ -380,7 +373,7 @@ async def test_automatic_mode_changes_control_outputs(
         f"{settings.mqtt_controller_topic_suffix}"
     )
 
-    runtime = setup_lockstep(
+    runtime = await setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
@@ -467,7 +460,7 @@ async def test_parameters_set_over_mqtt_are_applied(
         f"{settings.mqtt_controller_topic_suffix}"
     )
 
-    runtime = setup_lockstep(
+    runtime = await setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
@@ -547,7 +540,7 @@ async def test_simulation_inputs_set_over_mqtt_reach_later_ticks(
         f"{settings.mqtt_simulator_topic_suffix}"
     )
 
-    runtime = setup_lockstep(
+    runtime = await setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
@@ -626,7 +619,7 @@ async def test_running_simulation_publishes_physically_valid_outputs(
         f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
     )
 
-    runtime = setup_lockstep(
+    runtime = await setup_lockstep(
         lookup_mode("thrusters"),
         settings,
         runtime_client,
