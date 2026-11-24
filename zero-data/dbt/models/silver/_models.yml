@@ -167,7 +167,8 @@ models:
           - not_null
   - name: slv_shore_power_converters
     description: >
-      Power the ESI shore power converter modules draw from shore.
+      Both sides of each ESI shore power converter module: the AC power it draws from shore, the DC power it
+      delivers to the 700 VDC bus, and its running state.
       Materialized as a view in the `views` database.
     columns:
       - name: ts
@@ -186,8 +187,16 @@ models:
         description: "The shore power converter the module belongs to: PS (07-11) or SB (07-12)."
         tests:
           - not_null
-      - name: power
+      - name: running
+        description: "Whether the module runs. An idle module's DC power is a sensor offset, not a flow."
+        tests:
+          - not_null
+      - name: ac_power
         description: "3-phase AC active power the module draws from shore in W. TODO: the source reports kW and is converted here; remove the conversion once the source reports W."
+        tests:
+          - not_null
+      - name: dc_power
+        description: "DC power the module delivers to the 700 VDC bus in W: battery-side current × voltage."
         tests:
           - not_null
   - name: slv_chiller

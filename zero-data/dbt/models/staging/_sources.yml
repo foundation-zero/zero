@@ -3751,6 +3751,30 @@ sources:
             description: "Timestamp of the 3-phase AC bus (shore side) active power in kW reading."
           - name: esi_ac_bus_active_power_3_phase__value
             description: "3-phase AC bus (shore side) active power in kW."
+          - name: esi_battery_current__has_value
+            description: "Indicates whether a value is present for the dC current on the battery side (the 700 VDC bus) in A, positive into the bus."
+          - name: esi_battery_current__is_valid
+            description: "Indicates whether the dC current on the battery side (the 700 VDC bus) in A, positive into the bus value is valid."
+          - name: esi_battery_current__timestamp
+            description: "Timestamp of the dC current on the battery side (the 700 VDC bus) in A, positive into the bus reading."
+          - name: esi_battery_current__value
+            description: "DC current on the battery side (the 700 VDC bus) in A, positive into the bus."
+          - name: esi_battery_voltage__has_value
+            description: "Indicates whether a value is present for the dC voltage on the battery side (the 700 VDC bus) in V."
+          - name: esi_battery_voltage__is_valid
+            description: "Indicates whether the dC voltage on the battery side (the 700 VDC bus) in V value is valid."
+          - name: esi_battery_voltage__timestamp
+            description: "Timestamp of the dC voltage on the battery side (the 700 VDC bus) in V reading."
+          - name: esi_battery_voltage__value
+            description: "DC voltage on the battery side (the 700 VDC bus) in V."
+          - name: running__has_value
+            description: "Indicates whether a value is present for the running state of the converter module."
+          - name: running__is_valid
+            description: "Indicates whether the running state of the converter module value is valid."
+          - name: running__timestamp
+            description: "Timestamp of the running state of the converter module reading."
+          - name: running__value
+            description: "Running state of the converter module."
       - name: marpower__fire_detection__call_point
         description: "Fire detection manual call points from the AMCS, one row per device."
         columns:
