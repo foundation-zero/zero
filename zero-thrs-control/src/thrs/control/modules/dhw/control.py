@@ -764,14 +764,6 @@ class DhwControl(
             controller_state.model_copy(deep=True),
         )
 
-    def reset(self) -> None:
-        self._current_values, self._current_controller_state = self.initial()
-        self._boosting_entered_at = None
-        self._boosting_shortfall_since = None
-        self._stall_tracking_key = None
-        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
-        self._init_controllers()
-
     def control(
         self, sensor_values: DhwSensorValues
     ) -> tuple[DhwControlValues, DhwControllerState]:

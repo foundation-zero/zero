@@ -64,11 +64,11 @@ class Module[
     ):
         """Starts with the given parameters, or the defaults, and automation mode."""
         self._name = name
-        control = description.control(
+        self._control = Switching(
+            lambda parameters: description.control(parameters, time_fn),
             parameters if parameters is not None else description.parameters_cls(),
-            time_fn,
+            name=name,
         )
-        self._control = Switching(control.initial()[0], control, name=name)
         self._control.switch_mode(AutomationMode(mode=automation_mode))
         self._alarms = description.alarms()
         self._channels = channels

@@ -51,11 +51,12 @@ def thrusters_control(simulation: ThrustersSimulation, postgres_db) -> Thrusters
 @fixture
 def switching() -> Callable[[float], Switching]:
     def _make(manual_flow: float = 1.0) -> Switching:
-        automatic = SimpleControl(SimpleParameters.zero(), datetime.now)
-        return Switching(
-            simple_control_values(flow=manual_flow),
-            automatic,
+        switching = Switching(
+            lambda parameters: SimpleControl(parameters, datetime.now),
+            SimpleParameters.zero(),
             name="simple",
         )
+        switching.update_manual_controls(simple_control_values(flow=manual_flow))
+        return switching
 
     return _make

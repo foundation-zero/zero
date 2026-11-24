@@ -256,13 +256,6 @@ class DrivesControl(
             _INITIAL_CONTROLLER_STATE(self._time()),
         )
 
-    def reset(self) -> None:
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
-        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
-        self._init_controllers()
-
     def control(
         self, sensor_values: DrivesSensorValues
     ) -> tuple[DrivesControlValues, DrivesControllerState]:

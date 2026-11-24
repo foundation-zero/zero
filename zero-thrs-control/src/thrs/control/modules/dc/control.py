@@ -217,12 +217,6 @@ class DcControl(
             _INITIAL_CONTROLLER_STATE(self._time()),
         )
 
-    def reset(self) -> None:
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
-        self._init_controllers(self._parameters)
-
     def control(
         self, sensor_values: DcSensorValues
     ) -> tuple[DcControlValues, DcControllerState]:
