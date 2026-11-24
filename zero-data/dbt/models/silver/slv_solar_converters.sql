@@ -1,24 +1,5 @@
 -- Power each solar EPC converter delivers to the main DC bus, labelled with the bimini it serves.
--- Until 5 Nov 2026 06:07 UTC the converters published to the busbar table, since then to tables of
--- their own. Both sources are combined under the same converter name so the history stays continuous.
--- Once the busbar history is copied into the new tables, the busbar part can go.
-with busbar as (
-    select
-        ts,
-        topic,
-        replace(topic, 'marpower/busbar/', '') as converter,
-        hvdc_power__value,
-        hvdc_power__has_value,
-        hvdc_power__is_valid
-    from {{ ref('stg_marpower__busbar') }}
-    where topic in (
-        'marpower/busbar/epc-31-t101',
-        'marpower/busbar/epc-32-t101',
-        'marpower/busbar/epc-32-t102'
-    )
-),
-
-pv_converters as (
+with converters as (
     select
         ts,
         topic,
@@ -31,14 +12,6 @@ pv_converters as (
         hvdc_power__has_value,
         hvdc_power__is_valid
     from {{ ref('stg_marpower__pv_converters') }}
-),
-
-converters as (
-    select * from busbar
-    where ts < TIMESTAMP '2026-11-05 06:07:00'
-    union all
-    select * from pv_converters
-    where ts >= TIMESTAMP '2026-11-05 06:07:00'
 )
 
 select
