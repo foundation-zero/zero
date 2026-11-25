@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from collections.abc import AsyncIterator, Callable, Sequence
+from collections.abc import AsyncIterator, Callable, Iterable, Sequence
 from datetime import UTC, date, datetime, time, timedelta
 from typing import Protocol
 
@@ -34,6 +34,12 @@ class DayTables(Protocol):
         ...
 
 
+class History(Protocol):
+    def load(self, alerts: Iterable[Alert]) -> None:
+        """Takes the alerts raised before polling started, oldest first."""
+        ...
+
+
 class PollingAlertSource:
     """Polls the day tables, since the AMCS database offers no way to be notified.
 
@@ -49,6 +55,9 @@ class PollingAlertSource:
         liveness: Liveness = Liveness(None),
         readiness: Readiness = Readiness(None),
         poll_timeout: timedelta = timedelta(seconds=10),
+        history: History | None = None,
+        history_window: timedelta = timedelta(0),
+        history_timeout: timedelta = timedelta(seconds=60),
     ):
         self._tables = tables
         self._interval = interval
@@ -56,6 +65,9 @@ class PollingAlertSource:
         self._liveness = liveness
         self._readiness = readiness
         self._poll_timeout = poll_timeout
+        self._history = history
+        self._history_window = history_window
+        self._history_timeout = history_timeout
         self._turn = 0
         self._connected: set[str] = set()
         self._last_ids: dict[date, int] | None = None
@@ -80,7 +92,7 @@ class PollingAlertSource:
         self._turn += 1
         try:
             # A stalled mirror must not keep the other one from taking its turn.
-            async with asyncio.timeout(self._poll_timeout.total_seconds()):
+            async with asyncio.timeout(self._timeout().total_seconds()):
                 new_alerts = await self._poll(tables)
         except Exception:
             logger.exception(
@@ -92,12 +104,21 @@ class PollingAlertSource:
             logger.info(f"Connected to database {tables.name}")
         return new_alerts
 
+    def _timeout(self) -> timedelta:
+        """A whole day of history takes longer to read than the alerts since the last poll."""
+        reads_history = self._history is not None and self._last_ids is None
+        return self._history_timeout if reads_history else self._poll_timeout
+
     async def _poll(self, tables: DayTables) -> list[Alert]:
         now = self._now()
         today = now.date()
         if self._last_ids is None:
-            # Skip history, otherwise every restart would replay the day's alerts.
-            self._last_ids = {today: await tables.latest_id(today)}
+            # History is not returned, otherwise every restart would notify of the day's alerts.
+            self._last_ids = (
+                await self._read_history(tables, now, self._history)
+                if self._history
+                else {today: await tables.latest_id(today)}
+            )
             logger.info(
                 f"Forwarding alerts after id {self._last_ids[today]} of {today}"
             )
@@ -125,6 +146,30 @@ class PollingAlertSource:
             if day == today or now < _end_of(day) + ROLLOVER_GRACE
         }
         return [alert for read in reads for alert in read]
+
+    async def _read_history(
+        self, tables: DayTables, now: datetime, history: History
+    ) -> dict[date, int]:
+        """Hands the whole of today to the history, and the days the window reaches into.
+
+        All of today rather than only the window, to also learn of alarms that were raised
+        earlier and are still active.
+        """
+        today = now.date()
+        first = min(today, (now - self._history_window).date())
+        days = [
+            first + timedelta(days=offset) for offset in range((today - first).days + 1)
+        ]
+        reads = [await tables.read_after(day, 0) for day in days]
+        history.load(alert for read in reads for alert in read)
+        logger.info(
+            f"Read {sum(len(read) for read in reads)} alerts of {', '.join(str(day) for day in days)}"
+            " as history"
+        )
+        return {
+            day: max((alert.id for alert in read), default=0)
+            for day, read in zip(days, reads, strict=True)
+        }
 
 
 def _end_of(day: date) -> datetime:

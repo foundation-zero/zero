@@ -1,7 +1,8 @@
 # zero-alert-forwarder
 
 Forwards alerts of the AMCS to [ntfy](https://ntfy.sh), so the crew gets them on their phones.
-Alarms raised in the technical space do not sound above decks otherwise.
+Alarms raised in the technical space do not sound above decks otherwise. It also publishes the
+current alarms on MQTT, which zero-mqtt-graphql serves to the Alarms app of zero-ui.
 
 ## Overview
 
@@ -13,15 +14,6 @@ seconds and sends each new alert that passes the filters to ntfy.
 - The database is only ever read; sessions are opened `READ ONLY`.
 - On startup the existing alerts of the day are skipped, only alerts raised afterwards are forwarded.
 - A failed poll is retried at the next interval, a failed notification `--attempts` times.
-
-### Reminders
-
-An alarm that nobody acknowledges is notified again, with growing urgency: 20 seconds after
-the alert, then after 10, 5 and 3 more seconds, and every second from then on. Only an `Acknowledged`
-update of the same alarm (matched on system, tag and location) stops the reminders; an alarm
-that went `Idle` unacknowledged keeps pinging, and a new `Activated` restarts the progression. Reminders reuse the alert's sequence ID, so they update the notification
-instead of stacking. They are kept in memory, so a restart forgets them. Set
-`--reminder-delays-seconds '[]'` to turn them off.
 
 ### Mirrored databases
 
@@ -45,7 +37,8 @@ every forwarded alert, so a large batch does not look like a hung loop. The Helm
 liveness probe restarts the container when the file is older than `livenessMaxAgeSeconds`.
 That value must exceed one notification's retries, `attempts * 10s + (attempts - 1) * interval`,
 and `--poll-timeout-seconds`, which bounds a poll of a single mirror so a stalled database
-cannot block the other one.
+cannot block the other one. With an alarm list, it must also exceed `--history-timeout-seconds`,
+which bounds the first poll instead.
 
 With `--readiness-path` the file is created once the starting point of the polling is known.
 The chart's readiness probe makes a rolling update wait for that, since alerts raised before
@@ -64,6 +57,32 @@ By default only `Activated` alerts of `Warning` and up are forwarded: `Caution` 
 flapping "service is not healthy" notices, and the other updates (`Idle`, `Acknowledged`, ...)
 only follow an alarm that was already forwarded.
 
+### Alarm list
+
+With `--mqtt-host` the service also keeps a list of alarms and publishes it to
+`alerts/alarm-list` every `--alarm-list-interval-seconds`. An alarm is identified by its system,
+tag and location, and is folded from every row of `--alarm-list-min-priority`
+and up, whatever `--updates` forwards to ntfy:
+
+| Update | Active | Acknowledged |
+|---|---|---|
+| `Activated` | yes | no |
+| `Acknowledged` | unchanged (no, for an alarm not seen before) | yes |
+| `Idle` | no | unchanged |
+| others | unchanged | unchanged, and only for an alarm already listed |
+
+The list holds every active alarm, and every alarm that is no longer active but changed within
+`--alarm-list-window-minutes`. The list is published with FastStream, which also generates its
+AsyncAPI spec (`python -m zero_alert_forwarder print-asyncapi`, collected by
+`scripts/aggregate-specs.sh`), so the spec cannot drift from what is published. zero-mqtt-graphql drops the list when it has not been
+published for its default TTL of 5 minutes, so the Alarms app shows the feed is offline then. For
+the same reason it is not retained.
+
+At startup the list is rebuilt from all of today's alerts, and from yesterday's when the window
+reaches into it, without notifying anyone. An alarm that has been active since before then
+appears only when it changes again. Reading that history can take longer than a regular poll,
+so the first poll is bounded by `--history-timeout-seconds` instead of `--poll-timeout-seconds`.
+
 ### Extending
 
 Alerts come from an `AlertSource` and go to a `Notifier` (see `source.py` and `ntfy.py`).
@@ -72,7 +91,8 @@ needs `--ntfy-url`.
 
 ## Configuration
 
-Settings are read from CLI flags, environment variables or a `.env` file.
+Settings are read from CLI flags of the `run` subcommand, environment variables or a `.env` file.
+The container runs `run` by default, with its settings in the environment.
 
 | Option | Environment | Default |
 |---|---|---|
@@ -88,18 +108,25 @@ Settings are read from CLI flags, environment variables or a `.env` file.
 | `--min-priority` | `MIN_PRIORITY` | `Warning` |
 | `--updates` | `UPDATES` | `["Activated"]` |
 | `--attempts` | `ATTEMPTS` | `3` |
-| `--reminder-delays-seconds` | `REMINDER_DELAYS_SECONDS` | `[20, 10, 5, 3, 1]`, last repeats |
 | `--dry-run` | `DRY_RUN` | `false` |
 | `--poll-timeout-seconds` | `POLL_TIMEOUT_SECONDS` | `10` |
+| `--history-timeout-seconds` | `HISTORY_TIMEOUT_SECONDS` | `60` |
 | `--liveness-path` | `LIVENESS_PATH` | none |
 | `--readiness-path` | `READINESS_PATH` | none |
+| `--mqtt-host` | `MQTT_HOST` | none, publishes no alarm list |
+| `--mqtt-port` | `MQTT_PORT` | `1883` |
+| `--mqtt-username` | `MQTT_USERNAME` | none |
+| `--mqtt-password` | `MQTT_PASSWORD` | none |
+| `--alarm-list-min-priority` | `ALARM_LIST_MIN_PRIORITY` | `Warning` |
+| `--alarm-list-window-minutes` | `ALARM_LIST_WINDOW_MINUTES` | `60` |
+| `--alarm-list-interval-seconds` | `ALARM_LIST_INTERVAL_SECONDS` | `5` (1 - 60) |
 
 ntfy topics on ntfy.sh are public to anyone who knows the name, so pick a long random one.
 
 ## Usage
 
 ```bash
-uv run python -m zero_alert_forwarder \
+uv run python -m zero_alert_forwarder run \
   --mysql-hosts '["localhost"]' --mysql-user chameleon --mysql-password chameleon \
   --ntfy-topic <topic>
 ```
@@ -115,4 +142,4 @@ uv run ruff check
 uv run pyrefly check
 ```
 
-The tests need neither a database nor network access.
+The tests need neither a database, a broker nor network access.

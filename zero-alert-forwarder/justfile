@@ -7,13 +7,13 @@ check: lint type_check test
 check_static: lint_no_fix format type_check
 
 lint:
-    uv run ruff check zero_alert_forwarder tests
+    uv run ruff check src tests
 
 lint_no_fix:
-    uv run ruff check --no-fix zero_alert_forwarder tests
+    uv run ruff check --no-fix src tests
 
 format:
-    uv run ruff format --check zero_alert_forwarder tests
+    uv run ruff format --check src tests
 
 type_check:
     uv run pyrefly check

@@ -55,6 +55,7 @@
     "thrsim": "THRSIM",
     "domestic": "Domestic Control",
     "powerTags": "Power Tags",
+    "alarms": "Alarms",
     "grafana": "Grafana",
     "sailSystem": "Sail system"
   },
@@ -149,6 +150,9 @@
         },
         "powerTags": {
           "title": "Power Tags"
+        },
+        "alarms": {
+          "title": "Alarms"
         }
       }
     },
