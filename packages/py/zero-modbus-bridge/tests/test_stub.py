@@ -108,3 +108,40 @@ def test_stub_topic_groups_have_isolated_register_spaces():
     assert ret_a.data == [3, 3]
     assert ret_b.data == [3, 3]
     assert stub.servers[0].data_hdl is not stub.servers[1].data_hdl
+
+
+def test_stub_stores_writes_to_registers_no_topic_reads():
+    topic = AnnotationModbusTopic(
+        topic="test/regs", model=TwoRegistersModel, start_register=10, unit_id=35
+    )
+    handler = MultiUnitDataHandler([topic], default_value=0)
+
+    ret = handler.write_h_regs(11, [1], _srv_info(35))
+
+    assert ret.exp_code == EXP_NONE
+    assert handler.read_register(35, 11) == 1
+    assert handler.read_register(35, 10) == 0
+
+
+def test_stub_rejects_writes_to_unknown_unit():
+    topic = AnnotationModbusTopic(topic="test/regs", model=TwoRegistersModel)
+    handler = MultiUnitDataHandler([topic], default_value=0)
+
+    ret = handler.write_h_regs(10, [1], _srv_info(99))
+
+    assert ret.exp_code == EXP_SLAVE_DEVICE_FAILURE
+
+
+def test_stub_write_to_a_float_register_shows_in_float_reads():
+    class FloatModel(BaseModel):
+        value: Annotated[float | None, ModbusField(offset=0, data_type="float32")]
+
+    topic = AnnotationModbusTopic(
+        topic="test/float", model=FloatModel, start_register=10
+    )
+    handler = MultiUnitDataHandler([topic], default_value=0)
+
+    handler.write_h_regs(10, [0x4248, 0x0000], _srv_info(1))
+
+    assert handler.read_h_regs(10, 2, _srv_info(1)).data == [0x4248, 0x0000]
+    assert handler.read_float(1, 10) == 50.0

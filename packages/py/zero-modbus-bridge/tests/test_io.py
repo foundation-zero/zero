@@ -121,3 +121,19 @@ def test_modbus_topic_extra_fields_not_shared():
 
     topic_a.extra_fields["key"] = "value"
     assert topic_b.extra_fields == {}
+
+
+@pytest.mark.parametrize(
+    ("raw", "scale_factor", "expected"),
+    [(404, 0.1, 40.4), (3348, 0.01, 33.48), (7, 0.04, 0.28), (5, 10.0, 50.0)],
+)
+def test_apply_modbus_field_rounds_integers_to_the_scale(raw, scale_factor, expected):
+    scaled = apply_modbus_field(raw, ModbusField(register=1, scale_factor=scale_factor))
+
+    assert repr(scaled) == repr(expected)
+
+
+def test_apply_modbus_field_keeps_float_precision():
+    scaled = apply_modbus_field(19.728954315185547, ModbusField(register=1))
+
+    assert scaled == 19.728954315185547

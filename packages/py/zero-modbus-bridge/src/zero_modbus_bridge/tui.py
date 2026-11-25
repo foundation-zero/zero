@@ -24,12 +24,18 @@ from textual.widgets import (
     TabPane,
 )
 
-from zero_modbus_bridge.io import ModbusField, ModbusTopic, extract_modbus_fields
+from zero_modbus_bridge.bit_ops import int16_to_uint16, uint16_to_int16
+from zero_modbus_bridge.io import (
+    ModbusField,
+    ModbusTopic,
+    extract_modbus_fields,
+    scale_decimals,
+)
 from zero_modbus_bridge.stub import MultiUnitDataHandler, Stub
 
 logger = logging.getLogger(__name__)
 
-type EditableDataType = Literal["uint16", "float32"]
+type EditableDataType = Literal["uint16", "int16", "float32"]
 
 
 class FieldRow(BaseModel):
@@ -106,19 +112,27 @@ def build_rows(topics: Sequence[ModbusTopic]) -> list[FieldRow]:
 def human_value(handler: MultiUnitDataHandler, row: FieldRow) -> float:
     if row.data_type == "float32":
         return handler.read_float(row.unit_id, row.address) * row.scale_factor
-    return handler.read_register(row.unit_id, row.address) * row.scale_factor
+    raw = handler.read_register(row.unit_id, row.address)
+    value = uint16_to_int16(raw) if row.data_type == "int16" else raw
+    return value * row.scale_factor
 
 
-def format_value(value: float, data_type: EditableDataType) -> str:
+def format_value(
+    value: float, data_type: EditableDataType, scale_factor: float = 1.0
+) -> str:
     if data_type == "float32":
         return f"{value:g}"
-    return str(round(value))
+    return f"{value:.{scale_decimals(scale_factor)}f}"
 
 
 def write_value(handler: MultiUnitDataHandler, row: FieldRow, text: str) -> None:
     value = float(text) / row.scale_factor
     if row.data_type == "float32":
         handler.set_float(row.unit_id, row.address, value)
+        return
+    if row.data_type == "int16":
+        signed = max(-0x8000, min(0x7FFF, round(value)))
+        handler.set_register(row.unit_id, row.address, int16_to_uint16(signed))
         return
     raw = max(0, min(65535, round(value)))
     handler.set_register(row.unit_id, row.address, raw)
@@ -224,7 +238,9 @@ class StubTui(App):
                 row.name,
                 str(row.address),
                 row.data_type,
-                format_value(human_value(tab.handler, row), row.data_type),
+                format_value(
+                    human_value(tab.handler, row), row.data_type, row.scale_factor
+                ),
                 row.unit or "",
                 key=str(row_index),
             )
@@ -243,7 +259,9 @@ class StubTui(App):
     def _edit_row(self, index: int, row_index: int) -> None:
         tab = self._tabs[index]
         row = tab.rows[row_index]
-        current = format_value(human_value(tab.handler, row), row.data_type)
+        current = format_value(
+            human_value(tab.handler, row), row.data_type, row.scale_factor
+        )
         self._editing = (index, row_index)
         self.push_screen(EditScreen(row, current), self._apply_edit)
 
