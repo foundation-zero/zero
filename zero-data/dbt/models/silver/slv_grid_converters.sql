@@ -1,6 +1,6 @@
 -- Power of the two uGrid grid converters on both sides, in W: the DC input from the 700 VDC bus
 -- (PvPower, published in kW) and the AC output into the 400 VAC switchboard (its incoming breaker).
--- Neither converter runs backwards (F21), so both sides are positive while it runs; the AC side reads a
+-- Neither converter runs backwards, so both sides are positive while it runs; the AC side reads a
 -- few W below zero when the converter is idle.
 select
     ts,

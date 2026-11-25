@@ -147,7 +147,7 @@ models:
       - name: sub_group
         description: "The shore power converter the module belongs to: PS or SB."
       - name: power
-        description: "Shore power drawn in W, aggregated per minute. A negative reading counts as zero."
+        description: "Shore power drawn from shore (AC side) in W, aggregated per minute. Zero while the module is idle."
   - name: gld_shore_power_per_minute_per_main_group
     description: >
       Shore power aggregated per minute per main group, one row per ESI converter module.
@@ -162,7 +162,38 @@ models:
       - name: main_group
         description: "The main group classification, always 'Shore'."
       - name: power
-        description: "Shore power drawn in W, aggregated per minute. A negative reading counts as zero."
+        description: "Shore power drawn from shore (AC side) in W, aggregated per minute. Zero while the module is idle."
+  - name: gld_shore_converter_losses_per_minute_per_group
+    description: >
+      Losses / Shore converters per minute: the AC power the ESI converters draw from shore minus the DC power
+      they deliver to the 700 VDC bus, summed over the modules that run. Read by both the main group and the
+      sub group panels. No tests: like the power tag gold views, a test would aggregate the whole history.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the minute interval."
+      - name: main_group
+        description: "The main group classification, always 'Losses'."
+      - name: sub_group
+        description: "The sub group classification, always 'Shore converters'."
+      - name: power
+        description: "Shore converter loss in W, aggregated per minute."
+  - name: gld_dc_ring_unallocated_power_per_minute_per_group
+    description: >
+      The unallocated load of the 700 VDC ring per minute, classed per segment: Propulsion / Thrusters
+      (unallocated) for SB.01.P01 and P04, Technical / 700VDC unallocated for the other four. The cable segments
+      are left out. Read by both the main group and the sub group panels. No tests: a test would aggregate the
+      whole history.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the minute interval."
+      - name: main_group
+        description: "The main group classification: 'Propulsion' or 'Technical'."
+      - name: sub_group
+        description: "The sub group classification: 'Thrusters (unallocated)' or '700VDC unallocated'."
+      - name: power
+        description: "Unallocated load in W, aggregated per minute; can be below zero."
   - name: gld_chiller_power_per_minute_per_group
     description: >
       Power of the compression chiller aggregated per minute, as HVAC / Chiller. Read by both the main group

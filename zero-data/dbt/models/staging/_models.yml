@@ -3625,6 +3625,52 @@ models:
         description: "Timestamp of the LVDC (low side) voltage in V reading."
       - name: lvdc_voltage__value
         description: "LVDC (low side) voltage in V."
+  - name: stg_marpower__dc_switches
+    description: >
+      Staging view for the DC switches =05.71 to =05.78 of the 700 VDC ring, one row per switch message.
+    columns:
+      - name: ts
+        description: "Time index of the measurement record (renamed from timestamp)."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message, one per switch."
+        tests:
+          - not_null
+      - name: technical_name
+        description: "The DC switch (05-71-q101 to 05-78-q101)."
+      - name: dcc_s_0__has_value
+        description: "Indicates whether a value is present for the DC current on section 0 in A."
+      - name: dcc_s_0__is_valid
+        description: "Indicates whether the DC current on section 0 in A value is valid."
+      - name: dcc_s_0__timestamp
+        description: "Timestamp of the DC current on section 0 in A reading."
+      - name: dcc_s_0__value
+        description: "DC current on section 0 in A."
+      - name: dcc_s_1__has_value
+        description: "Indicates whether a value is present for the DC current on section 1 in A."
+      - name: dcc_s_1__is_valid
+        description: "Indicates whether the DC current on section 1 in A value is valid."
+      - name: dcc_s_1__timestamp
+        description: "Timestamp of the DC current on section 1 in A reading."
+      - name: dcc_s_1__value
+        description: "DC current on section 1 in A."
+      - name: dcv_s_0__has_value
+        description: "Indicates whether a value is present for the DC voltage on section 0 in V."
+      - name: dcv_s_0__is_valid
+        description: "Indicates whether the DC voltage on section 0 in V value is valid."
+      - name: dcv_s_0__timestamp
+        description: "Timestamp of the DC voltage on section 0 in V reading."
+      - name: dcv_s_0__value
+        description: "DC voltage on section 0 in V."
+      - name: dcv_s_1__has_value
+        description: "Indicates whether a value is present for the DC voltage on section 1 in V."
+      - name: dcv_s_1__is_valid
+        description: "Indicates whether the DC voltage on section 1 in V value is valid."
+      - name: dcv_s_1__timestamp
+        description: "Timestamp of the DC voltage on section 1 in V reading."
+      - name: dcv_s_1__value
+        description: "DC voltage on section 1 in V."
   - name: stg_marpower__esi
     description: >
       Staging view for the Marpower ESI shore power converters, one topic per converter module:
@@ -3648,6 +3694,30 @@ models:
         description: "Timestamp of the 3-phase AC bus (shore side) active power in kW reading."
       - name: esi_ac_bus_active_power_3_phase__value
         description: "3-phase AC bus (shore side) active power in kW."
+      - name: esi_battery_current__has_value
+        description: "Indicates whether a value is present for the dC current on the battery side (the 700 VDC bus) in A, positive into the bus."
+      - name: esi_battery_current__is_valid
+        description: "Indicates whether the dC current on the battery side (the 700 VDC bus) in A, positive into the bus value is valid."
+      - name: esi_battery_current__timestamp
+        description: "Timestamp of the dC current on the battery side (the 700 VDC bus) in A, positive into the bus reading."
+      - name: esi_battery_current__value
+        description: "DC current on the battery side (the 700 VDC bus) in A, positive into the bus."
+      - name: esi_battery_voltage__has_value
+        description: "Indicates whether a value is present for the dC voltage on the battery side (the 700 VDC bus) in V."
+      - name: esi_battery_voltage__is_valid
+        description: "Indicates whether the dC voltage on the battery side (the 700 VDC bus) in V value is valid."
+      - name: esi_battery_voltage__timestamp
+        description: "Timestamp of the dC voltage on the battery side (the 700 VDC bus) in V reading."
+      - name: esi_battery_voltage__value
+        description: "DC voltage on the battery side (the 700 VDC bus) in V."
+      - name: running__has_value
+        description: "Indicates whether a value is present for the running state of the converter module."
+      - name: running__is_valid
+        description: "Indicates whether the running state of the converter module value is valid."
+      - name: running__timestamp
+        description: "Timestamp of the running state of the converter module reading."
+      - name: running__value
+        description: "Running state of the converter module."
   - name: stg_marpower__fire_detection
     description: "Staging view for the fire detection call points, detectors and sounders, one row per device message."
     columns:
