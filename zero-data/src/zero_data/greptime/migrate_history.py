@@ -20,6 +20,7 @@ from collections import defaultdict
 from collections.abc import Callable, Generator, Iterable, Iterator
 from contextlib import contextmanager
 from datetime import UTC, date, datetime
+from functools import partial
 from typing import Any
 
 import psycopg
@@ -36,6 +37,12 @@ LOCK_TABLE = "migrate_history_running"
 # Greptime holds an insert in memory: a day of a 1,100-column battery pack in one statement
 # took more than 8 GB, an hour of it (4M values) 150 MB.
 VALUES_PER_INSERT = 4_000_000
+# Greptime's frontend drops its connection to the datanode every few hours of copying
+# ("locally-reset streams reached limit"), and the statement in flight fails with an
+# internal error or as cancelled.
+CONNECTION_DROPPED = (psycopg.errors.InternalError, psycopg.errors.OperatorIntervention)
+ATTEMPTS = 5
+RETRY_WAIT = 60.0
 
 
 class MigrationFailed(Exception):
@@ -558,6 +565,20 @@ def lock(greptime: Greptime, unlock: bool = False) -> Generator[None]:
             signal.signal(signal.SIGINT, interrupt)
 
 
+def _retried[T](action: Callable[[], T], sleep: Callable[[float], None]) -> T:
+    """The action's result, trying again when Greptime drops the statement.
+
+    Safe for an insert: it leaves out the timestamps a failed attempt already wrote.
+    """
+    for attempt in range(1, ATTEMPTS):
+        try:
+            return action()
+        except CONNECTION_DROPPED as error:
+            logger.warning("Attempt %d failed, trying again: %s", attempt, error)
+            sleep(RETRY_WAIT)
+    return action()
+
+
 def run(
     greptime: Greptime,
     migration: Migration,
@@ -588,13 +609,16 @@ def run(
             for copy in history.copies:
                 if day in copy.days:
                     for start, end in copy.slices(day):
-                        greptime.run(copy.insert_sql(start, end))
-            there = greptime.count(
+                        _retried(
+                            partial(greptime.run, copy.insert_sql(start, end)), sleep
+                        )
+            rows_of_the_day = (
                 f"SELECT count(*) FROM {quote_ident(history.new_table)} "
                 f"WHERE {history.new_rows()} "
                 f'AND "timestamp" >= {timestamp_literal(day)} '
                 f'AND "timestamp" < {timestamp_literal(day + DAY_NS)}'
             )
+            there = _retried(partial(greptime.count, rows_of_the_day), sleep)
             if there != expected:
                 raise MigrationFailed(
                     f"{history.new_topic} holds {there} rows on {day_label(day)} "
