@@ -34,7 +34,7 @@ const t = tScoped("thrapp.components.navigation");
 
         <nav
           :aria-label="t('mainNavigation')"
-          class="border-border-subtle flex h-[73px] items-center gap-6 border-b px-6"
+          class="border-border-subtle font-ui flex h-[73px] items-center gap-6 border-b px-6"
         >
           <ThrappLogo class="mr-4" />
           <MainNav />
@@ -55,15 +55,13 @@ const t = tScoped("thrapp.components.navigation");
   </TooltipProvider>
 </template>
 
-<style lang="scss" scoped>
-// Same gradient as the shared TopNav banner (provided by the design team).
-:global(.dark .thrapp-banner) {
-  background:
-    radial-gradient(
-      43.74% 35.44% at 50.03% 36.53%,
-      var(----general---brand-dull, rgba(86, 133, 169, 0.2)) 0%,
-      rgba(153, 182, 204, 0) 100%
-    ),
-    var(----general---background-muted, #121619);
+<style scoped>
+/* A fixed-size ellipse centred above the bar, so it does not stretch with the viewport (design spec). */
+.thrapp-banner {
+  background: radial-gradient(
+    1334px 237px at 50% -63px,
+    color-mix(in srgb, var(--color-brand-a-400) 50%, transparent),
+    transparent
+  );
 }
 </style>

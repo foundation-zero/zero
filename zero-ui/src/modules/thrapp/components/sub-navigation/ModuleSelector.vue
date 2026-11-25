@@ -44,7 +44,7 @@ const select = async (module: unknown) => {
     @update:model-value="select"
   >
     <SelectTrigger
-      class="focus-visible:ring-brand flex h-9 min-w-0 cursor-pointer items-center gap-2 rounded-sm text-base leading-4 font-medium outline-none focus-visible:ring-2"
+      class="focus-visible:ring-brand flex h-9 min-w-0 cursor-pointer items-center gap-2 rounded-sm text-base leading-4 font-medium outline-none focus-visible:ring-2 lg:shrink-0"
       data-testid="module-selector"
     >
       <span class="text-muted-foreground shrink-0">

@@ -23,7 +23,7 @@ const modeTargets = computed(
 
 <template>
   <div
-    class="bg-background relative w-full border-b"
+    class="bg-background font-ui relative w-full border-b"
     :class="controlState === 'manual' ? 'border-warning border-b-2' : 'border-border-subtle'"
     data-testid="sub-navigation"
     :data-control-state="controlState"
