@@ -5920,7 +5920,7 @@
         "spec": {
           "id": 8,
           "title": "Propeller speed rate of change · ${pod:text}",
-          "description": "Rate of change of the propeller speed (corrected, raw / 10 rpm, without sign) between consecutive samples: positive when speeding up, negative when slowing down. Dashed: the drive ramps as configured in the drives, 3 Hz/s both ways = ±121.8 propeller rpm/s. Samples are about 3 s apart, and unchanged values are not published.",
+          "description": "Rate of change of the propeller speed (corrected, raw / 10 rpm, without sign) between consecutive samples: positive when speeding up, negative when slowing down. Dashed: the drive ramps as configured in the drives, 3 Hz/s both ways = ±121.8 propeller rpm/s. Samples are about 3 s apart, and unchanged values are not published, so short peaks can exceed what is shown here: a value beyond a line is real, one inside is not proof.",
           "links": [],
           "data": {
             "kind": "QueryGroup",
@@ -6845,6 +6845,189 @@
             }
           }
         }
+      },
+      "panel-62": {
+        "kind": "Panel",
+        "spec": {
+          "id": 62,
+          "title": "Torque rate of change · ${pod:text}",
+          "description": "Rate of change of the torque of each Aradex drive at the motor shaft (before the 1.478 gearbox; corrected, raw × 100 Nm, in steps of 100 Nm) between consecutive samples: positive when rising, negative when falling. The PLC code has no torque ramp at present. Samples are about 3 s apart, and unchanged values are not published, so short peaks can exceed what is shown here.",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "info8fcc-greptimedb-datasource",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT time, (torque - prev_torque) / ((CAST(time AS BIGINT) - CAST(prev_time AS BIGINT)) / 1e9) AS \"Drive 1 torque rate\"\nFROM (\n  SELECT timestamp AS time, torque__value * 100.0 AS torque,\n    LAG(torque__value * 100.0) OVER (ORDER BY timestamp) AS prev_torque,\n    LAG(timestamp) OVER (ORDER BY timestamp) AS prev_time\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara1\n  WHERE $__timeFilter(timestamp)\n) t\nWHERE prev_time IS NOT NULL\nORDER BY time"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "info8fcc-greptimedb-datasource",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT time, (torque - prev_torque) / ((CAST(time AS BIGINT) - CAST(prev_time AS BIGINT)) / 1e9) AS \"Drive 2 torque rate\"\nFROM (\n  SELECT timestamp AS time, torque__value * 100.0 AS torque,\n    LAG(torque__value * 100.0) OVER (ORDER BY timestamp) AS prev_torque,\n    LAG(timestamp) OVER (ORDER BY timestamp) AS prev_time\n  FROM public.marpower__150000_propulsion__pcs_${pod}_ara2\n  WHERE $__timeFilter(timestamp)\n) t\nWHERE prev_time IS NOT NULL\nORDER BY time"
+                      }
+                    },
+                    "refId": "B",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "info8fcc-greptimedb-datasource",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "${datasource}"
+                      },
+                      "spec": {
+                        "editorType": "sql",
+                        "format": 1,
+                        "pluginVersion": "2.1.4",
+                        "queryType": "table",
+                        "rawQuery": true,
+                        "rawSql": "SELECT date_bin('$__interval', timestamp, TIMESTAMP '1970-01-01') AS time,\n  avg(CASE WHEN drive = 1 THEN torque END) * 100 AS \"Drive 1 torque\",\n  avg(CASE WHEN drive = 2 THEN torque END) * 100 AS \"Drive 2 torque\"\nFROM (SELECT timestamp, 1 AS drive, torque__value AS torque FROM public.marpower__150000_propulsion__pcs_${pod}_ara1 WHERE $__timeFilter(timestamp)\n  UNION ALL\n  SELECT timestamp, 2 AS drive, torque__value AS torque FROM public.marpower__150000_propulsion__pcs_${pod}_ara2 WHERE $__timeFilter(timestamp)) a\nGROUP BY 1 ORDER BY 1"
+                      }
+                    },
+                    "refId": "C",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [
+                {
+                  "group": "renameByRegex",
+                  "kind": "Transformation",
+                  "spec": {
+                    "options": {
+                      "regex": "^(.*) Result \\d+$",
+                      "renamePattern": "$1"
+                    }
+                  }
+                }
+              ],
+              "queryOptions": {
+                "maxDataPoints": 600,
+                "interval": "1s"
+              }
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "12.3.0",
+            "spec": {
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "multi",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "none",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": null,
+                        "color": "green"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisLabel": "Nm/s",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "spanNulls": 60000,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": [
+                  {
+                    "matcher": {
+                      "id": "byRegexp",
+                      "options": "^Drive \\d torque$"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.axisPlacement",
+                        "value": "right"
+                      },
+                      {
+                        "id": "unit",
+                        "value": "Nm"
+                      },
+                      {
+                        "id": "custom.axisLabel",
+                        "value": "Torque"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     },
     "layout": {
@@ -6966,11 +7149,24 @@
                                 "spec": {
                                   "x": 0,
                                   "y": 26,
-                                  "width": 24,
+                                  "width": 12,
                                   "height": 8,
                                   "element": {
                                     "kind": "ElementReference",
                                     "name": "panel-8"
+                                  }
+                                }
+                              },
+                              {
+                                "kind": "GridLayoutItem",
+                                "spec": {
+                                  "x": 12,
+                                  "y": 26,
+                                  "width": 12,
+                                  "height": 8,
+                                  "element": {
+                                    "kind": "ElementReference",
+                                    "name": "panel-62"
                                   }
                                 }
                               }
