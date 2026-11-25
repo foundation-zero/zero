@@ -238,17 +238,21 @@ async def test_tick_sends_no_commands_until_the_values_are_known(
     mock_channels.get_actuated_control_values.return_value = None
 
     module = module_factory()
+    [start_from_actuated] = (
+        mock_channels.on_first_actuated_control_values.call_args.args
+    )
 
     await module.tick(None)
     assert mock_channels.send_control_values.await_count == 0
     assert mock_channels.send_controller_state.await_count == 1
 
     mock_channels.get_actuated_control_values.return_value = actuated
+    start_from_actuated(actuated)
     await module.tick(None)
     assert mock_channels.send_control_values.await_args == mock.call(actuated)
 
 
-async def test_manual_starts_from_the_actuated_values_once(
+async def test_manual_starts_from_the_first_actuated_values(
     advisory_sensor_values, mock_channels, mock_control, module_factory
 ):
     mock_control.initial.return_value = (
@@ -257,9 +261,11 @@ async def test_manual_starts_from_the_actuated_values_once(
     )
     first = simple_control_values(flow=6.0)
     module = module_factory()
+    [start_from_actuated] = (
+        mock_channels.on_first_actuated_control_values.call_args.args
+    )
 
-    mock_channels.get_actuated_control_values.return_value = first
-    await module.tick(advisory_sensor_values)
+    start_from_actuated(first)
     mock_channels.get_actuated_control_values.return_value = simple_control_values(
         flow=7.0
     )

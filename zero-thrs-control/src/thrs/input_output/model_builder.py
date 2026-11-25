@@ -1,5 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from contextlib import suppress
 from typing import Any
 
@@ -52,6 +53,7 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
             for field_name, field in cls.model_fields.items()
             if field.annotation is not None
         }
+        self._on_complete: list[Callable[[T], object]] = []
 
     def input(self, field: str, json: str | bytes):
         value = self._fields[field].validate_json(
@@ -60,9 +62,23 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
 
         self._values[field] = value
 
+        was_complete = self._value is not None
         # Just try to create the object, we can't compare key sets because of optional values
         with suppress(ValidationError):
             self._value = self._cls(**self._values)
+
+        if not was_complete and self._value is not None:
+            for hook in self._on_complete:
+                hook(self._value.model_copy(deep=True))
+
+    def on_complete(self, hook: Callable[[T], object]) -> None:
+        """Call `hook` once with a copy of the model when it is first complete, or now
+        with a copy of the current one if it already is; a copy, so the hook can't
+        change the result."""
+        if self._value is not None:
+            hook(self._value.model_copy(deep=True))
+        else:
+            self._on_complete.append(hook)
 
     def result(self) -> T | None:
         if logger.isEnabledFor(logging.DEBUG):

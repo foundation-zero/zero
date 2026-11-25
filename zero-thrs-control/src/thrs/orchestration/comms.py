@@ -172,6 +172,9 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
     def result(self) -> M | None:
         return self._builder.result()
 
+    def on_complete(self, hook: Callable[[M], object]) -> None:
+        self._builder.on_complete(hook)
+
 
 class DirectMqttMapping[M: ThrsValues](
     MqttReceiveMapping[M], MqttSendMapping[M | None]
@@ -465,6 +468,9 @@ class ControlChannels[
         self.get_manual_controls = manual_controls_mapping.result
         self.get_control_values_set = control_values_set_mapping.result
         self.get_actuated_control_values = actuated_control_values_mapping.result
+        self.on_first_actuated_control_values = (
+            actuated_control_values_mapping.on_complete
+        )
 
 
 class SimulationChannels[
