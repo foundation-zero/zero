@@ -1,5 +1,6 @@
 import importlib
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
 import pytest
 
@@ -40,3 +41,10 @@ def test_published_diagram_matches_manual(manual, scripts):
         f"missing, out of date, or left over from a removed diagram. Render it with `just manual {manual.stem}` and publish it with "
         f"`just manual_publish {manual.stem}`."
     )
+
+
+@pytest.mark.parametrize(
+    "diagram", sorted(MANUALS.glob("*.svg")), ids=lambda path: path.stem
+)
+def test_published_diagram_is_well_formed_xml(diagram):
+    ET.fromstring(diagram.read_text())  # noqa: S314

@@ -42,7 +42,9 @@ RENDER_DIAGRAM = """async ({ source, css }) => {
     deterministicIds: true,
   });
   const { svg } = await mermaid.render("manual-diagram", source);
-  return svg;
+  // Mermaid returns HTML markup such as a bare <br>; a standalone .svg must be XML.
+  const parsed = new DOMParser().parseFromString(svg, "text/html");
+  return new XMLSerializer().serializeToString(parsed.querySelector("svg"));
 }"""
 
 MERMAID_BLOCK = re.compile(r'<pre class="mermaid">(.*?)</pre>', re.DOTALL)
