@@ -104,6 +104,8 @@ export const fitSplash = (screen: HTMLElement, header: HTMLElement, area: HTMLEl
       height: groups.offsetHeight,
     };
   };
+  // The minimums below keep groups from collapsing into thin columns beside each other. They can't
+  // overflow: a group is never wider than the screen, so its tiles wrap when fewer fit in a row.
   const columnRange = (min: number) =>
     Array.from({ length: Math.max(maxColumns - min + 1, 0) }, (_, index) => maxColumns - index);
   const mostCompact = (fits: ReturnType<typeof measure>[]) =>

@@ -8,6 +8,7 @@ const { t } = useI18n();
 const { colorMode } = toRefs(useUIStore());
 const { setColorMode } = useUIStore();
 
+// VueUse resolves "auto" to the system's theme here, so this is always the theme on screen.
 const target = computed(() => (colorMode.value === "dark" ? "light" : "dark"));
 </script>
 
