@@ -715,3 +715,35 @@ Branch `feature/ZERO-2620-improve-energy-dashboard-performance`, based on #1139 
 | B | 5. Cleanup: remove views no panel reads; delete this plan and link its final version in ZERO-2620 |
 
 The views, both dashboards and the notebook change in one PR (A), because the views change shape: deploy `just dbt-deploy zero` and the dashboards back to back. A sub-task moves to Review when its PR is created and to Done when it merges.
+
+### Build notes (PR A, 2026-11-25)
+
+**Views.** Silver and gold hold one row per sample, without buckets or metadata joins:
+- `slv_dc_ring_segments` is replaced by `slv_dc_ring_switches` (power per switch per sample);
+- `slv_dc_ring_sources` lists devices per sample, without the 24 VDC supplies (their converter is in `dc_24v_metadata`, so the query takes them from `slv_24vdc_power_supplies`);
+- the 16 `gld_*` views are replaced by one, `gld_fixed_group_power`: every device whose groups are fixed (shore, shore converter losses, solar, thrusters, chiller, 350 VDC);
+- power tags, 24 VDC, AC unallocated, grid converter losses and the ring remainders are made in the base query from the silver views.
+
+**Base query.** One per dashboard, in the production and consumption panel; the treemap reuses it through `-- Dashboard --`, with Group by. The bars use Group by and Grouping to matrix, and the consumers are drawn below the axis with the `negative-Y` transform (the tooltip now shows them positive). Findings:
+- Greptime runs a CTE again for every reference. The first version read the 24 VDC tables 4 times, the switches 3 times and the power tags twice (25 s for 7 days). Each view is now read once: a row that counts in two series is repeated with a role (`CROSS JOIN (VALUES (1), (2))`), and a series with an anchor (AC unallocated, 24VDC unallocated) only counts in buckets where its anchor has data (18 s for 7 days).
+- Energy = average power × the part of the bucket inside the time range and before now, so the current hour or day and the edges of the range aren't extrapolated.
+- The flow canvas uses one 5-minute bucket instead of 5 minute buckets: the same result for sums and differences.
+- The treemap finds its fields by name, and `organize` only renames the display name, so its options name the Group by fields (`energy (sum)`, `group_energy (max)`).
+- The Greptime plugin times out after 60 s (`jsonData.queryTimeout`). 30 days on the historical dashboard takes about 75 s, so the datasources get 300 s. 60 days will take about 150 s.
+
+**Check against the old views** (Zero, 24 Nov 2026 00:00–24:00 UTC, hour and day buckets): every group matches to within 0.2 kWh except Galley (+2.1 kWh), Technical / Technical (+0.8) and AC unallocated (−3.1). That's the gap effect: a tag with samples in part of an hour is averaged instead of counting the empty minutes as 0. The total is the same (1495.4 against 1495.3 kWh).
+
+**Before and after on Zero** (run one at a time, `/health` checked between runs; the old views inlined as subqueries, as Zero's `views` database still holds pre-#1123 views):
+
+| Query | Before, 24 h | After, 24 h | After, 7 d | After, 30 d |
+|---|---|---|---|---|
+| Electrical: bars and treemap (one base query, hours) | > 120 s (timed out); the 11 views one by one 303 s | 4.0 s | 17.7 s | – |
+| Electrical: flow canvas (last 5 min) | same views, no filter pushdown: > 120 s | 1.6 s | – | – |
+| Electrical: battery (last 5 min) | 71 s | 0.7 s | – | – |
+| Historical: bars and treemap (one base query, days) | > 120 s | 3.3 s | 18.1 s | 74 s (77 s through Grafana) |
+| Historical: SoC | full scan of `gld_batteries_per_minute`, ≥ 71 s | 1.0 s | 4.6 s | 34 s |
+| Historical: `$start_date` variable (15 days) | full scan | 12 s | | |
+
+The old numbers don't depend on the range: no time filter reached the raw tables.
+
+**Deploy.** Zero's `views` database is behind (no `gld_aradex_power_per_minute_per_group`, no ring metadata tables), so `just dbt-deploy zero` is needed in any case. dbt doesn't drop the old views; removing them is part of PR B's cleanup.
