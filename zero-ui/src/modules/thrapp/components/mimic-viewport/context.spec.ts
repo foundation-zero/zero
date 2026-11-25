@@ -37,10 +37,11 @@ describe("createMimicZoomContext", () => {
   const mount = async (
     viewport = { width: 800, height: 400 },
     mimic = { width: 1000, height: 400 },
+    svg = createSvg(mimic.width, mimic.height),
   ) => {
     Object.assign(viewportSize, viewport);
     context.scroller.value = createScroller(viewport.width, viewport.height);
-    content.append(createSvg(mimic.width, mimic.height));
+    content.append(svg);
     context.content.value = content;
     await nextTick();
   };
@@ -95,6 +96,21 @@ describe("createMimicZoomContext", () => {
     const svg = content.querySelector("svg")!;
 
     // A mimic with a mini map stacks it above the diagram in portrait, so it becomes taller.
+    Object.assign(svg.viewBox.baseVal, { width: 1000, height: 800 });
+    svg.setAttribute("viewBox", "0 0 1000 800");
+
+    await vi.waitFor(() => expect(context.zoom.value).toBe(0.5));
+    expect(context.contentStyle.value).toEqual({ width: "500px", height: "400px" });
+  });
+
+  test("uses the outer SVG when the mimic nests other SVGs", async () => {
+    // A mimic with a mini map nests the map and the diagram in one outer SVG.
+    const svg = createSvg(1000, 400);
+    svg.append(createSvg(287, 427), createSvg(700, 400));
+    await mount({ width: 800, height: 400 }, { width: 1000, height: 400 }, svg);
+
+    expect(context.zoom.value).toBe(0.8);
+
     Object.assign(svg.viewBox.baseVal, { width: 1000, height: 800 });
     svg.setAttribute("viewBox", "0 0 1000 800");
 
