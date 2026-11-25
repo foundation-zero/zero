@@ -1,10 +1,12 @@
 /* Mermaid themeCSS: scoped to the diagram's SVG and shipped inside it. Colours are
    zero-ui's CSS variables, so the diagram follows the front-end's light and dark theme;
-   the front-end also outlines each state in its mode's colour. */
+   the front-end also outlines each state in its mode's colour. Where nothing defines
+   them, in the preview, the PDF or the SVG opened as a file, the fallbacks draw it in
+   black and white. */
 
 .node rect {
-  fill: var(--background);
-  stroke: var(--border);
+  fill: var(--background, white);
+  stroke: var(--border, #888);
   rx: 12px;
   ry: 12px;
 }
@@ -14,7 +16,7 @@
   text-align: left;
   font-size: 0.75rem;
   line-height: 1.4;
-  color: var(--foreground);
+  color: var(--foreground, black);
 }
 
 .node foreignObject:first-child .nodeLabel {
@@ -28,35 +30,35 @@
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: var(--muted-foreground);
+  color: var(--muted-foreground, #444);
   text-transform: uppercase;
 }
 
 .transition {
-  stroke: var(--muted-foreground);
+  stroke: var(--muted-foreground, #444);
   stroke-width: 1.25px;
 }
 
 marker path,
 #statediagram-barbEnd {
-  fill: var(--muted-foreground);
-  stroke: var(--muted-foreground);
+  fill: var(--muted-foreground, #444);
+  stroke: var(--muted-foreground, #444);
 }
 
 .edgeLabel,
 .edgeLabel p,
 .edgeLabel rect,
 .labelBkg {
-  background-color: var(--background);
-  fill: var(--background);
+  background-color: var(--background, white);
+  fill: var(--background, white);
   font-size: 11px;
-  color: var(--muted-foreground);
+  color: var(--muted-foreground, #444);
 }
 
 .state-start,
 circle.state-start {
-  fill: var(--foreground);
-  stroke: var(--foreground);
+  fill: var(--foreground, black);
+  stroke: var(--foreground, black);
 }
 
 .edgeLabel div,
@@ -69,7 +71,7 @@ circle.state-start {
 /* Mermaid's base theme paints the rest in fixed light colours; repaint everything a
    state diagram can draw. manual_render.py fails on any colour this leaves behind. */
 & {
-  fill: var(--foreground);
+  fill: var(--foreground, black);
 }
 
 marker,
@@ -78,18 +80,18 @@ marker,
 defs [id$="-barbEnd"],
 [id$="-dependencyStart"],
 [id$="-dependencyEnd"] {
-  fill: var(--muted-foreground);
-  stroke: var(--muted-foreground);
+  fill: var(--muted-foreground, #444);
+  stroke: var(--muted-foreground, #444);
 }
 
 .marker.cross {
-  stroke: var(--muted-foreground);
+  stroke: var(--muted-foreground, #444);
 }
 
 .divider,
 .statediagram-state .divider,
 g.stateGroup line {
-  stroke: var(--border);
+  stroke: var(--border, #888);
 }
 
 .statediagram-state rect.divider,
@@ -98,22 +100,22 @@ g.stateGroup line {
 .statediagram-cluster.statediagram-cluster-alt .inner,
 .stateGroup .composit,
 .stateGroup .alt-composit {
-  fill: var(--background);
+  fill: var(--background, white);
 }
 
 .node circle.state-start,
 .node .fork-join {
-  fill: var(--foreground);
-  stroke: var(--foreground);
+  fill: var(--foreground, black);
+  stroke: var(--foreground, black);
 }
 
 .node circle.state-end {
-  fill: var(--foreground);
-  stroke: var(--background);
+  fill: var(--foreground, black);
+  stroke: var(--background, white);
 }
 
 .end-state-inner {
-  fill: var(--foreground);
+  fill: var(--foreground, black);
 }
 
 .node polygon,
@@ -121,19 +123,19 @@ g.stateGroup line {
 .statediagram-note rect,
 .state-note,
 .stateLabel .box {
-  fill: var(--background);
-  stroke: var(--border);
+  fill: var(--background, white);
+  stroke: var(--border, #888);
 }
 
 .cluster-label,
 .nodeLabel,
 .label div .edgeLabel,
 .statediagram-note .nodeLabel {
-  color: var(--foreground);
+  color: var(--foreground, black);
 }
 
 .statediagram .edgeLabel {
-  color: var(--muted-foreground);
+  color: var(--muted-foreground, #444);
 }
 
 g.stateGroup text,
@@ -143,24 +145,24 @@ g.stateGroup .state-title,
 .stateLabel text,
 .edgeLabel .label text,
 .statediagramTitleText {
-  fill: var(--foreground);
+  fill: var(--foreground, black);
 }
 
 /* End states, forks, joins and notes are paths with fixed fill and stroke attributes. */
 .node .outer-path > path[fill]:not([fill="none"]) {
-  fill: var(--background);
+  fill: var(--background, white);
 }
 
 .node .outer-path > path[stroke]:not([stroke="none"]) {
-  stroke: var(--foreground);
+  stroke: var(--foreground, black);
 }
 
 .node g:not([class]) > path[fill]:not([fill="none"]),
 .node g:not([class]) > path[stroke]:not([stroke="none"]) {
-  fill: var(--foreground);
-  stroke: var(--foreground);
+  fill: var(--foreground, black);
+  stroke: var(--foreground, black);
 }
 
 .statediagram-note .outer-path > path[stroke]:not([stroke="none"]) {
-  stroke: var(--border);
+  stroke: var(--border, #888);
 }

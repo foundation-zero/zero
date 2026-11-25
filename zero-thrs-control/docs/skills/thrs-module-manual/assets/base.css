@@ -19,11 +19,3 @@ svg {
   display: block;
   vertical-align: middle;
 }
-
-/* Black and white for the preview and the PDF; the front-end supplies its own colours. */
-:root {
-  --background: white;
-  --foreground: black;
-  --muted-foreground: #444;
-  --border: #888;
-}
