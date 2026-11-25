@@ -11812,7 +11812,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS device,\n  a.\"Temperature\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(t.temperature__value) AS \"Temperature\",\n    t.topic,\n    t.technical_name\n  FROM (SELECT timestamp, topic, technical_name, temperature__value FROM public.marpower__dc_350v__temperature_sensor UNION ALL SELECT timestamp, topic, technical_name, temperature__value FROM public.marpower__dc_700v__temperature_sensor) AS t\n  WHERE $__timeFilter(t.timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS device,\n  a.\"Temperature\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(t.temperature__value) AS \"Temperature\",\n    t.topic,\n    t.technical_name\n  FROM (SELECT timestamp, topic, technical_name, temperature__value FROM public.marpower__dc_350v__temperature_sensor UNION ALL SELECT timestamp, topic, technical_name, temperature__value FROM public.marpower__dc_700v__temperature_sensor) AS t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",

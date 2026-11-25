@@ -351,7 +351,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS \"Converter\",\n  a.\"Power\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(esi_ac_bus_active_power_3_phase__value * 1000) AS \"Power\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__dc_700v__shore_converter t\n  WHERE $__timeFilter(t.timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 2, 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS \"Converter\",\n  a.\"Power\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(esi_ac_bus_active_power_3_phase__value * 1000) AS \"Power\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__dc_700v__shore_converter t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 2, 1"
                       }
                     },
                     "refId": "A",
@@ -612,7 +612,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS \"Converter\",\n  a.\"Power\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(pv_power__value * 1000) AS \"Power\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__dc_ac__inverter t\n  WHERE $__timeFilter(t.timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 2, 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS \"Converter\",\n  a.\"Power\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(pv_power__value * 1000) AS \"Power\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__dc_ac__inverter t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 2, 1"
                       }
                     },
                     "refId": "A",
@@ -735,7 +735,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS \"Meter\",\n  a.\"Power\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(active_power__value) AS \"Power\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__ac_400v__breaker t\n  WHERE $__timeFilter(t.timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 2, 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS \"Meter\",\n  a.\"Power\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(active_power__value) AS \"Power\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__ac_400v__breaker t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 2, 1"
                       }
                     },
                     "refId": "A",
@@ -1132,7 +1132,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS \"Converter\",\n  a.\"Power\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(-hvdc_power__value) AS \"Power\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__solar__dc_dc_converter t\n  WHERE $__timeFilter(t.timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 2, 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS \"Converter\",\n  a.\"Power\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(-hvdc_power__value) AS \"Power\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__solar__dc_dc_converter t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 2, 1"
                       }
                     },
                     "refId": "A",
@@ -1923,7 +1923,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS \"Converter\",\n  a.\"Power\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(hvdc_power__value) AS \"Power\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__dc_350v__dc_dc_converter t\n  WHERE $__timeFilter(t.timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 2, 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS \"Converter\",\n  a.\"Power\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(hvdc_power__value) AS \"Power\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__dc_350v__dc_dc_converter t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 2, 1"
                       }
                     },
                     "refId": "A",
