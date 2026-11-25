@@ -113,6 +113,9 @@ stock_ms = 20 # Unclear between milliseconds and MicroSoft
 - **Modules**: `snake_case.py`.
 - **Classes**: `PascalCase`.
 - **Functions and methods**: `snake_case`.
+- **Accuracy**: a name says what the thing currently holds or does — a test name states
+  what it asserts, an env var or regex names what it carries.
+- **Module internals**: prefix constants and helpers used only inside their module with `_`.
 - **Acronyms**: capitalize like regular words — `MqttTopic` not `MQTTTopic`, `PcanClient` not `PCANClient`.
 - **MQTT / data fields**: JSON field names are lowercase and non-abbreviated.
   Topic segments are lower case, dasherized (kebab-case).
@@ -263,12 +266,17 @@ guard into a silent no-op. Raise an explicit exception (or validate via pydantic
 - If a comment raises more questions than it answers, rewrite or remove it.
 - Don't commit an assistant's narration of its own reasoning or changes; that
   belongs in the PR, not the source.
+- Comments, docstrings and READMEs match the current code: the values and behavior they
+  state are the ones the code has, without dates or history.
+- Document model fields with `Field(description=...)` rather than a comment above them.
 - `# TODO:` is the convention for deferred work. Other markers (`FIXME`, `HACK`,
   `XXX`) are not used.
 
 **Tests:**
 
 - Use `nullcontext` from `contextlib` to make "does not raise" explicit in parametrized tests.
+- Wait on an observable signal (a log line, a ready endpoint) instead of retrying on any
+  exception, and assert the exact error text.
 
 ### 2.8 CLIs
 
