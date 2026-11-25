@@ -287,20 +287,6 @@ class TestDirectMqttMappingAutoclear:
         assert result is not None
         assert result.go_with_the.flow.value == 1.0
 
-    async def test_wait_for_result_consumes(self):
-        mapping = DirectMqttMapping(SimpleInOut, "sensors/data", autoclear=True)
-        first = _simple_model(1.0)
-        mapping.handle_message("sensors/data", first.model_dump_json(by_alias=True))
-        assert await mapping.wait_for_result() == first
-        assert mapping.result() is None
-
-    async def test_wait_for_result_without_autoclear_stays_sticky(self):
-        mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
-        model = _simple_model(1.0)
-        mapping.handle_message("sensors/data", model.model_dump_json(by_alias=True))
-        assert await mapping.wait_for_result() == model
-        assert mapping.result() == model
-
 
 class TestControlChannelsAutoclear:
     def test_command_channels_consume(self, settings):

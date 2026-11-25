@@ -1,6 +1,6 @@
 import json
 import logging
-from asyncio import Event, TaskGroup, gather
+from asyncio import TaskGroup
 from collections import defaultdict
 from collections.abc import Awaitable, Callable, Coroutine, Iterable, Mapping
 from functools import partial
@@ -53,8 +53,6 @@ class MqttReceiveMapping[M](Protocol):
     def handle_message(self, topic: str, json: str | bytes): ...
 
     def result(self) -> M | None: ...
-
-    async def wait_for_result(self) -> M: ...
 
 
 class MqttSendMapping[M](Protocol):
@@ -174,9 +172,6 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
     def result(self) -> M | None:
         return self._builder.result()
 
-    async def wait_for_result(self) -> M:
-        return await self._builder.wait_for_result()
-
 
 class DirectMqttMapping[M: ThrsValues](
     MqttReceiveMapping[M], MqttSendMapping[M | None]
@@ -197,8 +192,6 @@ class DirectMqttMapping[M: ThrsValues](
         self._adapter: TypeAdapter[M] = TypeAdapter(cls)
         self._topic = f"{topic}{f'/{topic_suffix}' if topic_suffix else ''}"
         self._value = None
-        self._first_value: M | None = None
-        self._first_received = Event()
         self._hooks: list[Callable[[M], None]] = []
         self._autoclear = autoclear
 
@@ -235,9 +228,6 @@ class DirectMqttMapping[M: ThrsValues](
     def handle_message(self, topic: str, json: str | bytes):
         if topic == self._topic:
             self._value = self._adapter.validate_json(json, context=self._context)
-            if not self._first_received.is_set():
-                self._first_value = self._value
-                self._first_received.set()
             for hook in self._hooks:
                 hook(self._value)
 
@@ -246,13 +236,6 @@ class DirectMqttMapping[M: ThrsValues](
         if value is not None and self._autoclear:
             self._value = None
         return value
-
-    async def wait_for_result(self) -> M:
-        await self._first_received.wait()
-        result = cast(M, self._first_value)
-        if self._autoclear:
-            self._value = None
-        return result
 
     def add_hook(self, hook: Callable[[M], None]):
         """`hook` runs synchronously for every message, so it can't be lost to
@@ -324,14 +307,6 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
         ):
             return cast(T, CombinedValues(values=mapping_result))
         return None
-
-    async def wait_for_result(self) -> T:
-        results = await gather(
-            *(builder.wait_for_result() for builder in self._mappings.values())
-        )
-        return cast(
-            T, CombinedValues(dict(zip(self._mappings.keys(), results, strict=False)))
-        )
 
 
 class MergedModuleMqttMapping(MqttSendMapping[tuple[CombinedValues, CombinedValues]]):

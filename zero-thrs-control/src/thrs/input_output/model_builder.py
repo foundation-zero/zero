@@ -1,8 +1,7 @@
 import logging
 from abc import ABC, abstractmethod
-from asyncio import Event
 from contextlib import suppress
-from typing import Any, cast
+from typing import Any
 
 from pydantic import TypeAdapter, ValidationError
 
@@ -27,9 +26,6 @@ class ModelBuilder[T](ABC):
 
     @abstractmethod
     def result(self) -> T | None: ...
-
-    @abstractmethod
-    async def wait_for_result(self) -> T: ...
 
 
 class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
@@ -56,10 +52,6 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
             for field_name, field in cls.model_fields.items()
             if field.annotation is not None
         }
-        self._first_value: T | None = initial
-        self._complete = Event()
-        if initial is not None:
-            self._complete.set()
 
     def input(self, field: str, json: str | bytes):
         value = self._fields[field].validate_json(
@@ -72,10 +64,6 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
         with suppress(ValidationError):
             self._value = self._cls(**self._values)
 
-            if not self._complete.is_set():
-                self._first_value = self._value
-                self._complete.set()
-
     def result(self) -> T | None:
         if logger.isEnabledFor(logging.DEBUG):
             try:
@@ -87,7 +75,3 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
                 )
 
         return self._value
-
-    async def wait_for_result(self) -> T:
-        await self._complete.wait()
-        return cast(T, self._first_value)
