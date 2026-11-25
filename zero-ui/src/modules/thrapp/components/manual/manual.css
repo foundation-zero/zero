@@ -64,8 +64,8 @@
   @apply border-border bg-background my-4 break-inside-avoid rounded-[2rem] border bg-[radial-gradient(circle,rgb(172_180_188/40%)_1px,transparent_1px)] bg-size-[24px_24px] p-6;
 }
 
-.manual figure.diagram pre.mermaid {
-  @apply font-ui m-0 flex justify-center whitespace-pre;
+.manual figure.diagram > svg {
+  @apply mx-auto block;
 }
 
 .manual figure.diagram figcaption {
