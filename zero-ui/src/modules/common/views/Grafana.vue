@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import { TopNav } from "@/modules/common/components/navigation";
-import { ENV } from "@/settings";
+import { grafanaUrl as toGrafanaUrl } from "@/modules/common/lib/grafana";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
+import { useRoute } from "vue-router";
 
 const { t } = useI18n();
-const grafanaUrl = computed(() => (ENV.VITE_GRAFANA_URL ?? "").trim());
+const route = useRoute();
+const grafanaUrl = computed(() => toGrafanaUrl(route.params.dashboard as string | undefined));
 </script>
 
 <template>

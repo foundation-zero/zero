@@ -1,112 +1,126 @@
 import { INCLUDED_APPS, ZeroApps } from "@/apps.ts";
+import { ZiHydrogenerator } from "@common/components/icons";
 import {
   RiAlarmWarningLine,
-  RiBarChart2Line,
-  RiLightbulbLine,
+  RiCheckboxCircleLine,
+  RiCompass3Line,
+  RiFlashlightLine,
+  RiLightbulbAiLine,
   RiPlugLine,
+  RiRouteLine,
   RiSailboatLine,
+  RiSteering2Line,
   RiTempHotLine,
-  RiWindyLine,
 } from "@remixicon/vue";
 import { defineAsyncComponent } from "vue";
-import { SplashAppLink } from "./splash-screen.types";
+import type { SplashEntry, SplashEntryMotion, SplashGroup } from "./splash-screen.types";
 
-// These timings were arbitrarily chosen by CoPilot but seem to work well together.
-export const TILE_ANIMATION_INTERVAL = 120; // ms
-export const TILE_INITIAL_DELAY = 240; // ms
-export const HERO_KICKER_DELAY = 120; // ms
-export const HERO_KICKER_DURATION = 700; // ms
-export const HERO_DESCRIPTION_DELAY = 720; // ms
-export const HERO_DESCRIPTION_DURATION = 700; // ms
-export const HERO_LETTERS_DURATION = 640; // ms
-export const HERO_LETTERS_INTERVAL = 120; // ms
-export const HERO_LETTERS_INITIAL_DELAY = 240; // ms
+/** Ripple entry from the launcher motion prototype: tiles scale up from the screen centre outward. */
+export const RIPPLE_HEAD_DURATION = 240; // ms
+export const RIPPLE_TILE_DURATION = 300; // ms
+export const RIPPLE_DELAY_PER_PIXEL = 0.32; // ms
+export const RIPPLE_SCALE_REDUCTION = 0.12;
+export const RIPPLE_EASING = "cubic-bezier(.2,1.15,.4,1)";
+/** Matches the centre of the background glow and grid. */
+export const RIPPLE_ORIGIN = { x: 0.5, y: 0.54 };
 
-export const SPLASH_LETTERS = ["Z", "E", "R", "O"];
+/** Phones always get small tiles. */
+export const SPLASH_PHONE_WIDTH = 560; // px
 
-export const SPLASH_APP_LINKS: SplashAppLink[] = [
+export const WORDMARK_DURATION = 1400; // ms
+export const WORDMARK_EASING = "cubic-bezier(.45,.05,.35,1)";
+
+/** Coming back from an app is shorter and calmer than a cold start. */
+export const SPLASH_ENTRY_MOTION: Record<SplashEntry, SplashEntryMotion> = {
+  cold: { duration: 1, delay: 1, distance: 1 },
+  return: { duration: 0.55, delay: 0.35, distance: 0.5 },
+};
+
+/** Tiles without an app are planned apps, shown disabled as "Coming soon". */
+const ALL_SPLASH_GROUPS: SplashGroup[] = [
   {
-    id: ZeroApps.loads,
-    nameKey: "views.splash.apps.loads.title",
-    to: "/loads",
-    icon: RiWindyLine,
-    glow: "color-mix(in srgb, var(--brand-dull) 42%, transparent)",
-    border: "var(--brand-dull)",
-    shadow: "var(--brand-dull)",
-    iconBackground: "color-mix(in srgb, var(--brand) 18%, transparent)",
+    nameKey: "views.splash.groups.sailing",
+    tiles: [
+      {
+        app: ZeroApps.loads,
+        to: "/loads",
+        nameKey: "views.splash.apps.loads.title",
+        icon: RiSailboatLine,
+      },
+      { nameKey: "views.splash.apps.conning.title", icon: RiCompass3Line },
+      { nameKey: "views.splash.apps.weatherRouting.title", icon: RiRouteLine },
+      {
+        app: ZeroApps.sailSystem,
+        to: "/sail-system",
+        nameKey: "views.splash.apps.sailSystem.title",
+        icon: RiSteering2Line,
+      },
+    ],
   },
   {
-    id: ZeroApps.thrsim,
-    nameKey: "views.splash.apps.thrsim.title",
-    to: "/thrsim",
-    icon: RiTempHotLine,
-    glow: "color-mix(in srgb, var(--warning-dull) 38%, transparent)",
-    border: "var(--warning-dull)",
-    shadow: "var(--warning-dull)",
-    iconBackground: "color-mix(in srgb, var(--warning) 16%, transparent)",
+    nameKey: "views.splash.groups.energy",
+    tiles: [
+      {
+        app: ZeroApps.thrs,
+        to: "/thrs",
+        nameKey: "views.splash.apps.thrs.title",
+        icon: RiTempHotLine,
+      },
+      {
+        app: ZeroApps.thrsim,
+        to: "/thrsim",
+        nameKey: "views.splash.apps.thrsim.title",
+        icon: RiTempHotLine,
+      },
+      {
+        app: ZeroApps.grafana,
+        to: "/grafana/energy-monitoring",
+        nameKey: "views.splash.apps.energyMonitoring.title",
+        icon: RiFlashlightLine,
+      },
+      {
+        app: ZeroApps.grafana,
+        to: "/grafana/hydrogeneration",
+        nameKey: "views.splash.apps.hydrogeneration.title",
+        icon: ZiHydrogenerator,
+      },
+      {
+        app: ZeroApps.powerTags,
+        to: "/power-tags",
+        nameKey: "views.splash.apps.powerTags.title",
+        icon: RiPlugLine,
+      },
+    ],
   },
   {
-    id: ZeroApps.thrs,
-    nameKey: "views.splash.apps.thrs.title",
-    to: "/thrs",
-    icon: RiTempHotLine,
-    glow: "color-mix(in srgb, var(--warning-dull) 38%, transparent)",
-    border: "var(--warning-dull)",
-    shadow: "var(--warning-dull)",
-    iconBackground: "color-mix(in srgb, var(--warning) 16%, transparent)",
+    nameKey: "views.splash.groups.shipSystems",
+    tiles: [
+      {
+        app: ZeroApps.domestic,
+        to: "/domestic",
+        nameKey: "views.splash.apps.domestic.title",
+        icon: RiLightbulbAiLine,
+      },
+      {
+        app: ZeroApps.alarms,
+        to: "/alarms",
+        nameKey: "views.splash.apps.alarms.title",
+        icon: RiAlarmWarningLine,
+        badge: defineAsyncComponent(
+          () => import("@/modules/alarms/components/active-alarms-badge/ActiveAlarmsBadge.vue"),
+        ),
+      },
+      {
+        app: ZeroApps.grafana,
+        to: "/grafana/commissioning",
+        nameKey: "views.splash.apps.commissioning.title",
+        icon: RiCheckboxCircleLine,
+      },
+    ],
   },
-  {
-    id: ZeroApps.domestic,
-    nameKey: "views.splash.apps.domestic.title",
-    to: "/domestic",
-    icon: RiLightbulbLine,
-    glow: "color-mix(in srgb, var(--constructive-dull) 38%, transparent)",
-    border: "var(--constructive-dull)",
-    shadow: "var(--constructive-dull)",
-    iconBackground: "color-mix(in srgb, var(--constructive) 16%, transparent)",
-  },
-  {
-    id: ZeroApps.grafana,
-    nameKey: "views.splash.apps.grafana.title",
-    to: "/grafana",
-    icon: RiBarChart2Line,
-    glow: "color-mix(in srgb, var(--warning-dull) 36%, transparent)",
-    border: "var(--warning-dull)",
-    shadow: "var(--warning-dull)",
-    iconBackground: "color-mix(in srgb, var(--warning) 16%, transparent)",
-  },
-  {
-    id: ZeroApps.sailSystem,
-    nameKey: "views.splash.apps.sailSystem.title",
-    descriptionKey: "views.splash.apps.sailSystem.description",
-    to: "/sail-system",
-    icon: RiSailboatLine,
-    glow: "color-mix(in srgb, var(--brand-dull) 40%, transparent)",
-    border: "var(--brand-dull)",
-    shadow: "var(--brand-dull)",
-    iconBackground: "color-mix(in srgb, var(--brand) 16%, transparent)",
-  },
-  {
-    id: ZeroApps.powerTags,
-    nameKey: "views.splash.apps.powerTags.title",
-    to: "/power-tags",
-    icon: RiPlugLine,
-    glow: "color-mix(in srgb, var(--brand-dull) 42%, transparent)",
-    border: "var(--brand-dull)",
-    shadow: "var(--brand-dull)",
-    iconBackground: "color-mix(in srgb, var(--brand) 18%, transparent)",
-  },
-  {
-    id: ZeroApps.alarms,
-    nameKey: "views.splash.apps.alarms.title",
-    to: "/alarms",
-    icon: RiAlarmWarningLine,
-    glow: "color-mix(in srgb, var(--destructive-dull) 38%, transparent)",
-    border: "var(--destructive-dull)",
-    shadow: "var(--destructive-dull)",
-    iconBackground: "color-mix(in srgb, var(--destructive) 16%, transparent)",
-    badge: defineAsyncComponent(
-      () => import("@/modules/alarms/components/active-alarms-badge/ActiveAlarmsBadge.vue"),
-    ),
-  },
-].filter((app) => INCLUDED_APPS.includes(app.id));
+];
+
+export const SPLASH_GROUPS: SplashGroup[] = ALL_SPLASH_GROUPS.map((group) => ({
+  ...group,
+  tiles: group.tiles.filter((tile) => !tile.app || INCLUDED_APPS.includes(tile.app)),
+})).filter((group) => group.tiles.length);

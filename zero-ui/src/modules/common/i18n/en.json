@@ -124,35 +124,53 @@
   },
   "views": {
     "splash": {
-      "brand": "Foundation Zero",
-      "kicker": "Integrated yacht systems",
-      "description": "Which subsystem do you want to operate?",
-      "open": "Open",
-      "enter": "Enter",
+      "comingSoon": "Coming soon",
+      "switchTo": {
+        "light": "Switch to light mode",
+        "dark": "Switch to dark mode"
+      },
+      "appCount": "{count} apps | {count} app | {count} apps",
+      "groups": {
+        "sailing": "Sailing",
+        "energy": "Energy",
+        "shipSystems": "Ship systems"
+      },
       "apps": {
+        "conning": {
+          "title": "Conning"
+        },
+        "weatherRouting": {
+          "title": "Weather routing"
+        },
         "loads": {
           "title": "Loads"
         },
-        "thrsim": {
-          "title": "THRSim"
+        "sailSystem": {
+          "title": "Sail systems HMI"
         },
         "thrs": {
           "title": "Heat system"
         },
-        "domestic": {
-          "title": "Domestic"
+        "thrsim": {
+          "title": "THRSim"
         },
-        "grafana": {
-          "title": "Grafana"
+        "energyMonitoring": {
+          "title": "Energy monitoring"
         },
-        "sailSystem": {
-          "title": "Sail system"
+        "hydrogeneration": {
+          "title": "Hydrogeneration"
         },
         "powerTags": {
           "title": "Power Tags"
         },
+        "domestic": {
+          "title": "Domestic control"
+        },
         "alarms": {
           "title": "Alarms"
+        },
+        "commissioning": {
+          "title": "Commissioning"
         }
       }
     },

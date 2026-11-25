@@ -11,7 +11,7 @@ export const sharedRoutes: RouteRecordRaw = {
 };
 
 export const grafanaRoute: RouteRecordRaw = {
-  path: "/grafana",
+  path: "/grafana/:dashboard?",
   name: "grafana",
   meta: {
     requiresAuth: false,
