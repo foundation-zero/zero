@@ -6,7 +6,10 @@ from pydantic.alias_generators import to_snake
 from thrs.input_output.base import ThrsValues, component_meta, valve_meta
 from thrs.input_output.definitions import control, sensor
 from thrs.input_output.definitions.system import AmcsControlMode
-from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+from thrs.input_output.root_types import (
+    AmcsHeartbeatControlValues,
+    AmcsModeSensorValues,
+)
 
 
 class CoolingPanelsSensorValues(AmcsModeSensorValues):
@@ -241,7 +244,7 @@ class CoolingPanelsSensorValues(AmcsModeSensorValues):
     ]
 
 
-class CoolingPanelsControlValues(AmcsWatchdogControlValues):
+class CoolingPanelsControlValues(AmcsHeartbeatControlValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,

@@ -18,7 +18,10 @@ from thrs.input_output.definitions.units import (
     OptionalCelsius,
     PcsMode,
 )
-from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+from thrs.input_output.root_types import (
+    AmcsHeartbeatControlValues,
+    AmcsModeSensorValues,
+)
 
 
 class ThrustersSensorValues(AmcsModeSensorValues):
@@ -300,7 +303,7 @@ class ThrustersSensorValues(AmcsModeSensorValues):
         )
 
 
-class ThrustersControlValues(AmcsWatchdogControlValues):
+class ThrustersControlValues(AmcsHeartbeatControlValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,

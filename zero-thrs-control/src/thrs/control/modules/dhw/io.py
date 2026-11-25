@@ -14,7 +14,10 @@ from thrs.input_output.base import (
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
-from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+from thrs.input_output.root_types import (
+    AmcsHeartbeatControlValues,
+    AmcsModeSensorValues,
+)
 
 
 class DhwSensorValues(AmcsModeSensorValues):
@@ -459,7 +462,7 @@ class DhwSensorValues(AmcsModeSensorValues):
         )
 
 
-class DhwControlValues(AmcsWatchdogControlValues):
+class DhwControlValues(AmcsHeartbeatControlValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,

@@ -8,11 +8,14 @@ from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions.sensor import FlowSensor
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
-from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+from thrs.input_output.root_types import (
+    AmcsHeartbeatControlValues,
+    AmcsModeSensorValues,
+)
 from thrs.orchestration.simulation import Simulation, SimulationResult
 
 
-class SimpleInOut(AmcsModeSensorValues, AmcsWatchdogControlValues):
+class SimpleInOut(AmcsModeSensorValues, AmcsHeartbeatControlValues):
     go_with_the: FlowSensor
 
     mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)] = (

@@ -17,7 +17,10 @@ from thrs.input_output.definitions.units import (
     GLYCOL_20_HEAT_TRANSFER_CONVERSION,
     Ratio,
 )
-from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+from thrs.input_output.root_types import (
+    AmcsHeartbeatControlValues,
+    AmcsModeSensorValues,
+)
 
 # The position of a PVT group's mix valve while the group is idle, and at start.
 IDLE_MIX_POSITION: Ratio = 0.2
@@ -1640,7 +1643,7 @@ class PvtSensorValues(AmcsModeSensorValues):
         )
 
 
-class PvtControlValues(AmcsWatchdogControlValues):
+class PvtControlValues(AmcsHeartbeatControlValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,

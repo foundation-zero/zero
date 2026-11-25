@@ -11,7 +11,7 @@ class AmcsModeSensorValues(ThrsValues, ABC):
     mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
 
 
-class AmcsWatchdogControlValues(ThrsValues, ABC):
+class AmcsHeartbeatControlValues(ThrsValues, ABC):
     external_available: Annotated[
         AmcsExternalAvailable, component_meta(included_in_fmu=False)
     ] = Field(default_factory=AmcsExternalAvailable)
