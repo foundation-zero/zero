@@ -353,7 +353,9 @@ the front-end's fonts. A unit test fails
 when either no longer matches.
 
 The render uses the house diagram styling in `assets/diagram.css` and the
-front-end's fonts, so the SVG is what the reader sees. Every colour in it must
+front-end's fonts, so the SVG is what the reader sees. It embeds those fonts,
+cut down to the characters of the Mermaid source, so the SVG also draws the same
+when opened as a file. Every colour in it must
 come from the front-end's colour variables, so it follows dark mode; the render
 fails on any colour Mermaid paints itself, which a new diagram feature such as a
 note or a composite state can bring in. Restyle it in `assets/diagram.css`. It also writes

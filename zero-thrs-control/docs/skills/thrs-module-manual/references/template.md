@@ -214,6 +214,11 @@ Rules:
   pump / holds the return…".
 - A line must not end in a colon — Mermaid rejects it, and the render in step 5
   fails.
+- **Characters the fonts carry.** Bullets and edge labels are set in Inter:
+  letters, digits, punctuation and symbols such as `°C`, `%`, `≥` and `→`. State
+  names are set in Urbanist, which has far fewer: keep them to letters, digits
+  and spaces. A character the font lacks, such as an emoji, `✓` or a Greek
+  letter in a state name, is drawn in a fallback font and overflows its box.
 - **Edge label**: the real condition, naming the parameter it compares against.
   Never a method name or a lambda. Mermaid does not wrap it, so break it yourself
   with `<br/>` — only between phrases, at "and" / "or" or after a comma, never
