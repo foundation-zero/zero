@@ -42,7 +42,7 @@ def test_heat_pump_command_writes_to_the_unit_it_reads():
 
     assert command.topic == "termodinamica/heat-pump/set"
     assert command.unit_id == 35
-    # The read topic's block starts at 210, so the command selects slave 2
+    # The command selects the slave the heat-pump topic reads
     assert (
         dict(command.to_writes(HeatPumpSet(power=True, setpoint_temperature=45)))[10]
         == 2

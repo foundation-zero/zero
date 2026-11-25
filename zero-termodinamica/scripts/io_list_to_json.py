@@ -2,9 +2,13 @@
 
 import json
 import re
+from collections import Counter
 from pathlib import Path
 
 import polars as pl
+from zero_modbus_bridge.io import extract_modbus_fields
+
+from zero_termodinamica.io import MODEL_REGISTRY, slave_block
 
 SCRIPTS_FOLDER = Path(__file__).parent
 EXCEL_PATH = SCRIPTS_FOLDER / "../docs/Vent en AC lijst Termodynamica.xls"
@@ -65,12 +69,12 @@ def _ac_topic_dict(
 def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> list[dict]:
     """Return AC room topic dicts from the Excel frame."""
     print(f"Select reg split: topic {topic_prefix} received {df.shape[0]} rows")
-    df = df.filter(pl.col("register_name").str.contains(r"REG_SPLIT_\d\d")).filter(
-        ~pl.col("register_name").str.contains("_FREE")
-    )
-    print(f"Select reg split: topic {topic_prefix} filtered {df.shape[0]} rows")
-    df = (
-        df.select(["register_name", "address", "description"])
+    split_rows = df.filter(
+        pl.col("register_name").str.contains(r"REG_SPLIT_\d\d")
+    ).filter(~pl.col("register_name").str.contains("_FREE"))
+    print(f"Select reg split: topic {topic_prefix} filtered {split_rows.shape[0]} rows")
+    splits = (
+        split_rows.select(["register_name", "address", "description"])
         .with_columns(
             pl.col("register_name").str.extract(r"REG_SPLIT_(\d+)").alias("reg_split"),
             pl.col("register_name")
@@ -98,7 +102,7 @@ def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> list[dict]:
     )
 
     result: list[dict] = []
-    for name, data in df.group_by("reg_split"):
+    for name, data in splits.group_by("reg_split"):
         reg_split = str(name[0])
         if reg_split not in REG_ROOM_MAPPING:
             continue
@@ -124,7 +128,7 @@ def load_ac_misc_topic(
     register_name_filter: list[str],
     field_name_strip: list[str],
 ) -> dict:
-    df = (
+    misc_rows = (
         df.filter(pl.col("register_name").str.contains_any(register_name_filter))
         .with_columns(
             pl.col("register_name")
@@ -150,7 +154,7 @@ def load_ac_misc_topic(
             .alias("scale_factor")
         )
     )
-    print(f"load flat topic {topic} with {len(df)} registers")
+    print(f"load flat topic {topic} with {len(misc_rows)} registers")
     fields = [
         {
             "modbus_register": row["address"],
@@ -158,7 +162,7 @@ def load_ac_misc_topic(
             "description": row["description"],
             "scale_factor": row["scale_factor"],
         }
-        for row in df.iter_rows(named=True)
+        for row in misc_rows.iter_rows(named=True)
     ]
     return {"topic": topic, "model": "ac_misc", "modbus_fields": fields}
 
@@ -195,89 +199,14 @@ VENTILATION_ROOMS = {
         "09": "Guest aft port",
     },
 }
-# Unit ID and slave slot per bridge.
+# Unit ID and slave number per bridge.
 HEAT_PUMP_UNIT = (35, 2)
 COLD_ROOM_UNITS = {"fridge": (36, 2), "freezer": (37, 3)}
 
 
-def slave_block(slot: int) -> int:
-    """First register of a slave's read-back block: 200 for slave 1, 210 for 2."""
-    return 200 + 10 * (slot - 1)
-
-
-# The HPB bridge uses the base register map (Fw 8.14.17, see docs/); slot 1
-# (200..204) only holds placeholders. It is controlled through registers 30
-# (global on/off) and 10/11/12 (slave selection, on/off and set point); its
-# slot's block reads the slave back.
-def heat_pump_fields(slot: int) -> list[tuple[int, str, str, float]]:
-    start = slave_block(slot)
-    return [
-        (30, "system_disabled", "Global On/Off System: 1=OFF 0=ON", 1.0),
-        (140, "compressor_speed", "Inverter Compressor Speed (0.1 %)", 0.1),
-        (141, "water_pump_speed", "Inverter Water Pump Speed (0.1 %)", 0.1),
-        (
-            182,
-            "compressor_power",
-            "Compressor absorption (W). The map says 1=0,01 Watt, but live it "
-            "reads 13 at 0.54 A: 1=10 Watt",
-            10.0,
-        ),
-        (185, "compressor_current", "Compressor absorption (1=0,01 Ampere)", 0.01),
-        (190, "active_error", "General Active Error bit field", 1.0),
-        (start, "power", "Unit Power On/Off 0=OFF 1=ON", 1.0),
-        (
-            start + 1,
-            "setpoint_temperature",
-            "Unit SetPoint (hundredths of degrees Celsius), range 6..70 °C",
-            0.01,
-        ),
-        (
-            start + 3,
-            "temperature",
-            "Unit temperature (hundredths of degrees Celsius)",
-            0.01,
-        ),
-        (start + 4, "status", "Diagnostic communication status bit field", 1.0),
-    ]
-
-
-# The fridge and freezer bridges expose the same subset of the base map, with
-# signed temperatures (two's complement): fridge 1..20 °C, freezer -5..-20 °C.
-# Unlike the heat pump, their slot differs per bridge (see COLD_ROOM_UNITS).
-def cold_room_fields(slot: int) -> list[tuple[int, str, str, float]]:
-    start = slave_block(slot)
-    return [
-        (30, "system_disabled", "Global On/Off System: 1=OFF 0=ON", 1.0),
-        (140, "compressor_speed", "Inverter Compressor Speed (0.1 %)", 0.1),
-        (
-            182,
-            "compressor_power",
-            "Compressor absorption (W). The map says 1=0,01 Watt, but live it "
-            "reads 13 at 0.54 A: 1=10 Watt",
-            10.0,
-        ),
-        (185, "compressor_current", "Compressor absorption (1=0,01 Ampere)", 0.01),
-        (190, "active_error", "General Active Error bit field", 1.0),
-        (start, "power", "Unit Power On/Off 0=OFF 1=ON", 1.0),
-        (
-            start + 1,
-            "setpoint_temperature",
-            "Unit SetPoint (hundredths of degrees Celsius, signed)",
-            0.01,
-        ),
-        (
-            start + 3,
-            "temperature",
-            "Unit temperature (hundredths of degrees Celsius, signed)",
-            0.01,
-        ),
-        (start + 4, "status", "Diagnostic communication status bit field", 1.0),
-    ]
-
-
 def select_ventilation_topics(df: pl.DataFrame, bridge: str) -> list[dict]:
     """Return a topic dict per populated DVS air handler slot on one bridge."""
-    df = (
+    slots = (
         df.filter(pl.col("register_name").str.contains(r"^REG_SPLIT_\d\d_READ_"))
         .with_columns(
             pl.col("register_name").str.extract(r"REG_SPLIT_(\d+)").alias("unit"),
@@ -318,34 +247,33 @@ def select_ventilation_topics(df: pl.DataFrame, bridge: str) -> list[dict]:
                 "room": VENTILATION_ROOMS[bridge][unit],
             },
         }
-        for (unit,), data in df.group_by("unit", maintain_order=True)
+        for (unit,), data in slots.group_by("unit", maintain_order=True)
         if unit in VENTILATION_ROOMS[bridge]
     ]
 
 
-def fixed_topic(
-    topic: str,
-    model: str,
-    fields: list[tuple[int, str, str, float]],
-    start_register: int | None = None,
-) -> dict:
-    """Topic dict for a bridge whose registers are listed in this script.
+def slave_unit_topic(topic: str, model_key: str, slave: int) -> dict:
+    """Topic dict for a unit wired as one slave of the base register map.
 
-    ``start_register`` places the model's offset fields, such as a slave slot.
+    Its registers, scales and descriptions come from the model.
     """
+    model = MODEL_REGISTRY[model_key]
+    start = slave_block(slave)
     return {
         "topic": topic,
-        "model": model,
-        **({"start_register": start_register} if start_register is not None else {}),
+        "model": model_key,
         "modbus_fields": [
             {
-                "modbus_register": register,
-                "field_name": field_name,
-                "description": description,
-                "scale_factor": scale_factor,
+                "modbus_register": start + field.offset
+                if field.offset is not None
+                else field.register,
+                "field_name": name,
+                "description": model.model_fields[name].description,
+                "scale_factor": field.scale_factor,
             }
-            for register, field_name, description, scale_factor in fields
+            for name, field in extract_modbus_fields(model).items()
         ],
+        "extra_fields": {"slave": slave},
     }
 
 
@@ -379,6 +307,7 @@ def load_modbus_data(excel_path: Path) -> list[dict]:
     ventilation_df = _read_sheet(
         excel_path, "Vent", read_options={"header_row": 3}
     ).filter(pl.col("register_name").is_not_null())
+    heat_pump_unit_id, heat_pump_slave = HEAT_PUMP_UNIT
     return [
         {"unit_id": AC_UNIT_ID, "topics": load_ac_topics(excel_path)},
         *(
@@ -389,13 +318,10 @@ def load_modbus_data(excel_path: Path) -> list[dict]:
             for bridge, unit_id in VENTILATION_UNIT_IDS.items()
         ),
         {
-            "unit_id": HEAT_PUMP_UNIT[0],
+            "unit_id": heat_pump_unit_id,
             "topics": [
-                fixed_topic(
-                    "termodinamica/heat-pump",
-                    "heat_pump",
-                    heat_pump_fields(HEAT_PUMP_UNIT[1]),
-                    start_register=slave_block(HEAT_PUMP_UNIT[1]),
+                slave_unit_topic(
+                    "termodinamica/heat-pump", "heat_pump", heat_pump_slave
                 )
             ],
         },
@@ -403,22 +329,17 @@ def load_modbus_data(excel_path: Path) -> list[dict]:
             {
                 "unit_id": unit_id,
                 "topics": [
-                    fixed_topic(
-                        f"termodinamica/{room}",
-                        "cold_room",
-                        cold_room_fields(slot),
-                        start_register=slave_block(slot),
-                    )
+                    slave_unit_topic(f"termodinamica/{room}", "cold_room", slave)
                 ],
             }
-            for room, (unit_id, slot) in COLD_ROOM_UNITS.items()
+            for room, (unit_id, slave) in COLD_ROOM_UNITS.items()
         ),
     ]
 
 
 def check_unique_topics(modbus_data: list[dict]) -> None:
-    topics = [topic["topic"] for unit in modbus_data for topic in unit["topics"]]
-    if duplicates := {topic for topic in topics if topics.count(topic) > 1}:
+    counts = Counter(topic["topic"] for unit in modbus_data for topic in unit["topics"])
+    if duplicates := [topic for topic, count in counts.items() if count > 1]:
         raise ValueError(f"Rooms share a topic: {sorted(duplicates)}")
 
 

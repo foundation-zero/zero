@@ -3467,69 +3467,71 @@
       {
         "topic": "termodinamica/heat-pump",
         "model": "heat_pump",
-        "start_register": 210,
         "modbus_fields": [
           {
             "modbus_register": 30,
             "field_name": "system_disabled",
-            "description": "Global On/Off System: 1=OFF 0=ON",
+            "description": "Global on/off: 1=off, 0=on",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 140,
             "field_name": "compressor_speed",
-            "description": "Inverter Compressor Speed (0.1 %)",
-            "scale_factor": 0.1
-          },
-          {
-            "modbus_register": 141,
-            "field_name": "water_pump_speed",
-            "description": "Inverter Water Pump Speed (0.1 %)",
+            "description": "Inverter compressor speed (%)",
             "scale_factor": 0.1
           },
           {
             "modbus_register": 182,
             "field_name": "compressor_power",
-            "description": "Compressor absorption (W). The map says 1=0,01 Watt, but live it reads 13 at 0.54 A: 1=10 Watt",
+            "description": "Compressor power (W)",
             "scale_factor": 10.0
           },
           {
             "modbus_register": 185,
             "field_name": "compressor_current",
-            "description": "Compressor absorption (1=0,01 Ampere)",
+            "description": "Compressor current (A)",
             "scale_factor": 0.01
           },
           {
             "modbus_register": 190,
             "field_name": "active_error",
-            "description": "General Active Error bit field",
+            "description": "General active error bit field",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 210,
             "field_name": "power",
-            "description": "Unit Power On/Off 0=OFF 1=ON",
+            "description": "Unit on/off: 0=off, 1=on",
             "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 214,
+            "field_name": "status",
+            "description": "Communication status bit field",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 141,
+            "field_name": "water_pump_speed",
+            "description": "Inverter water pump speed (%)",
+            "scale_factor": 0.1
           },
           {
             "modbus_register": 211,
             "field_name": "setpoint_temperature",
-            "description": "Unit SetPoint (hundredths of degrees Celsius), range 6..70 °C",
+            "description": "Water set point (°C), 6..70",
             "scale_factor": 0.01
           },
           {
             "modbus_register": 213,
             "field_name": "temperature",
-            "description": "Unit temperature (hundredths of degrees Celsius)",
+            "description": "Water temperature (°C)",
             "scale_factor": 0.01
-          },
-          {
-            "modbus_register": 214,
-            "field_name": "status",
-            "description": "Diagnostic communication status bit field",
-            "scale_factor": 1.0
           }
-        ]
+        ],
+        "extra_fields": {
+          "slave": 2
+        }
       }
     ]
   },
@@ -3539,63 +3541,65 @@
       {
         "topic": "termodinamica/fridge",
         "model": "cold_room",
-        "start_register": 210,
         "modbus_fields": [
           {
             "modbus_register": 30,
             "field_name": "system_disabled",
-            "description": "Global On/Off System: 1=OFF 0=ON",
+            "description": "Global on/off: 1=off, 0=on",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 140,
             "field_name": "compressor_speed",
-            "description": "Inverter Compressor Speed (0.1 %)",
+            "description": "Inverter compressor speed (%)",
             "scale_factor": 0.1
           },
           {
             "modbus_register": 182,
             "field_name": "compressor_power",
-            "description": "Compressor absorption (W). The map says 1=0,01 Watt, but live it reads 13 at 0.54 A: 1=10 Watt",
+            "description": "Compressor power (W)",
             "scale_factor": 10.0
           },
           {
             "modbus_register": 185,
             "field_name": "compressor_current",
-            "description": "Compressor absorption (1=0,01 Ampere)",
+            "description": "Compressor current (A)",
             "scale_factor": 0.01
           },
           {
             "modbus_register": 190,
             "field_name": "active_error",
-            "description": "General Active Error bit field",
+            "description": "General active error bit field",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 210,
             "field_name": "power",
-            "description": "Unit Power On/Off 0=OFF 1=ON",
+            "description": "Unit on/off: 0=off, 1=on",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 214,
+            "field_name": "status",
+            "description": "Communication status bit field",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 211,
             "field_name": "setpoint_temperature",
-            "description": "Unit SetPoint (hundredths of degrees Celsius, signed)",
+            "description": "Set point (°C)",
             "scale_factor": 0.01
           },
           {
             "modbus_register": 213,
             "field_name": "temperature",
-            "description": "Unit temperature (hundredths of degrees Celsius, signed)",
+            "description": "Cold room temperature (°C)",
             "scale_factor": 0.01
-          },
-          {
-            "modbus_register": 214,
-            "field_name": "status",
-            "description": "Diagnostic communication status bit field",
-            "scale_factor": 1.0
           }
-        ]
+        ],
+        "extra_fields": {
+          "slave": 2
+        }
       }
     ]
   },
@@ -3605,63 +3609,65 @@
       {
         "topic": "termodinamica/freezer",
         "model": "cold_room",
-        "start_register": 220,
         "modbus_fields": [
           {
             "modbus_register": 30,
             "field_name": "system_disabled",
-            "description": "Global On/Off System: 1=OFF 0=ON",
+            "description": "Global on/off: 1=off, 0=on",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 140,
             "field_name": "compressor_speed",
-            "description": "Inverter Compressor Speed (0.1 %)",
+            "description": "Inverter compressor speed (%)",
             "scale_factor": 0.1
           },
           {
             "modbus_register": 182,
             "field_name": "compressor_power",
-            "description": "Compressor absorption (W). The map says 1=0,01 Watt, but live it reads 13 at 0.54 A: 1=10 Watt",
+            "description": "Compressor power (W)",
             "scale_factor": 10.0
           },
           {
             "modbus_register": 185,
             "field_name": "compressor_current",
-            "description": "Compressor absorption (1=0,01 Ampere)",
+            "description": "Compressor current (A)",
             "scale_factor": 0.01
           },
           {
             "modbus_register": 190,
             "field_name": "active_error",
-            "description": "General Active Error bit field",
+            "description": "General active error bit field",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 220,
             "field_name": "power",
-            "description": "Unit Power On/Off 0=OFF 1=ON",
+            "description": "Unit on/off: 0=off, 1=on",
+            "scale_factor": 1.0
+          },
+          {
+            "modbus_register": 224,
+            "field_name": "status",
+            "description": "Communication status bit field",
             "scale_factor": 1.0
           },
           {
             "modbus_register": 221,
             "field_name": "setpoint_temperature",
-            "description": "Unit SetPoint (hundredths of degrees Celsius, signed)",
+            "description": "Set point (°C)",
             "scale_factor": 0.01
           },
           {
             "modbus_register": 223,
             "field_name": "temperature",
-            "description": "Unit temperature (hundredths of degrees Celsius, signed)",
+            "description": "Cold room temperature (°C)",
             "scale_factor": 0.01
-          },
-          {
-            "modbus_register": 224,
-            "field_name": "status",
-            "description": "Diagnostic communication status bit field",
-            "scale_factor": 1.0
           }
-        ]
+        ],
+        "extra_fields": {
+          "slave": 3
+        }
       }
     ]
   }

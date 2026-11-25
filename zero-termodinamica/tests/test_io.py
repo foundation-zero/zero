@@ -35,12 +35,12 @@ def test_ventilation_topics_follow_dvs_register_map():
     ]
 
     assert {t.unit_id for t in ventilation} == {33, 34}
-    unit_5 = next(
+    day_head = next(
         t for t in ventilation if t.topic == "termodinamica/ventilation/day-head"
     )
-    assert unit_5.model is VentilationUnit
-    assert unit_5.start_register == 130
-    assert unit_5.extra_fields == {"bridge": "2", "unit": "05", "room": "Day head"}
+    assert day_head.model is VentilationUnit
+    assert day_head.start_register == 130
+    assert day_head.extra_fields == {"bridge": "2", "unit": "05", "room": "Day head"}
 
 
 def test_heat_pump_topic_reads_control_registers():

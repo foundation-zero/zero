@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from typing import Annotated
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from zero_modbus_bridge.io import AnnotationModbusTopic, ModbusField, ModbusTopic
 
 
@@ -90,71 +90,93 @@ class VentilationUnit(BaseModel):
     room: str | None = None
 
 
-class HeatPump(BaseModel):
-    """The HPB, wired to its own bridge as a slave of the base register map.
+def slave_block(slave: int) -> int:
+    """First register of a slave's read-back block: 200 for slave 1, 210 for 2."""
+    return 200 + 10 * (slave - 1)
 
-    The slot fields are offsets from the topic's ``start_register``: 210 for
-    slave 2. The heat pump commands select the slave that block belongs to.
 
-    The external water pump may only stop once ``compressor_speed`` reads zero.
+class SlaveUnit(BaseModel):
+    """A unit on its own bridge, as one slave of the base register map.
+
+    Its slot fields are offsets from ``slave_block(slave)``; slot 1 (200..204)
+    only holds placeholders on these bridges.
     """
 
-    system_disabled: Annotated[int | None, ModbusField(register=30)]
-    compressor_speed: Annotated[
-        float | None, ModbusField(register=140, scale_factor=0.1)
+    system_disabled: Annotated[
+        int | None,
+        ModbusField(register=30),
+        Field(description="Global on/off: 1=off, 0=on"),
     ]
+    compressor_speed: Annotated[
+        float | None,
+        ModbusField(register=140, scale_factor=0.1),
+        Field(description="Inverter compressor speed (%)"),
+    ]
+    # The register says 0.01 W; from the data we assume 0.01 kW, i.e. 10 W.
+    compressor_power: Annotated[
+        float | None,
+        ModbusField(register=182, scale_factor=10.0),
+        Field(description="Compressor power (W)"),
+    ]
+    compressor_current: Annotated[
+        float | None,
+        ModbusField(register=185, scale_factor=0.01),
+        Field(description="Compressor current (A)"),
+    ]
+    active_error: Annotated[
+        int | None,
+        ModbusField(register=190),
+        Field(description="General active error bit field"),
+    ]
+    power: Annotated[
+        int | None, ModbusField(offset=0), Field(description="Unit on/off: 0=off, 1=on")
+    ]
+    status: Annotated[
+        int | None,
+        ModbusField(offset=4),
+        Field(description="Communication status bit field"),
+    ]
+    slave: int | None = None
+
+
+class HeatPump(SlaveUnit):
+    """The HPB. The external water pump may only stop once ``compressor_speed``
+    reads zero."""
+
     water_pump_speed: Annotated[
-        float | None, ModbusField(register=141, scale_factor=0.1)
+        float | None,
+        ModbusField(register=141, scale_factor=0.1),
+        Field(description="Inverter water pump speed (%)"),
     ]
-    # The register says 0.01 W; from the data we assume 0.01 kW, i.e. 10 W.
-    compressor_power: Annotated[
-        float | None, ModbusField(register=182, scale_factor=10.0)
-    ]
-    compressor_current: Annotated[
-        float | None, ModbusField(register=185, scale_factor=0.01)
-    ]
-    active_error: Annotated[int | None, ModbusField(register=190)]
-    power: Annotated[int | None, ModbusField(offset=0)]
     setpoint_temperature: Annotated[
-        float | None, ModbusField(offset=1, scale_factor=0.01)
+        float | None,
+        ModbusField(offset=1, scale_factor=0.01),
+        Field(description="Water set point (°C), 6..70"),
     ]
-    temperature: Annotated[float | None, ModbusField(offset=3, scale_factor=0.01)]
-    status: Annotated[int | None, ModbusField(offset=4)]
+    temperature: Annotated[
+        float | None,
+        ModbusField(offset=3, scale_factor=0.01),
+        Field(description="Water temperature (°C)"),
+    ]
 
 
-class ColdRoom(BaseModel):
-    """The fridge or freezer, each on its own bridge and slave slot of the base map.
+class ColdRoom(SlaveUnit):
+    """The fridge or freezer. Temperatures are signed (two's complement): the
+    fridge runs at 1..20 °C, the freezer at -5..-20 °C."""
 
-    The slot fields are offsets from the topic's ``start_register``: 210 for the
-    fridge (slot 2), 220 for the freezer (slot 3). Temperatures are signed: the
-    freezer runs between -5 and -20 °C.
-    """
-
-    system_disabled: Annotated[int | None, ModbusField(register=30)]
-    compressor_speed: Annotated[
-        float | None, ModbusField(register=140, scale_factor=0.1)
-    ]
-    # The register says 0.01 W; from the data we assume 0.01 kW, i.e. 10 W.
-    compressor_power: Annotated[
-        float | None, ModbusField(register=182, scale_factor=10.0)
-    ]
-    compressor_current: Annotated[
-        float | None, ModbusField(register=185, scale_factor=0.01)
-    ]
-    active_error: Annotated[int | None, ModbusField(register=190)]
-    power: Annotated[int | None, ModbusField(offset=0)]
     setpoint_temperature: Annotated[
         float | None,
         ModbusField(offset=1, data_type="int16", scale_factor=0.01),
+        Field(description="Set point (°C)"),
     ]
     temperature: Annotated[
         float | None,
         ModbusField(offset=3, data_type="int16", scale_factor=0.01),
+        Field(description="Cold room temperature (°C)"),
     ]
-    status: Annotated[int | None, ModbusField(offset=4)]
 
 
-_MODEL_REGISTRY: dict[str, type[BaseModel]] = {
+MODEL_REGISTRY: dict[str, type[BaseModel]] = {
     "air_conditioning_room": AirConditioningRoom,
     "ac_misc": ACMisc,
     "ventilation_unit": VentilationUnit,
@@ -166,20 +188,23 @@ _MODEL_REGISTRY: dict[str, type[BaseModel]] = {
 def _parse_topic(t: dict, unit_id: int) -> ModbusTopic:
     """Build a ModbusTopic from a JSON bridge entry, validating model key."""
     model_key = t.get("model", "")
-    if model_key not in _MODEL_REGISTRY:
+    if model_key not in MODEL_REGISTRY:
         raise ValueError(
             f"Topic {t['topic']} has unknown model key "
-            f"{model_key!r}; expected one of {sorted(_MODEL_REGISTRY)}"
+            f"{model_key!r}; expected one of {sorted(MODEL_REGISTRY)}"
         )
-    start_register = t.get("start_register", t["modbus_fields"][0]["modbus_register"])
     extra_fields_raw = t.get("extra_fields", {})
     if isinstance(extra_fields_raw, list):
         extra_fields = {ef["field_name"]: ef["value"] for ef in extra_fields_raw}
     else:
         extra_fields = extra_fields_raw
+    if (slave := extra_fields.get("slave")) is not None:
+        start_register = slave_block(slave)
+    else:
+        start_register = t["modbus_fields"][0]["modbus_register"]
     return AnnotationModbusTopic(
         topic=t["topic"],
-        model=_MODEL_REGISTRY[model_key],
+        model=MODEL_REGISTRY[model_key],
         start_register=start_register,
         unit_id=unit_id,
         extra_fields=extra_fields,
