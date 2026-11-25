@@ -72,6 +72,7 @@ class Module[
         self._control.switch_mode(AutomationMode(mode=automation_mode))
         self._alarms = description.alarms()
         self._channels = channels
+        self._started_from_actuated = False
 
     @property
     def name(self):
@@ -130,18 +131,25 @@ class Module[
     ) -> None:
         if sensor_values is not None:
             await self._channels.send_computed_values(sensor_values)
-        await self._channels.send_control_values(control_values)
+        # Until control knows what the plant should do it sends no Commands at all,
+        # `external_available` included: a restart does not override the plant, and
+        # the AMCS never sees it available without control behind it.
+        if self._started_from_actuated:
+            await self._channels.send_control_values(control_values)
         await self._channels.send_controller_state(controller_state)
         actuated_control_values = self._channels.get_actuated_control_values()
         if actuated_control_values is not None:
             await self._channels.send_actuated_control_values(actuated_control_values)
 
     async def tick(self, sensor_values: S | None) -> tuple[C, CS]:
+        actuated_control_values = self._channels.get_actuated_control_values()
+        if not self._started_from_actuated and actuated_control_values is not None:
+            # Manual starts from what the plant actuated
+            self._control.update_manual_controls(actuated_control_values)
+            self._started_from_actuated = True
+
         if sensor_values is None:
-            logger.warning(
-                "Module %s has no sensor values - sending last known manual control values",
-                self._name,
-            )
+            logger.info("Module %s has no sensor values yet", self._name)
             control_values = self._control.manual_controls
             controller_state = self._control.idle_state()
         else:

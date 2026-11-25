@@ -32,7 +32,8 @@ class Switching[
         name: str,
     ):
         """Builds a fresh automatic control from the current parameters each time
-        automatic control engages; the manual values start at its initial values."""
+        automatic control engages; the manual values start at its initial values,
+        until they are set from the first actuated values."""
         self._create_automatic = create_automatic
         self._parameters = parameters
         self._automatic_control = create_automatic(parameters)
