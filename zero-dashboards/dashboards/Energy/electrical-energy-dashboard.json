@@ -1329,7 +1329,7 @@
         "1d"
       ],
       "fiscalYearStartMonth": 0,
-      "from": "now-12h",
+      "from": "now-24h",
       "hideTimepicker": false,
       "timezone": "browser",
       "to": "now"

@@ -1170,7 +1170,7 @@
     "tags": [],
     "timeSettings": {
       "timezone": "browser",
-      "from": "now-13d/d",
+      "from": "now-20d/d",
       "to": "now/d",
       "autoRefresh": "15m",
       "autoRefreshIntervals": [
