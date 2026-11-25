@@ -446,6 +446,34 @@ class TestCombinedMqttMapping:
             }
         )
 
+    def test_starts_from_the_initial_values(self):
+        clss = {"module1": SimpleInOut, "module2": SimpleInOut}
+        initial = CombinedValues(
+            values={
+                "module1": SimpleInOut.initial(),
+                "module2": SimpleInOut.initial(),
+            }
+        )
+        mapping = ModuleMqttMapping(clss, PartialMqttMapping, initial=initial)
+        assert mapping.result() == initial
+
+        flow_sensor = FlowSensor(
+            flow=Stamped.stamp(50.0), temperature=Stamped.stamp(5.0)
+        )
+        mapping.handle_message(
+            "/500000-thrs/module1/go-with-the",
+            flow_sensor.model_dump_json(by_alias=True),
+        )
+
+        assert mapping.result() == CombinedValues(
+            values={
+                "module1": initial.values["module1"].model_copy(
+                    update={"go_with_the": flow_sensor}
+                ),
+                "module2": initial.values["module2"],
+            }
+        )
+
 
 @pytest.fixture
 async def mqtt_client(settings):

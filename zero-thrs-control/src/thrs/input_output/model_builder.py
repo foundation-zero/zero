@@ -36,21 +36,30 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
     """
     ModelBuilder that handles partial input.
 
-    Each input call is expected to set one field in the model.
+    Each input call is expected to set one field in the model. Given an `initial`
+    model, the builder starts from it, and each input call overrides one of its
+    fields.
     """
 
-    def __init__(self, cls: type[T], validation_context: WireContext | None = None):
+    def __init__(
+        self,
+        cls: type[T],
+        validation_context: WireContext | None = None,
+        initial: T | None = None,
+    ):
         self._cls = cls
         self._validation_context = validation_context
-        self._value: T | None = None
-        self._values: dict[str, Any] = {}
+        self._value: T | None = initial
+        self._values: dict[str, Any] = {} if initial is None else dict(initial)
         self._fields: dict[str, TypeAdapter] = {
             field_name: TypeAdapter(field.annotation)
             for field_name, field in cls.model_fields.items()
             if field.annotation is not None
         }
-        self._first_value: T | None = None
+        self._first_value: T | None = initial
         self._complete = Event()
+        if initial is not None:
+            self._complete.set()
 
     def input(self, field: str, json: str | bytes):
         value = self._fields[field].validate_json(

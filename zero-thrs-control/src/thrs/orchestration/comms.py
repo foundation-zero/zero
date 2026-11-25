@@ -74,6 +74,8 @@ class MappingForModule[M](Protocol):
         topic_prefix: str,
         module_name: str,
         topic_suffix: str | None = None,
+        *,
+        initial: M | None = None,
     ) -> MqttMapping[M]: ...
 
 
@@ -103,7 +105,10 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         *,
         only_computed_fields: bool = False,
         context: WireContext | None = None,
+        initial: M | None = None,
     ):
+        """Given an `initial` model, the result starts from it and each received
+        topic overrides its own component."""
         self._cls = message_type
         self._topic_prefix = topic_prefix
         self._module_prefix = module_name
@@ -118,7 +123,7 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
             self._topic(field_name, field): field_name
             for field_name, field in message_type.model_fields.items()
         }
-        self._builder = PartialModelBuilder(self._cls, context)
+        self._builder = PartialModelBuilder(self._cls, context, initial)
 
     @staticmethod
     def only_computed_fields[T: ThrsValues](
@@ -260,7 +265,8 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
     MQTT mapping for modules
 
     Accepts a `ModuleClassMap` instead of a single class.
-    Delegates to `sub_mapping` for each sub-model.
+    Delegates to `sub_mapping` for each sub-model, starting each from its model in
+    `initial` if given.
     """
 
     def __init__(
@@ -270,6 +276,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
         topic_prefix: str = "",
         topic_suffix: str | None = None,
         allow_incomplete: bool = False,
+        initial: CombinedValues | None = None,
     ):
         self._topic_prefix = topic_prefix
         self._mappings: Mapping[str, MqttMapping[ThrsValues]] = {
@@ -278,6 +285,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
                 topic_prefix,
                 device_module_prefix(name),
                 topic_suffix,
+                initial=None if initial is None else initial.values[name],
             )
             for name, module_cls in clss.items()
         }
