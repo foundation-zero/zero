@@ -152,7 +152,9 @@ the 24 VDC or AC output counts as unallocated.
 - **Load per segment and the cable offset** aren't on the energy dashboards. They are planned for the Load
   balance dashboard (ZERO-2736).
 - **Stale data:** the electrical energy dashboard shows a *Stale data* link when a source has had no sample
-  for 15 minutes.
+  for 15 minutes. It checks each raw table as a whole, so one silent device in a table with more devices
+  (an ESI module, a battery pack, a grid converter) isn't flagged. The DC ring switches are the exception:
+  they are checked one by one, because the ring model drops every minute in which one of the 8 is missing.
 
 ## More IO would split the unallocated groups
 

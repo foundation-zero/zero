@@ -22,12 +22,16 @@ with switch_power as (
     from {{ ref('stg_marpower__dc_switches') }}
     where dcc_s_0__has_value is true
     and dcc_s_0__is_valid is true
+    and dcc_s_0__value is not null
     and dcc_s_1__has_value is true
     and dcc_s_1__is_valid is true
+    and dcc_s_1__value is not null
     and dcv_s_0__has_value is true
     and dcv_s_0__is_valid is true
+    and dcv_s_0__value is not null
     and dcv_s_1__has_value is true
     and dcv_s_1__is_valid is true
+    and dcv_s_1__value is not null
     and abs(dcc_s_0__value) < 1000
     and abs(dcc_s_1__value) < 1000
     group by time, technical_name
