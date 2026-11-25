@@ -2,7 +2,7 @@
 
 Temporary: delete this file when the work is done. It records design sessions held on 2026-11-09, 2026-11-10 and 2026-11-12. Use it as the handoff for the sessions that write the design and build it.
 
-**Status:** the requirements and most of the decisions are settled. **The architecture (path A, C, D or E below) is not chosen yet.** Read [Paths](#paths) and [Measurements](#measurements), make that choice first, then follow [Next steps](#next-steps).
+**Status (2026-11-25):** the path is chosen: **no rollups**, the plan's path B (ZERO-2620). See [Decision 2026-11-25: no rollups](#decision-2026-11-25-no-rollups). It replaces paths A, C, D and E and everything about Flows, backfills and rollup tables below. The earlier sections stay as the research record.
 
 The 2026-11-12 session tested three new ideas: thin dbt views without aggregation, aggregation in Grafana, and sampling instead of averaging. See [Thin views, Grafana aggregation and sampling](#thin-views-grafana-aggregation-and-sampling-tested-2026-11-12). It led to path E.
 
@@ -569,3 +569,149 @@ SELECT date_trunc('day', b) AS day,
   -sum(CASE WHEN main_group NOT IN ('Solar','Hydrogeneration') THEN w ELSE 0 END) / 1000 AS consumption_kwh
 FROM allw GROUP BY day ORDER BY day
 ```
+
+## Decision 2026-11-25: no rollups
+
+Decided by Stefan for ZERO-2620. **No rollups of any kind:** no Flows, no scheduled `INSERT … SELECT`, no rollup tables, no backfill. This is path B from [Paths](#paths): raw data through thin views for every panel, without D's battery rollup.
+
+**Why:** at this stage of the project the data and the logic still change, for example new sources, metadata fixes, sign corrections and the 450000 cut-over. Every change would mean another backfill of the rollups. The goal is to make the system as fast as it can be without stored aggregates, by fixing the bottlenecks in dbt.
+
+**Accepted consequence:** cost grows with the selected range, because every query reads the raw rows in it. For the numbers see [Measurements](#measurements): about 0.3–0.7 s per panel for 24 h, about 5 s for a full energy panel over 30 days, about 17 s over 60 days. The battery measurements (25 s for 30 days) were taken on the old `marpower__450000_main_power_storage_errors` table and must be measured again on `marpower__battery__pack` (see [Sources since the plan](#sources-and-models-since-the-plan)).
+
+### What this replaces in the sections above
+
+| Section | Status |
+|---|---|
+| Flows, Range Queries, `INSERT … SELECT` research | Research record only |
+| [Requirements and decisions](#requirements-and-decisions): Flows, Backfill, `rollups` database, `_1m` / `_1h` tables, the freshness stat | Dropped |
+| dbt: "the staging layer is dropped" | Reversed: staging stays (it was only dropped because Flows can't read views) |
+| dbt: silver per topic per minute with sum, min, max, count | Replaced: silver is row level |
+| Dashboards: the freshness stat | Dropped. The existing stale data link on the electrical dashboard stays; the history dashboard gets none |
+| Dashboards: `$max_soc` = 300 kWh | Replaced: 5280 kWh (see [Battery capacity](#battery-capacity-max_soc)) |
+| Testing and rollout: v2 dashboards next to the old ones, then switch-over | Replaced: views and dashboards change in place (see [PRs](#prs-and-sub-tasks)) |
+| Paths, Open decisions, Next steps | Closed by this decision |
+
+### Design
+
+#### dbt: thin views in all three layers
+
+staging → silver → gold stays. **Every view is thin:** rename, validity filters, row-level derived columns and `UNION ALL` only.
+
+- **No `date_bin` / `date_trunc` and no `GROUP BY` in any view.** Grafana's time filter then reaches the raw time index (see [Thin views](#1-thin-dbt-views-without-aggregation-the-filter-reaches-the-raw-scan)).
+- **No metadata joined to raw rows.** Silver and gold stay per topic, without `main_group`, `sub_group` or `consumer`. The panel joins the metadata after aggregating (2.4 s → 0.66 s for `power_tags` over 24 h on Zero).
+- Metadata filters that used to sit in silver (`main_group IS NOT NULL`, `excluded IS NOT TRUE`, `converter IS NOT NULL`) move to the join in the panel.
+- Row-level logic stays in views: units (Aradex `× 100`), signs (solar), validity flags, the 24 V ≥ 18 V rule, the DC switch current × voltage (same row), the shore converter `running` flag (same row).
+- **The existing views change in place.** Their names may stay even though they no longer hold "per minute" data; renaming is decided during the build and has to match the dashboards in the same PR.
+
+Views that change (state of #1134 and #1139, which this branch is based on):
+- Silver with a metadata join: `slv_power_tags`, `slv_24vdc_currents`, `slv_24vdc_converter_voltages`, `slv_24vdc_power_supplies`, `slv_dc_ring_segments`.
+- Silver with `date_bin`: `slv_dc_ring_segments`, `slv_dc_ring_sources`.
+- Gold with `date_bin` + `GROUP BY`: all 16 `gld_*` views.
+
+#### Panel SQL
+
+Every panel follows the same steps:
+1. Filter on the raw time with `$__timeFilter(ts)` on the thin view.
+2. Aggregate per topic and time bucket.
+3. Join the metadata to that small result.
+4. Sum per group.
+
+```sql
+-- Example: power per main group per hour from power_tags
+WITH per_topic AS (
+  SELECT date_bin('1 hour'::interval, ts) AS time, topic, avg(active_power_total) AS power
+  FROM views.slv_power_tags
+  WHERE $__timeFilter(ts)
+  GROUP BY time, topic
+)
+SELECT p.time, m.main_group, sum(p.power) / 1000 AS power_kw
+FROM per_topic AS p
+JOIN public.power_tag_metadata AS m ON p.topic = m.topic
+WHERE m.main_group IS NOT NULL AND m.excluded IS NOT TRUE
+GROUP BY p.time, m.main_group
+```
+
+**Buckets:**
+- **Hour** by default: the 24 h dashboard's bars and power curves.
+- **Day** for daily values: daily energy = the day's average power per topic × 24 h. A topic that reported for part of a day counts as if it ran at that average all day; the before/after comparison shows where this matters.
+- **Minute** only in the flow canvas (its 5-minute rolling average).
+- **Treemaps:** one aggregate per topic over the whole selected range, or derived from the dashboard's base query.
+- Grafana's `$__interval` is not used: it reduces the rows returned, not the rows read.
+
+**Days start at 00:00 UTC.** Grafana's SQL can't read the viewer's browser time zone (it only changes how times are shown), and no raw table holds Zero's time zone. Greptime on Zero runs in UTC. Changing it later means giving `date_bin` an origin (`date_bin('1 day', ts, <origin>)`) in every day bucket. **To discuss with the team:** whether days should follow Zero's local time instead, and where that time zone would come from.
+
+#### Values that combine several signals
+
+Without a shared minute bucket in a view:
+- **Sums and differences use per-signal averages per bucket.** The average of a difference is the difference of the averages, so the bucket size doesn't matter. This covers:
+  - 24 V unallocated: supplies − breakers;
+  - DC ring segments and unallocated: switch flows − measured sources;
+  - AC unallocated: grid converter AC output − power tags;
+  - grid converter losses: DC − AC;
+  - shore converter losses: AC − DC.
+
+  The only difference from today is in gaps: a signal with data for part of a bucket is averaged over the samples it has, instead of a missing minute counting as 0.
+- **Products within one row stay row level:** the DC switch current × voltage, and the shore converter `running` flag.
+- **24 V power (current × converter voltage, from different topics):** `avg(I) × avg(V)` per converter per bucket, with a fallback to 24 V when a bucket has no voltage. Range Queries (`ALIGN … FILL PREV`) give the same result inside a bucket and add a second query syntax, so they aren't used.
+- **The DC ring "all 8 switches" rule** applies per bucket: a bucket counts when all 8 switches have data in it.
+
+#### Dashboards
+
+- **One base query per dashboard.** It returns power per main group and sub group per bucket for all sources, including the combined values above. The other panels reuse its result through Grafana's `-- Dashboard --` data source and transformations:
+  - **Electrical energy (24 h):** hour buckets. The flow canvas (minute buckets, 5-minute rolling average) and the battery keep their own queries.
+  - **Historical energy:** day buckets (UTC). The SoC panels keep their own query.
+- **The historical dashboard moves to the Grafana v2 schema**, first as-is with the same queries.
+- **No freshness stat.** The stale data link on the electrical dashboard (ZERO-2644) stays. The history dashboard gets none.
+- **SoC graph** (history dashboard), as in [Dashboards](#dashboards), with:
+  - `$max_soc` = **5280** kWh;
+  - SoC % = total pack energy ÷ `$max_soc`. It reads low while packs are disconnected; say so in the panel description.
+
+#### Battery capacity (`$max_soc`)
+
+**5280 kWh: 22 packs (PDUs) × 3 strings × 80 kWh.**
+- **Battery arrangement:** drawing 9445008 rev 6 says "In total there are 1056 battery's stored on board … The batteries in total have an capacity of 5280 KWh."
+- **Eplan V3.3 as-built:**
+  - each PDU feeds 3 battery strings, each with "Nom. mod cap: 80 kWh" (9445244 page 8: PDU 01 of 05.41 feeds G101–G103);
+  - converter 05.43 reads "Total bank cap: 720 kWh" (9445220 page 562);
+  - PDUs per converter: 05.41, 05.44, 05.45 and 05.46 have 4 each; 05.42 and 05.43 have 3 each. That makes 22.
+- **Zero, read-only, 2026-11-25, `marpower__battery__pack` over 10 minutes:**
+  - 22 pack topics, `05-41-1` … `05-46-4`;
+  - for each connected pack, energy ÷ SoC is 229–243 kWh, which matches 3 × 80 = 240 kWh;
+  - 12 of the 22 packs reported 0 kWh and 0 connected strings.
+- **Conflicts:**
+  - the arrangement drawing also says "56 strings", which fits neither 22 × 3 = 66 nor its own 1056 batteries;
+  - older documents (the short-circuit study, SLD V4.1) give 48 × 98 kWh, an earlier design;
+  - the hotel load routing study (9450100) speaks of "a 5 MWh battery pack, full batteries: 4232 kWh", which is a usable capacity, not the installed one.
+
+#### Acceptance
+
+There are no fixed time targets. **Done** means:
+- a before/after table measured on Zero for each dashboard's slowest panels at 24 h, 7 d and 30 d;
+- the numbers matching the old views, with differences explained (gaps, the 24 V product);
+- the old models and queries removed.
+
+When measuring on Zero: run heavy queries one at a time, check `/health` between runs, and stop above ~30–60 s.
+
+### Sources and models since the plan
+
+#1134 and #1139 (ZERO-2619, parts 4 and 5) added sources and models after the measurements above:
+- staging: `stg_marpower__dc_switches`, `stg_marpower__dc_ac_inverters`, `stg_marpower__ac_400v_breakers`, and an updated `stg_marpower__esi`;
+- silver: `slv_dc_ring_segments`, `slv_dc_ring_sources`, `slv_grid_converters`, an updated `slv_shore_power_converters`;
+- gold: `gld_dc_ring_unallocated_power_per_minute_per_group`, `gld_grid_converter_power_per_minute_per_group`, `gld_shore_converter_losses_per_minute_per_group`;
+- metadata: `dc_ring_switch_metadata`, `dc_ring_source_metadata`, `dc_ring_segment_metadata` (`load_dc_ring_metadata`).
+
+Shore power now has a source: the shore converters. The note in [Facts about the environment](#facts-about-the-environment) that it has none is out of date. Since the 450000 cut-over the battery data is in `marpower__battery__pack`.
+
+### PRs and sub-tasks
+
+Branch `feature/ZERO-2620-improve-energy-dashboard-performance`, based on #1139 (stacked until #1134 and #1139 merge) with the three plan commits from `Research/ZERO-2534-research-energy-dashboard-improvements` cherry-picked.
+
+| PR | Sub-task |
+|---|---|
+| A | 1. Update the plan with the no-rollup design (this section) |
+| A | 2. Move the historical energy dashboard to Grafana v2, as-is |
+| A | 3. Thin dbt views, and new queries for both dashboards and `zero-data/notebooks/energy_report.py`, with the before/after check on Zero |
+| B | 4. SoC graph: trend panel 0–7 days ahead, "days until SoC < `$min_soc`" stat, `$lookback_days`, `$daily_consumption`, `$max_soc` = 5280 kWh; remove `$start_date` and the hidden `energy.*` queries |
+| B | 5. Cleanup: remove views no panel reads; delete this plan and link its final version in ZERO-2620 |
+
+The views, both dashboards and the notebook change in one PR (A), because the views change shape: deploy `just dbt-deploy zero` and the dashboards back to back. A sub-task moves to Review when its PR is created and to Done when it merges.
