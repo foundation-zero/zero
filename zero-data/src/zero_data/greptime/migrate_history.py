@@ -248,9 +248,17 @@ def _days(greptime: Greptime, table: str, where: str) -> list[tuple[int, int, in
 
 
 def load(
-    greptime: Greptime, spec: MigrationSpec, old_tables: Iterable[str] = ()
+    greptime: Greptime,
+    spec: MigrationSpec,
+    old_tables: Iterable[str] = (),
+    newest: date | None = None,
 ) -> Migration:
-    """Read what there is to copy and what is already there. Only reads."""
+    """Read what there is to copy and what is already there, up to the newest day. Only reads."""
+    up_to_newest = (
+        f' AND "timestamp" < {timestamp_literal(day_start(newest) + DAY_NS)}'
+        if newest
+        else ""
+    )
     selected = set(old_tables)
     unknown = sorted(selected - set(spec.old_tables))
     if unknown:
@@ -322,7 +330,9 @@ def load(
             )
             continue
         copy_days = _days(
-            greptime, unit.old_table, _rows_with_a_value(unit.old_topic, pairs)
+            greptime,
+            unit.old_table,
+            _rows_with_a_value(unit.old_topic, pairs) + up_to_newest,
         )
         if not copy_days:
             continue
@@ -349,7 +359,10 @@ def load(
             new_table=new_table, new_topic=new_topic, copies=topic_copies, present={}
         )
         present = {
-            day: rows for day, rows, _ in _days(greptime, new_table, history.new_rows())
+            day: rows
+            for day, rows, _ in _days(
+                greptime, new_table, history.new_rows() + up_to_newest
+            )
         }
         expected = history.expected
         surplus = sorted(

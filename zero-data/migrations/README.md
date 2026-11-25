@@ -35,7 +35,7 @@ The four commands, all under `uv run zero-data greptime migrate-history`:
 | Command | What it does |
 |---|---|
 | `build-spec <mapping.csv> --out <spec.json>` | Makes the spec. Needs Docker, not Greptime. |
-| `run <spec.json> [--dry-run] [--until <date>] [--unlock]` | Copies. With `--dry-run` it only reads and prints a report. |
+| `run <spec.json> [--dry-run] [--from <date>] [--until <date>] [--unlock]` | Copies. With `--dry-run` it only reads and prints a report. |
 | `check <spec.json>` | Compares old and new. Prints the differences and exits 1 when there are any. |
 | `drop <spec.json> [--execute] [--unlock]` | Drops the old tables whose history is checked. Without `--execute` it prints what it would do. |
 
@@ -167,8 +167,9 @@ tables and their columns.
   error: 1003` or `operation was canceled`. The run waits a minute and sends it again, five times at most.
 - **The run stops with an error** (a timeout, a restart of Greptime): start it again. If
   Greptime ran out of memory on an insert, lower `VALUES_PER_INSERT` in `migrate_history.py`
-  first. Days
-  that are complete are skipped, and a day that was copied in part gets its missing rows.
+  first. Days that are complete are skipped, and a day that was copied in part gets its missing
+  rows. Pass `--from` the newest day that isn't complete yet: the run then reads only the days up
+  to it, instead of counting everything already copied first.
 - **The run stops because a day "holds N rows after copying, M expected":** the new topic has
   rows on that day that didn't come from the old topic. Nothing wrong was written, but find
   out where they came from before going on.
