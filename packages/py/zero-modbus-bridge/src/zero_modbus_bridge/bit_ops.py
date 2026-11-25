@@ -3,7 +3,7 @@
 import math
 import struct
 
-from zero_modbus_bridge.io import RawModbusValue
+from zero_modbus_bridge.io import ModbusField, RawModbusValue
 
 
 def lsw_registers_to_float(regs: list[int]) -> float:
@@ -34,6 +34,20 @@ def uint16_to_int16(raw: int) -> int:
 def int16_to_uint16(value: int) -> int:
     """Store a signed value as a raw two's complement register: -1 -> 65535."""
     return value & 0xFFFF
+
+
+def to_raw(value: float, field: ModbusField) -> int:
+    """The register value a read of ``field`` turns into ``value``.
+
+    The inverse of ``apply_modbus_field`` for single registers, so writes use
+    the field's own scale. Raises ``ValueError`` when it doesn't fit.
+    """
+    raw = round(value / field.scale_factor)
+    if field.data_type == "int16" and -0x8000 <= raw <= 0x7FFF:
+        return int16_to_uint16(raw)
+    if field.data_type == "uint16" and 0 <= raw <= 0xFFFF:
+        return raw
+    raise ValueError(f"{value} doesn't fit a {field.data_type} register")
 
 
 def is_finite_float(raw: RawModbusValue) -> bool:

@@ -539,18 +539,18 @@ async def test_write_goes_between_two_topic_reads():
     modbus.write_single_register.side_effect = write
     bridge = _command_bridge(modbus, ModbusWriter(modbus))
 
-    probe = asyncio.create_task(bridge.run_once())
-    await asyncio.to_thread(first_read_started.wait, 5)
-    command = asyncio.create_task(bridge.write(_SWITCH, _Switch(on=True)))
-    await asyncio.sleep(0.05)  # the write is queued behind the first topic
-    release_first_read.set()
-    await asyncio.gather(probe, command)
+    async with asyncio.TaskGroup() as tasks:
+        tasks.create_task(bridge.run_once())
+        await asyncio.to_thread(first_read_started.wait, 5)
+        tasks.create_task(bridge.write(_SWITCH, _Switch(on=True)))
+        await asyncio.sleep(0.05)  # the write is queued behind the first topic
+        release_first_read.set()
 
     assert calls == [("read", 10), ("write", 30), ("read", 20)]
 
 
 @pytest.mark.asyncio
-async def test_stopping_run_shuts_the_modbus_thread_down():
+async def test_a_stopped_bridge_takes_no_more_modbus_calls():
     bridge = _command_bridge(MagicMock(is_open=True), None)
     run = asyncio.create_task(bridge.run())
     await asyncio.sleep(0.05)
@@ -560,4 +560,4 @@ async def test_stopping_run_shuts_the_modbus_thread_down():
         await run
 
     with pytest.raises(RuntimeError, match="shutdown"):
-        bridge._modbus_thread.submit(print)
+        await bridge.run_once()

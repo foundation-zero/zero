@@ -113,9 +113,8 @@ def human_value(handler: MultiUnitDataHandler, row: FieldRow) -> float:
     if row.data_type == "float32":
         return handler.read_float(row.unit_id, row.address) * row.scale_factor
     raw = handler.read_register(row.unit_id, row.address)
-    if row.data_type == "int16":
-        raw = uint16_to_int16(raw)
-    return raw * row.scale_factor
+    value = uint16_to_int16(raw) if row.data_type == "int16" else raw
+    return value * row.scale_factor
 
 
 def format_value(

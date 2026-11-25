@@ -1,10 +1,14 @@
+import pytest
+
 from zero_modbus_bridge.bit_ops import (
     float_to_lsw_registers,
     int16_to_uint16,
     is_finite_float,
     lsw_registers_to_float,
+    to_raw,
     uint16_to_int16,
 )
+from zero_modbus_bridge.io import ModbusField, apply_modbus_field
 
 
 def test_lsw_registers_to_float_known_value():
@@ -62,3 +66,34 @@ def test_int16_to_uint16_round_trip():
         0,
         0x7FFF,
     ]
+
+
+@pytest.mark.parametrize(
+    ("value", "field", "raw"),
+    [
+        (45.0, ModbusField(register=1, scale_factor=0.01), 4500),
+        (-18.0, ModbusField(register=1, data_type="int16", scale_factor=0.01), 63736),
+        (1, ModbusField(register=1), 1),
+    ],
+)
+def test_to_raw_is_the_inverse_of_reading(value, field, raw):
+    assert to_raw(value, field) == raw
+    assert (
+        apply_modbus_field(
+            uint16_to_int16(raw) if field.data_type == "int16" else raw, field
+        )
+        == value
+    )
+
+
+@pytest.mark.parametrize(
+    ("value", "field"),
+    [
+        (-1.0, ModbusField(register=1)),
+        (700.0, ModbusField(register=1, scale_factor=0.01)),
+        (1.0, ModbusField(register=1, data_type="float32")),
+    ],
+)
+def test_to_raw_rejects_what_doesnt_fit(value, field):
+    with pytest.raises(ValueError):
+        to_raw(value, field)
