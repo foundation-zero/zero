@@ -247,6 +247,24 @@ def test_run_sends_a_statement_again_when_greptime_drops_it(
     assert check(greptime, load(greptime, SPEC)) == []
 
 
+def test_run_counts_a_day_again_when_greptime_drops_the_count(
+    tables: Query, greptime: Greptime, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    failures = [psycopg.errors.InternalError_("Internal error: 1003")]
+    waits: list[float] = []
+
+    def failing_once(sql: str) -> int:
+        if failures:
+            raise failures.pop()
+        return Greptime.count(greptime, sql)
+
+    monkeypatch.setattr(greptime, "count", failing_once)
+
+    assert run(greptime, load(greptime, SPEC), None, 0, waits.append) == 10
+
+    assert waits.count(migrate_history.RETRY_WAIT) == 1
+
+
 def test_run_gives_up_when_greptime_keeps_failing(
     tables: Query, greptime: Greptime, monkeypatch: pytest.MonkeyPatch
 ) -> None:
