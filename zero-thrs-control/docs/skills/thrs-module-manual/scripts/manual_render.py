@@ -30,6 +30,7 @@ from manual_diagram import (
     diagram_source,
     font_faces,
     is_diagram_current,
+    missing_characters,
     stamp_diagram,
     verified_mermaid,
     with_diagram,
@@ -65,6 +66,20 @@ UNTHEMED_COLOURS = """(variables) => {
   });
   sentinels.remove();
   return [...new Set(unthemed)];
+}"""
+
+LABEL_FONTS = """() => {
+  const labels = document.createTreeWalker(
+    document.querySelector("#manual-diagram"),
+    NodeFilter.SHOW_TEXT,
+  );
+  const found = [];
+  for (let text = labels.nextNode(); text; text = labels.nextNode()) {
+    if (text.textContent.trim() && !text.parentElement.closest("style")) {
+      found.push([getComputedStyle(text.parentElement).fontFamily, text.textContent]);
+    }
+  }
+  return found;
 }"""
 
 COUNT_PROSE_WORDS = """() => {
@@ -132,6 +147,7 @@ def render_diagram(page: Page, manual: Path, source: str) -> None:
         "(svg) => { document.querySelector('pre.mermaid').outerHTML = svg; }", svg
     )
     unthemed = page.evaluate(UNTHEMED_COLOURS, THEME_VARIABLES)
+    missing = missing_characters(page.evaluate(LABEL_FONTS))
     page.locator("#manual-diagram").screenshot(path=preview)
 
     if unthemed:
@@ -139,6 +155,12 @@ def render_diagram(page: Page, manual: Path, source: str) -> None:
             "These colours come from Mermaid's theme, not the front-end's, so they would "
             f"not follow dark mode; restyle them in {DIAGRAM_CSS.name}:\n  "
             + "\n  ".join(unthemed)
+        )
+    if missing:
+        raise SystemExit(
+            "These characters are not in the diagram's fonts, so they would be drawn "
+            "in a fallback font and overflow their box; rephrase them:\n  "
+            + "\n  ".join(missing)
         )
     diagram = diagram_path(manual)
     diagram.write_text(stamp_diagram(with_embedded_fonts(svg, source), source))

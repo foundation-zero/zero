@@ -15,6 +15,7 @@ import re
 from pathlib import Path
 
 from fontTools import subset
+from fontTools.ttLib import TTFont
 from playwright.sync_api import ViewportSize
 
 SKILL = Path(__file__).parents[1]
@@ -90,6 +91,24 @@ def with_embedded_fonts(svg: str, source: str) -> str:
     )
     return re.sub(
         r"<svg[^>]*>", lambda tag: f"{tag[0]}<style>{faces}</style>", svg, count=1
+    )
+
+
+def missing_characters(labels: list[tuple[str, str]]) -> list[str]:
+    """Each (font-family, text) label's characters that its embedded font lacks."""
+    characters = {
+        family: TTFont(file).getBestCmap().keys()
+        for family, file in EMBEDDED_FONTS.items()
+    }
+    return sorted(
+        {
+            f"{character!r} in {text!r} ({family})"
+            for font_family, text in labels
+            for family in EMBEDDED_FONTS
+            if font_family.startswith(f'"{family}"')
+            for character in text
+            if not character.isspace() and ord(character) not in characters[family]
+        }
     )
 
 

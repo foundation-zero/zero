@@ -134,6 +134,17 @@ def test_diagram_is_not_current_after_a_font_family_change(
     assert not manual_diagram.is_diagram_current(page)
 
 
+def test_missing_characters_are_those_the_label_font_lacks(manual_diagram):
+    labels = [
+        ('"Manual Diagram Urbanist", Urbanist, sans-serif', "Boosting Δ"),
+        ('"Manual Diagram Inter", Inter, sans-serif', "Δ ≥ 5 °C"),
+    ]
+
+    assert manual_diagram.missing_characters(labels) == [
+        "'Δ' in 'Boosting Δ' (Manual Diagram Urbanist)"
+    ]
+
+
 def test_embedded_fonts_cover_every_character_of_the_diagram(manual_diagram):
     source = "stateDiagram-v2\n  idle --> boosting: supply &gt; 5 °C"
 
