@@ -568,6 +568,42 @@ Domestic. The notebook is not part of this ticket.
   - 21: the flow diagram shows the net battery power per minute instead of the charging and discharging
     packs separately (Data, dashboards).
 
+### Status (2026-11-24)
+
+- **PR B (#1089) and B2 (#1123) are merged**, with #1112–#1115. PR C (step 7) starts from main.
+- **greptime-zero still runs the views from before PR A**: `power_tag_metadata` has no `excluded` column yet,
+  so the 10P1 and 10P2 feeders are still counted twice there until `just dbt-deploy zero` (F1, F13).
+
+### F22 (added 2026-11-24): the AC remainder is ≈ 96 kWh/day, and the grid converters lose ≈ 28 kWh/day
+
+- **Sources after the cut-over:** DC input `marpower__dc_ac__inverter.pv_power__value` (kW, 05-11-u101 aft,
+  05-12-u101 fwd); AC output `marpower__ac_400v__breaker.active_power__value` (W) at the switchboard's incoming
+  breakers 10p0-1-100q01 (from 05.11) and 10p0-3-300q01 (from 05.12), the only breakers in that table. Both
+  hold history from 28 Aug.
+- **Losses** (DC − AC), 14–21 Nov: 1.18 kW, or **28 kWh/day**; 0.73 kW for 05.11 and 0.45 kW for 05.12, an
+  efficiency of 93 % and 91 % while running. An idle converter gives a few W below zero (at most −34 W).
+- **AC remainder** (AC output − power tags), 14–21 Nov, without the 10P1/10P2 feeders: AC output 13.97 kW,
+  power tags 9.97 kW, remainder **4.0 kW, or 96 kWh/day** (F6: 72 kWh/day on the old tables). It is steady:
+  2.8–4.7 kW in 98 % of the minutes, below zero in one. With the feeders counted twice, as on greptime-zero
+  today, the remainder drops to −17 kW whenever the galley runs.
+- **No opposing flows** (F21): neither converter's DC input is ever negative, so the AC output of both can be
+  added.
+- **`power-tags/10P3/washer-1`** still publishes no values (2 rows in 7 days): no metadata (plan change of
+  2026-11-16).
+
+### Changes to the plan (2026-11-24)
+
+**PR C** holds step 7 without the 10P3 reclassification (done in PR B), on branch
+`feature/ZERO-2642-add-ac-side`.
+
+- `stg_marpower__dc_ac_inverters` and `stg_marpower__ac_400v_breakers` → `slv_grid_converters` (DC and AC power
+  per converter in W) → `gld_grid_converter_power_per_minute_per_group`, with two series:
+  *Technical / AC unallocated* (AC output minus the power tag total) and *Losses / Grid converters* (DC − AC per
+  converter, in the minutes where both sides have data).
+- Negative loss minutes are kept as measured, so the energy adds up. Minutes without power tag data count the
+  whole AC output as unallocated, as in the 24 VDC view.
+- Like the views of B2, one gold view for the main group and the sub group panels, and no dbt tests.
+
 ## Work log
 
 | Date | PR | Step | What |
@@ -585,3 +621,5 @@ Domestic. The notebook is not part of this ticket.
 | 2026-11-23 | B2 | 5 | `slv_24vdc_power_supplies` → `gld_24vdc_unallocated_power_per_minute_per_group` (Technical / 24VDC unallocated: power supplies minus breakers per minute), in the graphs, flow diagram and treemaps of both dashboards. Checked on 18 Nov 08:00–14:00 in a local Greptime: 15.6 kWh from the power supplies, 4.3 kWh behind breakers, 11.3 kWh unallocated, the same in every panel and as computed on Zero. |
 | 2026-11-23 | B2 | 6 | `stg_marpower__dc_350v_converters` → `slv_350vdc_converters` → `gld_350vdc_power_per_minute_per_group` (Domestic / Lighting: the sum of the four converters), in the same panels. Checked on the same window: 20.5 kWh, the same in every panel and as computed on Zero. No split per output and no 350 VDC converter losses (F20). |
 | 2026-11-23 | – | – | F21 added: converter types and connections from the drawings, battery packs charging each other, the 350 VDC network passing power between segments; open items 19–21. |
+| 2026-11-24 | – | – | Status, F22 and the PR C change added: grid converter sources after the cut-over, the AC remainder and the grid converter losses. |
+| 2026-11-24 | C | 7 | `stg_marpower__dc_ac_inverters` + `stg_marpower__ac_400v_breakers` → `slv_grid_converters` → `gld_grid_converter_power_per_minute_per_group` (Technical / AC unallocated, Losses / Grid converters), in the graphs, flow diagram and treemaps of both dashboards. Checked in a local Greptime: losses 63.3 kWh on 16–17 Nov, the same as computed on Zero; on 18 Nov 08:00–14:00 losses 8.9 kWh and AC unallocated 23.6 kWh, the same in every panel and as computed on Zero (without the 10P1/10P2 feeders). |

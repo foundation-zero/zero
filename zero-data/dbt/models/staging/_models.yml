@@ -3782,3 +3782,62 @@ models:
         description: "Timestamp of the LVDC (low side, 350 VDC) voltage in V reading."
       - name: lvdc_voltage__value
         description: "LVDC (low side, 350 VDC) voltage in V."
+  - name: stg_marpower__dc_ac_inverters
+    description: >
+      Staging view for the Marpower uGrid grid converters between the 700 VDC bus and the 400 VAC switchboard,
+      one topic per converter.
+    columns:
+      - name: ts
+        description: "Time index of the measurement record (renamed from timestamp)."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message, one per grid converter."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - "marpower/45-dc-ac/inverter/05-11-u101"
+                  - "marpower/45-dc-ac/inverter/05-12-u101"
+      - name: technical_name
+        description: "The converter's designation (05-11-u101 aft, 05-12-u101 fwd)."
+      - name: pv_current__has_value
+        description: "Indicates whether a value is present for the DC input current in A."
+      - name: pv_current__is_valid
+        description: "Indicates whether the DC input current in A value is valid."
+      - name: pv_current__timestamp
+        description: "Timestamp of the DC input current in A reading."
+      - name: pv_current__value
+        description: "DC input current in A."
+      - name: pv_power__has_value
+        description: "Indicates whether a value is present for the DC input power from the 700 VDC bus in kW."
+      - name: pv_power__is_valid
+        description: "Indicates whether the DC input power from the 700 VDC bus in kW value is valid."
+      - name: pv_power__timestamp
+        description: "Timestamp of the DC input power from the 700 VDC bus in kW reading."
+      - name: pv_power__value
+        description: "DC input power from the 700 VDC bus in kW."
+  - name: stg_marpower__ac_400v_breakers
+    description: >
+      Staging view for the Marpower 400 VAC breakers: the switchboard's incoming breakers from the grid
+      converters, one topic per breaker.
+    columns:
+      - name: ts
+        description: "Time index of the measurement record (renamed from timestamp)."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message, one per breaker."
+        tests:
+          - not_null
+      - name: technical_name
+        description: "The breaker's designation (10p0-1-100q01 from 05-11-u101, 10p0-3-300q01 from 05-12-u101)."
+      - name: active_power__has_value
+        description: "Indicates whether a value is present for the active power through the breaker in W, positive into the 400 VAC switchboard."
+      - name: active_power__is_valid
+        description: "Indicates whether the active power through the breaker in W, positive into the 400 VAC switchboard value is valid."
+      - name: active_power__timestamp
+        description: "Timestamp of the active power through the breaker in W, positive into the 400 VAC switchboard reading."
+      - name: active_power__value
+        description: "Active power through the breaker in W, positive into the 400 VAC switchboard."
