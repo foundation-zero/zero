@@ -19,8 +19,8 @@
   color: var(--foreground, black);
 }
 
-.node foreignObject:first-child .nodeLabel {
-  font-family: "Urbanist", sans-serif;
+.node .label > :first-child .nodeLabel {
+  font-family: "Manual Diagram Urbanist", "Urbanist", sans-serif;
   font-size: 0.875rem;
   line-height: 1.4;
   font-weight: 600;
@@ -63,7 +63,7 @@ circle.state-start {
 
 .edgeLabel div,
 .node .nodeLabel,
-.node foreignObject div {
+.node .label div {
   max-width: none !important;
   white-space: nowrap !important;
 }

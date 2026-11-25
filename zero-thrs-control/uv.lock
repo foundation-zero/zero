@@ -2377,6 +2377,7 @@ analysis = [
     { name = "seaborn" },
 ]
 dev = [
+    { name = "fonttools" },
     { name = "playwright" },
     { name = "pygraphviz" },
     { name = "pyrefly" },
@@ -2422,6 +2423,7 @@ analysis = [
     { name = "seaborn", specifier = "~=0.13.2" },
 ]
 dev = [
+    { name = "fonttools", specifier = "~=4.68" },
     { name = "playwright", specifier = "==1.64.1" },
     { name = "pygraphviz", specifier = "~=2.0.4" },
     { name = "pyrefly", specifier = "~=1.5" },

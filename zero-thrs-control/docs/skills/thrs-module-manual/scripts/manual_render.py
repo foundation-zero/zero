@@ -33,6 +33,7 @@ from manual_diagram import (
     stamp_diagram,
     verified_mermaid,
     with_diagram,
+    with_embedded_fonts,
 )
 from playwright.sync_api import Browser, Page, ViewportSize, sync_playwright
 from pydantic import BaseModel, Field
@@ -140,7 +141,7 @@ def render_diagram(page: Page, manual: Path, source: str) -> None:
             + "\n  ".join(unthemed)
         )
     diagram = diagram_path(manual)
-    diagram.write_text(stamp_diagram(svg, source))
+    diagram.write_text(stamp_diagram(with_embedded_fonts(svg, source), source))
     print(f"Wrote {diagram} and {preview}")
 
 

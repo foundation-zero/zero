@@ -9,9 +9,12 @@ tests/manuals/test_published_manuals.py fails when a published SVG is out of dat
 
 import base64
 import hashlib
+import html
+import io
 import re
 from pathlib import Path
 
+from fontTools import subset
 from playwright.sync_api import ViewportSize
 
 SKILL = Path(__file__).parents[1]
@@ -28,13 +31,20 @@ FONT_FILES = {
     ("Urbanist", "normal"): FONTS / "Urbanist/Urbanist-VariableFont_wght.ttf",
     ("Urbanist", "italic"): FONTS / "Urbanist/Urbanist-Italic-VariableFont_wght.ttf",
 }
+# Shipped inside the SVG, cut down to the diagram's characters, so it draws the same
+# when opened as a file. Their own family names keep these partial fonts from
+# replacing the front-end's full ones when the SVG is shown inside a page.
+EMBEDDED_FONTS = {
+    "Manual Diagram Inter": FONT_FILES[("Inter", "normal")],
+    "Manual Diagram Urbanist": FONT_FILES[("Urbanist", "normal")],
+}
 SCREEN = ViewportSize(width=1280, height=900)
 
 RENDER_DIAGRAM = """async ({ source, css }) => {
   mermaid.initialize({
     startOnLoad: false,
     theme: "base",
-    fontFamily: "Inter, sans-serif",
+    fontFamily: '"Manual Diagram Inter", Inter, sans-serif',
     themeCSS: css,
     // The default "neo" look strokes boxes with a fixed-colour gradient.
     look: "classic",
@@ -56,6 +66,30 @@ def font_faces() -> str:
         f'@font-face {{ font-family: "{family}"; font-style: {style}; font-weight: 100 900; '
         f"src: url(data:font/ttf;base64,{base64.b64encode(file.read_bytes()).decode()}); }}"
         for (family, style), file in FONT_FILES.items()
+    )
+
+
+def subset_font(file: Path, text: str) -> bytes:
+    options = subset.Options()
+    options.flavor = "woff"
+    subsetter = subset.Subsetter(options)
+    subsetter.populate(text=text)
+    font = subset.load_font(str(file), options)
+    subsetter.subset(font)
+    woff = io.BytesIO()
+    subset.save_font(font, woff, options)
+    return woff.getvalue()
+
+
+def with_embedded_fonts(svg: str, source: str) -> str:
+    text = html.unescape(source)
+    faces = "".join(
+        f'@font-face {{ font-family: "{family}"; font-weight: 100 900; '
+        f"src: url(data:font/woff;base64,{base64.b64encode(subset_font(file, text)).decode()}); }}"
+        for family, file in EMBEDDED_FONTS.items()
+    )
+    return re.sub(
+        r"<svg[^>]*>", lambda tag: f"{tag[0]}<style>{faces}</style>", svg, count=1
     )
 
 

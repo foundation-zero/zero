@@ -1,8 +1,12 @@
+import base64
 import hashlib
 import importlib
+import io
+import re
 from pathlib import Path
 
 import pytest
+from fontTools.ttLib import TTFont
 
 SCRIPTS = Path(__file__).parents[2] / "docs/skills/thrs-module-manual/scripts"
 SOURCE = "stateDiagram-v2\n  [*] --> idle"
@@ -128,3 +132,16 @@ def test_diagram_is_not_current_after_a_font_family_change(
     )
 
     assert not manual_diagram.is_diagram_current(page)
+
+
+def test_embedded_fonts_cover_every_character_of_the_diagram(manual_diagram):
+    source = "stateDiagram-v2\n  idle --> boosting: supply &gt; 5 °C"
+
+    svg = manual_diagram.with_embedded_fonts(SVG, source)
+
+    fonts = re.findall(r"base64,([A-Za-z0-9+/=]+)", svg)
+    assert svg.startswith('<svg id="manual-diagram" width="100%"><style>@font-face')
+    assert len(fonts) == len(manual_diagram.EMBEDDED_FONTS)
+    for font in fonts:
+        characters = TTFont(io.BytesIO(base64.b64decode(font))).getBestCmap()
+        assert set(map(ord, "idle--> boosting: supply > 5 °C")) <= characters.keys()
