@@ -1151,7 +1151,20 @@
         ]
       }
     },
-    "links": [],
+    "links": [
+      {
+        "title": "Range: ${range_warning}",
+        "type": "link",
+        "icon": "info",
+        "tooltip": "${range_warning:text}. Click to show the last 30 days.",
+        "url": "/d/singel-historical-energy?from=now-29d/d&to=now/d",
+        "tags": [],
+        "asDropdown": false,
+        "targetBlank": false,
+        "includeVars": true,
+        "keepTime": false
+      }
+    ],
     "liveNow": false,
     "preload": false,
     "tags": [],
@@ -1392,6 +1405,38 @@
           "label": "Max state of charge",
           "hide": "hideVariable",
           "skipUrlSync": true
+        }
+      },
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "range_warning",
+          "description": "For the Range link: 'ok', or a warning when the time range is longer than 30 days (value), and an explanation (text).",
+          "current": {
+            "text": "",
+            "value": ""
+          },
+          "hide": "hideVariable",
+          "refresh": "onTimeRangeChanged",
+          "skipUrlSync": true,
+          "query": {
+            "kind": "DataQuery",
+            "group": "info8fcc-greptimedb-datasource",
+            "version": "v0",
+            "datasource": {
+              "name": "${datasource}"
+            },
+            "spec": {
+              "__legacyStringValue": "-- For the Range link: a warning when the time range is longer than 30 days. The panels read the raw data of\n-- the whole range, so a long range is slow and loads Zero's Greptime. The value is the link's status (\"ok\" or\n-- \"⚠️ 45 days\"), the text its tooltip. Reads no table. The GreptimeDB plugin takes the first column as the\n-- value and the second as the text, whatever their names.\nSELECT\n  CASE WHEN days > 30 THEN '⚠️ ' || cast(days AS STRING) || ' days' ELSE 'ok' END AS __value,\n  CASE\n    WHEN days > 30 THEN cast(days AS STRING) || ' days is over 30: the panels read the raw data of the whole range, about 75 s for 30 days and 2.5 min for 60'\n    ELSE cast(days AS STRING) || ' days: up to 30 days loads in about a minute or less'\n  END AS __text\nFROM (\n  SELECT cast(round((to_unixtime($__toTime) - to_unixtime($__fromTime)) / 86400.0) AS BIGINT) AS days\n)"
+            }
+          },
+          "definition": "-- For the Range link: a warning when the time range is longer than 30 days. The panels read the raw data of\n-- the whole range, so a long range is slow and loads Zero's Greptime. The value is the link's status (\"ok\" or\n-- \"⚠️ 45 days\"), the text its tooltip. Reads no table. The GreptimeDB plugin takes the first column as the\n-- value and the second as the text, whatever their names.\nSELECT\n  CASE WHEN days > 30 THEN '⚠️ ' || cast(days AS STRING) || ' days' ELSE 'ok' END AS __value,\n  CASE\n    WHEN days > 30 THEN cast(days AS STRING) || ' days is over 30: the panels read the raw data of the whole range, about 75 s for 30 days and 2.5 min for 60'\n    ELSE cast(days AS STRING) || ' days: up to 30 days loads in about a minute or less'\n  END AS __text\nFROM (\n  SELECT cast(round((to_unixtime($__toTime) - to_unixtime($__fromTime)) / 86400.0) AS BIGINT) AS days\n)",
+          "regex": "",
+          "sort": "disabled",
+          "options": [],
+          "multi": false,
+          "includeAll": false,
+          "allowCustomValue": false
         }
       }
     ],
