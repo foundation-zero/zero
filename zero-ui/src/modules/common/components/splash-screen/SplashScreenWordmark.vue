@@ -21,25 +21,24 @@ onBeforeUnmount(() => animation?.cancel());
     viewBox="0 0 841 97"
     role="img"
     :aria-label="t('app.title')"
-    class="block h-auto"
+    class="block h-auto opacity-56"
   >
     <defs>
       <linearGradient
         :id="`${id}-gradient`"
-        x1="935.072"
-        y1="72.9"
-        x2="-34.38"
-        y2="72.9"
-        gradientUnits="userSpaceOnUse"
+        x1="0"
+        y1="0"
+        x2="0"
+        y2="1"
       >
-        <stop stop-color="#5685A9" />
+        <stop class="[stop-color:var(--brand-dull)]" />
         <stop
           offset=".5"
-          stop-color="#779DBB"
+          class="[stop-color:var(--brand-muted)]"
         />
         <stop
           offset="1"
-          stop-color="#99B6CC"
+          class="[stop-color:var(--brand)]"
         />
       </linearGradient>
       <mask

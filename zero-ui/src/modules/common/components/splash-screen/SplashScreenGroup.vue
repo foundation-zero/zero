@@ -22,11 +22,13 @@ const headingId = useId();
     >
       <h2
         :id="headingId"
-        class="font-headers text-foreground text-(length:--splash-group-name) leading-[1.2] font-medium"
+        class="font-headers text-foreground text-(length:--splash-group-name) leading-7 font-semibold"
       >
         {{ name }}
       </h2>
-      <span class="text-muted-foreground text-(length:--splash-group-count)">{{ count }}</span>
+      <span class="text-muted-foreground text-(length:--splash-group-count) leading-8">{{
+        count
+      }}</span>
       <span class="rule absolute inset-x-0 bottom-0 h-px" />
     </div>
     <div
@@ -50,9 +52,9 @@ const headingId = useId();
   );
 }
 
-/* Neutral, with a short brand accent, so it reads as a heading underline rather than a grid line. */
+/* A short brand accent, so it reads as a heading underline rather than a grid line. */
 .rule {
-  background: color-mix(in srgb, var(--foreground) 32%, transparent);
+  background: var(--foreground);
 }
 
 .rule::before {

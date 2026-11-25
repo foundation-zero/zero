@@ -21,7 +21,7 @@ const { t } = useI18n();
     <component
       :is="to ? 'RouterLink' : 'div'"
       :to="to"
-      class="tile-button flex w-full flex-col items-center rounded-(--splash-radius) pt-3 text-inherit no-underline"
+      class="tile-button flex w-full flex-col items-center rounded-(--splash-radius) pt-(--splash-tile-pad) text-inherit no-underline"
     >
       <span
         class="tile relative grid size-(--splash-tile) place-items-center rounded-(--splash-radius)"
@@ -33,13 +33,13 @@ const { t } = useI18n();
         />
       </span>
       <span
-        class="label text-foreground mt-3 text-center text-(length:--splash-label) leading-(--splash-label-line) font-semibold"
+        class="label text-foreground mt-(--splash-tile-pad) text-center text-(length:--splash-label) leading-(--splash-label-line) font-semibold"
       >
         {{ name }}
       </span>
       <span
         v-if="!to"
-        class="text-muted-foreground text-center text-(length:--splash-status) leading-normal"
+        class="text-muted-foreground text-center text-(length:--splash-status) leading-(--splash-status-line)"
       >
         {{ t("views.splash.comingSoon") }}
       </span>
@@ -58,54 +58,45 @@ const { t } = useI18n();
   outline-offset: 4px;
 }
 
-/* Glass: translucent body, frosted backdrop, specular rim and a soft top highlight. */
+/*
+ * Frosted glass, fading from a trace of foreground to dull. Figma blends color and opacity apart, which
+ * darkens (or in dark mode lightens) the middle; CSS gradients don't, so the stops spell that out.
+ */
 .tile {
   --wash: transparent;
-  --glass-inset:
-    inset 0 1px 0 var(--splash-glass-rim-hi), inset 0 -10px 18px rgb(0 0 0 / 0.14),
-    inset 0 1px 4px color-mix(in srgb, var(--brand) 60%, transparent);
-  background: linear-gradient(to bottom, var(--splash-glass-top), var(--splash-glass-bottom));
-  border: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
-  box-shadow:
-    0 4px 20px rgb(0 0 0 / 0.25),
-    var(--glass-inset);
-  backdrop-filter: blur(5px) saturate(145%) brightness(1.04);
+  --edge: 1px;
+  --inner-shadow: inset 0 1px 4px var(--brand);
+  --mix-25: color-mix(in srgb, var(--dull) 25%, var(--foreground));
+  --mix-50: color-mix(in srgb, var(--dull) 50%, var(--foreground));
+  --mix-75: color-mix(in srgb, var(--dull) 75%, var(--foreground));
+  background:
+    linear-gradient(var(--wash), var(--wash)) border-box,
+    linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--foreground) 2.5%, transparent),
+        color-mix(in srgb, var(--mix-25) 14.4%, transparent) 25%,
+        color-mix(in srgb, var(--mix-50) 26.3%, transparent) 50%,
+        color-mix(in srgb, var(--mix-75) 38.1%, transparent) 75%,
+        color-mix(in srgb, var(--dull) 50%, transparent)
+      )
+      border-box;
+  border: var(--edge) solid var(--border);
+  box-shadow: 0 4px 20px rgb(0 0 0 / 0.25);
+  backdrop-filter: blur(2px);
   transition:
     transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1),
     box-shadow 0.15s ease,
     border-color 0.15s ease;
 }
 
-.tile::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background:
-    linear-gradient(var(--wash), var(--wash)),
-    radial-gradient(130% 70% at 28% -8%, var(--splash-glass-spec), transparent 62%);
-  transition: background 0.15s ease;
-}
-
-/* Light-catching rim: bright at the top-left edge, a faint return at the bottom-right. */
+/* Drawn over the border, as Figma does, so the edge stays one crisp line. */
 .tile::after {
   content: "";
   position: absolute;
-  inset: -1px;
+  inset: calc(var(--edge) * -1);
   border-radius: inherit;
-  padding: 1px;
   pointer-events: none;
-  background: linear-gradient(
-    155deg,
-    var(--splash-glass-edge-hi) 0%,
-    transparent 38%,
-    transparent 68%,
-    var(--splash-glass-edge-lo) 100%
-  );
-  mask:
-    linear-gradient(#000 0 0) content-box exclude,
-    linear-gradient(#000 0 0);
+  box-shadow: var(--inner-shadow);
 }
 
 .icon {
@@ -115,21 +106,23 @@ const { t } = useI18n();
 
 @media (hover: hover) {
   :not(.coming-soon) > .tile-button:hover .tile {
-    --wash: var(--splash-hover-wash);
+    --wash: rgb(255 255 255 / 0.04);
     transform: translateY(-4px);
-    border: 1.5px solid var(--brand);
+    --edge: 1.5px;
+    border-color: var(--brand);
     box-shadow:
       0 4px 20px rgb(0 0 0 / 0.25),
-      0 0 24px var(--splash-hover-glow),
-      var(--glass-inset);
+      0 0 24px color-mix(in srgb, var(--brand) 40%, transparent);
   }
 }
 
 :not(.coming-soon) > .tile-button:active .tile {
-  --wash: var(--splash-press-wash);
+  --wash: rgb(0 0 0 / 0.12);
   transform: translateY(2px);
-  border: 1.5px solid var(--brand);
-  box-shadow: inset 0 3px 10px rgb(0 0 0 / 0.35);
+  --edge: 1.5px;
+  --inner-shadow: inset 0 3px 10px rgb(0 0 0 / 0.35), inset 0 1px 4px var(--brand);
+  border-color: var(--brand);
+  box-shadow: none;
   transition-duration: 0.08s;
 }
 
@@ -152,7 +145,6 @@ const { t } = useI18n();
 
 @media (prefers-reduced-motion: reduce) {
   .tile,
-  .tile::before,
   .icon {
     transition: none;
   }

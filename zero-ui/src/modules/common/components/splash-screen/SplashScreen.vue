@@ -46,7 +46,7 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
         class="w-(--splash-wordmark)"
       />
       <SplashDarkModeToggle
-        class="absolute top-[calc(var(--splash-head-top)-6px)] right-[calc(var(--splash-margin)*0.6)] max-[560px]:top-7.5 max-[560px]:right-3"
+        class="absolute top-(--splash-switch-top) right-(--splash-switch-right)"
       />
     </header>
 
@@ -84,19 +84,10 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
   /* The design's light launcher sits on neutral white rather than the app's cool grey-0. */
   --splash-background: var(--color-neutral-0);
 
-  --splash-grid-minor: rgb(68 106 136 / 0.042);
-  --splash-grid-major: rgb(68 106 136 / 0.096);
-  --splash-vignette: rgb(0 0 0 / 0.12);
-  --splash-hover-wash: rgb(255 255 255 / 0.35);
-  --splash-press-wash: rgb(0 0 0 / 0.08);
-  --splash-hover-glow: rgb(68 106 136 / 0.35);
-  --splash-switch-bg: rgb(255 255 255 / 0.7);
-  --splash-glass-top: rgb(255 255 255 / 0.62);
-  --splash-glass-bottom: rgb(196 203 208 / 0.5);
-  --splash-glass-rim-hi: rgb(255 255 255 / 0.7);
-  --splash-glass-edge-hi: rgb(255 255 255 / 0.95);
-  --splash-glass-edge-lo: rgb(255 255 255 / 0.4);
-  --splash-glass-spec: rgb(255 255 255 / 0.35);
+  --splash-grid-minor: 4%;
+  --splash-grid-major: 10%;
+  --splash-vignette: rgb(0 0 0 / 0.09);
+  --splash-switch-bg: var(--muted);
 
   /* Large tiles; the media queries below step down so the launcher fits the screen. */
   --splash-cell: 208px;
@@ -107,14 +98,18 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
   --splash-cluster-gap: 56px;
   --splash-line-gap: 40px;
   --splash-label: 20px;
-  --splash-label-line: 1.6;
+  --splash-label-line: 36px;
   --splash-status: 16px;
-  --splash-group-name: 28px;
+  --splash-status-line: 32px;
+  --splash-tile-pad: 12px;
+  --splash-group-name: 24px;
   --splash-group-count: 16px;
   --splash-rule-accent: 28px;
   --splash-wordmark: 420px;
   --splash-margin: 120px;
   --splash-head-top: 72px;
+  --splash-switch-top: 76px;
+  --splash-switch-right: 120px;
 }
 
 .splash-screen::-webkit-scrollbar {
@@ -123,19 +118,10 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
 
 .dark .splash-screen {
   --splash-background: var(--background);
-  --splash-grid-minor: rgb(153 182 204 / 0.07);
-  --splash-grid-major: rgb(153 182 204 / 0.16);
-  --splash-vignette: rgb(0 0 0 / 0.28);
-  --splash-hover-wash: rgb(255 255 255 / 0.04);
-  --splash-press-wash: rgb(0 0 0 / 0.12);
-  --splash-hover-glow: rgb(153 182 204 / 0.4);
-  --splash-switch-bg: rgb(34 39 43 / 0.6);
-  --splash-glass-top: rgb(250 250 250 / 0.07);
-  --splash-glass-bottom: rgb(50 57 63 / 0.5);
-  --splash-glass-rim-hi: rgb(255 255 255 / 0.14);
-  --splash-glass-edge-hi: rgb(255 255 255 / 0.38);
-  --splash-glass-edge-lo: rgb(255 255 255 / 0.1);
-  --splash-glass-spec: rgb(255 255 255 / 0.08);
+  --splash-grid-minor: 7%;
+  --splash-grid-major: 16%;
+  --splash-vignette: rgb(0 0 0 / 0.21);
+  --splash-switch-bg: color-mix(in srgb, var(--background) 50%, transparent);
 }
 
 @media (min-width: 2300px) {
@@ -143,6 +129,8 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
     --splash-wordmark: 560px;
     --splash-margin: 160px;
     --splash-head-top: 96px;
+    --splash-switch-top: 101px;
+    --splash-switch-right: 96px;
   }
 }
 
@@ -156,12 +144,15 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
     --splash-cluster-gap: 48px;
     --splash-line-gap: 32px;
     --splash-label: 16px;
-    --splash-status: 13px;
-    --splash-group-name: 24px;
-    --splash-group-count: 14px;
+    --splash-label-line: 32px;
+    --splash-status: 12px;
+    --splash-status-line: 20px;
+    --splash-tile-pad: 10px;
     --splash-wordmark: 320px;
     --splash-margin: 60px;
     --splash-head-top: 44px;
+    --splash-switch-top: 36px;
+    --splash-switch-right: 48px;
   }
 }
 
@@ -169,7 +160,9 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
   .splash-screen {
     --splash-wordmark: 340px;
     --splash-margin: 40px;
-    --splash-head-top: 56px;
+    --splash-head-top: 35px;
+    --splash-switch-top: 33px;
+    --splash-switch-right: 38px;
     --splash-line-gap: 28px;
   }
 }
@@ -182,10 +175,10 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
   --splash-icon: 56px;
   --splash-tile-gap: 16px;
   --splash-label: 20px;
-  --splash-label-line: 1.6;
+  --splash-label-line: 36px;
   --splash-status: 16px;
-  --splash-group-name: 28px;
-  --splash-group-count: 16px;
+  --splash-status-line: 32px;
+  --splash-tile-pad: 12px;
 }
 
 .splash-screen[data-splash-size="m"] {
@@ -195,10 +188,10 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
   --splash-icon: 44px;
   --splash-tile-gap: 12px;
   --splash-label: 16px;
-  --splash-label-line: 1.6;
-  --splash-status: 13px;
-  --splash-group-name: 24px;
-  --splash-group-count: 14px;
+  --splash-label-line: 32px;
+  --splash-status: 12px;
+  --splash-status-line: 20px;
+  --splash-tile-pad: 10px;
 }
 
 .splash-screen[data-splash-size="s"] {
@@ -207,11 +200,11 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
   --splash-radius: 18px;
   --splash-icon: 32px;
   --splash-tile-gap: 6px;
-  --splash-label: 13px;
-  --splash-label-line: 1.4;
+  --splash-label: 12px;
+  --splash-label-line: 20px;
   --splash-status: 12px;
-  --splash-group-name: 20px;
-  --splash-group-count: 13px;
+  --splash-status-line: 20px;
+  --splash-tile-pad: 8px;
 }
 
 @media (max-width: 560px) {
@@ -222,16 +215,20 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
     --splash-icon: 32px;
     --splash-tile-gap: 6px;
     --splash-cluster-gap: 24px;
-    --splash-line-gap: 28px;
-    --splash-label: 13px;
-    --splash-label-line: 1.4;
+    --splash-line-gap: 32px;
+    --splash-label: 12px;
+    --splash-label-line: 20px;
     --splash-status: 12px;
+    --splash-status-line: 20px;
+    --splash-tile-pad: 8px;
     --splash-group-name: 20px;
     --splash-group-count: 13px;
     --splash-rule-accent: 20px;
     --splash-wordmark: 200px;
     --splash-margin: 12px;
-    --splash-head-top: 40px;
+    --splash-head-top: 22px;
+    --splash-switch-top: 12px;
+    --splash-switch-right: clamp(8px, 50vw - 152px, 24px);
   }
 }
 </style>
