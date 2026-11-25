@@ -504,7 +504,10 @@ class SimulationChannels[
         control_values_clss: ModuleClassMap,
         simulation_inputs_cls: type[I],
         simulation_outputs_cls: type[O],
+        initial_control_values: CombinedValues,
     ) -> None:
+        """Until control sends them, the control values are the initial ones, so the
+        simulation need not wait for control, like the plant."""
         simulation_inputs_topic = (
             f"{config.mqtt_simulator_topic_prefix}/{SIMULATION_INPUTS_TOPIC}"
         )
@@ -517,6 +520,7 @@ class SimulationChannels[
             PartialMqttMapping,
             config.mqtt_devices_topic_prefix,
             config.mqtt_control_topic_suffix,
+            initial=initial_control_values,
         )
         connector._register_listener(control_values_mapping)
         simulation_inputs_mapping = DirectMqttMapping(
@@ -543,7 +547,6 @@ class SimulationChannels[
         )
 
         self.get_control_values = control_values_mapping.result
-        self.wait_for_control_values = control_values_mapping.wait_for_result
         self.get_simulation_inputs = simulation_inputs_mapping.result
 
     async def send_device_values(

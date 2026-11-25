@@ -6,6 +6,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from thrs.control.state import ControlModes
+from thrs.input_output.base import CombinedValues
 from thrs.orchestration.comms import (
     ControlChannels,
     MqttConnector,
@@ -29,6 +30,18 @@ from thrs.persistence.manager import PersistManager
 logger: logging.Logger = logging.getLogger(__name__)
 
 
+def initial_control_values(
+    control_modules: dict[str, ModuleDescription], timestamp: datetime
+) -> CombinedValues:
+    """Every module's control values at their initial values, stamped at `timestamp`."""
+    return CombinedValues(
+        values={
+            module: description.control_values_cls.initial(timestamp)
+            for module, description in control_modules.items()
+        }
+    )
+
+
 def setup_simulation_module(
     connector: MqttConnector,
     config: Config,
@@ -38,13 +51,14 @@ def setup_simulation_module(
     sensor_values_cls = {
         module: desc.sensor_values_cls for module, desc in control_modules.items()
     }
+    start_time = datetime.now(UTC)
 
     simulation = Simulation(
         sensor_values_cls,
         simulation_description.simulation_outputs_cls,
         simulation_description.fmu,
         simulation_description.simulation_inputs,
-        datetime.now(UTC),
+        start_time,
         timedelta(seconds=1),
     )
 
@@ -60,6 +74,7 @@ def setup_simulation_module(
             },
             type(simulation_description.simulation_inputs),
             simulation_description.simulation_outputs_cls,
+            initial_control_values(control_modules, start_time),
         ),
     )
 

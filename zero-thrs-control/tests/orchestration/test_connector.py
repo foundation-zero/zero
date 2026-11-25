@@ -35,6 +35,7 @@ from thrs.orchestration.comms import (
     ModuleMqttMapping,
     MqttConnector,
     PartialMqttMapping,
+    SimulationChannels,
 )
 from thrs.orchestration.module import ModuleDescription
 
@@ -374,6 +375,23 @@ class TestControlChannelsPublishQos:
             call.kwargs["qos"] for call in connector._create_publisher.call_args_list
         ]
         assert publisher_qos == [expected_qos] * 4
+
+
+class TestSimulationChannels:
+    def test_control_values_start_at_the_initial_values(self, settings):
+        initial = CombinedValues(values={"module1": SimpleInOut.initial()})
+
+        channels = SimulationChannels(
+            mock.Mock(),
+            settings,
+            {"module1": SimpleInOut},
+            {"module1": SimpleInOut},
+            SimpleParameters,
+            SimpleParameters,
+            initial_control_values=initial,
+        )
+
+        assert channels.get_control_values() == initial
 
 
 class TestCombinedMqttMapping:

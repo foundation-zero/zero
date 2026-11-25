@@ -321,7 +321,6 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     channels = Mock()
     channels.get_control_values.return_value = control_values
     channels.get_simulation_inputs.return_value = simulation_inputs
-    channels.wait_for_control_values = AsyncMock()
     channels.send_device_values = AsyncMock()
     channels.send_simulation_inputs = AsyncMock()
     channels.send_simulation_outputs = AsyncMock()
@@ -336,7 +335,6 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     assert mock_liveness.signal.call_count == 4
 
     assert channels.get_control_values.call_count == 4
-    assert channels.wait_for_control_values.await_count == 0
     assert simulation.update_simulation_inputs.call_count == 4
     assert simulation.tick.call_count == 4
 

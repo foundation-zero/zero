@@ -131,6 +131,7 @@ async def test_actuated_control_values_roundtrip(
             {"thrusters": SharedDemoControlValues},
             DemoSimulationInputs,
             DemoSimulationOutputs,
+            CombinedValues({"thrusters": SharedDemoControlValues.initial()}),
         )
         control_channels = ControlChannels(
             connector, settings, "thrusters", shared_module
