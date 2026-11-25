@@ -5,6 +5,7 @@ export { default as Description } from "./ModuleParametersDescription.vue";
 export { default as Header } from "./ModuleParametersHeader.vue";
 export { default as List } from "./ModuleParametersList.vue";
 export { default as ListItem } from "./ModuleParametersListItem.vue";
+export { default as ListItemInfo } from "./ModuleParametersListItemInfo.vue";
 export { default as ListItemTitle } from "./ModuleParametersListItemTitle.vue";
 export { default as ListItemValue } from "./ModuleParametersListItemValue.vue";
 export { default as Pid } from "./ModuleParametersPid.vue";

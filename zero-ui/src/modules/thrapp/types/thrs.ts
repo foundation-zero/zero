@@ -5,6 +5,8 @@ export type SchemaDefinition<T> = {
   componentType: T;
   /** Where the MQTT GraphQL API answers the component, in the generated fragments' response. */
   path?: readonly string[];
+  /** What the component is for, from the AsyncAPI Spec's description of it. */
+  description?: string;
 };
 
 // Number between 0 and 1 representing a ratio (e.g., for flow distribution)

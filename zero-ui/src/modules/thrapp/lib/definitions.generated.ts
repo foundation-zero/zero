@@ -1325,22 +1325,32 @@ export const DHW_CONTROL_VALUES_DEFINITION = {
 export const DHW_PARAMETERS_DEFINITION = {
   boostingMinimumHeat: {
     componentType: ParametersType.Power,
+    description:
+      "Minimum heat transfer to the tank in Watt (~1 kW) below which boosting is considered stalled",
     path: ["thrs", "controller", "dhw", "parameters", "boostingMinimumHeat"],
   },
   boostingStallLockout: {
     componentType: ParametersType.Duration,
+    description:
+      "Lockout before a boosting source boosts a tank again after it stalled on that tank",
     path: ["thrs", "controller", "dhw", "parameters", "boostingStallLockout"],
   },
   boostingStallWindow: {
     componentType: ParametersType.Duration,
+    description:
+      "How long boosting heat transfer must stay below boosting_minimum_heat before the tank counts as stalled",
     path: ["thrs", "controller", "dhw", "parameters", "boostingStallWindow"],
   },
   boostingStartupGrace: {
     componentType: ParametersType.Duration,
+    description:
+      "Grace period after boosting starts on a source or tank before the stall guard checks heat transfer, covering valve travel, pump ramp and heatpump spin-up",
     path: ["thrs", "controller", "dhw", "parameters", "boostingStartupGrace"],
   },
   dcFlowcontrolMinimumSetpoint: {
     componentType: ParametersType.FlowControl,
+    description:
+      "Minimum pump dutypoint to guarantee sufficient flow for a temperature measurement",
     path: ["thrs", "controller", "dhw", "parameters", "dcFlowcontrolMinimumSetpoint"],
   },
   dcFlowTuning: {
@@ -1349,6 +1359,8 @@ export const DHW_PARAMETERS_DEFINITION = {
   },
   drivesFlowcontrolMinimumSetpoint: {
     componentType: ParametersType.FlowControl,
+    description:
+      "Minimum pump dutypoint to guarantee sufficient flow for a temperature measurement",
     path: ["thrs", "controller", "dhw", "parameters", "drivesFlowcontrolMinimumSetpoint"],
   },
   drivesFlowTuning: {
@@ -1361,6 +1373,7 @@ export const DHW_PARAMETERS_DEFINITION = {
   },
   fullLevelLowerBand: {
     componentType: ParametersType.Level,
+    description: "Level above which a non-filling tank counts as full",
     path: ["thrs", "controller", "dhw", "parameters", "fullLevelLowerBand"],
   },
   heatpumpBoostingEnabled: {
@@ -1385,6 +1398,8 @@ export const DHW_PARAMETERS_DEFINITION = {
   },
   htBoostingMinimumDelta: {
     componentType: ParametersType.dT,
+    description:
+      "Minimum delta T between the HT boosting source and the tank to start or continue HT boosting",
     path: ["thrs", "controller", "dhw", "parameters", "htBoostingMinimumDelta"],
   },
   maximumTankLevel: {
@@ -1397,6 +1412,7 @@ export const DHW_PARAMETERS_DEFINITION = {
   },
   minimumPumpDutypoint: {
     componentType: ParametersType.Dutypoint,
+    description: "Minimum output of the boosting pump controllers",
     path: ["thrs", "controller", "dhw", "parameters", "minimumPumpDutypoint"],
   },
   minimumTankLevel: {
@@ -2275,14 +2291,18 @@ export const PCM_CONTROL_VALUES_DEFINITION = {
 export const PCM_PARAMETERS_DEFINITION = {
   chargingRequested: {
     componentType: ParametersType.Enabled,
+    description: "Keep trying to charge the PCM modules while possible",
     path: ["thrs", "controller", "pcm", "parameters", "chargingRequested"],
   },
   gracePeriod: {
     componentType: ParametersType.Duration,
+    description:
+      "Grace period after entering charging/supplying before the stall guard checks a module's charging_state",
     path: ["thrs", "controller", "pcm", "parameters", "gracePeriod"],
   },
   minimumChargingTemperature: {
     componentType: ParametersType.Temperature,
+    description: "Range for thermal charging",
     path: ["thrs", "controller", "pcm", "parameters", "minimumChargingTemperature"],
   },
   module1FlowBalanceTuning: {
@@ -2315,14 +2335,18 @@ export const PCM_PARAMETERS_DEFINITION = {
   },
   retryDelay: {
     componentType: ParametersType.Duration,
+    description: "Lockout before retrying a mode after all its modules stalled and were dropped",
     path: ["thrs", "controller", "pcm", "parameters", "retryDelay"],
   },
   stallDuration: {
     componentType: ParametersType.Duration,
+    description:
+      "How long a module's charging_state may fail to show it actually (dis)charging before it is dropped as stalled",
     path: ["thrs", "controller", "pcm", "parameters", "stallDuration"],
   },
   supplyingRequested: {
     componentType: ParametersType.Enabled,
+    description: "Keep trying to supply heat from the PCM modules while possible",
     path: ["thrs", "controller", "pcm", "parameters", "supplyingRequested"],
   },
 } as const satisfies ParameterDefinitions;
