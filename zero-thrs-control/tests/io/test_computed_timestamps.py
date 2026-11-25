@@ -57,7 +57,7 @@ def _timestamps(dumped: Any) -> set[datetime]:
 def test_computed_values_take_timestamps_from_their_inputs(
     sensor_values_cls: type[ThrsValues],
 ):
-    sensor_values = sensor_values_cls.zero()
+    sensor_values = sensor_values_cls.initial()
     _stamp_inputs(sensor_values)
     valves = [
         getattr(sensor_values, name)

@@ -53,7 +53,7 @@ def switching() -> Callable[[float], Switching]:
     def _make(manual_flow: float = 1.0) -> Switching:
         switching = Switching(
             lambda parameters: SimpleControl(parameters, datetime.now),
-            SimpleParameters.zero(),
+            SimpleParameters.initial(),
             name="simple",
         )
         switching.update_manual_controls(simple_control_values(flow=manual_flow))

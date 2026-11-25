@@ -1686,11 +1686,11 @@ class PvtControlValues(AmcsWatchdogControlValues):
     ]
 
     @classmethod
-    def zero(cls, timestamp: datetime | None = None) -> Self:
-        """The starting control values: every component at its zero, except the
-        valves that start away from 0."""
+    def initial(cls, timestamp: datetime | None = None) -> Self:
+        """The starting control values: every component at its initial value, except
+        the valves that start away from 0."""
         stamped_at = timestamp or datetime.now(UTC)
-        values = super().zero(stamped_at)
+        values = super().initial(stamped_at)
         for valve, setpoint in (
             (values.pvt_mix_main_fwd, IDLE_MIX_POSITION),
             (values.pvt_mix_main_aft, IDLE_MIX_POSITION),

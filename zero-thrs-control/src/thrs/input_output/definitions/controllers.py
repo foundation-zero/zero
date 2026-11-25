@@ -75,13 +75,13 @@ class PidControllerValues(ThrsValues):
 
 class TanksControllerValues(ThrsValues):
     tank1_state: Annotated[
-        Stamped[TankState], field_meta(zero_value=TankState.NEEDS_FILL.value)
+        Stamped[TankState], field_meta(initial_value=TankState.NEEDS_FILL.value)
     ]
     tank2_state: Annotated[
-        Stamped[TankState], field_meta(zero_value=TankState.NEEDS_FILL.value)
+        Stamped[TankState], field_meta(initial_value=TankState.NEEDS_FILL.value)
     ]
     tank3_state: Annotated[
-        Stamped[TankState], field_meta(zero_value=TankState.NEEDS_FILL.value)
+        Stamped[TankState], field_meta(initial_value=TankState.NEEDS_FILL.value)
     ]
     time_to_fill: Stamped[Seconds | None]
     time_to_hot: Stamped[Seconds | None]

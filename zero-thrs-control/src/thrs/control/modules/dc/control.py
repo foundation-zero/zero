@@ -61,7 +61,7 @@ class DcControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = DcControlValues.zero(self._time())
+        self._current_values = DcControlValues.initial(self._time())
 
         self._init_controllers(parameters)
 
@@ -150,8 +150,8 @@ class DcControl(
     def initial(self) -> tuple[DcControlValues, DcControllerState]:
         timestamp = self._time()
         return (
-            DcControlValues.zero(timestamp),
-            DcControllerState.zero(timestamp),
+            DcControlValues.initial(timestamp),
+            DcControllerState.initial(timestamp),
         )
 
     def control(

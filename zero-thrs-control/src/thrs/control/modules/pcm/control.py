@@ -50,7 +50,7 @@ class PcmControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = PcmControlValues.zero(self._time())
+        self._current_values = PcmControlValues.initial(self._time())
         self._mode_entered_at: datetime | None = None
         self._module_last_active: dict[PcmChargeController, datetime] = {}
         self._dropped_modules: set[PcmChargeController] = set()
@@ -207,8 +207,8 @@ class PcmControl(
     def initial(self) -> tuple[PcmControlValues, PcmControllerState]:
         timestamp = self._time()
         return (
-            PcmControlValues.zero(timestamp),
-            PcmControllerState.zero(timestamp),
+            PcmControlValues.initial(timestamp),
+            PcmControllerState.initial(timestamp),
         )
 
     def update_parameters(self, parameters: PcmParameters):

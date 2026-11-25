@@ -185,7 +185,7 @@ class ConvertersControl(
     def initial(self) -> tuple[ConvertersControlValues, ConvertersControllerState]:
         return (
             self._current_values,
-            ConvertersControllerState.zero(self._time()),
+            ConvertersControllerState.initial(self._time()),
         )
 
     def _close_circuit(self):

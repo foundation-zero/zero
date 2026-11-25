@@ -47,7 +47,7 @@ class ConfigurableControl(
 
     def initial(self) -> tuple[SimpleInOut, ConfigurableControllerState]:
         return (
-            SimpleInOut.zero(),
+            SimpleInOut.initial(),
             ConfigurableControllerState(parameters=ConfigurableParameters()),
         )
 

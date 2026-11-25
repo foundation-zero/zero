@@ -435,11 +435,11 @@ class PcmControlValues(AmcsWatchdogControlValues):
     ] = control.Pcm(on=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC)))
 
     @classmethod
-    def zero(cls, timestamp: datetime | None = None) -> Self:
-        """The starting control values: every component at its zero, except the
-        valves that start away from 0."""
+    def initial(cls, timestamp: datetime | None = None) -> Self:
+        """The starting control values: every component at its initial value, except
+        the valves that start away from 0."""
         stamped_at = timestamp or datetime.now(UTC)
-        values = super().zero(stamped_at)
+        values = super().initial(stamped_at)
         for valve, setpoint in (
             (values.pcm_flowcontrol_module1, control.Valve.OPEN),
             (values.pcm_flowcontrol_module2, control.Valve.OPEN),
@@ -511,9 +511,9 @@ class PcmSimulationOutputs(ThrsValues):
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def consumers_flow_adsorption(self) -> sensor.FlowSensor:
-        return sensor.FlowSensor.zero()
+        return sensor.FlowSensor.initial()
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def consumers_flow_bypass(self) -> sensor.FlowSensor:
-        return sensor.FlowSensor.zero()
+        return sensor.FlowSensor.initial()

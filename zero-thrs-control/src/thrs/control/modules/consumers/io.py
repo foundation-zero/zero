@@ -176,11 +176,11 @@ class ConsumersControlValues(AmcsWatchdogControlValues):
     ]
 
     @classmethod
-    def zero(cls, timestamp: datetime | None = None) -> Self:
-        """The starting control values: every component at its zero, except the
-        valves that start away from 0."""
+    def initial(cls, timestamp: datetime | None = None) -> Self:
+        """The starting control values: every component at its initial value, except
+        the valves that start away from 0."""
         stamped_at = timestamp or datetime.now(UTC)
-        values = super().zero(stamped_at)
+        values = super().initial(stamped_at)
         for valve, setpoint in (
             (values.consumers_flowcontrol_adsorption, control.Valve.OPEN),
             (values.consumers_flowcontrol_bypass, control.Valve.OPEN),

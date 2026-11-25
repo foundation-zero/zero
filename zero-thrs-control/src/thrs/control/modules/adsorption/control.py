@@ -44,7 +44,7 @@ class AdsorptionControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = AdsorptionControlValues.zero(self._time())
+        self._current_values = AdsorptionControlValues.initial(self._time())
 
         self._init_state_machine_states()
         self._init_state_machine_transitions()
@@ -146,8 +146,8 @@ class AdsorptionControl(
     def initial(self) -> tuple[AdsorptionControlValues, AdsorptionControllerState]:
         timestamp = self._time()
         return (
-            AdsorptionControlValues.zero(timestamp),
-            AdsorptionControllerState.zero(timestamp),
+            AdsorptionControlValues.initial(timestamp),
+            AdsorptionControllerState.initial(timestamp),
         )
 
     def control(

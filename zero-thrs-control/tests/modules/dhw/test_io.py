@@ -77,7 +77,7 @@ def test_dhw_hvac_exchanger_computed_field():
     t_return = 40.0
     flow = 30.0
 
-    values = DhwSensorValues.zero().model_copy(
+    values = DhwSensorValues.initial().model_copy(
         update={
             "dhw_temperature_hvac_exchanger_return": sensor.TemperatureSensor(
                 temperature=Stamped.stamp(t_return)
@@ -103,7 +103,7 @@ def test_dhw_heatpump_computed_field():
     t_return = 55.0
     flow = 20.0
 
-    values = DhwSensorValues.zero().model_copy(
+    values = DhwSensorValues.initial().model_copy(
         update={
             "dhw_temperature_boosting_return": sensor.TemperatureSensor(
                 temperature=Stamped.stamp(t_return)
@@ -134,7 +134,7 @@ def test_computed_field_timestamp_uses_oldest():
     t_old = datetime(2026, 1, 1, 12, 0, 0)
     t_new = datetime(2026, 1, 1, 12, 0, 10)
 
-    values = DhwSensorValues.zero().model_copy(
+    values = DhwSensorValues.initial().model_copy(
         update={
             "dhw_temperature_hvac_exchanger_return": sensor.TemperatureSensor(
                 temperature=Stamped(value=60.0, timestamp=t_new)
@@ -155,7 +155,7 @@ def test_computed_field_timestamp_uses_oldest():
 
 
 def test_all_computed_fields_evaluate():
-    values = DhwSensorValues.zero()
+    values = DhwSensorValues.initial()
     for name in DhwSensorValues.model_computed_fields:
         result = getattr(values, name)
         assert result is not None, f"Computed field '{name}' returned None"

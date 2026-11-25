@@ -74,7 +74,7 @@ class PvtControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = PvtControlValues.zero(self._time())
+        self._current_values = PvtControlValues.initial(self._time())
 
         self._init_controllers(parameters, time_fn)
 
@@ -130,8 +130,8 @@ class PvtControl(
     def initial(self) -> tuple[PvtControlValues, PvtControllerState]:
         timestamp = self._time()
         return (
-            PvtControlValues.zero(timestamp),
-            PvtControllerState.zero(timestamp),
+            PvtControlValues.initial(timestamp),
+            PvtControllerState.initial(timestamp),
         )
 
     def update_parameters(self, parameters: PvtParameters):

@@ -139,12 +139,12 @@ def runner(
 
 @fixture
 def sensor_values() -> DhwSensorValues:
-    return DhwSensorValues.zero()
+    return DhwSensorValues.initial()
 
 
 @fixture
 def tanks_controller(parameters) -> TanksController:
-    control_values = DhwControlValues.zero()
+    control_values = DhwControlValues.initial()
     return TanksController(
         tank1=Tank(
             inlet=control_values.dhw_switch_tank1_inlet,

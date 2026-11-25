@@ -29,11 +29,11 @@ def test_switching_control(switching):
     )
     assert control_values.go_with_the.flow.value == 42.0
     assert controller_state == SimpleControllerState(
-        parameters=SimpleParameters.zero(),
+        parameters=SimpleParameters.initial(),
         manual_values=switching_control.manual_controls,
     )
     assert controller_state.automation_mode == AutomationMode(mode="manual")
-    assert controller_state.parameters == SimpleParameters.zero()
+    assert controller_state.parameters == SimpleParameters.initial()
 
     switching_control.switch_mode(AutomationMode(mode="automatic"))
     control_values, controller_state = switching_control.control(
@@ -42,7 +42,7 @@ def test_switching_control(switching):
 
     assert controller_state.automation_mode == AutomationMode(mode="automatic")
     assert controller_state.control_mode == SimpleMode()
-    assert controller_state.parameters == SimpleParameters.zero()
+    assert controller_state.parameters == SimpleParameters.initial()
     assert control_values.go_with_the.flow.value == 30.0
 
 
@@ -81,7 +81,7 @@ def _mock_switching(automatic: mock.Mock) -> tuple[Switching, mock.Mock]:
     """A switching control whose automatic control is always `automatic`, and the
     factory that builds it, to count the builds."""
     automatic.initial.return_value = (
-        SimpleInOut.zero(),
+        SimpleInOut.initial(),
         SimpleControllerState(parameters=SimpleParameters()),
     )
     create_automatic = mock.Mock(return_value=automatic)

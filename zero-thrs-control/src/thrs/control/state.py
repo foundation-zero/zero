@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from typing import Literal, Self, cast
 
-from thrs.input_output.base import ThrsValues, zero_field
+from thrs.input_output.base import ThrsValues, initial_field
 
 type ControlModes = Literal["manual", "automatic"]
 
@@ -36,16 +36,16 @@ class ControlState[C: ThrsValues, P: ThrsValues, M: ThrsValues](ThrsValues):
     parameters: P
 
     @classmethod
-    def zero(cls, timestamp: datetime | None = None) -> Self:
-        """The module's controllers at their zero values, stamped at `timestamp` or
-        now, with the default parameters and the defaults above."""
+    def initial(cls, timestamp: datetime | None = None) -> Self:
+        """The module's controllers at their initial values, stamped at `timestamp`
+        or now, with the default parameters and the defaults above."""
         stamped_at = timestamp or datetime.now(UTC)
         parameters_cls = cast(
             type[ThrsValues], cls.model_fields["parameters"].annotation
         )
         return cls(
             **{
-                name: zero_field(field, stamped_at)
+                name: initial_field(field, stamped_at)
                 for name, field in cls.model_fields.items()
                 if name not in ControlState.model_fields
             },

@@ -362,17 +362,17 @@ class AdsorptionControlValues(AmcsWatchdogControlValues):
         control.AdsorptionChiller,
         component_meta(yard_tag="50001034", component_type="adsorption_chiller"),
     ] = Field(  # TODO: Remove once control readout from mqtt is finalized
-        default_factory=lambda: control.AdsorptionChiller.zero(
+        default_factory=lambda: control.AdsorptionChiller.initial(
             datetime.fromtimestamp(0, UTC)
         )
     )
 
     @classmethod
-    def zero(cls, timestamp: datetime | None = None) -> Self:
-        """The starting control values: every component at its zero, except the
-        valves that start away from 0."""
+    def initial(cls, timestamp: datetime | None = None) -> Self:
+        """The starting control values: every component at its initial value, except
+        the valves that start away from 0."""
         stamped_at = timestamp or datetime.now(UTC)
-        values = super().zero(stamped_at)
+        values = super().initial(stamped_at)
         for valve, setpoint in (
             (values.adsorption_mix_hot, control.Valve.MIXING_A_TO_AB),
             (values.adsorption_mix_waste, control.Valve.MIXING_A_TO_AB),

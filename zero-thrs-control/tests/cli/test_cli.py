@@ -572,7 +572,7 @@ async def test_simulation_inputs_set_over_mqtt_reach_later_ticks(
         )
         assert initial_model.thrusters_thruster_aft.heat_flow.value != 0.0
 
-        new_inputs = ThrustersSimulationInputs.zero()
+        new_inputs = ThrustersSimulationInputs.initial()
         await controls_client.publish(
             set_inputs_topic,
             new_inputs.model_dump_json(),

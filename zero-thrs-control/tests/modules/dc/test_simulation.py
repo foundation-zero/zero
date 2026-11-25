@@ -41,5 +41,5 @@ def test_dc_simulation_inputs(incorrect_simulation_inputs):
         with pytest.raises(Exception):
             for _i in range(300):
                 simulation.tick(
-                    DcControlValues.zero(),  # TODO: add actual control values
+                    DcControlValues.initial(),  # TODO: add actual control values
                 )

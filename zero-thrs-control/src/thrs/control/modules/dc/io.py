@@ -832,11 +832,11 @@ class DcControlValues(AmcsWatchdogControlValues):
     ]
 
     @classmethod
-    def zero(cls, timestamp: datetime | None = None) -> Self:
-        """The starting control values: every component at its zero, except the
-        valves that start away from 0."""
+    def initial(cls, timestamp: datetime | None = None) -> Self:
+        """The starting control values: every component at its initial value, except
+        the valves that start away from 0."""
         stamped_at = timestamp or datetime.now(UTC)
-        values = super().zero(stamped_at)
+        values = super().initial(stamped_at)
         values.dc_mix_exchanger.setpoint = Stamped(
             value=control.Valve.MIXING_A_TO_AB, timestamp=stamped_at
         )

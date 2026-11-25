@@ -572,11 +572,11 @@ class DrivesControlValues(AmcsWatchdogControlValues):
     ]
 
     @classmethod
-    def zero(cls, timestamp: datetime | None = None) -> Self:
-        """The starting control values: every component at its zero, except the
-        valves that start away from 0."""
+    def initial(cls, timestamp: datetime | None = None) -> Self:
+        """The starting control values: every component at its initial value, except
+        the valves that start away from 0."""
         stamped_at = timestamp or datetime.now(UTC)
-        values = super().zero(stamped_at)
+        values = super().initial(stamped_at)
         for valve, setpoint in (
             (values.drives_mix_exchanger, control.Valve.MIXING_A_TO_AB),
             (values.drives_flowcontrol_propdrive_aft, control.Valve.OPEN),

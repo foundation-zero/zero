@@ -695,8 +695,8 @@ class DhwControl(
     def initial(self) -> tuple[DhwControlValues, DhwControllerState]:
         timestamp = self._time()
         return (
-            DhwControlValues.zero(timestamp),
-            DhwControllerState.zero(timestamp),
+            DhwControlValues.initial(timestamp),
+            DhwControllerState.initial(timestamp),
         )
 
     def control(

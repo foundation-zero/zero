@@ -38,7 +38,7 @@ class ConsumersControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = ConsumersControlValues.zero(self._time())
+        self._current_values = ConsumersControlValues.initial(self._time())
 
         self._init_controllers()
 
@@ -80,8 +80,8 @@ class ConsumersControl(
     def initial(self) -> tuple[ConsumersControlValues, ConsumersControllerState]:
         timestamp = self._time()
         return (
-            ConsumersControlValues.zero(timestamp),
-            ConsumersControllerState.zero(timestamp),
+            ConsumersControlValues.initial(timestamp),
+            ConsumersControllerState.initial(timestamp),
         )
 
     def _control_flow_distribution(self, sensor_values: ConsumersSensorValues):

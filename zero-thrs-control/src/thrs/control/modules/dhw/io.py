@@ -472,7 +472,7 @@ class DhwControlValues(AmcsWatchdogControlValues):
     dhw_heatpump: Annotated[
         control.HeatPump, component_meta(yard_tag="50001035", component_type="heatpump")
     ] = Field(
-        default_factory=control.HeatPump.zero
+        default_factory=control.HeatPump.initial
     )  # TODO: Fix when heatpump is available on MQTT
     dhw_flowcontrol_dc: Annotated[
         control.Valve,

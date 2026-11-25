@@ -69,7 +69,7 @@ def test_simulation_test_runner():
         _, _, controller_state = runner.run(20, collector)
         frame = collector.result()
         inputs = io_mapping.generate_inputs(
-            ThrustersControlValues.zero(), simulation_inputs
+            ThrustersControlValues.initial(), simulation_inputs
         )
         outputs = fmu.tick(
             inputs,
@@ -78,7 +78,7 @@ def test_simulation_test_runner():
         mock_fmu_outputs = io_mapping.construct_outputs(
             inputs,
             outputs,
-            ThrustersControlValues.zero(),
+            ThrustersControlValues.initial(),
             simulation_inputs,
             datetime.now(UTC),
         )[2]
@@ -88,13 +88,17 @@ def test_simulation_test_runner():
 
         all_keys = partial(build_fmu_key_mapping, fmu_only=False)
         not_in_fmu = {
-            *flatten_model_values(ThrustersSensorValues.zero(), all_keys),
-            *flatten_model_values(ThrustersControlValues.zero(), all_keys),
+            *flatten_model_values(ThrustersSensorValues.initial(), all_keys),
+            *flatten_model_values(ThrustersControlValues.initial(), all_keys),
             *flatten_controller_state(controller_state),
             *flatten_model_values(simulation_inputs, all_keys),
         } - {
-            *flatten_model_values(ThrustersSensorValues.zero(), build_fmu_key_mapping),
-            *flatten_model_values(ThrustersControlValues.zero(), build_fmu_key_mapping),
+            *flatten_model_values(
+                ThrustersSensorValues.initial(), build_fmu_key_mapping
+            ),
+            *flatten_model_values(
+                ThrustersControlValues.initial(), build_fmu_key_mapping
+            ),
             *flatten_model_values(simulation_inputs, build_fmu_key_mapping),
         }
 

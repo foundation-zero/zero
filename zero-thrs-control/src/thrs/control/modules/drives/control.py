@@ -37,7 +37,7 @@ class DrivesControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = DrivesControlValues.zero(self._time())
+        self._current_values = DrivesControlValues.initial(self._time())
 
         self._init_state_machine_states()
         self._init_state_machine_transitions()
@@ -194,8 +194,8 @@ class DrivesControl(
     def initial(self) -> tuple[DrivesControlValues, DrivesControllerState]:
         timestamp = self._time()
         return (
-            DrivesControlValues.zero(timestamp),
-            DrivesControllerState.zero(timestamp),
+            DrivesControlValues.initial(timestamp),
+            DrivesControllerState.initial(timestamp),
         )
 
     def control(

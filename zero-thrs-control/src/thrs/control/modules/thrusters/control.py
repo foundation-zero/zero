@@ -48,7 +48,7 @@ class ThrustersControl(
     ) -> None:
         self._parameters = parameters
         self._time: Callable[[], datetime] = time_fn
-        self._current_control_values = ThrustersControlValues.zero(self._time())
+        self._current_control_values = ThrustersControlValues.initial(self._time())
 
         self._init_state_machine_states()
         self._init_state_machine_transitions()
@@ -262,8 +262,8 @@ class ThrustersControl(
     def initial(self) -> tuple[ThrustersControlValues, ThrustersControllerState]:
         timestamp = self._time()
         return (
-            ThrustersControlValues.zero(timestamp),
-            ThrustersControllerState.zero(timestamp),
+            ThrustersControlValues.initial(timestamp),
+            ThrustersControllerState.initial(timestamp),
         )
 
     def control(

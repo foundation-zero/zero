@@ -46,13 +46,13 @@ def test_zero_for_a_time_is_the_epoch():
     assert zero_for_unit(datetime) == datetime.fromtimestamp(0, UTC)
 
 
-def test_zero_for_unnested():
+def test_initial_for_unnested():
     class Data(ThrsValues):
         a: float
         b: Ratio
         c: PcsMode
 
-    zero = Data.zero()
-    assert zero.a == 0.0
-    assert zero.b == 0.0
-    assert zero.c == PcsMode.OFF.value
+    initial = Data.initial()
+    assert initial.a == 0.0
+    assert initial.b == 0.0
+    assert initial.c == PcsMode.OFF.value

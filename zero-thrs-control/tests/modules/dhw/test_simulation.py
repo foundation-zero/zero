@@ -69,5 +69,5 @@ def test_dhw_simulation_inputs(incorrect_simulation_inputs):
         with pytest.raises((ValidationError, FMICallException)):
             for _i in range(300):
                 simulation.tick(
-                    DhwControlValues.zero(),
+                    DhwControlValues.initial(),
                 )

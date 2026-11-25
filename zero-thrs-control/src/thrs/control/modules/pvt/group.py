@@ -188,7 +188,7 @@ class PvtGroupControl(
     def initial(self) -> tuple[PvtGroupControlValues, PvtGroupControllerState]:
         return (
             self._current_values,
-            PvtGroupControllerState.zero(self._time()),
+            PvtGroupControllerState.initial(self._time()),
         )
 
     def _string_warm(self, sensor_values: PvtGroupSensorValues):

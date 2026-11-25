@@ -90,7 +90,7 @@ class SimpleControl(
 
     def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
         return (
-            SimpleInOut.zero(),
+            SimpleInOut.initial(),
             SimpleControllerState(parameters=SimpleParameters()),
         )
 
