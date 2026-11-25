@@ -12,6 +12,7 @@
 ```
 Package:  snake_case, uv, hatch-vcs
 Types:    pydantic BaseModel/BaseSettings, 3.12+ generics (list[T] not List[T])
+Checker:  pyrefly, [tool.pyrefly] in pyproject.toml, # pyrefly: ignore[<kind>]
 Async:    asyncio.TaskGroup, aiomqtt, @asynccontextmanager
 Log:      %(asctime)s | %(levelname)-8s | %(message)s
 Testing:  pytest + pytest-asyncio, asyncio_mode=auto, function loop scope
@@ -112,6 +113,9 @@ stock_ms = 20 # Unclear between milliseconds and MicroSoft
 - **Modules**: `snake_case.py`.
 - **Classes**: `PascalCase`.
 - **Functions and methods**: `snake_case`.
+- **Accuracy**: a name says what the thing currently holds or does — a test name states
+  what it asserts, an env var or regex names what it carries.
+- **Module internals**: prefix constants and helpers used only inside their module with `_`.
 - **Acronyms**: capitalize like regular words — `MqttTopic` not `MQTTTopic`, `PcanClient` not `PCANClient`.
 - **MQTT / data fields**: JSON field names are lowercase and non-abbreviated.
   Topic segments are lower case, dasherized (kebab-case).
@@ -132,6 +136,20 @@ stock_ms = 20 # Unclear between milliseconds and MicroSoft
   )
   ```
 - Use `Annotated` for Pydantic fields that need extra metadata.
+- Type-check with [pyrefly](https://pyrefly.org) at its default preset: `pyrefly~=<version>`
+  in the `dev` group and a `[tool.pyrefly]` section in `pyproject.toml` that checks the whole
+  project:
+  ```toml
+  [tool.pyrefly]
+  project-includes = ["**/*.py*", "**/*.ipynb"]
+  type-ignore-unknown-tag-behavior = "no-effect"
+  ```
+- Silence an error you can't fix with `# pyrefly: ignore[<kind>]` on its line, naming the
+  error kind (e.g. `# pyrefly: ignore[bad-argument-type]`).
+  `pyrefly suppress --comment-location same-line` writes them and
+  `pyrefly suppress --remove-unused` drops the ones no longer needed. Not `# type: ignore` or
+  `# pyright: ignore` (with `no-effect`, a `# type: ignore[...]` with a mypy or pyright code
+  silences nothing), and no baseline file.
 
 ### 2.4 Logging
 
@@ -182,7 +200,7 @@ Projects use three scopes:
 | Scope | Purpose | Key packages |
 |-------|---------|-------------|
 | `dependencies` (top-level) | Runtime | aiomqtt, pydantic-settings, fastapi, strawberry-graphql |
-| `[dependency-groups] dev` | Development | ruff, mypy/pyright, python-dotenv, Jupyter |
+| `[dependency-groups] dev` | Development | ruff, pyrefly, python-dotenv, Jupyter |
 | `[dependency-groups] test` | Testing (optional) | pytest, pytest-asyncio, httpx, pytest-mock |
 
 ### 2.7 Idioms & Comment Style
@@ -248,12 +266,17 @@ guard into a silent no-op. Raise an explicit exception (or validate via pydantic
 - If a comment raises more questions than it answers, rewrite or remove it.
 - Don't commit an assistant's narration of its own reasoning or changes; that
   belongs in the PR, not the source.
+- Comments, docstrings and READMEs match the current code: the values and behavior they
+  state are the ones the code has, without dates or history.
+- Document model fields with `Field(description=...)` rather than a comment above them.
 - `# TODO:` is the convention for deferred work. Other markers (`FIXME`, `HACK`,
   `XXX`) are not used.
 
 **Tests:**
 
 - Use `nullcontext` from `contextlib` to make "does not raise" explicit in parametrized tests.
+- Wait on an observable signal (a log line, a ready endpoint) instead of retrying on any
+  exception, and assert the exact error text.
 
 ### 2.8 CLIs
 
@@ -538,7 +561,7 @@ check: lint type_check test
 lint:
     uv run ruff check
 type_check:
-    uv run pyright
+    uv run pyrefly check
 test *args:
     uv run pytest {{ args }}
 ```
@@ -565,7 +588,7 @@ test (lint → type-check → unit test → integration test)
 
 | Language | Pipeline |
 |----------|----------|
-| Python | `uv sync --locked` → `ruff check` + `ruff format --check` → `pyright`/`mypy` → `pytest` (unit, then integration against `docker compose` services) |
+| Python | `uv sync --locked` → `ruff check` + `ruff format --check` → `pyrefly check` → `pytest` (unit, then integration against `docker compose` services) |
 | Rust | `setup-rust-toolchain` (clippy, rustfmt, llvm-tools-preview) → `cargo fmt --check` + `cargo clippy --locked` → `cargo llvm-cov --locked --cobertura` |
 | TypeScript | `pnpm install` → `pnpm lint --max-warnings 0` → `pnpm test:unit` → `docker compose` services → `pnpm test:api` → `pnpm exec playwright test` → Cloudflare Pages deploy |
 
@@ -581,6 +604,9 @@ depend on it.
 **Docker tagging:** Python projects use `uvx hatch version` (via `hatch-vcs`
 from git tags). Rust uses `Cargo.toml` version + short SHA. CI apps use
 `docker/metadata-action` (semver + sha).
+Builds of a version with a suffix (anything but a release `X.Y.Z`) also get a
+`dev-<version>` tag; Artifact Registry expires those (cleanup policy in
+foundation-zero/gcp-common).
 
 **Docker images:** Workflows delegate to the reusable `job_docker_push.yaml` (only
 `zero-data` keeps its own job for its second GHCR image).

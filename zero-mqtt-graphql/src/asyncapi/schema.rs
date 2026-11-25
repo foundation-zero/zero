@@ -10,7 +10,7 @@ use super::roas::{
     Channel, Document, Items, Message, Schema, SchemaOrMultiFormat, SchemaType, SubSchema,
 };
 use super::unresolved_reason;
-use crate::api_model::{EnumValue, FieldType, Payload};
+use crate::api_model::{EnumValue, FieldDef, FieldType, Payload};
 use crate::naming::enum_value_name;
 
 /// The payload of a channel's message, with what else is read from its
@@ -134,7 +134,7 @@ fn extensions_from_payload_schema(
 fn extract_fields_from_schema_or_multi(
     schema_or_multi: &SchemaOrMultiFormat,
     doc: &Document,
-) -> BTreeMap<String, FieldType> {
+) -> BTreeMap<String, FieldDef> {
     match schema_or_multi {
         SchemaOrMultiFormat::Schema(schema) => extract_fields_from_schema(schema, doc),
         SchemaOrMultiFormat::MultiFormat(mf) => {
@@ -153,23 +153,26 @@ fn extract_fields_from_schema_or_multi(
     }
 }
 
-fn extract_fields_from_schema(schema: &Schema, doc: &Document) -> BTreeMap<String, FieldType> {
+/// The fields of an object schema, non-null when `required` and without a
+/// `null` arm.
+fn extract_fields_from_schema(schema: &Schema, doc: &Document) -> BTreeMap<String, FieldDef> {
     // Fields colliding after lowerCamel sanitization are kept here; building
     // the schema then stops at the duplicate field.
     schema
         .properties
         .iter()
         .filter_map(|(name, subschema)| {
-            let field_type = field_type_for_subschema(name.clone(), subschema, doc)?;
-
-            Some((name.clone(), field_type))
+            let field = field_def_for_subschema(name.clone(), subschema, doc)?;
+            let non_null = field.non_null && schema.required.contains(name);
+            Some((name.clone(), FieldDef { non_null, ..field }))
         })
         .collect()
 }
 
-/// Derive a field type from a (possibly `$ref`'d) subschema. A `$ref`'d
-/// one is named after the last segment of the reference it resolved at.
-fn field_type_for_subschema(name: String, sub: &SubSchema, doc: &Document) -> Option<FieldType> {
+/// Derive a field from a (possibly `$ref`'d) subschema, non-null when it
+/// has no `null` arm. A `$ref`'d one is named after the last segment of the
+/// reference it resolved at.
+fn field_def_for_subschema(name: String, sub: &SubSchema, doc: &Document) -> Option<FieldDef> {
     let SubSchema::Schema(entry) = sub else {
         return None;
     };
@@ -186,63 +189,87 @@ fn field_type_for_subschema(name: String, sub: &SubSchema, doc: &Document) -> Op
         .resolved_ref(doc)
         .and_then(|r| r.rsplit('/').next())
         .map_or(name, ToOwned::to_owned);
-    type_from_schema(name, schema, doc)
+    def_from_schema(name, schema, doc)
 }
 
-fn type_from_schema(name: String, schema: &Schema, doc: &Document) -> Option<FieldType> {
+fn def_from_schema(name: String, schema: &Schema, doc: &Document) -> Option<FieldDef> {
     if let Some(schema_type) = &schema.schema_type {
         return match schema_type {
-            SchemaType::Single(t) => field_type_for_json_type(name, t, schema, doc),
+            SchemaType::Single(t) => {
+                field_type_for_json_type(name, t, schema, doc).map(FieldDef::non_null)
+            }
             SchemaType::Multiple(types) => one_type(types.iter().enumerate().map(|(index, t)| {
                 field_type_for_json_type(format!("{name}{index}"), t, schema, doc)
+                    .map(FieldDef::non_null)
             })),
         };
     }
 
-    // Named constants without a `type`: an enum of whatever their values are.
+    // Named constants without a `type`: an enum of whatever their values
+    // are, nullable when one of them is `null`.
     if let Some(constants) = named_constants(schema) {
-        let plain = if constants.iter().all(|(raw, _)| raw.is_string()) {
+        let mut values = constants
+            .iter()
+            .map(|(raw, _)| raw)
+            .filter(|raw| !raw.is_null());
+        let plain = if values.clone().all(|raw| raw.is_string()) {
             FieldType::String
-        } else if constants.iter().all(|(raw, _)| raw.is_i64()) {
+        } else if values.all(|raw| raw.is_i64()) {
             FieldType::Int
         } else {
             FieldType::Json
         };
-        return Some(enum_field_type(name, schema, plain));
+        return Some(FieldDef {
+            non_null: constants.iter().all(|(raw, _)| !raw.is_null()),
+            field_type: enum_field_type(name, schema, plain),
+        });
     }
     // A union, nullable when one of its arms is `null`.
     for arms in [&schema.any_of, &schema.one_of].into_iter().flatten() {
-        let types = arms
+        let fields = arms
             .iter()
             .enumerate()
-            .map(|(index, sub)| field_type_for_subschema(format!("{name}{index}"), sub, doc));
-        if let Some(field_type) = one_type(types) {
-            return Some(field_type);
+            .map(|(index, sub)| field_def_for_subschema(format!("{name}{index}"), sub, doc));
+        if let Some(field) = one_type(fields) {
+            return Some(field);
         }
     }
-    // An intersection, such as pydantic wrapping a single `$ref`.
+    // An intersection, such as pydantic wrapping a single `$ref`: the type
+    // of its first typed arm, non-null when any typed arm rules out `null`.
     if let Some(all_of) = &schema.all_of {
-        for (index, sub) in all_of.iter().enumerate() {
-            if let Some(t) = field_type_for_subschema(format!("{name}{index}"), sub, doc) {
-                return Some(t);
-            }
+        let arms: Vec<FieldDef> = all_of
+            .iter()
+            .enumerate()
+            .filter_map(|(index, sub)| field_def_for_subschema(format!("{name}{index}"), sub, doc))
+            .collect();
+        let non_null = arms.iter().any(|arm| arm.non_null);
+        if let Some(first) = arms.into_iter().next() {
+            return Some(FieldDef { non_null, ..first });
         }
     }
 
     None
 }
 
-/// The type of a union of `types`, of which `None` are `null` or untyped
+/// The field of a union of `arms`, of which `None` are `null` or untyped
 /// arms: the type they all share, or any JSON when they differ, so the
-/// JSON Schema decides which values are valid. `None` when no arm has a
-/// type.
-fn one_type(types: impl Iterator<Item = Option<FieldType>>) -> Option<FieldType> {
-    let mut types = types.flatten();
+/// JSON Schema decides which values are valid. Non-null only when every arm
+/// is, as an untyped arm allows `null` too. `None` when no arm has a type.
+fn one_type(arms: impl Iterator<Item = Option<FieldDef>>) -> Option<FieldDef> {
+    let arms: Vec<Option<FieldDef>> = arms.collect();
+    let non_null = arms
+        .iter()
+        .all(|arm| arm.as_ref().is_some_and(|arm| arm.non_null));
+    let mut types = arms.into_iter().flatten().map(|arm| arm.field_type);
     let first = types.next()?;
-    Some(if types.all(|t| t == first) {
+    let field_type = if types.all(|t| t == first) {
         first
     } else {
         FieldType::Json
+    };
+    Some(FieldDef {
+        field_type,
+        non_null,
     })
 }
 
@@ -284,14 +311,20 @@ fn string_field_type(name: String, schema: &Schema) -> FieldType {
 /// own GraphQL name, otherwise `plain`. The values and their names come from
 /// [`named_constants`] when the schema has them, otherwise from `enum`,
 /// where only strings name themselves, so an integer `enum` stays `plain`.
+/// A `null` value is no enum value: it makes the field nullable instead.
 fn enum_field_type(name: String, schema: &Schema, plain: FieldType) -> FieldType {
     let constants = named_constants(schema);
     let candidates: Vec<(&Value, Option<&str>)> = match (&constants, &schema.enum_values) {
         (Some(constants), _) => constants
             .iter()
             .map(|&(raw, title)| (raw, Some(title)))
+            .filter(|(raw, _)| !raw.is_null())
             .collect(),
-        (None, Some(raw_values)) => raw_values.iter().map(|raw| (raw, raw.as_str())).collect(),
+        (None, Some(raw_values)) => raw_values
+            .iter()
+            .filter(|raw| !raw.is_null())
+            .map(|raw| (raw, raw.as_str()))
+            .collect(),
         (None, None) => return plain,
     };
     let values: Option<Vec<EnumValue>> = candidates
@@ -342,12 +375,13 @@ fn named_constants(schema: &Schema) -> Option<Vec<(&Value, &str)>> {
 }
 
 /// A list when every element has the same known type, otherwise any JSON.
+/// Its elements are non-null unless their schema has a `null` arm.
 /// The element type is unknown for a tuple, as draft-07 allows extra items
 /// of any type, and for `prefixItems` (JSON Schema 2020-12), which the
 /// draft-07 parser drops.
 fn array_field_type(name: String, schema: &Schema, doc: &Document) -> FieldType {
     let element = match &schema.items {
-        Some(Items::Single(item)) => field_type_for_subschema(name, item, doc),
+        Some(Items::Single(item)) => field_def_for_subschema(name, item, doc),
         Some(Items::Tuple(_)) | None => None,
     };
     element.map_or(FieldType::Json, |element| {
@@ -435,7 +469,7 @@ mod tests {
         let fields = extract_fields_from_schema(&schema, &doc);
         assert_eq!(fields.len(), 14);
         // BTreeMap ordering, so sorted by key
-        let get = |name: &str| fields.get(name).unwrap();
+        let get = |name: &str| &fields[name].field_type;
         // An array without a declared element type is any JSON.
         assert_eq!(get("items"), &FieldType::Json);
         assert_eq!(get("celsius"), &FieldType::Float);
@@ -451,19 +485,14 @@ mod tests {
         assert_eq!(get("step"), &FieldType::Duration);
         // Other formats stay plain strings.
         assert_eq!(get("email"), &FieldType::String);
+        let x = || BTreeMap::from([("x".to_string(), FieldDef::nullable(FieldType::Float))]);
         assert_eq!(
             get("nested"),
-            &FieldType::Object(
-                "nested".to_string(),
-                Box::new(BTreeMap::from([("x".to_string(), FieldType::Float); 1]))
-            )
+            &FieldType::Object("nested".to_string(), Box::new(x()))
         );
         assert_eq!(
             get("reffed"),
-            &FieldType::Object(
-                "nested".to_string(),
-                Box::new(BTreeMap::from([("x".to_string(), FieldType::Float); 1]))
-            )
+            &FieldType::Object("nested".to_string(), Box::new(x()))
         );
     }
 
@@ -491,13 +520,13 @@ mod tests {
         let fields =
             extract_fields_from_schema(&schema_with_properties(props), &document(&json!({})));
 
-        let list = |element| FieldType::List(Box::new(element));
-        assert_eq!(fields["modules"], list(FieldType::String));
+        let list = |element| FieldType::List(Box::new(FieldDef::non_null(element)));
+        assert_eq!(fields["modules"].field_type, list(FieldType::String));
         // A tuple allows extra items of any type (draft-07 `additionalItems`).
-        assert_eq!(fields["same"], FieldType::Json);
-        assert_eq!(fields["mixed"], FieldType::Json);
+        assert_eq!(fields["same"].field_type, FieldType::Json);
+        assert_eq!(fields["mixed"].field_type, FieldType::Json);
         // The draft-07 parser drops `prefixItems`, so the element type is unknown.
-        assert_eq!(fields["tuning"], FieldType::Json);
+        assert_eq!(fields["tuning"].field_type, FieldType::Json);
     }
 
     #[test_log::test]
@@ -521,13 +550,17 @@ mod tests {
         let fields =
             extract_fields_from_schema(&schema_with_properties(props), &document(&json!({})));
 
-        assert_eq!(fields["optional"], FieldType::Float);
-        assert_eq!(fields["nullable"], FieldType::Float);
-        assert_eq!(fields["any_of"], FieldType::Json);
-        assert_eq!(fields["one_of"], FieldType::Json);
-        assert_eq!(fields["types"], FieldType::Json);
+        let field_type = |name: &str| &fields[name].field_type;
+        assert_eq!(field_type("optional"), &FieldType::Float);
+        assert_eq!(field_type("nullable"), &FieldType::Float);
+        assert_eq!(field_type("any_of"), &FieldType::Json);
+        assert_eq!(field_type("one_of"), &FieldType::Json);
+        assert_eq!(field_type("types"), &FieldType::Json);
         // Each element is a number or a string: any JSON, not `Float`.
-        assert_eq!(fields["items"], FieldType::List(Box::new(FieldType::Json)));
+        assert_eq!(
+            field_type("items"),
+            &FieldType::List(Box::new(FieldDef::non_null(FieldType::Json)))
+        );
     }
 
     #[test_log::test]
@@ -575,8 +608,11 @@ mod tests {
             ),
         ]);
 
-        let fields =
-            extract_fields_from_schema(&schema_with_properties(props), &document(&json!({})));
+        let fields: BTreeMap<String, FieldType> =
+            extract_fields_from_schema(&schema_with_properties(props), &document(&json!({})))
+                .into_iter()
+                .map(|(name, field)| (name, field.field_type))
+                .collect();
 
         let value = |name: &str, raw: Value| EnumValue {
             name: name.to_string(),
@@ -669,14 +705,140 @@ mod tests {
     }
 
     #[test_log::test]
-    fn test_nullable_anyof_field() {
-        let props = BTreeMap::from([(
-            "current_a".to_string(),
-            json!({"anyOf": [{"type": "number"}, {"type": "null"}]}),
-        )]);
-        let schema = schema_with_properties(props);
+    fn test_null_value_makes_an_enum_nullable_not_json() {
+        let props = BTreeMap::from([
+            (
+                "named".to_string(),
+                json!({"oneOf": [{"const": 1, "title": "ONE"}, {"const": null, "title": "NONE"}]}),
+            ),
+            (
+                "listed".to_string(),
+                json!({"type": ["string", "null"], "enum": ["auto", null]}),
+            ),
+        ]);
+        let schema = Schema {
+            required: vec!["named".to_string(), "listed".to_string()],
+            ..schema_with_properties(props)
+        };
+
         let fields = extract_fields_from_schema(&schema, &document(&json!({})));
-        assert_eq!(fields.len(), 1);
-        assert_eq!(fields.get("current_a"), Some(&FieldType::Float));
+
+        let value = |name: &str, raw: Value| EnumValue {
+            name: name.to_string(),
+            raw,
+        };
+        assert_eq!(
+            fields["named"],
+            FieldDef::nullable(FieldType::Enum(
+                "named".to_string(),
+                vec![value("ONE", json!(1))]
+            ))
+        );
+        assert_eq!(
+            fields["listed"],
+            FieldDef::nullable(FieldType::Enum(
+                "listed0".to_string(),
+                vec![value("AUTO", json!("auto"))]
+            ))
+        );
+    }
+
+    #[test_log::test]
+    fn test_non_null_when_required_without_null_arm() {
+        let props = BTreeMap::from([
+            ("on".to_string(), json!({"type": "boolean"})),
+            (
+                "setpoint".to_string(),
+                json!({"anyOf": [{"type": "number"}, {"type": "null"}]}),
+            ),
+            ("heading".to_string(), json!({"type": ["number", "null"]})),
+            ("note".to_string(), json!({"type": "string"})),
+            (
+                "untyped_arm".to_string(),
+                json!({"anyOf": [{"type": "number"}, {}]}),
+            ),
+            (
+                "mode".to_string(),
+                json!({"allOf": [{"$ref": "#/components/schemas/mode"}]}),
+            ),
+            (
+                "nullable_then_number".to_string(),
+                json!({"allOf": [{"type": ["number", "null"]}, {"type": "number"}]}),
+            ),
+            (
+                "number_then_nullable".to_string(),
+                json!({"allOf": [{"type": "number"}, {"type": ["number", "null"]}]}),
+            ),
+            (
+                "nullable_all_of".to_string(),
+                json!({"allOf": [{"type": ["number", "null"]}, {}]}),
+            ),
+            (
+                "alarms".to_string(),
+                json!({"type": "array", "items": {"$ref": "#/components/schemas/alarm"}}),
+            ),
+            (
+                "readings".to_string(),
+                json!({"type": "array", "items": {"type": ["number", "null"]}}),
+            ),
+        ]);
+        let required = [
+            "on",
+            "setpoint",
+            "heading",
+            "untyped_arm",
+            "mode",
+            "nullable_then_number",
+            "number_then_nullable",
+            "nullable_all_of",
+            "alarms",
+            "readings",
+        ];
+        let schema = Schema {
+            required: required.map(String::from).to_vec(),
+            ..schema_with_properties(props)
+        };
+        let doc = document(&json!({
+            "mode": {"type": "string", "enum": ["auto", "manual"]},
+            "alarm": {
+                "type": "object",
+                "properties": {"code": {"type": "integer"}, "text": {"type": "string"}},
+                "required": ["code"]
+            }
+        }));
+
+        let fields = extract_fields_from_schema(&schema, &doc);
+
+        let non_null = |name: &str| fields[name].non_null;
+        assert!(non_null("on"));
+        // Required, but the Spec allows `null`.
+        assert!(!non_null("setpoint"));
+        assert!(!non_null("heading"));
+        // An untyped arm allows `null` too.
+        assert!(!non_null("untyped_arm"));
+        // Not required, so it may be left out.
+        assert!(!non_null("note"));
+        assert!(non_null("mode"));
+        // An intersection is non-null when any arm rules out `null`, in
+        // either order.
+        assert!(non_null("nullable_then_number"));
+        assert!(non_null("number_then_nullable"));
+        assert!(!non_null("nullable_all_of"));
+        assert!(non_null("alarms"));
+        assert_eq!(
+            fields["alarms"].field_type,
+            FieldType::List(Box::new(FieldDef::non_null(FieldType::Object(
+                "alarm".to_string(),
+                Box::new(BTreeMap::from([
+                    ("code".to_string(), FieldDef::non_null(FieldType::Int)),
+                    ("text".to_string(), FieldDef::nullable(FieldType::String)),
+                ]))
+            ))))
+        );
+        assert!(non_null("readings"));
+        assert_eq!(
+            fields["readings"].field_type,
+            FieldType::List(Box::new(FieldDef::nullable(FieldType::Float)))
+        );
     }
 }

@@ -3,10 +3,12 @@ from datetime import datetime
 import pytest
 
 from thrs.control.controllers import PcmChargeController
-from thrs.control.modules.pcm import PcmControllerState
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions import sensor
-from thrs.input_output.definitions.controllers import PcmChargingState
+from thrs.input_output.definitions.controllers import (
+    PcmChargeControllerValues,
+    PcmChargingState,
+)
 from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
 
 FLOW = 5.0
@@ -73,9 +75,7 @@ def test_idle_at_zero_flow_despite_temperature_difference():
 
 
 def test_module_computed_field_idle_by_default():
-    controller_state = PcmControllerState.zero()
-
-    charge_controller = controller_state.pcm_module1_charge_controller
+    charge_controller = PcmChargeControllerValues.zero()
 
     assert charge_controller.charging_state.value == PcmChargingState.IDLE.value
     assert charge_controller.charge.value is None

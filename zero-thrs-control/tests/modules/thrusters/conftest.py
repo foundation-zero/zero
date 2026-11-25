@@ -4,9 +4,14 @@ from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.classes.machine_state_logger import MachineStateLoggingService
-from thrs.control.modules.thrusters import (
-    ThrustersAlarms,
-    ThrustersControl,
+from thrs.control.modules.thrusters.control import ThrustersAlarms, ThrustersControl
+from thrs.control.modules.thrusters.io import (
+    ThrustersControlValues,
+    ThrustersSensorValues,
+    ThrustersSimulationInputs,
+    ThrustersSimulationOutputs,
+)
+from thrs.control.modules.thrusters.state import (
     ThrustersControllerState,
     ThrustersControlMode,
     ThrustersParameters,
@@ -20,12 +25,6 @@ from thrs.input_output.definitions.simulation import (
 )
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
 from thrs.input_output.definitions.units import PcsMode
-from thrs.input_output.modules.thrusters import (
-    ThrustersControlValues,
-    ThrustersSensorValues,
-    ThrustersSimulationInputs,
-    ThrustersSimulationOutputs,
-)
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import thrusters_path

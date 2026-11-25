@@ -3,7 +3,6 @@ import logging
 from asyncio import create_task, sleep
 from contextlib import suppress
 from datetime import datetime, timedelta
-from typing import cast
 from unittest import mock
 
 import pytest
@@ -12,15 +11,15 @@ from aiomqtt import Client
 from thrs.classes.database import PostgresDatabase
 from thrs.classes.persistence.engine import NoopPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
-from thrs.control.modules.thrusters import ThrustersParameters
-from thrs.control.switching import AutomationMode
-from thrs.input_output.definitions.wire_context import AMCS_WRITE_CONTEXT
-from thrs.input_output.model_builder import PartialModelBuilder
-from thrs.input_output.modules.thrusters import (
+from thrs.control.modules.thrusters.io import (
     ThrustersControlValues,
     ThrustersSimulationInputs,
     ThrustersSimulationOutputs,
 )
+from thrs.control.modules.thrusters.state import ThrustersParameters
+from thrs.control.state import AutomationMode
+from thrs.input_output.definitions.wire_context import AMCS_WRITE_CONTEXT
+from thrs.input_output.model_builder import PartialModelBuilder
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
 from thrs.orchestration.setup import setup_control_modules, setup_simulation_module
@@ -136,14 +135,13 @@ def setup_lockstep(
 
 @pytest.mark.timeout(30)
 @pytest.mark.slow
-async def test_simulation_run_start_stop(
+async def test_simulation_status_goes_available_running_available(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies the simulation can transition from available to running and back to available.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
 
     runtime = setup_lockstep(
@@ -200,14 +198,13 @@ async def test_simulation_run_start_stop(
 
 @pytest.mark.timeout(30)
 @pytest.mark.slow
-async def test_simulation_run_playback_rate(
+async def test_higher_playback_rate_publishes_more_outputs(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies a higher playback rate produces more simulation output messages in equal wall time.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
@@ -277,14 +274,13 @@ async def test_simulation_run_playback_rate(
 
 @pytest.mark.timeout(5)
 @pytest.mark.slow
-async def test_simulation_run_step(
+async def test_step_directive_advances_and_publishes(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies step directives progress the simulation and publish outputs for each requested duration.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
@@ -374,14 +370,13 @@ async def test_simulation_run_step(
 
 @pytest.mark.timeout(10)
 @pytest.mark.slow
-async def test_simulation_controls_automated_control(
+async def test_automatic_mode_changes_control_outputs(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies switching to automatic mode results in non-default automatic control outputs.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     set_automation_topic = (
         f"{settings.mqtt_controller_topic_prefix}/thrusters/automation-mode/"
@@ -461,14 +456,13 @@ async def test_simulation_controls_automated_control(
 
 @pytest.mark.timeout(5)
 @pytest.mark.slow
-async def test_simulation_controls_set_parameters(
+async def test_parameters_set_over_mqtt_are_applied(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies runtime applies updated controller parameters sent over MQTT.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     parameters_topic = f"{settings.mqtt_controller_topic_prefix}/thrusters/parameters"
     set_parameters_topic = (
@@ -540,14 +534,13 @@ async def test_simulation_controls_set_parameters(
 
 @pytest.mark.timeout(5)
 @pytest.mark.slow
-async def test_simulation_controls_set_simulation_inputs(
+async def test_simulation_inputs_set_over_mqtt_reach_later_ticks(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies externally provided simulation inputs are accepted and reflected in later ticks.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     simulation_inputs_topic = (
         f"{settings.mqtt_simulator_topic_prefix}/simulation-inputs"
@@ -586,7 +579,7 @@ async def test_simulation_controls_set_simulation_inputs(
         initial_model = ThrustersSimulationInputs.model_validate_json(
             initial_inputs.payload
         )
-        assert cast(float, initial_model.thrusters_thruster_aft.heat_flow.value) != 0.0
+        assert initial_model.thrusters_thruster_aft.heat_flow.value != 0.0
 
         new_inputs = ThrustersSimulationInputs.zero()
         await controls_client.publish(
@@ -611,11 +604,11 @@ async def test_simulation_controls_set_simulation_inputs(
             updated_model = ThrustersSimulationInputs.model_validate_json(
                 updated_inputs.payload
             )
-            if cast(float, updated_model.thrusters_thruster_aft.heat_flow.value) == 0.0:
+            if updated_model.thrusters_thruster_aft.heat_flow.value == 0.0:
                 break
 
         assert updated_model is not None
-        assert cast(float, updated_model.thrusters_thruster_aft.heat_flow.value) == 0.0
+        assert updated_model.thrusters_thruster_aft.heat_flow.value == 0.0
     finally:
         run_task.cancel()
         with suppress(asyncio.CancelledError):
@@ -624,14 +617,13 @@ async def test_simulation_controls_set_simulation_inputs(
 
 @pytest.mark.timeout(10)
 @pytest.mark.slow
-async def test_simulation_controls_simulation_output(
+async def test_running_simulation_publishes_physically_valid_outputs(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies simulation outputs are published with physically valid values while running.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     simulation_outputs_topic = (
         f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
@@ -673,7 +665,7 @@ async def test_simulation_controls_simulation_output(
         output_model = ThrustersSimulationOutputs.model_validate_json(
             simulation_output.payload
         )
-        assert cast(float, output_model.thrusters_pcm_return.temperature.value) > 0
+        assert output_model.thrusters_pcm_return.temperature.value > 0
     finally:
         run_task.cancel()
         with suppress(asyncio.CancelledError):

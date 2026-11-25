@@ -24,6 +24,8 @@ models:
           - not_null
       - name: main_group
         description: "The main group classification of the power tag."
+        tests:
+          - not_null
       - name: sub_group
         description: "The sub group classification, within the main group, of the power tag."
   - name: slv_batteries
@@ -134,8 +136,7 @@ models:
           - not_null
   - name: slv_solar_converters
     description: >
-      Power the solar EPC converters on the main and owners biminis deliver to the main DC bus,
-      combined from the busbar table (until 5 Nov 2026 06:07 UTC) and the per-converter PV tables (since then).
+      Power the solar EPC converters on the main and owners biminis deliver to the main DC bus.
       Materialized as a view in the `views` database.
     columns:
       - name: ts
@@ -147,7 +148,7 @@ models:
         tests:
           - not_null
       - name: converter
-        description: "The solar EPC converter, e.g. epc-31-t101, the same for the busbar and the per-converter PV topic."
+        description: "The solar EPC converter, e.g. epc-31-t101."
         tests:
           - not_null
           - accepted_values:
@@ -166,7 +167,8 @@ models:
           - not_null
   - name: slv_shore_power_converters
     description: >
-      Power the ESI shore power converter modules draw from shore.
+      Both sides of each ESI shore power converter module: the AC power it draws from shore, the DC power it
+      delivers to the 700 VDC bus, and its running state.
       Materialized as a view in the `views` database.
     columns:
       - name: ts
@@ -185,7 +187,146 @@ models:
         description: "The shore power converter the module belongs to: PS (07-11) or SB (07-12)."
         tests:
           - not_null
-      - name: power
+      - name: running
+        description: "Whether the module runs. An idle module's DC power is a sensor offset, not a flow."
+        tests:
+          - not_null
+      - name: ac_power
         description: "3-phase AC active power the module draws from shore in W. TODO: the source reports kW and is converted here; remove the conversion once the source reports W."
         tests:
           - not_null
+      - name: dc_power
+        description: "DC power the module delivers to the 700 VDC bus in W: battery-side current × voltage."
+        tests:
+          - not_null
+  - name: slv_chiller
+    description: >
+      Power of the compression chiller's two compressors and its seawater pump, one row per device.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: device
+        description: "The chiller device: Compressor 1, Compressor 2 or Seawater pump."
+        tests:
+          - not_null
+      - name: power
+        description: "Power of the device in W. The source reports kW and is converted here."
+        tests:
+          - not_null
+  - name: slv_24vdc_power_supplies
+    description: >
+      Output power of the 24 VDC power supplies, labelled with their converter group.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic of the power supply."
+        tests:
+          - not_null
+      - name: converter
+        description: "The converter group the power supply belongs to, e.g. W14E1_01."
+        tests:
+          - not_null
+      - name: power
+        description: "Output power of the power supply in W."
+        tests:
+          - not_null
+  - name: slv_350vdc_converters
+    description: >
+      Power each 350 VDC converter draws from the 700 VDC bus. A converter can run backwards; only the sum
+      over the four is the load of the 350 VDC network.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: converter
+        description: "The converter's designation, e.g. 02-71-t101."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["02-71-t101", "02-71-t102", "02-72-t101", "02-72-t102"]
+      - name: power
+        description: "HVDC (700 VDC side) power in W, positive from the 700 VDC bus to the 350 VDC network."
+        tests:
+          - not_null
+  - name: slv_grid_converters
+    description: >
+      Power of the two grid converters on both sides in W: the DC input from the 700 VDC bus and the AC
+      output into the 400 VAC switchboard, measured at its incoming breaker.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic associated with the raw message."
+        tests:
+          - not_null
+      - name: converter
+        description: "The grid converter's designation; the AC breakers are mapped to the converter that feeds them."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["05-11-u101", "05-12-u101"]
+      - name: side
+        description: "'dc' for the input from the 700 VDC bus, 'ac' for the output into the 400 VAC switchboard."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["dc", "ac"]
+      - name: power
+        description: "Power in W, positive from the 700 VDC bus to the 400 VAC switchboard."
+        tests:
+          - not_null
+  - name: slv_dc_ring_sources
+    description: >
+      The measured sources on the 700 VDC ring per minute and per unit: what each unit takes from the bus, so a
+      source that feeds the bus is negative. dc_ring_source_metadata places each unit on its segment.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the minute interval."
+      - name: kind
+        description: "The kind of source: shore_converter, battery, grid_converter, dc_350v_converter, dc_24v_converter, aradex or chiller."
+      - name: unit
+        description: "The unit within the source, e.g. 05-41 or W14E1_01."
+      - name: power
+        description: "Power the unit takes from the 700 VDC bus in W, averaged per minute per device and summed per unit; negative when it feeds the bus."
+  - name: slv_dc_ring_segments
+    description: >
+      The load per segment of the 700 VDC ring per minute: the power that flows into the segment through its DC
+      switches and doesn't flow out, the part its measured sources take, and the rest. Only minutes in which all
+      8 switches report. No tests: a test would aggregate the whole history.
+      Materialized as a view in the `views` database.
+    columns:
+      - name: time
+        description: "Timestamp representing the start of the minute interval."
+      - name: segment
+        description: "The bus segment, e.g. SB.01.P01, or one of the two cable segments."
+      - name: load_power
+        description: "Net power into the segment through its DC switches in W."
+      - name: measured_power
+        description: "Net power the segment's measured sources take from the bus in W."
+      - name: unallocated_power
+        description: "load_power minus measured_power in W: the load no signal covers, or for a cable segment the measurement error of the switches."
+

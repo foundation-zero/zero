@@ -50,7 +50,7 @@ logging.basicConfig(
     stream=sys.stdout,
 )
 
-settings = Settings()  # type: ignore
+settings = Settings()
 logger = logging.getLogger(__name__)
 
 
@@ -248,11 +248,12 @@ class Query:
     def version(self) -> str:
         return "1.0.0"
 
-    air_conditioning_log = log_field(AcLog, AcLogType)
-    amplifiers_log = log_field(AmplifiersLog, AmplifiersLogType)
-    ventilation_log = log_field(VentilationLog, VentilationLogType)
-    blinds_log = log_field(BlindsLog, BlindsLogType)
-    lighting_groups_log = log_field(LightingGroupsLog, LightingGroupsLogType)
+    # pyrefly does not see strawberry's pydantic types as StrawberryTypeFromPydantic.
+    air_conditioning_log = log_field(AcLog, AcLogType)  # pyrefly: ignore[bad-argument-type]
+    amplifiers_log = log_field(AmplifiersLog, AmplifiersLogType)  # pyrefly: ignore[bad-argument-type]
+    ventilation_log = log_field(VentilationLog, VentilationLogType)  # pyrefly: ignore[bad-argument-type]
+    blinds_log = log_field(BlindsLog, BlindsLogType)  # pyrefly: ignore[bad-argument-type]
+    lighting_groups_log = log_field(LightingGroupsLog, LightingGroupsLogType)  # pyrefly: ignore[bad-argument-type]
 
 
 P = ParamSpec("P")

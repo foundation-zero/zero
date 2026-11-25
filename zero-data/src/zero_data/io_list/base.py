@@ -6,7 +6,7 @@ from .types import IOResult
 
 class ReaderBase(ABC):
     @abstractmethod
-    def read_io_list(self, path: list[Path]) -> IOResult: ...
+    def read_io_list(self, paths: list[Path]) -> IOResult: ...
 
     @staticmethod
     def convert_value(val):

@@ -103,7 +103,9 @@
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT358F01', 'Cooling Pump Technical Space', 'cooling-pump-technical-space', 'power-tags/10P0-3/cooling-pump-technical-space', 'Technical', 'Cooling'),
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT374F01', 'Battery Room Ventilator SB Fwd', 'battery-room-ventilator-sb-fwd', 'power-tags/10P0-3/battery-room-ventilator-sb-fwd', 'HVAC', 'Ventilation'),
             ('1970-01-01 00:00:00', 2, '10P0.3', 'PT375F01', 'Battery Room Ventilator SB Aft', 'battery-room-ventilator-sb-aft', 'power-tags/10P0-3/battery-room-ventilator-sb-aft', 'HVAC', 'Ventilation'),
-            ('1970-01-01 00:00:00', 2, '10P0.3', '', 'Power distribution panel FWD', '10p3-power-distr-panel-fwd', 'power-tags/10P0-3/10p3-power-distr-panel-fwd', 'Technical', 'Technical'),
+            -- Feeder of sub-board 10P3, kept as Domestic / Crew & laundry: its consumers (washers, dryers,
+            -- crew mess, crew cabins, toilets) have no tags of their own.
+            ('1970-01-01 00:00:00', 2, '10P0.3', '', 'Power distribution panel FWD', '10p3-power-distr-panel-fwd', 'power-tags/10P0-3/10p3-power-distr-panel-fwd', 'Domestic', 'Crew & laundry'),
             ('1970-01-01 00:00:00', 3, '10P1', 'PT28F01', 'AHU1500 Aft Area', 'ahu1500-aft-area', 'power-tags/10P1/ahu1500-aft-area', 'HVAC', 'Air handling units'),
             ('1970-01-01 00:00:00', 3, '10P1', 'PT63F01', 'AV System Supply #1', 'av-system-supply-1', 'power-tags/10P1/av-system-supply-1', 'Domestic', 'Guest area'),
             ('1970-01-01 00:00:00', 3, '10P1', 'PT62F01', 'Burglar Alarm System', 'burglar-alarm-system', 'power-tags/10P1/burglar-alarm-system', 'Technical', 'NavComm'),

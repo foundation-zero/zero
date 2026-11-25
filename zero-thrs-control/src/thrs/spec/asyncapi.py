@@ -3,8 +3,8 @@
 Channels are recorded from the runtime's own channel wiring, so the document cannot drift from it.
 """
 
-from collections.abc import Mapping
 from logging import warning
+from typing import Any
 
 from asyncapi3 import AsyncAPI3
 from asyncapi3.models import (
@@ -35,7 +35,6 @@ from thrs.orchestration.config import Config
 from thrs.runtime.descriptions.simulation import Mode
 from thrs.spec.recording_connector import TopicMapping, collect_topics
 
-# A served value never expires into null, as it never did in thrs-api.
 CHANNEL_TTL = "1h"
 
 
@@ -66,7 +65,7 @@ def _operation_key(topic: TopicMapping) -> str:
 
 
 def _message_key(payload_type: type[ThrsValues]) -> str:
-    return f"{payload_type.__module__.split('.')[-1]}{payload_type.__name__.replace('[', '').replace(']', '')}"
+    return payload_type.__name__.replace("[", "").replace("]", "")
 
 
 def _build_asyncapi(
@@ -85,18 +84,18 @@ def _build_asyncapi(
     )
     schemas = defs.get("$defs", {})
 
-    channels: Mapping[str, Channel | Reference] = {}
+    channels: dict[str, Channel | Reference] = {}
     channels.update(
         {
             f"thrs_controller_{module}": Channel(
                 address=f"thrs/controller/{module}/#",
-                **{"x-ttl": CHANNEL_TTL},  # type: ignore
+                **{"x-ttl": CHANNEL_TTL},
             )
             for module in mode.control_modules
         }
     )
 
-    operations: Mapping[str, Operation | Reference] = {}
+    operations: dict[str, Operation | Reference] = {}
     operations.update(
         {
             f"subscribe_{module}": Operation(
@@ -107,7 +106,7 @@ def _build_asyncapi(
         }
     )
 
-    messages: Mapping[str, Message | Reference] = {}
+    messages: dict[str, Message | Reference] = {}
     for topic_data in sorted(topics, key=lambda topic: topic.topic):
         message_key = _message_key(topic_data.payload_type)
         operation_key = _operation_key(topic_data)
@@ -121,24 +120,23 @@ def _build_asyncapi(
                 payload=Schema(**json_schema),
                 **{
                     "x-zero-component-type": topic_data.component_type,
-                },  # type: ignore
+                },
             )
 
         operation = Operation(
             action=topic_data.direction, channel=Reference(**{"$ref": channel_ref})
         )
 
-        yard_tag = (
-            {"x-zero-yard-tag": topic_data.yard_tag} if topic_data.yard_tag else {}
-        )
+        extensions: dict[str, Any] = {
+            "x-ttl": CHANNEL_TTL,
+            "x-zero-component-type": topic_data.component_type,
+        }
+        if topic_data.yard_tag:
+            extensions["x-zero-yard-tag"] = topic_data.yard_tag
         channel = Channel(
             address=topic_data.topic,
             messages=Messages(root={"message": Reference(**{"$ref": message_ref})}),
-            **{
-                "x-ttl": CHANNEL_TTL,
-                "x-zero-component-type": topic_data.component_type,
-                **yard_tag,
-            },  # type: ignore
+            **extensions,
         )
 
         if channel_key in channels:

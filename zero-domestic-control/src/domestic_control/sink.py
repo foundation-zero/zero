@@ -1,5 +1,6 @@
+from collections.abc import AsyncGenerator
 from contextlib import AbstractAsyncContextManager, AsyncExitStack, asynccontextmanager
-from typing import AsyncIterator, Protocol
+from typing import Protocol
 
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncEngine
@@ -49,7 +50,7 @@ class PostgresSink(BeginSink):
         self._engine = engine
 
     @asynccontextmanager
-    async def send_begin(self, message: SinkMessage) -> AsyncIterator[None]:
+    async def send_begin(self, message: SinkMessage) -> AsyncGenerator[None]:
         async with AsyncSession(self._engine) as session:
             async with session.begin():
                 data = message.model_dump()

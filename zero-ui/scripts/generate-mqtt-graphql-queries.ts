@@ -258,6 +258,7 @@ const valveType = (type: unknown): keyof typeof Thrs.ValveType =>
 interface Schema {
   $ref?: string;
   type?: string | string[];
+  description?: string;
   properties?: Record<string, Schema>;
   anyOf?: Schema[];
   oneOf?: Schema[];
@@ -367,6 +368,7 @@ interface DefinitionEntry {
   path: string[];
   yardTag?: string;
   valveType?: string;
+  description?: string;
 }
 
 interface ModuleOutput {
@@ -660,8 +662,9 @@ const addParameters = (context: ModuleContext): void => {
     const key = graphqlName(property);
     context.output.definitions.parameters.push({
       key,
-      componentType: `ParametersType.${parameterKind(context.module, key, schema)}`,
+      componentType: `ParametersType.${parameterKind(context.module, key, resolve(thrsControl, schema) ?? schema)}`,
       path: [...path, key],
+      description: schema.description,
     });
     context.output.selections.parameters.push({
       path,
@@ -770,12 +773,20 @@ const renderSelection = ({ name, field, children }: Selection, indent: string): 
 const constName = (module: string, part: Part, suffix: string) =>
   `${screamingSnakeCase(module)}_${screamingSnakeCase(part)}_${suffix}`;
 
-const renderEntry = ({ key, componentType, path, yardTag, valveType }: DefinitionEntry): string =>
+const renderEntry = ({
+  key,
+  componentType,
+  path,
+  yardTag,
+  valveType,
+  description,
+}: DefinitionEntry): string =>
   [
     `  ${key}: {`,
     yardTag ? `    yardTag: "${yardTag}",` : undefined,
     `    componentType: ${componentType},`,
     valveType ? `    valveType: ${valveType},` : undefined,
+    description ? `    description: ${JSON.stringify(description)},` : undefined,
     `    path: ${JSON.stringify(path)},`,
     "  },",
   ]

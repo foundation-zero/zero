@@ -1,12 +1,18 @@
-from thrs.control.modules.dhw import DhwAlarms, DhwControllerState, DhwParameters
+from datetime import UTC, datetime
+
+from thrs.control.modules.dhw.control import _INITIAL_CONTROLLER_STATE, DhwAlarms
+from thrs.control.modules.dhw.io import DhwControlValues, DhwSensorValues
+from thrs.control.modules.dhw.state import DhwControllerState, DhwParameters
 from thrs.input_output.definitions.units import TankState
-from thrs.input_output.modules.dhw import DhwControlValues, DhwSensorValues
 
 WARNING_CODE = "Tank in use below minimum temperature"
 
 
-def controller_state(tank1_state: TankState) -> DhwControllerState:
-    state = DhwControllerState.zero()
+def controller_state(
+    tank1_state: TankState, parameters: DhwParameters
+) -> DhwControllerState:
+    state = _INITIAL_CONTROLLER_STATE(datetime.now(UTC))
+    state.parameters = parameters
     state.dhw_tanks_controller.tank1_state.value = tank1_state
     state.dhw_tanks_controller.tank2_state.value = TankState.STANDBY
     state.dhw_tanks_controller.tank3_state.value = TankState.STANDBY
@@ -25,8 +31,7 @@ def test_cold_tank_in_use_raises_warning(
     raised = alarms.check(
         sensor_values,
         DhwControlValues.zero(),
-        parameters,
-        controller_state(TankState.IN_USE),
+        controller_state(TankState.IN_USE, parameters),
     )
 
     warning = next(alarm for alarm in raised if alarm.code == WARNING_CODE)
@@ -45,8 +50,7 @@ def test_hot_tank_in_use_raises_no_warning(
     raised = alarms.check(
         sensor_values,
         DhwControlValues.zero(),
-        parameters,
-        controller_state(TankState.IN_USE),
+        controller_state(TankState.IN_USE, parameters),
     )
 
     assert not [alarm for alarm in raised if alarm.code == WARNING_CODE]
@@ -64,8 +68,7 @@ def test_cold_tank_not_in_use_raises_no_warning(
     raised = alarms.check(
         sensor_values,
         DhwControlValues.zero(),
-        parameters,
-        controller_state(TankState.NEEDS_BOOST),
+        controller_state(TankState.NEEDS_BOOST, parameters),
     )
 
     assert not [alarm for alarm in raised if alarm.code == WARNING_CODE]

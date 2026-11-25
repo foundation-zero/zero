@@ -33,7 +33,9 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::api_model::{Api, Direction, FieldType, Payload, Spec, TopicDef, TopicKind};
+    use crate::api_model::{
+        Api, Direction, FieldDef, FieldType, Payload, Spec, TopicDef, TopicKind,
+    };
     use crate::graphql::build_schema;
     use crate::http::router;
     use crate::topic_map::TopicMap;
@@ -53,9 +55,9 @@ mod tests {
             topic: "test/channel".to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![
-                    ("value".to_string(), FieldType::Float),
-                    ("ok".to_string(), FieldType::Boolean),
+                fields: BTreeMap::from([
+                    ("value".to_string(), FieldDef::nullable(FieldType::Float)),
+                    ("ok".to_string(), FieldDef::nullable(FieldType::Boolean)),
                 ]),
             }),
             operation: Direction::Send,
@@ -75,7 +77,7 @@ mod tests {
             topic: "123/topic".to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![("x".to_string(), FieldType::Float)]),
+                fields: BTreeMap::from([("x".to_string(), FieldDef::nullable(FieldType::Float))]),
             }),
             operation: Direction::Send,
             ttl_secs: None,
@@ -114,11 +116,11 @@ mod tests {
             topic: "t".to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![
-                    ("f_float".to_string(), FieldType::Float),
-                    ("f_int".to_string(), FieldType::Int),
-                    ("f_bool".to_string(), FieldType::Boolean),
-                    ("f_str".to_string(), FieldType::String),
+                fields: BTreeMap::from([
+                    ("f_float".to_string(), FieldDef::nullable(FieldType::Float)),
+                    ("f_int".to_string(), FieldDef::nullable(FieldType::Int)),
+                    ("f_bool".to_string(), FieldDef::nullable(FieldType::Boolean)),
+                    ("f_str".to_string(), FieldDef::nullable(FieldType::String)),
                 ]),
             }),
             operation: Direction::Send,
@@ -142,10 +144,10 @@ mod tests {
             topic: "test/channel".to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![
-                    ("value".to_string(), FieldType::Float),
-                    ("ok".to_string(), FieldType::Boolean),
-                    ("label".to_string(), FieldType::String),
+                fields: BTreeMap::from([
+                    ("value".to_string(), FieldDef::nullable(FieldType::Float)),
+                    ("ok".to_string(), FieldDef::nullable(FieldType::Boolean)),
+                    ("label".to_string(), FieldDef::nullable(FieldType::String)),
                 ]),
             }),
             operation: Direction::Send,
@@ -179,7 +181,10 @@ mod tests {
             topic: "test/channel".to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from([("counter".to_string(), FieldType::Json)]),
+                fields: BTreeMap::from([(
+                    "counter".to_string(),
+                    FieldDef::nullable(FieldType::Json),
+                )]),
             }),
             operation: Direction::Send,
             ttl_secs: None,
@@ -204,7 +209,10 @@ mod tests {
             topic: "test/channel".to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
+                fields: BTreeMap::from([(
+                    "value".to_string(),
+                    FieldDef::nullable(FieldType::Float),
+                )]),
             }),
             operation: Direction::Send,
             ttl_secs: None,
@@ -227,7 +235,10 @@ mod tests {
             topic: "test/channel".to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
+                fields: BTreeMap::from([(
+                    "value".to_string(),
+                    FieldDef::nullable(FieldType::Float),
+                )]),
             }),
             operation: Direction::Send,
             ttl_secs: None,
@@ -252,7 +263,10 @@ mod tests {
             topic: "test/channel".to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
+                fields: BTreeMap::from([(
+                    "value".to_string(),
+                    FieldDef::nullable(FieldType::Float),
+                )]),
             }),
             operation: Direction::Send,
             ttl_secs: None,
@@ -277,7 +291,10 @@ mod tests {
             topic: "test/channel".to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
+                fields: BTreeMap::from([(
+                    "value".to_string(),
+                    FieldDef::nullable(FieldType::Float),
+                )]),
             }),
             operation: Direction::Send,
             ttl_secs: None,
@@ -299,7 +316,10 @@ mod tests {
                 topic: "a/b".to_string(),
                 payload: Some(Payload {
                     name: "payload1".to_string(),
-                    fields: BTreeMap::from_iter(vec![("x".to_string(), FieldType::Float)]),
+                    fields: BTreeMap::from([(
+                        "x".to_string(),
+                        FieldDef::nullable(FieldType::Float),
+                    )]),
                 }),
                 operation: Direction::Send,
                 ttl_secs: None,
@@ -310,7 +330,10 @@ mod tests {
                 topic: "a/c".to_string(),
                 payload: Some(Payload {
                     name: "payload2".to_string(),
-                    fields: BTreeMap::from_iter(vec![("y".to_string(), FieldType::Float)]),
+                    fields: BTreeMap::from([(
+                        "y".to_string(),
+                        FieldDef::nullable(FieldType::Float),
+                    )]),
                 }),
                 operation: Direction::Send,
                 ttl_secs: None,
@@ -339,7 +362,10 @@ mod tests {
             topic: "test/channel".to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![("value".to_string(), FieldType::Float)]),
+                fields: BTreeMap::from([(
+                    "value".to_string(),
+                    FieldDef::nullable(FieldType::Float),
+                )]),
             }),
             operation: Direction::Send,
             ttl_secs: None,

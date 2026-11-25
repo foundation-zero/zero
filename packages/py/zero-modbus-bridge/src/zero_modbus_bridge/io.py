@@ -1,5 +1,6 @@
 """I/O types for Modbus bridges."""
 
+from decimal import Decimal
 from typing import Any, Callable, Literal, get_type_hints
 
 from pydantic import BaseModel, Field, PrivateAttr
@@ -18,7 +19,7 @@ class ModbusField:
 
     register: int | None = None
     offset: int | None = None
-    data_type: Literal["uint16", "float32", "bool"] = "uint16"
+    data_type: Literal["uint16", "int16", "float32", "bool"] = "uint16"
     modbus_type: Literal["holding", "coil"] = "holding"
     scale_factor: float = 1.0
     validator: Callable[[RawModbusValue], bool] | None = None
@@ -28,7 +29,7 @@ class ModbusField:
         *,
         register: int | None = None,
         offset: int | None = None,
-        data_type: Literal["uint16", "float32", "bool"] = "uint16",
+        data_type: Literal["uint16", "int16", "float32", "bool"] = "uint16",
         modbus_type: Literal["holding", "coil"] = "holding",
         scale_factor: float = 1.0,
         validator: Callable[[RawModbusValue], bool] | None = None,
@@ -148,7 +149,18 @@ def apply_modbus_field(raw: RawModbusValue, field: ModbusField) -> RawModbusValu
         return None
     if isinstance(raw, bool):
         return raw
-    return float(raw) * field.scale_factor
+    scaled = float(raw) * field.scale_factor
+    if isinstance(raw, int):
+        # Drop float noise (40.400000000000006): an integer register scaled by
+        # 0.1 has exactly one decimal.
+        return round(scaled, scale_decimals(field.scale_factor))
+    return scaled
+
+
+def scale_decimals(scale_factor: float) -> int:
+    """Decimals a scaled integer register can have: 1 for 0.1, 2 for 0.04."""
+    exponent = Decimal(str(scale_factor)).normalize().as_tuple().exponent
+    return max(0, -int(exponent))
 
 
 def build_annotation_converter[T: BaseModel](

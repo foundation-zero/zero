@@ -9,7 +9,6 @@ from thrs.input_output.definitions import control
 from thrs.input_output.definitions.units import (
     Bar,
     Celsius,
-    Degree,
     DeltaT,
     Empty,
     Hz,
@@ -95,15 +94,6 @@ class TemperatureSensor(ThrsValues):
 
 class LevelSensor(ThrsValues):
     level: Stamped[Liter]
-
-    # TODO: Remove this when api is no longer coupled
-    @field_validator("level", mode="before")
-    @classmethod
-    def fix_nan(cls, value: Stamped[Liter] | dict) -> Stamped[Liter] | dict:
-        if isinstance(value, dict) and value["Value"] == "NaN":
-            value["Value"] = 0.0
-            value["TimeStamp"] = datetime.fromtimestamp(0, UTC)
-        return value
 
 
 class CalculatedTemperature(ThrsValues):
@@ -234,15 +224,15 @@ class HeatTransferDevice(ThrsValues):
         heat = Stamped.combine(delta_t, flow, value=heat_value)
         return cls(
             temperature_supply=StampedWithSource.from_stamped(
-                temperature_supply,  # type: ignore
+                temperature_supply,  # pyrefly: ignore[bad-argument-type]
                 temperature_supply_source,
             ),
             temperature_return=StampedWithSource.from_stamped(
-                temperature_return,  # type: ignore
+                temperature_return,  # pyrefly: ignore[bad-argument-type]
                 temperature_return_source,
             ),
             delta_t=delta_t,
-            flow=StampedWithSource.from_stamped(flow, flow_source),  # type: ignore
+            flow=StampedWithSource.from_stamped(flow, flow_source),  # pyrefly: ignore[bad-argument-type]
             heat=heat,
         )
 
@@ -272,8 +262,7 @@ class HeatTransferDevice(ThrsValues):
             heat_transfer_conversion,
         )
         if valves_open_closed(closed_valves=[mix_valve]):
-            # When the valve is closed the exchanger bypass is closed and everything goes past the exchanger
-            # Everything goes past exchanger so calculations are correct
+            # A closed mix valve closes the bypass, so all measured flow passes the exchanger
             return heat_transfer
 
         if valves_open_closed(open_valves=[mix_valve]):
@@ -304,21 +293,16 @@ def extract_source_yardtag(model: ThrsValues, key: str) -> str:
     computed_field_info = klass.model_computed_fields.get(key)
 
     if not field_info and computed_field_info:
-        yard_tag: str = computed_field_info.json_schema_extra.get("yard_tag")  # type: ignore
+        yard_tag: str = computed_field_info.json_schema_extra.get("yard_tag")  # pyrefly: ignore[missing-attribute]
         if not yard_tag:
             return "calculated"
         return yard_tag
 
-    return field_info.json_schema_extra.get("yard_tag", "unknown")  # type: ignore
+    return field_info.json_schema_extra.get("yard_tag", "unknown")  # pyrefly: ignore[missing-attribute]
 
 
 class Valve(AmcsComponentAlarms, ThrsValues):
     position_rel: Stamped[Ratio]
-
-    # Not used in control, only in frontend TODO: Remove when graphql api is split off
-    position_abs: Annotated[Stamped[Degree], field_meta(included_in_fmu=False)] = (
-        Stamped(value=0.0, timestamp=datetime.fromtimestamp(0, UTC))
-    )
 
     # TODO: Remove once marpower fixes this on their side
     @field_validator("position_rel")

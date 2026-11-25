@@ -14,7 +14,7 @@ from aiomqtt import Client
 from pydantic import TypeAdapter
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
-from thrs.control.switching import AutomationMode, SwitchingControlMode
+from thrs.control.state import AutomationMode
 from thrs.input_output.base import CombinedValues, ThrsValues, get_topic
 from thrs.input_output.definitions.wire_context import (
     AMCS_RECEIVE_CONTEXT,
@@ -137,14 +137,17 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         )
 
     def split_to_topics(self, model: M) -> dict[str, str]:
+        """A `None` component sends an empty payload, which clears its topic."""
         fields = (
             self._cls.model_computed_fields
             if self._only_computed_fields
             else self._cls.model_fields
         )
         return {
-            self._topic(key, field): getattr(model, key).model_dump_json(
-                by_alias=True, context=self._context
+            self._topic(key, field): (
+                ""
+                if (component := getattr(model, key)) is None
+                else component.model_dump_json(by_alias=True, context=self._context)
             )
             for key, field in fields.items()
         }
@@ -171,7 +174,9 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         return await self._builder.wait_for_result()
 
 
-class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
+class DirectMqttMapping[M: ThrsValues](
+    MqttReceiveMapping[M], MqttSendMapping[M | None]
+):
     """MQTT mapping that maps the entire model to a single topic"""
 
     def __init__(
@@ -188,8 +193,6 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
         self._adapter: TypeAdapter[M] = TypeAdapter(cls)
         self._topic = f"{topic}{f'/{topic_suffix}' if topic_suffix else ''}"
         self._value = None
-        # An Event rather than a Future: since Python 3.14 a Future needs a running loop,
-        # and mappings are fed outside one.
         self._first_value: M | None = None
         self._first_received = Event()
         self._hooks: list[Callable[[M], object]] = []
@@ -214,8 +217,10 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
             context=context,
         )
 
-    def split_to_topics(self, model: M) -> dict[str, str]:
-        return {self._topic: model.model_dump_json(by_alias=True)}
+    def split_to_topics(self, model: M | None) -> dict[str, str]:
+        """`None` sends an empty payload, which clears the topic."""
+        payload = "" if model is None else model.model_dump_json(by_alias=True)
+        return {self._topic: payload}
 
     def subscribe_topics(self) -> set[str]:
         return {self._topic}
@@ -226,9 +231,7 @@ class DirectMqttMapping[M: ThrsValues](MqttMapping[M]):
     def handle_message(self, topic: str, json: str | bytes):
         awaitables: list[Awaitable] = []
         if topic == self._topic:
-            self._value = cast(
-                M, self._adapter.validate_json(json, context=self._context)
-            )
+            self._value = self._adapter.validate_json(json, context=self._context)
             if not self._first_received.is_set():
                 self._first_value = self._value
                 self._first_received.set()
@@ -466,51 +469,12 @@ class ControlChannels[
             ),
             qos=publish_qos,
         )
-        self.send_parameters = connector._create_publisher(
-            DirectMqttMapping[P].for_module(
-                control_module.parameters_cls,
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="parameters",
-            ),
-            qos=publish_qos,
-        )
-
-        # We should not need to wrap here with SwitchingControlMode because it exposes SwitchingControlMode
-        # which we should not have to know about here... This needs a refactor of how switching control is handled
-        self.send_control_modes = connector._create_publisher(
-            DirectMqttMapping[SwitchingControlMode[M]].for_module(
-                SwitchingControlMode[control_module.control_mode_cls],
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="control-mode",
-            ),
-            qos=publish_qos,
-        )
-        self.send_automation_mode = connector._create_publisher(
-            DirectMqttMapping[AutomationMode].for_module(
-                AutomationMode,
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="automation-mode",
-            ),
-            qos=publish_qos,
-        )
         self.send_actuated_control_values = connector._create_publisher(
             DirectMqttMapping[C].for_module(
                 control_module.control_values_cls,
                 config.mqtt_controller_topic_prefix,
                 module_name,
                 type_topic="control-values",
-            ),
-            qos=publish_qos,
-        )
-        self.send_manual_control = connector._create_publisher(
-            DirectMqttMapping[C].for_module(
-                control_module.control_values_cls,
-                config.mqtt_controller_topic_prefix,
-                module_name,
-                type_topic="manual-values",
             ),
             qos=publish_qos,
         )
@@ -585,7 +549,6 @@ class SimulationChannels[
 
 class DirectivesChannels:
     def __init__(self, connector: MqttConnector, config: Config) -> None:
-        self._connector = connector
         status_set_mapping = DirectMqttMapping(
             SimulationStatusSetMessage,
             f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusSetMessage.subscribe_topic()}",
@@ -593,18 +556,13 @@ class DirectivesChannels:
         )
         connector._register_listener(status_set_mapping)
 
-        self._status_topic = f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}"
+        status_topic = f"{config.mqtt_simulator_topic_prefix}/{SimulationStatusMessage.subscribe_topic()}"
 
         self.send_simulation_status = connector._create_publisher(
-            DirectMqttMapping(SimulationStatusMessage, self._status_topic), retain=True
+            DirectMqttMapping(SimulationStatusMessage, status_topic), retain=True
         )
 
         self.on_status_set = status_set_mapping.add_hook
-
-    async def clear_simulation_status(self):
-        await self._connector._mqtt_client.publish(
-            self._status_topic, b"", qos=1, retain=True
-        )
 
 
 class MqttConnector:

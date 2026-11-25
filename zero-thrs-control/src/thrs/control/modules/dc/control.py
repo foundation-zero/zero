@@ -1,0 +1,433 @@
+from collections.abc import Callable
+from datetime import datetime
+
+from thrs.classes.control import Control
+from thrs.classes.machine_state_logger import StateLogger
+from thrs.control.controllers import PidController
+from thrs.control.modules.dc.converters import (
+    _INITIAL_CONVERTERS_CONTROLLER_STATE,
+    ConvertersControl,
+    ConvertersControllerState,
+    ConvertersControlValues,
+    ConvertersParameters,
+    ConvertersSensorValues,
+)
+from thrs.control.modules.dc.io import DcControlValues, DcSensorValues
+from thrs.control.modules.dc.state import (
+    DcControllerState,
+    DcControlMode,
+    DcParameters,
+)
+from thrs.input_output.alarms import BaseAlarms
+from thrs.input_output.base import Stamped
+from thrs.input_output.definitions.control import Pump, Valve
+from thrs.input_output.definitions.units import Celsius, Ratio
+from thrs.orchestration.module import ModuleDescription
+
+
+def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DcControlValues:  # noqa: N802
+    return DcControlValues(
+        dc_pump_aft=Pump(
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        dc_pump_fwd=Pump(
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        dc_pump_ugrid=Pump(
+            dutypoint=Stamped(value=0.1, timestamp=timestamp),
+            on=Stamped(value=False, timestamp=timestamp),
+        ),
+        dc_mix_fwd=Valve(
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+        ),
+        dc_mix_aft=Valve(
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+        ),
+        dc_mix_ugrid=Valve(
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+        ),
+        dc_mix_recovery=Valve(
+            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
+        ),
+        dc_mix_exchanger=Valve(
+            setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=timestamp)
+        ),
+        dc_switch_aft4=Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
+        dc_switch_aft3=Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
+        dc_switch_aft2=Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
+        dc_switch_aft1=Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
+        dc_switch_fwd2=Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
+        dc_switch_fwd1=Valve(setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)),
+        dc_switch_ugrid2=Valve(
+            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
+        ),
+        dc_switch_ugrid1=Valve(
+            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
+        ),
+    )
+
+
+def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DcControllerState:  # noqa: N802
+    converter_state = _INITIAL_CONVERTERS_CONTROLLER_STATE(timestamp)
+    return DcControllerState(
+        dc_heat_dump_controller=PidController.zero(timestamp),
+        dc_recovery_mix_controller=PidController.zero(timestamp),
+        dc_brightloops_aft_pump_controller=converter_state.converters_pump_controller,
+        dc_brightloops_aft_warmup_mix_controller=converter_state.converters_warmup_mix_controller,
+        dc_brightloops_fwd_pump_controller=converter_state.converters_pump_controller,
+        dc_brightloops_fwd_warmup_mix_controller=converter_state.converters_warmup_mix_controller,
+        dc_ugrids_pump_controller=converter_state.converters_pump_controller,
+        dc_ugrids_warmup_mix_controller=converter_state.converters_warmup_mix_controller,
+        parameters=DcParameters(),
+        control_mode=None,
+    )
+
+
+def brightloops_aft_parameters(dc_parameters: DcParameters) -> ConvertersParameters:
+    return ConvertersParameters(
+        converter_return_temperature=dc_parameters.brightloop_return_temperature,
+        converter_flow_setpoint=dc_parameters.brightloop_flow_setpoint,
+        warmup_mix_tuning=dc_parameters.brightloops_aft_mix_tuning,
+        pump_tuning=dc_parameters.brightloops_aft_pump_tuning,
+    )
+
+
+def brightloops_fwd_parameters(dc_parameters: DcParameters) -> ConvertersParameters:
+    return ConvertersParameters(
+        converter_return_temperature=dc_parameters.brightloop_return_temperature,
+        converter_flow_setpoint=dc_parameters.brightloop_flow_setpoint,
+        warmup_mix_tuning=dc_parameters.brightloops_fwd_mix_tuning,
+        pump_tuning=dc_parameters.brightloops_fwd_pump_tuning,
+    )
+
+
+def ugrids_parameters(dc_parameters: DcParameters) -> ConvertersParameters:
+    return ConvertersParameters(
+        converter_return_temperature=dc_parameters.ugrid_return_temperature,
+        converter_flow_setpoint=dc_parameters.ugrid_flow_setpoint,
+        warmup_mix_tuning=dc_parameters.ugrids_mix_tuning,
+        pump_tuning=dc_parameters.ugrids_pump_tuning,
+    )
+
+
+class DcControl(
+    Control[
+        DcSensorValues, DcControlValues, DcParameters, DcControlMode, DcControllerState
+    ]
+):
+    def __init__(
+        self,
+        parameters: DcParameters,
+        time_fn: Callable[[], datetime],
+        state_logger: StateLogger,
+    ) -> None:
+        self._parameters = parameters
+        self._time = time_fn
+        self.state_logger = state_logger
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
+
+        self._init_controllers(parameters)
+        self.state_logger.log_parameters_initial_state(parameters)
+
+    def _init_controllers(self, parameters: DcParameters):
+        self._heat_dump_controller = PidController[Ratio, Celsius](
+            initial=self._current_values.dc_mix_exchanger.setpoint.value,
+            setpoint=lambda: self._parameters.maximum_supply_temperature,
+            tuning=lambda: self._parameters.heat_dump_tuning,
+            time_fn=self._time,
+        )
+
+        self._heat_dump_controller.enable()  # always enabled
+
+        self._recovery_mix_controller = PidController[Ratio, Celsius](
+            initial=self._current_values.dc_mix_recovery.setpoint.value,
+            setpoint=lambda: self._parameters.recovery_temperature,
+            tuning=lambda: self._parameters.recovery_mix_tuning,
+            time_fn=self._time,
+        )
+
+        self._recovery_mix_controller.enable()  # always enabled
+
+        self._brightloops_aft_control = ConvertersControl(
+            brightloops_aft_parameters(parameters),
+            initial_control_values=ConvertersControlValues(
+                pump=self._current_values.dc_pump_aft,
+                mix=self._current_values.dc_mix_aft,
+                switches=[
+                    self._current_values.dc_switch_aft1,
+                    self._current_values.dc_switch_aft2,
+                    self._current_values.dc_switch_aft3,
+                    self._current_values.dc_switch_aft4,
+                ],
+            ),
+            time_fn=self._time,
+            state_logger=self.state_logger,
+        )
+
+        self._brightloops_fwd_control = ConvertersControl(
+            brightloops_fwd_parameters(parameters),
+            initial_control_values=ConvertersControlValues(
+                pump=self._current_values.dc_pump_fwd,
+                mix=self._current_values.dc_mix_fwd,
+                switches=[
+                    self._current_values.dc_switch_fwd1,
+                    self._current_values.dc_switch_fwd2,
+                ],
+            ),
+            time_fn=self._time,
+            state_logger=self.state_logger,
+        )
+
+        self._ugrids_control = ConvertersControl(
+            ugrids_parameters(parameters),
+            initial_control_values=ConvertersControlValues(
+                pump=self._current_values.dc_pump_ugrid,
+                mix=self._current_values.dc_mix_ugrid,
+                switches=[
+                    self._current_values.dc_switch_ugrid1,
+                    self._current_values.dc_switch_ugrid2,
+                ],
+            ),
+            time_fn=self._time,
+            state_logger=self.state_logger,
+        )
+
+    @property
+    def parameters(self) -> DcParameters:
+        return self._parameters
+
+    @StateLogger.log_parameters
+    def update_parameters(self, parameters: DcParameters):
+        self._parameters = parameters
+        self._brightloops_aft_control.update_parameters(
+            brightloops_aft_parameters(parameters)
+        )
+        self._brightloops_fwd_control.update_parameters(
+            brightloops_fwd_parameters(parameters)
+        )
+        self._ugrids_control.update_parameters(ugrids_parameters(parameters))
+
+    def update_controls(self, control_values: DcControlValues):
+        self._current_values.update_in_place(control_values)
+
+    @staticmethod
+    def modes() -> list[str]:
+        return [""]
+
+    @property
+    def initial_mode(self) -> DcControlMode:
+        return DcControlMode(
+            brightloops_aft=self._brightloops_aft_control.initial_mode,
+            brightloops_fwd=self._brightloops_fwd_control.initial_mode,
+            ugrids=self._ugrids_control.initial_mode,
+        )
+
+    @property
+    def mode(self) -> DcControlMode:
+        return DcControlMode(
+            brightloops_aft=self._brightloops_aft_control.mode,
+            brightloops_fwd=self._brightloops_fwd_control.mode,
+            ugrids=self._ugrids_control.mode,
+        )
+
+    def initial(self) -> tuple[DcControlValues, DcControllerState]:
+        return (
+            _INITIAL_CONTROL_VALUES(self._time()),
+            _INITIAL_CONTROLLER_STATE(self._time()),
+        )
+
+    def reset(self) -> None:
+        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
+            deep=True
+        )
+        self._init_controllers(self._parameters)
+
+    @StateLogger.log_warnings
+    def control(
+        self, sensor_values: DcSensorValues
+    ) -> tuple[DcControlValues, DcControllerState]:
+        self._control_heat_dump(sensor_values)
+        self._control_recovery_mix(sensor_values)
+
+        converter_state = self._control_groups(sensor_values)
+
+        return (
+            self._current_values,
+            DcControllerState(
+                dc_heat_dump_controller=self._heat_dump_controller.values(),
+                dc_recovery_mix_controller=self._recovery_mix_controller.values(),
+                dc_brightloops_aft_pump_controller=converter_state[
+                    "dc_brightloops_aft"
+                ].converters_pump_controller,
+                dc_brightloops_aft_warmup_mix_controller=converter_state[
+                    "dc_brightloops_aft"
+                ].converters_warmup_mix_controller,
+                dc_brightloops_fwd_pump_controller=converter_state[
+                    "dc_brightloops_fwd"
+                ].converters_pump_controller,
+                dc_brightloops_fwd_warmup_mix_controller=converter_state[
+                    "dc_brightloops_fwd"
+                ].converters_warmup_mix_controller,
+                dc_ugrids_pump_controller=converter_state[
+                    "dc_ugrids"
+                ].converters_pump_controller,
+                dc_ugrids_warmup_mix_controller=converter_state[
+                    "dc_ugrids"
+                ].converters_warmup_mix_controller,
+                parameters=self._parameters,
+                control_mode=self.mode,
+            ),
+        )
+
+    def _control_heat_dump(self, sensor_values: DcSensorValues):
+        if self._heat_dump_controller.enabled():
+            self._current_values.dc_mix_exchanger.setpoint = Stamped(
+                value=self._heat_dump_controller(
+                    sensor_values.dc_temperature_supply.temperature.value
+                ),
+                timestamp=self._time(),
+            )
+
+    def _control_recovery_mix(self, sensor_values: DcSensorValues):
+        if self._recovery_mix_controller.enabled():
+            self._current_values.dc_mix_recovery.setpoint = Stamped(
+                value=self._recovery_mix_controller(
+                    sensor_values.dc_temperature_recovery.temperature.value
+                ),
+                timestamp=self._time(),
+            )
+
+    def _update_group_control_values(
+        self,
+        brightloops_aft_control_values: ConvertersControlValues,
+        brightloops_fwd_control_values: ConvertersControlValues,
+        ugrids_control_values: ConvertersControlValues,
+    ):
+        self._current_values.dc_pump_aft = brightloops_aft_control_values.pump
+        self._current_values.dc_pump_fwd = brightloops_fwd_control_values.pump
+        self._current_values.dc_pump_ugrid = ugrids_control_values.pump
+        self._current_values.dc_mix_aft = brightloops_aft_control_values.mix
+        self._current_values.dc_mix_fwd = brightloops_fwd_control_values.mix
+        self._current_values.dc_mix_ugrid = ugrids_control_values.mix
+        self._current_values.dc_switch_aft1 = brightloops_aft_control_values.switches[0]
+        self._current_values.dc_switch_aft2 = brightloops_aft_control_values.switches[1]
+        self._current_values.dc_switch_aft3 = brightloops_aft_control_values.switches[2]
+        self._current_values.dc_switch_aft4 = brightloops_aft_control_values.switches[3]
+        self._current_values.dc_switch_fwd1 = brightloops_fwd_control_values.switches[0]
+        self._current_values.dc_switch_fwd2 = brightloops_fwd_control_values.switches[1]
+        self._current_values.dc_switch_ugrid1 = ugrids_control_values.switches[0]
+        self._current_values.dc_switch_ugrid2 = ugrids_control_values.switches[1]
+
+    def _control_groups(
+        self, sensor_values: DcSensorValues
+    ) -> dict[str, ConvertersControllerState]:
+        brightloops_aft_control_values, brightloops_aft_controller_state = (
+            self._brightloops_aft_control.control(
+                ConvertersSensorValues(
+                    pump=sensor_values.dc_pump_aft,
+                    temperature_supply=sensor_values.dc_temperature_aft_supply,
+                    temperature_return=sensor_values.dc_temperature_aft_return,
+                    pressure=sensor_values.dc_pressure_aft,
+                    mix=sensor_values.dc_mix_aft,
+                    flows=[
+                        sensor_values.dc_flow_aft1,
+                        sensor_values.dc_flow_aft2,
+                        sensor_values.dc_flow_aft3,
+                        sensor_values.dc_flow_aft4,
+                    ],
+                    switches=[
+                        sensor_values.dc_switch_aft1,
+                        sensor_values.dc_switch_aft2,
+                        sensor_values.dc_switch_aft3,
+                        sensor_values.dc_switch_aft4,
+                    ],
+                    converters=[
+                        sensor_values.dc_brightloop_aft1,
+                        sensor_values.dc_brightloop_aft2,
+                        sensor_values.dc_brightloop_aft3,
+                        sensor_values.dc_brightloop_aft4,
+                    ],
+                    converter_return_temperatures=[
+                        sensor_values.dc_temperature_aft1_return,
+                        sensor_values.dc_temperature_aft2_return,
+                        sensor_values.dc_temperature_aft3_return,
+                        sensor_values.dc_temperature_aft4_return,
+                    ],
+                )
+            )
+        )
+
+        brightloops_fwd_control_values, brightloops_fwd_controller_state = (
+            self._brightloops_fwd_control.control(
+                ConvertersSensorValues(
+                    pump=sensor_values.dc_pump_fwd,
+                    temperature_supply=sensor_values.dc_temperature_fwd_supply,
+                    temperature_return=sensor_values.dc_temperature_fwd_return,
+                    pressure=sensor_values.dc_pressure_fwd,
+                    mix=sensor_values.dc_mix_fwd,
+                    flows=[sensor_values.dc_flow_fwd1, sensor_values.dc_flow_fwd2],
+                    switches=[
+                        sensor_values.dc_switch_fwd1,
+                        sensor_values.dc_switch_fwd2,
+                    ],
+                    converters=[
+                        sensor_values.dc_brightloop_fwd1,
+                        sensor_values.dc_brightloop_fwd2,
+                    ],
+                    converter_return_temperatures=[
+                        sensor_values.dc_temperature_fwd1_return,
+                        sensor_values.dc_temperature_fwd2_return,
+                    ],
+                )
+            )
+        )
+
+        ugrids_control_values, ugrids_controller_state = self._ugrids_control.control(
+            ConvertersSensorValues(
+                pump=sensor_values.dc_pump_ugrid,
+                temperature_supply=sensor_values.dc_temperature_ugrid_supply,
+                temperature_return=sensor_values.dc_temperature_ugrid_return,
+                pressure=sensor_values.dc_pressure_ugrid,
+                mix=sensor_values.dc_mix_ugrid,
+                flows=[sensor_values.dc_flow_ugrid1, sensor_values.dc_flow_ugrid2],
+                switches=[
+                    sensor_values.dc_switch_ugrid1,
+                    sensor_values.dc_switch_ugrid2,
+                ],
+                converters=[sensor_values.dc_ugrid1, sensor_values.dc_ugrid2],
+                converter_return_temperatures=[
+                    sensor_values.dc_temperature_ugrid1_return,
+                    sensor_values.dc_temperature_ugrid2_return,
+                ],
+            )
+        )
+
+        self._update_group_control_values(
+            brightloops_aft_control_values,
+            brightloops_fwd_control_values,
+            ugrids_control_values,
+        )
+
+        return {
+            "dc_brightloops_aft": brightloops_aft_controller_state,
+            "dc_brightloops_fwd": brightloops_fwd_controller_state,
+            "dc_ugrids": ugrids_controller_state,
+        }
+
+
+class DcAlarms(BaseAlarms):
+    pass
+
+
+DC_MODULE_DESCRIPTION = ModuleDescription(
+    DcSensorValues,
+    DcControlValues,
+    DcParameters,
+    DcControl,
+    DcControllerState,
+    DcAlarms,
+)

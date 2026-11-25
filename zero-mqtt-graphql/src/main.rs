@@ -18,7 +18,7 @@ use zero_mqtt_graphql::api_model::Api;
 use zero_mqtt_graphql::asyncapi::load_specs;
 use zero_mqtt_graphql::cache::{TopicCache, spawn_eviction};
 use zero_mqtt_graphql::config::AppConfig;
-use zero_mqtt_graphql::graphql::{Mutations, build_schema};
+use zero_mqtt_graphql::graphql::{Mutations, build_schema, schema_sdl};
 use zero_mqtt_graphql::http::router;
 use zero_mqtt_graphql::mqtt::{MqttConnection, MqttSubscriber};
 
@@ -295,7 +295,7 @@ fn export_sdl(api: &Api, mutations: Option<&Mutations>, output: Option<&str>) ->
 
     let cache = Arc::new(TopicCache::new());
     let schema = build_schema(api, &cache, mutations)?;
-    let sdl = schema.sdl();
+    let sdl = schema_sdl(&schema);
     match output {
         Some(path) => {
             std::fs::write(path, &sdl).with_context(|| format!("writing schema to '{path}'"))?;
@@ -312,7 +312,7 @@ mod tests {
 
     use super::*;
     use zero_mqtt_graphql::{
-        api_model::{Direction, FieldType, Payload, Spec, TopicDef, TopicKind},
+        api_model::{Direction, FieldDef, FieldType, Payload, Spec, TopicDef, TopicKind},
         topic_map::TopicMap,
     };
 
@@ -321,7 +321,7 @@ mod tests {
             topic: "test/topic".to_string(),
             payload: Some(Payload {
                 name: "payload".to_string(),
-                fields: BTreeMap::from_iter(vec![("x".to_string(), FieldType::Float)]),
+                fields: BTreeMap::from([("x".to_string(), FieldDef::nullable(FieldType::Float))]),
             }),
             operation: Direction::Send,
             ttl_secs: None,

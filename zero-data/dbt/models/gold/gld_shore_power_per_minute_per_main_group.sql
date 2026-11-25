@@ -1,10 +1,11 @@
--- Power is drawn from shore (AC active power of the ESI converters);
--- a negative reading counts as zero.
+-- Shore power: the AC power the ESI converters draw from shore, counted only while a module runs, as in
+-- gld_shore_converter_losses_per_minute_per_group. Shore minus the converter losses is the DC power the
+-- converters deliver to the 700 VDC bus.
 select
-    date_bin('1 minute'::interval, ts)              as time,
+    date_bin('1 minute'::interval, ts)                      as time,
     topic,
     module,
-    'Shore'                                         as main_group,
-    avg(case when power > 0 then power else 0 end)  as power
+    'Shore'                                                 as main_group,
+    avg(case when running then ac_power else 0 end)        as power
 from {{ ref('slv_shore_power_converters') }}
 group by time, topic, module

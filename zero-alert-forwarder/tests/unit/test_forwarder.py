@@ -1,7 +1,7 @@
-import asyncio
 from collections.abc import AsyncIterator
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 
+from zero_alert_forwarder.alarm_list import AlarmList
 from zero_alert_forwarder.alert import Alert, AlertPriority, AlertUpdate
 from zero_alert_forwarder.forwarder import Forwarder
 
@@ -135,92 +135,28 @@ async def test_gives_up_but_continues_with_next_alert():
     assert notifier.calls == 4
 
 
-class PacedSource:
-    """Yields each alert after a pause, during which reminders can fire."""
-
-    def __init__(self, *steps: tuple[float, Alert]):
-        self._steps = steps
-
-    async def alerts(self) -> AsyncIterator[Alert]:
-        for pause, alert in self._steps:
-            await asyncio.sleep(pause)
-            yield alert
-        await asyncio.sleep(0.1)
-
-
-async def remind(notifier: RecordingNotifier, *steps: tuple[float, Alert]):
-    await Forwarder(
-        PacedSource(*steps),
-        notifier,
-        AlertPriority.WARNING,
-        {AlertUpdate.ACTIVATED},
-        1,
-        timedelta(0),
-        [timedelta(seconds=0.02), timedelta(seconds=0.01)],
-    ).run()
-
-
-async def test_reminds_until_silenced():
-    notifier = RecordingNotifier()
-
-    await remind(
-        notifier,
-        (0, make_alert(1, tag="pump")),
-        (0.2, make_alert(2, update=AlertUpdate.ACKNOWLEDGED, tag="pump")),
-    )
-
-    reminded = len(notifier.notified)
-    assert reminded > 3
-    assert set(notifier.notified) == {1}
-
-
-async def test_stops_reminding_once_acknowledged():
-    notifier = RecordingNotifier()
-
-    await remind(
-        notifier,
-        (0, make_alert(1, tag="pump")),
-        (0.05, make_alert(2, update=AlertUpdate.ACKNOWLEDGED, tag="pump")),
-    )
-
-    # The final pause is long enough for several more reminders, had any survived.
-    assert len(notifier.notified) < 6
-
-
-async def test_acknowledging_another_alarm_does_not_silence():
-    notifier = RecordingNotifier()
-
-    await remind(
-        notifier,
-        (0, make_alert(1, tag="pump")),
-        (0.05, make_alert(2, update=AlertUpdate.ACKNOWLEDGED, tag="fan")),
-    )
-
-    assert len(notifier.notified) > 6
-
-
-async def test_does_not_remind_without_delays():
+async def test_every_row_reaches_the_alarm_list():
+    alarms = AlarmList(AlertPriority.WARNING, timedelta(hours=1))
     notifier = RecordingNotifier()
 
     await Forwarder(
-        PacedSource((0, make_alert(1))),
+        ListSource(
+            make_alert(1, tag="PUMP-1"),
+            make_alert(2, tag="PUMP-1", update=AlertUpdate.ACKNOWLEDGED),
+            make_alert(3, tag="PUMP-2", update=AlertUpdate.IDLE),
+        ),
         notifier,
         AlertPriority.WARNING,
         {AlertUpdate.ACTIVATED},
-        1,
+        3,
         timedelta(0),
+        alarms=alarms,
     ).run()
 
+    listed = {
+        alarm.tag: alarm
+        for alarm in alarms.message(datetime(2026, 10, 22, 17, 0, tzinfo=UTC)).alarms
+    }
+    assert listed["PUMP-1"].active and listed["PUMP-1"].acknowledged
+    assert not listed["PUMP-2"].active
     assert notifier.notified == [1]
-
-
-async def test_keeps_reminding_when_alarm_goes_idle_unacknowledged():
-    notifier = RecordingNotifier()
-
-    await remind(
-        notifier,
-        (0, make_alert(1, tag="pump")),
-        (0.05, make_alert(2, update=AlertUpdate.IDLE, tag="pump")),
-    )
-
-    assert len(notifier.notified) > 6

@@ -52,9 +52,9 @@ class Simulation[
         self._simulation_outputs_cls = simulation_outputs_cls
         self._fmu = fmu
         self._io_mapping: IoMapping = (
-            CombinedIoMapping(sensor_values_clss, simulation_outputs_cls)  # type: ignore
+            CombinedIoMapping(sensor_values_clss, simulation_outputs_cls)
             if isinstance(sensor_values_clss, dict)
-            else ThrsModelIoMapping(sensor_values_clss, simulation_outputs_cls)  # type: ignore
+            else ThrsModelIoMapping(sensor_values_clss, simulation_outputs_cls)  # pyrefly: ignore[bad-argument-type]
         )
 
     @property
@@ -137,8 +137,8 @@ class SimulationUnit[
     ) -> None:
         """Send sensor values, simulation inputs, and simulation outputs to the appropriate channels."""
         await self._channels.send_device_values(
-            sim_result.sensor_values,  # type: ignore[arg-type]
-            sim_result.control_values,  # type: ignore[arg-type]
+            sim_result.sensor_values,  # pyrefly: ignore[bad-argument-type]
+            sim_result.control_values,  # pyrefly: ignore[bad-argument-type]
         )
         await self._channels.send_simulation_inputs(sim_result.simulation_inputs)
         await self._channels.send_simulation_outputs(sim_result.simulation_outputs)

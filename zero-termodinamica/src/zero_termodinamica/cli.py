@@ -5,18 +5,20 @@ from secrets import token_hex
 from faststream import FastStream
 from faststream.mqtt import MQTTBroker
 from faststream.specification.asyncapi import AsyncAPI
-from pydantic import Field
+from pydantic import BaseModel, Field
 from pydantic_settings import (
     BaseSettings,
     CliApp,
     CliSubCommand,
 )
 from zero_modbus_bridge.bridge import ModbusBridge
+from zero_modbus_bridge.commands import ModbusCommand, register_commands
 from zero_modbus_bridge.health import make_health_asgi, run_with_health
 from zero_modbus_bridge.publisher import MqttPublisher
 from zero_modbus_bridge.settings import ModbusSettings, MqttSettings
 from zero_modbus_bridge.stub import Stub
 
+from zero_termodinamica.commands import modbus_commands
 from zero_termodinamica.io import read_modbus_topics
 
 logging.basicConfig(
@@ -40,6 +42,7 @@ class RunCmd(ModbusSettings, MqttSettings):
             buffer_size=max(1, round(BUFFER_SECONDS / self.modbus_probe_interval))
             * len(topics),
         )
+        register_commands(broker, modbus_commands(topics), bridge.write)
         await run_with_health(broker, bridge.run, make_health_asgi(broker, bridge))
 
 
@@ -61,8 +64,14 @@ class AsyncApiCmd(BaseSettings):
         broker = MQTTBroker("localhost:1883")
         spec = AsyncAPI(title=self.title, version=self.version)
         app = FastStream(broker, specification=spec)
-        MqttPublisher.register_publishers(broker, read_modbus_topics())
+        topics = read_modbus_topics()
+        MqttPublisher.register_publishers(broker, topics)
+        register_commands(broker, modbus_commands(topics), _spec_only)
         print(json.dumps(app.schema.to_specification().to_jsonable(), indent=2))
+
+
+async def _spec_only(command: ModbusCommand, message: BaseModel) -> None:
+    raise NotImplementedError("Only registered to document the command topics")
 
 
 class ZeroTermodinamica(BaseSettings, cli_kebab_case=True):

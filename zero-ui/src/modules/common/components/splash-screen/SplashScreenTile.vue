@@ -7,6 +7,8 @@ defineProps<{
   icon: Component;
   /** Without a route the tile is a planned app, shown disabled. */
   to?: string;
+  /** Shown on the corner of the tile, for what needs attention in the app. */
+  badge?: Component;
 }>();
 
 const { t } = useI18n();
@@ -31,6 +33,12 @@ const { t } = useI18n();
           aria-hidden="true"
           class="icon relative size-(--splash-icon)"
         />
+        <span
+          v-if="badge"
+          class="absolute -top-(--splash-badge-offset) -right-(--splash-badge-offset) z-10"
+        >
+          <component :is="badge" />
+        </span>
       </span>
       <span
         class="label text-foreground mt-(--splash-tile-pad) text-center text-(length:--splash-label) leading-(--splash-label-line) font-semibold"
@@ -65,6 +73,7 @@ const { t } = useI18n();
 .tile {
   --wash: transparent;
   --edge: 1px;
+  --splash-badge-offset: calc(var(--splash-tile-pad) - 2px);
   --inner-shadow: inset 0 1px 4px var(--brand);
   --mix-25: color-mix(in srgb, var(--dull) 25%, var(--foreground));
   --mix-50: color-mix(in srgb, var(--dull) 50%, var(--foreground));

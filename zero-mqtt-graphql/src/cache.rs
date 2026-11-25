@@ -58,7 +58,12 @@ impl TopicCache {
                 ttl_secs: *ttl.unwrap_or(&self.default_ttl_secs),
             },
         );
-        // Fails only when nobody listens, which is fine.
+        let _ = self.updates.send(topic.to_string());
+    }
+
+    /// Forget the cached payload for a topic.
+    pub fn remove(&self, topic: &str) {
+        self.data.remove(topic);
         let _ = self.updates.send(topic.to_string());
     }
 
@@ -120,6 +125,7 @@ pub fn spawn_eviction(cache: std::sync::Arc<TopicCache>) {
 mod tests {
     use super::*;
     use serde_json::json;
+    use tokio::sync::broadcast::error::TryRecvError;
 
     #[test_log::test]
     fn test_from_definitions_collects_overrides() {
@@ -171,6 +177,40 @@ mod tests {
         cache.insert("test/topic", serde_json::Value::Null);
 
         assert_eq!(cache.get("test/topic").unwrap(), serde_json::Value::Null);
+    }
+
+    #[test_log::test]
+    fn test_remove() {
+        let cache = TopicCache::new();
+        cache.insert("test/topic", json!({"v": 1}));
+        cache.remove("test/topic");
+
+        assert!(cache.get("test/topic").is_none());
+    }
+
+    #[test_log::test]
+    fn test_insert_and_remove_send_their_update() {
+        let cache = TopicCache::new();
+        let mut updates = cache.updates();
+        cache.insert("test/topic", json!({"v": 1}));
+        cache.remove("test/topic");
+
+        assert_eq!(updates.try_recv(), Ok("test/topic".to_string()));
+        assert_eq!(updates.try_recv(), Ok("test/topic".to_string()));
+        assert_eq!(updates.try_recv(), Err(TryRecvError::Empty));
+    }
+
+    #[test_log::test]
+    fn test_expiry_sends_no_update() {
+        let cache = TopicCache::with_ttl(0, TopicMap::new());
+        cache.insert("on-read", json!(1));
+        cache.insert("on-evict", json!(2));
+        let mut updates = cache.updates();
+        std::thread::sleep(std::time::Duration::from_millis(10));
+
+        assert!(cache.get("on-read").is_none());
+        cache.evict_expired();
+        assert_eq!(updates.try_recv(), Err(TryRecvError::Empty));
     }
 
     #[test_log::test]

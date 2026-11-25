@@ -4,7 +4,13 @@ from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.control.modules.drives import DrivesAlarms, DrivesControl, DrivesParameters
+from thrs.control.modules.drives.control import DrivesAlarms, DrivesControl
+from thrs.control.modules.drives.io import (
+    DrivesSensorValues,
+    DrivesSimulationInputs,
+    DrivesSimulationOutputs,
+)
+from thrs.control.modules.drives.state import DrivesParameters
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import (
     ActiveHeatSource,
@@ -13,11 +19,6 @@ from thrs.input_output.definitions.simulation import (
     PropulsionDrive,
 )
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
-from thrs.input_output.modules.drives import (
-    DrivesSensorValues,
-    DrivesSimulationInputs,
-    DrivesSimulationOutputs,
-)
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import drives_path

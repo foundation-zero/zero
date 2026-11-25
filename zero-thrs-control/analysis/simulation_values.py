@@ -50,7 +50,7 @@ class StampedDf[T](ThrsValues):
 
 class SimulationValues(ThrsValues):
     def get_values_at_time(self, time: datetime) -> Self:
-        SelectedInputsModel = self.__class__.original  # type: ignore  # noqa: N806
+        SelectedInputsModel = self.__class__.original  # noqa: N806  # pyrefly: ignore[missing-attribute]
 
         def _component(component_name, component):
             component_value = getattr(self, component_name)
@@ -117,10 +117,10 @@ def _component_with_metadata(field, component):
     # Preserve the original field metadata (like included_in_fmu) from the parent class
     if getattr(field, "json_schema_extra", None):
         info = FieldInfo.from_annotation(
-            Annotated[
+            Annotated[  # pyrefly: ignore[bad-argument-type]
                 component,
                 Field(json_schema_extra=field.json_schema_extra),
-            ]  # type: ignore
+            ]
         )
         return Annotated[component, info]
     return component
@@ -133,12 +133,12 @@ def dataframify(cls: type[ThrsValues]) -> type:
     if isclass(cls) and issubclass(cls, Stamped):
         field_type = unit_for_annotation(cls)
 
-        return Stamped[field_type] | StampedDf[field_type]  # type: ignore
+        return Stamped[field_type] | StampedDf[field_type]
 
     components = {
         component_name: _component_with_metadata(
             component,
-            dataframify(component.annotation),  # type: ignore
+            dataframify(component.annotation),  # pyrefly: ignore[bad-argument-type]
         )
         for component_name, component in cls.model_fields.items()
     }
@@ -148,11 +148,11 @@ def dataframify(cls: type[ThrsValues]) -> type:
         for method_name in cls.model_computed_fields
     }
 
-    model = create_model(  # type: ignore
+    model = create_model(  # pyrefly: ignore[no-matching-overload]
         f"{cls.__name__!s}Df",
         __base__=SimulationValues,
         __validators__=methods,
-        **components,  # type: ignore
+        **components,
     )
 
     _dataframed_dataclasses[cls] = model

@@ -6,7 +6,7 @@ from datetime import timedelta
 from pathlib import Path
 from tempfile import TemporaryDirectory, gettempdir
 from types import TracebackType
-from typing import Any, Protocol, Self, cast, runtime_checkable
+from typing import Any, Protocol, Self, runtime_checkable
 
 from fmpy import extract, read_model_description
 from fmpy.fmi2 import FMU2Slave
@@ -77,15 +77,14 @@ class Fmu:
 
             extract(file_path, self._cached_unzip_dir)
 
-        # Due to test issues, use an instance-local extraction directory to avoid file locking
-        # collisions when multiple tests/processes initialize the same FMU.
+        # The cache is shared by every process (e.g. pytest workers), so each instance
+        # loads its binaries from a private copy and never locks another's.
         self._temp_dir = TemporaryDirectory(
             prefix=f"fmu_instance_{file_key}_",
             ignore_cleanup_errors=True,
         )
         self._temp_unzip_dir = self._temp_dir.name
 
-        # Copy cached extraction into an instance-local directory to keep DLLs isolated.
         shutil.copytree(
             self._cached_unzip_dir,
             self._temp_unzip_dir,
@@ -144,16 +143,13 @@ class Fmu:
 
         self._time += duration.total_seconds()
 
-        return cast(
-            dict[str, Any],
-            dict(
-                zip(
-                    self._output_names,
-                    self._fmu_instance.getReal(self._var_mapper(self._output_names)),
-                    strict=False,
-                )
-            ),
-        )  # type: ignore
+        return dict(
+            zip(
+                self._output_names,
+                self._fmu_instance.getReal(self._var_mapper(self._output_names)),
+                strict=False,
+            )
+        )
 
     @property
     def solver_time(self):

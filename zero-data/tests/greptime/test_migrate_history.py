@@ -8,6 +8,7 @@ from collections.abc import Iterator
 from datetime import date
 from pathlib import Path
 
+import psycopg
 import pytest
 
 from tests.greptime.conftest import Greptime as Query
@@ -215,6 +216,72 @@ def test_run_copies_a_wide_day_in_parts(
 
     assert len(inserts) == 14
     assert check(greptime, load(greptime, SPEC)) == []
+
+
+@pytest.mark.parametrize(
+    "dropped",
+    [
+        psycopg.errors.InternalError_("Internal error: 1003"),
+        psycopg.errors.OperatorIntervention("operation was canceled"),
+    ],
+)
+def test_run_sends_a_statement_again_when_greptime_drops_it(
+    tables: Query,
+    greptime: Greptime,
+    monkeypatch: pytest.MonkeyPatch,
+    dropped: psycopg.Error,
+) -> None:
+    failures = [dropped]
+    waits: list[float] = []
+
+    def failing_once(sql: str) -> None:
+        if sql.startswith("INSERT") and failures:
+            raise failures.pop()
+        Greptime.run(greptime, sql)
+
+    monkeypatch.setattr(greptime, "run", failing_once)
+
+    assert run(greptime, load(greptime, SPEC), None, 0, waits.append) == 10
+
+    assert migrate_history.RETRY_WAIT in waits
+    assert check(greptime, load(greptime, SPEC)) == []
+
+
+def test_run_counts_a_day_again_when_greptime_drops_the_count(
+    tables: Query, greptime: Greptime, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    failures = [psycopg.errors.InternalError_("Internal error: 1003")]
+    waits: list[float] = []
+
+    def failing_once(sql: str) -> int:
+        if failures:
+            raise failures.pop()
+        return Greptime.count(greptime, sql)
+
+    monkeypatch.setattr(greptime, "count", failing_once)
+
+    assert run(greptime, load(greptime, SPEC), None, 0, waits.append) == 10
+
+    assert waits.count(migrate_history.RETRY_WAIT) == 1
+
+
+def test_run_gives_up_when_greptime_keeps_failing(
+    tables: Query, greptime: Greptime, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    attempts: list[str] = []
+
+    def failing(sql: str) -> None:
+        if sql.startswith("INSERT"):
+            attempts.append(sql)
+            raise psycopg.errors.InternalError_("Internal error: 1003")
+        Greptime.run(greptime, sql)
+
+    monkeypatch.setattr(greptime, "run", failing)
+
+    with pytest.raises(psycopg.errors.InternalError_):
+        migrate(greptime)
+
+    assert len(attempts) == migrate_history.ATTEMPTS
 
 
 def test_a_second_run_copies_nothing(tables: Query, greptime: Greptime) -> None:

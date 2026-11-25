@@ -1,3 +1,4 @@
+from typing import Annotated
 from unittest.mock import MagicMock
 
 import pytest
@@ -58,6 +59,24 @@ async def test_reader_annotated_uint16():
     assert result is not None
     assert result.val == 42
     assert result.flag is True
+
+
+class _SignedModel(BaseModel):
+    temperature: Annotated[
+        float | None, ModbusField(register=10, data_type="int16", scale_factor=0.01)
+    ]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(("raw", "expected"), [(0x10000 - 1850, -18.5), (450, 4.5)])
+async def test_reader_annotated_int16(raw: int, expected: float):
+    mock_modbus = MagicMock()
+    mock_modbus.read_holding_registers.return_value = [raw]
+
+    topic = AnnotationModbusTopic(topic="test/i", model=_SignedModel)
+    result = ModbusReader(mock_modbus, [topic]).read_topic(topic)
+
+    assert result.temperature == pytest.approx(expected)
 
 
 @pytest.mark.asyncio
@@ -183,7 +202,7 @@ def test_read_all_reconnects_after_dead_unit_drops_socket():
         AnnotationModbusTopic(topic="t/2", model=FloatModel, unit_id=2),  # dead
         AnnotationModbusTopic(topic="t/3", model=FloatModel, unit_id=3),
     ]
-    reader = ModbusReader(gateway, topics)  # type: ignore[arg-type]
+    reader = ModbusReader(gateway, topics)  # pyrefly: ignore[bad-argument-type]
 
     results = {name: payload for name, payload in reader.read_all()}
 
@@ -216,7 +235,7 @@ def test_read_all_stops_on_unreachable_gateway():
         AnnotationModbusTopic(topic=f"t/{i}", model=FloatModel, unit_id=i)
         for i in range(1, 6)
     ]
-    reader = ModbusReader(gateway, topics)  # type: ignore[arg-type]
+    reader = ModbusReader(gateway, topics)  # pyrefly: ignore[bad-argument-type]
 
     assert list(reader.read_all()) == []
     # Breaks on the first failed open instead of retrying every remaining topic.

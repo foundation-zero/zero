@@ -1,6 +1,7 @@
 import { INCLUDED_APPS, ZeroApps } from "@/apps.ts";
 import { ZiHydrogenerator } from "@common/components/icons";
 import {
+  RiAlarmWarningLine,
   RiCheckboxCircleLine,
   RiCompass3Line,
   RiFlashlightLine,
@@ -11,6 +12,7 @@ import {
   RiSteering2Line,
   RiTempHotLine,
 } from "@remixicon/vue";
+import { defineAsyncComponent } from "vue";
 import type { SplashEntry, SplashEntryMotion, SplashGroup } from "./splash-screen.types";
 
 /** Ripple entry from the launcher motion prototype: tiles scale up from the screen centre outward. */
@@ -98,6 +100,15 @@ const ALL_SPLASH_GROUPS: SplashGroup[] = [
         to: "/domestic",
         nameKey: "views.splash.apps.domestic.title",
         icon: RiLightbulbAiLine,
+      },
+      {
+        app: ZeroApps.alarms,
+        to: "/alarms",
+        nameKey: "views.splash.apps.alarms.title",
+        icon: RiAlarmWarningLine,
+        badge: defineAsyncComponent(
+          () => import("@/modules/alarms/components/active-alarms-badge/ActiveAlarmsBadge.vue"),
+        ),
       },
       {
         app: ZeroApps.grafana,

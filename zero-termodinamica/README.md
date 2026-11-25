@@ -10,6 +10,14 @@ The application reads modbus from a Modbus TCP adapter. After reading, it publis
 
 The script produces a json file (`modbus_units.json`) that can be loaded in by the application to read specific modbus registers and bundle & publish them as json.
 
+### Commands
+
+The application also writes to the bridges. `termodinamica/heat-pump/set` takes
+`{"power": bool, "setpoint_temperature": float}` (6..70 °C, whole degrees) and
+switches the heat pump; `termodinamica/heat-pump` reads the result back. Whoever
+sends it runs the external water pump, which may only stop once
+`compressor_speed` reads zero.
+
 ## Requirements
 
 - just

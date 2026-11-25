@@ -8,7 +8,7 @@ from pytest import fixture
 from tests.helpers.collector import PolarsCollector
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.input_output.modules.dhw import (
+from thrs.control.modules.dhw.io import (
     DhwControlValues,
     DhwSensorValues,
     DhwSimulationInputs,
@@ -36,7 +36,6 @@ def test_simulation(simulation, simulation_inputs, control, alarms):
         simulator_input_field_setters(
             DhwSimulationInputs,
             ignore=[
-                "mode",  # Not a physical quantity
                 # The FMU tolerates these, even with the control running
                 ("dhw_hvac_exchanger", "maximum_temperature"),
                 ("dhw_seawater_supply", "temperature"),

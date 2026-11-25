@@ -127,8 +127,10 @@ jobs:
           images: |
             ${{ env.IMAGE }}
             ${{ env.GHCR_URL }}/${{ github.repository }}/io_validation_tool
+          # dev- images expire after 7 days (gcp-common). Only a release version has no "-".
           tags: |
             type=raw,value=${{ steps.version.outputs.version }}
+            type=raw,value=dev-${{ steps.version.outputs.version }},enable=${{ contains(steps.version.outputs.version, '-') }}
       - run: 'echo "$GSHEET_SA_KEY" > .gsheet-sa-key.json'
         working-directory: zero-data
         env:

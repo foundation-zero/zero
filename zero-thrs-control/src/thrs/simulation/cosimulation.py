@@ -143,7 +143,6 @@ class CoSimulationMaster(ExitStack, FmuLike):
         for participant, coupling in zip(
             self._participants, self._compiled_couplings, strict=False
         ):
-            # filter the inputs for the current participant
             direct_inputs = {
                 key: value
                 for key, value in inputs.items()

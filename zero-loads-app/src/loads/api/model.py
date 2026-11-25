@@ -156,13 +156,13 @@ async def get_load_case(
 
     return LoadCase(
         id=ID(str(load_case.id)),
-        name=load_case.name,  # type: ignore
-        awa=load_case.awa,  # type: ignore
-        aws=load_case.aws,  # type: ignore
-        twa=load_case.twa,  # type: ignore
-        tws=load_case.tws,  # type: ignore
-        bsp=load_case.bsp,  # type: ignore
-        heel=load_case.heel,  # type: ignore
+        name=load_case.name,  # pyrefly: ignore[bad-argument-type]
+        awa=load_case.awa,  # pyrefly: ignore[bad-argument-type]
+        aws=load_case.aws,  # pyrefly: ignore[bad-argument-type]
+        twa=load_case.twa,  # pyrefly: ignore[bad-argument-type]
+        tws=load_case.tws,  # pyrefly: ignore[bad-argument-type]
+        bsp=load_case.bsp,  # pyrefly: ignore[bad-argument-type]
+        heel=load_case.heel,  # pyrefly: ignore[bad-argument-type]
     )
 
 
@@ -175,13 +175,13 @@ async def get_load_cases(session: AsyncSession) -> list[LoadCase]:
     return [
         LoadCase(
             id=ID(str(load_case.id)),
-            name=load_case.name,  # type: ignore
-            awa=load_case.awa,  # type: ignore
-            aws=load_case.aws,  # type: ignore
-            twa=load_case.twa,  # type: ignore
-            tws=load_case.tws,  # type: ignore
-            bsp=load_case.bsp,  # type: ignore
-            heel=load_case.heel,  # type: ignore
+            name=load_case.name,  # pyrefly: ignore[bad-argument-type]
+            awa=load_case.awa,  # pyrefly: ignore[bad-argument-type]
+            aws=load_case.aws,  # pyrefly: ignore[bad-argument-type]
+            twa=load_case.twa,  # pyrefly: ignore[bad-argument-type]
+            tws=load_case.tws,  # pyrefly: ignore[bad-argument-type]
+            bsp=load_case.bsp,  # pyrefly: ignore[bad-argument-type]
+            heel=load_case.heel,  # pyrefly: ignore[bad-argument-type]
         )
         for load_case in load_cases
     ]
@@ -248,11 +248,11 @@ async def get_sails_by_case_ids(
     for load_case_id, sail in result.all():
         grouped[str(load_case_id)].append(
             SailType(
-                id=sail.id,  # type: ignore
-                abbreviation=sail.abbreviation,  # type: ignore
-                position_id=sail.position_id,  # type: ignore
-                name=sail.name,  # type: ignore
-                variant_name=sail.variant_name,  # type: ignore
+                id=sail.id,  # pyrefly: ignore[bad-argument-type]
+                abbreviation=sail.abbreviation,  # pyrefly: ignore[bad-argument-type]
+                position_id=sail.position_id,  # pyrefly: ignore[bad-argument-type]
+                name=sail.name,  # pyrefly: ignore[bad-argument-type]
+                variant_name=sail.variant_name,  # pyrefly: ignore[bad-argument-type]
             )
         )
 
@@ -355,11 +355,11 @@ async def get_sails(ids: Sequence[str] | None, session: AsyncSession) -> list[Sa
     if sails:
         return [
             SailType(
-                id=sail.id,  # type: ignore
-                abbreviation=sail.abbreviation,  # type: ignore
-                position_id=sail.position_id,  # type: ignore
-                name=sail.name,  # type: ignore
-                variant_name=sail.variant_name,  # type: ignore
+                id=sail.id,  # pyrefly: ignore[bad-argument-type]
+                abbreviation=sail.abbreviation,  # pyrefly: ignore[bad-argument-type]
+                position_id=sail.position_id,  # pyrefly: ignore[bad-argument-type]
+                name=sail.name,  # pyrefly: ignore[bad-argument-type]
+                variant_name=sail.variant_name,  # pyrefly: ignore[bad-argument-type]
             )
             for sail in sails
         ]

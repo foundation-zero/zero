@@ -5,9 +5,9 @@ from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
 from tests.modules.pvt.conftest import PvtSimulation
-from thrs.control.modules.pvt import PvtControl
+from thrs.control.modules.pvt.control import PvtControl
+from thrs.control.modules.pvt.io import PvtSimulationInputs
 from thrs.input_output.definitions.control import Valve
-from thrs.input_output.modules.pvt import PvtSimulationInputs
 
 
 @fixture(
@@ -16,7 +16,6 @@ from thrs.input_output.modules.pvt import PvtSimulationInputs
             PvtSimulationInputs,
             ignore=[
                 "pvt_pcm_supply",  # Switches don't lend themselves to absurdation
-                "mode",  # Not a physical quantity
             ],
         )
     )

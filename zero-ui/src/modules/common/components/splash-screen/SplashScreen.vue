@@ -70,6 +70,7 @@ onBeforeUnmount(() => animations.forEach((animation) => animation.cancel()));
             :name="t(tile.nameKey)"
             :icon="tile.icon"
             :to="tile.to"
+            :badge="tile.badge"
           />
         </SplashScreenGroup>
       </div>

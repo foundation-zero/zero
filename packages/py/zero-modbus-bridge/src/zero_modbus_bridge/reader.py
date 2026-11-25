@@ -6,7 +6,7 @@ from typing import Any, Iterator
 from pydantic import BaseModel
 from pyModbusTCP.client import ModbusClient
 
-from zero_modbus_bridge.bit_ops import lsw_registers_to_float
+from zero_modbus_bridge.bit_ops import lsw_registers_to_float, uint16_to_int16
 from zero_modbus_bridge.io import ModbusField, ModbusTopic
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ class ModbusReader:
         """
         if self._modbus.is_open:
             return True
-        return bool(self._modbus.open())
+        return self._modbus.open()
 
     def read_all(self) -> Iterator[tuple[str, Any]]:
         """Read every topic once and yield ``(topic_name, payload)``.
@@ -90,6 +90,8 @@ class ModbusReader:
             return self._read_float32(register)
         if field.modbus_type == "coil":
             return self._read_coil(register)
+        if field.data_type == "int16":
+            return uint16_to_int16(self._read_uint16(register))
         return self._read_uint16(register)
 
     def _read_float32(self, register: int) -> float | None:
@@ -104,7 +106,7 @@ class ModbusReader:
             return bool(value[0])
         raise ValueError(f"Failed to read coil from address {register}")
 
-    def _read_uint16(self, register: int) -> int | None:
+    def _read_uint16(self, register: int) -> int:
         value = self._modbus.read_holding_registers(register, 1)
         if value:
             return value[0]

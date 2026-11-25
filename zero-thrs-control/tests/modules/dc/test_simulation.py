@@ -4,7 +4,7 @@ import pytest
 from pytest import fixture
 
 from tests.helpers.simulation_inputs import simulator_input_field_setters
-from thrs.input_output.modules.dc import (
+from thrs.control.modules.dc.io import (
     DcControlValues,
     DcSensorValues,
     DcSimulationInputs,
@@ -15,9 +15,7 @@ from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import dc_path
 
 
-@fixture(
-    params=list(simulator_input_field_setters(DcSimulationInputs, ignore=["mode"]))
-)
+@fixture(params=list(simulator_input_field_setters(DcSimulationInputs)))
 def incorrect_simulation_inputs(simulation_inputs, request):
     request.param(simulation_inputs, -9e7)
     return simulation_inputs

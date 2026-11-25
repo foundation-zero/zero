@@ -32,18 +32,18 @@ run module='thrs': (run_lockstep module)
 [parallel]
 run_split module='thrs': (run_control module) (run_simulation module)
 
-check: lint type_check test test_mqtt
+check: lint format type_check test test_mqtt
 
 check_static: lint_no_fix format type_check
 
 lint:
-    uv run ruff check src tests
+    uv run ruff check src tests docs/skills
 
 lint_no_fix:
-    uv run ruff check --no-fix src tests
+    uv run ruff check --no-fix src tests docs/skills
 
 type_check:
-    uv run pyright
+    uv run pyrefly check
 
 test *args:
     uv run pytest {{ cov }} -n auto -m "not io and not mqtt" {{ args }}
@@ -56,10 +56,10 @@ test_io *args:
     uv run pytest {{ cov }} -m "io" {{ args }}
 
 format:
-    uv run ruff format --check src tests
+    uv run ruff format --check src tests docs/skills
 
 format_fix:
-    uv run ruff format src tests
+    uv run ruff format src tests docs/skills
 
 build_fmu_compile_container:
     docker build . --platform linux/amd64 --tag fmu_compile_image --target fmu_compile
@@ -108,14 +108,19 @@ test_spec *args:
 manual_scripts := "docs/skills/thrs-module-manual/scripts"
 manuals := "../zero-ui/src/modules/thrapp/documentation"
 
-manual_pdf module:
+manual module: _chromium
     uv run python {{ manual_scripts }}/manual_version.py {{ module }} /tmp/thrs-manuals/{{ module }}.html
-    cd ../zero-ui && pnpm install --silent && pnpm exec playwright install chromium
-    cd ../zero-ui && pnpm render-manual /tmp/thrs-manuals/{{ module }}.html
+    uv run python {{ manual_scripts }}/manual_render.py diagram /tmp/thrs-manuals/{{ module }}.html
 
-manual_publish module:
+manual_publish module: _chromium
+    uv run python {{ manual_scripts }}/manual_render.py check /tmp/thrs-manuals/{{ module }}.html
     cp /tmp/thrs-manuals/{{ module }}.html {{ manuals }}/{{ module }}.html
+    if [ -f /tmp/thrs-manuals/{{ module }}.svg ]; then cp /tmp/thrs-manuals/{{ module }}.svg {{ manuals }}/{{ module }}.svg; else rm -f {{ manuals }}/{{ module }}.svg; fi
     cd ../zero-ui && pnpm exec prettier --write src/modules/thrapp/documentation/{{ module }}.html
+    uv run python {{ manual_scripts }}/manual_render.py pdf /tmp/thrs-manuals/{{ module }}.html
+
+_chromium:
+    uv run playwright install chromium
 
 manual_stamp module:
     uv run python {{ manual_scripts }}/manual_version.py {{ module }} {{ manuals }}/{{ module }}.html

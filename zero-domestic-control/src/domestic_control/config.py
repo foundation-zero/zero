@@ -30,15 +30,15 @@ class Settings(BaseSettings):
 
     greptime_url: str
 
-    @computed_field  # type: ignore[misc]
+    @computed_field
     @property
     def pg_url(self) -> str:
         return f"postgresql+psycopg://{self.pg_user}:{self.pg_password}@{self.pg_host}:{self.pg_port}/{self.pg_db}"
 
-    @computed_field  # type: ignore[misc]
+    @computed_field
     @property
     def greptime_url_with_driver(self) -> str:
         return self.greptime_url.replace("mysql", "mysql+aiomysql")
 
 
-settings = Settings()  # type: ignore
+settings = Settings()

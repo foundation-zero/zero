@@ -153,7 +153,7 @@ fn tree_conflict<T>(topic: &str, existing: &str) -> anyhow::Result<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api_model::{Direction, FieldType, Payload, TopicKind};
+    use crate::api_model::{Direction, FieldDef, FieldType, Payload, TopicKind};
 
     /// Helper for a Send Topic with one Float field.
     fn mock_topic(topic: &str, field: &str) -> TopicDef {
@@ -161,7 +161,7 @@ mod tests {
             topic: topic.to_string(),
             payload: Some(Payload {
                 name: format!("{field}payload"),
-                fields: BTreeMap::from_iter(vec![(field.to_string(), FieldType::Float)]),
+                fields: BTreeMap::from([(field.to_string(), FieldDef::nullable(FieldType::Float))]),
             }),
             operation: Direction::Send,
             ttl_secs: None,

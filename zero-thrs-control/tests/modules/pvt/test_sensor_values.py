@@ -3,10 +3,10 @@ from datetime import timedelta
 from pytest import approx
 
 from tests.modules.pvt.conftest import PvtRunner
-from thrs.control.modules.pvt import PvtControl
+from thrs.control.modules.pvt.control import PvtControl
+from thrs.control.modules.pvt.io import PvtSimulationInputs
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import HeatSource
-from thrs.input_output.modules.pvt import PvtSimulationInputs
 
 
 def test_main_heat_combines_aft_and_fwd(

@@ -59,7 +59,7 @@ class PostgresPersistentEngine(PersistentEngine):
             return ModulePersistenceSnapshot(
                 parameters=stored.parameters,
                 manual_control_values=stored.manual_control_values,
-                control_mode=stored.automation_mode,  # type: ignore[arg-type]
+                control_mode=stored.automation_mode,  # pyrefly: ignore[bad-argument-type]
             )
 
     async def save(self, module_name: str, snapshot: ModulePersistenceSnapshot) -> None:
@@ -71,7 +71,6 @@ class PostgresPersistentEngine(PersistentEngine):
             updated_at=datetime.now(UTC),
         )
 
-        # Insert or update the record if it already exists
         upsert = statement.on_conflict_do_update(
             index_elements=[ModulePersistence.module_name],
             set_={

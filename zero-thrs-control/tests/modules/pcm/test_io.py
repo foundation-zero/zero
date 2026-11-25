@@ -5,7 +5,7 @@ from tests.modules.conftest import (
     compare_modelica_names,
     compare_yard_tags,
 )
-from thrs.input_output.modules.pcm import (
+from thrs.control.modules.pcm.io import (
     PcmControlValues,
     PcmSensorValues,
     PcmSimulationInputs,

@@ -11,11 +11,14 @@ type SplashTileBase = {
 export type SplashAppTile = SplashTileBase & {
   app: ZeroApps;
   to: string;
+  /** Shown on the corner of the tile, for what needs attention in the app. */
+  badge?: Component;
 };
 
 export type SplashComingSoonTile = SplashTileBase & {
   app?: never;
   to?: never;
+  badge?: never;
 };
 
 export type SplashTile = SplashAppTile | SplashComingSoonTile;

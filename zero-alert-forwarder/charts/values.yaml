@@ -28,15 +28,30 @@ forwarding:
   updates:
     - Activated
   attempts: 3
-  # Re-notify while an alarm is not acknowledged: after 20s, then 10s, 5s, 3s, and every 1s after.
-  reminderDelaysSeconds: [20, 10, 5, 3, 1]
   # Bounds one poll of one mirror, so a stalled database does not block the other.
   pollTimeoutSeconds: 10
+  # Bounds the first poll, which reads the day so far to rebuild the alarm list.
+  historyTimeoutSeconds: 60
   dryRun: false
+
+mqtt:
+  # Broker to publish the alarm list to, for zero-mqtt-graphql; empty publishes nothing.
+  host: ""
+  port: 1883
+  # Optional Secret with the broker username and password.
+  existingSecret: ""
+  existingSecretUsernameKey: username
+  existingSecretPasswordKey: password
+
+alarmList:
+  minPriority: Warning
+  # Alarms that ended stay listed this long after their last change.
+  windowMinutes: 60
+  intervalSeconds: 5
 
 livenessPath: /tmp/liveness
 # Liveness is refreshed per notification, so this must exceed one notification's retries:
-# attempts * 10s + (attempts - 1) * pollIntervalSeconds, and also pollTimeoutSeconds.
+# attempts * 10s + (attempts - 1) * pollIntervalSeconds, and also pollTimeoutSeconds and historyTimeoutSeconds.
 livenessMaxAgeSeconds: 120
 # Created once polling is set up; gates a rolling update on the new pod being ready.
 readinessPath: /tmp/ready

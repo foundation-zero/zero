@@ -4,8 +4,22 @@ from typing import Any, Self
 from pydantic import computed_field
 
 from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
-from thrs.control.modules.dhw import DhwControl, DhwParameters
-from thrs.control.modules.drives import DrivesControl, DrivesParameters
+from thrs.control.modules.dhw.control import DhwControl
+from thrs.control.modules.dhw.io import (
+    DhwControlValues,
+    DhwSensorValues,
+    DhwSimulationInputs,
+    DhwSimulationOutputs,
+)
+from thrs.control.modules.dhw.state import DhwParameters
+from thrs.control.modules.drives.control import DrivesControl
+from thrs.control.modules.drives.io import (
+    DrivesControlValues,
+    DrivesSensorValues,
+    DrivesSimulationInputs,
+    DrivesSimulationOutputs,
+)
+from thrs.control.modules.drives.state import DrivesParameters
 from thrs.input_output.base import (
     CombinedValues,
     Stamped,
@@ -13,18 +27,6 @@ from thrs.input_output.base import (
     computed_meta,
 )
 from thrs.input_output.definitions import sensor, simulation
-from thrs.input_output.modules.dhw import (
-    DhwControlValues,
-    DhwSensorValues,
-    DhwSimulationInputs,
-    DhwSimulationOutputs,
-)
-from thrs.input_output.modules.drives import (
-    DrivesControlValues,
-    DrivesSensorValues,
-    DrivesSimulationInputs,
-    DrivesSimulationOutputs,
-)
 from thrs.simulation.cosimulation import (
     CoSimulationMaster,
     CoSimulationParticipant,
@@ -35,7 +37,6 @@ from thrs.simulation.io_mapping import CombinedIoMapping
 
 
 class MockFmu(Fmu):
-    # This mock FMU ignores the inputs and always returns the same outputs, but it records the inputs it receives for assertions in the test.
     def __init__(self, outputs: dict[str, Any]):
         self.inputs: list[dict[str, Any]] = []
         self._outputs = outputs
@@ -47,7 +48,7 @@ class MockFmu(Fmu):
     def __enter__(self) -> Self:
         return self
 
-    def __exit__(self, *_) -> bool:
+    def __exit__(self, *_) -> bool:  # pyrefly: ignore[bad-override]
         return True
 
     @property
