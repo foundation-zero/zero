@@ -1629,7 +1629,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(NULLIF(minimum_soc__value, 0)) AS \"SoC\"\nFROM public.marpower__battery__pack t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS device,\n  a.\"SoC\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(NULLIF(minimum_soc__value, 0)) AS \"SoC\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__battery__pack t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -1750,7 +1750,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(battery_power__value) AS \"Power\"\nFROM public.marpower__battery__pack t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS device,\n  a.\"Power\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(battery_power__value) AS \"Power\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__battery__pack t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -1871,7 +1871,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(maximum_cell_temperature__value) AS \"Max cell temperature\"\nFROM public.marpower__battery__pack t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS device,\n  a.\"Max cell temperature\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(maximum_cell_temperature__value) AS \"Max cell temperature\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__battery__pack t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -1992,7 +1992,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0)) AS \"Max channel temperature\"\nFROM public.marpower__battery__pack t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS device,\n  a.\"Max channel temperature\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(NULLIF(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value), 0)) AS \"Max channel temperature\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__battery__pack t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -2113,7 +2113,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT '05_' || split_part(t.technical_name, '-', 2) AS \"System\",\n  coalesce(m.name || ' · ', '') || t.technical_name AS \"Pack\",\n  last_value(minimum_soc__value ORDER BY t.timestamp) AS \"SoC [%]\",\n  last_value(maximum_cell_temperature__value ORDER BY t.timestamp) AS \"Max temp [°C]\",\n  round(last_value(battery_power__value ORDER BY t.timestamp), 1) AS \"Power [kW]\",\n  last_value(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value) ORDER BY t.timestamp) AS \"DC:DC max [°C]\"\nFROM public.marpower__battery__pack t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY t.technical_name, m.name ORDER BY t.technical_name"
+                        "rawSql": "SELECT '05_' || split_part(a.technical_name, '-', 2) AS \"System\",\n  coalesce(m.name || ' · ', '') || a.technical_name AS \"Pack\",\n  a.\"SoC [%]\",\n  a.\"Max temp [°C]\",\n  a.\"Power [kW]\",\n  a.\"DC:DC max [°C]\"\nFROM (SELECT last_value(minimum_soc__value ORDER BY t.timestamp) AS \"SoC [%]\",\n    last_value(maximum_cell_temperature__value ORDER BY t.timestamp) AS \"Max temp [°C]\",\n    round(last_value(battery_power__value ORDER BY t.timestamp), 1) AS \"Power [kW]\",\n    last_value(greatest(cell_01_temperature_1__value, cell_01_temperature_2__value, cell_02_temperature_1__value, cell_02_temperature_2__value) ORDER BY t.timestamp) AS \"DC:DC max [°C]\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__battery__pack t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY a.technical_name"
                       }
                     },
                     "refId": "A",
@@ -2355,7 +2355,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(heat_sink_0_temperature__value * 0.1) AS \"Hs-0\",\n  avg(heat_sink_1_temperature__value * 0.1) AS \"Hs-1\"\nFROM public.marpower__dc_700v__dc_switch t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS device,\n  a.\"Hs-0\",\n  a.\"Hs-1\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(heat_sink_0_temperature__value * 0.1) AS \"Hs-0\",\n    avg(heat_sink_1_temperature__value * 0.1) AS \"Hs-1\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__dc_700v__dc_switch t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -2476,7 +2476,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(dcv_s_0__value) AS \"Value\"\nFROM public.marpower__dc_700v__dc_switch t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS device,\n  a.\"Value\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(dcv_s_0__value) AS \"Value\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__dc_700v__dc_switch t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -2597,7 +2597,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(dcv_s_1__value) AS \"Value\"\nFROM public.marpower__dc_700v__dc_switch t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS device,\n  a.\"Value\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(dcv_s_1__value) AS \"Value\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__dc_700v__dc_switch t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -2718,7 +2718,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(dcv_ext__value) AS \"Value\"\nFROM public.marpower__dc_700v__dc_switch t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS device,\n  a.\"Value\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(dcv_ext__value) AS \"Value\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__dc_700v__dc_switch t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -2839,7 +2839,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(dcc_s_0__value) AS \"Value\"\nFROM public.marpower__dc_700v__dc_switch t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS device,\n  a.\"Value\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(dcc_s_0__value) AS \"Value\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__dc_700v__dc_switch t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",
@@ -2960,7 +2960,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n  coalesce(m.name || ' · ', '') || t.technical_name AS device,\n  avg(dcc_s_1__value) AS \"Value\"\nFROM public.marpower__dc_700v__dc_switch t\nLEFT JOIN public.marpower__device_metadata m ON m.topic = t.topic\nWHERE $__timeFilter(t.timestamp)\nGROUP BY 1, 2 ORDER BY 1"
+                        "rawSql": "SELECT a.time,\n  coalesce(m.name || ' · ', '') || a.technical_name AS device,\n  a.\"Value\"\nFROM (SELECT date_bin('$__interval', t.timestamp, TIMESTAMP '1970-01-01') AS time,\n    avg(dcc_s_1__value) AS \"Value\",\n    t.topic,\n    t.technical_name\n  FROM public.marpower__dc_700v__dc_switch t\n  WHERE $__timeFilter(timestamp)\n  GROUP BY 1, t.topic, t.technical_name) a\nLEFT JOIN public.marpower__device_metadata m ON m.topic = a.topic\nORDER BY 1"
                       }
                     },
                     "refId": "A",

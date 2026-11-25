@@ -1054,7 +1054,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE $__timeFilter(fire.ts)\n  AND meta.section = 'Accommodation' AND meta.room_or_area LIKE '%Cabin%'\nGROUP BY 1, 2 ORDER BY 1, 2"
+                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE fire.ts >= $__fromTime AND fire.ts <= $__toTime\n  AND meta.section = 'Accommodation' AND meta.room_or_area LIKE '%Cabin%'\nGROUP BY 1, 2 ORDER BY 1, 2"
                       }
                     },
                     "refId": "A",
@@ -1416,7 +1416,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE $__timeFilter(fire.ts)\n  AND meta.section = 'Accommodation' AND meta.room_or_area LIKE '%Corridor%'\nGROUP BY 1, 2 ORDER BY 1, 2"
+                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE fire.ts >= $__fromTime AND fire.ts <= $__toTime\n  AND meta.section = 'Accommodation' AND meta.room_or_area LIKE '%Corridor%'\nGROUP BY 1, 2 ORDER BY 1, 2"
                       }
                     },
                     "refId": "A",
@@ -1778,7 +1778,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE $__timeFilter(fire.ts)\n  AND meta.section = 'Accommodation' AND meta.room_or_area LIKE '%Owner%' AND meta.room_or_area NOT LIKE '%Cabin%' AND meta.room_or_area NOT LIKE '%Corridor%'\nGROUP BY 1, 2 ORDER BY 1, 2"
+                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE fire.ts >= $__fromTime AND fire.ts <= $__toTime\n  AND meta.section = 'Accommodation' AND meta.room_or_area LIKE '%Owner%' AND meta.room_or_area NOT LIKE '%Cabin%' AND meta.room_or_area NOT LIKE '%Corridor%'\nGROUP BY 1, 2 ORDER BY 1, 2"
                       }
                     },
                     "refId": "A",
@@ -2128,7 +2128,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE $__timeFilter(fire.ts)\n  AND meta.section = 'Accommodation' AND (meta.room_or_area LIKE '%Lounge%' OR meta.room_or_area LIKE '%Salon%') AND meta.room_or_area NOT LIKE '%Cabin%' AND meta.room_or_area NOT LIKE '%Corridor%' AND meta.room_or_area NOT LIKE '%Crew%' AND meta.room_or_area NOT LIKE '%Owner%'\nGROUP BY 1, 2 ORDER BY 1, 2"
+                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE fire.ts >= $__fromTime AND fire.ts <= $__toTime\n  AND meta.section = 'Accommodation' AND (meta.room_or_area LIKE '%Lounge%' OR meta.room_or_area LIKE '%Salon%') AND meta.room_or_area NOT LIKE '%Cabin%' AND meta.room_or_area NOT LIKE '%Corridor%' AND meta.room_or_area NOT LIKE '%Crew%' AND meta.room_or_area NOT LIKE '%Owner%'\nGROUP BY 1, 2 ORDER BY 1, 2"
                       }
                     },
                     "refId": "A",
@@ -2478,7 +2478,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE $__timeFilter(fire.ts)\n  AND meta.section = 'Accommodation' AND ( meta.room_or_area LIKE '%Storage%' OR meta.room_or_area LIKE '%Office%' OR meta.room_or_area LIKE '%Galley%' OR meta.room_or_area LIKE '%Laundry%' ) AND meta.room_or_area NOT LIKE '%Cabin%' AND meta.room_or_area NOT LIKE '%Corridor%'\nGROUP BY 1, 2 ORDER BY 1, 2"
+                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE fire.ts >= $__fromTime AND fire.ts <= $__toTime\n  AND meta.section = 'Accommodation' AND ( meta.room_or_area LIKE '%Storage%' OR meta.room_or_area LIKE '%Office%' OR meta.room_or_area LIKE '%Galley%' OR meta.room_or_area LIKE '%Laundry%' ) AND meta.room_or_area NOT LIKE '%Cabin%' AND meta.room_or_area NOT LIKE '%Corridor%'\nGROUP BY 1, 2 ORDER BY 1, 2"
                       }
                     },
                     "refId": "A",
@@ -2828,7 +2828,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE $__timeFilter(fire.ts)\n  AND meta.section = 'Accommodation' AND meta.room_or_area LIKE '%Crew%' AND meta.room_or_area NOT LIKE '%Cabin%' AND meta.room_or_area NOT LIKE '%Corridor%'\nGROUP BY 1, 2 ORDER BY 1, 2"
+                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE fire.ts >= $__fromTime AND fire.ts <= $__toTime\n  AND meta.section = 'Accommodation' AND meta.room_or_area LIKE '%Crew%' AND meta.room_or_area NOT LIKE '%Cabin%' AND meta.room_or_area NOT LIKE '%Corridor%'\nGROUP BY 1, 2 ORDER BY 1, 2"
                       }
                     },
                     "refId": "A",
@@ -3178,7 +3178,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE $__timeFilter(fire.ts)\n  AND meta.section = 'Technical' AND meta.room_or_area LIKE '%Battery%'\nGROUP BY 1, 2 ORDER BY 1, 2"
+                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE fire.ts >= $__fromTime AND fire.ts <= $__toTime\n  AND meta.section = 'Technical' AND meta.room_or_area LIKE '%Battery%'\nGROUP BY 1, 2 ORDER BY 1, 2"
                       }
                     },
                     "refId": "A",
@@ -3528,7 +3528,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE $__timeFilter(fire.ts)\n  AND meta.section = 'Technical' AND ( meta.room_or_area LIKE '%Fore%' OR meta.room_or_area LIKE '%Lazarette%' OR meta.room_or_area LIKE '%Bilge%' OR meta.room_or_area LIKE '%Pod%' )\nGROUP BY 1, 2 ORDER BY 1, 2"
+                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE fire.ts >= $__fromTime AND fire.ts <= $__toTime\n  AND meta.section = 'Technical' AND ( meta.room_or_area LIKE '%Fore%' OR meta.room_or_area LIKE '%Lazarette%' OR meta.room_or_area LIKE '%Bilge%' OR meta.room_or_area LIKE '%Pod%' )\nGROUP BY 1, 2 ORDER BY 1, 2"
                       }
                     },
                     "refId": "A",
@@ -3878,7 +3878,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE $__timeFilter(fire.ts)\n  AND meta.section = 'Technical' AND meta.room_or_area LIKE '%Technical%'\nGROUP BY 1, 2 ORDER BY 1, 2"
+                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE fire.ts >= $__fromTime AND fire.ts <= $__toTime\n  AND meta.section = 'Technical' AND meta.room_or_area LIKE '%Technical%'\nGROUP BY 1, 2 ORDER BY 1, 2"
                       }
                     },
                     "refId": "A",
@@ -4228,7 +4228,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE $__timeFilter(fire.ts)\n  AND meta.section = 'Hatch'\nGROUP BY 1, 2 ORDER BY 1, 2"
+                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE fire.ts >= $__fromTime AND fire.ts <= $__toTime\n  AND meta.section = 'Hatch'\nGROUP BY 1, 2 ORDER BY 1, 2"
                       }
                     },
                     "refId": "A",
@@ -4578,7 +4578,7 @@
                         "pluginVersion": "2.1.4",
                         "queryType": "table",
                         "rawQuery": true,
-                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE $__timeFilter(fire.ts)\n  AND meta.section = 'Storage'\nGROUP BY 1, 2 ORDER BY 1, 2"
+                        "rawSql": "SELECT date_bin('$__interval', fire.ts, TIMESTAMP '1970-01-01') AS time,\n  meta.description,\n  max(CASE\n      WHEN fire.alarm__value THEN 5\n      WHEN fire.pre_alarm__value THEN 4\n      WHEN fire.fault__value THEN 3\n      WHEN fire.disabled__value THEN 2\n      WHEN fire.test__value THEN 1\n      ELSE 0 END) AS state\nFROM views.stg_marpower__fire_detection AS fire\nJOIN public.marpower__firedetection_metadata AS meta ON fire.topic = meta.topic\nWHERE fire.ts >= $__fromTime AND fire.ts <= $__toTime\n  AND meta.section = 'Storage'\nGROUP BY 1, 2 ORDER BY 1, 2"
                       }
                     },
                     "refId": "A",
