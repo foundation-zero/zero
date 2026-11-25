@@ -13,7 +13,7 @@ date, or exists for a manual without a Mermaid block. `pdf` prints `<module>.pdf
 from the manual and its SVG.
 """
 
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from html import escape
 from pathlib import Path
@@ -94,7 +94,7 @@ COUNT_PROSE_WORDS = """() => {
 
 
 @contextmanager
-def chromium() -> Iterator[Browser]:
+def chromium() -> Generator[Browser]:
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         try:

@@ -13,6 +13,7 @@ import html
 import io
 import re
 from pathlib import Path
+from typing import BinaryIO
 
 from fontTools import subset
 from fontTools.ttLib import TTFont
@@ -94,11 +95,14 @@ def with_embedded_fonts(svg: str, source: str) -> str:
     )
 
 
+def font_characters(font: Path | BinaryIO) -> set[int]:
+    return set(TTFont(font).getBestCmap() or {})
+
+
 def missing_characters(labels: list[tuple[str, str]]) -> list[str]:
     """Each (font-family, text) label's characters that its embedded font lacks."""
     characters = {
-        family: TTFont(file).getBestCmap().keys()
-        for family, file in EMBEDDED_FONTS.items()
+        family: font_characters(file) for family, file in EMBEDDED_FONTS.items()
     }
     return sorted(
         {
