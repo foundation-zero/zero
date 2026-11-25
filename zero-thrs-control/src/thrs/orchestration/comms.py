@@ -193,8 +193,6 @@ class DirectMqttMapping[M: ThrsValues](
         self._adapter: TypeAdapter[M] = TypeAdapter(cls)
         self._topic = f"{topic}{f'/{topic_suffix}' if topic_suffix else ''}"
         self._value = None
-        # An Event rather than a Future: since Python 3.14 a Future needs a running loop,
-        # and mappings are fed outside one.
         self._first_value: M | None = None
         self._first_received = Event()
         self._hooks: list[Callable[[M], object]] = []

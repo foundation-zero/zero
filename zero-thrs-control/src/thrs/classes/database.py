@@ -18,7 +18,6 @@ class PostgresDatabase:
     session_factory: async_sessionmaker[AsyncSession]
 
     def __init__(self, settings: Config):
-        # Let engine echo if log level is DEBUG
         engine_echo = logging.getLogger().getEffectiveLevel() <= logging.DEBUG
         self._settings = settings
         self.init_engine(engine_echo=engine_echo)

@@ -27,7 +27,6 @@ from thrs.simulation.models.fmu_paths import high_temperature_path
                 ("thrusters_seawater_supply", "flow"),
                 ("pvt_seawater_supply", "flow"),
                 ("pcm_freshwater_supply", "flow"),
-                "mode",
             ],  # Do not throw an exception
         )
     )

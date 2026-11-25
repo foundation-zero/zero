@@ -596,6 +596,9 @@ depend on it.
 **Docker tagging:** Python projects use `uvx hatch version` (via `hatch-vcs`
 from git tags). Rust uses `Cargo.toml` version + short SHA. CI apps use
 `docker/metadata-action` (semver + sha).
+Builds of a version with a suffix (anything but a release `X.Y.Z`) also get a
+`dev-<version>` tag; Artifact Registry expires those (cleanup policy in
+foundation-zero/gcp-common).
 
 **Docker images:** Workflows delegate to the reusable `job_docker_push.yaml` (only
 `zero-data` keeps its own job for its second GHCR image).

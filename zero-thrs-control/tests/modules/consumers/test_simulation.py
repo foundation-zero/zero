@@ -19,7 +19,6 @@ from thrs.input_output.definitions.units import WATER_HEAT_TRANSFER_CONVERSION
         simulator_input_field_setters(
             ConsumersSimulationInputs,
             ignore=[
-                "mode",  # Not a physical quantity
                 # The FMU tolerates this, even with the control running
                 ("consumers_pcm_supply", "flow"),
             ],

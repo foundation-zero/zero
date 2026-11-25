@@ -195,17 +195,13 @@ def control() -> Callable[[CombinedValues], tuple[CombinedValues, CombinedValues
         simulator_input_field_setters(
             ThrsSimulationInputs,
             ignore=[
-                "adsorption_available_hot_temperature",
-                "adsorption_available_cold_temperature",
-                "adsorption_available_seawater_temperature",
-                "adsorption_chiller",
-                "thrusters_seawater_supply",  # Does not throw exception
-                "pvt_seawater_supply",  # Does not throw exception
-                "dhw_hvac_exchanger",  # Does not throw exception
-                "dhw_seawater_supply",  # Does not throw exception
-                "dhw_hotwater_demand",  # Does not throw exception
-                ("pcm_freshwater_supply", "flow"),  # Does not throw exception
-                "mode",  # Does not throw exception
+                # The FMU tolerates these, even with the control running
+                "thrusters_seawater_supply",
+                "pvt_seawater_supply",
+                "dhw_hvac_exchanger",
+                "dhw_seawater_supply",
+                "dhw_hotwater_demand",
+                ("pcm_freshwater_supply", "flow"),
             ],
         )
     )

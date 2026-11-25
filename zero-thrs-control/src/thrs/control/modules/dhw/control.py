@@ -310,7 +310,7 @@ class TanksController:
                 or self._fallback_tank_in_use(parameters)
             )
             if chosen is not None:
-                # Reset filling/boosting tank if it is chosen as fallback tank
+                # A tank in use cannot also be filling or boosting
                 if chosen is self._filling_tank:
                     self._filling_tank = None
                 if chosen is self._boosting_tank:

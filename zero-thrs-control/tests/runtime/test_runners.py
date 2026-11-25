@@ -209,10 +209,6 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     control.update_parameters.assert_has_calls(
         [call(parameters), call(parameters), call(parameters)]
     )
-    # TODO: Restore this when control_runner does not need to wrap a switching control around the actual control
-    # control.update_manual_controls.assert_has_calls(
-    #     [call(control_values), call(control_values), call(control_values)]
-    # )
     alarms.check.assert_has_calls(
         [
             call(sensor_values, control_values, controller_state),

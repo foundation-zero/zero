@@ -102,14 +102,12 @@ class CombinedIoMapping[I: ThrsValues, O: ThrsValues](
         simulation_inputs: I,
         time: datetime,
     ) -> tuple[CombinedValues, O, dict[str, Any]]:
-        # build simulation outputs from FMU outputs alone
         (simulation_outputs,) = build_outputs_from_fmu(
             (self._simulation_outputs_cls,),
             fmu_outputs,
             time,
         )
 
-        # extract non-FMU values from both simulation inputs and outputs
         non_fmu_values = {
             key: value
             for module_name, sensor_values_cls in self._sensor_values_clss.items()
@@ -121,7 +119,6 @@ class CombinedIoMapping[I: ThrsValues, O: ThrsValues](
             for key, value in extract_non_fmu_values(source, sensor_values_cls).items()
         }
 
-        # build sensor values with the combined non-FMU values
         sensor_values = build_outputs_from_fmu(
             tuple(self._sensor_values_clss.values()),
             fmu_outputs,

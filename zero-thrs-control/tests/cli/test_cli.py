@@ -135,14 +135,13 @@ def setup_lockstep(
 
 @pytest.mark.timeout(30)
 @pytest.mark.slow
-async def test_simulation_run_start_stop(
+async def test_simulation_status_goes_available_running_available(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies the simulation can transition from available to running and back to available.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
 
     runtime = setup_lockstep(
@@ -199,14 +198,13 @@ async def test_simulation_run_start_stop(
 
 @pytest.mark.timeout(30)
 @pytest.mark.slow
-async def test_simulation_run_playback_rate(
+async def test_higher_playback_rate_publishes_more_outputs(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies a higher playback rate produces more simulation output messages in equal wall time.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
@@ -276,14 +274,13 @@ async def test_simulation_run_playback_rate(
 
 @pytest.mark.timeout(5)
 @pytest.mark.slow
-async def test_simulation_run_step(
+async def test_step_directive_advances_and_publishes(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies step directives progress the simulation and publish outputs for each requested duration.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     outputs_topic = f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"
 
@@ -373,14 +370,13 @@ async def test_simulation_run_step(
 
 @pytest.mark.timeout(10)
 @pytest.mark.slow
-async def test_simulation_controls_automated_control(
+async def test_automatic_mode_changes_control_outputs(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies switching to automatic mode results in non-default automatic control outputs.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     set_automation_topic = (
         f"{settings.mqtt_controller_topic_prefix}/thrusters/automation-mode/"
@@ -460,14 +456,13 @@ async def test_simulation_controls_automated_control(
 
 @pytest.mark.timeout(5)
 @pytest.mark.slow
-async def test_simulation_controls_set_parameters(
+async def test_parameters_set_over_mqtt_are_applied(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies runtime applies updated controller parameters sent over MQTT.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     parameters_topic = f"{settings.mqtt_controller_topic_prefix}/thrusters/parameters"
     set_parameters_topic = (
@@ -539,14 +534,13 @@ async def test_simulation_controls_set_parameters(
 
 @pytest.mark.timeout(5)
 @pytest.mark.slow
-async def test_simulation_controls_set_simulation_inputs(
+async def test_simulation_inputs_set_over_mqtt_reach_later_ticks(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies externally provided simulation inputs are accepted and reflected in later ticks.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     simulation_inputs_topic = (
         f"{settings.mqtt_simulator_topic_prefix}/simulation-inputs"
@@ -623,14 +617,13 @@ async def test_simulation_controls_set_simulation_inputs(
 
 @pytest.mark.timeout(10)
 @pytest.mark.slow
-async def test_simulation_controls_simulation_output(
+async def test_running_simulation_publishes_physically_valid_outputs(
     controls_client: Client,
     runtime_client: Client,
     test_client: Client,
     status_client: Client,
     settings: Config,
 ):
-    # Verifies simulation outputs are published with physically valid values while running.
     status_topic = f"{settings.mqtt_simulator_topic_prefix}/status"
     simulation_outputs_topic = (
         f"{settings.mqtt_simulator_topic_prefix}/simulation-outputs"

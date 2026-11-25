@@ -37,7 +37,6 @@ from thrs.simulation.io_mapping import CombinedIoMapping
 
 
 class MockFmu(Fmu):
-    # This mock FMU ignores the inputs and always returns the same outputs, but it records the inputs it receives for assertions in the test.
     def __init__(self, outputs: dict[str, Any]):
         self.inputs: list[dict[str, Any]] = []
         self._outputs = outputs
