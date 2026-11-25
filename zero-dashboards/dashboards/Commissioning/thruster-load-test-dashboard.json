@@ -7015,7 +7015,7 @@
                       },
                       {
                         "id": "unit",
-                        "value": "Nm"
+                        "value": "forceNm"
                       },
                       {
                         "id": "custom.axisLabel",
