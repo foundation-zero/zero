@@ -83,8 +83,8 @@ def test_ac_room_temperatures_are_in_degrees_celsius():
     room = next(
         t for t in read_modbus_topics() if t.topic == "termodinamica/ac/tech-room"
     )
-    # Live room 01: set point 22.00 °C, 18.90 °C
-    registers = {201: 2200, 203: 1890}
+    # Live room 01: set point 22.00 °C, 18.90 °C, 51 % humidity
+    registers = {201: 2200, 203: 1890, 207: 51}
     modbus = MagicMock()
     modbus.read_holding_registers.side_effect = lambda register, _: [
         registers.get(register, 0)
@@ -94,6 +94,7 @@ def test_ac_room_temperatures_are_in_degrees_celsius():
 
     assert payload.setpoint_room_temperature == 22.0
     assert payload.air_temperature_in == 18.9
+    assert payload.humidity == 0.51
     assert payload.room == "Tech room"
 
 
@@ -109,3 +110,21 @@ def test_ventilation_payload_names_its_room():
     ).read_topic(unit)
 
     assert (payload.bridge, payload.unit, payload.room) == ("2", "03", "Lower salon")
+
+
+def test_ventilation_humidity_is_a_ratio():
+    unit = next(
+        t
+        for t in read_modbus_topics()
+        if t.topic == "termodinamica/ventilation/main-deckhouse"
+    )
+    # Live main deckhouse: 40.4 % humidity, 50.0 % set point
+    registers = {74: 404, 75: 500}
+    modbus = MagicMock()
+    modbus.read_holding_registers.side_effect = lambda register, _: [
+        registers.get(register, 0)
+    ]
+
+    payload = ModbusReader(modbus, [unit]).read_topic(unit)
+
+    assert (payload.humidity, payload.setpoint_humidity) == (0.404, 0.5)

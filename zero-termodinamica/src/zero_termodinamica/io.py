@@ -19,7 +19,8 @@ class AirConditioningRoom(BaseModel):
     status: Annotated[int | None, ModbusField(offset=4)]
     ahu_mode: Annotated[int | None, ModbusField(offset=5)]
     heater_power: Annotated[int | None, ModbusField(offset=6)]
-    humidity: Annotated[int | None, ModbusField(offset=7)]
+    # Relative humidity as a ratio (0..1); the register holds whole percents.
+    humidity: Annotated[float | None, ModbusField(offset=7, scale_factor=0.01)]
     reg_split: str | None = None
     room: str | None = None
 
@@ -72,13 +73,16 @@ class VentilationUnit(BaseModel):
     setpoint_air_flow: Annotated[int | None, ModbusField(offset=1)]
     co2_level: Annotated[int | None, ModbusField(offset=2)]
     setpoint_co2: Annotated[int | None, ModbusField(offset=3)]
-    humidity: Annotated[float | None, ModbusField(offset=4, scale_factor=0.1)]
-    setpoint_humidity: Annotated[float | None, ModbusField(offset=5, scale_factor=0.1)]
+    # Relative humidity as a ratio (0..1); the registers hold tenths of percents.
+    humidity: Annotated[float | None, ModbusField(offset=4, scale_factor=0.001)]
+    setpoint_humidity: Annotated[
+        float | None, ModbusField(offset=5, scale_factor=0.001)
+    ]
     co2_level_2: Annotated[int | None, ModbusField(offset=6)]
     setpoint_co2_2: Annotated[int | None, ModbusField(offset=7)]
-    humidity_2: Annotated[float | None, ModbusField(offset=8, scale_factor=0.1)]
+    humidity_2: Annotated[float | None, ModbusField(offset=8, scale_factor=0.001)]
     setpoint_humidity_2: Annotated[
-        float | None, ModbusField(offset=9, scale_factor=0.1)
+        float | None, ModbusField(offset=9, scale_factor=0.001)
     ]
     errors: Annotated[int | None, ModbusField(offset=10)]
     bridge: str | None = None

@@ -52,7 +52,7 @@
             "modbus_register": 207,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -110,7 +110,7 @@
             "modbus_register": 217,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -168,7 +168,7 @@
             "modbus_register": 227,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -226,7 +226,7 @@
             "modbus_register": 237,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -284,7 +284,7 @@
             "modbus_register": 247,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -342,7 +342,7 @@
             "modbus_register": 257,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -400,7 +400,7 @@
             "modbus_register": 267,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -458,7 +458,7 @@
             "modbus_register": 277,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -516,7 +516,7 @@
             "modbus_register": 287,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -574,7 +574,7 @@
             "modbus_register": 297,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -632,7 +632,7 @@
             "modbus_register": 307,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -690,7 +690,7 @@
             "modbus_register": 317,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -748,7 +748,7 @@
             "modbus_register": 327,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -806,7 +806,7 @@
             "modbus_register": 337,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -864,7 +864,7 @@
             "modbus_register": 347,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -922,7 +922,7 @@
             "modbus_register": 357,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -980,7 +980,7 @@
             "modbus_register": 367,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1038,7 +1038,7 @@
             "modbus_register": 377,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1096,7 +1096,7 @@
             "modbus_register": 387,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1154,7 +1154,7 @@
             "modbus_register": 397,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1212,7 +1212,7 @@
             "modbus_register": 407,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1270,7 +1270,7 @@
             "modbus_register": 417,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1328,7 +1328,7 @@
             "modbus_register": 427,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1386,7 +1386,7 @@
             "modbus_register": 437,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1444,7 +1444,7 @@
             "modbus_register": 447,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1502,7 +1502,7 @@
             "modbus_register": 457,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1560,7 +1560,7 @@
             "modbus_register": 467,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1618,7 +1618,7 @@
             "modbus_register": 477,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1676,7 +1676,7 @@
             "modbus_register": 487,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1734,7 +1734,7 @@
             "modbus_register": 497,
             "field_name": "humidity",
             "description": "Humidity 0..100% ",
-            "scale_factor": 1.0
+            "scale_factor": 0.01
           }
         ],
         "extra_fields": {
@@ -1869,13 +1869,13 @@
             "modbus_register": 74,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 75,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 76,
@@ -1893,13 +1893,13 @@
             "modbus_register": 78,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 79,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 80,
@@ -1946,13 +1946,13 @@
             "modbus_register": 94,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 95,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 96,
@@ -1970,13 +1970,13 @@
             "modbus_register": 98,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 99,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 100,
@@ -2023,13 +2023,13 @@
             "modbus_register": 114,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 115,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 116,
@@ -2047,13 +2047,13 @@
             "modbus_register": 118,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 119,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 120,
@@ -2100,13 +2100,13 @@
             "modbus_register": 134,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 135,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 136,
@@ -2124,13 +2124,13 @@
             "modbus_register": 138,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 139,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 140,
@@ -2177,13 +2177,13 @@
             "modbus_register": 154,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 155,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 156,
@@ -2201,13 +2201,13 @@
             "modbus_register": 158,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 159,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 160,
@@ -2254,13 +2254,13 @@
             "modbus_register": 174,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 175,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 176,
@@ -2278,13 +2278,13 @@
             "modbus_register": 178,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 179,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 180,
@@ -2331,13 +2331,13 @@
             "modbus_register": 194,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 195,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 196,
@@ -2355,13 +2355,13 @@
             "modbus_register": 198,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 199,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 200,
@@ -2408,13 +2408,13 @@
             "modbus_register": 214,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 215,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 216,
@@ -2432,13 +2432,13 @@
             "modbus_register": 218,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 219,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 220,
@@ -2485,13 +2485,13 @@
             "modbus_register": 234,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 235,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 236,
@@ -2509,13 +2509,13 @@
             "modbus_register": 238,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 239,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 240,
@@ -2562,13 +2562,13 @@
             "modbus_register": 254,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 255,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 256,
@@ -2586,13 +2586,13 @@
             "modbus_register": 258,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 259,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 260,
@@ -2639,13 +2639,13 @@
             "modbus_register": 274,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 275,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 276,
@@ -2663,13 +2663,13 @@
             "modbus_register": 278,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 279,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 280,
@@ -2716,13 +2716,13 @@
             "modbus_register": 294,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 295,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 296,
@@ -2740,13 +2740,13 @@
             "modbus_register": 298,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 299,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 300,
@@ -2793,13 +2793,13 @@
             "modbus_register": 314,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 315,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 316,
@@ -2817,13 +2817,13 @@
             "modbus_register": 318,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 319,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 320,
@@ -2875,13 +2875,13 @@
             "modbus_register": 74,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 75,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 76,
@@ -2899,13 +2899,13 @@
             "modbus_register": 78,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 79,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 80,
@@ -2952,13 +2952,13 @@
             "modbus_register": 94,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 95,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 96,
@@ -2976,13 +2976,13 @@
             "modbus_register": 98,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 99,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 100,
@@ -3029,13 +3029,13 @@
             "modbus_register": 114,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 115,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 116,
@@ -3053,13 +3053,13 @@
             "modbus_register": 118,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 119,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 120,
@@ -3106,13 +3106,13 @@
             "modbus_register": 134,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 135,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 136,
@@ -3130,13 +3130,13 @@
             "modbus_register": 138,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 139,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 140,
@@ -3183,13 +3183,13 @@
             "modbus_register": 154,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 155,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 156,
@@ -3207,13 +3207,13 @@
             "modbus_register": 158,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 159,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 160,
@@ -3260,13 +3260,13 @@
             "modbus_register": 174,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 175,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 176,
@@ -3284,13 +3284,13 @@
             "modbus_register": 178,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 179,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 180,
@@ -3337,13 +3337,13 @@
             "modbus_register": 194,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 195,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 196,
@@ -3361,13 +3361,13 @@
             "modbus_register": 198,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 199,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 200,
@@ -3414,13 +3414,13 @@
             "modbus_register": 214,
             "field_name": "humidity",
             "description": "Unit Humidity Level reading",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 215,
             "field_name": "setpoint_humidity",
             "description": "Unit Humidity Set Point",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 216,
@@ -3438,13 +3438,13 @@
             "modbus_register": 218,
             "field_name": "humidity_2",
             "description": "Unit Humidity Level reading sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 219,
             "field_name": "setpoint_humidity_2",
             "description": "Unit Humidity Set Point sensor 2 (when available)",
-            "scale_factor": 0.1
+            "scale_factor": 0.001
           },
           {
             "modbus_register": 220,

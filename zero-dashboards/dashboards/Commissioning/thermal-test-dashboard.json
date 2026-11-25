@@ -790,7 +790,7 @@
               },
               "fieldConfig": {
                 "defaults": {
-                  "unit": "percent",
+                  "unit": "percentunit",
                   "thresholds": {
                     "mode": "absolute",
                     "steps": [
@@ -999,7 +999,7 @@
                     "properties": [
                       {
                         "id": "unit",
-                        "value": "percent"
+                        "value": "percentunit"
                       },
                       {
                         "id": "decimals",

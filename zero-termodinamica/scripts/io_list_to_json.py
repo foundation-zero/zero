@@ -87,7 +87,7 @@ def select_nested_ac_topics(df: pl.DataFrame, topic_prefix: str) -> list[dict]:
         .with_columns(
             pl.when(
                 pl.col("field_name").str.contains_any(
-                    ["air_temperature_in", "setpoint_room_temperature"]
+                    ["air_temperature_in", "setpoint_room_temperature", "humidity"]
                 )
             )
             .then(0.01)
@@ -292,7 +292,7 @@ def select_ventilation_topics(df: pl.DataFrame, bridge: str) -> list[dict]:
         )
         .with_columns(
             pl.when(pl.col("field_name").str.contains("humidity"))
-            .then(0.1)
+            .then(0.001)
             .otherwise(1.0)
             .alias("scale_factor")
         )
