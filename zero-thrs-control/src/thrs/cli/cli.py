@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
 
@@ -71,7 +71,7 @@ class ControlCmd(BaseSettings):
                 connector,
                 settings,
                 control_mode.control_modules,
-                datetime.now,
+                lambda: datetime.now(UTC),
                 persistence,
             )
 

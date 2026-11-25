@@ -143,9 +143,9 @@ class FlowBalanceController:
         self,
         valves: list[Valve],
         valve_controllers: list[PidController[Ratio, LMin]],
+        time_fn: Callable[[], datetime],
         pump: Pump | None = None,
         pump_controller: PidController[Ratio, LMin] | None = None,
-        time_fn: Callable[[], datetime] = datetime.now,
     ):
         self._valve_controllers = valve_controllers
         self._pump_controller = pump_controller
@@ -242,8 +242,11 @@ class FlowDistributionController:
         self,
         valves: list[Valve],
         valve_controllers: list[PidController[Ratio, LMin]],
+        time_fn: Callable[[], datetime],
     ):
-        self._flow_balance_controller = FlowBalanceController(valves, valve_controllers)
+        self._flow_balance_controller = FlowBalanceController(
+            valves, valve_controllers, time_fn
+        )
 
     def set_active_valves(self, actives: list[bool]):
         self._flow_balance_controller.set_active_valves(actives)

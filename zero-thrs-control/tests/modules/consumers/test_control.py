@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from pytest import approx
 
-from tests.modules.consumers.conftest import ConsumersRunner
+from tests.modules.consumers.conftest import ConsumersRunner, ConsumersSimulation
 from thrs.control.modules.consumers.control import ConsumersControl
 from thrs.control.modules.consumers.io import (
     ConsumersControlValues,
@@ -61,6 +61,16 @@ def test_flow_follows_the_ratio_setpoints(
     )
 
     assert _switch_setpoints(control_values) == [Valve.OPEN, Valve.OPEN]
+
+
+def test_flow_control_is_stamped_with_the_control_clock(
+    runner: ConsumersRunner, simulation: ConsumersSimulation
+):
+    _, control_values, _ = runner.tick()
+
+    assert (
+        control_values.consumers_flowcontrol_dhw.setpoint.timestamp == simulation.time()
+    )
 
 
 def test_dhw_disabled(runner: ConsumersRunner, control: ConsumersControl):

@@ -174,9 +174,9 @@ class DrivesControl(
                 self._current_values.drives_flowcontrol_propdrive_fwd,
             ],
             [self._aft_flow_controller, self._fwd_flow_controller],
+            self._time,
             self._active_pump,
             self._pump_controller_propulsion,
-            self._time,
         )
 
     @property

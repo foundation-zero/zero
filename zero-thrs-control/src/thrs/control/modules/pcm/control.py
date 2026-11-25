@@ -181,9 +181,9 @@ class PcmControl(
                 self._module3_flow_controller,
                 self._module4_flow_controller,
             ],
+            self._time,
             self._current_values.pcm_pump,
             self._pump_flow_controller,
-            self._time,
         )
 
         self._module1_charge_controller = PcmChargeController(
