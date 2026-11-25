@@ -50,22 +50,35 @@ no signal covers goes into one *unallocated* sub group per main group.
 
 ## How each number is made
 
-All views give power per minute, in W. A panel adds up the minutes and divides by 60 to get energy in Wh.
+The dbt views hold one row per sample, in W, without time buckets or groups, so a query's time filter reaches
+the raw tables. Each dashboard has one base query, in its production and consumption panel; the treemap reuses
+its result. The base query:
 
-| Series | Main group / sub group | How it is made | View |
+1. averages each device per time bucket: an hour on the electrical energy dashboard, a day on the historical
+   one, and one bucket of the last 5 minutes for the flow canvas;
+2. joins the groups from the metadata tables to those averages;
+3. makes the series that combine signals as sums and differences of the averages, so they don't depend on
+   the bucket size;
+4. turns power into energy: the average power × the part of the bucket inside the time range and before now.
+
+Days start at 00:00 UTC: Grafana's SQL can't read the viewer's time zone, and no table holds Zero's. Whether
+days should follow Zero's local time instead is still to be discussed with the team.
+
+
+| Series | Main group / sub group | How it is made | Views |
 |---|---|---|---|
-| Shore | Shore / Shore power converter PS, SB | AC power each ESI module draws from shore, counted only while the module runs | `gld_shore_power_per_minute_per_*` |
-| Solar | Solar / Owners bimini, Main bimini | Power each EPC converter delivers to the bus; drawing from the bus counts as 0 | `gld_solar_power_per_minute_per_*` |
-| Thrusters | Propulsion / Thrusters, Hydrogeneration / Thrusters | Aradex power, split by sign: positive is propulsion, negative is hydrogeneration | `gld_aradex_power_per_minute_per_group` |
-| Power tags | Per tag, from `power_tag_metadata` | AC consumers with a power tag. The 10P1 and 10P2 feeders are excluded: their consumers have their own tags | `gld_power_tags_power_per_minute_per_*` |
-| AC unallocated | Technical / AC unallocated | Grid converters' AC output minus the power tag total | `gld_grid_converter_power_per_minute_per_group` |
-| 24 VDC breakers | Per breaker, from `dc_24v_metadata` | Breaker current × converter voltage | `gld_24vdc_power_per_minute_per_*` |
-| 24VDC unallocated | Technical / 24VDC unallocated | 24 VDC supplies' output minus the breaker total | `gld_24vdc_unallocated_power_per_minute_per_group` |
-| 350 VDC | Domestic / Lighting | Sum of the four 350 VDC converters on their 700 VDC side | `gld_350vdc_power_per_minute_per_group` |
-| Chiller | HVAC / Chiller | Its two compressors and its seawater pump | `gld_chiller_power_per_minute_per_group` |
-| Segment remainders | Technical / 700VDC unallocated, Propulsion / Thrusters (unallocated) | Per bus segment of the 700 VDC ring (see below) | `gld_dc_ring_unallocated_power_per_minute_per_group` |
-| Shore converter losses | Losses / Shore converters | AC − DC per ESI module, while it runs | `gld_shore_converter_losses_per_minute_per_group` |
-| Grid converter losses | Losses / Grid converters | DC input − AC output per uGrid | `gld_grid_converter_power_per_minute_per_group` |
+| Shore | Shore / Shore power converter PS, SB | AC power each ESI module draws from shore, counted only while the module runs | `gld_fixed_group_power` |
+| Solar | Solar / Owners bimini, Main bimini | Power each EPC converter delivers to the bus; drawing from the bus counts as 0 | `gld_fixed_group_power` |
+| Thrusters | Propulsion / Thrusters, Hydrogeneration / Thrusters | Aradex power, split by sign: positive is propulsion, negative is hydrogeneration | `gld_fixed_group_power` |
+| Power tags | Per tag, from `power_tag_metadata` | AC consumers with a power tag. The 10P1 and 10P2 feeders are excluded: their consumers have their own tags | `slv_power_tags` |
+| AC unallocated | Technical / AC unallocated | Grid converters' AC output minus the power tag total | `slv_grid_converters`, `slv_power_tags` |
+| 24 VDC breakers | Per breaker, from `dc_24v_metadata` | Breaker current × converter voltage (24 V when no supply of the converter has a valid voltage) | `slv_24vdc_currents`, `slv_24vdc_converter_voltages` |
+| 24VDC unallocated | Technical / 24VDC unallocated | 24 VDC supplies' output minus the breaker total | `slv_24vdc_power_supplies` and the breakers |
+| 350 VDC | Domestic / Lighting | Sum of the four 350 VDC converters on their 700 VDC side | `gld_fixed_group_power` |
+| Chiller | HVAC / Chiller | Its two compressors and its seawater pump | `gld_fixed_group_power` |
+| Segment remainders | Technical / 700VDC unallocated, Propulsion / Thrusters (unallocated) | Per bus segment of the 700 VDC ring (see below) | `slv_dc_ring_switches`, `slv_dc_ring_sources`, `slv_24vdc_power_supplies` |
+| Shore converter losses | Losses / Shore converters | AC − DC per ESI module, while it runs | `gld_fixed_group_power` |
+| Grid converter losses | Losses / Grid converters | DC input − AC output per uGrid | `slv_grid_converters` |
 
 ### The 700 VDC ring
 
@@ -78,7 +91,7 @@ and 8 segments between them:
 05.76 | SB.02.P01 | 05.77 | SB.02.P02 | 05.78 | cable | back to 05.71
 ```
 
-For each segment and minute:
+For each segment and time bucket:
 
 1. **Load** = power that flows in through its two switches − power that flows out.
 2. **Measured** = the sources on the segment that have a power signal: shore and battery converters, grid
@@ -108,32 +121,33 @@ offset to within 0.02 kWh.
 | Main group and sub group of each power tag, and which tags are excluded | `zero-data/dbt/macros/load_power_tag_metadata.sql` |
 | Converter, main group and sub group of each 24 VDC breaker | `zero-data/dbt/macros/load_24vdc_metadata.sql` |
 | DC switch signs, segment of each source, group of each segment | `zero-data/dbt/macros/load_dc_ring_metadata.sql` |
-| Fixed groups (shore, solar, thrusters, chiller, 350 VDC, losses, unallocated) | The gold view itself |
+| Fixed groups (shore, solar, thrusters, chiller, 350 VDC, shore converter losses) | `zero-data/dbt/models/gold/gld_fixed_group_power.sql` |
+| Groups of the combined series (unallocated, grid converter losses) | The dashboards' base queries |
 
 ## Caveats
 
 ### Missing samples count as zero (no forward-fill)
 
-A view averages the samples within each minute. A minute without a sample has no row, and the panels add up
-the minutes, so that minute counts as 0 W. Many signals are published only when their value changes. A steady
-load then publishes nothing and is counted too low, or not at all. Within a minute, the average weighs each
-sample the same, not by how long its value held.
+A query averages the samples of each device within a time bucket. A device with samples in part of a bucket
+counts at that average for the whole bucket; a bucket without any sample counts as 0 W. Many signals are
+published only when their value changes. A steady load then publishes nothing and is counted too low, or not at
+all. Within a bucket, the average weighs each sample the same, not by how long its value held.
 
 The fix is to forward-fill these signals: carry the last value forward until the next sample, up to a limit
 so a source that has stopped doesn't keep its last value for ever. First we need to know which signals
 publish only on change. See ZERO-2748.
 
-The *unallocated* series make this worse: when the breakers or power tags have no data in a minute, all of
+The *unallocated* series make this worse: when the breakers or power tags have no data in a bucket, all of
 the 24 VDC or AC output counts as unallocated.
 
 ### Known errors and assumptions
 
 - **Remainders are measurements, not consumers.** A remainder holds every unmeasured consumer on its
   segment, plus the switches' measurement error (about ±1 kW per segment) and the losses of the battery and
-  24 VDC converters (measured on their output side). A minute can go below zero; it is kept as measured, so
+  24 VDC converters (measured on their output side). A bucket can go below zero; it is kept as measured, so
   the energy adds up.
 - **No segment remainders before 20 Oct 2026.** Before then the switch currents read about −1000 A; those
-  samples are left out. A minute counts only when all 8 switches report.
+  samples are left out. A bucket counts only when all 8 switches have data in it.
 - **Aradex power before 10 Nov 2026 is about 12 times too high**, so on older days with thruster use the
   remainders of SB.01.P01 and P04 go far below zero.
 - **Shore converter offset:** an idle ESI module reads a DC current (07-12-tbc1a +1.8 A, about +1.2 kW).
@@ -143,7 +157,7 @@ the 24 VDC or AC output counts as unallocated.
   network is *Domestic / Lighting*, its converter losses included. The 350 VDC network is tied between aft and
   fwd, and power flows in at one converter and out at another (up to about 2 kW). Only the sum is the load.
 - **Battery packs charge each other** in about 9 % of the minutes, about 15 kW. The flow diagram adds the
-  charging and the discharging packs up separately, so in those minutes it shows both sides too high.
+  charging and the discharging packs up separately, so at those times it shows both sides too high.
 - **24 VDC supply placement is assumed.** Their load is too steady to fit to a segment. From the drawings,
   group _01 is on the aft feed and _02 on the fwd feed.
 - **Solar converters aren't connected yet**, so Solar reads 0.
@@ -154,7 +168,7 @@ the 24 VDC or AC output counts as unallocated.
 - **Stale data:** the electrical energy dashboard shows a *Stale data* link when a source has had no sample
   for 15 minutes. It checks each raw table as a whole, so one silent device in a table with more devices
   (an ESI module, a battery pack, a grid converter) isn't flagged. The DC ring switches are the exception:
-  they are checked one by one, because the ring model drops every minute in which one of the 8 is missing.
+  they are checked one by one, because the ring model drops every bucket in which one of the 8 is missing.
 
 ## More IO would split the unallocated groups
 
