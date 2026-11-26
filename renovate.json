@@ -7,6 +7,7 @@
     "security:minimumReleaseAgePypi",
     "workarounds:all"
   ],
+  "timezone": "Europe/Amsterdam",
   "hostRules": [
     {
       "matchHost": "europe-west1-docker.pkg.dev",
@@ -37,6 +38,30 @@
       "matchDepNames": ["python", "ghcr.io/astral-sh/uv"],
       "matchUpdateTypes": ["major", "minor", "patch"],
       "groupName": "Python"
+    },
+    {
+      "description": "zero-ui updates arrive every other Thursday from 2026-11-26, one upgrade task per sprint. Cron cannot count weeks, so the dates are listed; extend them before November 2027",
+      "matchFileNames": ["zero-ui/**"],
+      "schedule": [
+        "* * 26 11 *",
+        "* * 10,24 12 *",
+        "* * 7,21 1 *",
+        "* * 4,18 2 *",
+        "* * 4,18 3 *",
+        "* * 1,15,29 4 *",
+        "* * 13,27 5 *",
+        "* * 10,24 6 *",
+        "* * 8,22 7 *",
+        "* * 5,19 8 *",
+        "* * 2,16,30 9 *",
+        "* * 14,28 10 *"
+      ]
+    },
+    {
+      "description": "One PR for all non-major zero-ui updates; majors keep a PR each",
+      "matchFileNames": ["zero-ui/**"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "pinDigest", "digest"],
+      "groupName": "non-major zero-ui dependencies"
     }
   ]
 }
