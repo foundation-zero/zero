@@ -10,6 +10,11 @@ const { t } = useI18n();
     :to="{ name: 'thrs' }"
     class="focus-visible:ring-brand font-headers rounded-sm outline-none focus-visible:ring-2"
   >
-    <TopNavAppLogo class="gap-1.5 max-sm:flex"> - {{ t("apps.thrs") }} </TopNavAppLogo>
+    <TopNavAppLogo
+      class="gap-1.5 max-sm:flex"
+      suffix-class="text-brand"
+    >
+      - {{ t("apps.thrs") }}
+    </TopNavAppLogo>
   </RouterLink>
 </template>

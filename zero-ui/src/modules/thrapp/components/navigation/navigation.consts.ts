@@ -13,3 +13,6 @@ export const MAIN_TABS: MainTab[] = [
 
 // 36 px icon buttons, grown to a 44 px touch target on coarse pointers.
 export const ICON_BUTTON_CLASS = "size-9 pointer-coarse:size-11";
+
+// Buttons on the dark banner: a translucent background and brand-coloured icon (design spec).
+export const BANNER_BUTTON_CLASS = "bg-background/50 text-brand rounded-md";

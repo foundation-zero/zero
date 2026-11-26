@@ -50,7 +50,7 @@ const select = async (module: unknown) => {
       <span class="text-muted-foreground shrink-0">
         {{ parentModule ? moduleName(parentModule) : tNav("module") }}
       </span>
-      <RiArrowRightLine class="text-muted-foreground size-3 shrink-0" />
+      <RiArrowRightLine class="text-border size-3 shrink-0" />
       <span class="text-foreground truncate">{{ activeModule && moduleName(activeModule) }}</span>
       <SelectIcon as-child>
         <RiArrowDropDownLine class="size-5 shrink-0" />

@@ -62,13 +62,13 @@ const returnFocus = (event: Event) => {
         ref="toggleSwitch"
         :model-value="state === 'automatic' || isUnlocking"
         :disabled="isProcessing"
-        class="focus-visible:ring-brand data-[state=checked]:bg-brand-muted data-[state=unchecked]:border-warning data-[state=unchecked]:bg-neutral-grey-1000 relative h-6 w-12 cursor-pointer focus-visible:ring-2"
-        thumb-class="size-[22px] data-[state=checked]:bg-neutral-grey-600 data-[state=unchecked]:bg-warning data-[state=checked]:translate-x-6 data-[state=unchecked]:translate-x-0"
+        class="focus-visible:ring-brand data-[state=checked]:bg-brand-dull data-[state=unchecked]:border-warning data-[state=unchecked]:bg-neutral-grey-1000 relative h-6 w-12 cursor-pointer focus-visible:ring-2"
+        thumb-class="size-6 data-[state=checked]:bg-border data-[state=unchecked]:bg-warning data-[state=checked]:translate-x-[23px] data-[state=unchecked]:-translate-x-px"
         @update:model-value="toggle"
       >
         <RiLockLine
           v-if="state === 'automatic'"
-          class="text-brand-dull absolute left-2 size-4"
+          class="text-brand absolute left-2 size-4"
         />
       </Switch>
     </PopoverAnchor>
