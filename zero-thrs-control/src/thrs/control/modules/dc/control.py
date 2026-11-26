@@ -203,21 +203,6 @@ class DcControl(
         )
         self._ugrids_control.update_parameters(ugrids_parameters(parameters))
 
-    def update_controls(self, control_values: DcControlValues):
-        self._current_values.update_in_place(control_values)
-
-    @staticmethod
-    def modes() -> list[str]:
-        return [""]
-
-    @property
-    def initial_mode(self) -> DcControlMode:
-        return DcControlMode(
-            brightloops_aft=self._brightloops_aft_control.initial_mode,
-            brightloops_fwd=self._brightloops_fwd_control.initial_mode,
-            ugrids=self._ugrids_control.initial_mode,
-        )
-
     @property
     def mode(self) -> DcControlMode:
         return DcControlMode(
@@ -231,12 +216,6 @@ class DcControl(
             _INITIAL_CONTROL_VALUES(self._time()),
             _INITIAL_CONTROLLER_STATE(self._time()),
         )
-
-    def reset(self) -> None:
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
-        self._init_controllers(self._parameters)
 
     def control(
         self, sensor_values: DcSensorValues

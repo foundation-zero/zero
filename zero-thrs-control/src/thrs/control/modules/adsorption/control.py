@@ -183,17 +183,6 @@ class AdsorptionControl(
     def update_parameters(self, parameters: AdsorptionParameters) -> None:
         self._parameters = parameters
 
-    def update_controls(self, control_values: AdsorptionControlValues):
-        self._current_values.update_in_place(control_values)
-
-    def modes(self) -> list[str]:
-        return list(self._state_machine.states.keys())
-
-    @property
-    def initial_mode(self) -> AdsorptionControlMode:
-        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
-        return AdsorptionControlMode(mode=initial_mode)
-
     @property
     def mode(self) -> AdsorptionControlMode:
         mode: str = self.state
@@ -204,13 +193,6 @@ class AdsorptionControl(
             _INITIAL_CONTROL_VALUES(self._time()),
             _INITIAL_CONTROLLER_STATE(self._time()),
         )
-
-    def reset(self) -> None:
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
-        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
-        self._init_controllers()
 
     def control(
         self, sensor_values: AdsorptionSensorValues

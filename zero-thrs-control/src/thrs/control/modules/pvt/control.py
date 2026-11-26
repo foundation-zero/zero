@@ -188,38 +188,17 @@ class PvtControl(
             owners=self._owners_control.mode,
         )
 
-    @staticmethod
-    def modes() -> list[str]:
-        return [""]
-
-    @property
-    def initial_mode(self) -> PvtControlMode:
-        return PvtControlMode(
-            fwd=self._main_fwd_control.initial_mode,
-            aft=self._main_aft_control.initial_mode,
-            owners=self._owners_control.initial_mode,
-        )
-
     def initial(self) -> tuple[PvtControlValues, PvtControllerState]:
         return (
             _INITIAL_CONTROL_VALUES(self._time()),
             _INITIAL_CONTROLLER_STATE(self._time()),
         )
 
-    def reset(self) -> None:
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
-        self._init_controllers(self._parameters, self._time)
-
     def update_parameters(self, parameters: PvtParameters):
         self._parameters = parameters
         self._main_fwd_control.update_parameters(main_pvt_group_parameters(parameters))
         self._main_aft_control.update_parameters(aft_pvt_group_parameters(parameters))
         self._owners_control.update_parameters(owners_pvt_group_parameters(parameters))
-
-    def update_controls(self, control_values: PvtControlValues):
-        self._current_values.update_in_place(control_values)
 
     def _control_heat_dump(self, sensor_values: PvtSensorValues):
         self._current_values.pvt_mix_exchanger.setpoint = Stamped(

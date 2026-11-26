@@ -24,7 +24,8 @@ class LockstepRunner[
 
         self._control_values = CombinedValues(
             values={
-                module.name: module._control.initial()[0] for module in control_modules
+                module.name: module._control.manual_controls
+                for module in control_modules
             }
         )
 

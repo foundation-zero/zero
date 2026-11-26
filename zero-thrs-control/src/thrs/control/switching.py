@@ -1,7 +1,7 @@
 import logging
+from collections.abc import Callable
 
 from thrs.classes.control import Control
-from thrs.control.manual import ManualControl
 from thrs.control.state import AutomationMode, ControlModes, ControlState
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.root_types import AmcsModeSensorValues
@@ -18,38 +18,29 @@ class Switching[
 ]:
     def __init__(
         self,
-        manual: ManualControl[SensorValues, ControlValues],
-        automatic: Control[
-            SensorValues,
-            ControlValues,
-            ControlParameters,
-            ControlMode,
-            ControllerState,
+        create_automatic: Callable[
+            [ControlParameters],
+            Control[
+                SensorValues,
+                ControlValues,
+                ControlParameters,
+                ControlMode,
+                ControllerState,
+            ],
         ],
+        parameters: ControlParameters,
         name: str,
     ):
-        self._manual_control = manual
-        self._automatic_control = automatic
+        """Builds a fresh automatic control from the current parameters each time
+        automatic control engages; the manual values start at its initial values."""
+        self._create_automatic = create_automatic
+        self._parameters = parameters
+        self._automatic_control = create_automatic(parameters)
+        self._manual_controls, _ = self._automatic_control.initial()
         self._name = name
         self._mode: ControlModes = "manual"
         self._last_mode: ControlModes = "manual"
-        self._was_advisory: bool | None = None
-
-    @property
-    def automatic_control(self):
-        return self._automatic_control
-
-    @property
-    def manual_control(self):
-        return self._manual_control
-
-    def initial(
-        self,
-    ) -> tuple[ControlValues, ControllerState]:
-        return (
-            self._manual_control.initial()[0],
-            self._automatic_control.initial()[1],
-        )
+        self._was_advisory = False
 
     def control(
         self,
@@ -70,19 +61,20 @@ class Switching[
             )
         self._was_advisory = is_advisory
         if not is_advisory:
-            if actuated_control_values is not None:
-                self.update_manual_controls(actuated_control_values)
             self._mode = "manual"
 
         if self._mode == "manual":
-            if self._last_mode == "automatic" and actuated_control_values is not None:
+            # Track what was actually actuated: by the AMCS while it is in control,
+            # or by our automatic control on the tick we leave it.
+            if actuated_control_values is not None and (
+                not is_advisory or self._last_mode == "automatic"
+            ):
                 self.update_manual_controls(actuated_control_values)
-            control_values, _ = self._manual_control.control(sensor_values)
             self._last_mode = "manual"
-            return control_values, self.idle_state()
+            return self.manual_controls, self.idle_state()
 
         if self._last_mode == "manual":
-            self._automatic_control.reset()
+            self._automatic_control = self._create_automatic(self._parameters)
         control_values, controller_state = self._automatic_control.control(
             sensor_values
         )
@@ -95,12 +87,15 @@ class Switching[
         """The controller state while the automatic control does not run.
 
         That is while manual, or without sensor values: the automatic control's
-        initial state, with the current parameters and modes.
+        initial state, with the current parameters and modes. It has the automatic
+        control's mode only once that has run, as a fresh one is built on its first
+        tick: until then it has none, as while manual.
         """
         _, controller_state = self._automatic_control.initial()
-        controller_state.parameters = self._automatic_control.parameters
+        controller_state.parameters = self._parameters
+        running = self._mode == "automatic" and self._last_mode == "automatic"
         controller_state.control_mode = (
-            self._automatic_control.mode if self._mode == "automatic" else None
+            self._automatic_control.mode if running else None
         )
         controller_state.automation_mode = AutomationMode(mode=self._mode)
         controller_state.manual_values = self.manual_controls
@@ -109,28 +104,13 @@ class Switching[
     def switch_mode(self, mode: AutomationMode):
         self._mode = mode.mode
 
-    @property
-    def parameters(self) -> ControlParameters:
-        return self._automatic_control.parameters
-
     def update_parameters(self, parameters: ControlParameters):
+        self._parameters = parameters
         self._automatic_control.update_parameters(parameters)
-
-    @staticmethod
-    def modes() -> list[AutomationMode]:
-        return [AutomationMode(mode="manual"), AutomationMode(mode="automatic")]
-
-    @staticmethod
-    def initial_mode() -> AutomationMode:
-        return AutomationMode(mode="manual")
-
-    @property
-    def control_mode(self) -> ControlModes:
-        return self._mode
 
     @property
     def manual_controls(self) -> ControlValues:
-        return self._manual_control.controls
+        return self._manual_controls
 
     def update_manual_controls(self, values: ControlValues):
-        self._manual_control.update_controls(values)
+        self._manual_controls = values

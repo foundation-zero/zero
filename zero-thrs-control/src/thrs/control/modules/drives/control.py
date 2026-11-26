@@ -12,7 +12,6 @@ from thrs.control.modules.drives.state import (
     DrivesControlMode,
     DrivesParameters,
 )
-from thrs.control.modules.thrusters.state import ThrustersControlMode
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Pump, Valve
@@ -246,17 +245,6 @@ class DrivesControl(
     def update_parameters(self, parameters: DrivesParameters):
         self._parameters = parameters
 
-    def update_controls(self, control_values: DrivesControlValues):
-        self._current_values.update_in_place(control_values)
-
-    def modes(self) -> list[str]:
-        return list(self._state_machine.states.keys())
-
-    @property
-    def initial_mode(self) -> ThrustersControlMode:
-        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
-        return ThrustersControlMode(mode=initial_mode)
-
     @property
     def mode(self) -> DrivesControlMode:
         mode: str = self.state
@@ -267,13 +255,6 @@ class DrivesControl(
             _INITIAL_CONTROL_VALUES(self._time()),
             _INITIAL_CONTROLLER_STATE(self._time()),
         )
-
-    def reset(self) -> None:
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
-        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
-        self._init_controllers()
 
     def control(
         self, sensor_values: DrivesSensorValues

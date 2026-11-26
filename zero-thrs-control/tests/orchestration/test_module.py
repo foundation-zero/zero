@@ -247,7 +247,7 @@ async def test_control_values_set_becomes_the_manual_controls(
     assert controller_state.manual_values == requested
 
 
-async def test_automatic_control_resets_and_returns_first_control_tick(
+async def test_automatic_control_rebuilds_and_returns_first_control_tick(
     advisory_sensor_values,
     manual_values,
     mock_channels,
@@ -270,9 +270,7 @@ async def test_automatic_control_resets_and_returns_first_control_tick(
     automatic_control_values, _ = await module.tick(advisory_sensor_values)
 
     assert manual_control_values == actuated
-    assert mock_description.control.call_count == 1  # no rebuild, reset in place
-    assert module._control.automatic_control is mock_control
-    mock_control.reset.assert_called_once_with()
+    assert mock_description.control.call_count == 2  # rebuilt on engage
     assert mock_control.control.call_args_list == [mock.call(advisory_sensor_values)]
     assert automatic_control_values == fresh_values
     assert automatic_control_values != initial
@@ -280,31 +278,23 @@ async def test_automatic_control_resets_and_returns_first_control_tick(
 
 
 async def test_parameters_changed_while_manual_survive_engage():
-    channels = make_async_channels()
-    module = make_module(channels=channels)
+    module = make_module(channels=make_async_channels())
     module._control.update_parameters(ConfigurableParameters(setpoint=77.0))
-    automatic = module._control.automatic_control
 
     module.set_automation_mode(AutomationMode(mode="automatic"))
-    await module.tick(simple_advisory_values(flow=2.0))
+    _, controller_state = await module.tick(simple_advisory_values(flow=2.0))
 
-    assert module._control.automatic_control is automatic
-    assert automatic.parameters.setpoint == 77.0
-    assert module._control.parameters.setpoint == 77.0
+    assert controller_state.parameters.setpoint == 77.0
 
 
 async def test_starting_parameters_carry_into_the_first_automatic_tick():
     module = make_module(
         parameters=ConfigurableParameters(setpoint=77.0), automation_mode="automatic"
     )
-    assert module._control.parameters.setpoint == 77.0
-    automatic = module._control.automatic_control
 
-    await module.tick(simple_advisory_values(flow=2.0))
+    _, controller_state = await module.tick(simple_advisory_values(flow=2.0))
 
-    assert module._control.automatic_control is automatic
-    assert automatic.parameters.setpoint == 77.0
-    assert module._control.parameters.setpoint == 77.0
+    assert controller_state.parameters.setpoint == 77.0
 
 
 async def test_automatic_to_manual_snaps_to_actuated_while_advisory(
@@ -380,16 +370,16 @@ async def test_stale_automation_mode_not_reapplied_after_advisory_return(
     module = module_factory()
 
     await module.sync_control_channels_state()
-    await module.tick(advisory_sensor_values)
-    assert module._control.control_mode == "automatic"
+    _, controller_state = await module.tick(advisory_sensor_values)
+    assert controller_state.automation_mode == AutomationMode(mode="automatic")
 
     await module.sync_control_channels_state()
-    await module.tick(manual_values)
-    assert module._control.control_mode == "manual"
+    _, controller_state = await module.tick(manual_values)
+    assert controller_state.automation_mode == AutomationMode(mode="manual")
 
     await module.sync_control_channels_state()
-    await module.tick(advisory_sensor_values)
-    assert module._control.control_mode == "manual"
+    _, controller_state = await module.tick(advisory_sensor_values)
+    assert controller_state.automation_mode == AutomationMode(mode="manual")
 
 
 async def test_tick_without_sensors_echoes_actuated(manual_values):

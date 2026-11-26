@@ -723,7 +723,7 @@ class DhwControl(
             time_fn=self._time,
         )
 
-    def update_controller_state(self, sensor_values: DhwSensorValues):
+    def _update_controller_state(self, sensor_values: DhwSensorValues):
         self._current_controller_state.dhw_tanks_controller = (
             self._tanks_controller.values(
                 sensor_values=sensor_values,
@@ -750,17 +750,6 @@ class DhwControl(
     def update_parameters(self, parameters: DhwParameters):
         self._parameters = parameters
 
-    def update_controls(self, control_values: DhwControlValues):
-        self._current_values.update_in_place(control_values)
-
-    def modes(self) -> list[str]:
-        return list(self._state_machine.states.keys())
-
-    @property
-    def initial_mode(self) -> DhwControlMode:
-        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
-        return DhwControlMode(boosting_mode=initial_mode, filling_mode="idle")
-
     @property
     def mode(self) -> DhwControlMode:
         mode: str = self.state
@@ -774,14 +763,6 @@ class DhwControl(
             _INITIAL_CONTROL_VALUES(self._time()).model_copy(deep=True),
             controller_state.model_copy(deep=True),
         )
-
-    def reset(self) -> None:
-        self._current_values, self._current_controller_state = self.initial()
-        self._boosting_entered_at = None
-        self._boosting_shortfall_since = None
-        self._stall_tracking_key = None
-        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
-        self._init_controllers()
 
     def control(
         self, sensor_values: DhwSensorValues
@@ -797,7 +778,7 @@ class DhwControl(
         self._control_filling_flow(sensor_values)
         self._control_boosting_flow(sensor_values)
 
-        self.update_controller_state(sensor_values)
+        self._update_controller_state(sensor_values)
 
         return (self._current_values, self._current_controller_state)
 

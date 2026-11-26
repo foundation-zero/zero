@@ -184,14 +184,6 @@ class PvtGroupControl(
     def parameters(self) -> PvtGroupParameters:
         return self._parameters
 
-    def modes(self) -> list[str]:
-        return list(self._state_machine.states.keys())
-
-    @property
-    def initial_mode(self) -> PvtGroupControlMode:
-        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
-        return PvtGroupControlMode(mode=initial_mode)
-
     @property
     def mode(self) -> PvtGroupControlMode:
         mode: str = self.state
@@ -200,18 +192,10 @@ class PvtGroupControl(
     def update_parameters(self, parameters: PvtGroupParameters):
         self._parameters = parameters
 
-    def update_controls(self, control_values: PvtGroupControlValues):
-        self._current_values.update_in_place(control_values)
-
     def initial(self) -> tuple[PvtGroupControlValues, PvtGroupControllerState]:
         return (
             self._current_values,
             _INITIAL_PVT_GROUP_CONTROLLER_STATE(self._time()),
-        )
-
-    def reset(self) -> None:
-        raise NotImplementedError(
-            "Reset is not implemented as this control is intended to be used as a subcontrol of PvtControl"
         )
 
     def _string_warm(self, sensor_values: PvtGroupSensorValues):

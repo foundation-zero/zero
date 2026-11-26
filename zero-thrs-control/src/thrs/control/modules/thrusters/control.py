@@ -307,17 +307,6 @@ class ThrustersControl(
     def update_parameters(self, parameters: ThrustersParameters):
         self._parameters = parameters
 
-    def update_controls(self, control_values: ThrustersControlValues):
-        self._current_control_values.update_in_place(control_values)
-
-    def modes(self) -> list[str]:
-        return list(self._state_machine.states.keys())
-
-    @property
-    def initial_mode(self) -> ThrustersControlMode:
-        initial_mode: str = self._state_machine.initial  # pyrefly: ignore[bad-assignment]
-        return ThrustersControlMode(mode=initial_mode)
-
     @property
     def mode(self) -> ThrustersControlMode:
         mode: str = self.state
@@ -328,13 +317,6 @@ class ThrustersControl(
             _INITIAL_CONTROL_VALUES(self._time()),
             _INITIAL_CONTROLLER_STATE(self._time()),
         )
-
-    def reset(self) -> None:
-        self._current_control_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
-        self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
-        self._init_controllers(self._parameters)
 
     def control(
         self, sensor_values: ThrustersSensorValues
@@ -572,7 +554,7 @@ class ThrustersControl(
 
     def _activate_pump(self, sensor_values: ThrustersSensorValues):
         if self._active_pump:
-            self.raise_warning("A pump was already active upon selecting")
+            self._raise_warning("A pump was already active upon selecting")
         elif self._most_recently_active_pump == "pump1":
             self._most_recently_active_pump = "pump2"
             self._active_pump = self._current_control_values.thrusters_pump2
@@ -584,12 +566,12 @@ class ThrustersControl(
 
     def _deactivate_pump(self, sensor_values: ThrustersSensorValues):
         if not self._active_pump:
-            self.raise_warning("No pump active when deactivating")
+            self._raise_warning("No pump active when deactivating")
 
         self._active_pump.on = Stamped(value=False, timestamp=self._time())
         self._active_pump = None
 
-    def raise_warning(self, message: str) -> NoReturn:
+    def _raise_warning(self, message: str) -> NoReturn:
         raise Warning(message)
 
 

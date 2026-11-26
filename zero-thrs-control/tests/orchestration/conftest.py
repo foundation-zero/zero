@@ -35,6 +35,7 @@ def mock_channels():
 @pytest.fixture
 def mock_description(mock_control, mock_alarms):
     description = mock.Mock()
+    description.parameters_cls = SimpleParameters
     description.control.return_value = mock_control
     description.alarms.return_value = mock_alarms
     return description

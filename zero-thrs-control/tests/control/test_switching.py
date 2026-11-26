@@ -6,12 +6,12 @@ import pytest
 from tests.orchestration.simples import (
     SimpleControllerState,
     SimpleInOut,
+    SimpleMode,
     SimpleParameters,
     simple_advisory_values,
     simple_control_values,
     simple_non_advisory_values,
 )
-from thrs.control.manual import ManualControl
 from thrs.control.state import AutomationMode
 from thrs.control.switching import Switching
 
@@ -19,7 +19,7 @@ from thrs.control.switching import Switching
 def test_switching_control(switching):
     switching_control = switching(manual_flow=42.0)
 
-    control_values, controller_state = switching_control.initial()
+    controller_state = switching_control.idle_state()
 
     assert controller_state.automation_mode == AutomationMode(mode="manual")
     assert controller_state.control_mode is None
@@ -28,11 +28,12 @@ def test_switching_control(switching):
         simple_advisory_values(flow=42.0)
     )
     assert control_values.go_with_the.flow.value == 42.0
-    assert controller_state == switching_control.automatic_control.initial()[
-        1
-    ].model_copy(update={"manual_values": switching_control.manual_controls})
+    assert controller_state == SimpleControllerState(
+        parameters=SimpleParameters.zero(),
+        manual_values=switching_control.manual_controls,
+    )
     assert controller_state.automation_mode == AutomationMode(mode="manual")
-    assert controller_state.parameters == switching_control.parameters
+    assert controller_state.parameters == SimpleParameters.zero()
 
     switching_control.switch_mode(AutomationMode(mode="automatic"))
     control_values, controller_state = switching_control.control(
@@ -40,8 +41,8 @@ def test_switching_control(switching):
     )
 
     assert controller_state.automation_mode == AutomationMode(mode="automatic")
-    assert controller_state.control_mode == switching_control.automatic_control.mode
-    assert controller_state.parameters == switching_control.parameters
+    assert controller_state.control_mode == SimpleMode()
+    assert controller_state.parameters == SimpleParameters.zero()
     assert control_values.go_with_the.flow.value == 30.0
 
 
@@ -76,72 +77,71 @@ def test_advisory_restore_does_not_auto_engage(switching):
     assert control_values.go_with_the.flow.value == 1.0
 
 
-def _mock_switching(initial_automatic: mock.Mock) -> Switching:
-    initial_automatic.parameters = SimpleParameters()
-    initial_automatic.initial.return_value = (
+def _mock_switching(automatic: mock.Mock) -> tuple[Switching, mock.Mock]:
+    """A switching control whose automatic control is always `automatic`, and the
+    factory that builds it, to count the builds."""
+    automatic.initial.return_value = (
         SimpleInOut.zero(),
         SimpleControllerState(parameters=SimpleParameters()),
     )
-    return Switching(
-        ManualControl(simple_control_values(flow=4.0)),
-        initial_automatic,
-        name="simple",
-    )
+    create_automatic = mock.Mock(return_value=automatic)
+    switching_control = Switching(create_automatic, SimpleParameters(), name="simple")
+    switching_control.update_manual_controls(simple_control_values(flow=4.0))
+    return switching_control, create_automatic
 
 
 def test_manual_ticks_do_not_touch_automatic():
     automatic = mock.Mock()
-    switching_control = _mock_switching(automatic)
+    switching_control, create_automatic = _mock_switching(automatic)
 
     control_values, controller_state = switching_control.control(
         simple_advisory_values(flow=9.0)
     )
 
     assert control_values.go_with_the.flow.value == 4.0
-    automatic.update_controls.assert_not_called()
-    automatic.control.assert_not_called()
-    automatic.reset.assert_not_called()
+    assert automatic.control.call_count == 0
+    assert create_automatic.call_count == 1
     assert controller_state == automatic.initial.return_value[1]
 
 
-def test_manual_to_automatic_resets_and_returns_first_control_tick():
+def test_manual_to_automatic_rebuilds_and_returns_first_control_tick():
     automatic = mock.Mock()
     automatic.control.return_value = (
         simple_control_values(flow=4.0),
         SimpleControllerState(parameters=SimpleParameters()),
     )
-    switching_control = _mock_switching(automatic)
+    switching_control, create_automatic = _mock_switching(automatic)
     switching_control.control(simple_advisory_values(flow=9.0))
-    assert automatic.reset.call_count == 0
+    assert create_automatic.call_count == 1
 
     switching_control.switch_mode(AutomationMode(mode="automatic"))
     control_values, controller_state = switching_control.control(
         simple_advisory_values(flow=9.0)
     )
 
-    # Switching to automatic resets the same control in place
-    assert switching_control.automatic_control is automatic
-    automatic.reset.assert_called_once_with()
-    automatic.control.assert_called_once()
+    # Switching to automatic builds a fresh control from the current parameters
+    assert create_automatic.call_args_list == [
+        mock.call(SimpleParameters()),
+        mock.call(SimpleParameters()),
+    ]
+    assert automatic.control.call_count == 1
     assert control_values.go_with_the.flow.value == 4.0
     assert controller_state is automatic.control.return_value[1]
 
-    # Staying automatic ticks the same instance without resetting again
+    # Staying automatic ticks the same control without building again
     switching_control.control(simple_advisory_values(flow=9.0))
-    automatic.reset.assert_called_once()
+    assert create_automatic.call_count == 2
     assert automatic.control.call_count == 2
 
 
 def test_manual_to_automatic_ignores_manual(switching):
     switching_control = switching(manual_flow=99.0)
-    automatic = switching_control.automatic_control
 
     switching_control.switch_mode(AutomationMode(mode="automatic"))
     control_values, _ = switching_control.control(
         simple_advisory_values(flow=8.0), simple_control_values(flow=6.0)
     )
 
-    assert switching_control.automatic_control is automatic
     assert control_values.go_with_the.flow.value == 8.0
     assert switching_control.manual_controls.go_with_the.flow.value == 99.0
 
@@ -218,3 +218,14 @@ def test_advisory_disable_logs_warning_on_falling_edge_only(
         )
 
     assert caplog.records == []
+
+
+def test_idle_state_has_the_mode_once_the_automatic_control_runs(switching):
+    switching_control = switching()
+    switching_control.switch_mode(AutomationMode(mode="automatic"))
+    # Not run yet: no mode, as while manual.
+    assert switching_control.idle_state().control_mode is None
+
+    switching_control.control(simple_advisory_values(flow=8.0))
+
+    assert switching_control.idle_state().control_mode == SimpleMode()

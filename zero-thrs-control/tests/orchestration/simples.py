@@ -87,7 +87,6 @@ class SimpleControl(
     ):
         self._parameters = parameters
         self._time = time_fn
-        self._current_values: SimpleInOut = SimpleInOut.zero()
 
     def initial(self) -> tuple[SimpleInOut, SimpleControllerState]:
         return (
@@ -103,14 +102,6 @@ class SimpleControl(
             SimpleControllerState(parameters=self._parameters, control_mode=self.mode),
         )
 
-    @staticmethod
-    def modes() -> list[str]:
-        return []
-
-    @staticmethod
-    def initial_mode() -> str:
-        return ""
-
     @property
     def mode(self) -> SimpleMode | None:
         return SimpleMode()
@@ -121,12 +112,6 @@ class SimpleControl(
 
     def update_parameters(self, parameters: SimpleParameters):
         self._parameters = parameters
-
-    def update_controls(self, control_values: SimpleInOut) -> None:
-        self._current_values.update_in_place(control_values)
-
-    def reset(self) -> None:
-        self._current_values = SimpleInOut.zero()
 
 
 def simple_controller_state() -> SimpleControllerState:
