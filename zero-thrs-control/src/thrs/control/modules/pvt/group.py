@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Annotated
 
 from pydantic import model_validator
-from transitions import Machine, State
+from statemachine import State, StateChart
 
 from thrs.classes.control import Control
 from thrs.control.controllers import PidController
@@ -71,6 +71,28 @@ class PvtGroupControllerState(ControlMode):
     ]
 
 
+class _PvtGroupStateMachine(StateChart["PvtGroupControl"]):
+    """Each event takes the first of its transitions whose condition holds."""
+
+    # An error in a guard or action raises instead of becoming an unhandled event.
+    catch_errors_as_events = False
+
+    idle = State(
+        initial=True,
+        enter=["_set_mix_to_idle_position", "_disable_warmup_mix", "_deactivate_pump"],
+        exit=["_enable_warmup_mix", "_activate_pump"],
+    )
+    warmup = State(enter="_set_pump_to_minimum_dutypoint")
+    recovery = State(enter="_enable_pump_control", exit="_disable_pump_control")
+
+    check_temperatures = warmup.from_(idle, cond="_string_warm") | idle.from_(
+        warmup, recovery, cond="_low_return_temperature"
+    )
+    check_mix = recovery.from_(warmup, cond="_mix_open") | warmup.from_(
+        recovery, cond="_mix_closed"
+    )
+
+
 class PvtGroupControl(
     Control[
         PvtGroupSensorValues,
@@ -80,8 +102,6 @@ class PvtGroupControl(
         PvtGroupControllerState,
     ]
 ):
-    state: str  # Value set by Machine transitions logic
-
     def __init__(
         self,
         parameters: PvtGroupParameters,
@@ -92,72 +112,13 @@ class PvtGroupControl(
         self._time = time_fn
         self._current_values = initial_control_values
 
-        self._init_state_machine_states()
-        self._init_state_machine_transitions()
-        self._state_machine = Machine(
-            self,
-            transitions=self._transitions,
-            states=self._states,
-            initial="idle",
-        )
+        # Starting with a mode set skips idle's enter actions: the first outputs are
+        # the initial control values.
+        self._state: str = _PvtGroupStateMachine.idle.value
+        self._state_machine = _PvtGroupStateMachine(model=self, state_field="_state")
         self._init_controllers()
 
-    def _init_state_machine_states(self):
-        self._states = [
-            State(
-                name="idle",
-                on_enter=[
-                    self._set_mix_to_idle_position,
-                    self._disable_warmup_mix,
-                    self._deactivate_pump,
-                ],
-                on_exit=[
-                    self._enable_warmup_mix,
-                    self._activate_pump,
-                ],
-            ),
-            State(name="warmup", on_enter=self._set_pump_to_minimum_dutypoint),
-            State(
-                name="recovery",
-                on_enter=self._enable_pump_control,
-                on_exit=self._disable_pump_control,
-            ),
-        ]
-
-    def _init_state_machine_transitions(self):
-        self._transitions = [
-            {
-                "trigger": "_check_temperatures",
-                "source": "idle",
-                "dest": "warmup",
-                "conditions": "_string_warm",
-            },
-            {
-                "trigger": "_check_temperatures",
-                "source": ["warmup", "recovery"],
-                "dest": "idle",
-                "conditions": "_low_return_temperature",
-            },
-            {
-                "trigger": "_check_mix",
-                "source": "warmup",
-                "dest": "recovery",
-                "conditions": "_mix_open",
-            },
-            {
-                "trigger": "_check_mix",
-                "source": "recovery",
-                "dest": "warmup",
-                "conditions": "_mix_closed",
-            },
-        ]
-
     def _init_controllers(self):
-        if not hasattr(self, "_state_machine") or self._state_machine is None:
-            raise ValueError(
-                "State machine must be initialized before creating control methods"
-            )
-
         self._warmup_mix_controller = PidController[Ratio, Celsius](
             self._current_values.mix.setpoint.value,
             lambda: self._parameters.warmup_temperature,
@@ -179,8 +140,7 @@ class PvtGroupControl(
 
     @property
     def mode(self) -> PvtGroupControlMode:
-        mode: str = self.state
-        return PvtGroupControlMode(mode=mode)
+        return PvtGroupControlMode(mode=self._state)
 
     def update_parameters(self, parameters: PvtGroupParameters):
         self._parameters = parameters
@@ -241,10 +201,9 @@ class PvtGroupControl(
     def control(
         self, sensor_values: PvtGroupSensorValues
     ) -> tuple[PvtGroupControlValues, PvtGroupControllerState]:
-        self._check_temperatures(sensor_values)  # pyrefly: ignore[missing-attribute]
+        self._state_machine.check_temperatures(sensor_values)
         self._control_warmup_mix(sensor_values)
-        if not self.mode.is_idle:
-            self._check_mix(sensor_values)  # pyrefly: ignore[missing-attribute]
+        self._state_machine.check_mix(sensor_values)
         self._control_pump(sensor_values)
 
         return (
