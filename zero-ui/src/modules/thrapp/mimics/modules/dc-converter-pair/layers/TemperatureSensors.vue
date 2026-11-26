@@ -9,7 +9,8 @@ import TemperatureLabelInstance from "../../../instances/TemperatureLabelInstanc
 const props = defineProps<{ fields: BranchFields<MimicComponentType.TemperatureSensor> }>();
 
 const getContext = getTooltipContext(MimicComponentType.TemperatureSensor);
-const temperatureSensors = computed(() => props.fields.map(getContext));
+// Not `map(getContext)`: map passes the index, which getContext takes as `arrayIndexIfMultiple`.
+const temperatureSensors = computed(() => props.fields.map((field) => getContext(field)));
 </script>
 
 <template>

@@ -9,7 +9,8 @@ import FlowLabelInstance from "../../../instances/FlowLabelInstance.vue";
 const props = defineProps<{ fields: BranchFields<MimicComponentType.FlowSensor> }>();
 
 const getContext = getTooltipContext(MimicComponentType.FlowSensor);
-const flowSensors = computed(() => props.fields.map(getContext));
+// Not `map(getContext)`: map passes the index, which getContext takes as `arrayIndexIfMultiple`.
+const flowSensors = computed(() => props.fields.map((field) => getContext(field)));
 </script>
 
 <template>

@@ -75,7 +75,7 @@ pnpm convert-direction-arrows <module>
 pnpm convert-direction-arrows dc
 ```
 
-`<module>` is the folder name under `src/modules/thrapp/mimics/modules/<module>/layers/DirectionArrows.vue`.
+`<module>` is the folder name under `src/modules/thrapp/mimics/modules/<module>/layers/DirectionArrows.vue`. Mimics that share layers have no `layers/` of their own: the DC converter groups `dc-fwd` and `dc-ugrid`, and the top half of `dc-aft`, draw their arrows from `dc-converter-pair`.
 
 **What it does:**
 

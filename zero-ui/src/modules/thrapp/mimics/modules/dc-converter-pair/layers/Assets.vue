@@ -8,7 +8,8 @@ import { PowerConverterInstance } from "../../../instances";
 const props = defineProps<{ fields: BranchFields<MimicComponentType.PowerConverter> }>();
 
 const getContext = getTooltipContext(MimicComponentType.PowerConverter);
-const converters = computed(() => props.fields.map(getContext));
+// Not `map(getContext)`: map passes the index, which getContext takes as `arrayIndexIfMultiple`.
+const converters = computed(() => props.fields.map((field) => getContext(field)));
 </script>
 
 <template>

@@ -13,7 +13,8 @@ import TagLabelInstance from "../../../instances/TagLabelInstance.vue";
 const props = defineProps<{ fields: BranchFields<MimicComponentType.ManualValve> }>();
 
 const getContext = getTooltipContext(MimicComponentType.ManualValve);
-const manualValves = computed(() => props.fields.map(getContext));
+// Not `map(getContext)`: map passes the index, which getContext takes as `arrayIndexIfMultiple`.
+const manualValves = computed(() => props.fields.map((field) => getContext(field)));
 </script>
 
 <template>
