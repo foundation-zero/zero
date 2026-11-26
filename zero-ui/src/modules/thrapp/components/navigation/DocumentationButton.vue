@@ -21,9 +21,9 @@ const { documentation } = useThrappNavigation();
         :class="
           cn(
             ICON_BUTTON_CLASS,
-            'focus-visible:ring-brand relative focus-visible:ring-2',
+            'focus-visible:ring-brand hover:bg-foreground/5 relative rounded-xs focus-visible:ring-2',
             documentation.active &&
-              'text-foreground after:bg-attention after:absolute after:bottom-1 after:h-0.5 after:w-4',
+              'bg-foreground/5 text-foreground after:bg-attention after:absolute after:inset-x-0 after:bottom-0 after:mx-auto after:h-0.5 after:w-5 after:rounded-[1px]',
           )
         "
       >

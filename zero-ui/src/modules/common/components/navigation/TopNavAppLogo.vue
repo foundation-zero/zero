@@ -7,6 +7,8 @@ const props = withDefaults(
   defineProps<{
     class?: HTMLAttributes["class"];
     tag?: keyof HTMLElementTagNameMap;
+    /** Classes for the app name after the logo, e.g. its colour. */
+    suffixClass?: HTMLAttributes["class"];
   }>(),
   {
     tag: "span",
@@ -20,7 +22,9 @@ const props = withDefaults(
     :class="cn('flex items-center gap-1 text-nowrap max-sm:hidden', props.class)"
   >
     <ZeroLogo />
-    <span class="text-disabled-foreground text-xs font-extralight uppercase">
+    <span
+      :class="cn('text-disabled-foreground text-xs font-extralight uppercase', props.suffixClass)"
+    >
       <slot />
     </span>
   </component>

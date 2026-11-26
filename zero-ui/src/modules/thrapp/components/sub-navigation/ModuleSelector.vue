@@ -44,13 +44,13 @@ const select = async (module: unknown) => {
     @update:model-value="select"
   >
     <SelectTrigger
-      class="focus-visible:ring-brand flex h-9 min-w-0 cursor-pointer items-center gap-2 rounded-sm text-base leading-4 font-medium outline-none focus-visible:ring-2"
+      class="focus-visible:ring-brand flex h-9 min-w-0 cursor-pointer items-center gap-2 rounded-sm text-base leading-4 font-medium outline-none focus-visible:ring-2 lg:shrink-0"
       data-testid="module-selector"
     >
       <span class="text-muted-foreground shrink-0">
         {{ parentModule ? moduleName(parentModule) : tNav("module") }}
       </span>
-      <RiArrowRightLine class="text-muted-foreground size-3 shrink-0" />
+      <RiArrowRightLine class="text-border size-3 shrink-0" />
       <span class="text-foreground truncate">{{ activeModule && moduleName(activeModule) }}</span>
       <SelectIcon as-child>
         <RiArrowDropDownLine class="size-5 shrink-0" />

@@ -7,7 +7,7 @@ import TopNavZero from "@/modules/common/components/navigation/TopNavZero.vue";
 import { tScoped } from "@/modules/common/lib/utils";
 import CompactMenu from "./CompactMenu.vue";
 import DocumentationButton from "./DocumentationButton.vue";
-import { ICON_BUTTON_CLASS } from "./navigation.consts";
+import { BANNER_BUTTON_CLASS, ICON_BUTTON_CLASS } from "./navigation.consts";
 import MainNav from "./MainNav.vue";
 import ThrappLogo from "./ThrappLogo.vue";
 
@@ -18,14 +18,16 @@ const t = tScoped("thrapp.components.navigation");
   <TooltipProvider>
     <header class="bg-background relative z-20 shrink-0">
       <div class="max-desktop:hidden">
-        <TopNavToolbar class="thrapp-banner h-14 border-0 px-6 md:px-6">
+        <TopNavToolbar class="thrapp-banner dark text-foreground h-14 border-0 px-6 md:px-6">
           <template #center>
             <TopNavZero />
           </template>
           <template #right-content>
-            <div class="flex items-center gap-1">
-              <DarkModeToggle :class="ICON_BUTTON_CLASS" />
-              <span class="pointer-coarse:[&_[data-slot=button]]:size-11">
+            <div class="flex items-center gap-4">
+              <DarkModeToggle :class="[ICON_BUTTON_CLASS, BANNER_BUTTON_CLASS]" />
+              <span
+                class="[&_[data-slot=button]]:bg-background/50 [&_[data-slot=button]]:text-brand [&_[data-slot=button]]:rounded-md pointer-coarse:[&_[data-slot=button]]:size-11"
+              >
                 <AppLauncher />
               </span>
             </div>
@@ -34,7 +36,7 @@ const t = tScoped("thrapp.components.navigation");
 
         <nav
           :aria-label="t('mainNavigation')"
-          class="border-border-subtle flex h-[73px] items-center gap-6 border-b px-6"
+          class="border-border-subtle font-ui flex h-[73px] items-center gap-6 border-b px-6"
         >
           <ThrappLogo class="mr-4" />
           <MainNav />
@@ -45,7 +47,9 @@ const t = tScoped("thrapp.components.navigation");
         </nav>
       </div>
 
-      <div class="thrapp-banner desktop:hidden flex h-14 items-center gap-2 px-2 md:px-4">
+      <div
+        class="thrapp-banner dark text-foreground desktop:hidden flex h-14 items-center gap-2 px-2 md:px-4"
+      >
         <CompactMenu />
         <ThrappLogo />
       </div>
@@ -55,15 +59,19 @@ const t = tScoped("thrapp.components.navigation");
   </TooltipProvider>
 </template>
 
-<style lang="scss" scoped>
-// Same gradient as the shared TopNav banner (provided by the design team).
-:global(.dark .thrapp-banner) {
+<style scoped>
+/*
+ * The banner stays dark in both themes (its `dark` class scopes the dark tokens to it), with an
+ * ellipse centred above the bar: 1334 px wide as designed up to 1920 px, then as wide relative to
+ * the screen (1334 / 1920), so the buttons at the edges stay in the light part on larger screens.
+ */
+.thrapp-banner {
   background:
     radial-gradient(
-      43.74% 35.44% at 50.03% 36.53%,
-      var(----general---brand-dull, rgba(86, 133, 169, 0.2)) 0%,
-      rgba(153, 182, 204, 0) 100%
+      max(1334px, 69.48vw) 237px at 50% -63px,
+      color-mix(in srgb, var(--color-brand-a-400) 50%, transparent),
+      transparent
     ),
-    var(----general---background-muted, #121619);
+    var(--background);
 }
 </style>

@@ -32,7 +32,7 @@ export const SIZE_ATTRIBUTES: Record<ModeBadgeSize, string> = {
   [ModeBadgeSize.Asset]: "rounded-lg px-4 py-0.5 text-xs",
   [ModeBadgeSize.Tank]: "rounded-lg px-4 py-0.5 text-xs",
   [ModeBadgeSize.Circuit]: "rounded-xl px-4 py-0.5 text-sm",
-  [ModeBadgeSize.Navigation]: "rounded-xl px-3 py-2 text-base leading-4",
+  [ModeBadgeSize.Navigation]: "h-7 rounded-[12px] px-3 text-base",
 };
 
 export const MODE_COLORS: Record<ModeBadgeMode, string> = {

@@ -35,7 +35,8 @@
 @source inline("{,sm:,md:,lg:,xl:,2xl:,3xl:,4xl:}grid-cols-{{1..14..1},{15..42..3}}");
 
 :root {
-  --background: var(--color-neutral-grey-0);
+  /* Neutral white, as in the design, rather than the cooler grey-0. */
+  --background: var(--color-neutral-0);
   --foreground: var(--color-neutral-grey-1000);
 
   --muted: var(--color-neutral-grey-50);

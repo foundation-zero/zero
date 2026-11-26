@@ -20,7 +20,7 @@ const { tabs } = useThrappNavigation();
       <RouterLink
         :to="tab.to"
         :aria-current="tab.active ? 'page' : undefined"
-        class="focus-visible:ring-brand -mb-px inline-flex items-center border-b px-4 text-base whitespace-nowrap uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset"
+        class="focus-visible:ring-brand -mb-px inline-flex items-center border-b px-4 text-base font-medium whitespace-nowrap uppercase transition-colors outline-none focus-visible:ring-2 focus-visible:ring-inset"
         :class="
           tab.active
             ? 'border-attention text-foreground'
