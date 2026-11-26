@@ -54,15 +54,15 @@ eye — that is exactly where a manual quietly goes stale. Run:
 ```bash
 cd zero-thrs-control
 uv run python docs/skills/thrs-module-manual/scripts/module_facts.py <module> \
-  --diagram /tmp/<module>-truth.png
+  --diagram /tmp/<module>-truth.mmd
 ```
 
 It prints, from the live objects: every parameter with its unit, default, real
 bounds and in-code description; the cross-parameter validators; alarm codes and
 severities; **the control modes the operator sees**; the actuators and sensors;
-and each state machine with its `on_enter`/`on_exit` hooks and transition
-conditions (lambdas included, as source). `--diagram` writes the raw
-pytransitions rendering.
+and each state machine as python-statemachine's Mermaid rendering, with its
+entry/exit actions and transition conditions. `--diagram` writes that rendering
+to a file.
 
 If the script reports the module has no `*_MODULE_DESCRIPTION`, it is a helper
 like `converters` or `pvt_group` — it belongs inside its parent's manual, not in
