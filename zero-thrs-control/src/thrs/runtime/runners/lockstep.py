@@ -1,7 +1,7 @@
-from thrs.classes.persistence.manager import PersistManager
 from thrs.input_output.base import CombinedValues, ThrsValues
 from thrs.orchestration.module import Module
 from thrs.orchestration.simulation import SimulationUnit
+from thrs.persistence.manager import PersistManager
 from thrs.runtime.runners.base import Runner
 
 

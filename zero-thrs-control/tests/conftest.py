@@ -7,8 +7,8 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from thrs.classes.database import PostgresDatabase
 from thrs.orchestration.config import Config
+from thrs.persistence.database import PostgresDatabase
 
 
 @pytest.fixture(scope="session")

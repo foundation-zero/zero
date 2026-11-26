@@ -3,9 +3,9 @@ from typing import Protocol
 
 from sqlalchemy.dialects import postgresql
 
-from thrs.classes.database import PostgresDatabase
-from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
-from thrs.db.models.module_persistence import ModulePersistence
+from thrs.persistence.database import PostgresDatabase
+from thrs.persistence.models import ModulePersistence
+from thrs.persistence.module_snapshot import ModulePersistenceSnapshot
 
 
 class PersistentEngine(Protocol):

@@ -5,12 +5,12 @@ from unittest import mock
 import pytest
 from sqlalchemy.exc import OperationalError
 
-from thrs.classes.database import PostgresDatabase
-from thrs.classes.persistence.engine import (
+from thrs.cli.setup import setup_persistence_manager
+from thrs.persistence.database import PostgresDatabase
+from thrs.persistence.engine import (
     NoopPersistentEngine,
     PostgresPersistentEngine,
 )
-from thrs.orchestration.setup import setup_persistence_manager
 
 
 def _connection_error() -> OperationalError:
@@ -57,7 +57,7 @@ def _fake_database(session_factory) -> PostgresDatabase:
 async def test_falls_back_to_noop_when_postgres_is_unreachable(
     caplog: pytest.LogCaptureFixture,
 ):
-    caplog.set_level(logging.WARNING, logger="thrs.orchestration.setup")
+    caplog.set_level(logging.WARNING, logger="thrs.cli.setup")
     database = _fake_database(_FailingSessionFactory())
 
     manager = await setup_persistence_manager(

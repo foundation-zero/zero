@@ -4,8 +4,9 @@ from typing import Annotated
 
 from transitions import Machine, State
 
-from thrs.classes.control import Control, ControlMode
+from thrs.classes.control import Control
 from thrs.control.controllers import PidController
+from thrs.control.state import ControlMode
 from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions import control, sensor
 from thrs.input_output.definitions.control import Valve

@@ -2,10 +2,9 @@ from typing import Annotated
 
 from pydantic import Field, model_validator
 
-from thrs.classes.control import ControlMode
 from thrs.control.modules.pvt.group import PvtGroupControlMode
 from thrs.control.modules.pvt.io import PvtControlValues
-from thrs.control.state import ControlState
+from thrs.control.state import ControlMode, ControlState
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning

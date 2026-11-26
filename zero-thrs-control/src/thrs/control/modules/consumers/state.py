@@ -2,9 +2,8 @@ from typing import Annotated
 
 from pydantic import Field
 
-from thrs.classes.control import ControlMode
 from thrs.control.modules.consumers.io import ConsumersControlValues
-from thrs.control.state import ControlState
+from thrs.control.state import ControlMode, ControlState
 from thrs.input_output.base import ThrsValues, component_meta
 from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Ratio, Tuning

@@ -1,9 +1,9 @@
 import logging
 from datetime import datetime, timedelta
 
-from thrs.classes.persistence.engine import PersistentEngine
-from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.state import ControlState
+from thrs.persistence.engine import PersistentEngine
+from thrs.persistence.module_snapshot import ModulePersistenceSnapshot
 
 logger: logging.Logger = logging.getLogger(__name__)
 

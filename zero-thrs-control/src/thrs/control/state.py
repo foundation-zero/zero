@@ -9,6 +9,18 @@ class AutomationMode(ThrsValues):
     mode: ControlModes
 
 
+class ControlMode(ThrsValues):
+    def __str__(self):
+        values = [
+            getattr(self, field_name)
+            if isinstance(getattr(self, field_name), str)
+            else f"{field_name}: {getattr(self, field_name)!s}"
+            for field_name, field_info in type(self).model_fields.items()
+        ]
+
+        return ", ".join(values)
+
+
 class ControlState[C: ThrsValues, P: ThrsValues, M: ThrsValues](ThrsValues):
     """What a module's controller publishes about itself, besides its own controllers.
 

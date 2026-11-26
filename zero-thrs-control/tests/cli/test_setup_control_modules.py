@@ -8,14 +8,14 @@ from tests.helpers.modules import (
     CONFIGURABLE_MODULE_DESCRIPTION,
     ConfigurableParameters,
 )
-from thrs.classes.persistence.engine import InMemoryPersistentEngine
-from thrs.classes.persistence.manager import PersistManager
-from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
+from thrs.cli.setup import setup_control_modules
 from thrs.control.state import AutomationMode
 from thrs.orchestration.comms import MqttConnector
 from thrs.orchestration.config import Config
 from thrs.orchestration.module import Module
-from thrs.orchestration.setup import setup_control_modules
+from thrs.persistence.engine import InMemoryPersistentEngine
+from thrs.persistence.manager import PersistManager
+from thrs.persistence.module_snapshot import ModulePersistenceSnapshot
 
 DEFAULTS = ConfigurableParameters()
 

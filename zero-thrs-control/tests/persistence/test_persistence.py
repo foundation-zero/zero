@@ -5,14 +5,14 @@ from pydantic import ValidationError
 from sqlalchemy.exc import OperationalError
 
 from tests.helpers.modules import ConfigurableControllerState, ConfigurableParameters
-from thrs.classes.persistence.engine import (
+from thrs.control.state import AutomationMode, ControlModes
+from thrs.persistence.engine import (
     InMemoryPersistentEngine,
     NoopPersistentEngine,
     PersistentEngine,
 )
-from thrs.classes.persistence.manager import PersistManager
-from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
-from thrs.control.state import AutomationMode, ControlModes
+from thrs.persistence.manager import PersistManager
+from thrs.persistence.module_snapshot import ModulePersistenceSnapshot
 
 HEARTBEAT = timedelta(seconds=60)
 
