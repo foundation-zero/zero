@@ -148,8 +148,7 @@ class MigrateRunCmd(_MigrateCmd):
     def cli_cmd(self) -> None:
         connection = _connection(self.host)
         spec = read_spec(self.spec)
-        with connect(connection) as handle:
-            greptime = Greptime(handle, connection.dbname)
+        with Greptime(connection) as greptime:
             if self.dry_run:
                 leftovers = {
                     table: leftover(greptime, spec, table)
@@ -163,8 +162,8 @@ class MigrateRunCmd(_MigrateCmd):
                 )
                 return
             with (
-                connect(connection) as lock_handle,
-                lock(Greptime(lock_handle, connection.dbname), self.unlock),
+                Greptime(connection) as lock_greptime,
+                lock(lock_greptime, self.unlock),
             ):
                 migration = load(greptime, spec, self.table, up_to=self.from_)
                 for refusal in migration.refused:
@@ -180,8 +179,7 @@ class MigrateCheckCmd(_MigrateCmd):
 
     def cli_cmd(self) -> None:
         connection = _connection(self.host)
-        with connect(connection) as handle:
-            greptime = Greptime(handle, connection.dbname)
+        with Greptime(connection) as greptime:
             findings = check(greptime, load(greptime, read_spec(self.spec), self.table))
         for finding in findings:
             print(finding)
@@ -209,14 +207,12 @@ class MigrateDropCmd(_MigrateCmd):
         if self.accept_unmigrated and not self.table:
             raise SystemExit("--accept-unmigrated needs the tables named with --table")
         connection = _connection(self.host)
-        with connect(connection) as handle, ExitStack() as held:
+        with Greptime(connection) as greptime, ExitStack() as held:
             if self.execute:
-                lock_handle = held.enter_context(connect(connection))
-                held.enter_context(
-                    lock(Greptime(lock_handle, connection.dbname), self.unlock)
-                )
+                lock_greptime = held.enter_context(Greptime(connection))
+                held.enter_context(lock(lock_greptime, self.unlock))
             outcomes = drop(
-                Greptime(handle, connection.dbname),
+                greptime,
                 read_spec(self.spec),
                 self.table,
                 self.accept_unmigrated,

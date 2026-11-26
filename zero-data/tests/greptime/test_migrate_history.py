@@ -5,6 +5,7 @@ and a catch-all topic whose keys belong to two devices in two new tables.
 """
 
 import re
+import socket
 from collections.abc import Iterator
 from datetime import date
 from pathlib import Path
@@ -102,9 +103,14 @@ def ts(day: int, hour: int, nanos: int = 0) -> str:
 
 
 @pytest.fixture
-def greptime(connection: GreptimeConnection) -> Iterator[Greptime]:
-    with connect(connection.with_dbname("public")) as handle:
-        yield Greptime(handle, "public")
+def waits() -> list[float]:
+    return []
+
+
+@pytest.fixture
+def greptime(connection: GreptimeConnection, waits: list[float]) -> Iterator[Greptime]:
+    with Greptime(connection.with_dbname("public"), waits.append) as opened:
+        yield opened
 
 
 @pytest.fixture
@@ -164,6 +170,14 @@ def no_sleep(_: float) -> None:
 
 def migrate(greptime: Greptime, until: date | None = None) -> int:
     return run(greptime, load(greptime, SPEC), until, 0, no_sleep)
+
+
+def lose_connection(greptime: Greptime) -> psycopg.Connection:
+    """Close the socket under the live connection, as a dead peer leaves it; returns it."""
+    lost = greptime._open()
+    with socket.socket(fileno=socket.dup(lost.fileno())) as dead:
+        dead.shutdown(socket.SHUT_RDWR)
+    return lost
 
 
 def sounder_rows(tables: Query) -> list[tuple[object, ...]]:
@@ -231,11 +245,11 @@ def test_run_copies_a_wide_day_in_parts(
 def test_run_sends_a_statement_again_when_greptime_drops_it(
     tables: Query,
     greptime: Greptime,
+    waits: list[float],
     monkeypatch: pytest.MonkeyPatch,
     dropped: psycopg.Error,
 ) -> None:
     failures = [dropped]
-    waits: list[float] = []
 
     def failing_once(sql: str) -> None:
         if sql.startswith("INSERT") and failures:
@@ -244,28 +258,104 @@ def test_run_sends_a_statement_again_when_greptime_drops_it(
 
     monkeypatch.setattr(greptime, "run", failing_once)
 
-    assert run(greptime, load(greptime, SPEC), None, 0, waits.append) == 10
+    assert migrate(greptime) == 10
 
     assert migrate_history.RETRY_WAIT in waits
     assert check(greptime, load(greptime, SPEC)) == []
 
 
 def test_run_counts_a_day_again_when_greptime_drops_the_count(
-    tables: Query, greptime: Greptime, monkeypatch: pytest.MonkeyPatch
+    tables: Query,
+    greptime: Greptime,
+    waits: list[float],
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    migration = load(greptime, SPEC)
     failures = [psycopg.errors.InternalError_("Internal error: 1003")]
-    waits: list[float] = []
 
-    def failing_once(sql: str) -> int:
-        if failures:
+    def failing_once(sql: str) -> list[tuple[object, ...]]:
+        if sql.startswith("SELECT count(*)") and failures:
             raise failures.pop()
-        return Greptime.count(greptime, sql)
+        return Greptime._fetch(greptime, sql)
 
-    monkeypatch.setattr(greptime, "count", failing_once)
+    monkeypatch.setattr(greptime, "_fetch", failing_once)
 
-    assert run(greptime, load(greptime, SPEC), None, 0, waits.append) == 10
+    assert run(greptime, migration, None, 0, no_sleep) == 10
 
     assert waits.count(migrate_history.RETRY_WAIT) == 1
+
+
+def test_run_opens_a_lost_connection_again_and_sends_the_statement_again(
+    tables: Query,
+    greptime: Greptime,
+    waits: list[float],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    lost: list[psycopg.Connection] = []
+
+    def losing_once(sql: str) -> None:
+        if sql.startswith("INSERT") and not lost:
+            lost.append(lose_connection(greptime))
+        Greptime.run(greptime, sql)
+
+    monkeypatch.setattr(greptime, "run", losing_once)
+
+    assert migrate(greptime) == 10
+
+    assert lost[0].broken
+    assert waits.count(migrate_history.RETRY_WAIT) == 1
+    assert check(greptime, load(greptime, SPEC)) == []
+
+
+def test_run_gives_up_when_the_connection_keeps_getting_lost(
+    tables: Query, greptime: Greptime, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    attempts: list[str] = []
+
+    def losing(sql: str) -> None:
+        if sql.startswith("INSERT"):
+            attempts.append(sql)
+            lose_connection(greptime)
+        Greptime.run(greptime, sql)
+
+    monkeypatch.setattr(greptime, "run", losing)
+
+    with pytest.raises(psycopg.OperationalError, match="closed the connection"):
+        migrate(greptime)
+
+    assert len(attempts) == migrate_history.ATTEMPTS
+
+
+def test_load_and_check_open_a_lost_connection_again(
+    tables: Query, greptime: Greptime, waits: list[float]
+) -> None:
+    migrate(greptime)
+    lose_connection(greptime)
+    migration = load(greptime, SPEC)
+    lose_connection(greptime)
+
+    assert check(greptime, migration) == []
+    assert waits.count(migrate_history.RETRY_WAIT) == 2
+
+
+def test_a_statement_that_is_not_retried_still_opens_a_lost_connection_again(
+    tables: Query, greptime: Greptime
+) -> None:
+    lose_connection(greptime)
+    with pytest.raises(psycopg.OperationalError):
+        greptime.run(f'DROP TABLE IF EXISTS "{LOCK_TABLE}"')
+
+    greptime.run(f'DROP TABLE IF EXISTS "{LOCK_TABLE}"')
+
+
+def test_connect_turns_on_tcp_keepalives(connection: GreptimeConnection) -> None:
+    with connect(connection) as handle:
+        parameters = handle.info.get_parameters()
+
+    assert parameters["keepalives"] == "1"
+    assert int(parameters["keepalives_idle"]) > 0
+    assert int(parameters["keepalives_count"]) > 0
+    assert int(parameters["connect_timeout"]) > 0
 
 
 def test_run_gives_up_when_greptime_keeps_failing(
