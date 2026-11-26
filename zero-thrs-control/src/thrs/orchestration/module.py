@@ -4,10 +4,8 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from thrs.classes.control import Control
-from thrs.classes.machine_state_logger import StateLogger
-from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.manual import ManualControl
-from thrs.control.state import AutomationMode, ControlState
+from thrs.control.state import AutomationMode, ControlModes, ControlState
 from thrs.control.switching import Switching
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.definitions.system import AmcsExternalAvailable
@@ -37,9 +35,7 @@ class ModuleDescription[
         sensor_values_cls: type[S],
         control_values_cls: type[C],
         parameters_cls: type[P],
-        control: Callable[
-            [P, Callable[[], datetime], StateLogger], Control[S, C, P, M, CS]
-        ],
+        control: Callable[[P, Callable[[], datetime]], Control[S, C, P, M, CS]],
         controller_state_cls: type[CS],
         alarms: Callable[[], BaseAlarms[S, C, CS]],
     ):
@@ -64,23 +60,23 @@ class Module[
         description: ModuleDescription[S, C, P, M, CS],
         channels: ControlChannels[S, C, P, M, CS],
         time_fn: Callable[[], datetime],
-        state_logger: StateLogger,
+        parameters: P | None = None,
+        automation_mode: ControlModes = "manual",
     ):
+        """Starts with the given parameters, or the defaults, and automation mode."""
         self._name = name
-        parameters = description.parameters_cls()
-        control = description.control(parameters, time_fn, state_logger)
+        control = description.control(
+            parameters if parameters is not None else description.parameters_cls(),
+            time_fn,
+        )
         self._control = Switching(
             ManualControl(control.initial()[0]),
             control,
             name=name,
         )
+        self._control.switch_mode(AutomationMode(mode=automation_mode))
         self._alarms = description.alarms()
         self._channels = channels
-        self._active_alarms: dict[str, Alarm] = {}
-
-    @property
-    def control_state_logger(self) -> StateLogger:
-        return self._control.automatic_control.state_logger
 
     @property
     def name(self):
@@ -118,50 +114,6 @@ class Module[
     def set_automation_mode(self, mode: AutomationMode) -> None:
         self._control.switch_mode(mode)
 
-    def get_persistence_snapshot(self) -> ModulePersistenceSnapshot:
-        """Serialize the configuration a restart should be able to pick up again."""
-        return ModulePersistenceSnapshot(
-            parameters=self._control.parameters.model_dump(mode="json"),
-            manual_control_values=self._control.manual_controls.model_dump(
-                mode="json", exclude={"external_available"}
-            ),
-            control_mode=self._control.control_mode,
-        )
-
-    def apply_persistence_snapshot(self, snapshot: ModulePersistenceSnapshot) -> None:
-        """Apply a configuration snapshot."""
-
-        parameters = self._validate_parameters(snapshot)
-        manual_control_values = self._validate_manual_control_values(snapshot)
-        automation_mode = AutomationMode(mode=snapshot.control_mode)
-
-        if parameters is not None:
-            self._control.update_parameters(parameters)
-
-        if manual_control_values is not None:
-            self._control.update_manual_controls(manual_control_values)
-
-        self._control.switch_mode(automation_mode)
-
-    def _validate_manual_control_values(
-        self, snapshot: ModulePersistenceSnapshot
-    ) -> C | None:
-        """Validate manual control values from a snapshot without applying them."""
-        if snapshot.manual_control_values is None:
-            return None
-
-        return self._control.manual_controls.model_validate(
-            snapshot.manual_control_values
-        )
-
-    def _validate_parameters(self, snapshot: ModulePersistenceSnapshot) -> P | None:
-        """Validate control parameters from a snapshot without applying them."""
-        if snapshot.parameters is None:
-            return None
-
-        return self._control.parameters.model_validate(snapshot.parameters)
-
-    @StateLogger.log_alarms
     def _check_alarms(
         self, sensor_values: S, control_values: C, controller_state: CS
     ) -> list[Alarm]:
@@ -189,7 +141,7 @@ class Module[
         if actuated_control_values is not None:
             await self._channels.send_actuated_control_values(actuated_control_values)
 
-    async def tick(self, sensor_values: S | None) -> C:
+    async def tick(self, sensor_values: S | None) -> tuple[C, CS]:
         if sensor_values is None:
             logger.warning(
                 "Module %s has no sensor values - sending last known manual control values",
@@ -205,4 +157,4 @@ class Module[
 
         await self.send_control_updates(sensor_values, control_values, controller_state)
 
-        return control_values
+        return control_values, controller_state

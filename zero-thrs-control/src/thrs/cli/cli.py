@@ -14,7 +14,6 @@ from pydantic_settings import (
     SettingsConfigDict,
 )
 
-from thrs.control.state import AutomationMode
 from thrs.orchestration.comms import DirectivesChannels, MqttConnector
 from thrs.orchestration.config import Config
 from thrs.orchestration.log import setup_logging
@@ -26,7 +25,6 @@ from thrs.orchestration.setup import (
     setup_simulation_module,
 )
 from thrs.orchestration.simulation import SimulationUnit
-from thrs.runtime.context import control_shutdown_context
 from thrs.runtime.descriptions.simulation import ModeName, lookup_mode
 from thrs.runtime.directives import DirectiveHandling
 from thrs.runtime.liveness import Liveness
@@ -41,10 +39,8 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 class ControlCmd(BaseSettings):
     mode: ModeName
-    machine_state_logging: CliImplicitFlag[bool] = True
     module_persistence: CliImplicitFlag[bool] = True
     allow_boot_without_persistence_having_active_postgres: CliImplicitFlag[bool] = False
-    restore_manual_control_values: CliImplicitFlag[bool] = False
 
     async def cli_cmd(self) -> None:
         logger.debug("Starting control command: %s", self.mode)
@@ -54,17 +50,12 @@ class ControlCmd(BaseSettings):
 
         control_mode = lookup_mode(self.mode)
 
-        database = setup_database(
-            settings,
-            self.module_persistence,
-            self.machine_state_logging,
-        )
+        database = setup_database(settings, self.module_persistence)
 
         persistence = await setup_persistence_manager(
             database,
             self.module_persistence,
             self.allow_boot_without_persistence_having_active_postgres,
-            self.restore_manual_control_values,
         )
 
         async with MqttClient(
@@ -76,24 +67,20 @@ class ControlCmd(BaseSettings):
         ) as mqtt_client:
             connector = MqttConnector(mqtt_client)
 
-            control_modules: list[Module] = setup_control_modules(
+            control_modules: list[Module] = await setup_control_modules(
                 connector,
                 settings,
                 control_mode.control_modules,
                 datetime.now,
-                database,
-                self.machine_state_logging,
+                persistence,
             )
-
-            await persistence.restore_all(control_modules)
 
             runner = ControlRunner(control_modules, liveness_check, persistence)
             runtime = Runtime(RealtimeLoop(), runner, connector)
 
             logger.info("Running control")
 
-            async with control_shutdown_context(control_modules):
-                await runtime.start()
+            await runtime.start()
 
 
 class SimulationCmd(BaseSettings):
@@ -135,11 +122,9 @@ class SimulationCmd(BaseSettings):
 
 class LockstepCmd(BaseSettings):
     mode: ModeName
-    machine_state_logging: CliImplicitFlag[bool] = True
     play: CliImplicitFlag[bool] = False
     module_persistence: CliImplicitFlag[bool] = True
     allow_boot_without_persistence_having_active_postgres: CliImplicitFlag[bool] = False
-    restore_manual_control_values: CliImplicitFlag[bool] = False
 
     async def setup(self, settings: Config, mqtt_client: MqttClient) -> Runtime:
         logger.debug("Starting lockstep command: %s", self.mode)
@@ -159,34 +144,23 @@ class LockstepCmd(BaseSettings):
             mode.simulation_description,
         )
 
-        database = setup_database(
-            settings,
-            self.module_persistence,
-            self.machine_state_logging,
-        )
+        database = setup_database(settings, self.module_persistence)
 
         persistence = await setup_persistence_manager(
             database,
             self.module_persistence,
             self.allow_boot_without_persistence_having_active_postgres,
-            self.restore_manual_control_values,
         )
 
-        control_modules: list[Module] = setup_control_modules(
+        control_modules: list[Module] = await setup_control_modules(
             connector,
             settings,
             mode.control_modules,
             time_fn=simulation_module.time,
-            database=database,
-            machine_state_logging_service_enabled=self.machine_state_logging,
+            persistence=persistence,
             # Lockstep trades delivery guarantees for speed; every tick republishes these values
             publish_qos=0,
         )
-
-        for module in control_modules:
-            module.set_automation_mode(AutomationMode(mode="automatic"))
-
-        await persistence.restore_all(control_modules)
 
         runner = LockstepRunner(control_modules, simulation_module, persistence)
 
@@ -219,8 +193,7 @@ class LockstepCmd(BaseSettings):
             runtime = await self.setup(settings, mqtt_client)
             logger.info("Running lockstep")
 
-            async with control_shutdown_context(runtime.runner.control_modules):  # pyrefly: ignore[missing-attribute]
-                await runtime.start()
+            await runtime.start()
 
 
 class AsyncApiCmd(BaseModel):

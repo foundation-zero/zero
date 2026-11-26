@@ -1,6 +1,7 @@
 from datetime import UTC, datetime, timedelta
 from functools import partial
 from types import SimpleNamespace
+from unittest import mock
 from unittest.mock import AsyncMock, Mock, call
 
 from tests.helpers.collector import PolarsCollector
@@ -9,7 +10,6 @@ from tests.helpers.simulation_runner import (
     flatten_controller_state,
 )
 from tests.orchestration.simples import simple_control_values, simple_controller_state
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.classes.persistence.engine import NoopPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
 from thrs.control.modules.thrusters.control import ThrustersAlarms, ThrustersControl
@@ -36,16 +36,6 @@ from thrs.simulation.io_mapping import ThrsModelIoMapping, flatten_model_values
 from thrs.simulation.models.fmu_paths import thrusters_path
 
 
-class ModelDumpable:
-    """Minimal stand-in for a ThrsValues instance: identity-based equality (like
-    `mock.sentinel`) plus a `model_dump()`, since `Module.get_persistence_snapshot()`
-    is now called on every tick by the persistence-wired runners and would otherwise
-    blow up on a plain sentinel/dict test double."""
-
-    def model_dump(self, mode: str = "json", exclude: set | None = None) -> dict:
-        return {}
-
-
 def _mock_description(control: Mock, alarms: Mock) -> Mock:
     """Stand-in ModuleDescription whose factories return the same mock control
     and alarms, so engaging automatic rebuilds without needing real classes."""
@@ -68,11 +58,7 @@ def test_simulation_test_runner():
             timedelta(seconds=1),
         )
 
-        control = ThrustersControl(
-            ThrustersParameters(),
-            simulation.time,
-            MachineStateLoggingServiceNoop(),
-        )
+        control = ThrustersControl(ThrustersParameters(), simulation.time)
         alarms = ThrustersAlarms()
 
         io_mapping = ThrsModelIoMapping(
@@ -121,7 +107,7 @@ def test_simulation_test_runner():
 async def test_lockstep_runner_ticks_and_publishes_channels():
     control_values = simple_control_values(flow=1.0)
     controller_state = simple_controller_state()
-    parameters = ModelDumpable()
+    parameters = mock.sentinel.parameters
     sensor_values = Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
 
     combined_sensor_values = CombinedValues(values={"module": sensor_values})
@@ -166,7 +152,6 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
         description=_mock_description(control, alarms),
         channels=control_channels,
         time_fn=datetime.now,
-        state_logger=MachineStateLoggingServiceNoop(),
     )
     module.set_automation_mode(AutomationMode(mode="automatic"))
 
@@ -246,7 +231,7 @@ async def test_control_runner_ticks_and_uses_channels():
     control_values = simple_control_values(flow=1.0)
     control_values_new = simple_control_values(flow=2.0)
     controller_state = simple_controller_state()
-    parameters = ModelDumpable()
+    parameters = mock.sentinel.parameters
     sensor_values = Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
 
     mock_liveness = Mock()
@@ -277,7 +262,6 @@ async def test_control_runner_ticks_and_uses_channels():
         description=_mock_description(control, alarms),
         channels=channels,
         time_fn=datetime.now,
-        state_logger=MachineStateLoggingServiceNoop(),
     )
     module.set_automation_mode(AutomationMode(mode="automatic"))
 

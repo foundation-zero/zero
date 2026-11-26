@@ -2,7 +2,6 @@ from datetime import UTC, datetime, timedelta
 
 from pytest import fixture
 
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.adsorption.control import AdsorptionControl
 from thrs.control.modules.adsorption.io import (
     AdsorptionSensorValues,
@@ -51,9 +50,7 @@ def simulation_inputs():
 
 @fixture
 def control(simulation):
-    return AdsorptionControl(
-        AdsorptionParameters(), simulation.time, MachineStateLoggingServiceNoop()
-    )
+    return AdsorptionControl(AdsorptionParameters(), simulation.time)
 
 
 @fixture

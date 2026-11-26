@@ -5,7 +5,6 @@ from typing import Literal, NoReturn
 from transitions import Machine, State
 
 from thrs.classes.control import Control
-from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import FlowBalanceController, PidController
 from thrs.control.modules.thrusters.io import (
     ThrustersControlValues,
@@ -15,9 +14,6 @@ from thrs.control.modules.thrusters.state import (
     ThrustersControllerState,
     ThrustersControlMode,
     ThrustersParameters,
-)
-from thrs.db.models.machine_state import (
-    MachineStateEvent,
 )
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 from thrs.input_output.base import Stamped
@@ -94,32 +90,25 @@ class ThrustersControl(
     _states: list[State]
     _parameters: ThrustersParameters
 
-    # Log state machine attributes
-    state_logger: StateLogger
     state: str  # Value set by Machine transitions logic
 
     def __init__(
         self,
         parameters: ThrustersParameters,
         time_fn: Callable[[], datetime],
-        state_logger: StateLogger,
     ) -> None:
         self._parameters = parameters
         self._time: Callable[[], datetime] = time_fn
-        self.state_logger = state_logger
         self._current_control_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
             deep=True
         )
 
         self._init_state_machine_states()
         self._init_state_machine_transitions()
-        self._state_machine = self.state_logger.create_logged_state_machine(
+        self._state_machine = Machine(
             self, transitions=self._transitions, states=self._states, initial="idle"
         )
         self._init_controllers(parameters)
-
-        # Log configuration
-        self.state_logger.log_parameters_initial_state(parameters)
 
     def _init_controllers(self, parameters):
         if not hasattr(self, "_state_machine") or self._state_machine is None:
@@ -315,7 +304,6 @@ class ThrustersControl(
     def parameters(self) -> ThrustersParameters:
         return self._parameters
 
-    @StateLogger.log_parameters
     def update_parameters(self, parameters: ThrustersParameters):
         self._parameters = parameters
 
@@ -348,7 +336,6 @@ class ThrustersControl(
         self._state_machine.set_state(self._state_machine.initial)  # pyrefly: ignore[bad-argument-type]
         self._init_controllers(self._parameters)
 
-    @StateLogger.log_warnings
     def control(
         self, sensor_values: ThrustersSensorValues
     ) -> tuple[ThrustersControlValues, ThrustersControllerState]:
@@ -586,23 +573,13 @@ class ThrustersControl(
     def _activate_pump(self, sensor_values: ThrustersSensorValues):
         if self._active_pump:
             self.raise_warning("A pump was already active upon selecting")
+        elif self._most_recently_active_pump == "pump1":
+            self._most_recently_active_pump = "pump2"
+            self._active_pump = self._current_control_values.thrusters_pump2
         else:
-            if self._most_recently_active_pump == "pump1":
-                self._most_recently_active_pump = "pump2"
-                self._active_pump = self._current_control_values.thrusters_pump2
+            self._most_recently_active_pump = "pump1"
+            self._active_pump = self._current_control_values.thrusters_pump1
 
-            else:
-                self._most_recently_active_pump = "pump1"
-                self._active_pump = self._current_control_values.thrusters_pump1
-
-            # Example event log
-            self.state_logger.log_event(
-                MachineStateEvent(
-                    control_name=self.__class__.__name__,
-                    event_name="pump activated",
-                    event_details=self._most_recently_active_pump,
-                )
-            )
         self._active_pump.on = Stamped(value=True, timestamp=self._time())
 
     def _deactivate_pump(self, sensor_values: ThrustersSensorValues):

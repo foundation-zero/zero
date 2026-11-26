@@ -27,6 +27,6 @@ class ControlRunner[S: AmcsModeSensorValues](Runner):
         for module in self._modules:
             sensor_values = await module.sync_control_channels_state()
 
-            await module.tick(sensor_values)
+            _, controller_state = await module.tick(sensor_values)
 
-            await self._persistence.persist(module)
+            await self._persistence.persist(module.name, controller_state)

@@ -2,10 +2,9 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Annotated
 
-from transitions import State
+from transitions import Machine, State
 
 from thrs.classes.control import Control, ControlMode
-from thrs.classes.machine_state_logger import StateLogger
 from thrs.control.controllers import PidController
 from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions import control, sensor
@@ -105,23 +104,20 @@ class ConvertersControl(
         parameters: ConvertersParameters,
         time_fn: Callable[[], datetime],
         initial_control_values: ConvertersControlValues,
-        state_logger: StateLogger,
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self.state_logger = state_logger
         self._current_values = initial_control_values
 
         self._init_state_machine_states()
         self._init_state_machine_transitions()
-        self._state_machine = self.state_logger.create_logged_state_machine(
+        self._state_machine = Machine(
             self,
             transitions=self._transitions,
             states=self._states,
             initial="idle",
         )
         self._init_controllers()
-        self.state_logger.log_parameters_initial_state(parameters)
 
     def _init_controllers(self):
         if not hasattr(self, "_state_machine") or self._state_machine is None:
@@ -187,7 +183,6 @@ class ConvertersControl(
     def parameters(self) -> ConvertersParameters:
         return self._parameters
 
-    @StateLogger.log_parameters
     def update_parameters(self, parameters: ConvertersParameters):
         self._parameters = parameters
 
@@ -232,7 +227,6 @@ class ConvertersControl(
     def _converter_active(self, sensor_values: ConvertersSensorValues) -> bool:
         return any(converter.active.value for converter in sensor_values.converters)
 
-    @StateLogger.log_warnings
     def control(
         self, sensor_values: ConvertersSensorValues
     ) -> tuple[ConvertersControlValues, ConvertersControllerState]:

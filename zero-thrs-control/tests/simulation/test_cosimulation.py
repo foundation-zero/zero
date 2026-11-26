@@ -3,7 +3,6 @@ from typing import Any, Self
 
 from pydantic import computed_field
 
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.dhw.control import DhwControl
 from thrs.control.modules.dhw.io import (
     DhwControlValues,
@@ -177,12 +176,8 @@ def test_cosimulation_input_routing():
 
     control_values = CombinedValues(
         values={
-            "drives": DrivesControl(
-                DrivesParameters(), datetime.now, MachineStateLoggingServiceNoop()
-            ).initial()[0],
-            "dhw": DhwControl(
-                DhwParameters(), datetime.now, MachineStateLoggingServiceNoop()
-            ).initial()[0],
+            "drives": DrivesControl(DrivesParameters(), datetime.now).initial()[0],
+            "dhw": DhwControl(DhwParameters(), datetime.now).initial()[0],
         }
     )
 

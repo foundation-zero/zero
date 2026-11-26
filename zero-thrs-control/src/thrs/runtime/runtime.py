@@ -22,7 +22,3 @@ class Runtime:
             tg.create_task(await self._connector.run())
 
             tg.create_task(self._loop.loop(self._runner))
-
-    @property
-    def runner(self) -> Runner:
-        return self._runner

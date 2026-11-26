@@ -58,7 +58,6 @@ class PostgresPersistentEngine(PersistentEngine):
 
             return ModulePersistenceSnapshot(
                 parameters=stored.parameters,
-                manual_control_values=stored.manual_control_values,
                 control_mode=stored.automation_mode,  # pyrefly: ignore[bad-argument-type]
             )
 
@@ -66,7 +65,6 @@ class PostgresPersistentEngine(PersistentEngine):
         statement = postgresql.insert(ModulePersistence).values(
             module_name=module_name,
             parameters=snapshot.parameters,
-            manual_control_values=snapshot.manual_control_values,
             automation_mode=snapshot.control_mode,
             updated_at=datetime.now(UTC),
         )
@@ -75,7 +73,6 @@ class PostgresPersistentEngine(PersistentEngine):
             index_elements=[ModulePersistence.module_name],
             set_={
                 "parameters": statement.excluded.parameters,
-                "manual_control_values": statement.excluded.manual_control_values,
                 "automation_mode": statement.excluded.automation_mode,
                 "updated_at": statement.excluded.updated_at,
             },

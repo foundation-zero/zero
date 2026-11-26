@@ -6,17 +6,13 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from thrs.classes.database import PostgresDatabase
-from thrs.classes.machine_state_logger import (
-    MachineStateLoggingService,
-    MachineStateLoggingServiceNoop,
-    StateLogger,
-)
 from thrs.classes.persistence.engine import (
     NoopPersistentEngine,
     PersistentEngine,
     PostgresPersistentEngine,
 )
 from thrs.classes.persistence.manager import PersistManager
+from thrs.control.state import ControlModes
 from thrs.orchestration.comms import (
     ControlChannels,
     MqttConnector,
@@ -71,12 +67,11 @@ def setup_simulation_module(
 def setup_database(
     config: Config,
     module_persistence_enabled: bool,
-    machine_state_logging_service_enabled: bool,
 ) -> PostgresDatabase | None:
     """Single engine shared by every consumer that needs Postgres. Only built when
-    persistence or machine-state logging actually needs one; `None` otherwise, so the
-    runtime can run against MQTT only."""
-    if not module_persistence_enabled and not machine_state_logging_service_enabled:
+    persistence actually needs one; `None` otherwise, so the runtime can run against
+    MQTT only."""
+    if not module_persistence_enabled:
         return None
 
     return PostgresDatabase(config)
@@ -86,7 +81,6 @@ async def setup_persistence_manager(
     database: PostgresDatabase | None,
     module_persistence_enabled: bool,
     allow_boot_without_persistence_having_active_postgres: bool = False,
-    restore_manual_control_values: bool = True,
 ) -> PersistManager:
     """Build the persist manager. Without persistence enabled it silently no-ops, so
     the runtime can run against MQTT only."""
@@ -103,9 +97,7 @@ async def setup_persistence_manager(
                 "is False - refusing to boot without persistence having active postgres"
             )
 
-    return PersistManager(
-        engine, restore_manual_control_values=restore_manual_control_values
-    )
+    return PersistManager(engine)
 
 
 async def _is_postgres_reachable(database: PostgresDatabase) -> bool:
@@ -119,45 +111,40 @@ async def _is_postgres_reachable(database: PostgresDatabase) -> bool:
     return True
 
 
-def setup_machine_state_logger(
-    database: PostgresDatabase | None,
-    machine_state_logging_service_enabled: bool,
-) -> StateLogger:
-    """If disabled by the caller or no database is provided, it logs machine state to a noop service."""
-    if not machine_state_logging_service_enabled or database is None:
-        return MachineStateLoggingServiceNoop()
-
-    return MachineStateLoggingService(database)
-
-
-def setup_control_modules(
+async def setup_control_modules(
     connector: MqttConnector,
     config: Config,
     control_modules: dict[str, ModuleDescription],
     time_fn: Callable[[], datetime],
-    database: PostgresDatabase | None,
-    machine_state_logging_service_enabled: bool,
+    persistence: PersistManager,
     publish_qos: int = 1,
 ) -> list[Module]:
+    """Build the control modules, each starting from its stored configuration if
+    there is one, or else its default parameters in manual. Raises if a stored
+    configuration no longer validates against its module's parameters."""
     result = []
 
-    for module_name, module in control_modules.items():
-        # Each module gets its own service: it tracks the last state and trigger of one control.
-        machine_state_logger = setup_machine_state_logger(
-            database, machine_state_logging_service_enabled
-        )
-
-        channel = ControlChannels(
-            connector, config, module_name, module, publish_qos=publish_qos
-        )
+    for module_name, description in control_modules.items():
+        parameters = None
+        automation_mode: ControlModes = "manual"
+        stored = await persistence.load(module_name)
+        if stored is not None:
+            automation_mode = stored.control_mode
+            if stored.parameters is not None:
+                parameters = description.parameters_cls.model_validate(
+                    stored.parameters
+                )
 
         result.append(
             Module(
                 module_name,
-                description=module,
-                channels=channel,
+                description=description,
+                channels=ControlChannels(
+                    connector, config, module_name, description, publish_qos=publish_qos
+                ),
                 time_fn=time_fn,
-                state_logger=machine_state_logger,
+                parameters=parameters,
+                automation_mode=automation_mode,
             )
         )
 

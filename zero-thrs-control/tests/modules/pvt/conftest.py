@@ -3,7 +3,6 @@ from datetime import UTC, datetime, timedelta
 from pytest import fixture
 
 from tests.helpers.simulation_runner import SimulationTestRunner
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.control.modules.pvt.control import PvtAlarms, PvtControl
 from thrs.control.modules.pvt.io import (
     PvtControlValues,
@@ -61,9 +60,7 @@ def simulation_inputs():
 
 @fixture
 def control(simulation):
-    return PvtControl(
-        PvtParameters(), simulation.time, MachineStateLoggingServiceNoop()
-    )
+    return PvtControl(PvtParameters(), simulation.time)
 
 
 @fixture

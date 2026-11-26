@@ -18,9 +18,6 @@ class ModulePersistence(ModulePersistenceBase, table=True):
     parameters: dict[str, Any] | None = Field(
         default=None, sa_column=Column(JSONB, nullable=True)
     )
-    manual_control_values: dict[str, Any] | None = Field(
-        default=None, sa_column=Column(JSONB, nullable=True)
-    )
     automation_mode: str = Field(default="manual")
     updated_at: datetime = Field(
         default_factory=lambda: datetime.now(UTC),

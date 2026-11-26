@@ -6,7 +6,6 @@ import pytest
 from tests.helpers.modules import make_async_channels
 from tests.orchestration.simples import SimpleParameters, simple_non_advisory_values
 from thrs.classes.control import Control
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
@@ -49,7 +48,6 @@ def module_factory(mock_channels, mock_description):
             description=mock_description,
             channels=mock_channels,
             time_fn=datetime.now,
-            state_logger=MachineStateLoggingServiceNoop(),
         )
 
     return make_module

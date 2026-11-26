@@ -369,8 +369,6 @@ def test_minimum_pump_dutypoint_rejects_below_pump_floor(
 def test_reset_restores_initial_control_state(
     control: DhwControl, parameters, sensor_values: DhwSensorValues
 ):
-    state_logger = control.state_logger
-
     # Dirty all mutable state: tick once, then force the rest.
     control.control(sensor_values)
     control._current_values.dhw_pump.dutypoint = Stamped.stamp(0.9)
@@ -399,7 +397,6 @@ def test_reset_restores_initial_control_state(
 
     # Parameters, time function and logger are kept (same objects, no re-log).
     assert control.parameters is parameters
-    assert control.state_logger is state_logger
     # State machine is back at its initial state without firing transitions.
     assert control.mode == control.initial_mode
     assert control.mode.is_boosting_idle

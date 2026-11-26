@@ -16,10 +16,9 @@ from unittest import mock
 import pytest
 from pydantic import ValidationError
 
-from thrs.classes.machine_state_logger import MachineStateLoggingServiceNoop
+from tests.helpers.modules import make_async_channels
 from thrs.classes.persistence.engine import InMemoryPersistentEngine
 from thrs.classes.persistence.manager import PersistManager
-from thrs.classes.persistence.module_snapshot import ModulePersistenceSnapshot
 from thrs.control.modules.adsorption.control import ADSORPTION_MODULE_DESCRIPTION
 from thrs.control.modules.consumers.control import CONSUMERS_MODULE_DESCRIPTION
 from thrs.control.modules.dc.control import DC_MODULE_DESCRIPTION
@@ -28,7 +27,10 @@ from thrs.control.modules.drives.control import DRIVES_MODULE_DESCRIPTION
 from thrs.control.modules.pcm.control import PCM_MODULE_DESCRIPTION
 from thrs.control.modules.pvt.control import PVT_MODULE_DESCRIPTION
 from thrs.control.modules.thrusters.control import THRUSTERS_MODULE_DESCRIPTION
+from thrs.orchestration.comms import MqttConnector
+from thrs.orchestration.config import Config
 from thrs.orchestration.module import Module, ModuleDescription
+from thrs.orchestration.setup import setup_control_modules
 
 ALL_MODULE_DESCRIPTIONS: dict[str, ModuleDescription] = {
     "adsorption": ADSORPTION_MODULE_DESCRIPTION,
@@ -95,28 +97,9 @@ def _changed_from_defaults(parameters_cls):
     return parameters_cls.model_validate(values)
 
 
-def _make_module(name: str, description: ModuleDescription) -> Module:
-    """Build a real Module for `description`, with mocked control channels since
-    we never send anything over MQTT in these tests - only persistence is under
-    test here."""
-    channels = mock.Mock()
-    channels.get_sensor_values.return_value = None
-    channels.get_parameters.return_value = None
-    channels.get_manual_controls.return_value = None
-    channels.get_automation_modes.return_value = None
-
-    return Module(
-        name,
-        description=description,
-        channels=channels,
-        time_fn=lambda: datetime.now(UTC),
-        state_logger=MachineStateLoggingServiceNoop(),
-    )
-
-
 @pytest.mark.parametrize("name,description", ALL_MODULE_DESCRIPTIONS.items())
 async def test_changed_parameter_is_stored_and_restored(
-    name: str, description: ModuleDescription
+    settings: Config, name: str, description: ModuleDescription
 ):
     defaults = description.parameters_cls()
     changed = _changed_from_defaults(description.parameters_cls)
@@ -128,20 +111,28 @@ async def test_changed_parameter_is_stored_and_restored(
     store = InMemoryPersistentEngine()
     manager = PersistManager(store)
 
-    module = _make_module(name, description)
-    module.apply_persistence_snapshot(
-        ModulePersistenceSnapshot(parameters=changed.model_dump(mode="json"))
+    module = Module(
+        name,
+        description=description,
+        channels=make_async_channels(),
+        time_fn=lambda: datetime.now(UTC),
+        parameters=changed,
     )
 
-    assert await manager.persist(module) is True
+    _, state = await module.tick(None)
+    assert await manager.persist(name, state) is True
     assert store.snapshots[name].parameters == changed.model_dump(mode="json")
 
-    # A fresh module and a fresh manager, as if the process had restarted - the
+    # Fresh modules and a fresh manager, as if the process had restarted - the
     # only thing carrying state across is the (in-memory, here) database.
-    restarted_module = _make_module(name, description)
-    restored = await PersistManager(store).restore(restarted_module)
+    [restarted_module] = await setup_control_modules(
+        MqttConnector(mock.AsyncMock()),
+        settings,
+        {name: description},
+        lambda: datetime.now(UTC),
+        PersistManager(store),
+    )
 
-    assert restored is True
-    restored_parameters = restarted_module.get_persistence_snapshot().parameters
-    assert restored_parameters == changed.model_dump(mode="json")
-    assert restored_parameters != defaults.model_dump(mode="json")
+    _, restored_state = await restarted_module.tick(None)
+    assert restored_state.parameters == changed
+    assert restored_state.parameters != defaults

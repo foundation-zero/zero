@@ -5,11 +5,7 @@ from pydantic import Field
 
 from tests.orchestration.simples import SimpleInOut, SimpleMode, simple_control_values
 from thrs.classes.control import Control
-from thrs.classes.machine_state_logger import (
-    MachineStateLoggingServiceNoop,
-    StateLogger,
-)
-from thrs.control.state import ControlState
+from thrs.control.state import ControlModes, ControlState
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import ThrsValues
 from thrs.orchestration.module import Module, ModuleDescription
@@ -45,13 +41,9 @@ class ConfigurableControl(
         self,
         parameters: ConfigurableParameters,
         time_fn=None,
-        state_logger: StateLogger | None = None,
     ) -> None:
         self._parameters = parameters
         self._time_fn = time_fn or datetime.now
-        self.state_logger: StateLogger = (
-            state_logger or MachineStateLoggingServiceNoop()
-        )
         self._current_values: SimpleInOut = SimpleInOut.zero()
 
     def initial(self) -> tuple[SimpleInOut, ConfigurableControllerState]:
@@ -134,14 +126,18 @@ CONFIGURABLE_MODULE_DESCRIPTION = ModuleDescription(
 
 
 def make_module(
-    name: str = "test", channels: mock.Mock | None = None
+    name: str = "test",
+    channels: mock.Mock | None = None,
+    parameters: ConfigurableParameters | None = None,
+    automation_mode: ControlModes = "manual",
 ) -> ConfigurableModule:
     return Module(
         name,
         description=CONFIGURABLE_MODULE_DESCRIPTION,
-        channels=channels or make_channels(),
+        channels=channels or make_async_channels(),
         time_fn=datetime.now,
-        state_logger=MachineStateLoggingServiceNoop(),
+        parameters=parameters,
+        automation_mode=automation_mode,
     )
 
 
