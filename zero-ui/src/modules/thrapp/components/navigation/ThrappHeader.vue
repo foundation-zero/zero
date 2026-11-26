@@ -61,13 +61,14 @@ const t = tScoped("thrapp.components.navigation");
 
 <style scoped>
 /*
- * The banner stays dark in both themes (its `dark` class scopes the dark tokens to it), with a
- * fixed-size ellipse centred above the bar so it does not stretch with the viewport (design spec).
+ * The banner stays dark in both themes (its `dark` class scopes the dark tokens to it), with an
+ * ellipse centred above the bar: 1334 px wide as designed up to 1920 px, then as wide relative to
+ * the screen (1334 / 1920), so the buttons at the edges stay in the light part on larger screens.
  */
 .thrapp-banner {
   background:
     radial-gradient(
-      1334px 237px at 50% -63px,
+      max(1334px, 69.48vw) 237px at 50% -63px,
       color-mix(in srgb, var(--color-brand-a-400) 50%, transparent),
       transparent
     ),
