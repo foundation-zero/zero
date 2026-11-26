@@ -553,7 +553,6 @@
         "heat": "Heat",
         "charged": "Charged",
         "estBatteryLoad": "Est. battery load",
-        "electricGeneration": "Electric generation",
         "internalTemperature": "Internal temp",
         "power": "Power"
       }
@@ -764,7 +763,7 @@
         "prefixed": "{prefix} - {label}",
         "prefixes": {
           "pvt": {
-            "fwd": "FW",
+            "fwd": "FWD",
             "aft": "AFT",
             "owners": "Owners"
           },
@@ -998,9 +997,8 @@
       "drives": "Drives & shorepower",
       "pcm": "PCM",
       "pvt": "PVT",
-      "pvt-main": "PVT-Bimini FWD AFT",
-      "pvt-owners": "PVT-Bimini Owners",
-      "pvt-main-heat": "PVT-Bimini heat map",
+      "pvt-main": "PVT main bimini",
+      "pvt-owners": "PVT owners bimini",
       "dc-aft": "DC/DC group 1",
       "dc-ugrid": "DC/AC group 1",
       "dc-fwd": "DC/DC group 2",

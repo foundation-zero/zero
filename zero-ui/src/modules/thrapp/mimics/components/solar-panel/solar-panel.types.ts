@@ -6,4 +6,7 @@ export type SolarPanelProps = {
   orientation?: SolarPanelOrientation;
   /** Relative yield (0..1); undefined renders the panel without a yield fill. */
   yieldRatio?: Ratio;
+  /** Rendered size, when a layout draws its panels larger than `SOLAR_PANEL_DIMENSIONS`. */
+  width?: number;
+  height?: number;
 };

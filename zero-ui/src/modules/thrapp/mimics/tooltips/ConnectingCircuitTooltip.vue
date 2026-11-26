@@ -53,6 +53,7 @@ const { labels, actions } = useTranslations();
         <template #value>
           <ModeBadges
             :module="custom.modeModule"
+            :targets="custom.modeTargets"
             :size="ModeBadgeSize.Circuit"
           />
         </template>

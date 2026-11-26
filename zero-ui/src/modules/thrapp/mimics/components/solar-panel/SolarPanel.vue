@@ -17,12 +17,20 @@ const props = withDefaults(
     x: 0,
     y: 0,
     yieldRatio: undefined,
+    width: undefined,
+    height: undefined,
   },
 );
 
 const dimensions = computed(() => SOLAR_PANEL_DIMENSIONS[props.size]);
 const grid = computed(() => SOLAR_PANEL_GRID[props.size]);
 const isLandscape = computed(() => props.orientation === SolarPanelOrientation.Landscape);
+// The panel's own box; the rendered size may stretch it, e.g. on the larger owners bimini.
+const box = computed(() =>
+  isLandscape.value
+    ? { width: dimensions.value.height, height: dimensions.value.width }
+    : dimensions.value,
+);
 
 // The panel is drawn in portrait and rotated a quarter turn clockwise for landscape.
 const transform = computed(() =>
@@ -37,8 +45,10 @@ const yieldColor = computed(() =>
   <svg
     :x="x"
     :y="y"
-    :width="isLandscape ? dimensions.height : dimensions.width"
-    :height="isLandscape ? dimensions.width : dimensions.height"
+    :width="width ?? box.width"
+    :height="height ?? box.height"
+    :viewBox="`0 0 ${box.width} ${box.height}`"
+    preserveAspectRatio="none"
     overflow="visible"
     data-slot="solar-panel"
   >

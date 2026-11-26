@@ -42,7 +42,7 @@ export const PVT_ASSET_DATA = toFieldsMap({
     "9001-03": toInstance<MimicComponentType.Pvt>({
       controls: {},
       controllerState: {},
-      custom: { group: "owners" },
+      custom: { group: "owners", mimic: "pvt-owners" },
       parameters: {},
       source: getField(SensorComponentType.Pvt, "pvt", "placeholder"),
 

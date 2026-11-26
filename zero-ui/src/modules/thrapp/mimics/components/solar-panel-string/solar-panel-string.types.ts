@@ -6,6 +6,9 @@ export type SolarPanelPlacement = {
   y: number;
   size?: SolarPanelSize;
   orientation?: SolarPanelOrientation;
+  /** Rendered size, when the layout draws its panels larger than their own size. */
+  width?: number;
+  height?: number;
 };
 
 /** A rectangular frame, or an arbitrary outline path for strings that are not rectangular. */

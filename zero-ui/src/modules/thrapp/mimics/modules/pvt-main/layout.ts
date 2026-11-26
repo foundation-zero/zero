@@ -1,7 +1,5 @@
+import { BiminiString } from "../../components/mini-map";
 import { SolarPanelOrientation, SolarPanelSize } from "../../components/solar-panel";
-import { SolarPanelStringProps } from "../../components/solar-panel-string";
-
-export type BiminiString = Omit<SolarPanelStringProps, "yieldRatio"> & { string: string };
 
 /**
  * Top-down layout of the main bimini strings, in the coordinates of the mimic.
@@ -9,7 +7,7 @@ export type BiminiString = Omit<SolarPanelStringProps, "yieldRatio"> & { string:
  */
 export const MAIN_BIMINI_STRINGS: BiminiString[] = [
   {
-    string: "13",
+    field: "pvt:aft-string-13",
     frame: { x: 51.91, y: 24.08, width: 181, height: 13 },
     label: { x: 142.67, y: 30.36 },
     panels: [
@@ -46,7 +44,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "12",
+    field: "pvt:aft-string-12",
     frame: { x: 51.91, y: 38.58, width: 181, height: 26 },
     label: { x: 142.67, y: 50.21 },
     panels: [
@@ -58,7 +56,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "11.1",
+    field: "pvt:aft-string-11.1",
     frame: { x: 13.91, y: 66.08, width: 123, height: 35 },
     label: { x: 70.89, y: 82.96 },
     panels: [
@@ -70,7 +68,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "11.2",
+    field: "pvt:aft-string-11.2",
     frame: { x: 146.91, y: 66.08, width: 123, height: 35 },
     label: { x: 206.27, y: 82.96 },
     panels: [
@@ -82,7 +80,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "9",
+    field: "pvt:aft-string-9",
     frame: { x: 11.91, y: 102.58, width: 136, height: 35 },
     label: { x: 75.39, y: 117.9 },
     panels: [
@@ -94,7 +92,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "10",
+    field: "pvt:aft-string-10",
     frame: { x: 149.41, y: 102.58, width: 123, height: 35 },
     label: { x: 209.77, y: 117.9 },
     panels: [
@@ -106,7 +104,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "8.1",
+    field: "pvt:aft-string-8.1",
     frame: { x: 18.91, y: 139.08, width: 108.5, height: 35 },
     label: { x: 72.39, y: 155.78 },
     panels: [
@@ -117,7 +115,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "8.2",
+    field: "pvt:aft-string-8.2",
     frame: { x: 156.41, y: 139.08, width: 108.5, height: 35 },
     label: { x: 209.98, y: 155.78 },
     panels: [
@@ -128,7 +126,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "7.1",
+    field: "pvt:aft-string-7.1",
     frame: { x: 18.91, y: 175.58, width: 108.5, height: 35 },
     label: { x: 73.39, y: 192.88 },
     panels: [
@@ -139,7 +137,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "7.2",
+    field: "pvt:aft-string-7.2",
     frame: { x: 156.41, y: 175.58, width: 108.5, height: 35 },
     label: { x: 210.48, y: 192.88 },
     panels: [
@@ -150,7 +148,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "6.1",
+    field: "pvt:aft-string-6.1",
     frame: { x: 18.91, y: 212.08, width: 108.5, height: 35 },
     label: { x: 72.39, y: 228.79 },
     panels: [
@@ -161,7 +159,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "6.2",
+    field: "pvt:aft-string-6.2",
     frame: { x: 156.41, y: 212.08, width: 108.5, height: 35 },
     label: { x: 209.98, y: 228.79 },
     panels: [
@@ -172,7 +170,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "5.1",
+    field: "pvt:aft-string-5.1",
     frame: { x: 18.91, y: 248.58, width: 108.5, height: 35 },
     label: { x: 72.39, y: 262.35 },
     panels: [
@@ -183,7 +181,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "5.2",
+    field: "pvt:aft-string-5.2",
     frame: { x: 156.41, y: 248.58, width: 108.5, height: 35 },
     label: { x: 209.98, y: 262.35 },
     panels: [
@@ -194,7 +192,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "4",
+    field: "pvt:aft-string-4",
     frame: { x: 128.91, y: 139.08, width: 26, height: 144.5 },
     label: { x: 141.83, y: 206.74, vertical: true },
     panels: [
@@ -205,7 +203,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "1.1",
+    field: "pvt:aft-string-1.1",
     frame: { x: 106.41, y: 285.08, width: 35, height: 108.5 },
     label: { x: 124.06, y: 336.86, vertical: true },
     panels: [
@@ -216,7 +214,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "1.2",
+    field: "pvt:aft-string-1.2",
     frame: { x: 142.91, y: 285.08, width: 35, height: 108.5 },
     label: { x: 159.89, y: 337.86, vertical: true },
     panels: [
@@ -227,7 +225,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "2.1",
+    field: "pvt:aft-string-2.1",
     frame: { x: 69.91, y: 285.08, width: 35, height: 123 },
     label: { x: 87.8, y: 337.86, vertical: true },
     panels: [
@@ -244,7 +242,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
     ],
   },
   {
-    string: "2.2",
+    field: "pvt:aft-string-2.2",
     frame: { x: 179.41, y: 285.08, width: 35, height: 123 },
     label: { x: 197.81, y: 338.86, vertical: true },
     panels: [
@@ -262,7 +260,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
   },
   // Left side
   {
-    string: "3",
+    field: "pvt:aft-string-3",
     frame: { d: "M68.9 320.58H41.41V357.6H68.9V371.58H32.86V357.11H27.4V284.58H68.9V320.58Z" },
     label: { x: 33.21, y: 328.7, vertical: true },
     panels: [
@@ -279,7 +277,7 @@ export const MAIN_BIMINI_STRINGS: BiminiString[] = [
   },
   // Right side
   {
-    string: "3",
+    field: "pvt:aft-string-3",
     frame: {
       d: "M215.42 320.58H242.91V357.6H215.42V371.58H251.45V357.11H256.92V284.58H215.42V320.58Z",
     },

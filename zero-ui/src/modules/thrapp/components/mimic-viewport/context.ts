@@ -45,7 +45,13 @@ export const createMimicZoomContext = (): MimicZoomContext => {
   // Read once the viewport hands over its content element, and again when the SVG changes: mimics
   // are async components, so their SVG may only appear after the content is mounted.
   watch(content, readIntrinsicSize, { flush: "post" });
-  useMutationObserver(content, readIntrinsicSize, { childList: true, subtree: true });
+  useMutationObserver(content, readIntrinsicSize, {
+    childList: true,
+    subtree: true,
+    // A mimic may change its viewBox, e.g. to stack its mini map in portrait.
+    attributes: true,
+    attributeFilter: ["viewBox"],
+  });
 
   const { width: viewportWidth, height: viewportHeight } = useElementSize(scroller);
 

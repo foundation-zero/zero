@@ -5,6 +5,7 @@ import { computed, toRefs } from "vue";
 import ControlState from "./ControlState.vue";
 import ModuleSelector from "./ModuleSelector.vue";
 import SubNavigationModes from "./SubNavigationModes.vue";
+import { SUB_MODULE_MODE_TARGETS } from "./sub-navigation.consts";
 import { getControlModule, getControlState } from "./sub-navigation.utils";
 
 /** Context of the selected module: module selector, its modes and how it is controlled. */
@@ -15,6 +16,9 @@ const { control } = toRefs(useAutomationStore());
 // Sub-modules (e.g. the PVT biminis) are controlled through their module.
 const controlModule = computed(() => props.activeModule && getControlModule(props.activeModule));
 const controlState = computed(() => getControlState(control.value, controlModule.value));
+const modeTargets = computed(
+  () => props.activeModule && SUB_MODULE_MODE_TARGETS[props.activeModule],
+);
 </script>
 
 <template>
@@ -40,6 +44,7 @@ const controlState = computed(() => getControlState(control.value, controlModule
       </div>
       <SubNavigationModes
         :module="controlModule"
+        :targets="modeTargets"
         class="basis-full lg:flex-1 lg:basis-auto"
       />
     </div>
