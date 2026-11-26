@@ -7,7 +7,7 @@ export type BranchFields<Type extends MimicComponentType> = [
   RegisterField<Type>,
 ];
 
-/** What a group of two DC converters shows; the layout is the same for every such group. */
+/** The fields of a group of two DC converters, as the converter pair's layers draw them. */
 export type DcConverterPairFields = {
   converters: BranchFields<MimicComponentType.PowerConverter>;
   circuit: RegisterField<MimicComponentType.ConnectingCircuit>;
