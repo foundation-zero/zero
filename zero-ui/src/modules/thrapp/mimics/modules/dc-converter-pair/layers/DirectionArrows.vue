@@ -7,7 +7,7 @@ import { LayerFilterOption } from "../../../components/layer-filter/layer-filter
   <LayerFilter :filter="LayerFilterOption.DirectionArrows">
     <defs>
       <marker
-        id="dc-fwd-dir-arrow"
+        id="dc-converter-pair-dir-arrow"
         markerWidth="6"
         markerHeight="7"
         refX="3.5"
@@ -29,43 +29,43 @@ import { LayerFilterOption } from "../../../components/layer-filter/layer-filter
       class="stroke-flows-pipe-arrow"
       stroke-width="1"
       fill="none"
-      marker-end="url(#dc-fwd-dir-arrow)"
+      marker-end="url(#dc-converter-pair-dir-arrow)"
     >
       <line
-        x1="385"
-        y1="53"
-        x2="445"
-        y2="53"
+        x1="388"
+        y1="51"
+        x2="448"
+        y2="51"
       />
       <line
-        x1="445"
-        y1="173"
-        x2="385"
-        y2="173"
+        x1="448"
+        y1="171"
+        x2="388"
+        y2="171"
       />
       <line
-        x1="385"
-        y1="272"
-        x2="445"
-        y2="272"
+        x1="388"
+        y1="270"
+        x2="448"
+        y2="270"
       />
       <line
-        x1="781"
-        y1="272"
-        x2="841"
-        y2="272"
+        x1="771"
+        y1="270"
+        x2="831"
+        y2="270"
       />
       <line
-        x1="445"
-        y1="392"
-        x2="385"
-        y2="392"
+        x1="448"
+        y1="390"
+        x2="388"
+        y2="390"
       />
       <line
-        x1="841"
-        y1="392"
-        x2="781"
-        y2="392"
+        x1="831"
+        y1="390"
+        x2="771"
+        y2="390"
       />
     </g>
   </LayerFilter>

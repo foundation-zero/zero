@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { computed } from "vue";
+import { BranchFields } from "../dc-converter-pair.types";
 import { MimicComponentType } from "@/modules/thrapp/types";
-import { getTooltipContexts } from "../../../data";
+import { getTooltipContext } from "../../../data";
 import { TemperatureSensorInstance } from "../../../instances";
 import TemperatureLabelInstance from "../../../instances/TemperatureLabelInstance.vue";
 
-const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSensor, [
-  "1038-12",
-  "1038-13",
-]);
+const props = defineProps<{ fields: BranchFields<MimicComponentType.TemperatureSensor> }>();
+
+const getContext = getTooltipContext(MimicComponentType.TemperatureSensor);
+const temperatureSensors = computed(() => props.fields.map(getContext));
 </script>
 
 <template>
@@ -16,26 +18,26 @@ const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSens
     <TemperatureSensorInstance
       x="551"
       y="8.25"
-      v-bind="temperatureSensors['1038-12']"
+      v-bind="temperatureSensors[0]"
     >
       <TemperatureLabelInstance
         x="496"
         y="-6.5"
-        :tag-id="temperatureSensors['1038-12'].tooltip?.yardTag"
-        :temperature="temperatureSensors['1038-12'].source"
+        :tag-id="temperatureSensors[0].tooltip?.yardTag"
+        :temperature="temperatureSensors[0].source"
       />
     </TemperatureSensorInstance>
     <!-- The source icon is inset in its 32px instance viewBox. -->
     <TemperatureSensorInstance
       x="551"
       y="222.25"
-      v-bind="temperatureSensors['1038-13']"
+      v-bind="temperatureSensors[1]"
     >
       <TemperatureLabelInstance
         x="496"
         y="203.5"
-        :tag-id="temperatureSensors['1038-13'].tooltip?.yardTag"
-        :temperature="temperatureSensors['1038-13'].source"
+        :tag-id="temperatureSensors[1].tooltip?.yardTag"
+        :temperature="temperatureSensors[1].source"
       />
     </TemperatureSensorInstance>
   </g>

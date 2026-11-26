@@ -1,28 +1,17 @@
 <script setup lang="ts">
-import Assets from "./layers/Assets.vue";
-import CircuitBoxes from "./layers/CircuitBoxes.vue";
-import DirectionArrows from "./layers/DirectionArrows.vue";
-import FlowSensors from "./layers/FlowSensors.vue";
-import ManualValves from "./layers/ManualValves.vue";
-import Pipes from "./layers/Pipes.vue";
-import SwitchValves from "./layers/SwitchValves.vue";
-import TemperatureSensors from "./layers/TemperatureSensors.vue";
+import { DcConverterPairFields, DcConverterPairMimic } from "../dc-converter-pair";
+
+// DC/DC group 2: Brightloops FWD 2 and 1.
+const FIELDS: DcConverterPairFields = {
+  converters: ["dc:fwd-2", "dc:fwd-1"],
+  circuit: "dc:fwd",
+  switchValves: ["1068-05", "1068-06"],
+  manualValves: ["1167-05", "1167-06"],
+  temperatureSensors: ["1038-12", "1038-13"],
+  flowSensors: ["1057-11", "1057-12"],
+};
 </script>
 
 <template>
-  <svg
-    viewBox="-20 -15 1142 445"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    aria-hidden="true"
-  >
-    <DirectionArrows />
-    <Pipes />
-    <SwitchValves />
-    <ManualValves />
-    <TemperatureSensors />
-    <FlowSensors />
-    <Assets />
-    <CircuitBoxes />
-  </svg>
+  <DcConverterPairMimic :fields="FIELDS" />
 </template>
