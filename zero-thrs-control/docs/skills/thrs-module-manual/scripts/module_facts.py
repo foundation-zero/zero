@@ -7,9 +7,9 @@ from `zero-thrs-control` with `uv run python <this file> <module>`.
     uv run python docs/skills/thrs-module-manual/scripts/module_facts.py pcm
     uv run python ... pcm --diagram /tmp/pcm_truth.png
 
-`--diagram` writes the raw pytransitions/graphviz rendering of the state machine.
-That picture is the ground truth to check a redrawn figure against; it is too
-dense to ship in a manual.
+`--diagram` writes the raw rendering of the state machine: Graphviz for a
+pytransitions machine, Mermaid for a python-statemachine one. That picture is the
+ground truth to check a redrawn figure against; it is too dense to ship in a manual.
 """
 
 import argparse
@@ -23,6 +23,7 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
+from statemachine import StateChart
 from transitions.extensions import GraphMachine
 
 from thrs.input_output.definitions.units import unit_meta
@@ -177,7 +178,10 @@ def state_machines(control: Any) -> list[tuple[str, Any]]:
         if attr.startswith("__"):
             continue
         sub = inspect.getattr_static(control, attr)
-        if sub is not control and getattr(sub, "_states", None):
+        if isinstance(sub, StateChart):
+            label = "top level" if sub.model is control else f"sub-control `{attr}`"
+            subs.append((label, sub))
+        elif sub is not control and getattr(sub, "_states", None):
             subs.append((f"sub-control `{attr}`", sub))
     top = [("top level", control)] if getattr(control, "_states", None) else []
     return top + list({id(sub): (label, sub) for label, sub in subs}.values())
@@ -188,6 +192,9 @@ def describe_state_machines(control: Any) -> None:
     machines = state_machines(control)
     for label, obj in machines:
         print(f"### {label} — {type(obj).__name__}\n")
+        if isinstance(obj, StateChart):
+            print(f"```mermaid\n{obj:mermaid}\n```\n")
+            continue
         for state in obj._states:
             print(f"- state `{state.name}`")
             for hook in ("on_enter", "on_exit"):
@@ -230,12 +237,17 @@ def draw_diagram(control: Any, states: Any, transitions: Any, path: str) -> None
     print(f"\nGround-truth diagram written to {path}")
 
 
-def find_machine(control: Any) -> tuple[Any, Any, Any] | None:
+def write_diagram(control: Any, path: str) -> None:
     machines = state_machines(control)
     if not machines:
-        return None
+        print("\nNo state machine to draw.")
+        return
     _, machine = machines[0]
-    return machine, machine._states, machine._transitions
+    if isinstance(machine, StateChart):
+        Path(path).write_text(f"{machine:mermaid}\n")
+        print(f"\nGround-truth Mermaid diagram written to {path}")
+    else:
+        draw_diagram(machine, machine._states, machine._transitions, path)
 
 
 def module_description(module_name: str) -> Any:
@@ -324,11 +336,7 @@ def main() -> None:
     print_facts(description, control)
 
     if args.diagram:
-        machine = find_machine(control)
-        if machine is None:
-            print("\nNo state machine to draw.")
-        else:
-            draw_diagram(*machine, args.diagram)
+        write_diagram(control, args.diagram)
 
 
 if __name__ == "__main__":

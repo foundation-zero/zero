@@ -21,6 +21,7 @@ dependencies = [
   "asyncpg>=0.30.0,<1.0.0",
   "asyncapi3==0.0.2",
   "more_itertools==11.2.1",
+  "python-statemachine>=3.2.2,<4",
 ]
 dynamic = ["version"]
 license-files = ["LICENSE"]
@@ -39,6 +40,7 @@ analysis = [
   "pyarrow~=26.0.1",
   "pyqtgraph~=0.14.0",
   "pyside6~=6.12.0",
+  "python-statemachine[diagrams]>=3.2.2,<4",
   "seaborn~=0.13.2",
 ]
 test = [
