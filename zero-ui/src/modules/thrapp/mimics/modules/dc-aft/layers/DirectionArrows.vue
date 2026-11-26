@@ -32,30 +32,6 @@ import { LayerFilterOption } from "../../../components/layer-filter/layer-filter
       marker-end="url(#dc-aft-dir-arrow)"
     >
       <line
-        x1="380"
-        y1="51"
-        x2="440"
-        y2="51"
-      />
-      <line
-        x1="440"
-        y1="171"
-        x2="380"
-        y2="171"
-      />
-      <line
-        x1="380"
-        y1="270"
-        x2="440"
-        y2="270"
-      />
-      <line
-        x1="782"
-        y1="270"
-        x2="842"
-        y2="270"
-      />
-      <line
         x1="734"
         y1="116"
         x2="734"
@@ -110,39 +86,27 @@ import { LayerFilterOption } from "../../../components/layer-filter/layer-filter
         y2="745"
       />
       <line
-        x1="440"
-        y1="390"
-        x2="380"
-        y2="390"
-      />
-      <line
-        x1="842"
-        y1="390"
-        x2="782"
-        y2="390"
-      />
-      <line
-        x1="380"
+        x1="388"
         y1="478"
-        x2="440"
+        x2="448"
         y2="478"
       />
       <line
-        x1="440"
+        x1="448"
         y1="598"
-        x2="380"
+        x2="388"
         y2="598"
       />
       <line
-        x1="380"
+        x1="388"
         y1="671"
-        x2="440"
+        x2="448"
         y2="671"
       />
       <line
-        x1="440"
+        x1="448"
         y1="791"
-        x2="380"
+        x2="388"
         y2="791"
       />
     </g>

@@ -77,6 +77,11 @@ pnpm convert-direction-arrows dc
 
 `<module>` is the folder name under `src/modules/thrapp/mimics/modules/<module>/layers/DirectionArrows.vue`.
 
+The DC converter groups share their layers in `dc-converter-pair`:
+
+- `dc-fwd` and `dc-ugrid` have no `layers/` of their own, so the script fails for them. Run `pnpm convert-direction-arrows dc-converter-pair` instead; the arrows change for both groups and for the top half of `dc-aft`.
+- `dc-aft/layers/DirectionArrows.vue` only holds the arrows of its lower half and its risers.
+
 **What it does:**
 
 1. Reads the module's `DirectionArrows.vue` and locates every `<path>` with `fill-opacity="0.55"` (the signature of a Figma-exported arrow: an end-cap square, a chevron, and a thin rectangle spanning the arrow's length).
