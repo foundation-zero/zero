@@ -24,12 +24,13 @@ def _(mo):
         # Domestic energy report
 
         Weekly electrical consumption built from the dbt view
-        `views.slv_power_tags`, which joins GreptimeDB's `public.power_tags`
-        with `public.power_tag_metadata` (`main_group` / `sub_group`).
+        `views.slv_power_tags` (GreptimeDB's `public.power_tags`) and the
+        groups in `public.power_tag_metadata` (`main_group` / `sub_group`),
+        joined after averaging, as the energy dashboards do.
 
         Energy is the integral of `active_power_total` over the reporting window:
-        each topic is averaged into 1-minute buckets, then summed
-        (`sum(avg_W) / 60 / 1000` → kWh). Distribution-panel feed meters are
+        each topic is averaged into 1-hour buckets, then summed
+        (`sum(avg_W) / 1000` → kWh). Distribution-panel feed meters are
         excluded, as they measure the sum of their downstream tags. Pick a
         Sunday-to-Sunday week below; the controls default to the most recent
         complete week in the data.
@@ -100,6 +101,26 @@ def _(datetime, engine, mo, pd, text):
     # counting them alongside those tags double-counts the same energy.
     EXCLUDE_DISTRIBUTION_PANELS = "AND UPPER(COALESCE(consumer, '')) NOT LIKE '%DISTR%'"
 
+    # Each topic is averaged per bucket first and joined to its groups afterwards: joining the metadata to every
+    # row is what makes a query over a week slow.
+    GROUPS = """
+        JOIN power_tag_metadata AS m ON x.topic = m.topic
+        WHERE m.main_group IS NOT NULL AND m.excluded IS NOT TRUE
+    """
+
+    def per_topic(interval: str) -> str:
+        return f"""
+            SELECT date_bin('{interval}'::INTERVAL, ts) AS time,
+                   topic,
+                   AVG(active_power_total) AS avg_power_w,
+                   MAX(consumer) AS consumer,
+                   MAX(panel) AS panel
+            FROM views.slv_power_tags
+            WHERE ts >= :start AND ts < :end
+                  {EXCLUDE_DISTRIBUTION_PANELS}
+            GROUP BY time, topic
+        """
+
     @mo.cache
     def load_energy_per_topic(start: datetime, end: datetime) -> pd.DataFrame:
         query = text(
@@ -107,22 +128,11 @@ def _(datetime, engine, mo, pd, text):
             SELECT x.topic,
                    MAX(x.consumer) AS consumer,
                    MAX(x.panel) AS panel,
-                   SUM(x.minute_avg_power_w) / 60.0 / 1000.0 AS energy_kwh,
-                   MAX(x.main_group) AS main_group,
-                   MAX(x.sub_group) AS sub_group
-            FROM (
-                SELECT date_bin('1 minute'::INTERVAL, ts) AS minute,
-                       topic,
-                       AVG(active_power_total) AS minute_avg_power_w,
-                       MAX(consumer) AS consumer,
-                       MAX(panel) AS panel,
-                       MAX(main_group) AS main_group,
-                       MAX(sub_group) AS sub_group
-                FROM views.slv_power_tags
-                WHERE ts >= :start AND ts < :end
-                      {EXCLUDE_DISTRIBUTION_PANELS}
-                GROUP BY minute, topic
-            ) AS x
+                   SUM(x.avg_power_w) / 1000.0 AS energy_kwh,
+                   MAX(m.main_group) AS main_group,
+                   MAX(m.sub_group) AS sub_group
+            FROM ({per_topic("1 hour")}) AS x
+            {GROUPS}
             GROUP BY x.topic
             """
         )
@@ -133,26 +143,15 @@ def _(datetime, engine, mo, pd, text):
     def load_energy_per_day(start: datetime, end: datetime) -> pd.DataFrame:
         query = text(
             f"""
-            SELECT date_trunc('day', x.minute) AS day,
+            SELECT date_trunc('day', x.time) AS day,
                    x.topic,
-                   SUM(x.minute_avg_power_w) / 60.0 / 1000.0 AS energy_kwh,
-                   MAX(x.main_group) AS main_group,
-                   MAX(x.sub_group) AS sub_group,
+                   SUM(x.avg_power_w) / 1000.0 AS energy_kwh,
+                   MAX(m.main_group) AS main_group,
+                   MAX(m.sub_group) AS sub_group,
                    MAX(x.panel) AS panel,
                    MAX(x.consumer) AS consumer
-            FROM (
-                SELECT date_bin('1 minute'::INTERVAL, ts) AS minute,
-                       topic,
-                       AVG(active_power_total) AS minute_avg_power_w,
-                       MAX(main_group) AS main_group,
-                       MAX(sub_group) AS sub_group,
-                       MAX(panel) AS panel,
-                       MAX(consumer) AS consumer
-                FROM views.slv_power_tags
-                WHERE ts >= :start AND ts < :end
-                      {EXCLUDE_DISTRIBUTION_PANELS}
-                GROUP BY minute, topic
-            ) AS x
+            FROM ({per_topic("1 hour")}) AS x
+            {GROUPS}
             GROUP BY day, x.topic
             """
         )
@@ -167,17 +166,15 @@ def _(datetime, engine, mo, pd, text):
             raise ValueError(f"Unsupported resolution: {interval}")
         query = text(
             f"""
-            SELECT date_bin('{interval}'::INTERVAL, ts) AS time,
-                   topic,
-                   AVG(active_power_total) AS avg_power_w,
-                   MAX(main_group) AS main_group,
-                   MAX(sub_group) AS sub_group,
-                   MAX(panel) AS panel,
-                   MAX(consumer) AS consumer
-            FROM views.slv_power_tags
-            WHERE ts >= :start AND ts < :end
-                  {EXCLUDE_DISTRIBUTION_PANELS}
-            GROUP BY time, topic
+            SELECT x.time,
+                   x.topic,
+                   x.avg_power_w,
+                   m.main_group,
+                   m.sub_group,
+                   x.panel,
+                   x.consumer
+            FROM ({per_topic(interval)}) AS x
+            {GROUPS}
             """
         )
         with engine.connect() as conn:

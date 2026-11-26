@@ -1,11 +1,14 @@
 apiVersion: 1
 
+# queryTimeout (s, the plugin's default is 60): the historical energy dashboard reads the raw data of its whole
+# range, which takes about 75 s for 30 days.
 datasources:
   - name: greptimedb-zero
     type: info8fcc-greptimedb-datasource
     access: proxy
     jsonData:
       host: http://greptime-zero.tail0b4840.ts.net:4000
+      queryTimeout: 300
     isDefault: true
     editable: true
   - name: greptimedb-subzero
@@ -13,6 +16,7 @@ datasources:
     access: proxy
     jsonData:
       host: http://greptime-subzero.tail0b4840.ts.net:4000
+      queryTimeout: 300
     isDefault: false
     editable: true
   - name: greptimedb-singel
@@ -20,5 +24,6 @@ datasources:
     access: proxy
     jsonData:
       host: http://greptime-singel.tail0b4840.ts.net:4000
+      queryTimeout: 300
     isDefault: false
     editable: true

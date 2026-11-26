@@ -1,32 +1,11 @@
-with dc_24v as (
-    select
-        ts,
-        topic,
-        voltage__value,
-        voltage__has_value,
-        voltage__is_valid
-    from {{ ref('stg_marpower__24vdc') }}
-),
-
-metadata as (
-    select
-        topic,
-        converter,
-        converter_subnr
-    from {{ source('metadata', 'dc_24v_metadata') }}
-)
-
+-- Output voltage of each 24 VDC power supply, in V; a reading of 18 V or less isn't a valid output voltage. Its
+-- converter and converter_subnr in dc_24v_metadata are joined by the query that reads this view, after it has
+-- averaged the rows per topic.
 select
-    dc.ts,
-    dc.topic,
-    dc.voltage__value as voltage,
-    meta.converter,
-    meta.converter_subnr
-from dc_24v as dc
-join metadata as meta
-    on dc.topic = meta.topic
-where dc.voltage__has_value is true
-and dc.voltage__is_valid is true
-and dc.voltage__value > 18
-and meta.converter is not null
-and meta.converter_subnr is not null
+    ts,
+    topic,
+    voltage__value as voltage
+from {{ ref('stg_marpower__24vdc') }}
+where voltage__has_value is true
+and voltage__is_valid is true
+and voltage__value > 18

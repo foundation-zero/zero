@@ -3,7 +3,8 @@ version: 2
 models:
   - name: slv_power_tags
     description: >
-      Power tags enriched with metadata: electrical consumption measures with main- and sub-group classifications.
+      Active power of each power tag. Its main group and sub group in power_tag_metadata are joined by the query
+      that reads this view, after averaging per topic and time bucket.
       Materialized as a view in the `views` database.
     columns:
       - name: ts
@@ -19,15 +20,9 @@ models:
       - name: consumer
         description: "Consumer identifier associated with the tag."
       - name: active_power_total
-        description: "Total active power consumption."
+        description: "Total active power consumption in W."
         tests:
           - not_null
-      - name: main_group
-        description: "The main group classification of the power tag."
-        tests:
-          - not_null
-      - name: sub_group
-        description: "The sub group classification, within the main group, of the power tag."
   - name: slv_batteries
     description: >
       Battery metrics enriched with metadata.
@@ -59,7 +54,8 @@ models:
         description: "Total power of the battery."
   - name: slv_24vdc_currents
     description: >
-      24V DC system output currents enriched with metadata.
+      Output current of each 24 VDC breaker channel. Its converter, main group and sub group in dc_24v_metadata are
+      joined by the query that reads this view, after averaging per topic and time bucket.
       Materialized as a view in the `views` database.
     columns:
       - name: ts
@@ -74,19 +70,10 @@ models:
         description: "Output current of the 24V DC device."
         tests:
           - not_null
-      - name: converter
-        description: "The converter the 24V DC device is connected to."
-        tests:
-          - not_null
-      - name: main_group
-        description: "The main group classification of the 24V DC device."
-        tests:
-          - not_null
-      - name: sub_group
-        description: "The sub group classification, within the main group, of the 24V DC device."
   - name: slv_24vdc_converter_voltages
     description: >
-      24V DC system converter voltages enriched with metadata.
+      Output voltage of each 24 VDC power supply. Its converter and converter_subnr in dc_24v_metadata are joined by
+      the query that reads this view, after averaging per topic and time bucket.
       Materialized as a view in the `views` database.
     columns:
       - name: ts
@@ -99,14 +86,6 @@ models:
           - not_null
       - name: voltage
         description: "Voltage of the 24V DC system. This value is checked if above 18 Volts to validate the measurement."
-        tests:
-          - not_null
-      - name: converter
-        description: "The converter name."
-        tests:
-          - not_null
-      - name: converter_subnr
-        description: "The sub-number of the converter."
         tests:
           - not_null
   - name: slv_pcs_aradexes
@@ -222,7 +201,8 @@ models:
           - not_null
   - name: slv_24vdc_power_supplies
     description: >
-      Output power of the 24 VDC power supplies, labelled with their converter group.
+      Output power of each 24 VDC power supply. Its converter in dc_24v_metadata is joined by the query that reads
+      this view, after averaging per topic and time bucket.
       Materialized as a view in the `views` database.
     columns:
       - name: ts
@@ -231,10 +211,6 @@ models:
           - not_null
       - name: topic
         description: "MQTT topic of the power supply."
-        tests:
-          - not_null
-      - name: converter
-        description: "The converter group the power supply belongs to, e.g. W14E1_01."
         tests:
           - not_null
       - name: power
@@ -300,33 +276,40 @@ models:
           - not_null
   - name: slv_dc_ring_sources
     description: >
-      The measured sources on the 700 VDC ring per minute and per unit: what each unit takes from the bus, so a
-      source that feeds the bus is negative. dc_ring_source_metadata places each unit on its segment.
+      The measured sources on the 700 VDC ring, one row per sample: what each device takes from the bus, so a source
+      that feeds the bus is negative. dc_ring_source_metadata places each unit on its segment. The 24 VDC power
+      supplies aren't in it: their unit, the converter, is in dc_24v_metadata. No tests: each view it reads has them.
       Materialized as a view in the `views` database.
     columns:
-      - name: time
-        description: "Timestamp representing the start of the minute interval."
+      - name: ts
+        description: "Ingest timestamp."
       - name: kind
-        description: "The kind of source: shore_converter, battery, grid_converter, dc_350v_converter, dc_24v_converter, aradex or chiller."
+        description: "The kind of source: shore_converter, battery, grid_converter, dc_350v_converter, aradex or chiller."
       - name: unit
-        description: "The unit within the source, e.g. 05-41 or W14E1_01."
+        description: "The unit within the source as dc_ring_source_metadata names it, e.g. 05-41 or AFT-1."
+      - name: device
+        description: "The device within the unit (module, pack, converter, Aradex, chiller device): a query averages per device, then sums per unit."
       - name: power
-        description: "Power the unit takes from the 700 VDC bus in W, averaged per minute per device and summed per unit; negative when it feeds the bus."
-  - name: slv_dc_ring_segments
+        description: "Power the device takes from the 700 VDC bus in W; negative when it feeds the bus."
+  - name: slv_dc_ring_switches
     description: >
-      The load per segment of the 700 VDC ring per minute: the power that flows into the segment through its DC
-      switches and doesn't flow out, the part its measured sources take, and the rest. Only minutes in which all
-      8 switches report. No tests: a test would aggregate the whole history.
+      Power through each DC switch of the 700 VDC ring (05.71–05.78): current × voltage, averaged over the switch's
+      two sections. dc_ring_switch_metadata gives the sign and the segments on either side.
       Materialized as a view in the `views` database.
     columns:
-      - name: time
-        description: "Timestamp representing the start of the minute interval."
-      - name: segment
-        description: "The bus segment, e.g. SB.01.P01, or one of the two cable segments."
-      - name: load_power
-        description: "Net power into the segment through its DC switches in W."
-      - name: measured_power
-        description: "Net power the segment's measured sources take from the bus in W."
-      - name: unallocated_power
-        description: "load_power minus measured_power in W: the load no signal covers, or for a cable segment the measurement error of the switches."
-
+      - name: ts
+        description: "Ingest timestamp."
+        tests:
+          - not_null
+      - name: topic
+        description: "MQTT topic of the switch."
+        tests:
+          - not_null
+      - name: technical_name
+        description: "The switch, e.g. 05-71-q101."
+        tests:
+          - not_null
+      - name: power
+        description: "Power through the switch in W, positive from section 0 to section 1."
+        tests:
+          - not_null
