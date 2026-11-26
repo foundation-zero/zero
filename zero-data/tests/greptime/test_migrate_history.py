@@ -300,7 +300,7 @@ def test_run_from_a_day_reads_and_copies_nothing_newer(
     def days(migration: Migration) -> set[str]:
         return {day_label(day) for h in migration.histories for day in h.expected}
 
-    migration = load(greptime, SPEC, newest=date(2026, 8, 7))
+    migration = load(greptime, SPEC, up_to=date(2026, 8, 7))
 
     assert max(days(migration)) == "2026-08-07"
     assert max(days(load(greptime, SPEC))) == "2026-08-08"

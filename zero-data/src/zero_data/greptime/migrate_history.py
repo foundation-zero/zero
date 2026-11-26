@@ -251,12 +251,12 @@ def load(
     greptime: Greptime,
     spec: MigrationSpec,
     old_tables: Iterable[str] = (),
-    newest: date | None = None,
+    up_to: date | None = None,
 ) -> Migration:
-    """Read what there is to copy and what is already there, up to the newest day. Only reads."""
-    up_to_newest = (
-        f' AND "timestamp" < {timestamp_literal(day_start(newest) + DAY_NS)}'
-        if newest
+    """Read what there is to copy and what is already there, up to and including a day. Only reads."""
+    before_next_day = (
+        f' AND "timestamp" < {timestamp_literal(day_start(up_to) + DAY_NS)}'
+        if up_to
         else ""
     )
     selected = set(old_tables)
@@ -332,7 +332,7 @@ def load(
         copy_days = _days(
             greptime,
             unit.old_table,
-            _rows_with_a_value(unit.old_topic, pairs) + up_to_newest,
+            _rows_with_a_value(unit.old_topic, pairs) + before_next_day,
         )
         if not copy_days:
             continue
@@ -361,7 +361,7 @@ def load(
         present = {
             day: rows
             for day, rows, _ in _days(
-                greptime, new_table, history.new_rows() + up_to_newest
+                greptime, new_table, history.new_rows() + before_next_day
             )
         }
         expected = history.expected

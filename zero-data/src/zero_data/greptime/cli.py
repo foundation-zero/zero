@@ -158,7 +158,7 @@ class MigrateRunCmd(_MigrateCmd):
                 }
                 print(
                     report(
-                        load(greptime, spec, self.table, newest=self.from_), leftovers
+                        load(greptime, spec, self.table, up_to=self.from_), leftovers
                     )
                 )
                 return
@@ -166,7 +166,7 @@ class MigrateRunCmd(_MigrateCmd):
                 connect(connection) as lock_handle,
                 lock(Greptime(lock_handle, connection.dbname), self.unlock),
             ):
-                migration = load(greptime, spec, self.table, newest=self.from_)
+                migration = load(greptime, spec, self.table, up_to=self.from_)
                 for refusal in migration.refused:
                     logger.warning(
                         "Left out %s: %s", refusal.unit.label, refusal.reason
