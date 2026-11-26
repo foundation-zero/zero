@@ -164,12 +164,8 @@ def tables(public: Query, greptime: Greptime) -> Iterator[Query]:
             public.drop_table(table)
 
 
-def no_sleep(_: float) -> None:
-    pass
-
-
 def migrate(greptime: Greptime, until: date | None = None) -> int:
-    return run(greptime, load(greptime, SPEC), until, 0, no_sleep)
+    return run(greptime, load(greptime, SPEC), until, 0)
 
 
 def lose_connection(greptime: Greptime) -> psycopg.Connection:
@@ -280,7 +276,7 @@ def test_run_counts_a_day_again_when_greptime_drops_the_count(
 
     monkeypatch.setattr(greptime, "_fetch", failing_once)
 
-    assert run(greptime, migration, None, 0, no_sleep) == 10
+    assert run(greptime, migration, None, 0) == 10
 
     assert waits.count(migrate_history.RETRY_WAIT) == 1
 
@@ -377,6 +373,15 @@ def test_run_gives_up_when_greptime_keeps_failing(
     assert len(attempts) == migrate_history.ATTEMPTS
 
 
+def test_run_pauses_through_the_same_sleep_as_its_retries(
+    tables: Query, greptime: Greptime, waits: list[float]
+) -> None:
+    run(greptime, load(greptime, SPEC), None, 0.5)
+
+    assert waits
+    assert set(waits) == {0.5}
+
+
 def test_a_second_run_copies_nothing(tables: Query, greptime: Greptime) -> None:
     migrate(greptime)
 
@@ -394,7 +399,7 @@ def test_run_from_a_day_reads_and_copies_nothing_newer(
 
     assert max(days(migration)) == "2026-08-07"
     assert max(days(load(greptime, SPEC))) == "2026-08-08"
-    run(greptime, migration, None, 0, no_sleep)
+    run(greptime, migration, None, 0)
     missing_days = {
         day
         for finding in check(greptime, load(greptime, SPEC))
@@ -418,7 +423,7 @@ def test_run_completes_a_day_that_was_copied_in_part(
     tables: Query, greptime: Greptime
 ) -> None:
     load_first = load(greptime, SPEC)
-    run(greptime, load_first, date(2026, 8, 9), 0, no_sleep)
+    run(greptime, load_first, date(2026, 8, 9), 0)
     tables.execute(
         f'INSERT INTO "{SOUNDER}" ("timestamp", "topic", "technical_name", '
         f'"alarm__value", "alarm__timestamp", "pre_alarm__value", "level__value") '
@@ -443,7 +448,7 @@ def test_a_column_of_another_type_leaves_its_unit_out_until_it_is_altered(
         ("level__value", "bigint", "double"),
     ]
     assert [r.unit.new_table for r in migration.refused] == [SOUNDER, SOUNDER]
-    run(greptime, migration, None, 0, no_sleep)
+    run(greptime, migration, None, 0)
     assert tables.fetch(f'SELECT count(*) FROM "{SOUNDER}"') == [(0,)]
     assert len(check(greptime, load(greptime, SPEC))) == 2
 
@@ -475,8 +480,8 @@ def test_two_old_topics_of_one_new_topic_keep_their_rows_at_the_same_moment(
         ]
     )
 
-    assert run(greptime, load(greptime, spec), None, 0, no_sleep) == 11
-    assert run(greptime, load(greptime, spec), None, 0, no_sleep) == 0
+    assert run(greptime, load(greptime, spec), None, 0) == 11
+    assert run(greptime, load(greptime, spec), None, 0) == 0
 
     assert tables.fetch(
         f'SELECT "command__value", "spare__value" FROM "{PANEL}" '
@@ -597,7 +602,7 @@ def test_drop_checks_old_tables_of_one_new_topic_before_dropping_either(
             ),
         ]
     )
-    run(greptime, load(greptime, spec), None, 0, no_sleep)
+    run(greptime, load(greptime, spec), None, 0)
 
     outcomes = drop(greptime, spec, [OLD, OLD_GENERAL], True, True)
 

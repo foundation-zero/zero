@@ -128,6 +128,9 @@ class Greptime:
                 self._sleep(RETRY_WAIT)
         return action()
 
+    def pause(self, seconds: float) -> None:
+        self._sleep(seconds)
+
     def rows(self, sql: str) -> list[tuple[Any, ...]]:
         return self.retried(partial(self._fetch, sql))
 
@@ -625,7 +628,6 @@ def run(
     migration: Migration,
     until: date | None = None,
     pause: float = 0.1,
-    sleep: Callable[[float], None] = time.sleep,
 ) -> int:
     """Copy day by day, newest first, across all units; returns the rows copied."""
     for table, columns in migration.additions.items():
@@ -666,7 +668,7 @@ def run(
                     f"after copying, {expected} expected"
                 )
             copied_today += there - present
-            sleep(pause)
+            greptime.pause(pause)
         copied += copied_today
         logger.info("%s: %d rows copied", day_label(day), copied_today)
     return copied
