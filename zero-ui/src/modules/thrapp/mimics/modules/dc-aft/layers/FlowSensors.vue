@@ -4,42 +4,11 @@ import { getTooltipContexts } from "../../../data";
 import { FlowSensorInstance } from "../../../instances";
 import FlowLabelInstance from "../../../instances/FlowLabelInstance.vue";
 
-const flowSensors = getTooltipContexts(MimicComponentType.FlowSensor, [
-  "1057-04",
-  "1057-05",
-  "1057-06",
-  "1057-07",
-]);
+const flowSensors = getTooltipContexts(MimicComponentType.FlowSensor, ["1057-06", "1057-07"]);
 </script>
 
 <template>
   <g>
-    <!-- The source icon is inset in its 40px instance viewBox. -->
-    <FlowSensorInstance
-      x="547"
-      y="126"
-      v-bind="flowSensors['1057-04']"
-    >
-      <FlowLabelInstance
-        x="472"
-        y="107.5"
-        :tag-id="flowSensors['1057-04'].tooltip?.yardTag"
-        :flow="flowSensors['1057-04'].source"
-      />
-    </FlowSensorInstance>
-    <!-- The source icon is inset in its 40px instance viewBox. -->
-    <FlowSensorInstance
-      x="547"
-      y="340"
-      v-bind="flowSensors['1057-05']"
-    >
-      <FlowLabelInstance
-        x="472"
-        y="321.5"
-        :tag-id="flowSensors['1057-05'].tooltip?.yardTag"
-        :flow="flowSensors['1057-05'].source"
-      />
-    </FlowSensorInstance>
     <!-- The source icon is inset in its 40px instance viewBox. -->
     <FlowSensorInstance
       x="547"

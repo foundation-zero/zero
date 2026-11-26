@@ -5,8 +5,6 @@ import { TemperatureSensorInstance } from "../../../instances";
 import TemperatureLabelInstance from "../../../instances/TemperatureLabelInstance.vue";
 
 const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSensor, [
-  "1038-05",
-  "1038-06",
   "1038-07",
   "1038-08",
 ]);
@@ -14,32 +12,6 @@ const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSens
 
 <template>
   <g>
-    <!-- The source icon is inset in its 32px instance viewBox. -->
-    <TemperatureSensorInstance
-      x="551"
-      y="8.25"
-      v-bind="temperatureSensors['1038-05']"
-    >
-      <TemperatureLabelInstance
-        x="496"
-        y="-6.5"
-        :tag-id="temperatureSensors['1038-05'].tooltip?.yardTag"
-        :temperature="temperatureSensors['1038-05'].source"
-      />
-    </TemperatureSensorInstance>
-    <!-- The source icon is inset in its 32px instance viewBox. -->
-    <TemperatureSensorInstance
-      x="551"
-      y="222.25"
-      v-bind="temperatureSensors['1038-06']"
-    >
-      <TemperatureLabelInstance
-        x="496"
-        y="203.5"
-        :tag-id="temperatureSensors['1038-06'].tooltip?.yardTag"
-        :temperature="temperatureSensors['1038-06'].source"
-      />
-    </TemperatureSensorInstance>
     <!-- The source icon is inset in its 32px instance viewBox. -->
     <TemperatureSensorInstance
       x="551"
