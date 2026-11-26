@@ -116,14 +116,14 @@ class SimulationUnit[
         self._simulation = simulation
         self._channels = channels
 
-    async def sync_simulation_channels_state(self) -> C:
+    def sync_simulation_channels_state(self) -> C:
         """Synchronize control values and simulation inputs."""
 
         self.sync_simulation_inputs()
 
         control_values = self._channels.get_control_values()
         if control_values is None:
-            control_values = await self._channels.wait_for_control_values()
+            raise RuntimeError("The simulation's control values must be seeded")
         return control_values
 
     def execute_simulation_tick(

@@ -21,7 +21,7 @@ class SimulationRunner[
         """Run simulation for a tick."""
         self._liveness.signal()
 
-        control_values = await self._simulation_module.sync_simulation_channels_state()
+        control_values = self._simulation_module.sync_simulation_channels_state()
 
         sim_result = self._simulation_module.execute_simulation_tick(control_values)
 

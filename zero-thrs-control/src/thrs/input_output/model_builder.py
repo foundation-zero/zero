@@ -1,8 +1,8 @@
 import logging
 from abc import ABC, abstractmethod
-from asyncio import Event
+from collections.abc import Callable
 from contextlib import suppress
-from typing import Any, cast
+from typing import Any
 
 from pydantic import TypeAdapter, ValidationError
 
@@ -28,29 +28,32 @@ class ModelBuilder[T](ABC):
     @abstractmethod
     def result(self) -> T | None: ...
 
-    @abstractmethod
-    async def wait_for_result(self) -> T: ...
-
 
 class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
     """
     ModelBuilder that handles partial input.
 
-    Each input call is expected to set one field in the model.
+    Each input call is expected to set one field in the model. Given an `initial`
+    model, the builder starts from it, and each input call overrides one of its
+    fields.
     """
 
-    def __init__(self, cls: type[T], validation_context: WireContext | None = None):
+    def __init__(
+        self,
+        cls: type[T],
+        validation_context: WireContext | None = None,
+        initial: T | None = None,
+    ):
         self._cls = cls
         self._validation_context = validation_context
-        self._value: T | None = None
-        self._values: dict[str, Any] = {}
+        self._value: T | None = initial
+        self._values: dict[str, Any] = {} if initial is None else dict(initial)
         self._fields: dict[str, TypeAdapter] = {
             field_name: TypeAdapter(field.annotation)
             for field_name, field in cls.model_fields.items()
             if field.annotation is not None
         }
-        self._first_value: T | None = None
-        self._complete = Event()
+        self._on_complete: list[Callable[[T], object]] = []
 
     def input(self, field: str, json: str | bytes):
         value = self._fields[field].validate_json(
@@ -59,13 +62,23 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
 
         self._values[field] = value
 
+        was_complete = self._value is not None
         # Just try to create the object, we can't compare key sets because of optional values
         with suppress(ValidationError):
             self._value = self._cls(**self._values)
 
-            if not self._complete.is_set():
-                self._first_value = self._value
-                self._complete.set()
+        if not was_complete and self._value is not None:
+            for hook in self._on_complete:
+                hook(self._value.model_copy(deep=True))
+
+    def on_complete(self, hook: Callable[[T], object]) -> None:
+        """Call `hook` once with a copy of the model when it is first complete, or now
+        with a copy of the current one if it already is; a copy, so the hook can't
+        change the result."""
+        if self._value is not None:
+            hook(self._value.model_copy(deep=True))
+        else:
+            self._on_complete.append(hook)
 
     def result(self) -> T | None:
         if logger.isEnabledFor(logging.DEBUG):
@@ -78,7 +91,3 @@ class PartialModelBuilder[T: ThrsValues](ModelBuilder[T]):
                 )
 
         return self._value
-
-    async def wait_for_result(self) -> T:
-        await self._complete.wait()
-        return cast(T, self._first_value)

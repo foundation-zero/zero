@@ -8,6 +8,7 @@ from more_itertools import one
 from pydantic.fields import ComputedFieldInfo, FieldInfo
 
 from thrs.input_output.base import (
+    CombinedValues,
     ComponentType,
     ThrsValues,
     get_component_type,
@@ -162,6 +163,7 @@ def collect_topics(config: Config, thrs_mode: Mode) -> list[TopicMapping]:
         control_values_clss={},
         simulation_inputs_cls=type(simulation_description.simulation_inputs),
         simulation_outputs_cls=simulation_description.simulation_outputs_cls,
+        initial_control_values=CombinedValues(values={}),
     )
     DirectivesChannels(connector, config)
 

@@ -137,6 +137,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     control_channels.get_automation_modes.return_value = None
     control_channels.get_manual_controls.return_value = control_values
     control_channels.get_control_values_set.return_value = None
+    control_channels.get_actuated_control_values.return_value = control_values
     control_channels.send_control_values = AsyncMock()
     control_channels.send_computed_values = AsyncMock()
     control_channels.send_controller_state = AsyncMock()
@@ -252,6 +253,7 @@ async def test_control_runner_ticks_and_uses_channels():
     channels.get_automation_modes.return_value = None
     channels.get_manual_controls.return_value = control_values_new
     channels.get_control_values_set.return_value = None
+    channels.get_actuated_control_values.return_value = control_values
     channels.get_sensor_values.return_value = sensor_values
     channels.send_computed_values = AsyncMock()
     channels.send_control_values = AsyncMock()
@@ -321,7 +323,6 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     channels = Mock()
     channels.get_control_values.return_value = control_values
     channels.get_simulation_inputs.return_value = simulation_inputs
-    channels.wait_for_control_values = AsyncMock()
     channels.send_device_values = AsyncMock()
     channels.send_simulation_inputs = AsyncMock()
     channels.send_simulation_outputs = AsyncMock()
@@ -336,7 +337,6 @@ async def test_simulation_runner_ticks_and_uses_inputs():
     assert mock_liveness.signal.call_count == 4
 
     assert channels.get_control_values.call_count == 4
-    assert channels.wait_for_control_values.await_count == 0
     assert simulation.update_simulation_inputs.call_count == 4
     assert simulation.tick.call_count == 4
 

@@ -75,6 +75,7 @@ class ConsumersControl(
                 self._adsorption_flow_controller,
                 self._bypass_flow_controller,
             ],
+            self._time,
         )
 
     def initial(self) -> tuple[ConsumersControlValues, ConsumersControllerState]:

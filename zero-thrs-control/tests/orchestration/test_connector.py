@@ -35,6 +35,7 @@ from thrs.orchestration.comms import (
     ModuleMqttMapping,
     MqttConnector,
     PartialMqttMapping,
+    SimulationChannels,
 )
 from thrs.orchestration.module import ModuleDescription
 
@@ -286,20 +287,6 @@ class TestDirectMqttMappingAutoclear:
         assert result is not None
         assert result.go_with_the.flow.value == 1.0
 
-    async def test_wait_for_result_consumes(self):
-        mapping = DirectMqttMapping(SimpleInOut, "sensors/data", autoclear=True)
-        first = _simple_model(1.0)
-        mapping.handle_message("sensors/data", first.model_dump_json(by_alias=True))
-        assert await mapping.wait_for_result() == first
-        assert mapping.result() is None
-
-    async def test_wait_for_result_without_autoclear_stays_sticky(self):
-        mapping = DirectMqttMapping(SimpleInOut, "sensors/data")
-        model = _simple_model(1.0)
-        mapping.handle_message("sensors/data", model.model_dump_json(by_alias=True))
-        assert await mapping.wait_for_result() == model
-        assert mapping.result() == model
-
 
 class TestControlChannelsAutoclear:
     def test_command_channels_consume(self, settings):
@@ -376,6 +363,23 @@ class TestControlChannelsPublishQos:
         assert publisher_qos == [expected_qos] * 4
 
 
+class TestSimulationChannels:
+    def test_control_values_start_at_the_initial_values(self, settings):
+        initial = CombinedValues(values={"module1": SimpleInOut.initial()})
+
+        channels = SimulationChannels(
+            mock.Mock(),
+            settings,
+            {"module1": SimpleInOut},
+            {"module1": SimpleInOut},
+            SimpleParameters,
+            SimpleParameters,
+            initial_control_values=initial,
+        )
+
+        assert channels.get_control_values() == initial
+
+
 class TestCombinedMqttMapping:
     def test_split_to_topics(self):
         clss = {"module1": SimpleInOut}
@@ -443,6 +447,34 @@ class TestCombinedMqttMapping:
                     go_with_the=flow_sensor,
                     external_available=result.values["module1"].external_available,
                 )
+            }
+        )
+
+    def test_starts_from_the_initial_values(self):
+        clss = {"module1": SimpleInOut, "module2": SimpleInOut}
+        initial = CombinedValues(
+            values={
+                "module1": SimpleInOut.initial(),
+                "module2": SimpleInOut.initial(),
+            }
+        )
+        mapping = ModuleMqttMapping(clss, PartialMqttMapping, initial=initial)
+        assert mapping.result() == initial
+
+        flow_sensor = FlowSensor(
+            flow=Stamped.stamp(50.0), temperature=Stamped.stamp(5.0)
+        )
+        mapping.handle_message(
+            "/500000-thrs/module1/go-with-the",
+            flow_sensor.model_dump_json(by_alias=True),
+        )
+
+        assert mapping.result() == CombinedValues(
+            values={
+                "module1": initial.values["module1"].model_copy(
+                    update={"go_with_the": flow_sensor}
+                ),
+                "module2": initial.values["module2"],
             }
         )
 

@@ -133,9 +133,9 @@ class ThrustersControl(
                 self._current_control_values.thrusters_flowcontrol_fwd,
             ],
             [self._aft_flow_controller, self._fwd_flow_controller],
+            self._time,
             self._active_pump,
             self._pump_controller,
-            self._time,
         )
 
     def _init_state_machine_transitions(self):

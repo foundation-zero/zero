@@ -52,3 +52,32 @@ def test_partial_model_builder():
     assert result is not None
     assert result.thrusters_flow_fwd.flow.value == 14.12
     assert result.thrusters_flow_aft.flow.value == 12.12
+
+
+def _flow_message(flow: float) -> str:
+    return f"""{{
+        "Flow": {{"Value": {flow}, "TimeStamp": "2025-01-21T08:49:03.6735253Z"}},
+        "Temperature": {{"Value": 17.12, "TimeStamp": "2025-01-21T08:49:03.6735253Z"}}
+    }}"""
+
+
+def test_partial_model_builder_calls_on_complete_once():
+    builder = PartialModelBuilder(SimpleSensors)
+    completed: list[SimpleSensors] = []
+    builder.on_complete(completed.append)
+
+    builder.input("thrusters_flow_fwd", _flow_message(12.0))
+    assert completed == []
+
+    builder.input("thrusters_flow_aft", _flow_message(12.0))
+    first = builder.result()
+    assert first is not None
+    assert completed == [first]
+    assert completed[0].thrusters_flow_fwd is not first.thrusters_flow_fwd
+
+    builder.input("thrusters_flow_fwd", _flow_message(14.0))
+    assert completed == [first]
+
+    late: list[SimpleSensors] = []
+    builder.on_complete(late.append)
+    assert late == [builder.result()]

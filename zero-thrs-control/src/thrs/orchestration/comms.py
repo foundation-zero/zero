@@ -1,6 +1,6 @@
 import json
 import logging
-from asyncio import Event, TaskGroup, gather
+from asyncio import TaskGroup
 from collections import defaultdict
 from collections.abc import Awaitable, Callable, Coroutine, Iterable, Mapping
 from functools import partial
@@ -54,8 +54,6 @@ class MqttReceiveMapping[M](Protocol):
 
     def result(self) -> M | None: ...
 
-    async def wait_for_result(self) -> M: ...
-
 
 class MqttSendMapping[M](Protocol):
     """Mapping between a model and MQTT topics to send messages"""
@@ -74,6 +72,8 @@ class MappingForModule[M](Protocol):
         topic_prefix: str,
         module_name: str,
         topic_suffix: str | None = None,
+        *,
+        initial: M | None = None,
     ) -> MqttMapping[M]: ...
 
 
@@ -103,7 +103,10 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
         *,
         only_computed_fields: bool = False,
         context: WireContext | None = None,
+        initial: M | None = None,
     ):
+        """Given an `initial` model, the result starts from it and each received
+        topic overrides its own component."""
         self._cls = message_type
         self._topic_prefix = topic_prefix
         self._module_prefix = module_name
@@ -118,7 +121,7 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
             self._topic(field_name, field): field_name
             for field_name, field in message_type.model_fields.items()
         }
-        self._builder = PartialModelBuilder(self._cls, context)
+        self._builder = PartialModelBuilder(self._cls, context, initial)
 
     @staticmethod
     def only_computed_fields[T: ThrsValues](
@@ -169,8 +172,8 @@ class PartialMqttMapping[M: ThrsValues](MqttMapping[M]):
     def result(self) -> M | None:
         return self._builder.result()
 
-    async def wait_for_result(self) -> M:
-        return await self._builder.wait_for_result()
+    def on_complete(self, hook: Callable[[M], object]) -> None:
+        self._builder.on_complete(hook)
 
 
 class DirectMqttMapping[M: ThrsValues](
@@ -192,8 +195,6 @@ class DirectMqttMapping[M: ThrsValues](
         self._adapter: TypeAdapter[M] = TypeAdapter(cls)
         self._topic = f"{topic}{f'/{topic_suffix}' if topic_suffix else ''}"
         self._value = None
-        self._first_value: M | None = None
-        self._first_received = Event()
         self._hooks: list[Callable[[M], None]] = []
         self._autoclear = autoclear
 
@@ -230,9 +231,6 @@ class DirectMqttMapping[M: ThrsValues](
     def handle_message(self, topic: str, json: str | bytes):
         if topic == self._topic:
             self._value = self._adapter.validate_json(json, context=self._context)
-            if not self._first_received.is_set():
-                self._first_value = self._value
-                self._first_received.set()
             for hook in self._hooks:
                 hook(self._value)
 
@@ -241,13 +239,6 @@ class DirectMqttMapping[M: ThrsValues](
         if value is not None and self._autoclear:
             self._value = None
         return value
-
-    async def wait_for_result(self) -> M:
-        await self._first_received.wait()
-        result = cast(M, self._first_value)
-        if self._autoclear:
-            self._value = None
-        return result
 
     def add_hook(self, hook: Callable[[M], None]):
         """`hook` runs synchronously for every message, so it can't be lost to
@@ -260,7 +251,8 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
     MQTT mapping for modules
 
     Accepts a `ModuleClassMap` instead of a single class.
-    Delegates to `sub_mapping` for each sub-model.
+    Delegates to `sub_mapping` for each sub-model, starting each from its model in
+    `initial` if given.
     """
 
     def __init__(
@@ -270,6 +262,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
         topic_prefix: str = "",
         topic_suffix: str | None = None,
         allow_incomplete: bool = False,
+        initial: CombinedValues | None = None,
     ):
         self._topic_prefix = topic_prefix
         self._mappings: Mapping[str, MqttMapping[ThrsValues]] = {
@@ -278,6 +271,7 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
                 topic_prefix,
                 device_module_prefix(name),
                 topic_suffix,
+                initial=None if initial is None else initial.values[name],
             )
             for name, module_cls in clss.items()
         }
@@ -316,14 +310,6 @@ class ModuleMqttMapping[T: CombinedValues](MqttReceiveMapping[T]):
         ):
             return cast(T, CombinedValues(values=mapping_result))
         return None
-
-    async def wait_for_result(self) -> T:
-        results = await gather(
-            *(builder.wait_for_result() for builder in self._mappings.values())
-        )
-        return cast(
-            T, CombinedValues(dict(zip(self._mappings.keys(), results, strict=False)))
-        )
 
 
 class MergedModuleMqttMapping(MqttSendMapping[tuple[CombinedValues, CombinedValues]]):
@@ -482,6 +468,9 @@ class ControlChannels[
         self.get_manual_controls = manual_controls_mapping.result
         self.get_control_values_set = control_values_set_mapping.result
         self.get_actuated_control_values = actuated_control_values_mapping.result
+        self.on_first_actuated_control_values = (
+            actuated_control_values_mapping.on_complete
+        )
 
 
 class SimulationChannels[
@@ -496,7 +485,10 @@ class SimulationChannels[
         control_values_clss: ModuleClassMap,
         simulation_inputs_cls: type[I],
         simulation_outputs_cls: type[O],
+        initial_control_values: CombinedValues,
     ) -> None:
+        """Until control sends them, the control values are the initial ones, so the
+        simulation need not wait for control, like the plant."""
         simulation_inputs_topic = (
             f"{config.mqtt_simulator_topic_prefix}/{SIMULATION_INPUTS_TOPIC}"
         )
@@ -509,6 +501,7 @@ class SimulationChannels[
             PartialMqttMapping,
             config.mqtt_devices_topic_prefix,
             config.mqtt_control_topic_suffix,
+            initial=initial_control_values,
         )
         connector._register_listener(control_values_mapping)
         simulation_inputs_mapping = DirectMqttMapping(
@@ -535,7 +528,6 @@ class SimulationChannels[
         )
 
         self.get_control_values = control_values_mapping.result
-        self.wait_for_control_values = control_values_mapping.wait_for_result
         self.get_simulation_inputs = simulation_inputs_mapping.result
 
     async def send_device_values(
