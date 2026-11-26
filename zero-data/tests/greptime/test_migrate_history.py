@@ -4,6 +4,7 @@ The old table holds a sounder that was renamed on day 2 (an earlier name of the 
 and a catch-all topic whose keys belong to two devices in two new tables.
 """
 
+import re
 from collections.abc import Iterator
 from datetime import date
 from pathlib import Path
@@ -305,9 +306,9 @@ def test_run_from_a_day_reads_and_copies_nothing_newer(
     assert max(days(load(greptime, SPEC))) == "2026-08-08"
     run(greptime, migration, None, 0, no_sleep)
     missing_days = {
-        finding.split(": ")[0].split()[-1]
+        day
         for finding in check(greptime, load(greptime, SPEC))
-        if "old rows" in finding
+        for day in re.findall(r"\b\d{4}-\d{2}-\d{2}\b", finding)
     }
     assert missing_days == {"2026-08-08"}
     migrate(greptime)

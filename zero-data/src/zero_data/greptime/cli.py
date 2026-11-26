@@ -156,13 +156,17 @@ class MigrateRunCmd(_MigrateCmd):
                     for table in self.table or spec.old_tables
                     if table in greptime.tables()
                 }
-                print(report(load(greptime, spec, self.table, self.from_), leftovers))
+                print(
+                    report(
+                        load(greptime, spec, self.table, newest=self.from_), leftovers
+                    )
+                )
                 return
             with (
                 connect(connection) as lock_handle,
                 lock(Greptime(lock_handle, connection.dbname), self.unlock),
             ):
-                migration = load(greptime, spec, self.table, self.from_)
+                migration = load(greptime, spec, self.table, newest=self.from_)
                 for refusal in migration.refused:
                     logger.warning(
                         "Left out %s: %s", refusal.unit.label, refusal.reason
