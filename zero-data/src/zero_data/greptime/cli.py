@@ -177,10 +177,25 @@ class MigrateRunCmd(_MigrateCmd):
 class MigrateCheckCmd(_MigrateCmd):
     """Compare the old and new rows of every unit; exits 1 when they differ."""
 
+    from_: Annotated[
+        date | None,
+        Field(
+            alias="from",
+            description="Check only this day and older.",
+        ),
+    ] = None
+    days_only: Annotated[
+        CliImplicitFlag[bool],
+        Field(
+            description="Compare only the rows per day, not the values of every column."
+        ),
+    ] = False
+
     def cli_cmd(self) -> None:
         connection = _connection(self.host)
         with Greptime(connection) as greptime:
-            findings = check(greptime, load(greptime, read_spec(self.spec), self.table))
+            migration = load(greptime, read_spec(self.spec), self.table, self.from_)
+            findings = check(greptime, migration, days_only=self.days_only)
         for finding in findings:
             print(finding)
         if findings:

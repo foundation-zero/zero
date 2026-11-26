@@ -74,6 +74,14 @@ def day_start(day: date) -> int:
     return int(datetime(day.year, day.month, day.day, tzinfo=UTC).timestamp()) * 10**9
 
 
+def _before_next_day(up_to: date | None) -> str:
+    return (
+        f' AND "timestamp" < {timestamp_literal(day_start(up_to) + DAY_NS)}'
+        if up_to
+        else ""
+    )
+
+
 def _chunks(columns: list[str]) -> Iterator[list[str]]:
     for start in range(0, len(columns), COLUMNS_PER_QUERY):
         yield columns[start : start + COLUMNS_PER_QUERY]
@@ -274,6 +282,7 @@ class Migration(BaseModel):
     additions: dict[str, dict[str, str]]
     mismatches: list[Mismatch]
     refused: list[Refusal]
+    up_to: date | None = None
 
     def touching(self, old_table: str) -> list[History]:
         return [
@@ -299,11 +308,7 @@ def load(
     up_to: date | None = None,
 ) -> Migration:
     """Read what there is to copy and what is already there, up to and including a day. Only reads."""
-    before_next_day = (
-        f' AND "timestamp" < {timestamp_literal(day_start(up_to) + DAY_NS)}'
-        if up_to
-        else ""
-    )
+    before_next_day = _before_next_day(up_to)
     selected = set(old_tables)
     unknown = sorted(selected - set(spec.old_tables))
     if unknown:
@@ -437,6 +442,7 @@ def load(
         },
         mismatches=mismatches,
         refused=refused,
+        up_to=up_to,
     )
 
 
@@ -705,11 +711,14 @@ def _merged(stats: list[tuple[Any, ...]]) -> tuple[Any, ...]:
     )
 
 
-def check(greptime: Greptime, migration: Migration) -> list[str]:
+def check(
+    greptime: Greptime, migration: Migration, *, days_only: bool = False
+) -> list[str]:
     """Where the new tables differ from the old ones; empty when the copy is complete.
 
-    Per new topic it compares the rows per day, and `count`, `min` and `max` of every copied
-    column, between the old topics and the new topic up to the old topics' last row.
+    Per new topic it compares the rows per day, and unless `days_only`, `count`, `min` and
+    `max` of every copied column, between the old topics and the new topic up to the old
+    topics' last row, both up to the migration's last day.
     """
     findings = [
         f"{r.unit.old_table} {r.unit.label}: left out. {r.reason}"
@@ -723,12 +732,14 @@ def check(greptime: Greptime, migration: Migration) -> list[str]:
             for day in sorted(set(expected) | set(history.present))
             if expected.get(day, 0) != history.present.get(day, 0)
         )
+        if days_only:
+            continue
         old_stats: dict[str, list[tuple[Any, ...]]] = defaultdict(list)
         for copy in history.copies:
             stats = _aggregates(
                 greptime,
                 copy.unit.old_table,
-                copy.old_rows(),
+                copy.old_rows() + _before_next_day(migration.up_to),
                 [old for old, _ in copy.pairs],
             )
             for old, new in copy.pairs:
@@ -780,6 +791,7 @@ def drop(
             additions={},
             mismatches=[],
             refused=[r for r in migration.refused if r.unit.old_table == table],
+            up_to=migration.up_to,
         )
         findings = check(greptime, selected)
         recent = greptime.count(

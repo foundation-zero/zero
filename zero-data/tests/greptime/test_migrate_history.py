@@ -538,6 +538,58 @@ def test_check_finds_rows_and_values_that_differ(
     ]
 
 
+def test_check_days_only_finds_a_missing_day_but_not_a_value_that_differs(
+    tables: Query, greptime: Greptime
+) -> None:
+    migrate(greptime)
+    tables.execute(
+        f'INSERT INTO "{OLD}" ("timestamp", "topic", "level__value") VALUES '
+        f"({ts(8, 12)}, '{OLD_SOUNDER}', 99), ({ts(9, 10)}, '{OLD_SOUNDER}', 5)"
+    )
+    tables.execute(
+        f'INSERT INTO "{SOUNDER}" ("timestamp", "topic", "technical_name", '
+        f"\"level__value\") VALUES ({ts(8, 12)}, '{NEW_SOUNDER}', '201h1-s', 8)"
+    )
+    migration = load(greptime, SPEC)
+
+    findings = check(greptime, migration, days_only=True)
+
+    assert findings == [f"{SOUNDER} {NEW_SOUNDER} 2026-08-09: 1 old rows, 0 new rows"]
+    assert (
+        f"{SOUNDER} {NEW_SOUNDER} level__value: count, min, max (8, 3, 99) old, "
+        "(7, 3, 8) new" in check(greptime, migration)
+    )
+
+
+def test_check_days_only_sends_no_column_query(
+    tables: Query, greptime: Greptime, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    migrate(greptime)
+    migration = load(greptime, SPEC)
+    queries: list[str] = []
+
+    def recording(sql: str) -> list[tuple[object, ...]]:
+        queries.append(sql)
+        return Greptime._fetch(greptime, sql)
+
+    monkeypatch.setattr(greptime, "_fetch", recording)
+
+    assert check(greptime, migration, days_only=True) == []
+    assert queries == []
+    assert check(greptime, migration) == []
+    assert any("min(" in sql for sql in queries)
+
+
+def test_check_up_to_a_day_finds_nothing_about_newer_days(
+    tables: Query, greptime: Greptime
+) -> None:
+    migration = load(greptime, SPEC, up_to=date(2026, 8, 7))
+    run(greptime, migration, None, 0)
+
+    assert check(greptime, load(greptime, SPEC, up_to=date(2026, 8, 7))) == []
+    assert check(greptime, load(greptime, SPEC)) != []
+
+
 def test_leftover_names_the_topics_and_columns_no_unit_copies(
     tables: Query, greptime: Greptime
 ) -> None:
@@ -687,6 +739,9 @@ def test_the_commands_run_check_and_drop(
         MigrateCheckCmd(spec=spec_path).cli_cmd()
     MigrateRunCmd(spec=spec_path, pause=0).cli_cmd()
     MigrateCheckCmd(spec=spec_path).cli_cmd()
+    MigrateCheckCmd.model_validate(
+        {"spec": spec_path, "from": "2026-08-07", "days_only": True}
+    ).cli_cmd()
     MigrateDropCmd(spec=spec_path, table=[OLD_GENERAL]).cli_cmd()
     assert f"{OLD_GENERAL}: would be dropped" in capsys.readouterr().out
     with pytest.raises(SystemExit, match="needs the tables named"):
