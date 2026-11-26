@@ -17,12 +17,11 @@ from thrs.control.modules.pcm.state import (
 )
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.control import Pcm, Pump, Valve
+from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.controllers import (
     PCM_HEATING_ELEMENT_POWER,
     PCM_MODULE1_FRESHWATER_PURGE_VOLUME,
     PCM_MODULE1_PURGE_VOLUME,
-    PcmChargeControllerValues,
     PcmChargeStatus,
     PcmChargingState,
 )
@@ -31,67 +30,6 @@ from thrs.input_output.definitions.units import (
     Ratio,
 )
 from thrs.orchestration.module import ModuleDescription
-
-
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> PcmControlValues:  # noqa: N802
-    return PcmControlValues(
-        pcm_pump=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        pcm_switch_charging_return=Valve(
-            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
-        ),
-        pcm_flowcontrol_module1=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        pcm_flowcontrol_module2=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        pcm_flowcontrol_module3=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        pcm_flowcontrol_module4=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        pcm_switch_discharging=Valve(
-            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
-        ),
-        pcm_switch_charging_supply=Valve(
-            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
-        ),
-        pcm_switch_consumers=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        pcm_module1=Pcm(on=Stamped(value=False, timestamp=timestamp)),
-    )
-
-
-def _INITIAL_CHARGE_CONTROLLER_VALUES(  # noqa: N802
-    timestamp: datetime,
-) -> PcmChargeControllerValues:
-    return PcmChargeControllerValues(
-        charge=Stamped(value=None, timestamp=timestamp),
-        energy=Stamped(value=None, timestamp=timestamp),
-        charge_status=Stamped(value=PcmChargeStatus.UNKNOWN, timestamp=timestamp),
-        charging_state=Stamped(value=PcmChargingState.IDLE, timestamp=timestamp),
-    )
-
-
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> PcmControllerState:  # noqa: N802
-    return PcmControllerState(
-        pcm_pump_flow_controller=PidController.zero(timestamp),
-        pcm_module1_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
-        pcm_module2_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
-        pcm_module3_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
-        pcm_module4_charge_controller=_INITIAL_CHARGE_CONTROLLER_VALUES(timestamp),
-        pcm_module1_flow_controller=PidController.zero(timestamp),
-        pcm_module2_flow_controller=PidController.zero(timestamp),
-        pcm_module3_flow_controller=PidController.zero(timestamp),
-        pcm_module4_flow_controller=PidController.zero(timestamp),
-        parameters=PcmParameters(),
-        control_mode=None,
-    )
 
 
 class PcmControl(
@@ -112,9 +50,7 @@ class PcmControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
+        self._current_values = PcmControlValues.initial(self._time())
         self._mode_entered_at: datetime | None = None
         self._module_last_active: dict[PcmChargeController, datetime] = {}
         self._dropped_modules: set[PcmChargeController] = set()
@@ -269,9 +205,10 @@ class PcmControl(
         return PcmControlMode(mode=mode)
 
     def initial(self) -> tuple[PcmControlValues, PcmControllerState]:
+        timestamp = self._time()
         return (
-            _INITIAL_CONTROL_VALUES(self._time()),
-            _INITIAL_CONTROLLER_STATE(self._time()),
+            PcmControlValues.initial(timestamp),
+            PcmControllerState.initial(timestamp),
         )
 
     def update_parameters(self, parameters: PcmParameters):

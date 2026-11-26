@@ -15,7 +15,7 @@ from thrs.control.modules.dhw.state import (
 )
 from thrs.input_output.alarms import BaseAlarms, Severity, alarm
 from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.control import HeatPump, Pump, Valve
+from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.controllers import (
     TanksControllerValues,
 )
@@ -38,70 +38,6 @@ BOOSTING_SOURCES: tuple[BoostingSource, ...] = (
     "boosting_high_temperature",
     "boosting_heatpump",
 )
-
-
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> DhwControlValues:  # noqa: N802
-    return DhwControlValues(
-        dhw_pump=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        dhw_heatpump=HeatPump(
-            on=Stamped(value=False, timestamp=timestamp),
-            temperature_setpoint=Stamped(value=50.0, timestamp=timestamp),
-        ),
-        dhw_flowcontrol_dc=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
-        dhw_flowcontrol_drives=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
-        dhw_switch_tank3_inlet=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
-        dhw_switch_tank3_boosting_return=Valve(
-            setpoint=Stamped(value=0.0, timestamp=timestamp)
-        ),
-        dhw_switch_tank3_outlet=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
-        dhw_switch_tank3_boosting_supply=Valve(
-            setpoint=Stamped(value=0.0, timestamp=timestamp)
-        ),
-        dhw_switch_tank2_inlet=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
-        dhw_switch_tank2_boosting_return=Valve(
-            setpoint=Stamped(value=0.0, timestamp=timestamp)
-        ),
-        dhw_switch_tank2_outlet=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
-        dhw_switch_tank2_boosting_supply=Valve(
-            setpoint=Stamped(value=0.0, timestamp=timestamp)
-        ),
-        dhw_switch_tank1_inlet=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
-        dhw_switch_tank1_boosting_return=Valve(
-            setpoint=Stamped(value=0.0, timestamp=timestamp)
-        ),
-        dhw_switch_tank1_outlet=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
-        dhw_switch_tank1_boosting_supply=Valve(
-            setpoint=Stamped(value=0.0, timestamp=timestamp)
-        ),
-        dhw_switch_low_temperature=Valve(
-            setpoint=Stamped(value=0.0, timestamp=timestamp)
-        ),
-        dhw_switch_heatpump=Valve(setpoint=Stamped(value=0.0, timestamp=timestamp)),
-        dhw_switch_high_temperature=Valve(
-            setpoint=Stamped(value=0.0, timestamp=timestamp)
-        ),
-    )
-
-
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> DhwControllerState:  # noqa: N802
-
-    return DhwControllerState(
-        dhw_tanks_controller=TanksControllerValues(
-            tank1_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
-            tank2_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
-            tank3_state=Stamped(value=TankState.NEEDS_FILL, timestamp=timestamp),
-            time_to_fill=Stamped(value=None, timestamp=timestamp),
-            time_to_hot=Stamped(value=None, timestamp=timestamp),
-        ),
-        dhw_drives_flow_controller=PidController.zero(timestamp),
-        dhw_dc_flow_controller=PidController.zero(timestamp),
-        dhw_pump_flow_controller=PidController.zero(timestamp, setpoint=0.0),
-        parameters=DhwParameters(),
-        control_mode=None,
-    )
 
 
 class Tank:
@@ -757,11 +693,10 @@ class DhwControl(
         return DhwControlMode(boosting_mode=mode, filling_mode=filling_mode)
 
     def initial(self) -> tuple[DhwControlValues, DhwControllerState]:
-        controller_state = _INITIAL_CONTROLLER_STATE(self._time())
-
+        timestamp = self._time()
         return (
-            _INITIAL_CONTROL_VALUES(self._time()).model_copy(deep=True),
-            controller_state.model_copy(deep=True),
+            DhwControlValues.initial(timestamp),
+            DhwControllerState.initial(timestamp),
         )
 
     def control(

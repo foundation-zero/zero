@@ -25,40 +25,15 @@ class ThrsValues(BaseModel):
     )
 
     @classmethod
-    def zero(cls) -> Self:
-        def _zero_component(component):
-            def _zero_value(field: FieldInfo):
-                if isinstance(field.json_schema_extra, dict):
-                    override = field.json_schema_extra.get("zero_value")
-                    if override is not None:
-                        return override
-                unit = unit_for_annotation(field.annotation)
-                if unit is datetime:
-                    return datetime.fromtimestamp(0, UTC)
-                return zero_for_unit(unit) if unit else 0.0
-
-            if isinstance(component, type):
-                if issubclass(component, StampedWithSource):
-                    return StampedWithSource.stamp(
-                        zero_for_unit(unit_for_annotation(component)), "initialization"
-                    )
-                if issubclass(component, Stamped):
-                    return Stamped.stamp(zero_for_unit(unit_for_annotation(component)))
-                if issubclass(component, ThrsValues):
-                    return component(
-                        **{
-                            field_name: Stamped.stamp(_zero_value(field))
-                            for field_name, field in component.model_fields.items()
-                        }
-                    )
-            unit = unit_for_annotation(component)
-            return zero_for_unit(unit) if unit else 0.0
-
-        vals = {
-            component_name: _zero_component(component.annotation)
-            for component_name, component in cls.model_fields.items()
-        }
-        return cls(**vals)
+    def initial(cls, timestamp: datetime | None = None) -> Self:
+        """Every component at its initial value, stamped at `timestamp`, or now."""
+        stamped_at = timestamp or datetime.now(UTC)
+        return cls(
+            **{
+                name: initial_field(field, stamped_at)
+                for name, field in cls.model_fields.items()
+            }
+        )
 
     def update_in_place(self, other: Self) -> None:
         """Copy the values of other into self, keeping the identity of nested components."""
@@ -159,6 +134,40 @@ class StampedWithSource[T](Stamped[T]):
         return StampedWithSource(
             value=value, timestamp=min(s.timestamp for s in stamped), source=source
         )
+
+
+def initial_component(component: Any, stamped_at: datetime) -> Any:
+    """A component at its initial value, its own components through their fields."""
+    if isinstance(component, type):
+        if issubclass(component, StampedWithSource):
+            return StampedWithSource(
+                value=zero_for_unit(unit_for_annotation(component)),
+                timestamp=stamped_at,
+                source="initialization",
+            )
+        if issubclass(component, Stamped):
+            return Stamped(
+                value=zero_for_unit(unit_for_annotation(component)),
+                timestamp=stamped_at,
+            )
+        if issubclass(component, ThrsValues):
+            return component(
+                **{
+                    field_name: initial_field(field, stamped_at)
+                    for field_name, field in component.model_fields.items()
+                }
+            )
+    return zero_for_unit(unit_for_annotation(component))
+
+
+def initial_field(field: FieldInfo, stamped_at: datetime) -> Any:
+    """A field at its initial value: its `initial_value` override, stamped, else the
+    initial value of its component."""
+    if isinstance(field.json_schema_extra, dict):
+        override = field.json_schema_extra.get("initial_value")
+        if override is not None:
+            return Stamped(value=override, timestamp=stamped_at)
+    return initial_component(field.annotation, stamped_at)
 
 
 def _factory[R, **P](
@@ -271,7 +280,7 @@ class ParameterMeta:
 
 class FieldMeta(BaseModel):
     included_in_fmu: bool = True
-    zero_value: Any | None = None
+    initial_value: Any | None = None
 
 
 def field_meta(*args, **kwargs):

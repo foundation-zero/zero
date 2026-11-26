@@ -22,37 +22,6 @@ from thrs.input_output.definitions.units import LMin, Ratio
 from thrs.orchestration.module import ModuleDescription
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ConsumersControlValues:  # noqa: N802
-    return ConsumersControlValues(
-        consumers_flowcontrol_bypass=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        consumers_flowcontrol_dhw=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        consumers_flowcontrol_adsorption=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        consumers_switch_adsorption=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        consumers_switch_dhw=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-    )
-
-
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> ConsumersControllerState:  # noqa: N802
-
-    return ConsumersControllerState(
-        consumers_dhw_flow_controller=PidController.zero(timestamp),
-        consumers_bypass_flow_controller=PidController.zero(timestamp),
-        consumers_adsorption_flow_controller=PidController.zero(timestamp),
-        parameters=ConsumersParameters(),
-        control_mode=None,
-    )
-
-
 class ConsumersControl(
     Control[
         ConsumersSensorValues,
@@ -69,9 +38,7 @@ class ConsumersControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
+        self._current_values = ConsumersControlValues.initial(self._time())
 
         self._init_controllers()
 
@@ -111,9 +78,10 @@ class ConsumersControl(
         )
 
     def initial(self) -> tuple[ConsumersControlValues, ConsumersControllerState]:
+        timestamp = self._time()
         return (
-            _INITIAL_CONTROL_VALUES(self._time()),
-            _INITIAL_CONTROLLER_STATE(self._time()),
+            ConsumersControlValues.initial(timestamp),
+            ConsumersControllerState.initial(timestamp),
         )
 
     def _control_flow_distribution(self, sensor_values: ConsumersSensorValues):

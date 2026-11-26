@@ -7,13 +7,13 @@ from transitions import Machine, State
 
 from thrs.classes.control import Control
 from thrs.control.controllers import PidController
+from thrs.control.modules.pvt.io import IDLE_MIX_POSITION
 from thrs.control.state import ControlMode
 from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions import control, sensor
 from thrs.input_output.definitions.controllers import PidControllerValues
 from thrs.input_output.definitions.units import Celsius, Ratio, Tuning
 
-IDLE_MIX_POSITION: Ratio = 0.2
 RECOVERY_MIX_UPPER_BOUND: Ratio = 0.2
 RECOVERY_MIX_LOWER_BOUND: Ratio = 0.05
 
@@ -69,13 +69,6 @@ class PvtGroupControllerState(ControlMode):
     pvt_group_pump_controller: Annotated[
         PidControllerValues, component_meta(component_type="pid_controller")
     ]
-
-
-def _INITIAL_PVT_GROUP_CONTROLLER_STATE(timestamp: datetime) -> PvtGroupControllerState:  # noqa: N802
-    return PvtGroupControllerState(
-        pvt_group_warmup_mix_controller=PidController.zero(timestamp),
-        pvt_group_pump_controller=PidController.zero(timestamp),
-    )
 
 
 class PvtGroupControl(
@@ -195,7 +188,7 @@ class PvtGroupControl(
     def initial(self) -> tuple[PvtGroupControlValues, PvtGroupControllerState]:
         return (
             self._current_values,
-            _INITIAL_PVT_GROUP_CONTROLLER_STATE(self._time()),
+            PvtGroupControllerState.initial(self._time()),
         )
 
     def _string_warm(self, sensor_values: PvtGroupSensorValues):

@@ -1,5 +1,6 @@
 # Per https://docs.google.com/document/d/11EGlLqZ21uHy4ICmhvPx9uKOwm0guKgWxY6-1zSQ2mQ/edit?tab=t.0#heading=h.l7ph84h61wda
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from enum import Enum
 from types import GenericAlias, UnionType
 from typing import (
@@ -59,6 +60,9 @@ def unit_meta(unit: Any) -> UnitMeta | None:
 
 
 def zero_for_unit(unit: Any) -> Any:
+    """The zero of a unit."""
+    if unit is datetime:
+        return datetime.fromtimestamp(0, UTC)
     if isinstance(unit, TypeAliasType):
         unit = unit.__value__
     if get_origin(unit) is Annotated:

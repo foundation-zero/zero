@@ -1,4 +1,5 @@
-from typing import Annotated
+from datetime import UTC, datetime
+from typing import Annotated, Self
 
 from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
@@ -14,8 +15,12 @@ from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import (
     GLYCOL_20_HEAT_TRANSFER_CONVERSION,
+    Ratio,
 )
 from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+
+# The position of a PVT group's mix valve while the group is idle, and at start.
+IDLE_MIX_POSITION: Ratio = 0.2
 
 
 class PvtSensorValues(AmcsModeSensorValues):
@@ -1679,6 +1684,24 @@ class PvtControlValues(AmcsWatchdogControlValues):
         control.Valve,
         valve_meta(yard_tag="50001047-02", component_type="valve", valve_type="mix"),
     ]
+
+    @classmethod
+    def initial(cls, timestamp: datetime | None = None) -> Self:
+        """The starting control values: every component at its initial value, except
+        the valves that start away from 0."""
+        stamped_at = timestamp or datetime.now(UTC)
+        values = super().initial(stamped_at)
+        for valve, setpoint in (
+            (values.pvt_mix_main_fwd, IDLE_MIX_POSITION),
+            (values.pvt_mix_main_aft, IDLE_MIX_POSITION),
+            (values.pvt_mix_owners, IDLE_MIX_POSITION),
+            (values.pvt_switch_main_fwd, control.Valve.OPEN),
+            (values.pvt_switch_main_aft, control.Valve.OPEN),
+            (values.pvt_switch_owners, control.Valve.OPEN),
+            (values.pvt_mix_exchanger, control.Valve.MIXING_A_TO_AB),
+        ):
+            valve.setpoint = Stamped(value=setpoint, timestamp=stamped_at)
+        return values
 
 
 class PvtSimulationInputs(ThrsValues):

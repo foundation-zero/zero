@@ -1,4 +1,5 @@
-from typing import Annotated
+from datetime import UTC, datetime
+from typing import Annotated, Self
 
 from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
@@ -569,6 +570,24 @@ class DrivesControlValues(AmcsWatchdogControlValues):
         control.Valve,
         valve_meta(yard_tag="50001069-08", component_type="valve", valve_type="switch"),
     ]
+
+    @classmethod
+    def initial(cls, timestamp: datetime | None = None) -> Self:
+        """The starting control values: every component at its initial value, except
+        the valves that start away from 0."""
+        stamped_at = timestamp or datetime.now(UTC)
+        values = super().initial(stamped_at)
+        for valve, setpoint in (
+            (values.drives_mix_exchanger, control.Valve.MIXING_A_TO_AB),
+            (values.drives_flowcontrol_propdrive_aft, control.Valve.OPEN),
+            (values.drives_flowcontrol_propdrive_fwd, control.Valve.OPEN),
+            (values.drives_switch_propdrive_aft1, control.Valve.OPEN),
+            (values.drives_switch_propdrive_aft2, control.Valve.OPEN),
+            (values.drives_switch_propdrive_fwd1, control.Valve.OPEN),
+            (values.drives_switch_propdrive_fwd2, control.Valve.OPEN),
+        ):
+            valve.setpoint = Stamped(value=setpoint, timestamp=stamped_at)
+        return values
 
 
 class DrivesSimulationInputs(ThrsValues):

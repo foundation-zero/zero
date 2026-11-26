@@ -16,57 +16,14 @@ from thrs.control.modules.adsorption.state import (
 )
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.control import AdsorptionChiller, Valve
+from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.units import (
     AdsorptionChillerMode,
     Celsius,
     FreeCoolingMode,
     Ratio,
-    TankControlMode,
 )
 from thrs.orchestration.module import ModuleDescription
-
-
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> AdsorptionControlValues:  # noqa: N802
-    return AdsorptionControlValues(
-        adsorption_flowcontrol_waste=Valve(
-            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
-        ),
-        adsorption_mix_hot=Valve(
-            setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=timestamp)
-        ),
-        adsorption_mix_waste=Valve(
-            setpoint=Stamped(value=Valve.MIXING_A_TO_AB, timestamp=timestamp)
-        ),
-        adsorption_switch_dhw=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        adsorption_chiller=AdsorptionChiller(
-            enable=Stamped(value=False, timestamp=timestamp),
-            mode=Stamped(value=AdsorptionChillerMode.OFF, timestamp=timestamp),
-            cooling_setpoint=Stamped(value=17.0, timestamp=timestamp),
-            free_cooling_mode=Stamped(value=FreeCoolingMode.AUTO, timestamp=timestamp),
-            available_seawater_temperature=Stamped(value=20.0, timestamp=timestamp),
-            available_hot_temperature=Stamped(value=20.0, timestamp=timestamp),
-            available_cold_temperature=Stamped(value=20.0, timestamp=timestamp),
-            cold_minimum=Stamped(value=15.0, timestamp=timestamp),
-            hot_minimum=Stamped(value=53.0, timestamp=timestamp),
-            cold_hysteresis=Stamped(value=2.0, timestamp=timestamp),
-            hot_hysteresis=Stamped(value=2.0, timestamp=timestamp),
-            tank_control_mode=Stamped(value=TankControlMode.BOTH, timestamp=timestamp),
-        ),
-    )
-
-
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> AdsorptionControllerState:  # noqa: N802
-
-    return AdsorptionControllerState(
-        adsorption_hot_mix_controller=PidController.zero(timestamp),
-        adsorption_recovery_controller=PidController.zero(timestamp),
-        adsorption_waste_cooling_controller=PidController.zero(timestamp),
-        parameters=AdsorptionParameters(),
-        control_mode=None,
-    )
 
 
 class AdsorptionControl(
@@ -87,9 +44,7 @@ class AdsorptionControl(
     ) -> None:
         self._parameters = parameters
         self._time = time_fn
-        self._current_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
+        self._current_values = AdsorptionControlValues.initial(self._time())
 
         self._init_state_machine_states()
         self._init_state_machine_transitions()
@@ -189,9 +144,10 @@ class AdsorptionControl(
         return AdsorptionControlMode(mode=mode)
 
     def initial(self) -> tuple[AdsorptionControlValues, AdsorptionControllerState]:
+        timestamp = self._time()
         return (
-            _INITIAL_CONTROL_VALUES(self._time()),
-            _INITIAL_CONTROLLER_STATE(self._time()),
+            AdsorptionControlValues.initial(timestamp),
+            AdsorptionControllerState.initial(timestamp),
         )
 
     def control(

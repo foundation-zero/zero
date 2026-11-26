@@ -1,5 +1,5 @@
 from datetime import UTC, datetime
-from typing import Annotated, cast
+from typing import Annotated, Self, cast
 
 from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
@@ -434,6 +434,22 @@ class PcmControlValues(AmcsWatchdogControlValues):
         control.Pcm, component_meta(yard_tag="50001049", component_type="pcm")
     ] = control.Pcm(on=Stamped(value=False, timestamp=datetime.fromtimestamp(0, UTC)))
 
+    @classmethod
+    def initial(cls, timestamp: datetime | None = None) -> Self:
+        """The starting control values: every component at its initial value, except
+        the valves that start away from 0."""
+        stamped_at = timestamp or datetime.now(UTC)
+        values = super().initial(stamped_at)
+        for valve, setpoint in (
+            (values.pcm_flowcontrol_module1, control.Valve.OPEN),
+            (values.pcm_flowcontrol_module2, control.Valve.OPEN),
+            (values.pcm_flowcontrol_module3, control.Valve.OPEN),
+            (values.pcm_flowcontrol_module4, control.Valve.OPEN),
+            (values.pcm_switch_consumers, control.Valve.OPEN),
+        ):
+            valve.setpoint = Stamped(value=setpoint, timestamp=stamped_at)
+        return values
+
 
 class PcmSimulationInputs(ThrsValues):
     pcm_pvt_supply: simulation.Boundary
@@ -495,9 +511,9 @@ class PcmSimulationOutputs(ThrsValues):
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def consumers_flow_adsorption(self) -> sensor.FlowSensor:
-        return sensor.FlowSensor.zero()
+        return sensor.FlowSensor.initial()
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property
     def consumers_flow_bypass(self) -> sensor.FlowSensor:
-        return sensor.FlowSensor.zero()
+        return sensor.FlowSensor.initial()

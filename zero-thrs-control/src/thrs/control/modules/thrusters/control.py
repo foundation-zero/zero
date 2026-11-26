@@ -25,57 +25,6 @@ RECOVERY_MIX_UPPER_BOUND: Ratio = 0.2
 RECOVERY_MIX_LOWER_BOUND: Ratio = 0.05
 
 
-def _INITIAL_CONTROL_VALUES(timestamp: datetime) -> ThrustersControlValues:  # noqa: N802
-    return ThrustersControlValues(
-        thrusters_pump1=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        thrusters_pump2=Pump(
-            dutypoint=Stamped(value=0.1, timestamp=timestamp),
-            on=Stamped(value=False, timestamp=timestamp),
-        ),
-        thrusters_mix_recovery=Valve(
-            setpoint=Stamped(value=Valve.MIXING_B_TO_AB, timestamp=timestamp)
-        ),
-        thrusters_mix_exchanger=Valve(
-            setpoint=Stamped(
-                value=Valve.MIXING_A_TO_AB,
-                timestamp=timestamp,
-            )
-        ),
-        thrusters_flowcontrol_aft=Valve(
-            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
-        ),
-        thrusters_flowcontrol_fwd=Valve(
-            setpoint=Stamped(value=Valve.CLOSED, timestamp=timestamp)
-        ),
-        thrusters_switch_recovery=Valve(
-            setpoint=Stamped(value=Valve.OPEN, timestamp=timestamp)
-        ),
-        thrusters_switch_aft=Valve(
-            setpoint=Stamped(value=Valve.SWITCH_B, timestamp=timestamp)
-        ),
-        thrusters_switch_fwd=Valve(
-            setpoint=Stamped(value=Valve.SWITCH_B, timestamp=timestamp)
-        ),
-    )
-
-
-def _INITIAL_CONTROLLER_STATE(timestamp: datetime) -> ThrustersControllerState:  # noqa: N802
-    return ThrustersControllerState(
-        thrusters_heat_dump_controller=PidController.zero(timestamp),
-        thrusters_warmup_mix_controller=PidController.zero(timestamp),
-        thrusters_pump_controller=PidController.zero(timestamp),
-        thrusters_aft_recovery_temperature_controller=PidController.zero(timestamp),
-        thrusters_fwd_recovery_temperature_controller=PidController.zero(timestamp),
-        thrusters_aft_flow_controller=PidController.zero(timestamp),
-        thrusters_fwd_flow_controller=PidController.zero(timestamp),
-        parameters=ThrustersParameters(),
-        control_mode=None,
-    )
-
-
 class ThrustersControl(
     Control[
         ThrustersSensorValues,
@@ -99,9 +48,7 @@ class ThrustersControl(
     ) -> None:
         self._parameters = parameters
         self._time: Callable[[], datetime] = time_fn
-        self._current_control_values = _INITIAL_CONTROL_VALUES(self._time()).model_copy(
-            deep=True
-        )
+        self._current_control_values = ThrustersControlValues.initial(self._time())
 
         self._init_state_machine_states()
         self._init_state_machine_transitions()
@@ -313,9 +260,10 @@ class ThrustersControl(
         return ThrustersControlMode(mode=mode)
 
     def initial(self) -> tuple[ThrustersControlValues, ThrustersControllerState]:
+        timestamp = self._time()
         return (
-            _INITIAL_CONTROL_VALUES(self._time()),
-            _INITIAL_CONTROLLER_STATE(self._time()),
+            ThrustersControlValues.initial(timestamp),
+            ThrustersControllerState.initial(timestamp),
         )
 
     def control(

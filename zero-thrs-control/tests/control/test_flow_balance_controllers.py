@@ -3,7 +3,7 @@ from thrs.control.modules.thrusters.io import ThrustersSensorValues
 
 
 def test_all_valves_active(thrusters_control: ThrustersControl):
-    thrusters_control._activate_pump(ThrustersSensorValues.zero())
+    thrusters_control._activate_pump(ThrustersSensorValues.initial())
 
     thrusters_control._flow_balance_controller.enable([True, True])
     thrusters_control._flow_balance_controller.set_setpoints([20.0, 30.0])
@@ -23,7 +23,7 @@ def test_all_valves_active(thrusters_control: ThrustersControl):
 
 
 def test_no_valves_active(thrusters_control: ThrustersControl):
-    thrusters_control._activate_pump(ThrustersSensorValues.zero())
+    thrusters_control._activate_pump(ThrustersSensorValues.initial())
 
     thrusters_control._flow_balance_controller.set_setpoints([20.0, 30.0])
     thrusters_control._flow_balance_controller.set_pump(thrusters_control._active_pump)
@@ -44,7 +44,7 @@ def test_no_valves_active(thrusters_control: ThrustersControl):
 
 
 def test_inactive_valves(thrusters_control: ThrustersControl):
-    thrusters_control._activate_pump(ThrustersSensorValues.zero())
+    thrusters_control._activate_pump(ThrustersSensorValues.initial())
 
     thrusters_control._flow_balance_controller.enable([False, True])
 

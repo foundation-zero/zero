@@ -75,7 +75,7 @@ def test_idle_at_zero_flow_despite_temperature_difference():
 
 
 def test_module_computed_field_idle_by_default():
-    charge_controller = PcmChargeControllerValues.zero()
+    charge_controller = PcmChargeControllerValues.initial()
 
     assert charge_controller.charging_state.value == PcmChargingState.IDLE.value
     assert charge_controller.charge.value is None

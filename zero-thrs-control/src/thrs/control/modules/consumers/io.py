@@ -1,9 +1,16 @@
-from typing import Annotated
+from datetime import UTC, datetime
+from typing import Annotated, Self
 
 from pydantic import ConfigDict, computed_field
 from pydantic.alias_generators import to_snake
 
-from thrs.input_output.base import ThrsValues, component_meta, computed_meta, valve_meta
+from thrs.input_output.base import (
+    Stamped,
+    ThrsValues,
+    component_meta,
+    computed_meta,
+    valve_meta,
+)
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.system import AmcsControlMode
 from thrs.input_output.definitions.units import (
@@ -167,6 +174,22 @@ class ConsumersControlValues(AmcsWatchdogControlValues):
         control.Valve,
         valve_meta(yard_tag="50001067-15", component_type="valve", valve_type="switch"),
     ]
+
+    @classmethod
+    def initial(cls, timestamp: datetime | None = None) -> Self:
+        """The starting control values: every component at its initial value, except
+        the valves that start away from 0."""
+        stamped_at = timestamp or datetime.now(UTC)
+        values = super().initial(stamped_at)
+        for valve, setpoint in (
+            (values.consumers_flowcontrol_adsorption, control.Valve.OPEN),
+            (values.consumers_flowcontrol_bypass, control.Valve.OPEN),
+            (values.consumers_flowcontrol_dhw, control.Valve.OPEN),
+            (values.consumers_switch_adsorption, control.Valve.OPEN),
+            (values.consumers_switch_dhw, control.Valve.OPEN),
+        ):
+            valve.setpoint = Stamped(value=setpoint, timestamp=stamped_at)
+        return values
 
 
 class ConsumersSimulationInputs(ThrsValues):
