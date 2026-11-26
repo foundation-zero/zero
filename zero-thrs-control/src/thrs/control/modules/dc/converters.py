@@ -2,7 +2,7 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Annotated
 
-from transitions import Machine, State
+from statemachine import State, StateChart
 
 from thrs.classes.control import Control
 from thrs.control.controllers import PidController
@@ -79,6 +79,23 @@ class ConvertersControlValues(ThrsValues):
     switches: list[control.Valve]
 
 
+class _ConvertersStateMachine(StateChart["ConvertersControl"]):
+    """Each event takes the first of its transitions whose condition holds."""
+
+    # An error in a guard or action raises instead of becoming an unhandled event.
+    catch_errors_as_events = False
+
+    idle = State(initial=True, enter="_close_circuit")
+    recovery = State(
+        enter=["_enable_controllers", "_activate_pump"],
+        exit=["_disable_controllers", "_deactivate_pump"],
+    )
+
+    check_converters_active = recovery.from_(
+        idle, cond="_converter_active"
+    ) | idle.from_(recovery, cond="not _converter_active")
+
+
 class ConvertersControl(
     Control[
         ConvertersSensorValues,
@@ -88,8 +105,6 @@ class ConvertersControl(
         ConvertersControllerState,
     ]
 ):
-    state: str  # Value set by Machine transitions logic
-
     def __init__(
         self,
         parameters: ConvertersParameters,
@@ -100,22 +115,13 @@ class ConvertersControl(
         self._time = time_fn
         self._current_values = initial_control_values
 
-        self._init_state_machine_states()
-        self._init_state_machine_transitions()
-        self._state_machine = Machine(
-            self,
-            transitions=self._transitions,
-            states=self._states,
-            initial="idle",
-        )
+        # Starting with a mode set skips idle's enter actions: the first outputs are
+        # the initial control values.
+        self._state: str = _ConvertersStateMachine.idle.value
+        self._state_machine = _ConvertersStateMachine(model=self, state_field="_state")
         self._init_controllers()
 
     def _init_controllers(self):
-        if not hasattr(self, "_state_machine") or self._state_machine is None:
-            raise ValueError(
-                "State machine must be initialized before creating control methods"
-            )
-
         self._pump_controller = PidController[Ratio, LMin](
             initial=self._current_values.pump.dutypoint.value,
             setpoint=0.0,  # Overwritten in control
@@ -131,45 +137,6 @@ class ConvertersControl(
             time_fn=self._time,
         )
 
-    def _init_state_machine_states(self):
-        self._states = [
-            State(
-                name="idle",
-                on_enter=self._close_circuit,
-            ),
-            State(
-                name="recovery",
-                on_enter=[
-                    lambda sensor_values: self._pump_controller.enable(),
-                    lambda sensor_values: self._warmup_mix_controller.enable(),
-                    self._activate_pump,
-                ],
-                on_exit=[
-                    lambda sensor_values: self._pump_controller.disable(),
-                    lambda sensor_values: self._warmup_mix_controller.disable(),
-                    self._deactivate_pump,
-                ],
-            ),
-        ]
-
-    def _init_state_machine_transitions(self):
-        self._transitions = [
-            {
-                "trigger": "_check_converters_active",
-                "source": "idle",
-                "dest": "recovery",
-                "conditions": self._converter_active,
-            },
-            {
-                "trigger": "_check_converters_active",
-                "source": "recovery",
-                "dest": "idle",
-                "conditions": lambda sensor_values: (
-                    not self._converter_active(sensor_values)
-                ),
-            },
-        ]
-
     @property
     def parameters(self) -> ConvertersParameters:
         return self._parameters
@@ -179,8 +146,7 @@ class ConvertersControl(
 
     @property
     def mode(self) -> ConvertersControlMode:
-        mode: str = self.state
-        return ConvertersControlMode(mode=mode)
+        return ConvertersControlMode(mode=self._state)
 
     def initial(self) -> tuple[ConvertersControlValues, ConvertersControllerState]:
         return (
@@ -192,6 +158,14 @@ class ConvertersControl(
         self._current_values.mix.setpoint = Stamped(
             value=Valve.MIXING_B_TO_AB, timestamp=self._time()
         )
+
+    def _enable_controllers(self):
+        self._pump_controller.enable()
+        self._warmup_mix_controller.enable()
+
+    def _disable_controllers(self):
+        self._pump_controller.disable()
+        self._warmup_mix_controller.disable()
 
     def _activate_pump(self, sensor_values: ConvertersSensorValues):
         self._current_values.pump.on = Stamped(value=True, timestamp=self._time())
@@ -205,7 +179,7 @@ class ConvertersControl(
     def control(
         self, sensor_values: ConvertersSensorValues
     ) -> tuple[ConvertersControlValues, ConvertersControllerState]:
-        self._check_converters_active(sensor_values)  # pyrefly: ignore[missing-attribute]
+        self._state_machine.check_converters_active(sensor_values)
         self._control_warmup_mix(sensor_values)
         self._control_switch_valves(sensor_values)
         self._control_flow(sensor_values)

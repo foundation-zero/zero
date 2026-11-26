@@ -178,9 +178,12 @@ def state_machines(control: Any) -> list[tuple[str, Any]]:
         if attr.startswith("__"):
             continue
         sub = inspect.getattr_static(control, attr)
+        sub_machine = getattr(sub, "_state_machine", None)
         if isinstance(sub, StateChart):
             label = "top level" if sub.model is control else f"sub-control `{attr}`"
             subs.append((label, sub))
+        elif sub is not control and isinstance(sub_machine, StateChart):
+            subs.append((f"sub-control `{attr}`", sub_machine))
         elif sub is not control and getattr(sub, "_states", None):
             subs.append((f"sub-control `{attr}`", sub))
     top = [("top level", control)] if getattr(control, "_states", None) else []
