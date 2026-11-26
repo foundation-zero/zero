@@ -4,7 +4,6 @@ from asyncio import Event, TaskGroup, gather
 from collections import defaultdict
 from collections.abc import Awaitable, Callable, Coroutine, Iterable, Mapping
 from functools import partial
-from inspect import isawaitable
 from typing import (
     Protocol,
     cast,
@@ -195,7 +194,7 @@ class DirectMqttMapping[M: ThrsValues](
         self._value = None
         self._first_value: M | None = None
         self._first_received = Event()
-        self._hooks: list[Callable[[M], object]] = []
+        self._hooks: list[Callable[[M], None]] = []
         self._autoclear = autoclear
 
     @staticmethod
@@ -229,17 +228,13 @@ class DirectMqttMapping[M: ThrsValues](
         return {self._topic}
 
     def handle_message(self, topic: str, json: str | bytes):
-        awaitables: list[Awaitable] = []
         if topic == self._topic:
             self._value = self._adapter.validate_json(json, context=self._context)
             if not self._first_received.is_set():
                 self._first_value = self._value
                 self._first_received.set()
             for hook in self._hooks:
-                result = hook(self._value)
-                if isawaitable(result):
-                    awaitables.append(result)
-        gather(*awaitables, return_exceptions=True)
+                hook(self._value)
 
     def result(self) -> M | None:
         value = self._value
@@ -254,7 +249,9 @@ class DirectMqttMapping[M: ThrsValues](
             self._value = None
         return result
 
-    def add_hook(self, hook: Callable[[M], object]):
+    def add_hook(self, hook: Callable[[M], None]):
+        """`hook` runs synchronously for every message, so it can't be lost to
+        scheduling; one that needs to await should only queue the work."""
         self._hooks.append(hook)
 
 
