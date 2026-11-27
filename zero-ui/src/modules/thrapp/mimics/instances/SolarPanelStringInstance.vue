@@ -18,7 +18,6 @@ const { t } = useI18n();
       :frame="frame"
       :panels="panels"
       :label="label"
-      :yield-ratio="yieldRatio"
     >
       {{ t("thrapp.mimics.pvt.string", { label: tooltip?.yardTag }) }}
     </SolarPanelString>

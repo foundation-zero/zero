@@ -1,8 +1,14 @@
 <script setup lang="ts">
+import { Ratio } from "@/modules/thrapp/types/thrs";
 import { SolarPanelStringProps } from ".";
 import { SolarPanel } from "../solar-panel";
 
-defineProps<SolarPanelStringProps>();
+defineProps<
+  SolarPanelStringProps & {
+    /** Relative yield (0..1) of the string, applied to all of its panels. */
+    yieldRatio?: Ratio;
+  }
+>();
 </script>
 
 <template>
