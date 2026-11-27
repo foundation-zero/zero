@@ -26,8 +26,7 @@ impl PathNode {
             PathNode::Branch(children) => children
                 .values()
                 .next()
-                .map(PathNode::first_topic)
-                .unwrap_or_default(),
+                .map_or_default(PathNode::first_topic),
         }
     }
 }

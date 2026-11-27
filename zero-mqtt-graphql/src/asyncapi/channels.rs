@@ -124,8 +124,7 @@ fn topic_from_channel(
     let kind = if is_parametrized_channel(Some(address)) {
         let field_attributes = message_payload
             .as_ref()
-            .map(|m| m.field_attributes.clone())
-            .unwrap_or_default();
+            .map_or_default(|m| m.field_attributes.clone());
         let group = group_from_channel(name, channel, field_attributes, path)?;
         info!("Loaded topic group '{address}' from {}", path.display());
         TopicKind::Group(group)
