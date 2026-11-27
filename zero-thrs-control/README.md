@@ -26,12 +26,6 @@ Replace the FMU path with the file you want to compile.
 
 The recipe sets `CFLAGS="-std=gnu17 -include unistd.h"` automatically.
 
-On macOS, install graphviz first:
-
-```bash
-brew install graphviz
-```
-
 ## Lockstep
 
 Run the lockstep with:
@@ -84,7 +78,5 @@ Install dependencies on macOS:
 
 ```bash
 brew install graphviz
-export CFLAGS="-I $(brew --prefix graphviz)/include"
-export LDFLAGS="-L $(brew --prefix graphviz)/lib"
 uv sync --locked
 ```

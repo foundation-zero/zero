@@ -5,11 +5,11 @@ so the output cannot drift from the code the way a hand-read summary can. Run it
 from `zero-thrs-control` with `uv run python <this file> <module>`.
 
     uv run python docs/skills/thrs-module-manual/scripts/module_facts.py pcm
-    uv run python ... pcm --diagram /tmp/pcm_truth.png
+    uv run python ... pcm --diagram /tmp/pcm_truth.mmd
 
-`--diagram` writes the raw pytransitions/graphviz rendering of the state machine.
-That picture is the ground truth to check a redrawn figure against; it is too
-dense to ship in a manual.
+`--diagram` writes python-statemachine's raw Mermaid rendering of the state
+machine. That picture is the ground truth to check a redrawn figure against; it is
+too dense to ship in a manual.
 """
 
 import argparse
@@ -23,7 +23,7 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
-from transitions.extensions import GraphMachine
+from statemachine import StateChart
 
 from thrs.input_output.definitions.units import unit_meta
 
@@ -54,33 +54,6 @@ def bounds_of(metadata: list[Any]) -> list[str]:
                 continue
             out.append(f"{symbol} {value}")
     return out
-
-
-def source_of(fn: Any) -> str:
-    """Readable name for a state hook or transition condition.
-
-    Conditions are often lambdas closing over parameters; their name is
-    `<lambda>`, so fall back to the source line, which is what actually tells
-    you when the transition fires.
-    """
-    if isinstance(fn, str):
-        return fn
-    name = getattr(fn, "__name__", None)
-    if name and name != "<lambda>":
-        return name
-    try:
-        text = " ".join(inspect.getsource(fn).split())
-    except OSError, TypeError:
-        return str(fn)
-    if "lambda" in text:
-        return text[text.index("lambda") :].rstrip(",").rstrip()
-    return text
-
-
-def as_list(value: Any) -> list[Any]:
-    if value is None:
-        return []
-    return value if isinstance(value, list) else [value]
 
 
 def describe_parameters(parameters_cls: type) -> None:
@@ -177,37 +150,21 @@ def state_machines(control: Any) -> list[tuple[str, Any]]:
         if attr.startswith("__"):
             continue
         sub = inspect.getattr_static(control, attr)
-        if sub is not control and getattr(sub, "_states", None):
-            subs.append((f"sub-control `{attr}`", sub))
-    top = [("top level", control)] if getattr(control, "_states", None) else []
-    return top + list({id(sub): (label, sub) for label, sub in subs}.values())
+        sub_machine = getattr(sub, "_state_machine", None)
+        if isinstance(sub, StateChart):
+            label = "top level" if sub.model is control else f"sub-control `{attr}`"
+            subs.append((label, sub))
+        elif sub is not control and isinstance(sub_machine, StateChart):
+            subs.append((f"sub-control `{attr}`", sub_machine))
+    return list({id(sub): (label, sub) for label, sub in subs}.values())
 
 
 def describe_state_machines(control: Any) -> None:
     print("## State machine(s)\n")
     machines = state_machines(control)
-    for label, obj in machines:
-        print(f"### {label} — {type(obj).__name__}\n")
-        for state in obj._states:
-            print(f"- state `{state.name}`")
-            for hook in ("on_enter", "on_exit"):
-                names = [source_of(h) for h in as_list(getattr(state, hook, None))]
-                if names:
-                    print(f"    - {hook}: {', '.join(names)}")
-        print()
-        for transition in getattr(obj, "_transitions", None) or []:
-            conditions = [source_of(c) for c in as_list(transition.get("conditions"))]
-            unless = [source_of(c) for c in as_list(transition.get("unless"))]
-            line = (
-                f"- `{transition['source']}` --[{transition['trigger']}]--> "
-                f"`{transition['dest']}`"
-            )
-            if conditions:
-                line += f"\n    - when ALL of: {'; '.join(conditions)}"
-            if unless:
-                line += f"\n    - unless ANY of: {'; '.join(unless)}"
-            print(line)
-        print()
+    for label, machine in machines:
+        print(f"### {label} — {type(machine).__name__}\n")
+        print(f"```mermaid\n{machine:mermaid}\n```\n")
 
     if not machines:
         print(
@@ -216,26 +173,14 @@ def describe_state_machines(control: Any) -> None:
         )
 
 
-def draw_diagram(control: Any, states: Any, transitions: Any, path: str) -> None:
-    GraphMachine(
-        model=control,
-        states=states,
-        transitions=transitions,
-        graph_engine="pygraphviz",
-        initial=getattr(control, "state", None) or states[0].name,
-        show_conditions=True,
-        show_state_attributes=True,
-    )
-    control.get_graph().draw(path, prog="dot")
-    print(f"\nGround-truth diagram written to {path}")
-
-
-def find_machine(control: Any) -> tuple[Any, Any, Any] | None:
+def write_diagram(control: Any, path: str) -> None:
     machines = state_machines(control)
     if not machines:
-        return None
+        print("\nNo state machine to draw.")
+        return
     _, machine = machines[0]
-    return machine, machine._states, machine._transitions
+    Path(path).write_text(f"{machine:mermaid}\n")
+    print(f"\nGround-truth Mermaid diagram written to {path}")
 
 
 def module_description(module_name: str) -> Any:
@@ -315,7 +260,7 @@ def fingerprint(module_name: str) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("module", help="module name, e.g. pcm, dhw, pvt, thrusters")
-    parser.add_argument("--diagram", help="also write the raw graphviz state diagram")
+    parser.add_argument("--diagram", help="also write the raw Mermaid state diagram")
     args = parser.parse_args()
 
     description = module_description(args.module)
@@ -324,11 +269,7 @@ def main() -> None:
     print_facts(description, control)
 
     if args.diagram:
-        machine = find_machine(control)
-        if machine is None:
-            print("\nNo state machine to draw.")
-        else:
-            draw_diagram(*machine, args.diagram)
+        write_diagram(control, args.diagram)
 
 
 if __name__ == "__main__":

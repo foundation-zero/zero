@@ -3,7 +3,7 @@ from collections.abc import Callable
 from datetime import datetime, timedelta
 from typing import Literal
 
-from transitions import Machine, State
+from statemachine import State, StateChart
 
 from thrs.classes.control import Control
 from thrs.control.controllers import PidController
@@ -508,6 +508,45 @@ class TanksController:
         )
 
 
+class _DhwStateMachine(StateChart["DhwControl"]):
+    """Each event takes the first of its transitions whose condition holds."""
+
+    # An error in a guard or action raises instead of becoming an unhandled event.
+    catch_errors_as_events = False
+
+    # TODO: re-enable both checks as soon as boosting_low_temperature has
+    # transitions, or drop boosting_low_temperature
+    validate_disconnected_states = False
+    validate_trap_states = False
+
+    idle = State(
+        initial=True,
+        enter=["_deactivate_pump", "_close_boosting_valves", "_clear_pump_control"],
+        exit="_activate_pump",
+    )
+    # TODO: Low temperature boosting not implemented yet
+    boosting_low_temperature = State(enter="_set_valves_to_boosting_low_temperature")
+    boosting_high_temperature = State(
+        enter="_set_valves_to_boosting_high_temperature",
+        exit="_clear_pump_control",
+    )
+    boosting_heatpump = State(
+        enter=["_set_valves_to_boosting_heatpump", "_activate_heatpump"],
+        exit=["_deactivate_heatpump", "_clear_pump_control"],
+    )
+
+    try_boosting = (
+        boosting_high_temperature.from_(
+            idle, boosting_heatpump, cond="_ht_boosting_available"
+        )
+        | boosting_heatpump.from_(
+            idle, boosting_high_temperature, cond="_heatpump_boosting_available"
+        )
+        | idle.from_(boosting_heatpump, cond="not _heatpump_boosting_available")
+        | idle.from_(boosting_high_temperature, cond="not _ht_boosting_available")
+    )
+
+
 class DhwControl(
     Control[
         DhwSensorValues,
@@ -517,8 +556,6 @@ class DhwControl(
         DhwControllerState,
     ]
 ):
-    state: str  # Value set by Machine transitions logic
-
     def __init__(
         self,
         parameters: DhwParameters,
@@ -531,85 +568,13 @@ class DhwControl(
         self._boosting_shortfall_since: datetime | None = None
         self._stall_tracking_key: tuple[BoostingSource, Tank] | None = None
 
-        self._init_state_machine_states()
-        self._init_state_machine_transitions()
-        self._state_machine = Machine(
-            self,
-            transitions=self._transitions,
-            states=self._states,
-            initial="idle",
-        )
+        # Starting with a mode set skips idle's enter actions: the first outputs are
+        # the initial control values.
+        self._state: str = _DhwStateMachine.idle.value
+        self._state_machine = _DhwStateMachine(model=self, state_field="_state")
         self._init_controllers()
 
-    def _init_state_machine_states(self):
-        self._states = [
-            State(
-                name="idle",
-                on_enter=[
-                    self._deactivate_pump,
-                    self._close_boosting_valves,
-                    self._clear_pump_control,
-                ],
-                on_exit=[self._activate_pump],
-            ),
-            State(
-                name="boosting_low_temperature",  # TODO: Low temperature boosting not implemented yet
-                on_enter=[
-                    self._set_valves_to_boosting_low_temperature,
-                ],
-            ),
-            State(
-                name="boosting_high_temperature",
-                on_enter=[self._set_valves_to_boosting_high_temperature],
-                on_exit=[self._clear_pump_control],
-            ),
-            State(
-                name="boosting_heatpump",
-                on_enter=[
-                    self._set_valves_to_boosting_heatpump,
-                    self._activate_heatpump,
-                ],
-                on_exit=[
-                    self._deactivate_heatpump,
-                    self._clear_pump_control,
-                ],
-            ),
-        ]
-
-    def _init_state_machine_transitions(self):
-        self._transitions = [
-            {
-                "trigger": "_try_boosting",
-                "source": ["idle", "boosting_heatpump"],
-                "dest": "boosting_high_temperature",
-                "conditions": self._ht_boosting_available,
-            },
-            {
-                "trigger": "_try_boosting",
-                "source": ["idle", "boosting_high_temperature"],
-                "dest": "boosting_heatpump",
-                "conditions": self._heatpump_boosting_available,
-            },
-            {
-                "trigger": "_try_boosting",
-                "source": ["boosting_heatpump"],
-                "dest": "idle",
-                "conditions": self._heatpump_boosting_unavailable,
-            },
-            {
-                "trigger": "_try_boosting",
-                "source": ["boosting_high_temperature"],
-                "dest": "idle",
-                "conditions": self._ht_boosting_unavailable,
-            },
-        ]
-
     def _init_controllers(self):
-        if not hasattr(self, "_state_machine") or self._state_machine is None:
-            raise ValueError(
-                "State machine must be initialized before creating control methods"
-            )
-
         self._pump_flow_controller = PidController[Ratio, LMin](
             self._current_values.dhw_pump.dutypoint.value,
             self._boosting_flow_setpoint,
@@ -688,9 +653,8 @@ class DhwControl(
 
     @property
     def mode(self) -> DhwControlMode:
-        mode: str = self.state
         filling_mode: str = "idle" if not self._tanks_controller.filling else "filling"
-        return DhwControlMode(boosting_mode=mode, filling_mode=filling_mode)
+        return DhwControlMode(boosting_mode=self._state, filling_mode=filling_mode)
 
     def initial(self) -> tuple[DhwControlValues, DhwControllerState]:
         timestamp = self._time()
@@ -704,7 +668,7 @@ class DhwControl(
     ) -> tuple[DhwControlValues, DhwControllerState]:
         self._lock_out_stalled_boosting_tank(sensor_values)
         self._tanks_controller(sensor_values, self._parameters)
-        self._try_boosting(sensor_values)  # pyrefly: ignore[missing-attribute]
+        self._state_machine.try_boosting(sensor_values)
         self._tanks_controller.apply_boosting(self._boosting_source)
         self._track_boosting_stall()
         self._enforce_boosting_source_valves()
@@ -746,17 +710,11 @@ class DhwControl(
             and not self._ht_boosting_available(sensor_values)
         )
 
-    def _ht_boosting_unavailable(self, sensor_values: DhwSensorValues) -> bool:
-        return not self._ht_boosting_available(sensor_values)
-
-    def _heatpump_boosting_unavailable(self, sensor_values: DhwSensorValues) -> bool:
-        return not self._heatpump_boosting_available(sensor_values)
-
     @property
     def _boosting_source(self) -> BoostingSource | None:
-        match self.state:
+        match self._state:
             case "boosting_high_temperature" | "boosting_heatpump":
-                return self.state
+                return self._state
             case _:
                 return None
 
@@ -1043,7 +1001,7 @@ class DhwControl(
         )
 
     def _boosting_flow_setpoint(self) -> LMin:
-        if self.state == "boosting_high_temperature":
+        if self._state == "boosting_high_temperature":
             return self._parameters.ht_boosting_flow_setpoint
         return self._parameters.heatpump_flow_setpoint
 

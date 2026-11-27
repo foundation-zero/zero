@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from datetime import datetime, timedelta
 
-from transitions import Machine, State
+from statemachine import State, StateChart
 
 from thrs.classes.control import Control
 from thrs.control.controllers import (
@@ -32,6 +32,38 @@ from thrs.input_output.definitions.units import (
 from thrs.orchestration.module import ModuleDescription
 
 
+class _PcmStateMachine(StateChart["PcmControl"]):
+    """Each event takes the first of its transitions whose condition holds."""
+
+    # An error in a guard or action raises instead of becoming an unhandled event.
+    catch_errors_as_events = False
+
+    # TODO: re-enable both checks as soon as boosting has transitions, or drop boosting
+    validate_disconnected_states = False
+    validate_trap_states = False
+
+    supplying = State(
+        enter=[
+            "_set_valves_to_supplying",
+            "_activate_pump",
+            "_start_mode_tracking",
+        ],
+        exit="_deactivate_pump",
+    )
+    charging = State(enter=["_set_valves_to_charging", "_start_mode_tracking"])
+    boosting = State(enter="_set_valves_to_boosting")
+    idle = State(
+        initial=True,
+        enter=["_set_valves_to_idle", "_disable_flow_balancing"],
+        exit="_enable_flow_balancing",
+    )
+
+    try_supplying = supplying.from_(idle, cond="_supplying_available")
+    check_supplying_conditions = idle.from_(supplying, cond="_supplying_should_stop")
+    try_charging = charging.from_(idle, cond="_charging_available")
+    check_charging_conditions = idle.from_(charging, cond="_charging_should_stop")
+
+
 class PcmControl(
     Control[
         PcmSensorValues,
@@ -41,8 +73,6 @@ class PcmControl(
         PcmControllerState,
     ]
 ):
-    state: str  # Value set by Machine transitions logic
-
     def __init__(
         self,
         parameters: PcmParameters,
@@ -57,81 +87,13 @@ class PcmControl(
         self._charging_retry_until: datetime | None = None
         self._supplying_retry_until: datetime | None = None
 
-        self._init_state_machine_states()
-        self._init_state_machine_transitions()
-        self._state_machine = Machine(
-            self,
-            transitions=self._transitions,
-            states=self._states,
-            initial="idle",
-        )
+        # Starting with a mode set skips idle's enter actions: the first outputs are
+        # the initial control values.
+        self._state: str = _PcmStateMachine.idle.value
+        self._state_machine = _PcmStateMachine(model=self, state_field="_state")
         self._init_controllers()
 
-    def _init_state_machine_states(self):
-        self._states = [
-            State(
-                name="supplying",
-                on_enter=[
-                    self._set_valves_to_supplying,
-                    self._activate_pump,
-                    self._start_mode_tracking,
-                ],
-                on_exit=[self._deactivate_pump],
-            ),
-            State(
-                name="charging",
-                on_enter=[
-                    self._set_valves_to_charging,
-                    self._start_mode_tracking,
-                ],
-            ),
-            State(
-                name="boosting",
-                on_enter=[
-                    self._set_valves_to_boosting,
-                ],
-            ),
-            State(
-                name="idle",
-                on_enter=[self._set_valves_to_idle, self._disable_flow_balancing],
-                on_exit=self._enable_flow_balancing,
-            ),
-        ]
-
-    def _init_state_machine_transitions(self):
-        self._transitions = [
-            {
-                "trigger": "_try_supplying",
-                "source": "idle",
-                "dest": "supplying",
-                "conditions": self._supplying_available,
-            },
-            {
-                "trigger": "_check_supplying_conditions",
-                "source": "supplying",
-                "dest": "idle",
-                "conditions": self._supplying_should_stop,
-            },
-            {
-                "trigger": "_try_charging",
-                "source": "idle",
-                "dest": "charging",
-                "conditions": self._charging_available,
-            },
-            {
-                "trigger": "_check_charging_conditions",
-                "source": "charging",
-                "dest": "idle",
-                "conditions": self._charging_should_stop,
-            },
-        ]
-
     def _init_controllers(self):
-        if not hasattr(self, "_state_machine") or self._state_machine is None:
-            raise ValueError(
-                "State machine must be initialized before creating control methods"
-            )
-
         self._pump_flow_controller = PidController[Ratio, LMin](
             self._current_values.pcm_pump.dutypoint.value,
             0,
@@ -201,8 +163,7 @@ class PcmControl(
 
     @property
     def mode(self) -> PcmControlMode:
-        mode: str = self.state
-        return PcmControlMode(mode=mode)
+        return PcmControlMode(mode=self._state)
 
     def initial(self) -> tuple[PcmControlValues, PcmControllerState]:
         timestamp = self._time()
@@ -217,21 +178,21 @@ class PcmControl(
     def control(
         self, sensor_values: PcmSensorValues
     ) -> tuple[PcmControlValues, PcmControllerState]:
-        self._try_supplying(sensor_values) if self.mode.is_idle else None  # pyrefly: ignore[missing-attribute]
-        self._try_charging(sensor_values) if self.mode.is_idle else None  # pyrefly: ignore[missing-attribute]
+        self._state_machine.try_supplying(sensor_values)
+        self._state_machine.try_charging(sensor_values)
 
         if self.mode.is_charging:
             self._update_dropped_modules(
                 PcmChargingState.CHARGING, PcmChargeStatus.FULL
             )
             self._set_charging_flow_setpoints(sensor_values)
-            self._check_charging_conditions(sensor_values)  # pyrefly: ignore[missing-attribute]
+            self._state_machine.check_charging_conditions(sensor_values)
         elif self.mode.is_supplying:
             self._update_dropped_modules(
                 PcmChargingState.DISCHARGING, PcmChargeStatus.EMPTY
             )
             self._set_supplying_flow_setpoints(sensor_values)
-            self._check_supplying_conditions(sensor_values)  # pyrefly: ignore[missing-attribute]
+            self._state_machine.check_supplying_conditions(sensor_values)
 
         controller_state = self._update_controllers(sensor_values)
 

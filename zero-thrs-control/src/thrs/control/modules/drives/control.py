@@ -2,7 +2,7 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Literal
 
-from transitions import Machine, State
+from statemachine import State, StateChart
 
 from thrs.classes.control import Control
 from thrs.control.controllers import FlowBalanceController, PidController
@@ -19,6 +19,34 @@ from thrs.input_output.definitions.units import Celsius, LMin, Ratio
 from thrs.orchestration.module import ModuleDescription
 
 
+class _DrivesStateMachine(StateChart["DrivesControl"]):
+    """Each event takes the first of its transitions whose condition holds."""
+
+    # An error in a guard or action raises instead of becoming an unhandled event.
+    catch_errors_as_events = False
+
+    idle = State(
+        initial=True,
+        enter=["_deactivate_pump", "_disable_heat_dump", "_disable_recovery_mix"],
+        exit=["_activate_pump", "_enable_heat_dump", "_enable_recovery_mix"],
+    )
+    shorepower = State(
+        enter=["_set_valves_to_shore_power", "_enable_pump_control_shorepower"],
+        exit="_disable_pump_control_shorepower",
+    )
+    propulsion = State(
+        enter=["_set_valves_to_propulsion", "_enable_flow_balancing"],
+        exit="_disable_flow_balancing",
+    )
+
+    check_shorepower = shorepower.from_(idle, cond="_shorepower_on") | idle.from_(
+        shorepower, cond="not _shorepower_on"
+    )
+    check_thrusters = propulsion.from_(idle, cond="_propdrive_active") | idle.from_(
+        propulsion, cond="not _propdrive_active"
+    )
+
+
 class DrivesControl(
     Control[
         DrivesSensorValues,
@@ -28,8 +56,6 @@ class DrivesControl(
         DrivesControllerState,
     ]
 ):
-    state: str  # Value set by Machine transitions logic
-
     def __init__(
         self,
         parameters: DrivesParameters,
@@ -39,84 +65,13 @@ class DrivesControl(
         self._time = time_fn
         self._current_values = DrivesControlValues.initial(self._time())
 
-        self._init_state_machine_states()
-        self._init_state_machine_transitions()
-        self._state_machine = Machine(
-            self,
-            transitions=self._transitions,
-            states=self._states,
-            initial="idle",
-        )
+        # Starting with a mode set skips idle's enter actions: the first outputs are
+        # the initial control values, and _deactivate_pump needs an active pump.
+        self._state: str = _DrivesStateMachine.idle.value
+        self._state_machine = _DrivesStateMachine(model=self, state_field="_state")
         self._init_controllers()
 
-    def _init_state_machine_states(self):
-        self._states = [
-            State(
-                name="idle",
-                on_enter=[
-                    self._deactivate_pump,
-                    self._disable_heat_dump,
-                    self._disable_recovery_mix,
-                ],
-                on_exit=[
-                    self._activate_pump,
-                    self._enable_heat_dump,
-                    self._enable_recovery_mix,
-                ],
-            ),
-            State(
-                name="shorepower",
-                on_enter=[
-                    self._set_valves_to_shore_power,
-                    self._enable_pump_control_shorepower,
-                ],
-                on_exit=[self._disable_pump_control_shorepower],
-            ),
-            State(
-                name="propulsion",
-                on_enter=[self._set_valves_to_propulsion, self._enable_flow_balancing],
-                on_exit=[self._disable_flow_balancing],
-            ),
-        ]
-
-    def _init_state_machine_transitions(self):
-        self._transitions = [
-            {
-                "trigger": "_check_shorepower",
-                "source": "idle",
-                "dest": "shorepower",
-                "conditions": self._shorepower_on,
-            },
-            {
-                "trigger": "_check_thrusters",
-                "source": "idle",
-                "dest": "propulsion",
-                "conditions": self._propdrive_active,
-            },
-            {
-                "trigger": "_check_shorepower",
-                "source": "shorepower",
-                "dest": "idle",
-                "conditions": lambda sensor_values: (
-                    not self._shorepower_on(sensor_values)
-                ),
-            },
-            {
-                "trigger": "_check_thrusters",
-                "source": "propulsion",
-                "dest": "idle",
-                "conditions": lambda sensor_values: (
-                    not self._propdrive_active(sensor_values)
-                ),
-            },
-        ]
-
     def _init_controllers(self):
-        if not hasattr(self, "_state_machine") or self._state_machine is None:
-            raise ValueError(
-                "State machine must be initialized before creating control methods"
-            )
-
         self._heat_dump_controller = PidController[Ratio, Celsius](
             initial=self._current_values.drives_mix_exchanger.setpoint.value,
             setpoint=lambda: (
@@ -188,8 +143,7 @@ class DrivesControl(
 
     @property
     def mode(self) -> DrivesControlMode:
-        mode: str = self.state
-        return DrivesControlMode(mode=mode)
+        return DrivesControlMode(mode=self._state)
 
     def initial(self) -> tuple[DrivesControlValues, DrivesControllerState]:
         timestamp = self._time()
@@ -201,10 +155,8 @@ class DrivesControl(
     def control(
         self, sensor_values: DrivesSensorValues
     ) -> tuple[DrivesControlValues, DrivesControllerState]:
-        if not self.mode.is_propulsion:
-            self._check_shorepower(sensor_values)  # pyrefly: ignore[missing-attribute]
-        if not self.mode.is_shorepower:
-            self._check_thrusters(sensor_values)  # pyrefly: ignore[missing-attribute]
+        self._state_machine.check_shorepower(sensor_values)
+        self._state_machine.check_thrusters(sensor_values)
         self._control_heat_dump(sensor_values)
         self._control_flow_balance(sensor_values)
         self._control_pump_shorepower(sensor_values)

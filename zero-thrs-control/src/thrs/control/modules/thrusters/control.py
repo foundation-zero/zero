@@ -2,7 +2,7 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Literal, NoReturn
 
-from transitions import Machine, State
+from statemachine import State, StateChart
 
 from thrs.classes.control import Control
 from thrs.control.controllers import FlowBalanceController, PidController
@@ -25,6 +25,56 @@ RECOVERY_MIX_UPPER_BOUND: Ratio = 0.2
 RECOVERY_MIX_LOWER_BOUND: Ratio = 0.05
 
 
+class _ThrustersStateMachine(StateChart["ThrustersControl"]):
+    """Each event takes the first of its transitions whose condition holds."""
+
+    # An error in a guard or action raises instead of becoming an unhandled event.
+    catch_errors_as_events = False
+
+    idle = State(
+        initial=True,
+        enter=[
+            "_deactivate_pump",
+            "_disable_flow_balancing",
+            "_set_valves_to_recovery",
+            "_disable_heat_dump",
+            "_open_flowcontrol_valves",
+            "_stop_warmup_mix",
+        ],
+        exit=["_activate_pump", "_enable_flow_balancing", "_enable_heat_dump"],
+    )
+    warmup = State(enter=["_set_valves_to_recovery", "_enable_warmup_mix"])
+    recovery = State(
+        enter=[
+            "_set_valves_to_recovery",
+            "_enable_warmup_mix",
+            "_enable_recovery_temperature_controllers",
+        ],
+        exit="_disable_recovery_temperature_controllers",
+    )
+    cooling = State(
+        enter=[
+            "_stop_warmup_mix",
+            "_set_valves_to_cooling",
+            "_set_cooling_flow_setpoints",
+        ]
+    )
+    cooldown = State(enter=["_stop_warmup_mix", "_set_cooldown_flow_setpoints"])
+
+    check_overheat = cooling.from_(
+        idle, warmup, recovery, cooldown, cooling, cond="_is_overheating"
+    )
+    check_pcs_mode = (
+        warmup.from_(idle, cooldown, cond="_pcs_propulsion_hydrogeneration")
+        | cooling.from_(idle, warmup, recovery, cooldown, cond="_pcs_maneuvering")
+        | cooldown.from_(warmup, recovery, cooling, cond="_pcs_off")
+        | idle.from_(cooldown, cond="_cooled_down and _pcs_off")
+    )
+    check_warmup_mix = recovery.from_(warmup, cond="_warmup_mix_open") | warmup.from_(
+        recovery, cond="_warmup_mix_closed"
+    )
+
+
 class ThrustersControl(
     Control[
         ThrustersSensorValues,
@@ -34,12 +84,7 @@ class ThrustersControl(
         ThrustersControllerState,
     ]
 ):
-    _state_machine: Machine
-    _transitions: list[dict]
-    _states: list[State]
     _parameters: ThrustersParameters
-
-    state: str  # Value set by Machine transitions logic
 
     def __init__(
         self,
@@ -50,19 +95,13 @@ class ThrustersControl(
         self._time: Callable[[], datetime] = time_fn
         self._current_control_values = ThrustersControlValues.initial(self._time())
 
-        self._init_state_machine_states()
-        self._init_state_machine_transitions()
-        self._state_machine = Machine(
-            self, transitions=self._transitions, states=self._states, initial="idle"
-        )
+        # Starting with a mode set skips idle's enter actions: the first outputs are
+        # the initial control values, and _deactivate_pump needs an active pump.
+        self._state: str = _ThrustersStateMachine.idle.value
+        self._state_machine = _ThrustersStateMachine(model=self, state_field="_state")
         self._init_controllers(parameters)
 
     def _init_controllers(self, parameters):
-        if not hasattr(self, "_state_machine") or self._state_machine is None:
-            raise ValueError(
-                "State machine must be initialized before creating control methods"
-            )
-
         """Create controllers and control methods for the different thrusters control aspects."""
         self._heat_dump_controller = PidController[Ratio, Celsius](
             self._current_control_values.thrusters_mix_exchanger.setpoint.value,
@@ -138,115 +177,6 @@ class ThrustersControl(
             self._pump_controller,
         )
 
-    def _init_state_machine_transitions(self):
-        """Define the transitions between states, their triggers and conditions."""
-        self._transitions = [
-            {
-                "trigger": "_check_overheat",
-                "source": ["idle", "warmup", "recovery", "cooldown", "cooling"],
-                "dest": "cooling",
-                "conditions": self._is_overheating,
-            },
-            {
-                "trigger": "_check_pcs_mode",
-                "source": ["cooling"],
-                "dest": None,
-                "conditions": lambda sensor_values: (
-                    False
-                ),  # stay in cooling until manually changed
-            },
-            {
-                "trigger": "_check_pcs_mode",
-                "source": ["idle", "cooldown"],
-                "dest": "warmup",
-                "conditions": self._pcs_propulsion_hydrogeneration,
-            },
-            {
-                "trigger": "_check_pcs_mode",
-                "source": ["idle", "warmup", "recovery", "cooldown"],
-                "dest": "cooling",
-                "conditions": self._pcs_maneuvering,
-            },
-            {
-                "trigger": "_check_pcs_mode",
-                "source": ["warmup", "recovery", "cooling"],
-                "dest": "cooldown",
-                "conditions": self._pcs_off,
-            },
-            {
-                "trigger": "_check_pcs_mode",
-                "source": ["cooldown"],
-                "dest": "idle",
-                "conditions": [self._cooled_down, self._pcs_off],
-            },
-            {
-                "trigger": "_check_warmup_mix",
-                "source": "warmup",
-                "dest": "recovery",
-                "conditions": self._warmup_mix_open,
-            },
-            {
-                "trigger": "_check_warmup_mix",
-                "source": "recovery",
-                "dest": "warmup",
-                "conditions": self._warmup_mix_closed,
-            },
-        ]
-
-    def _init_state_machine_states(self):
-        """Define the states and their entry/exit actions."""
-        self._states = [
-            State(
-                name="idle",
-                on_enter=[
-                    self._deactivate_pump,
-                    self._disable_flow_balancing,
-                    self._set_valves_to_recovery,
-                    self._disable_heat_dump,
-                    self._open_flowcontrol_valves,
-                    self._stop_warmup_mix,
-                ],
-                on_exit=[
-                    self._activate_pump,
-                    self._enable_flow_balancing,
-                    self._enable_heat_dump,
-                ],
-            ),
-            State(
-                name="warmup",
-                on_enter=[
-                    self._set_valves_to_recovery,
-                    self._enable_warmup_mix,
-                ],
-            ),
-            State(
-                name="recovery",
-                on_enter=[
-                    self._set_valves_to_recovery,
-                    self._enable_warmup_mix,
-                    self._enable_recovery_temperature_controllers,
-                ],
-                on_exit=[
-                    self._disable_recovery_temperature_controllers,
-                ],
-            ),
-            State(
-                name="cooling",
-                on_enter=[
-                    self._stop_warmup_mix,
-                    self._set_valves_to_cooling,
-                    self._set_cooling_flow_setpoints,
-                ],
-            ),
-            State(
-                name="cooldown",
-                on_enter=[
-                    self._stop_warmup_mix,
-                    self._set_cooldown_flow_setpoints,
-                ],
-            ),
-        ]
-
     @property
     def parameters(self) -> ThrustersParameters:
         return self._parameters
@@ -256,8 +186,7 @@ class ThrustersControl(
 
     @property
     def mode(self) -> ThrustersControlMode:
-        mode: str = self.state
-        return ThrustersControlMode(mode=mode)
+        return ThrustersControlMode(mode=self._state)
 
     def initial(self) -> tuple[ThrustersControlValues, ThrustersControllerState]:
         timestamp = self._time()
@@ -269,14 +198,14 @@ class ThrustersControl(
     def control(
         self, sensor_values: ThrustersSensorValues
     ) -> tuple[ThrustersControlValues, ThrustersControllerState]:
-        self._check_pcs_mode(sensor_values)  # pyrefly: ignore[missing-attribute]
-        self._check_overheat(sensor_values)  # pyrefly: ignore[missing-attribute]
+        self._state_machine.check_pcs_mode(sensor_values)
+        self._state_machine.check_overheat(sensor_values)
         self._control_heat_dump(sensor_values)
 
         # Recovery controls
         if self.mode.is_warmup or self.mode.is_recovery:
             self._control_warmup_mix(sensor_values)
-            self._check_warmup_mix(sensor_values)  # pyrefly: ignore[missing-attribute]
+            self._state_machine.check_warmup_mix(sensor_values)
         if self.mode.is_warmup:
             self._set_warmup_flow_setpoints(sensor_values)
         if self.mode.is_recovery:

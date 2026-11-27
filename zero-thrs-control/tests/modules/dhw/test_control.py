@@ -350,11 +350,11 @@ def test_pump_flow_setpoint_follows_boosting_source(parameters: DhwParameters):
     control = DhwControl(parameters, datetime.now)
     controller = control._pump_flow_controller
 
-    control._state_machine.set_state("boosting_heatpump")
+    control._state = "boosting_heatpump"
     controller(None)  # syncs the setpoint getter
     assert controller.setpoint == parameters.heatpump_flow_setpoint
 
-    control._state_machine.set_state("boosting_high_temperature")
+    control._state = "boosting_high_temperature"
     controller(None)
     assert controller.setpoint == parameters.ht_boosting_flow_setpoint
 
@@ -395,7 +395,7 @@ def test_boosting_stall_grace_suppresses_check(parameters: DhwParameters):
     clock = _Clock(datetime(2026, 1, 1))
     control = DhwControl(parameters, clock)
     sensor_values = DhwSensorValues.initial()  # heatpump heat reads zero (valves shut)
-    control._state_machine.set_state("boosting_heatpump")
+    control._state = "boosting_heatpump"
     control._boosting_entered_at = clock()
 
     # No heat transfer, but still inside the startup grace -> not stalled.
@@ -410,7 +410,7 @@ def test_boosting_stall_trips_after_window(
     clock = _Clock(datetime(2026, 1, 1))
     control = DhwControl(parameters, clock)
     sensor_values = DhwSensorValues.initial()
-    control._state_machine.set_state("boosting_heatpump")
+    control._state = "boosting_heatpump"
     control._boosting_entered_at = clock()
 
     clock.advance(parameters.boosting_startup_grace + 1)
@@ -430,7 +430,7 @@ def test_boosting_stall_debounce_resets_on_recovery(parameters: DhwParameters):
     clock = _Clock(datetime(2026, 1, 1))
     control = DhwControl(parameters, clock)
     sensor_values = DhwSensorValues.initial()
-    control._state_machine.set_state("boosting_heatpump")
+    control._state = "boosting_heatpump"
     control._boosting_entered_at = clock()
     clock.advance(parameters.boosting_startup_grace + 1)
 
@@ -461,7 +461,7 @@ def test_boosting_stall_locks_out_boosting_tank_for_its_source(
     sensor_values = DhwSensorValues.initial()
     boosting_tank = control._tanks_controller._tanks[2]
     control._tanks_controller._boosting_tank = boosting_tank
-    control._state_machine.set_state("boosting_high_temperature")
+    control._state = "boosting_high_temperature"
     control._boosting_entered_at = clock()
     clock.advance(parameters.boosting_startup_grace + 1)
 
