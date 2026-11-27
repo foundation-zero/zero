@@ -52,6 +52,7 @@ export type CustomFields<Fields extends Record<MimicComponentType, Record<string
 export type SensorFieldDefinitions = SensorFields<{
   [MimicComponentType.Pcm]: {
     heatTransfer: SensorComponentType.HeatTransferDevice;
+    freshwaterHeatTransfer?: SensorComponentType.HeatTransferDevice;
   };
   [MimicComponentType.BoilerTank]: {
     level: SensorComponentType.Level;
@@ -436,8 +437,8 @@ export type ExtractModuleFields<
     SensorComponentType | ControlComponentType | ParametersType | ControllerStateComponentType
   >,
 > = {
-  [K in keyof Fields]: Fields[K] extends undefined
-    ? ModuleField<Fields[K]> | undefined
+  [K in keyof Fields]: undefined extends Fields[K]
+    ? ModuleField<Exclude<Fields[K], undefined>> | undefined
     : ModuleField<Fields[K]>;
 };
 

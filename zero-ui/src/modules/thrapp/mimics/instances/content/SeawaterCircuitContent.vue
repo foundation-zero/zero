@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ZiSeawater } from "@/modules/common/components/icons";
-import { SensorComponentType } from "@/modules/thrapp/types/thrs";
 import { MimicComponentInstanceProps } from "..";
 import { TooltipComponentContext } from "../../../components/tooltip";
 import { MimicComponentType } from "../../../types";
@@ -11,7 +10,7 @@ import {
   ValueListSeparator,
   ValueListTemperatureItem,
 } from "../../components/value-list";
-import { getMimicDataProvider, ModuleField } from "../../providers";
+import { getMimicDataProvider } from "../../providers";
 
 withDefaults(
   defineProps<
@@ -43,7 +42,7 @@ const state = getComponentState();
     <ValueList dense>
       <ValueListHeatPowerItem
         v-if="sensors.heatTransfer"
-        :source="sensors.heatTransfer as ModuleField<SensorComponentType.HeatTransferDevice>"
+        :source="sensors.heatTransfer"
       />
       <ValueListSeparator />
       <ValueListTemperatureItem

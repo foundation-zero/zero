@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ZiHeatBatteryFull } from "@/modules/common/components/icons";
+import { isDefined } from "@/modules/common/lib/utils";
 import { reactiveOmit } from "@vueuse/core";
+import { computed } from "vue";
 import { MimicComponentInstanceProps } from ".";
 import { MimicTooltipTrigger, TooltipComponentContext } from "../../components/tooltip";
 import { MimicComponentType } from "../../types";
-import { Pcm, PcmLayout, PcmTitle } from "../components/pcm";
+import { Pcm, PcmExchangerHeat, PcmLayout, PcmTitle } from "../components/pcm";
 import PcmContent from "../components/pcm/PcmContent.vue";
 import {
   ValueList,
@@ -13,6 +15,7 @@ import {
   ValueListSeparator,
 } from "../components/value-list";
 import { YardTag } from "../components/yard-tag";
+import { getMimicDataProvider } from "../providers";
 import ControllerStateValue from "../providers/ControllerStateValue.vue";
 import { FieldRenderer } from "../renderers";
 
@@ -28,6 +31,19 @@ const props = withDefaults(
   },
 );
 const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
+
+const { getSensorValue } = getMimicDataProvider();
+const heatTransfer = getSensorValue(props.sensors.heatTransfer);
+const freshwaterHeatTransfer =
+  props.sensors.freshwaterHeatTransfer && getSensorValue(props.sensors.freshwaterHeatTransfer);
+
+const totalHeat = computed(() => {
+  const heat = heatTransfer.value?.heat.value;
+  const freshwaterHeat = freshwaterHeatTransfer?.value?.heat.value;
+  return isDefined(heat) || isDefined(freshwaterHeat)
+    ? (heat ?? 0) + (freshwaterHeat ?? 0)
+    : undefined;
+});
 </script>
 
 <template>
@@ -55,7 +71,10 @@ const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
         </ControllerStateValue>
         <ValueList class="gap-0 text-base font-medium">
           <ValueListSeparator class="my-0.5" />
-          <ValueListHeatPowerItem :source="sensors.heatTransfer" />
+          <ValueListHeatPowerItem
+            :source="sensors.heatTransfer"
+            :value="totalHeat"
+          />
           <ValueListItem>
             <ZiHeatBatteryFull
               class="size-3.5"
@@ -71,6 +90,18 @@ const forwardedProps = reactiveOmit(props, ["registerField", "type"]);
           <ValueListSeparator class="my-0.5" />
         </ValueList>
       </PcmContent>
+      <template
+        v-if="sensors.freshwaterHeatTransfer"
+        #left-exchanger
+      >
+        <PcmExchangerHeat :source="sensors.heatTransfer" />
+      </template>
+      <template
+        v-if="sensors.freshwaterHeatTransfer"
+        #right-exchanger
+      >
+        <PcmExchangerHeat :source="sensors.freshwaterHeatTransfer" />
+      </template>
     </Pcm>
     <slot />
   </MimicTooltipTrigger>

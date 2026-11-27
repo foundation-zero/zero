@@ -59,8 +59,15 @@ const props = defineProps<TooltipComponentContext<MimicComponentType.Pcm>>();
     </TooltipList>
 
     <TooltipList>
-      <TooltipListHeader>{{ labels("heatExchange") }}</TooltipListHeader>
+      <TooltipListHeader>
+        {{ labels("heatExchange") }}<template v-if="sensors.freshwaterHeatTransfer"> B-C</template>
+      </TooltipListHeader>
       <Partials.ExchangeCircuit :source="sensors.heatTransfer" />
+    </TooltipList>
+
+    <TooltipList v-if="sensors.freshwaterHeatTransfer">
+      <TooltipListHeader>{{ labels("heatExchange") }} A-D</TooltipListHeader>
+      <Partials.ExchangeCircuit :source="sensors.freshwaterHeatTransfer" />
     </TooltipList>
 
     <TooltipList>

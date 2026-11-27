@@ -5802,6 +5802,12 @@
             "pcm",
             "pcmHeatModule1",
             null
+          ],
+          "freshwaterHeatTransfer": [
+            "sensor:heatTransferDevice",
+            "pcm",
+            "pcmHeatModule1Freshwater",
+            null
           ]
         },
         "controllerState": {
