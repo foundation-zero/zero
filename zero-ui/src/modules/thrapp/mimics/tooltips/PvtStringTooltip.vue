@@ -8,11 +8,11 @@ import {
 import { TooltipList, TooltipListHeader } from "../../components/tooltip-list";
 import { MimicComponentType } from "../../types";
 import { PvtStringInstance } from "../instances";
-import { SensorValue } from "../providers";
 import * as Partials from "./partials";
+import Circuit from "./partials/ExchangeCircuitPartial.vue";
 
 const props = defineProps<TooltipComponentContext<MimicComponentType.PvtString>>();
-const { items, labels } = useTranslations();
+const { labels } = useTranslations();
 </script>
 
 <template>
@@ -26,31 +26,8 @@ const { items, labels } = useTranslations();
       <Partials.ComponentInfo :tooltip="tooltip" />
     </TooltipList>
     <TooltipList>
-      <TooltipListHeader>{{ labels("output") }}</TooltipListHeader>
-      <SensorValue
-        :source="source"
-        field="flow"
-      >
-        <Partials.ListItem>
-          {{ items("flow") }}
-        </Partials.ListItem>
-      </SensorValue>
-      <SensorValue
-        :source="source"
-        field="temperatureSupply"
-      >
-        <Partials.ListItem>
-          {{ items("incomingTemperature") }}
-        </Partials.ListItem>
-      </SensorValue>
-      <SensorValue
-        :source="source"
-        field="temperatureReturn"
-      >
-        <Partials.ListItem>
-          {{ items("outgoingTemperature") }}
-        </Partials.ListItem>
-      </SensorValue>
+      <TooltipListHeader>{{ labels("heatExchange") }}</TooltipListHeader>
+      <Circuit :source="source" />
     </TooltipList>
   </MimicTooltip>
 </template>
