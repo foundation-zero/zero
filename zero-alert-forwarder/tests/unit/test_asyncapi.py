@@ -32,6 +32,7 @@ def _resolve(spec: dict, reference: str) -> object:
 
 def _references(node: object) -> set[str]:
     match node:
+        # pyrefly: ignore[not-callable]
         case {"$ref": str(reference)}:
             return {reference}
         case dict():
