@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@foundation-zero/graphql-subscriptions-mock": "^1.0.2",
-    "@readme/openapi-parser": "^10.0.0",
+    "@readme/openapi-parser": "^11.0.0",
     "@remixicon/vue": "^4.9.0",
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/vue-table": "^9.3.1",
