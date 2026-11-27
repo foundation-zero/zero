@@ -69,8 +69,7 @@ pub(super) fn message_payload(
             fields: extract_fields_from_schema_or_multi(schema_or_multi, doc),
         },
         field_attributes: serde_json::to_value(schema_or_multi)
-            .map(|schema| extensions_from_payload_schema(&schema))
-            .unwrap_or_default(),
+            .map_or_default(|schema| extensions_from_payload_schema(&schema)),
         schema_ref,
     })
 }
