@@ -153,3 +153,6 @@ default-groups = ["dev", "test", "analysis"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/thrs"]
+# The editable install also puts the project root on sys.path, so the analysis
+# notebooks import `analysis` and `tests.helpers`; images install non-editable.
+dev-mode-dirs = ["src", "."]
