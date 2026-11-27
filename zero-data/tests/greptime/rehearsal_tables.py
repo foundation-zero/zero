@@ -14,7 +14,6 @@ from pydantic_settings import BaseSettings, CliApp, CliPositionalArg
 from zero_data.greptime.config import GreptimeConnection
 from zero_data.greptime.migrate_history import Greptime, quote_ident
 from zero_data.greptime.migration_spec import MigrationSpec, read_spec
-from zero_data.greptime.snapshot import connect
 
 logger = logging.getLogger(__name__)
 
@@ -38,10 +37,8 @@ class RehearsalTables(BaseSettings):
 
     def cli_cmd(self) -> None:
         connection = GreptimeConnection()
-        with connect(connection) as handle:
-            tables = create_new_tables(
-                Greptime(handle, connection.dbname), read_spec(self.spec)
-            )
+        with Greptime(connection) as greptime:
+            tables = create_new_tables(greptime, read_spec(self.spec))
         logger.info("Created %d tables on %s", len(tables), connection.host)
 
 

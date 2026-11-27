@@ -21,12 +21,14 @@ from collections.abc import Callable, Generator, Iterable, Iterator
 from contextlib import contextmanager
 from datetime import UTC, date, datetime
 from functools import partial
-from typing import Any
+from typing import Any, Self
 
 import psycopg
 from pydantic import BaseModel
 
+from zero_data.greptime.config import GreptimeConnection
 from zero_data.greptime.migration_spec import MigrationSpec, Unit
+from zero_data.greptime.snapshot import open_handle
 
 logger = logging.getLogger(__name__)
 
@@ -78,19 +80,62 @@ def _chunks(columns: list[str]) -> Iterator[list[str]]:
 
 
 class Greptime:
-    """Queries against one Greptime database over its Postgres wire endpoint."""
+    """Queries against one Greptime database over its Postgres wire endpoint.
 
-    def __init__(self, handle: psycopg.Connection, dbname: str) -> None:
-        self._handle = handle
-        self._dbname = dbname
+    A lost connection is opened again before the next statement. Queries are sent again when
+    Greptime drops them or the connection is lost; other statements only through `retried`.
+    """
 
-    def rows(self, sql: str) -> list[tuple[Any, ...]]:
-        with self._handle.cursor() as cursor:
+    def __init__(
+        self,
+        connection: GreptimeConnection,
+        sleep: Callable[[float], None] = time.sleep,
+    ) -> None:
+        self._connection = connection
+        self._dbname = connection.dbname
+        self._sleep = sleep
+        self._handle = open_handle(connection)
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(self, *_: object) -> None:
+        self._handle.close()
+
+    def _open(self) -> psycopg.Connection:
+        if self._handle.broken:
+            self._handle = open_handle(self._connection)
+        return self._handle
+
+    def _fetch(self, sql: str) -> list[tuple[Any, ...]]:
+        with self._open().cursor() as cursor:
             cursor.execute(sql)  # pyrefly: ignore[no-matching-overload]
             return cursor.fetchall()
 
+    def retried[T](self, action: Callable[[], T]) -> T:
+        """The action's result, trying again when Greptime drops the statement or the
+        connection is lost.
+
+        Safe for an insert: it leaves out the timestamps a failed attempt already wrote.
+        """
+        for attempt in range(1, ATTEMPTS):
+            try:
+                return action()
+            except psycopg.Error as error:
+                if not (isinstance(error, CONNECTION_DROPPED) or self._handle.broken):
+                    raise
+                logger.warning("Attempt %d failed, trying again: %s", attempt, error)
+                self._sleep(RETRY_WAIT)
+        return action()
+
+    def pause(self, seconds: float) -> None:
+        self._sleep(seconds)
+
+    def rows(self, sql: str) -> list[tuple[Any, ...]]:
+        return self.retried(partial(self._fetch, sql))
+
     def run(self, sql: str) -> None:
-        with self._handle.cursor() as cursor:
+        with self._open().cursor() as cursor:
             cursor.execute(sql)  # pyrefly: ignore[no-matching-overload]
 
     def count(self, sql: str) -> int:
@@ -578,26 +623,11 @@ def lock(greptime: Greptime, unlock: bool = False) -> Generator[None]:
             signal.signal(signal.SIGINT, interrupt)
 
 
-def _retried[T](action: Callable[[], T], sleep: Callable[[float], None]) -> T:
-    """The action's result, trying again when Greptime drops the statement.
-
-    Safe for an insert: it leaves out the timestamps a failed attempt already wrote.
-    """
-    for attempt in range(1, ATTEMPTS):
-        try:
-            return action()
-        except CONNECTION_DROPPED as error:
-            logger.warning("Attempt %d failed, trying again: %s", attempt, error)
-            sleep(RETRY_WAIT)
-    return action()
-
-
 def run(
     greptime: Greptime,
     migration: Migration,
     until: date | None = None,
     pause: float = 0.1,
-    sleep: Callable[[float], None] = time.sleep,
 ) -> int:
     """Copy day by day, newest first, across all units; returns the rows copied."""
     for table, columns in migration.additions.items():
@@ -622,8 +652,8 @@ def run(
             for copy in history.copies:
                 if day in copy.days:
                     for start, end in copy.slices(day):
-                        _retried(
-                            partial(greptime.run, copy.insert_sql(start, end)), sleep
+                        greptime.retried(
+                            partial(greptime.run, copy.insert_sql(start, end))
                         )
             rows_of_the_day = (
                 f"SELECT count(*) FROM {quote_ident(history.new_table)} "
@@ -631,14 +661,14 @@ def run(
                 f'AND "timestamp" >= {timestamp_literal(day)} '
                 f'AND "timestamp" < {timestamp_literal(day + DAY_NS)}'
             )
-            there = _retried(partial(greptime.count, rows_of_the_day), sleep)
+            there = greptime.count(rows_of_the_day)
             if there != expected:
                 raise MigrationFailed(
                     f"{history.new_topic} holds {there} rows on {day_label(day)} "
                     f"after copying, {expected} expected"
                 )
             copied_today += there - present
-            sleep(pause)
+            greptime.pause(pause)
         copied += copied_today
         logger.info("%s: %d rows copied", day_label(day), copied_today)
     return copied

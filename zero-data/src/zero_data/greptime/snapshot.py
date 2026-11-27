@@ -21,19 +21,41 @@ from zero_data.greptime.config import (
 logger = logging.getLogger(__name__)
 
 
-@contextmanager
-def connect(
-    connection: GreptimeConnection,
-) -> Generator["psycopg.Connection"]:
-    """A Greptime connection over the Postgres wire endpoint, auto-committing DDL."""
-    handle = psycopg.connect(
+# A connection that dies silently (Greptime restarts, the network path drops) would otherwise
+# leave a query waiting forever. Probes are answered by the peer's kernel, also while a long
+# query runs.
+_CONNECT_TIMEOUT_S = 30
+_KEEPALIVE_IDLE_S = 60
+_KEEPALIVE_INTERVAL_S = 10
+_KEEPALIVE_COUNT = 6
+
+
+def open_handle(connection: GreptimeConnection) -> "psycopg.Connection":
+    """A Greptime connection over the Postgres wire endpoint, auto-committing DDL.
+
+    A peer that stops answering fails the statement in flight with `OperationalError`.
+    """
+    return psycopg.connect(
         host=connection.host,
         port=connection.pg_port,
         user=connection.user,
         password=connection.password,
         dbname=connection.dbname,
+        autocommit=True,
+        connect_timeout=_CONNECT_TIMEOUT_S,
+        keepalives=1,
+        keepalives_idle=_KEEPALIVE_IDLE_S,
+        keepalives_interval=_KEEPALIVE_INTERVAL_S,
+        keepalives_count=_KEEPALIVE_COUNT,
     )
-    handle.autocommit = True
+
+
+@contextmanager
+def connect(
+    connection: GreptimeConnection,
+) -> Generator["psycopg.Connection"]:
+    """`open_handle`, closed on exit."""
+    handle = open_handle(connection)
     try:
         yield handle
     finally:

@@ -165,6 +165,9 @@ tables and their columns.
 - **The log says "Attempt N failed, trying again":** Greptime's frontend drops its connection to
   the datanode every few hours of copying, and the statement in flight fails with `Internal
   error: 1003` or `operation was canceled`. The run waits a minute and sends it again, five times at most.
+- **The log says "Attempt N failed" after a lost connection** (a restarted Greptime, a dropped
+  network path): the run notices within about two minutes, opens a new connection and sends the
+  statement again, within the same five attempts. `check` and the reads of a run do the same.
 - **The run stops with an error** (a timeout, a restart of Greptime): start it again. If
   Greptime ran out of memory on an insert, lower `VALUES_PER_INSERT` in `migrate_history.py`
   first. Days that are complete are skipped, and a day that was copied in part gets its missing
