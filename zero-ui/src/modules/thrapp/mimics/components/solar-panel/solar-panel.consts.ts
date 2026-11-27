@@ -30,3 +30,9 @@ export const SOLAR_PANEL_GRID: Record<SolarPanelSize, { columns: number[]; rows:
 };
 
 export const YIELD_STEPS = [1000, 900, 800, 700, 600, 500, 400, 300, 200, 100, 0];
+
+/**
+ * Peak heat of a large panel in W: the design heat of the energy recovery diagram 9450001-7,
+ * 16 kW over 45 panels and 8 kW over 22.
+ */
+export const SOLAR_PANEL_PEAK_HEAT = 360;

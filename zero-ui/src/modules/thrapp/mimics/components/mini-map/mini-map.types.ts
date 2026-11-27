@@ -28,6 +28,6 @@ export type MiniMapLayout = {
 };
 
 /** A string of the bimini on a mini map, with the tooltip key of its PVT string. */
-export type BiminiString = Omit<SolarPanelStringProps, "yieldRatio"> & {
+export type BiminiString = SolarPanelStringProps & {
   field: RegisterField<MimicComponentType.PvtString>;
 };

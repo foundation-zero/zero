@@ -1,6 +1,31 @@
 import { describe, expect, it } from "vitest";
-import { MimicWithMiniMapProps } from "./mini-map.types";
-import { getMiniMapLayout } from "./mini-map.utils";
+import { SolarPanelSize } from "../solar-panel";
+import { BiminiString, MimicWithMiniMapProps } from "./mini-map.types";
+import { getMiniMapLayout, toBiminiStringProps } from "./mini-map.utils";
+
+describe("toBiminiStringProps", () => {
+  const frame = { x: 0, y: 0, width: 10, height: 10 };
+  const shape = {
+    frame,
+    panels: [
+      { x: 0, y: 0 },
+      { x: 0, y: 0, size: SolarPanelSize.Small },
+    ],
+  };
+  const strings: BiminiString[] = [
+    { field: "pvt:aft-string-3", ...shape },
+    { field: "pvt:aft-string-3", ...shape },
+    { field: "pvt:aft-string-4", frame, panels: [{ x: 0, y: 0 }] },
+  ];
+
+  it("gives each shape the peak heat of its whole string", () => {
+    const [left, right, single] = toBiminiStringProps(strings);
+    const shapePeak = 360 + (360 * 14) / 27;
+    expect(left.peakHeat).toBeCloseTo(2 * shapePeak);
+    expect(right.peakHeat).toBeCloseTo(2 * shapePeak);
+    expect(single.peakHeat).toBe(360);
+  });
+});
 
 // A wide diagram and a map that is drawn at twice its own size.
 const props: MimicWithMiniMapProps = {

@@ -1,7 +1,14 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { SolarPanelOrientation, SolarPanelSize, solarYieldColor } from ".";
+import { SolarPanelOrientation, SolarPanelSize, solarPanelPeakHeat, solarYieldColor } from ".";
 import SolarPanel from "./SolarPanel.vue";
+
+describe("solarPanelPeakHeat", () => {
+  it("gives a large panel the design peak and a small one its share of the area", () => {
+    expect(solarPanelPeakHeat()).toBe(360);
+    expect(solarPanelPeakHeat(SolarPanelSize.Small)).toBeCloseTo((360 * 14) / 27);
+  });
+});
 
 describe("solarYieldColor", () => {
   it("maps a low yield to the dark end and a high yield to the light end of the scale", () => {
