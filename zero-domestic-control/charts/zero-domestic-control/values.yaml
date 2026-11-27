@@ -8,7 +8,7 @@ image:
   # This sets the pull policy for images.
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "@sha256:5fd88903c086e28243e489e5c731c1f8560b2e6ba86abcf7a871d195e6c6b365"
 
 # Required: MQTT host
 mqtt:
