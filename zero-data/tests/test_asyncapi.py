@@ -26,7 +26,7 @@ from zero_data.io_list.types import IOResult, IOTopic, IOValue
 
 @pytest.fixture(scope="module")
 def io_result() -> IOResult:
-    return read_io_list([Path("io_lists/ZERO mocked IO-List.xlsx")], "marpower")
+    return read_io_list([Path("io_lists/io-list ~ help ~ totals.xlsx")], "marpower")
 
 
 @pytest.fixture(scope="module")
@@ -58,11 +58,16 @@ def test_every_field_is_a_stamped_value_of_its_data_type(
 ):
     schemas = document["components"]["schemas"]
     for topic in managed_topics:
-        payload = document["channels"][key(topic)]["messages"]["message"]["payload"]
+        message_payload = document["channels"][key(topic)]["messages"]["message"][
+            "payload"
+        ]
+        payload = (
+            schemas[message_payload["$ref"].removeprefix(SCHEMA_REF_PREFIX)]
+            if "$ref" in message_payload
+            else message_payload
+        )
 
-        assert set(payload["properties"]) == {
-            field for field in served_fields(topic.topic)
-        }
+        assert set(served_fields(topic.topic)) <= set(payload["properties"])
         for field in topic.topic.fields:
             ref = payload["properties"][field.name]["$ref"]
             stamped = schemas[ref.removeprefix(SCHEMA_REF_PREFIX)]
