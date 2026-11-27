@@ -92,6 +92,12 @@ search-path = ["src", ".", "docs/skills/thrs-module-manual/scripts"]
 
 [tool.ruff]
 fix = true
+# Notebooks written against APIs that no longer exist, and an fmpy scratchpad.
+extend-exclude = [
+  "analysis/old_notebooks/paper_figures.ipynb",
+  "src/thrs/simulation/models/SolarTestModel/control_test.ipynb",
+  "src/thrs/simulation/models/XRGTestModel/test_simulation.ipynb",
+]
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -137,6 +143,10 @@ extend-unsafe-fixes = ["COM812"]
   "ERA001", # Allow commented out code in notebooks
 ]
 
+"analysis/**" = [
+  "S101", # Asserts narrow simulation results for the type checker
+]
+
 [build-system]
 requires = ["hatchling>=1.26,<2", "hatch-vcs>=0.4,<1"]
 build-backend = "hatchling.build"
@@ -153,3 +163,6 @@ default-groups = ["dev", "test", "analysis"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/thrs"]
+# The editable install also puts the project root on sys.path, so the analysis
+# notebooks import `analysis` and `tests.helpers`; images install non-editable.
+dev-mode-dirs = ["src", "."]
