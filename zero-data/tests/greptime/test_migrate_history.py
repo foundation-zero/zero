@@ -4,6 +4,7 @@ The old table holds a sounder that was renamed on day 2 (an earlier name of the 
 and a catch-all topic whose keys belong to two devices in two new tables.
 """
 
+import re
 from collections.abc import Iterator
 from datetime import date
 from pathlib import Path
@@ -19,8 +20,10 @@ from zero_data.greptime.config import GreptimeConnection
 from zero_data.greptime.migrate_history import (
     LOCK_TABLE,
     Greptime,
+    Migration,
     MigrationFailed,
     check,
+    day_label,
     drop,
     leftover,
     load,
@@ -289,6 +292,27 @@ def test_a_second_run_copies_nothing(tables: Query, greptime: Greptime) -> None:
 
     assert migrate(greptime) == 0
     assert len(sounder_rows(tables)) == 6
+
+
+def test_run_from_a_day_reads_and_copies_nothing_newer(
+    tables: Query, greptime: Greptime
+) -> None:
+    def days(migration: Migration) -> set[str]:
+        return {day_label(day) for h in migration.histories for day in h.expected}
+
+    migration = load(greptime, SPEC, up_to=date(2026, 8, 7))
+
+    assert max(days(migration)) == "2026-08-07"
+    assert max(days(load(greptime, SPEC))) == "2026-08-08"
+    run(greptime, migration, None, 0, no_sleep)
+    missing_days = {
+        day
+        for finding in check(greptime, load(greptime, SPEC))
+        for day in re.findall(r"\b\d{4}-\d{2}-\d{2}\b", finding)
+    }
+    assert missing_days == {"2026-08-08"}
+    migrate(greptime)
+    assert check(greptime, load(greptime, SPEC)) == []
 
 
 def test_run_goes_back_no_further_than_until(tables: Query, greptime: Greptime) -> None:

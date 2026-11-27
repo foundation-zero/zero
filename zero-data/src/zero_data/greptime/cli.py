@@ -121,6 +121,14 @@ class MigrateRunCmd(_MigrateCmd):
         date | None,
         Field(description="Copy back to and including this day (default: everything)."),
     ] = None
+    from_: Annotated[
+        date | None,
+        Field(
+            alias="from",
+            description="Start at this day and leave newer days alone, so a restart "
+            "reads only the days still to copy (default: every day).",
+        ),
+    ] = None
     dry_run: Annotated[
         CliImplicitFlag[bool],
         Field(description="Only read, and print what a run would do."),
@@ -148,13 +156,17 @@ class MigrateRunCmd(_MigrateCmd):
                     for table in self.table or spec.old_tables
                     if table in greptime.tables()
                 }
-                print(report(load(greptime, spec, self.table), leftovers))
+                print(
+                    report(
+                        load(greptime, spec, self.table, up_to=self.from_), leftovers
+                    )
+                )
                 return
             with (
                 connect(connection) as lock_handle,
                 lock(Greptime(lock_handle, connection.dbname), self.unlock),
             ):
-                migration = load(greptime, spec, self.table)
+                migration = load(greptime, spec, self.table, up_to=self.from_)
                 for refusal in migration.refused:
                     logger.warning(
                         "Left out %s: %s", refusal.unit.label, refusal.reason
