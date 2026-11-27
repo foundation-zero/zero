@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: europe-west1-docker.pkg.dev/common-449414/common/zero-ui
   pullPolicy: IfNotPresent
-  tag: ""
+  tag: "@sha256:0bc626ed26230846263bdbdf6fa7283a452951656d6741a02c38338e2437b323"
 
 ui:
   config: {}
