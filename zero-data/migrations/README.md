@@ -36,7 +36,7 @@ The four commands, all under `uv run zero-data greptime migrate-history`:
 |---|---|
 | `build-spec <mapping.csv> --out <spec.json>` | Makes the spec. Needs Docker, not Greptime. |
 | `run <spec.json> [--dry-run] [--from <date>] [--until <date>] [--unlock]` | Copies. With `--dry-run` it only reads and prints a report. |
-| `check <spec.json>` | Compares old and new. Prints the differences and exits 1 when there are any. |
+| `check <spec.json> [--from <date>] [--days-only]` | Compares old and new. Prints the differences and exits 1 when there are any. |
 | `drop <spec.json> [--execute] [--unlock]` | Drops the old tables whose history is checked. Without `--execute` it prints what it would do. |
 
 `run`, `check` and `drop` take `--host <greptime host>` (default: `GREPTIME_HOST`, else the
@@ -118,6 +118,9 @@ tables and their columns.
    ```bash
    uv run zero-data greptime migrate-history check spec.json --host <host>
    ```
+   For a very wide table, such as the battery packs, `--days-only` checks the rows per day
+   without the values of every column, which reads far less. `drop` always runs the full
+   check.
 7. **Look at the dashboards** over a period before the cut-over.
 8. **Take a Greptime backup, then drop the old tables:**
    ```bash
