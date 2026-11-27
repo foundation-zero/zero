@@ -1,5 +1,7 @@
 import { MimicComponentType } from "@/modules/thrapp/types";
+import { sumBy } from "lodash";
 import { getTooltipContext } from "../../data";
+import { solarPanelPeakHeat } from "../solar-panel";
 import { BiminiString, MimicWithMiniMapProps, MiniMapLayout } from "./mini-map.types";
 
 /**
@@ -32,8 +34,20 @@ export function getMiniMapLayout(
   };
 }
 
-/** The props of the bimini strings on a mini map: their layout and their PVT string context. */
+/**
+ * The props of the bimini strings on a mini map: their layout, their PVT string context and the
+ * peak heat of the whole string, over all of its shapes.
+ */
 export function toBiminiStringProps(strings: BiminiString[]) {
   const getPvtString = getTooltipContext(MimicComponentType.PvtString);
-  return strings.map(({ field, ...layout }) => ({ ...layout, ...getPvtString(field) }));
+  const peakHeat = (field: BiminiString["field"]) =>
+    sumBy(
+      strings.filter((string) => string.field === field).flatMap(({ panels }) => panels),
+      ({ size }) => solarPanelPeakHeat(size),
+    );
+  return strings.map(({ field, ...layout }) => ({
+    ...layout,
+    ...getPvtString(field),
+    peakHeat: peakHeat(field),
+  }));
 }
