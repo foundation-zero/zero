@@ -34,7 +34,7 @@ analysis = [
   "ipympl~=0.10.0",
   "matplotlib~=3.11.2",
   "pandas~=3.1.1",
-  "plotly~=7.1.0",
+  "plotly~=7.2.0",
   "polars==2.1.0",
   "pyarrow~=26.0.1",
   "pyqtgraph~=0.14.0",
