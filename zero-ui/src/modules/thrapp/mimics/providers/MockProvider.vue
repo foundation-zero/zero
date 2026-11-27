@@ -44,6 +44,8 @@ const getControlValue = <Type extends ControlComponentType, Module extends keyof
   module,
   field,
 ]: ModuleField<Type, Module>): Ref<ControlDefinitionMap[Type] | undefined> => {
+  if (field === "placeholder") return toRef(undefined);
+
   const { componentType } = getControlDefinition(module, field);
   return CONTROL_VALUES_FACTORY[componentType]() as Ref<ControlDefinitionMap[Type] | undefined>;
 };
