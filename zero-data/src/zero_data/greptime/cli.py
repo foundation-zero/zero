@@ -126,7 +126,7 @@ class MigrateRunCmd(_MigrateCmd):
         Field(
             alias="from",
             description="Start at this day and leave newer days alone, so a restart "
-            "reads only the days still to copy (default: the newest day).",
+            "reads only the days still to copy (default: every day).",
         ),
     ] = None
     dry_run: Annotated[
