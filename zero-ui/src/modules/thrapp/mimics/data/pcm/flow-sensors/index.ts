@@ -27,5 +27,8 @@ export const PCM_FLOW_SENSOR_DATA = toFieldsMap({
     "1192": toFlowSensor({
       source: getField(SensorComponentType.Flow, "consumers", "consumersFlowBypass"),
     }),
+    "25001139": toFlowSensor({
+      source: getField(SensorComponentType.FlowOnly, "freshWaterHot", "hotFlowToPcm"),
+    }),
   },
 });

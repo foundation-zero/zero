@@ -35,6 +35,8 @@
     "1215": "FlowControlValve/1215",
     "9043": "Pyranometer/9043",
     "9044": "Pyranometer/9044",
+    "25001135": "MixValve/25001135",
+    "25001139": "FlowSensor/25001139",
     "41001001": "HVAC/41001001",
     "1038-01": "TemperatureSensor/1038-01",
     "1038-02": "TemperatureSensor/1038-02",
@@ -224,6 +226,7 @@
     "1214-01": "MixValve/1214-01",
     "1218-01": "FlowSensor/1218-01",
     "1218-02": "FlowSensor/1218-02",
+    "25001038-3": "TemperatureSensor/25001038-3",
     "9005-01": "TemperatureSensor/9005-01",
     "9005-02": "TemperatureSensor/9005-02",
     "9005-03": "TemperatureSensor/9005-03",
@@ -499,6 +502,9 @@
     "drives:drivesTemperatureShorepowerReturn": "TemperatureSensor/1038-11",
     "drives:drivesTemperatureSupply": "TemperatureSensor/1038-14",
     "drives:shorepower": "ConnectingCircuit/drives:shorepower",
+    "freshWaterHot:hotFlowToPcm": "FlowSensor/25001139",
+    "freshWaterHot:hotMixPcm": "MixValve/25001135",
+    "freshWaterHot:hotTemperatureFromPcm": "TemperatureSensor/25001038-3",
     "fwd-1": "PowerConverter/dc:fwd-1",
     "fwd-2": "PowerConverter/dc:fwd-2",
     "highTemperature": "ExchangeCircuit/adsorption:highTemperature",
@@ -2329,6 +2335,21 @@
           "yardTag": "1192",
           "technicalName": "consumers-flow-bypass",
           "mqttTopic": ".../consumers-flow-bypass",
+          "componentType": "Flow sensor"
+        }
+      },
+      "25001139": {
+        "source": [
+          "sensor:flowOnly",
+          "freshWaterHot",
+          "hotFlowToPcm",
+          null
+        ],
+        "tooltip": {
+          "title": "Flow sensor",
+          "yardTag": "25001139",
+          "technicalName": "hot-flow-to-pcm",
+          "mqttTopic": ".../hot-flow-to-pcm",
           "componentType": "Flow sensor"
         }
       },
@@ -5340,6 +5361,29 @@
           "componentType": "Mix valve"
         }
       },
+      "25001135": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "pcm",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "freshWaterHot",
+          "hotMixPcm",
+          null
+        ],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "25001135",
+          "technicalName": "hot-mix-pcm",
+          "mqttTopic": ".../hot-mix-pcm",
+          "componentType": "3 way valve DN 25"
+        }
+      },
       "1042-03": {
         "controls": {
           "valve": [
@@ -5776,6 +5820,12 @@
             "sensor:heatTransferDevice",
             "pcm",
             "pcmHeatModule1",
+            null
+          ],
+          "freshwaterHeatTransfer": [
+            "sensor:heatTransferDevice",
+            "pcm",
+            "pcmHeatModule1Freshwater",
             null
           ]
         },
@@ -11783,6 +11833,21 @@
           "yardTag": "1038-73",
           "technicalName": "pvt-temperature-main-aft-return",
           "mqttTopic": ".../pvt-temperature-main-aft-return",
+          "componentType": "Temperature sensor"
+        }
+      },
+      "25001038-3": {
+        "source": [
+          "sensor:temperature",
+          "freshWaterHot",
+          "hotTemperatureFromPcm",
+          null
+        ],
+        "tooltip": {
+          "title": "Temperature sensor",
+          "yardTag": "25001038-3",
+          "technicalName": "hot-temperature-from-pcm",
+          "mqttTopic": ".../hot-temperature-from-pcm",
           "componentType": "Temperature sensor"
         }
       },

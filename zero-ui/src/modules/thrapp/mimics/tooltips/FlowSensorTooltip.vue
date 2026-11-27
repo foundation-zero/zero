@@ -10,14 +10,23 @@ import {
   TooltipListHeader,
   TooltipListItemAction,
 } from "../../components/tooltip-list";
+import { SensorComponentType } from "@/modules/thrapp/types/thrs";
+import { computed } from "vue";
 import { MimicComponentType } from "../../types";
 import { SensorGraph } from "../components/sensor-graph";
 import { YardTag } from "../components/yard-tag";
 import { FlowSensorInstance } from "../instances";
-import { SensorValue } from "../providers";
+import { ModuleField, SensorValue } from "../providers";
 import { FieldRenderer } from "../renderers";
 import * as Partials from "./partials";
 const props = defineProps<TooltipComponentContext<MimicComponentType.FlowSensor>>();
+
+// Only a full flow meter reports quantity and temperature; a flow-only one reports its flow.
+const fullFlowSource = computed(() =>
+  props.source[0] === SensorComponentType.Flow
+    ? (props.source as ModuleField<SensorComponentType.Flow>)
+    : undefined,
+);
 
 const { items, labels } = useTranslations();
 </script>
@@ -50,25 +59,27 @@ const { items, labels } = useTranslations();
           {{ items("flow") }}
         </Partials.ListItem>
       </SensorValue>
-      <SensorValue
-        :source="source"
-        field="quantity"
-      >
-        <Partials.ListItem no-source>
-          {{ items("quantity") }}
-          <template #renderer>
-            <FieldRenderer.QuantityLiters />
-          </template>
-        </Partials.ListItem>
-      </SensorValue>
-      <SensorValue
-        :source="source"
-        field="temperature"
-      >
-        <Partials.ListItem no-source>
-          {{ items("temperature") }}
-        </Partials.ListItem>
-      </SensorValue>
+      <template v-if="fullFlowSource">
+        <SensorValue
+          :source="fullFlowSource"
+          field="quantity"
+        >
+          <Partials.ListItem no-source>
+            {{ items("quantity") }}
+            <template #renderer>
+              <FieldRenderer.QuantityLiters />
+            </template>
+          </Partials.ListItem>
+        </SensorValue>
+        <SensorValue
+          :source="fullFlowSource"
+          field="temperature"
+        >
+          <Partials.ListItem no-source>
+            {{ items("temperature") }}
+          </Partials.ListItem>
+        </SensorValue>
+      </template>
     </TooltipList>
 
     <TooltipList v-if="custom.controller">

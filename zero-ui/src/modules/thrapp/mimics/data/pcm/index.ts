@@ -8,6 +8,7 @@ import { PCM_FLOW_SENSOR_DATA } from "./flow-sensors";
 import { PCM_HEAT_BATTERIES_DATA } from "./heat-batteries";
 import { PCM_HEAT_EXCHANGER_DATA } from "./heat-exchangers";
 import { PCM_MANUAL_VALVE_DATA } from "./manual-valves";
+import { PCM_MIX_VALVE_DATA } from "./mix-valves";
 import { PCM_PRESSURE_GAUGE_DATA } from "./pressure-gauges";
 import { PCM_PUMP_DATA } from "./pumps";
 import { PCM_SWITCH_VALVE_DATA } from "./switch-valves";
@@ -26,6 +27,7 @@ export const PCM_MIMIC_DATA = toFieldsMap({
   ...PCM_HEAT_BATTERIES_DATA,
   ...PCM_SWITCH_VALVE_DATA,
   ...PCM_MANUAL_VALVE_DATA,
+  ...PCM_MIX_VALVE_DATA,
   ...PCM_PUMP_DATA,
   ...PCM_CHECK_VALVE_DATA,
   ...PCM_PRESSURE_GAUGE_DATA,

@@ -52,5 +52,8 @@ export const PCM_TEMPERATURE_SENSOR_DATA = toFieldsMap({
     "1038-55": toTemperatureSensor({
       source: getField(SensorComponentType.Temperature, "pcm", "pcmTemperatureProducersSupply"),
     }),
+    "25001038-3": toTemperatureSensor({
+      source: getField(SensorComponentType.Temperature, "freshWaterHot", "hotTemperatureFromPcm"),
+    }),
   },
 });

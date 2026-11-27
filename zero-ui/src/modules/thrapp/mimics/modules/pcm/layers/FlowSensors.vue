@@ -14,6 +14,7 @@ const flowSensors = getTooltipContexts(MimicComponentType.FlowSensor, [
   "1058-07",
   "1058-08",
   "1192",
+  "25001139",
 ]);
 </script>
 
@@ -111,6 +112,19 @@ const flowSensors = getTooltipContexts(MimicComponentType.FlowSensor, [
       y="710"
       :tag-id="flowSensors['1192'].tooltip?.yardTag"
       :flow="flowSensors['1192'].source"
+    />
+  </FlowSensorInstance>
+  <FlowSensorInstance
+    x="1030"
+    y="152"
+    :orientation="ComponentOrientation.Down"
+    v-bind="flowSensors['25001139']"
+  >
+    <FlowLabelInstance
+      x="1070"
+      y="147"
+      :tag-id="flowSensors['25001139'].tooltip?.yardTag"
+      :flow="flowSensors['25001139'].source"
     />
   </FlowSensorInstance>
 </template>

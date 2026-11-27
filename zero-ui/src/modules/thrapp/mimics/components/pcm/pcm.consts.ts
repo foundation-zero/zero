@@ -13,6 +13,10 @@ export const HEAT_PIPES_BOTTOM_RIGHT_POSITION = {
   x: 13.7 * REM,
   y: 6.8 * REM,
 };
+export const PCM_EXCHANGER_HEAT_WIDTH = 45;
+export const PCM_EXCHANGER_HEAT_HEIGHT = 27;
+export const PCM_EXCHANGER_HEAT_LEFT_POSITION = { x: 1, y: 93 };
+export const PCM_EXCHANGER_HEAT_RIGHT_POSITION = { x: 215, y: 73 };
 export const PCM_TITLE_LEFT = 50;
 export const PCM_CONTENT_LEFT = 50;
 export const PCM_CONTENT_RIGHT_WITH_PORTS = 0;

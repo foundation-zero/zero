@@ -6,6 +6,10 @@ import {
   HEAT_PIPES_TOP_LEFT_POSITION,
   PCM_CONTENT_RIGHT_DIAGONAL,
   PCM_CONTENT_RIGHT_WITH_PORTS,
+  PCM_EXCHANGER_HEAT_HEIGHT,
+  PCM_EXCHANGER_HEAT_LEFT_POSITION,
+  PCM_EXCHANGER_HEAT_RIGHT_POSITION,
+  PCM_EXCHANGER_HEAT_WIDTH,
   PCM_HEIGHT,
   PCM_WIDTH,
   PcmLayout,
@@ -61,22 +65,22 @@ provide("contentRightPadding", contentRightPadding);
         <text
           x="9"
           y="28"
-          >A</text
-        >
-        <text
-          x="9"
-          y="88"
-          >D</text
-        >
-        <text
-          x="9"
-          y="115"
           >B</text
         >
         <text
           x="9"
-          y="173"
+          y="88"
           >C</text
+        >
+        <text
+          x="9"
+          y="115"
+          >D</text
+        >
+        <text
+          x="9"
+          y="173"
+          >A</text
         >
       </g>
       <g v-else>
@@ -93,15 +97,31 @@ provide("contentRightPadding", contentRightPadding);
         <text
           :x="PCM_WIDTH - 16"
           y="115"
-          >D</text
+          >A</text
         >
         <text
           :x="PCM_WIDTH - 16"
           y="173"
-          >A</text
+          >D</text
         >
       </g>
     </g>
+    <foreignObject
+      v-if="$slots['left-exchanger']"
+      v-bind="PCM_EXCHANGER_HEAT_LEFT_POSITION"
+      :width="PCM_EXCHANGER_HEAT_WIDTH"
+      :height="PCM_EXCHANGER_HEAT_HEIGHT"
+    >
+      <slot name="left-exchanger" />
+    </foreignObject>
+    <foreignObject
+      v-if="$slots['right-exchanger']"
+      v-bind="PCM_EXCHANGER_HEAT_RIGHT_POSITION"
+      :width="PCM_EXCHANGER_HEAT_WIDTH"
+      :height="PCM_EXCHANGER_HEAT_HEIGHT"
+    >
+      <slot name="right-exchanger" />
+    </foreignObject>
     <foreignObject
       :width="PCM_WIDTH"
       :height="PCM_HEIGHT"

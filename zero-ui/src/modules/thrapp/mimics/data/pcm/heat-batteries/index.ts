@@ -8,10 +8,11 @@ const createHeatBattery = (
   title: string,
   heatExchanger: ModuleField<SensorComponentType.HeatTransferDevice>,
   controller: ModuleField<ControllerStateComponentType.PcmChargeController>,
+  freshwaterHeatExchanger?: ModuleField<SensorComponentType.HeatTransferDevice>,
 ) =>
   toInstance<MimicComponentType.Pcm>({
     source: heatExchanger,
-    sensors: { heatTransfer: heatExchanger },
+    sensors: { heatTransfer: heatExchanger, freshwaterHeatTransfer: freshwaterHeatExchanger },
     controls: {},
     controllerState: { chargeController: controller },
     parameters: {},
@@ -34,6 +35,7 @@ export const PCM_HEAT_BATTERIES_DATA = toFieldsMap({
         "pcm",
         "pcmModule1ChargeController",
       ),
+      getField(SensorComponentType.HeatTransferDevice, "pcm", "pcmHeatModule1Freshwater"),
     ),
     "1050": createHeatBattery(
       "Heat battery 2",
