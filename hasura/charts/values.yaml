@@ -2,7 +2,7 @@ hasura-enterprise-stack:
   graphql-engine:
     image:
       repository: europe-west1-docker.pkg.dev/common-449414/common/hasura-graphql-engine
-      tag: "0.0.0" # Overwritten in CI
+      tag: "0.11.26@sha256:6740ee1b23df501dfc6e332c2cafddaf0e08331e22a26fb400efcadd60a9fed2" # Overwritten in CI
 
 externalService:
   enabled: false
