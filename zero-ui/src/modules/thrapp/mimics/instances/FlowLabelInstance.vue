@@ -6,7 +6,11 @@ import { ModuleField } from "../providers";
 import SensorValue from "../providers/SensorValue.vue";
 import { FieldRenderer } from "../renderers";
 
-defineProps<MimicComponentInstanceProps & { flow: ModuleField<SensorComponentType.Flow> }>();
+defineProps<
+  MimicComponentInstanceProps & {
+    flow: ModuleField<SensorComponentType.Flow | SensorComponentType.FlowOnly>;
+  }
+>();
 </script>
 
 <template>

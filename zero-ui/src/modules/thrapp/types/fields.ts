@@ -394,7 +394,7 @@ export type SourceFieldDefinitions = SourceFields<{
   [MimicComponentType.PressureSensor]: SensorComponentType.Pressure;
   [MimicComponentType.PressureGauge]: undefined;
   [MimicComponentType.TemperatureSensor]: SensorComponentType.Temperature;
-  [MimicComponentType.FlowSensor]: SensorComponentType.Flow;
+  [MimicComponentType.FlowSensor]: SensorComponentType.Flow | SensorComponentType.FlowOnly;
   [MimicComponentType.LevelSensor]: SensorComponentType.Level;
   [MimicComponentType.LevelSwitch]: SensorComponentType.LevelSwitch;
   [MimicComponentType.ManualValve]: undefined;

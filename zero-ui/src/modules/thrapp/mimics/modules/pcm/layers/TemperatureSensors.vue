@@ -17,6 +17,7 @@ const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSens
   "1038-54",
   "1038-31",
   "1038-55",
+  "25001038-3",
 ]);
 </script>
 
@@ -163,6 +164,20 @@ const temperatureSensors = getTooltipContexts(MimicComponentType.TemperatureSens
         y="635"
         :tag-id="temperatureSensors['1038-55'].tooltip?.yardTag"
         :temperature="temperatureSensors['1038-55'].source"
+      />
+    </TemperatureSensorInstance>
+
+    <TemperatureSensorInstance
+      x="1034"
+      y="96"
+      :orientation="ComponentOrientation.Down"
+      v-bind="temperatureSensors['25001038-3']"
+    >
+      <TemperatureLabelInstance
+        x="1070"
+        y="82"
+        :tag-id="temperatureSensors['25001038-3'].tooltip?.yardTag"
+        :temperature="temperatureSensors['25001038-3'].source"
       />
     </TemperatureSensorInstance>
   </g>
