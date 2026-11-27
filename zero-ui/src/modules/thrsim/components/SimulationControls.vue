@@ -27,7 +27,7 @@ const COMPONENTS: Record<SimulationComponentType, Component | null> = {
   [SimulationComponentType.HeatSource]: HeatSourceControl,
   [SimulationComponentType.ActiveHeatSource]: HeatSourceControl,
   [SimulationComponentType.HvacExchanger]: HvacControl,
-  [SimulationComponentType.AmcsControlMode]: null,
+  [SimulationComponentType.AmcsMode]: null,
   [SimulationComponentType.AdsorptionChiller]: null,
   [SimulationComponentType.Ugrid]: HeatSourceControl,
   [SimulationComponentType.PropulsionDrive]: HeatSourceControl,

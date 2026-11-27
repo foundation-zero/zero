@@ -174,7 +174,7 @@ export const ADSORPTION_SENSOR_VALUES_DEFINITION = {
     path: ["marpower", "_500000Thrs", "adsorption", "adsorptionMixWaste"],
   },
   adsorptionMode: {
-    componentType: SensorComponentType.AmcsControlMode,
+    componentType: SensorComponentType.AmcsMode,
     path: ["marpower", "_500000Thrs", "adsorption", "mode"],
   },
   adsorptionSeawaterExchanger: {
@@ -994,7 +994,7 @@ export const DC_SENSOR_VALUES_DEFINITION = {
     path: ["marpower", "_500000Thrs", "dc", "dcMixUgrid"],
   },
   dcMode: {
-    componentType: SensorComponentType.AmcsControlMode,
+    componentType: SensorComponentType.AmcsMode,
     path: ["marpower", "_500000Thrs", "dc", "mode"],
   },
   dcPressureAft: {
@@ -1534,7 +1534,7 @@ export const DHW_SENSOR_VALUES_DEFINITION = {
     path: ["marpower", "_500000Thrs", "dhw", "dhwLevelTank3"],
   },
   dhwMode: {
-    componentType: SensorComponentType.AmcsControlMode,
+    componentType: SensorComponentType.AmcsMode,
     path: ["marpower", "_500000Thrs", "dhw", "mode"],
   },
   dhwPressure: {
@@ -1903,7 +1903,7 @@ export const DRIVES_SENSOR_VALUES_DEFINITION = {
     path: ["marpower", "_500000Thrs", "drives", "drivesMixRecovery"],
   },
   drivesMode: {
-    componentType: SensorComponentType.AmcsControlMode,
+    componentType: SensorComponentType.AmcsMode,
     path: ["marpower", "_500000Thrs", "drives", "mode"],
   },
   drivesPressure: {
@@ -2426,7 +2426,7 @@ export const PCM_SENSOR_VALUES_DEFINITION = {
     path: ["thrs", "controller", "pcm", "pcmHeatModule4"],
   },
   pcmMode: {
-    componentType: SensorComponentType.AmcsControlMode,
+    componentType: SensorComponentType.AmcsMode,
     path: ["marpower", "_500000Thrs", "pcm", "mode"],
   },
   pcmPump: {
@@ -2970,7 +2970,7 @@ export const PVT_SENSOR_VALUES_DEFINITION = {
     path: ["marpower", "_500000Thrs", "pvt", "pvtMixOwners"],
   },
   pvtMode: {
-    componentType: SensorComponentType.AmcsControlMode,
+    componentType: SensorComponentType.AmcsMode,
     path: ["marpower", "_500000Thrs", "pvt", "mode"],
   },
   pvtOwnersString1Heat: {
@@ -3606,7 +3606,7 @@ export const THRUSTERS_SENSOR_VALUES_DEFINITION = {
     path: ["marpower", "_500000Thrs", "thrusters", "thrustersMixRecovery"],
   },
   thrustersMode: {
-    componentType: SensorComponentType.AmcsControlMode,
+    componentType: SensorComponentType.AmcsMode,
     path: ["marpower", "_500000Thrs", "thrusters", "mode"],
   },
   thrustersPcmHeat: {

@@ -1,5 +1,5 @@
 import {
-  AmcsControlMode,
+  AmcsMode,
   ControlDefinitions,
   ExtractControlValues,
   ExtractParameterValues,
@@ -28,7 +28,7 @@ export type SimulationFields = {
   [SimulationComponentType.Flow]: (keyof FlowSimulation)[];
   [SimulationComponentType.HvacExchanger]: (keyof HvacExchangerSimulation)[];
   [SimulationComponentType.AdsorptionChiller]: (keyof AdsorptionChillerSimulation)[];
-  [SimulationComponentType.AmcsControlMode]: (keyof AmcsControlModeSimulation)[];
+  [SimulationComponentType.AmcsMode]: (keyof AmcsModeSimulation)[];
 };
 
 export type ThrusterSimulation = {
@@ -66,8 +66,8 @@ export type HvacExchangerSimulation = {
   maximumTemperature: Stamped<number>;
 };
 
-export type AmcsControlModeSimulation = {
-  mode: Stamped<AmcsControlMode>;
+export type AmcsModeSimulation = {
+  mode: Stamped<AmcsMode>;
 };
 
 export type AdsorptionChillerSimulation = {
@@ -103,7 +103,7 @@ export type SimulationDefinitionMap = {
   [SimulationComponentType.Ugrid]: HeatSourceSimulation;
   [SimulationComponentType.PropulsionDrive]: HeatSourceSimulation;
   [SimulationComponentType.HvacExchanger]: HvacExchangerSimulation;
-  [SimulationComponentType.AmcsControlMode]: AmcsControlModeSimulation;
+  [SimulationComponentType.AmcsMode]: AmcsModeSimulation;
   [SimulationComponentType.AdsorptionChiller]: AdsorptionChillerSimulation;
 };
 

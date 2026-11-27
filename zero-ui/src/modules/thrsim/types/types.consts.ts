@@ -8,7 +8,7 @@ export const enum SimulationComponentType {
   HeatSource = "heatSource",
   ActiveHeatSource = "activeHeatSource",
   HvacExchanger = "hvacExchanger",
-  AmcsControlMode = "amcsControlMode",
+  AmcsMode = "amcsMode",
   AdsorptionChiller = "adsorptionChiller",
   Ugrid = "ugrid",
   PropulsionDrive = "propulsionDrive",

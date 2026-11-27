@@ -17,7 +17,7 @@ export type Degree = number;
 
 export type SchemaDefinitions<T extends SchemaDefinition<unknown>> = Record<string, T>;
 
-export const enum AmcsControlMode {
+export const enum AmcsMode {
   Local = "LOCAL",
   Manual = "MANUAL",
   Auto = "AUTO",
@@ -280,8 +280,8 @@ export type AdsorptionChillerSensor = {
   freeCooling: Stamped<boolean>;
 };
 
-export type AmcsControlModeSensor = {
-  mode: Stamped<AmcsControlMode>;
+export type AmcsModeSensor = {
+  mode: Stamped<AmcsMode>;
 };
 
 export type SensorType =
@@ -455,7 +455,7 @@ export const enum SensorComponentType {
   BrightloopGroup = "sensor:brightloopGroup",
   UgridGroup = "sensor:ugridGroup",
   ShorePowerGroup = "sensor:shorePowerGroup",
-  AmcsControlMode = "system:amcsControlMode",
+  AmcsMode = "system:amcsMode",
 }
 
 export const SENSOR_COMPONENT_TYPES = [
@@ -554,7 +554,7 @@ export type SensorDefinitionMap = {
   [SensorComponentType.UgridGroup]: UgridGroupSensor;
   [SensorComponentType.ShorePowerGroup]: ShorePowerGroupSensor;
   [SensorComponentType.Pyranometer]: PyranometerSensor;
-  [SensorComponentType.AmcsControlMode]: AmcsControlModeSensor;
+  [SensorComponentType.AmcsMode]: AmcsModeSensor;
 };
 
 export type ExtractValues<

@@ -12,7 +12,7 @@ from thrs.input_output.base import (
     valve_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
-from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.definitions.system import AmcsModeStatus
 from thrs.input_output.definitions.units import GLYCOL_20_HEAT_TRANSFER_CONVERSION
 from thrs.input_output.root_types import (
     AmcsHeartbeatControlValues,
@@ -603,7 +603,7 @@ class DrivesSimulationInputs(ThrsValues):
     drives_shorepower: simulation.ActiveHeatSource
     drives_seawater_supply: simulation.Boundary
     drives_dhw_supply: simulation.Boundary
-    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsModeStatus, component_meta(included_in_fmu=False)]
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property

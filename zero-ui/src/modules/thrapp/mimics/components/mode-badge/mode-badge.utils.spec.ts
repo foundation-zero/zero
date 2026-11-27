@@ -1,6 +1,6 @@
 import i18n from "@/i18n";
 import { ControlStatus } from "@/modules/thrapp/stores/automation";
-import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
+import { AmcsMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
 import { describe, expect, it } from "vitest";
 import { NamedValue } from "vue-i18n";
 import { ModeBadgeMode } from "./mode-badge.consts";
@@ -9,7 +9,7 @@ import { getModuleModes } from "./mode-badge.utils";
 const t = (key: string, values?: NamedValue) =>
   i18n.global.t(`thrapp.mimics.modeBadge.${key}`, values ?? {});
 
-const amcs = (value: AmcsControlMode) => ({ mode: { mode: { value } } });
+const amcs = (value: AmcsMode) => ({ mode: { mode: { value } } });
 
 const withModule = (module: string, status: object) =>
   ({ modules: { [module]: status } }) as unknown as ControlStatus;
@@ -17,7 +17,7 @@ const withModule = (module: string, status: object) =>
 const automatic = (module: string, automaticMode: object | null) =>
   withModule(module, {
     controlMode: { automatic: !!automaticMode, automaticMode },
-    sensorValues: amcs(AmcsControlMode.External),
+    sensorValues: amcs(AmcsMode.External),
   });
 
 const labels = (module: Parameters<typeof getModuleModes>[0], control?: ControlStatus) =>
@@ -94,7 +94,7 @@ describe("getModuleModes", () => {
   it("shows no badges while the control mode is unknown", () => {
     const control = withModule("pvt", {
       controlMode: null,
-      sensorValues: amcs(AmcsControlMode.External),
+      sensorValues: amcs(AmcsMode.External),
     });
 
     expect(getModuleModes("pvt", control, t)).toEqual([]);
@@ -103,11 +103,11 @@ describe("getModuleModes", () => {
   it("follows the automatic flag rather than the presence of an automatic mode", () => {
     const automaticWithoutMode = withModule("pvt", {
       controlMode: { automatic: true, automaticMode: null },
-      sensorValues: amcs(AmcsControlMode.External),
+      sensorValues: amcs(AmcsMode.External),
     });
     const manualWithStaleMode = withModule("thrusters", {
       controlMode: { automatic: false, automaticMode: { mode: "cooling" } },
-      sensorValues: amcs(AmcsControlMode.External),
+      sensorValues: amcs(AmcsMode.External),
     });
 
     expect(getModuleModes("pvt", automaticWithoutMode, t)).toEqual([]);
@@ -115,7 +115,7 @@ describe("getModuleModes", () => {
   });
 
   it("names the AMCS mode when the advisory mode is disabled", () => {
-    const control = withModule("pvt", { sensorValues: amcs(AmcsControlMode.Manual) });
+    const control = withModule("pvt", { sensorValues: amcs(AmcsMode.Manual) });
 
     expect(getModuleModes("pvt", control, t)).toEqual([
       { mode: ModeBadgeMode.AdvisoryOff, label: "AMCS manual" },

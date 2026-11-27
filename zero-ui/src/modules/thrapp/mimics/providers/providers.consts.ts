@@ -33,7 +33,7 @@ export const DEFAULT_SENSOR_FIELD_VALUE_FIELD: {
   [SensorComponentType.UgridGroup]: "anyActive",
   [SensorComponentType.ShorePowerGroup]: "anyActive",
   [SensorComponentType.Pyranometer]: "irradiance",
-  [SensorComponentType.AmcsControlMode]: "mode",
+  [SensorComponentType.AmcsMode]: "mode",
 };
 
 export const DEFAULT_CONTROL_FIELD_VALUE_FIELD: {

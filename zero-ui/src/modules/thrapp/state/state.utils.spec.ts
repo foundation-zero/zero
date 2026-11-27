@@ -1,4 +1,4 @@
-import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
+import { AmcsMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createApp, reactive, ref } from "vue";
 import { useAdvisoryEnabled, useAutomaticMode, useDcMode, usePvtMode } from ".";
@@ -102,17 +102,17 @@ describe("thrapp state", () => {
   });
 
   describe("useAdvisoryEnabled", () => {
-    const withAmcsMode = (mode: AmcsControlMode) => ({
+    const withAmcsMode = (mode: AmcsMode) => ({
       modules: { dhw: { sensorValues: { mode: { mode: stamp(mode) } } } },
     });
 
     it("is enabled when the AMCS hands control to us", () => {
-      automation.control = withAmcsMode(AmcsControlMode.External);
+      automation.control = withAmcsMode(AmcsMode.External);
 
       expect(inModule(useAdvisoryEnabled).value).toBe(true);
     });
 
-    it.each([AmcsControlMode.Local, AmcsControlMode.Manual, AmcsControlMode.Auto])(
+    it.each([AmcsMode.Local, AmcsMode.Manual, AmcsMode.Auto])(
       "is disabled when the AMCS is in %s mode",
       (mode) => {
         automation.control = withAmcsMode(mode);
@@ -125,7 +125,7 @@ describe("thrapp state", () => {
       {
         case: "no module is selected",
         module: undefined,
-        control: withAmcsMode(AmcsControlMode.External),
+        control: withAmcsMode(AmcsMode.External),
       },
       { case: "the control status is not loaded", module: "dhw", control: undefined },
       { case: "the module has no sensor values", module: "dhw", control: { modules: { dhw: {} } } },

@@ -73,7 +73,7 @@ const SENSOR_TYPES: Record<string, keyof typeof Thrs.SensorComponentType> = {
   level_sensor: "Level",
   level_switch: "LevelSwitch",
   pyranometer: "Pyranometer",
-  amcs_mode: "AmcsControlMode",
+  amcs_mode: "AmcsMode",
   heat_transfer: "HeatTransferDevice",
   calculated_flow: "CalculatedFlow",
   calculated_temperature: "CalculatedTemperature",
@@ -167,7 +167,7 @@ const SENSOR_FIELDS: Record<string, string[]> = {
   ],
   Ugrid: ["active", "tempPowerStage", "power"],
   Pyranometer: ["irradiance"],
-  AmcsControlMode: ["mode"],
+  AmcsMode: ["mode"],
 };
 
 /** The parts whose components have fields; a parameter is a field itself. */

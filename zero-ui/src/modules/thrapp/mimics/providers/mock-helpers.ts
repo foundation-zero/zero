@@ -1,7 +1,7 @@
 import { stamp, stampWithSource } from "@/modules/common/lib/utils";
 import { PID, Stamped } from "@/modules/common/types";
 import {
-  AmcsControlMode,
+  AmcsMode,
   BoilerTankState,
   ControlComponentType,
   ControlDefinitionMap,
@@ -290,8 +290,8 @@ export const SENSOR_VALUES_FACTORY: ValueFactory<SensorDefinitionMap> = {
     const irradiance = useRandomizedNumber(0, 1000);
     return computed(() => ({ irradiance: stamp(irradiance) }));
   },
-  [SensorComponentType.AmcsControlMode]: () => {
-    return computed(() => ({ mode: stamp(AmcsControlMode.External) }));
+  [SensorComponentType.AmcsMode]: () => {
+    return computed(() => ({ mode: stamp(AmcsMode.External) }));
   },
 };
 

@@ -5,7 +5,7 @@ from pydantic.alias_generators import to_snake
 
 from thrs.input_output.base import ThrsValues, component_meta, valve_meta
 from thrs.input_output.definitions import control, sensor
-from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.definitions.system import AmcsModeStatus
 from thrs.input_output.root_types import (
     AmcsHeartbeatControlValues,
     AmcsModeSensorValues,
@@ -364,7 +364,7 @@ class CoolingPanelsControlValues(AmcsHeartbeatControlValues):
 
 
 class CoolingPanelsSimulationInputs(ThrsValues):
-    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsModeStatus, component_meta(included_in_fmu=False)]
 
 
 class CoolingPanelsSimulationOutputs(ThrsValues):

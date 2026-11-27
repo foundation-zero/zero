@@ -28,7 +28,7 @@ from thrs.input_output.definitions.simulation import (
     OverpressureTemperatureBoundary,
     TemperatureBoundary,
 )
-from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
+from thrs.input_output.definitions.system import AmcsMode, AmcsModeStatus
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import dhw_path
@@ -62,7 +62,7 @@ def simulation_inputs():
         ),
         dhw_seawater_supply=TemperatureBoundary(temperature=Stamped.stamp(32)),
         dhw_hotwater_demand=FlowBoundary(flow=Stamped.stamp(20)),
-        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)),
     )
 
 

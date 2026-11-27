@@ -2,14 +2,14 @@
 
 The IO list gives these fields only a data type, so their meaning is kept
 here, per field name; each name belongs to one component type. The names
-follow THRS control (`ControlMode` and `PumpControlMode` in
+follow THRS control (`AmcsMode` and `PumpControlMode` in
 zero-thrs-control).
 """
 
 from enum import IntEnum
 
 
-class AmcsControlMode(IntEnum):
+class AmcsMode(IntEnum):
     LOCAL = 0
     MANUAL = 1
     AUTO = 2
@@ -33,6 +33,6 @@ class PumpControlMode(IntEnum):
 
 
 ENUMS: dict[str, type[IntEnum]] = {
-    "Mode": AmcsControlMode,  # ComponentType.AMCS_MODE
+    "Mode": AmcsMode,  # ComponentType.AMCS_MODE
     "CC_ControlMode": PumpControlMode,  # ComponentType.PUMP
 }

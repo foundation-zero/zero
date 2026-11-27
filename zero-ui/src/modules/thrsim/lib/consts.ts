@@ -72,7 +72,7 @@ export const SIMULATION_FIELDS: SimulationFields = {
   [SimulationComponentType.Flow]: ["flow"],
   [SimulationComponentType.HvacExchanger]: ["heatFlow", "maximumTemperature"],
   [SimulationComponentType.AdsorptionChiller]: ["freeCooling"],
-  [SimulationComponentType.AmcsControlMode]: ["mode"],
+  [SimulationComponentType.AmcsMode]: ["mode"],
 };
 
 // Each component with the fields of its type, the timestamp named as thrsim reads it.

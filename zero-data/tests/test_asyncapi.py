@@ -76,7 +76,7 @@ def test_every_field_is_a_stamped_value_of_its_data_type(
 @pytest.mark.parametrize(
     ("component", "field", "enum"),
     [
-        (ComponentType.AMCS_MODE, "Mode", "AmcsControlMode"),
+        (ComponentType.AMCS_MODE, "Mode", "AmcsMode"),
         (ComponentType.PUMP, "CC_ControlMode", "PumpControlMode"),
     ],
 )
@@ -94,10 +94,10 @@ def test_enum_fields_have_named_values(component, field, enum):
     payload = schemas[component_name(component)]
     assert payload["properties"][field] == {"$ref": f"{SCHEMA_REF_PREFIX}stamped{enum}"}
     assert schemas[f"stamped{enum}"]["properties"]["Value"] == {
-        "$ref": f"{SCHEMA_REF_PREFIX}{enum}"
+        "$ref": f"{SCHEMA_REF_PREFIX}enum{enum}"
     }
-    assert schemas[enum]["type"] == "integer"
-    assert schemas[enum]["oneOf"] == [
+    assert schemas[f"enum{enum}"]["type"] == "integer"
+    assert schemas[f"enum{enum}"]["oneOf"] == [
         {"const": member.value, "title": member.name} for member in ENUMS[field]
     ]
 

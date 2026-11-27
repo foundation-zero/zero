@@ -17,7 +17,7 @@ from thrs.control.modules.consumers.state import (
 )
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.simulation import Boundary
-from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
+from thrs.input_output.definitions.system import AmcsMode, AmcsModeStatus
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import consumers_path
@@ -69,7 +69,7 @@ def simulation_inputs():
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(29),
         ),
-        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)),
     )
 
 

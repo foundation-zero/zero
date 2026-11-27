@@ -20,7 +20,7 @@ from thrs.control.modules.pcm.state import (
 from thrs.input_output.base import Stamped
 from thrs.input_output.definitions.control import Valve
 from thrs.input_output.definitions.simulation import Boundary, TemperatureBoundary
-from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
+from thrs.input_output.definitions.system import AmcsMode, AmcsModeStatus
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu, FmuLike
 from thrs.simulation.models.fmu_paths import pcm_path
@@ -102,7 +102,7 @@ def simulation_inputs():
             temperature=Stamped.stamp(40), flow=Stamped.stamp(0)
         ),
         pcm_pvt_supply=Boundary(temperature=Stamped.stamp(70), flow=Stamped.stamp(30)),
-        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)),
     )
 
 
