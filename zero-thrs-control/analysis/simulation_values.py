@@ -44,7 +44,7 @@ class StampedDf[T](ThrsValues):
         return value
 
     @staticmethod
-    def stamp(value: pl.DataFrame) -> "StampedDf[Any]":
+    def stamp(value: pl.DataFrame) -> StampedDf[Any]:
         return StampedDf(value=value)
 
 

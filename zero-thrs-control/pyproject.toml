@@ -92,6 +92,12 @@ search-path = ["src", ".", "docs/skills/thrs-module-manual/scripts"]
 
 [tool.ruff]
 fix = true
+# Notebooks written against APIs that no longer exist, and an fmpy scratchpad.
+extend-exclude = [
+  "analysis/old_notebooks/paper_figures.ipynb",
+  "src/thrs/simulation/models/SolarTestModel/control_test.ipynb",
+  "src/thrs/simulation/models/XRGTestModel/test_simulation.ipynb",
+]
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -135,6 +141,10 @@ extend-unsafe-fixes = ["COM812"]
 
 "**/*.ipynb" = [
   "ERA001", # Allow commented out code in notebooks
+]
+
+"analysis/**" = [
+  "S101", # Asserts narrow simulation results for the type checker
 ]
 
 [build-system]

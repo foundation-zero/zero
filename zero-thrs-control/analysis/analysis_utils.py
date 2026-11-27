@@ -345,13 +345,11 @@ def plot_result(result: pl.DataFrame, path: str):
         pressure_keys,
     ]
     modules = list(
-        set(
-            [
-                col.split("_")[0]
-                for col in result.columns
-                if col not in ["time", "control_mode"]
-            ]
-        )
+        {
+            col.split("_")[0]
+            for col in result.columns
+            if col not in ["time", "control_mode"]
+        }
     )
 
     result_frames = {
