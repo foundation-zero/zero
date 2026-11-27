@@ -240,8 +240,8 @@ importers:
         specifier: ^5.16.1
         version: 5.16.1(supports-color@2.0.0)
       oas:
-        specifier: ^39.0.1
-        version: 39.0.1
+        specifier: ^40.0.0
+        version: 40.0.0
       pinia:
         specifier: ^4.1.0
         version: 4.1.0(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.46(typescript@6.0.3))
@@ -3702,9 +3702,9 @@ packages:
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
 
-  oas@39.0.1:
-    resolution: {integrity: sha512-t9o+RXxWsv1zSvwUfvVeW62kbkI/ZlTAD+CFr3hv4nEpnv5DgM3AImGT0BbSVHnDlHlmLLctY9RmD3/E74MvyQ==}
-    engines: {node: '>=20'}
+  oas@40.0.0:
+    resolution: {integrity: sha512-EJXphEy4oRvsKIaPFREn/h2cipqoXw7NZ9RPUptjnXNTZP9C4/UfMrcnnfGtNnBnqMtvJlyNNhRX07qStSBICQ==}
+    engines: {node: '>=22'}
 
   object-inspect@1.13.4:
     resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
@@ -8329,14 +8329,14 @@ snapshots:
     dependencies:
       boolbase: 1.0.0
 
-  oas@39.0.1:
+  oas@40.0.0:
     dependencies:
-      '@readme/openapi-parser': 10.0.0(openapi-types@12.1.3)
+      '@readme/openapi-parser': 11.0.0(@scalar/openapi-types@0.9.10)
+      '@scalar/openapi-types': 0.9.10
       '@types/json-schema': 7.0.15
       json-schema-merge-allof: 0.8.1
       jsonpath-plus: 10.4.0
       jsonpointer: 5.0.1
-      openapi-types: 12.1.3
       path-to-regexp: 8.4.2
       remove-undefined-objects: 9.0.2
 
