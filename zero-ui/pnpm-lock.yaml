@@ -189,8 +189,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2(playwright@1.65.1)
       '@readme/openapi-parser':
-        specifier: ^10.0.0
-        version: 10.0.0(openapi-types@12.1.3)
+        specifier: ^11.0.0
+        version: 11.0.0(@scalar/openapi-types@0.9.10)
       '@remixicon/vue':
         specifier: ^4.9.0
         version: 4.9.0(vue@3.5.46(typescript@6.0.3))
@@ -426,6 +426,12 @@ packages:
   '@apidevtools/json-schema-ref-parser@15.5.2':
     resolution: {integrity: sha512-B+C9Ok0DF/rjANIUHgwcV5/d4C72MB7f2IbKFL8jDGcGq2qn3yr893s8vAn2kbhmyaelAin0JK8EKF9P1+y7aQ==}
     engines: {node: '>=20'}
+    peerDependencies:
+      '@types/json-schema': ^7.0.15
+
+  '@apidevtools/json-schema-ref-parser@16.1.1':
+    resolution: {integrity: sha512-RY1qaEozeVToivXj1lBq6X5pdmPz7sRxxXL7QloUPeOUYALWSM18hf/sI6JqzVXGsCLrZPkGGK19oHKP6UPQJw==}
+    engines: {node: '>=22.19.0'}
     peerDependencies:
       '@types/json-schema': ^7.0.15
 
@@ -1483,9 +1489,19 @@ packages:
     peerDependencies:
       openapi-types: '>=7'
 
+  '@readme/openapi-parser@11.0.0':
+    resolution: {integrity: sha512-8dEfU4yIJg8BuFLDHg4tiKZQODQKpyZCHge7WpTA2CAtdCgJVBYFnO3BpmxFvI5zW5AkfJEK0hXKzGRCsxzQlw==}
+    engines: {node: '>=22.19.0'}
+    peerDependencies:
+      '@scalar/openapi-types': '>=0.9.0'
+
   '@readme/openapi-schemas@4.0.0':
     resolution: {integrity: sha512-hrG//9/+RpOZTrUDirU4OzfMqaxCdY5BMpr3YuLf3Rje9rfNsydQJsH9iCPTie9ZRu9xe+0OUD4fHe0JmGwa2w==}
     engines: {node: '>=20'}
+
+  '@readme/openapi-schemas@5.0.0':
+    resolution: {integrity: sha512-6Ow9rLabv8I8PUJcO/elcRgihux34HpfuJGhPneuHkv2WSoarkqnSRTmnr0K0igkeDcOcpPS2CM3tZnGIIE2tA==}
+    engines: {node: '>=22'}
 
   '@remixicon/vue@4.9.0':
     resolution: {integrity: sha512-4P0MY5ScL+MRLnHu1iT3xHAsliBwOGDIgSgHCZhSj2wkLa5NzqiQ4SGD/04VoHM+BRr8+xjmF7ZemkOUlMDJ3A==}
@@ -1611,6 +1627,10 @@ packages:
     peerDependenciesMeta:
       rollup:
         optional: true
+
+  '@scalar/openapi-types@0.9.10':
+    resolution: {integrity: sha512-rQVlvSLXvP3ljCY7BqKeJ07EjqtzJyaj1OTMVRVRBftmNmxupmmx1xNTnuLnaJIfGnrNEFLW7kyJofzH43wUPg==}
+    engines: {node: '>=22'}
 
   '@shikijs/core@4.6.0':
     resolution: {integrity: sha512-bfd4OKgvoyXYiYmMRuleA656P4V7M/Du9lcTl38Ngm6KszMj7bq4J1IGZwSYR4c95Tv5UQALtYNWUwaI9UT3xw==}
@@ -4882,6 +4902,11 @@ snapshots:
       js-yaml: 5.5.0
       undici: 6.29.1
 
+  '@apidevtools/json-schema-ref-parser@16.1.1(@types/json-schema@7.0.15)':
+    dependencies:
+      '@types/json-schema': 7.0.15
+      js-yaml: 5.5.0
+
   '@ardatan/relay-compiler@13.0.3(graphql@17.1.0)':
     dependencies:
       '@babel/runtime': 8.1.0
@@ -5990,7 +6015,21 @@ snapshots:
       ajv-draft-04: 1.0.0(ajv@8.20.0)
       openapi-types: 12.1.3
 
+  '@readme/openapi-parser@11.0.0(@scalar/openapi-types@0.9.10)':
+    dependencies:
+      '@apidevtools/json-schema-ref-parser': 16.1.1(@types/json-schema@7.0.15)
+      '@readme/better-ajv-errors': 2.4.0(ajv@8.20.0)
+      '@readme/openapi-schemas': 5.0.0
+      '@scalar/openapi-types': 0.9.10
+      '@types/json-schema': 7.0.15
+      ajv: 8.20.0
+      ajv-draft-04: 1.0.0(ajv@8.20.0)
+
   '@readme/openapi-schemas@4.0.0':
+    dependencies:
+      '@types/json-schema': 7.0.15
+
+  '@readme/openapi-schemas@5.0.0':
     dependencies:
       '@types/json-schema': 7.0.15
 
@@ -6058,6 +6097,8 @@ snapshots:
       '@types/estree': 1.0.10
       estree-walker: 2.0.2
       picomatch: 4.0.7
+
+  '@scalar/openapi-types@0.9.10': {}
 
   '@shikijs/core@4.6.0':
     dependencies:
