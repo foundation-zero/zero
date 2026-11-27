@@ -21,7 +21,7 @@ from thrs.control.modules.thrusters.state import (
 )
 from thrs.control.state import AutomationMode
 from thrs.input_output.base import CombinedValues, Stamped
-from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
+from thrs.input_output.definitions.system import AmcsMode, AmcsModeStatus
 from thrs.input_output.fmu_mapping import build_fmu_key_mapping
 from thrs.orchestration.module import Module
 from thrs.orchestration.simulation import Simulation, SimulationUnit
@@ -112,7 +112,7 @@ async def test_lockstep_runner_ticks_and_publishes_channels():
     control_values = simple_control_values(flow=1.0)
     controller_state = simple_controller_state()
     parameters = mock.sentinel.parameters
-    sensor_values = Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
+    sensor_values = Mock(mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)))
 
     combined_sensor_values = CombinedValues(values={"module": sensor_values})
     combined_control_values = CombinedValues(values={"module": control_values})  # pyrefly: ignore[bad-assignment]
@@ -237,7 +237,7 @@ async def test_control_runner_ticks_and_uses_channels():
     control_values_new = simple_control_values(flow=2.0)
     controller_state = simple_controller_state()
     parameters = mock.sentinel.parameters
-    sensor_values = Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
+    sensor_values = Mock(mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)))
 
     mock_liveness = Mock()
 

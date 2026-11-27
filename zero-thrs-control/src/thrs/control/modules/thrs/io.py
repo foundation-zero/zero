@@ -52,7 +52,7 @@ from thrs.control.modules.thrusters.io import (
 )
 from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
 from thrs.input_output.definitions import sensor, simulation
-from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.definitions.system import AmcsModeStatus
 from thrs.simulation.cosimulation import (
     CoSimulationMaster,
     CoSimulationParticipant,
@@ -120,7 +120,7 @@ class ThrsSimulationInputs(ThrsValues):
     drives_propdrive_fwd2: simulation.PropulsionDrive
     drives_shorepower: simulation.ActiveHeatSource
     drives_seawater_supply: simulation.Boundary
-    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsModeStatus, component_meta(included_in_fmu=False)]
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property

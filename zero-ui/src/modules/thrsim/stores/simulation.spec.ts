@@ -1,5 +1,5 @@
 import { useThrsHistory } from "@/modules/thrapp/stores/history";
-import { AmcsControlMode } from "@/modules/thrapp/types/thrs";
+import { AmcsMode } from "@/modules/thrapp/types/thrs";
 import { createTestingPinia } from "@pinia/testing";
 import { createUseQueryFake } from "@tests/lib/urql";
 import { useClientHandle, useQuery } from "@urql/vue";
@@ -137,16 +137,16 @@ describe("simulation store", () => {
     it("is on when the simulated AMCS hands over control", () => {
       const simulation = useSimulationStore();
 
-      withSimulator(running, { mode: { mode: { value: AmcsControlMode.External } } });
+      withSimulator(running, { mode: { mode: { value: AmcsMode.External } } });
       expect(simulation.isAdvisory).toBe(true);
 
-      withSimulator(running, { mode: { mode: { value: AmcsControlMode.Manual } } });
+      withSimulator(running, { mode: { mode: { value: AmcsMode.Manual } } });
       expect(simulation.isAdvisory).toBe(false);
     });
 
     it.each([
-      { enabled: true, mode: AmcsControlMode.External },
-      { enabled: false, mode: AmcsControlMode.Manual },
+      { enabled: true, mode: AmcsMode.External },
+      { enabled: false, mode: AmcsMode.Manual },
     ])("sets the AMCS mode to $mode when enabled=$enabled", async ({ enabled, mode }) => {
       const simulation = useSimulationStore();
       const refreshHistory = vi.spyOn(useThrsHistory(), "refresh");

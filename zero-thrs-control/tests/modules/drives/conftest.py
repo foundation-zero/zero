@@ -17,7 +17,7 @@ from thrs.input_output.definitions.simulation import (
     HeatSource,
     PropulsionDrive,
 )
-from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
+from thrs.input_output.definitions.system import AmcsMode, AmcsModeStatus
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import drives_path
@@ -41,7 +41,7 @@ def simulation_inputs_inactive():
         drives_dhw_supply=Boundary(
             temperature=Stamped.stamp(20), flow=Stamped.stamp(29)
         ),
-        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)),
     )
 
 
@@ -61,7 +61,7 @@ def simulation_inputs_all_drives_active():
         drives_dhw_supply=Boundary(
             temperature=Stamped.stamp(20), flow=Stamped.stamp(29)
         ),
-        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)),
     )
 
 
@@ -81,7 +81,7 @@ def simulation_inputs_shorepower():
         drives_dhw_supply=Boundary(
             temperature=Stamped.stamp(20), flow=Stamped.stamp(29)
         ),
-        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)),
     )
 
 

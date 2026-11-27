@@ -13,13 +13,16 @@ from thrs.input_output.base import (
 )
 from thrs.input_output.definitions import control, sensor, simulation
 from thrs.input_output.definitions.control import Valve
-from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.definitions.system import AmcsModeStatus
 from thrs.input_output.definitions.units import (
     GLYCOL_20_HEAT_TRANSFER_CONVERSION,
     WATER_HEAT_TRANSFER_CONVERSION,
     OptionalCelsius,
 )
-from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+from thrs.input_output.root_types import (
+    AmcsHeartbeatControlValues,
+    AmcsModeSensorValues,
+)
 
 
 class PcmSensorValues(AmcsModeSensorValues):
@@ -380,7 +383,7 @@ class PcmSensorValues(AmcsModeSensorValues):
         )
 
 
-class PcmControlValues(AmcsWatchdogControlValues):
+class PcmControlValues(AmcsHeartbeatControlValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,
@@ -456,7 +459,7 @@ class PcmSimulationInputs(ThrsValues):
     pcm_thrusters_supply: simulation.Boundary
     pcm_freshwater_supply: simulation.Boundary
     pcm_consumers_supply: simulation.TemperatureBoundary
-    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsModeStatus, component_meta(included_in_fmu=False)]
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property

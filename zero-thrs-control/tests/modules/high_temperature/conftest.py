@@ -21,7 +21,7 @@ from thrs.input_output.definitions.simulation import (
     Pcs,
     Thruster,
 )
-from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
+from thrs.input_output.definitions.system import AmcsMode, AmcsModeStatus
 from thrs.input_output.definitions.units import PcsMode
 from thrs.orchestration.module import ModuleDescription
 from thrs.orchestration.simulation import Simulation
@@ -55,7 +55,7 @@ def simulation_inputs():
             temperature=Stamped.stamp(40),
             flow=Stamped.stamp(29),
         ),
-        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)),
     )
 
 

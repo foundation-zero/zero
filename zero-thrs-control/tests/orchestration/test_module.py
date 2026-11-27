@@ -460,7 +460,7 @@ async def test_tick_without_sensors_publishes_the_current_parameters_and_modes()
     assert controller_state.parameters.setpoint == 77.0
 
 
-async def test_tick_always_updates_watchdog_timestamp(manual_values):
+async def test_tick_always_updates_heartbeat_timestamp(manual_values):
     channels = make_async_channels()
     module = make_module(channels=channels)
 

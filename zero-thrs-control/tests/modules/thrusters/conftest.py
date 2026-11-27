@@ -22,7 +22,7 @@ from thrs.input_output.definitions.simulation import (
     TemperatureBoundary,
     Thruster,
 )
-from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
+from thrs.input_output.definitions.system import AmcsMode, AmcsModeStatus
 from thrs.input_output.definitions.units import PcsMode
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
@@ -56,7 +56,7 @@ def simulation_inputs():
         ),
         thrusters_pcm_supply=TemperatureBoundary(temperature=Stamped.stamp(50)),
         thrusters_pcs=Pcs(mode=Stamped.stamp(PcsMode.PROPULSION)),
-        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)),
     )
 
 

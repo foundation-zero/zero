@@ -1,6 +1,6 @@
 import { DEFINITIONS } from "@/modules/thrapp/lib/consts";
 import { useAutomationStore } from "@/modules/thrapp/stores/automation";
-import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
+import { AmcsMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
 import { computed, inject, Ref, toRefs } from "vue";
 import { DcConverterGroup, PvtGroup } from "./state.types";
 
@@ -47,6 +47,6 @@ export const useAdvisoryEnabled = () => {
     const module = control.value.modules[key as keyof typeof control.value.modules];
     if (!module?.sensorValues) return null;
 
-    return module.sensorValues.mode?.mode.value === AmcsControlMode.External;
+    return module.sensorValues.mode?.mode.value === AmcsMode.External;
   });
 };

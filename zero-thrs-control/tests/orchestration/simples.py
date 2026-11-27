@@ -7,16 +7,19 @@ from thrs.control.state import ControlState
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped, ThrsValues, component_meta
 from thrs.input_output.definitions.sensor import FlowSensor
-from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
-from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+from thrs.input_output.definitions.system import AmcsMode, AmcsModeStatus
+from thrs.input_output.root_types import (
+    AmcsHeartbeatControlValues,
+    AmcsModeSensorValues,
+)
 from thrs.orchestration.simulation import Simulation, SimulationResult
 
 
-class SimpleInOut(AmcsModeSensorValues, AmcsWatchdogControlValues):
+class SimpleInOut(AmcsModeSensorValues, AmcsHeartbeatControlValues):
     go_with_the: FlowSensor
 
-    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)] = (
-        AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL))
+    mode: Annotated[AmcsModeStatus, component_meta(included_in_fmu=False)] = (
+        AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL))
     )
 
 
@@ -123,18 +126,18 @@ def simple_advisory_values(flow: float) -> SimpleInOut:
         go_with_the=FlowSensor(
             flow=Stamped.stamp(flow), temperature=Stamped.stamp(20.0)
         ),
-        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)),
     )
 
 
 def simple_non_advisory_values(
-    flow: float, mode: ControlMode = ControlMode.MANUAL
+    flow: float, mode: AmcsMode = AmcsMode.MANUAL
 ) -> SimpleInOut:
     return SimpleInOut(
         go_with_the=FlowSensor(
             flow=Stamped.stamp(flow), temperature=Stamped.stamp(20.0)
         ),
-        mode=AmcsControlMode(mode=Stamped.stamp(mode)),
+        mode=AmcsModeStatus(mode=Stamped.stamp(mode)),
     )
 
 

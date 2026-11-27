@@ -8,7 +8,7 @@ import { useIntervalFn } from "@vueuse/core";
 import { OperationResult } from "graphql-ws";
 import { Maybe } from "graphql/jsutils/Maybe";
 
-import { AmcsControlMode } from "@/modules/thrapp/types/thrs";
+import { AmcsMode } from "@/modules/thrapp/types/thrs";
 import { camelCase } from "lodash";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -85,7 +85,7 @@ export const useSimulationStore = defineStore("simulation", () => {
   const isAdvisory = computed(
     () =>
       (simulation.value?.inputs as { mode?: { mode?: { value?: string } } } | undefined)?.mode?.mode
-        ?.value === AmcsControlMode.External,
+        ?.value === AmcsMode.External,
   );
 
   // Sets some of the simulator's inputs, each field stamped, then reloads the simulator.
@@ -100,7 +100,7 @@ export const useSimulationStore = defineStore("simulation", () => {
     isProcessing.value = true;
     advisoryError.value = null;
     try {
-      const mode = enabled ? AmcsControlMode.External : AmcsControlMode.Manual;
+      const mode = enabled ? AmcsMode.External : AmcsMode.Manual;
       const result = await setInputs({ mode: valueInputs({ mode }) });
       if (result.error) {
         advisoryError.value = result.error.message ?? i18n.global.t("thrs.labels.failedToSubmit");

@@ -9,7 +9,7 @@ from pydantic import TypeAdapter
 
 from zero_data.config import MQTTConfig
 from zero_data.data_gen.marpower_generator import MarpowerGenerator, MarpowerStruct
-from zero_data.io_list.enums import AmcsControlMode, PumpControlMode
+from zero_data.io_list.enums import AmcsMode, PumpControlMode
 from zero_data.io_list.types import IOTopic, IOValue
 
 
@@ -98,7 +98,7 @@ def test_marpower_generator_picks_named_values_for_enum_fields():
         if "CC_ControlMode" in message
     }
     starts = {message["Starts"]["Value"] for message in messages if "Starts" in message}
-    assert modes <= set(AmcsControlMode)
+    assert modes <= set(AmcsMode)
     assert control_modes <= set(PumpControlMode)
     # Other integers stay random.
     assert not starts <= {1, 3, 4}

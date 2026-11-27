@@ -1,6 +1,9 @@
 from thrs.control.state import ControlState
 from thrs.input_output.base import ThrsValues
-from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+from thrs.input_output.root_types import (
+    AmcsHeartbeatControlValues,
+    AmcsModeSensorValues,
+)
 from thrs.orchestration.module import Module
 from thrs.persistence.manager import PersistManager
 from thrs.runtime.liveness import Liveness
@@ -11,7 +14,7 @@ class ControlRunner[S: AmcsModeSensorValues](Runner):
     def __init__(
         self,
         control_modules: list[
-            Module[S, AmcsWatchdogControlValues, ThrsValues, ThrsValues, ControlState]
+            Module[S, AmcsHeartbeatControlValues, ThrsValues, ThrsValues, ControlState]
         ],
         liveness: Liveness,
         persistence: PersistManager,

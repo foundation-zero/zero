@@ -16,7 +16,7 @@ from thrs.control.modules.thrusters.io import (
 )
 from thrs.input_output.base import Stamped, ThrsValues, component_meta, computed_meta
 from thrs.input_output.definitions import sensor, simulation
-from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.definitions.system import AmcsModeStatus
 
 
 class HighTemperatureSimulationInputs(ThrsValues):
@@ -31,7 +31,7 @@ class HighTemperatureSimulationInputs(ThrsValues):
     pcm_freshwater_supply: simulation.Boundary
     consumers_dhw_supply: simulation.Boundary
     consumers_adsorption_supply: simulation.Boundary
-    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsModeStatus, component_meta(included_in_fmu=False)]
 
     @computed_field(json_schema_extra=computed_meta(included_in_fmu=False))
     @property

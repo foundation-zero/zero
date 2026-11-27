@@ -21,7 +21,7 @@ from thrs.input_output.definitions.simulation import (
     HeatSource,
     TemperatureBoundary,
 )
-from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
+from thrs.input_output.definitions.system import AmcsMode, AmcsModeStatus
 from thrs.orchestration.simulation import Simulation
 from thrs.simulation.fmu import Fmu
 from thrs.simulation.models.fmu_paths import pvt_path
@@ -54,7 +54,7 @@ def simulation_inputs():
         pvt_seawater_supply=Boundary(
             temperature=Stamped.stamp(32), flow=Stamped.stamp(64)
         ),
-        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)),
     )
 
 

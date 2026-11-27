@@ -12,9 +12,12 @@ from thrs.input_output.base import (
     valve_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
-from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.definitions.system import AmcsModeStatus
 from thrs.input_output.definitions.units import GLYCOL_20_HEAT_TRANSFER_CONVERSION
-from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+from thrs.input_output.root_types import (
+    AmcsHeartbeatControlValues,
+    AmcsModeSensorValues,
+)
 
 
 class DcSensorValues(AmcsModeSensorValues):
@@ -762,7 +765,7 @@ class DcSensorValues(AmcsModeSensorValues):
         )
 
 
-class DcControlValues(AmcsWatchdogControlValues):
+class DcControlValues(AmcsHeartbeatControlValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,
@@ -848,7 +851,7 @@ class DcSimulationInputs(ThrsValues):
     dc_ugrid2: simulation.Ugrid
     dc_seawater_supply: simulation.Boundary
     dc_dhw_supply: simulation.Boundary
-    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsModeStatus, component_meta(included_in_fmu=False)]
     dc_brightloop_fwd1: simulation.ActiveHeatSource
     dc_brightloop_fwd2: simulation.ActiveHeatSource
     dc_brightloop_aft1: simulation.ActiveHeatSource

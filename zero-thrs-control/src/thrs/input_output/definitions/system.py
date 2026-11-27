@@ -7,23 +7,23 @@ from thrs.input_output.base import Stamped, ThrsValues
 from thrs.input_output.definitions.units import Seconds
 
 
-class ControlMode(Enum):
+class AmcsMode(Enum):
     LOCAL = 0
     MANUAL = 1
     AUTO = 2
     EXTERNAL = 3
 
 
-class AmcsControlMode(ThrsValues):
-    mode: Stamped[ControlMode]
+class AmcsModeStatus(ThrsValues):
+    mode: Stamped[AmcsMode]
 
     @classmethod
-    def create_advisory(cls) -> AmcsControlMode:
-        return cls(mode=Stamped.stamp(value=ControlMode.EXTERNAL))
+    def create_advisory(cls) -> AmcsModeStatus:
+        return cls(mode=Stamped.stamp(value=AmcsMode.EXTERNAL))
 
     @property
     def is_advisory(self) -> bool:
-        return self.mode.value == ControlMode.EXTERNAL.value
+        return self.mode.value == AmcsMode.EXTERNAL.value
 
 
 class AmcsExternalAvailable(ThrsValues):
@@ -33,6 +33,6 @@ class AmcsExternalAvailable(ThrsValues):
 
 
 __all__ = [
-    "AmcsControlMode",
     "AmcsExternalAvailable",
+    "AmcsModeStatus",
 ]

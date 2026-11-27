@@ -55,7 +55,7 @@ from thrs.input_output.definitions.simulation import (
     Thruster,
     Ugrid,
 )
-from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
+from thrs.input_output.definitions.system import AmcsMode, AmcsModeStatus
 from thrs.input_output.definitions.units import PcsMode
 from thrs.orchestration.module import ModuleClassMap, ModuleDescription
 from thrs.orchestration.simulation import Simulation
@@ -124,7 +124,7 @@ def simulation_inputs() -> ThrsSimulationInputs:
         drives_seawater_supply=Boundary(
             temperature=Stamped.stamp(20), flow=Stamped.stamp(64)
         ),
-        mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)),
+        mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)),
     )
 
 

@@ -8,7 +8,7 @@ from tests.orchestration.simples import SimpleParameters, simple_non_advisory_va
 from thrs.classes.control import Control
 from thrs.input_output.alarms import BaseAlarms
 from thrs.input_output.base import Stamped
-from thrs.input_output.definitions.system import AmcsControlMode, ControlMode
+from thrs.input_output.definitions.system import AmcsMode, AmcsModeStatus
 from thrs.orchestration.module import Module
 
 
@@ -56,7 +56,7 @@ def module_factory(mock_channels, mock_description):
 
 @pytest.fixture
 def advisory_sensor_values():
-    return mock.Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.EXTERNAL)))
+    return mock.Mock(mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.EXTERNAL)))
 
 
 @pytest.fixture
@@ -66,4 +66,4 @@ def manual_values():
 
 @pytest.fixture
 def local_sensor_values():
-    return mock.Mock(mode=AmcsControlMode(mode=Stamped.stamp(ControlMode.LOCAL)))
+    return mock.Mock(mode=AmcsModeStatus(mode=Stamped.stamp(AmcsMode.LOCAL)))

@@ -12,11 +12,14 @@ from thrs.input_output.base import (
     valve_meta,
 )
 from thrs.input_output.definitions import control, sensor, simulation
-from thrs.input_output.definitions.system import AmcsControlMode
+from thrs.input_output.definitions.system import AmcsModeStatus
 from thrs.input_output.definitions.units import (
     GLYCOL_20_HEAT_TRANSFER_CONVERSION,
 )
-from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+from thrs.input_output.root_types import (
+    AmcsHeartbeatControlValues,
+    AmcsModeSensorValues,
+)
 
 
 class ConsumersSensorValues(AmcsModeSensorValues):
@@ -28,7 +31,7 @@ class ConsumersSensorValues(AmcsModeSensorValues):
 
     # Mode is mirrored from PCM: consumers has no AMCS mode of its own.
     mode: Annotated[
-        AmcsControlMode,
+        AmcsModeStatus,
         component_meta(
             included_in_fmu=False,
             topic_override="500000-thrs/pcm/mode",
@@ -140,7 +143,7 @@ class ConsumersSensorValues(AmcsModeSensorValues):
         )
 
 
-class ConsumersControlValues(AmcsWatchdogControlValues):
+class ConsumersControlValues(AmcsHeartbeatControlValues):
     model_config = ConfigDict(
         alias_generator=to_snake,
         use_enum_values=True,
@@ -196,7 +199,7 @@ class ConsumersSimulationInputs(ThrsValues):
     consumers_adsorption_supply: simulation.Boundary
     consumers_dhw_supply: simulation.Boundary
     consumers_pcm_supply: simulation.Boundary
-    mode: Annotated[AmcsControlMode, component_meta(included_in_fmu=False)]
+    mode: Annotated[AmcsModeStatus, component_meta(included_in_fmu=False)]
 
 
 class ConsumersSimulationOutputs(ThrsValues):

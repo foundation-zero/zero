@@ -32,7 +32,7 @@ export const ADSORPTION_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.Boundary,
   },
   mode: {
-    componentType: SimulationComponentType.AmcsControlMode,
+    componentType: SimulationComponentType.AmcsMode,
   },
 });
 
@@ -62,7 +62,7 @@ export const CONSUMERS_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.Boundary,
   },
   mode: {
-    componentType: SimulationComponentType.AmcsControlMode,
+    componentType: SimulationComponentType.AmcsMode,
   },
 });
 
@@ -110,7 +110,7 @@ export const DC_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.Ugrid,
   },
   mode: {
-    componentType: SimulationComponentType.AmcsControlMode,
+    componentType: SimulationComponentType.AmcsMode,
   },
 });
 
@@ -149,7 +149,7 @@ export const DHW_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.Temperature,
   },
   mode: {
-    componentType: SimulationComponentType.AmcsControlMode,
+    componentType: SimulationComponentType.AmcsMode,
   },
 });
 
@@ -206,7 +206,7 @@ export const DRIVES_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.ActiveHeatSource,
   },
   mode: {
-    componentType: SimulationComponentType.AmcsControlMode,
+    componentType: SimulationComponentType.AmcsMode,
   },
 });
 
@@ -227,7 +227,7 @@ export const HIGH_TEMPERATURE_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.Boundary,
   },
   mode: {
-    componentType: SimulationComponentType.AmcsControlMode,
+    componentType: SimulationComponentType.AmcsMode,
   },
   pcmFreshwaterSupply: {
     componentType: SimulationComponentType.Boundary,
@@ -302,7 +302,7 @@ export const HIGH_TEMPERATURE_SIMULATION_OUTPUTS = toSimulationDefinition({
 
 export const PCM_SIMULATION_INPUTS = toSimulationDefinition({
   mode: {
-    componentType: SimulationComponentType.AmcsControlMode,
+    componentType: SimulationComponentType.AmcsMode,
   },
   pcmConsumersSupply: {
     componentType: SimulationComponentType.Temperature,
@@ -335,7 +335,7 @@ export const PCM_SIMULATION_OUTPUTS = toSimulationDefinition({
 
 export const PVT_SIMULATION_INPUTS = toSimulationDefinition({
   mode: {
-    componentType: SimulationComponentType.AmcsControlMode,
+    componentType: SimulationComponentType.AmcsMode,
   },
   pvtMainAft: {
     componentType: SimulationComponentType.HeatSource,
@@ -449,7 +449,7 @@ export const THRS_SIMULATION_INPUTS = toSimulationDefinition({
     componentType: SimulationComponentType.ActiveHeatSource,
   },
   mode: {
-    componentType: SimulationComponentType.AmcsControlMode,
+    componentType: SimulationComponentType.AmcsMode,
   },
   pcmFreshwaterSupply: {
     componentType: SimulationComponentType.Boundary,
@@ -569,7 +569,7 @@ export const THRS_SIMULATION_OUTPUTS = toSimulationDefinition({
 
 export const THRUSTERS_SIMULATION_INPUTS = toSimulationDefinition({
   mode: {
-    componentType: SimulationComponentType.AmcsControlMode,
+    componentType: SimulationComponentType.AmcsMode,
   },
   thrustersPcmSupply: {
     componentType: SimulationComponentType.Temperature,

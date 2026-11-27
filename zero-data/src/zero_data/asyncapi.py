@@ -62,6 +62,11 @@ def stamped_schema(value_type: str, value: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def enum_schema_name(enum: type[IntEnum]) -> str:
+    """Create unique name to tell it apart from the component schemas, which can share an enum's name."""
+    return f"enum{enum.__name__}"
+
+
 def enum_schema(enum: type[IntEnum]) -> dict[str, Any]:
     """An integer enum whose values are named, as named constants."""
     return {
@@ -172,14 +177,17 @@ def extract_schemas(
     values = {
         json_type: {"type": json_type}
         for json_type in sorted({JSON_TYPES[data_type] for _, data_type in all_fields})
-    } | {enum.__name__: {"$ref": SCHEMA_REF_PREFIX + enum.__name__} for enum in enums}
+    } | {
+        enum.__name__: {"$ref": SCHEMA_REF_PREFIX + enum_schema_name(enum)}
+        for enum in enums
+    }
 
     return (
         {
             component_name(component): component_schema(component, fields)
             for component, fields in component_types.items()
         }
-        | {enum.__name__: enum_schema(enum) for enum in enums}
+        | {enum_schema_name(enum): enum_schema(enum) for enum in enums}
         | {
             stamped_schema_name(name): stamped_schema(name, value)
             for name, value in values.items()

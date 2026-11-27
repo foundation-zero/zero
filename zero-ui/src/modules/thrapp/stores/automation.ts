@@ -10,7 +10,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { CONTROLLED_MODULES, ControlledModule, DEFINITIONS } from "../lib/consts";
 import { automationModeMutation } from "../lib/mqtt-graphql.utils";
-import { AmcsControlModeSensor, DcMode, PvtMode, SensorComponentType } from "../types/thrs";
+import { AmcsModeSensor, DcMode, PvtMode, SensorComponentType } from "../types/thrs";
 
 export type ThrustersAutomaticMode = { mode: string };
 export type PcmAutomaticMode = { mode: string };
@@ -61,7 +61,7 @@ export type ControlStatus = {
     [K in keyof ControlModes]: {
       controlMode: Nullable<ControlMode<ControlModes[K]>>;
       // The AMCS mode of the module's devices, if it has an AMCS mode device.
-      sensorValues: { mode?: AmcsControlModeSensor };
+      sensorValues: { mode?: AmcsModeSensor };
     };
   };
 };
@@ -83,7 +83,7 @@ const AUTOMATIC_MODE_SELECTIONS: Record<ControlledModule, string> = {
 const hasAmcsMode = (module: ControlledModule): boolean =>
   Object.entries(DEFINITIONS[module].sensorValues).some(
     ([key, { componentType }]) =>
-      key === `${module}Mode` && componentType === SensorComponentType.AmcsControlMode,
+      key === `${module}Mode` && componentType === SensorComponentType.AmcsMode,
   );
 
 type ControllerModes = {
@@ -93,7 +93,7 @@ type ControllerModes = {
   } | null;
 };
 
-type DeviceModes = { [K in ControlledModule]?: { mode?: AmcsControlModeSensor | null } | null };
+type DeviceModes = { [K in ControlledModule]?: { mode?: AmcsModeSensor | null } | null };
 
 export type ControlResponse = {
   thrs?: { controller?: ControllerModes | null } | null;

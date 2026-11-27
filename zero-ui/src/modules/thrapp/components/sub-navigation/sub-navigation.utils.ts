@@ -1,7 +1,7 @@
 import { ThrsModules } from "@/modules/thrapp/lib/consts";
 import { MimicKey } from "@/modules/thrapp/router/mimics";
 import { ControlStatus } from "@/modules/thrapp/stores/automation";
-import { AmcsControlMode } from "@/modules/thrapp/types/thrs";
+import { AmcsMode } from "@/modules/thrapp/types/thrs";
 import { MODULE_GROUPS } from "./sub-navigation.consts";
 import { ControlState, ModuleGroup, ModuleOptionGroup } from "./sub-navigation.types";
 
@@ -52,7 +52,7 @@ export function getControlState(
     return undefined;
   }
 
-  if (status.sensorValues.mode?.mode.value !== AmcsControlMode.External) {
+  if (status.sensorValues.mode?.mode.value !== AmcsMode.External) {
     return "advisoryDisabled";
   }
 

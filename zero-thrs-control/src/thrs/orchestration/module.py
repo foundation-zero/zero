@@ -8,7 +8,10 @@ from thrs.control.state import AutomationMode, ControlModes, ControlState
 from thrs.control.switching import Switching
 from thrs.input_output.base import ThrsValues
 from thrs.input_output.definitions.system import AmcsExternalAvailable
-from thrs.input_output.root_types import AmcsModeSensorValues, AmcsWatchdogControlValues
+from thrs.input_output.root_types import (
+    AmcsHeartbeatControlValues,
+    AmcsModeSensorValues,
+)
 
 if TYPE_CHECKING:
     from thrs.classes.control import Control
@@ -48,7 +51,7 @@ class ModuleDescription[
 
 class Module[
     S: AmcsModeSensorValues,
-    C: AmcsWatchdogControlValues,
+    C: AmcsHeartbeatControlValues,
     P: ThrsValues,
     M: ThrsValues,
     CS: ControlState,
@@ -150,7 +153,7 @@ class Module[
         else:
             control_values, controller_state = self.execute_control(sensor_values)
 
-        # Update amcs watchdog timestamp
+        # Update amcs heartbeat timestamp
         control_values.external_available = AmcsExternalAvailable()
 
         await self.send_control_updates(sensor_values, control_values, controller_state)

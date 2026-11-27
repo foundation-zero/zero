@@ -11,7 +11,7 @@ import {
   ThrustersAutomaticMode,
   useAutomationStore,
 } from "@/modules/thrapp/stores/automation";
-import { AmcsControlMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
+import { AmcsMode, DcMode, PvtMode } from "@/modules/thrapp/types/thrs";
 import { computed, MaybeRef, unref } from "vue";
 import { NamedValue } from "vue-i18n";
 import { ModeBadgeMode } from "./mode-badge.consts";
@@ -72,7 +72,7 @@ const THRUSTERS_MODES: Record<string, ModeBadgeMode> = {
   cooldown: ModeBadgeMode.CoolingLow,
 };
 
-const AMCS_MODES = [AmcsControlMode.Local, AmcsControlMode.Manual, AmcsControlMode.Auto];
+const AMCS_MODES = [AmcsMode.Local, AmcsMode.Manual, AmcsMode.Auto];
 
 /**
  * The mode badges of a module: one per target of its automatic mode, or the reason it is not
@@ -102,7 +102,7 @@ export function getModuleModes(
       ? t("prefixed", { prefix: t(`prefixes.${module}.${target}`), label })
       : label;
 
-  if (amcsMode !== AmcsControlMode.External) {
+  if (amcsMode !== AmcsMode.External) {
     const label = amcsMode && AMCS_MODES.includes(amcsMode) ? t(`amcs.${amcsMode}`) : undefined;
     return [{ mode: ModeBadgeMode.AdvisoryOff, label }];
   }

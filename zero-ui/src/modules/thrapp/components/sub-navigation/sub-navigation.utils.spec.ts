@@ -1,6 +1,6 @@
 import { MimicKey } from "@/modules/thrapp/router/mimics";
 import { ControlStatus } from "@/modules/thrapp/stores/automation";
-import { AmcsControlMode } from "@/modules/thrapp/types/thrs";
+import { AmcsMode } from "@/modules/thrapp/types/thrs";
 import { describe, expect, it } from "vitest";
 import {
   getControlModule,
@@ -72,7 +72,7 @@ describe("getControlModule", () => {
 });
 
 describe("getControlState", () => {
-  const status = (value: AmcsControlMode, automatic: boolean) =>
+  const status = (value: AmcsMode, automatic: boolean) =>
     ({
       modules: {
         dhw: {
@@ -83,17 +83,17 @@ describe("getControlState", () => {
     }) as unknown as ControlStatus;
 
   it("is automatic or manual when the advisory mode is enabled", () => {
-    expect(getControlState(status(AmcsControlMode.External, true), "dhw")).toBe("automatic");
-    expect(getControlState(status(AmcsControlMode.External, false), "dhw")).toBe("manual");
+    expect(getControlState(status(AmcsMode.External, true), "dhw")).toBe("automatic");
+    expect(getControlState(status(AmcsMode.External, false), "dhw")).toBe("manual");
   });
 
   it("is advisory disabled when the AMCS controls the module", () => {
-    expect(getControlState(status(AmcsControlMode.Local, true), "dhw")).toBe("advisoryDisabled");
+    expect(getControlState(status(AmcsMode.Local, true), "dhw")).toBe("advisoryDisabled");
   });
 
   it("is unknown until the status of the module is loaded", () => {
     expect(getControlState(undefined, "dhw")).toBeUndefined();
-    expect(getControlState(status(AmcsControlMode.External, true), "pvt")).toBeUndefined();
+    expect(getControlState(status(AmcsMode.External, true), "pvt")).toBeUndefined();
   });
 
   it("is unknown while the control mode of the module is missing", () => {
@@ -101,12 +101,12 @@ describe("getControlState", () => {
       modules: {
         dhw: {
           controlMode: null,
-          sensorValues: { mode: { mode: { value: AmcsControlMode.External } } },
+          sensorValues: { mode: { mode: { value: AmcsMode.External } } },
         },
       },
     } as unknown as ControlStatus;
 
     expect(getControlState(withoutControlMode, "dhw")).toBeUndefined();
-    expect(getControlState(status(AmcsControlMode.External, true), undefined)).toBeUndefined();
+    expect(getControlState(status(AmcsMode.External, true), undefined)).toBeUndefined();
   });
 });
