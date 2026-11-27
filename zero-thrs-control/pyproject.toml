@@ -35,14 +35,14 @@ analysis = [
   "matplotlib~=3.11.2",
   "pandas~=3.1.1",
   "plotly~=7.1.0",
-  "polars==2.1.0",
+  "polars==2.2.0",
   "pyarrow~=26.0.1",
   "pyqtgraph~=0.14.0",
   "pyside6~=6.12.0",
   "seaborn~=0.13.2",
 ]
 test = [
-  "polars~=2.1.0",
+  "polars~=2.2.0",
   "pytest~=9.2.0",
   "pytest-asyncio~=1.5.0",
   "pytest-timeout~=2.4.0,<3",
