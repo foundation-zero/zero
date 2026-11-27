@@ -35,6 +35,7 @@
     "1215": "FlowControlValve/1215",
     "9043": "Pyranometer/9043",
     "9044": "Pyranometer/9044",
+    "25001135": "MixValve/25001135",
     "41001001": "HVAC/41001001",
     "1038-01": "TemperatureSensor/1038-01",
     "1038-02": "TemperatureSensor/1038-02",
@@ -499,6 +500,7 @@
     "drives:drivesTemperatureShorepowerReturn": "TemperatureSensor/1038-11",
     "drives:drivesTemperatureSupply": "TemperatureSensor/1038-14",
     "drives:shorepower": "ConnectingCircuit/drives:shorepower",
+    "freshWaterHot:hotMixPcm": "MixValve/25001135",
     "fwd-1": "PowerConverter/dc:fwd-1",
     "fwd-2": "PowerConverter/dc:fwd-2",
     "highTemperature": "ExchangeCircuit/adsorption:highTemperature",
@@ -5338,6 +5340,29 @@
           "technicalName": "thrusters-mix-recovery",
           "mqttTopic": ".../thrusters-mix-recovery",
           "componentType": "Mix valve"
+        }
+      },
+      "25001135": {
+        "controls": {
+          "valve": [
+            "control:valve",
+            "pcm",
+            "placeholder",
+            null
+          ]
+        },
+        "source": [
+          "sensor:valve",
+          "freshWaterHot",
+          "hotMixPcm",
+          null
+        ],
+        "tooltip": {
+          "title": "Mix valve",
+          "yardTag": "25001135",
+          "technicalName": "hot-mix-pcm",
+          "mqttTopic": ".../hot-mix-pcm",
+          "componentType": "3 way valve DN 25"
         }
       },
       "1042-03": {
